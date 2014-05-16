@@ -2,6 +2,7 @@ package com.joyent.piranha.pageobject;
 
 import com.codeborne.selenide.ElementsCollection;
 import com.codeborne.selenide.SelenideElement;
+import com.joyent.piranha.PropertyHolder;
 import org.openqa.selenium.By;
 
 import static com.codeborne.selenide.Condition.*;
@@ -10,9 +11,10 @@ import static com.codeborne.selenide.Selenide.$;
 import static com.codeborne.selenide.Selenide.$$;
 
 public abstract class AbstractPageObject {
-    private static final String GLOBAL_TIMEOUT_KEY = "globaltimeout";
+    private static final String GLOBAL_TIMEOUT_KEY = "selenium.globaltimeout";
     private static final String GLOBAL_TIMEOUT_DEF = "15000";
-    private static final Integer CHANGE_STATUS_TIMEOUT = Integer.parseInt(System.getProperty("statustimeout", "240000"));
+    private static final Integer CHANGE_STATUS_TIMEOUT = Integer.parseInt(PropertyHolder.getChangeStatusTimeout());
+
 
     static final String DASHBOARD_MENU_TITLE = "Dashboard";
     static final String COMPUTE_MENU_TITLE = "Compute";
@@ -64,7 +66,7 @@ public abstract class AbstractPageObject {
     }
 
     public void waitForSmallSpinnerDisappear() {
-        $(".loading-small[style=\"\"]").waitWhile(exist, CHANGE_STATUS_TIMEOUT);
+        $(By.xpath("//span[contains(@class,'loading-small') and not(@style=\"display: none;\")]")).waitWhile(exist, CHANGE_STATUS_TIMEOUT);
     }
 
     public void waitForMediumSpinnerDisappear() {

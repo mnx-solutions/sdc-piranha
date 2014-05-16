@@ -1,16 +1,14 @@
 package com.joyent.piranha.pageobject;
 
-import com.codeborne.selenide.ElementsCollection;
 import com.codeborne.selenide.SelenideElement;
-import com.joyent.piranha.Common;
+import com.joyent.piranha.PropertyHolder;
 import org.openqa.selenium.By;
 
 import java.io.IOException;
 
-import static com.codeborne.selenide.Selectors.byText;
 import static com.codeborne.selenide.Condition.visible;
+import static com.codeborne.selenide.Selectors.byText;
 import static com.codeborne.selenide.Selenide.$;
-import static com.codeborne.selenide.Selenide.$$;
 import static com.codeborne.selenide.Selenide.page;
 
 public class ImageList extends AbstractPageObject {
@@ -51,7 +49,7 @@ public class ImageList extends AbstractPageObject {
 
     public void deleteImageByName(String imageName) throws IOException {
         String imageId = getImageUUID(imageName);
-        ProcessBuilder cloudApiAuth = new ProcessBuilder("ssh", "-i", System.getProperty("privateKeyPath"), "root@192.168.115.248", "curl", "-kis", "http://10.0.0.15/images/" + imageId, "-XDELETE");
+        ProcessBuilder cloudApiAuth = new ProcessBuilder("ssh", "-i", PropertyHolder.getPrivateKeyPath(), "root@192.168.115.248", "curl", "-kis", "http://10.0.0.15/images/" + imageId, "-XDELETE");
         cloudApiAuth.start();
     }
 

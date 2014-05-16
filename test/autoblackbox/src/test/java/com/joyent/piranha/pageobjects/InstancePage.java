@@ -3,6 +3,7 @@ package com.joyent.piranha.pageobjects;
 import com.codeborne.selenide.SelenideElement;
 import com.codeborne.selenide.WebDriverRunner;
 import com.joyent.piranha.Common;
+import com.joyent.piranha.PropertyHolder;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 
@@ -18,8 +19,7 @@ import static com.codeborne.selenide.Selenide.$;
  * Instance details page object. Holds methods to interact with given pages.
  */
 public class InstancePage {
-    private static final int CHANGE_STATUS_TIMEOUT = Integer.parseInt(System
-            .getProperty("statustimeout", "240000"));
+    private static final int CHANGE_STATUS_TIMEOUT = Integer.parseInt(PropertyHolder.getChangeStatusTimeout());
 
     public void validateStatus(String status) {
         $(".page-header .label").waitUntil(hasText(status),
@@ -63,7 +63,7 @@ public class InstancePage {
         c.should(matchText("Login\n" + login));
     }
 
-    //TODO: remove method
+@Deprecated
     public void resize(String size) {
         Common.checkSubHeadingText("Resize Instance");
         $(byText("Resize Instance type")).shouldBe(visible);

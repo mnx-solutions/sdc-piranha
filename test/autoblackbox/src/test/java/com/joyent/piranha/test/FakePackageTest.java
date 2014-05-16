@@ -1,6 +1,7 @@
 package com.joyent.piranha.test;
 
 import com.joyent.piranha.Common;
+import com.joyent.piranha.PropertyHolder;
 import com.joyent.piranha.pageobject.*;
 import com.joyent.piranha.util.TestWrapper;
 import org.junit.*;
@@ -15,7 +16,7 @@ import static com.codeborne.selenide.Selenide.page;
 import static org.junit.Assert.assertTrue;
 
 public class FakePackageTest extends TestWrapper {
-    public static final String USER_NAME = System.getProperty("loginusr");
+    public static final String USER_NAME = PropertyHolder.getTestUserLogin();
     private static NavBarMenu navBarMenu;
     public static SideBarMenu sideBarMenu;
 
@@ -25,7 +26,7 @@ public class FakePackageTest extends TestWrapper {
         baseUrl = BASE_URL;
 
         Login loginPage = open("/", Login.class);
-        loginPage.login(USER_NAME, System.getProperty("loginpw"));
+        loginPage.login(USER_NAME, PropertyHolder.getTestUserPassword());
         page(Dashboard.class).getCountInstancesRunning().shouldNotHave(text("0"));
         navBarMenu = page(NavBarMenu.class);
         sideBarMenu = page(SideBarMenu.class);

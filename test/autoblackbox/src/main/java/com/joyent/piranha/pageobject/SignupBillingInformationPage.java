@@ -40,9 +40,9 @@ public class SignupBillingInformationPage extends AbstractPageObject {
     }
 
     public void setExpireDate(String monthValue, String yearValue) {
-        Select expirationMonth = new Select($(By.id("expirationMonth")));
+        Select expirationMonth = new Select($(By.id("profile.billing.expirationMonth")));
         expirationMonth.selectByValue(monthValue);
-        Select expirationYear = new Select($(By.id("expirationYear")));
+        Select expirationYear = new Select($(By.id("profile.billing.expirationYear")));
         expirationYear.selectByValue(yearValue);
     }
 
@@ -51,7 +51,7 @@ public class SignupBillingInformationPage extends AbstractPageObject {
     }
 
     public void setAddressLine1(String address) {
-        setValue($(By.id("addressLine1")), address);
+        setValue($(By.id("profile.billing.addressLine1")), address);
     }
 
     public void setCountry(String countryValue) {
@@ -60,7 +60,7 @@ public class SignupBillingInformationPage extends AbstractPageObject {
     }
 
     public void setCity(String city) {
-        setValue($(By.id("city")), city);
+        setValue($(By.id("profile.billing.city")), city);
     }
 
     public void setState(String state) {
@@ -69,7 +69,7 @@ public class SignupBillingInformationPage extends AbstractPageObject {
     }
 
     public void setZipCode(String zipCode) {
-        setValue($(By.id("zipCode")), zipCode);
+        setValue($(By.id("profile.billing.zipCode")), zipCode);
     }
 
     public void setPhone(String phone) {

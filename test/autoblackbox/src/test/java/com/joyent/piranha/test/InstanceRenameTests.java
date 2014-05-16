@@ -1,6 +1,7 @@
 package com.joyent.piranha.test;
 
 import com.joyent.piranha.Common;
+import com.joyent.piranha.PropertyHolder;
 import com.joyent.piranha.pageobject.InstanceDetails;
 import com.joyent.piranha.pageobject.Login;
 import com.joyent.piranha.pageobject.NavBarMenu;
@@ -21,8 +22,8 @@ import static com.codeborne.selenide.Selenide.page;
 
 public class InstanceRenameTests extends TestWrapper {
 
-    public static final String USER_NAME = System.getProperty("loginusr");
-    public static final String PASSWORD = System.getProperty("loginpw");
+    public static final String USER_NAME = PropertyHolder.getTestUserLogin();
+    public static final String PASSWORD = PropertyHolder.getTestUserPassword();
     public static NavBarMenu navBarMenu;
     public static SideBarMenu sideBarMenu;
     public static InstanceDetails instanceDetails;

@@ -3,25 +3,24 @@ package com.joyent.piranha;
 import com.codeborne.selenide.ElementsCollection;
 import com.codeborne.selenide.SelenideElement;
 import com.codeborne.selenide.WebDriverRunner;
+import org.apache.commons.io.IOUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.openqa.selenium.By;
-import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.NoSuchElementException;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Scanner;
 import java.util.Set;
 
-import static com.codeborne.selenide.Condition.hasText;
-import static com.codeborne.selenide.Condition.matchText;
-import static com.codeborne.selenide.Condition.visible;
+import static com.codeborne.selenide.Condition.*;
 import static com.codeborne.selenide.Selectors.byAttribute;
 import static com.codeborne.selenide.Selectors.byText;
-import static com.codeborne.selenide.Selenide.$;
-import static com.codeborne.selenide.Selenide.$$;
-import static com.codeborne.selenide.Selenide.open;
+import static com.codeborne.selenide.Selenide.*;
 import static org.junit.Assert.assertTrue;
 
 /**
@@ -29,13 +28,12 @@ import static org.junit.Assert.assertTrue;
  */
 public class Common {
 
-    private static final int BASE_TIMEOUT = Integer.parseInt(System.getProperty("globaltimeout", "15000"));
-    private static final int CHANGE_STATUS_TIMEOUT = Integer.parseInt(System.getProperty("statustimeout", "240000"));
+    private static final int BASE_TIMEOUT = Integer.parseInt(PropertyHolder.getGlobalTimeout());
 
     public static void login() {
         $(byAttribute("type", "button")).click();
-        $(byAttribute("name", "username")).setValue(System.getProperty("loginusr"));
-        $(byAttribute("name", "password")).setValue(System.getProperty("loginpw"));
+        $(byAttribute("name", "username")).setValue(PropertyHolder.getTestUserLogin());
+        $(byAttribute("name", "password")).setValue(PropertyHolder.getTestUserPassword());
         $("#login-submit").click();
         $("#count-instances-running").waitWhile(hasText("0"), BASE_TIMEOUT);
     }
@@ -43,11 +41,6 @@ public class Common {
     public static void checkSubHeadingText(String headingText) {
         ElementsCollection headingTextContainer = $$("legend");
         assertTrue(Common.getRowByText(headingTextContainer, headingText).exists());
-    }
-
-    public static void openSubHeadingEditLink(String headingText) {
-        ElementsCollection headingTextContainer = $$("legend");
-        Common.getRowByText(headingTextContainer, headingText).$(byText("Edit")).click();
     }
 
     @Deprecated
@@ -68,42 +61,10 @@ public class Common {
         $(byText(text)).click();
     }
 
-    public static void openFirewallPage() {
-        $(byText("Compute")).click();
-        $(byText("Firewall")).click();
-    }
-
-    public static void openMyAccount() {
-        $(byText(System.getProperty("loginusr"))).click();
-        $("#link-account").click();
-    }
-
-    public static void openChangePasswordDialog() {
-        $(byText(System.getProperty("loginusr"))).click();
-        $("[data-ng-click=\"changePassword()\"]").click();
-    }
-
-    public static int getCollectionIndexByText(ElementsCollection col, String filter) {
-        int i = 0;
-        $(byText(filter)).shouldBe(visible);
-        for (SelenideElement element : col) {
-            if (element.findAll(byText(filter)).size() > 0) {
-                return i;
-            }
-            i++;
-        }
-        throw new NoSuchElementException("Such element doesn't exist");
-    }
-
     public static void clickButtonInModal(String buttonName) {
         $(".modal").shouldBe(visible);
         $(".modal-header").exists();
         $(".modal-footer").find(byText(buttonName)).click();
-    }
-
-    public static void checkBreadcrumb(String active, String right) {
-        $("ul.breadcrumb li", 0).$("a").should(matchText(active));
-        $("ul.breadcrumb li", 1).shouldHave(matchText("(.*)" + right));
     }
 
     public static void errorNotPresent() {
@@ -113,7 +74,7 @@ public class Common {
     }
 
     public static String[] instanceProperties() {
-        if (System.getProperty("datacenter").equals("us-west-b") || System.getProperty("datacenter").equals("local-x")) {
+        if (PropertyHolder.containsDatacenter(0,"us-west-b","local-x")) {
             return new String[]{
                     "base",
                     "13.3.0",
@@ -125,7 +86,7 @@ public class Common {
                     "0.125 vCPUs",
                     "$0.008",
                     "$5.84"};
-        } else if (System.getProperty("datacenter").equals("us-west-1")) {
+        } else if (PropertyHolder.containsDatacenter(0, "us-west-1")) {
             return new String[]{
                     "base",
                     "13.2.0",
@@ -143,7 +104,7 @@ public class Common {
 
     public static String getTestInstanceName() {
         final String instanceName;
-        switch (System.getProperty("datacenter")) {
+        switch (PropertyHolder.getDatacenter(0)) {
             case "us-west-b":
             case "local-x":
                 instanceName = "dnd-forImageAutoTests";
@@ -159,42 +120,21 @@ public class Common {
     }
 
     public static String getValueFromLog(String key) throws FileNotFoundException, JSONException {
-        File log = new File(System.getProperty("serverLogPath"));
+        File log = new File(PropertyHolder.getServerLogPath());
         String result = null;
-            Scanner scanner = new Scanner(log);
-            while (scanner.hasNext()) {
-                String line = scanner.nextLine();
-                if (line.contains(key)) {
-                    JSONObject newJson = new JSONObject(line);
-                    result = newJson.get(key).toString();
-                }
+        Scanner scanner = new Scanner(log);
+        while (scanner.hasNext()) {
+            String line = scanner.nextLine();
+            if (line.contains(key)) {
+                JSONObject newJson = new JSONObject(line);
+                result = newJson.get(key).toString();
             }
+        }
         return result;
-    }
-
-    public static void addGridColumn(String columnName) {
-        Common.clickColumnsButton();
-        JavascriptExecutor executor = (JavascriptExecutor) WebDriverRunner.getWebDriver();
-        executor.executeScript("$('#checkbox-list-columns label:contains(" + columnName + ") input').click();");
-        $(By.xpath("//th[@data-ng-repeat=\"prop in props | orderBy:'sequence'\" and contains(.,'" + columnName + "')]")).waitUntil(visible, BASE_TIMEOUT);
-    }
-
-    public static void clickColumnsButton() {
-        $("#button-columns").click();
-    }
-
-    public static void clickActionsButton() {
-        $("#button-actions").click();
     }
 
     public static void forceLogout() {
         open("/landing/forgetToken");
-    }
-
-    public static void performAction(String action) {
-        clickActionsButton();
-        $("#option-list-actions").waitUntil(visible, BASE_TIMEOUT);
-        $("#option-list-actions").$(byText(action)).click();
     }
 
     public static void switchWindow(SelenideElement elementToBeVisible) {
@@ -207,11 +147,23 @@ public class Common {
         }
     }
 
-    public static void waitForSmallLaoderDisappear() {
-        $(".pull-right.loading-small").waitWhile(visible, CHANGE_STATUS_TIMEOUT);
+    public static String addOneYearToDate(String date) throws ParseException, IOException, JSONException {
+        SimpleDateFormat userDate = new SimpleDateFormat("yyyy-MM-dd");
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(userDate.parse(date));
+        calendar.add(Calendar.YEAR, 1);
+        return userDate.format(calendar.getTime());
     }
 
-    public static void waitForMediumLaoderDisappear() {
-        $(".loading-medium.spiner-height").waitWhile(visible, CHANGE_STATUS_TIMEOUT);
+    public static String getUserCreateDate(String datacenter) throws IOException, JSONException {
+        String userName = PropertyHolder.getTestUserLogin();
+        ProcessBuilder processBuilder = new ProcessBuilder(PropertyHolder.getSdcPath() + "sdc-getaccount", "--" + userName + "");
+        processBuilder.environment().put("SDC_ACCOUNT", userName);
+        processBuilder.environment().put("SDC_KEY_ID", PropertyHolder.getSdcKeyID());
+        processBuilder.environment().put("SDC_URL", PropertyHolder.getSdcURL(datacenter));
+        processBuilder.environment().put("SDC_TESTING", "true");
+        Process p = processBuilder.start();
+        JSONObject outJSON = new JSONObject(IOUtils.toString(p.getInputStream()));
+        return outJSON.get("created").toString().substring(0, 10);
     }
 }
