@@ -395,6 +395,7 @@
                         Machine.provisionMachine(machineData).done(function (err, job) {
                             var quotaExceededHeader = 'QuotaExceeded: ';
                             if (err && err.message && err.message.indexOf(quotaExceededHeader) === 0) {
+                                $location.path('/dashboard');
                                 PopupDialog.error(null, err.message.substr(quotaExceededHeader.length), function () {
                                     $scope.zenboxDialog({
                                         request_subject: 'Please raise my provisioning limits'
