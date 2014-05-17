@@ -100,7 +100,7 @@ module.exports = function execute(scope, callback) {
 
                         call.req.session.zuoraServiceAttempt = 0;
                         call.req.session.save();
-                        callback(null);
+                        callback('User blocked');
                     });
                     return;
                 }
