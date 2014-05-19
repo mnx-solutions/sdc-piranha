@@ -93,7 +93,7 @@
 
 
                 scope.exportFields = {
-                    ignore: []
+                    ignore: 'all'
                 };
 
                 scope.searchForm = true;
