@@ -6,7 +6,8 @@
             restrict: 'EA',
             scope: {
                 name: '=',
-                objects: '='
+                objects: '=',
+                length: '@'
             },
 
             link: function ($scope) {

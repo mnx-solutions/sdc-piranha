@@ -70,7 +70,8 @@
             <div class="span6">
                 <div data-job-section
                      data-name="'Inputs'"
-                     data-objects="inputs"></div>
+                     data-objects="inputs"
+                     data-length="{{ job.stats.tasks }}"></div>
 
                 <div data-job-section
                      data-name="'Assets'"
@@ -90,15 +91,18 @@
             <div class="span6">
                 <div data-job-section
                      data-name="'Outputs'"
-                     data-objects="outputs"></div>
+                     data-objects="outputs"
+                     data-length="{{ job.stats.outputs }}"></div>
 
                 <div data-job-section
                      data-name="'Errors'"
-                     data-objects="errors"></div>
+                     data-objects="errors"
+                     data-length="{{ job.stats.errors }}"></div>
 
                 <div data-job-section
                      data-name="'Failures'"
-                     data-objects="failures"></div>
+                     data-objects="failures"
+                     data-length="{{ job.stats.failures }}"></div>
             </div>
         </div>
     </div>
