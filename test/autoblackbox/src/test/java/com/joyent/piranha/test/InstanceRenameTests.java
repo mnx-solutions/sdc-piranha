@@ -9,6 +9,7 @@ import com.joyent.piranha.pageobject.SideBarMenu;
 import com.joyent.piranha.util.TestWrapper;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import static com.codeborne.selenide.Condition.text;
@@ -31,7 +32,7 @@ public class InstanceRenameTests extends TestWrapper {
 
     @BeforeClass
     public static void openDashboard() {
-        timeout = CHANGE_STATUS_TIMEOUT;
+        timeout = BASE_TIMEOUT;
         baseUrl = BASE_URL;
         Login loginPage = open("/", Login.class);
         loginPage.login(USER_NAME, PASSWORD);
@@ -50,10 +51,10 @@ public class InstanceRenameTests extends TestWrapper {
         instanceDetails.clickRenameInstanceIcon();
         instanceDetails.getInstanceNameField().sendKeys("!!!");
         instanceDetails.waitForMediumSpinnerDisappear();
-        $(byText("Machine name can contain only letters, digits and signs like '.' and '-'.")).shouldBe(visible);
+        $(byText("machine name can contain only letters, digits and signs like '.' and '-'.")).shouldBe(visible);
         instanceDetails.getInstanceNameField().clear();
         instanceDetails.getInstanceNameField().sendKeys("dnd-forFIrewallAutoTests");
-        $(byText("Machine name is already in use")).shouldBe(visible);
+        $(byText("machine name is already in use")).shouldBe(visible);
     }
 
     @Test
