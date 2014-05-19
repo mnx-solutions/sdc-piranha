@@ -384,7 +384,9 @@
                         return;
                     }
                     var machineData = machine || $scope.data;
-                    if ($scope.keys.length === 0 && osByDatasets[machineData.dataset] !== 'windows') {
+                    //we can return can back when make ssh not required for windows
+                    //osByDatasets[machineData.dataset] !== 'windows'
+                    if ($scope.keys.length === 0) {
                         $rootScope.commonConfig('provisionBundle', {
                             manualCreate: false,
                             allowCreate: false,
