@@ -8,11 +8,8 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.support.ui.Select;
 
-import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Selectors.byText;
-import static com.codeborne.selenide.Selenide.$;
-import static com.codeborne.selenide.Selenide.$$;
-import static com.codeborne.selenide.Selenide.page;
+import static com.codeborne.selenide.Selenide.*;
 
 public class InstanceDetails extends AbstractPageObject {
     private final String name;
@@ -56,7 +53,7 @@ public class InstanceDetails extends AbstractPageObject {
     }
 
     public SelenideElement getInstanceNameField() {
-        return $("#instanceRename").isDisplayed() ? $("#instanceRename") : $(".page-title");
+        return $("#renameObject").isDisplayed() ? $("#renameObject") : $(".page-title");
     }
 
     public void rename(String name) {
