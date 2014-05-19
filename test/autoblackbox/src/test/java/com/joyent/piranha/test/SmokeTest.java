@@ -134,9 +134,7 @@ public class SmokeTest extends TestWrapper {
         String instanceName = "selenide-created-instance";
         String[] inst = Common.instanceProperties();
         final Dashboard dashboard = sideBarMenu.clickDashboard();
-        final CreateInstanceQuickStart createInstanceQuickStart = dashboard.clickCreateComputeInstance();
-        createInstanceQuickStart.checkTitle();
-        CreateInstance createInstance = createInstanceQuickStart.clickViewMoreImages();
+        final CreateInstance createInstance = dashboard.clickCreateComputeInstance();
         createInstance.selectDataCenter(DATACENTER);
         createInstance.waitUntilPageIsActive(0);
         createInstance.selectOsFilter("smartos");

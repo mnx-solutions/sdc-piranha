@@ -32,7 +32,7 @@ public class CreateInstance extends AbstractPageObject {
 
     public void selectDataCenter(String zone) {
         if (!$(byText("Quick Start: Create Instance")).isDisplayed()) {
-            waitForListingUpdate();
+            waitForMediumSpinnerDisappear();
         }
         $("#button-select-datacenter").click();
         $(byText(zone)).click();

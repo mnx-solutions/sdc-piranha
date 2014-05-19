@@ -34,8 +34,8 @@ public class Instances extends AbstractPageObject {
         return $("[data-ng-show=\"freeTierFound()\"]").text();
     }
 
-    public CreateInstanceQuickStart clickCreateButton() {
+    public CreateInstance clickCreateButton() {
         $("[href=\"#!/compute/create/simple\"]").click();
-        return page(CreateInstanceQuickStart.class);
+        return page(CreateInstance.class);
     }
 }
