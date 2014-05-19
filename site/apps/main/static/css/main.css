@@ -3161,6 +3161,14 @@ label.checkbox {
     border: 1px solid #666;
     margin-left: -1px;
 }
+.finder-column-loader .column-folders,
+.general-column.column-folders {
+    border: 0 none;
+    margin-left: 0;
+}
+.files-box.column-files {
+    margin-left: 0;
+}
 
 .header-btn-panel {
     padding-bottom: 5px;
