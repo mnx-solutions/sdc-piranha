@@ -427,19 +427,6 @@ div.error {
     width: 205px !important;
     padding: 0;
 }
-.content-p, .content-li{
-    font-size: 16px;
-    color: #3d3d3d;
-    line-height: 24px;
-    font-weight: 300;
-}
-.content-p{
-    padding-bottom: 15px;
-}
-.content-p.or{
-    padding-left: 10px;
-    padding-right: 10px;
-}
 .edit-form form{
     margin: 0;
 }
