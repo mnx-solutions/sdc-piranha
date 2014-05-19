@@ -39,8 +39,7 @@ public class FakePackageTest extends TestWrapper {
 
     @Test
     public void selectHighPerformancePackage() {
-        CreateInstanceQuickStart createInstanceQuickStart = sideBarMenu.clickDashboard().clickCreateComputeInstance();
-        CreateInstance createInstance = createInstanceQuickStart.clickViewMoreImages();
+        CreateInstance createInstance = sideBarMenu.clickDashboard().clickCreateComputeInstance();
         createInstance.waitForMediumSpinnerDisappear();
         createInstance.selectOsFilter("smartos");
         createInstance.selectOsImage("base");
