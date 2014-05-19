@@ -815,6 +815,15 @@
                         $scope.onFilterChange($scope.filterModel.key);
                     }
 
+                    var versions = $scope.versions[dataset.name];
+                    var filteredVersions = {};
+                    for (var version in versions) {
+                        if (versions[version].public === dataset.public) {
+                            filteredVersions[version] = versions[version];
+                        }
+                    }
+                    $scope.filteredVersions = filteredVersions;
+
                     setTimeout(expandLastSection, 600);
                     ng.element('.carousel').one('slid', expandLastSection);
                 });
