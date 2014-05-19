@@ -303,7 +303,8 @@ module.exports = function execute(scope) {
                 }
                 client.get('/' + client.user, function (error) {
                     if (error) {
-                        if (error.name === 'AccountBlockedError') {
+                        call.req.log.error(error, 'Ping manta storage');
+                        if (error.name === 'AccountBlockedError' || error.name === 'AccountBlocked') {
                             if (retries > 0) {
                                 retries -= 1;
                                 setTimeout(pingManta, 1000);
