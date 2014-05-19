@@ -17,6 +17,16 @@
     word-wrap: break-word;
 }
 
+.package-holder:last-child:after {
+    position: relative;
+    left: 100%;
+    display: inline-block;
+    width: 60px;
+    height: 1px;
+    background-color: transparent;
+    content: '';
+}
+
 .package-holder .header,
 .package-holder .desc {
     width: 236px;
