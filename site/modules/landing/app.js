@@ -78,7 +78,7 @@ module.exports = function execute(scope, app, callback) {
 
         if (campaignId) {
             var campaignDetails =  scope.config.ns['campaigns'][campaignId];
-            if (campaignDetails.signupRedirectUrl) {
+            if (campaignDetails && campaignDetails.signupRedirectUrl) {
                 redirectUrl = campaignDetails.signupRedirectUrl;
                 res.cookie('signupRedirectUrl', redirectUrl);
             } else {
