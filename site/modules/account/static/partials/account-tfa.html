@@ -5,17 +5,16 @@
     <div class="modal-body">
         <p data-ng-show="!tfaEnabled">Two-factor authentication is currently disabled.</p>
         <p data-ng-show="tfaEnabled">Two-factor authentication is currently enabled.</p>
-        <p data-ng-show="qrImage" class="content-p">If you enable two-factor authentication following instructions below, you will be asked to provide an extra verification code next time you login.</p>
-        <div class="fieldset-spacer"></div>
+        <p data-ng-show="qrImage">If you enable two-factor authentication following instructions below, you will be asked to provide an extra verification code next time you login.</p>
         <div data-ng-show="qrImage">
             <ol>
-                <li class="content-li">Please download 'Google Authenticator' from your phone's App Store.</li>
-                <li class="content-li">
+                <li>Please download 'Google Authenticator' from your phone's App Store.</li>
+                <li>
                     Scan the QR code below using the application:
                     <div style="margin: 15px; padding-left: 20px" data-ng-bind-html-unsafe="qrImage">
                     </div>
                 </li>
-                <li class="content-li">
+                <li>
                     Type the 6-digit code from Google Authenticator to verify your configuration:<br><br>
                     <div class="control-group">
                         <span class="edit-value-tfa"><input id="otpass" type="text" class="span4" value="" data-ng-model="otpass" /></span>
@@ -23,7 +22,6 @@
                     </div>
                 </li>
             </ol>
-            <div class="fieldset-spacer"></div>
         </div>
     </div>
 
