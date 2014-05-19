@@ -9,6 +9,7 @@ var mantaNotAvailable = 'Manta service is not available.';
 module.exports = function execute(scope) {
     var Manta = scope.api('MantaClient');
     var server = scope.api('Server');
+    var Billing = scope.api('Billing');
 
     function sendError(call, error) {
         function done(error) {
@@ -293,23 +294,29 @@ module.exports = function execute(scope) {
 
     server.onCall('StoragePing', function (call) {
         var client = Manta.createClient(call);
-        var retries = 10;
+        var retries = 15;
         function pingManta() {
-            client.get('/' + client.user, function (error) {
-                if (error) {
-                    if (error.name === 'AccountBlockedError' && call.req.session.provisionEnabled) {
-                        if (retries > 0) {
-                            retries -= 1;
-                            setTimeout(pingManta, 1000);
-                            return;
-                        }
-                        sendError(call, {message: 'Something went wrong.  Please try again in a minute.'});
-                        return;
-                    }
-                    sendError(call, error);
+            Billing.isActive(call.req.session.userId, function (error, isActive) {
+                if (error || !isActive) {
+                    sendError(call, {message: 'Something went wrong.  Please try again in a minute.'});
                     return;
                 }
-                call.done(null, 'pong');
+                client.get('/' + client.user, function (error) {
+                    if (error) {
+                        if (error.name === 'AccountBlockedError') {
+                            if (retries > 0) {
+                                retries -= 1;
+                                setTimeout(pingManta, 1000);
+                                return;
+                            }
+                            sendError(call, {message: 'Something went wrong.  Please try again in a minute.'});
+                            return;
+                        }
+                        sendError(call, error);
+                        return;
+                    }
+                    call.done(null, 'pong');
+                });
             });
         }
         pingManta();
