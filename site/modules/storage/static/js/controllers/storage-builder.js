@@ -3,8 +3,8 @@
 (function (app) {
     app.controller(
         'Storage.JobBuilderController',
-        ['$rootScope', '$scope', 'requestContext', 'localization', '$q', 'Storage', 'PopupDialog', '$location',
-            function ($rootScope, $scope, requestContext, localization, $q, Storage, PopupDialog, $location) {
+        ['$rootScope', '$scope', 'Account', 'requestContext', 'localization', '$q', 'Storage', 'PopupDialog', '$location',
+            function ($rootScope, $scope, Account, requestContext, localization, $q, Storage, PopupDialog, $location) {
                 localization.bind('storage', $scope);
                 requestContext.setUpRenderContext('storage.builder', $scope);
 
@@ -14,13 +14,18 @@
                 $scope.filePath = '';
                 $scope.mapStep = '';
                 $scope.reduceStep = '';
-
+                $scope.loading = true;
                 var cloneJob = $rootScope.popCommonConfig('cloneJob');
-                Storage.ping().then(angular.noop, function () {
-                    $location.url('/manta/intro');
-                    $location.replace();
+                Account.getAccount().then(function (account) {
+                    $scope.loading = false;
+                    $scope.account = account;
+                    if ($scope.account.provisionEnabled) {
+                        Storage.ping().then(angular.noop, function () {
+                            $location.url('/manta/intro');
+                            $location.replace();
+                        });
+                    }
                 });
-
                 if (cloneJob) {
                     $scope.jobName = cloneJob.name;
 
@@ -47,11 +52,19 @@
                     }
                 }
 
+                $scope.completeAccount = function () {
+                    var submitBillingInfo = {
+                        btnTitle: 'Submit and Access Job Builder',
+                        appendPopupMessage: 'Manta access will now be granted.'
+                    };
+                    Account.checkProvisioning(submitBillingInfo, null, null, null, false);
+                };
+
                 $scope.createJob = function () {
                     var dataAssets = $scope.dataAssets.map(function (dataAsset) {
                         return dataAsset.filePath;
                     });
-                    var inputs = $scope.dataInputs.map(function (dataInput) {
+                    var dataInputs = $scope.dataInputs.map(function (dataInput) {
                         return dataInput.filePath;
                     });
                     var job = {
@@ -59,7 +72,7 @@
                         mapStep: $scope.mapStep,
                         assets: dataAssets,
                         reduceStep: $scope.reduceStep,
-                        inputs: inputs
+                        inputs: dataInputs
                     };
 
                     $q.when(Storage.createJob(job, true)).then(

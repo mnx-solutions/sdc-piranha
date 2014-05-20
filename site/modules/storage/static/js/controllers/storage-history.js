@@ -12,20 +12,19 @@
                 $scope.placeHolderText = 'filter jobs';
 
                 if ($scope.features.manta === 'enabled') {
-                    Storage.ping().then(function () {
-                        Account.checkProvisioning({btnTitle: 'Submit and Access Job History'}, function () {
-                            $scope.gridUserConfig = Account.getUserConfig().$child('job_history');
-                            $scope.jobs = getJobsList();
-                        }, function () {}, function (isSuccess) {
-                            if (isSuccess) {
-                                $location.path('/manta/jobs');
-                            } else {
-                                $location.path('/manta/intro');
-                            }
-                        });
-                    }, function () {
-                        $location.url('/manta/intro');
-                        $location.replace();
+                    Account.getAccount().then(function (account) {
+                        $scope.account = account;
+                        if ($scope.account.provisionEnabled) {
+                            Storage.ping().then(function () {
+                                $scope.gridUserConfig = Account.getUserConfig().$child('job_history');
+                                $scope.jobs = getJobsList();
+                            }, function () {
+                                $location.url('/manta/intro');
+                                $location.replace();
+                            });
+                        } else {
+                            $scope.loading = false;
+                        }
                     });
                 } else {
                     $location.path('/');
@@ -52,6 +51,18 @@
                     }
                     return object.details;
                 };
+
+                $scope.completeAccount = function () {
+                    var submitBillingInfo = {
+                        btnTitle: 'Submit and Access Job History',
+                        appendPopupMessage: 'Manta access will now be granted.'
+                    };
+                    Account.checkProvisioning(submitBillingInfo, function () {
+                        $scope.gridUserConfig = Account.getUserConfig().$child('job_history');
+                        $scope.jobs = getJobsList();
+                    }, null, null, false);
+                };
+
 
                 $scope.gridOrder = ['-mtime'];
                 $scope.gridProps = [
