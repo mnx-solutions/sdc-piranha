@@ -1,8 +1,7 @@
 .utilization {
-    width: 100%;
-    margin-bottom: 30px;
     display: inline-table;
-    padding-right: 70px;
+    margin-bottom: 30px;
+    width: 100%;
 }
 
 .utilization .tile {
