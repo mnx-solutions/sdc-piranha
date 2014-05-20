@@ -23,12 +23,16 @@
         '$compile',
         'loggingService',
         'util',
+        'Limits',
+        'errorContext',
 
-        function ($scope, $filter, requestContext, $timeout, Machine, Dataset, Datacenter, Package, Account, Network, Image, $location, localization, $q, $$track, PopupDialog, $cookies, $rootScope, FreeTier, $compile, loggingService, util) {
+        function ($scope, $filter, requestContext, $timeout, Machine, Dataset, Datacenter, Package, Account, Network, Image, $location, localization, $q, $$track, PopupDialog, $cookies, $rootScope, FreeTier, $compile, loggingService, util, Limits, errorContext) {
             localization.bind('machine', $scope);
             requestContext.setUpRenderContext('machine.provision', $scope, {
                 title: localization.translate(null, 'machine', 'Create Instances on Joyent')
             });
+            var SELECT_PACKAGE_STEP = 1;
+            var REVIEW_STEP = 2;
 
             $scope.setCreateInstancePage = Machine.setCreateInstancePage;
             $scope.provisionSteps = [
@@ -70,6 +74,25 @@
                     );
                 }
             });
+            $scope.isProvisioningLimitsEnable = $scope.features.provisioningLimits === 'enabled';
+            $scope.getLimits = [];
+
+            function getUserLimits () {
+                var deferred = $q.defer();
+                Limits.getUserLimits(function (error, limits) {
+                    if (error) {
+                        PopupDialog.error('Error', error);
+                        deferred.resolve([]);
+                    }
+                    deferred.resolve(limits);
+                });
+                return deferred.promise;
+            }
+
+            if ($scope.isProvisioningLimitsEnable) {
+                $scope.getLimits = getUserLimits();
+            }
+
             $scope.keys = [];
             $scope.datacenters = [];
             $scope.networks = [];
@@ -127,7 +150,7 @@
                 return deferred.promise;
             }
 
-            var recentInstances = getCreatedMachines();
+            var recentMachines = getCreatedMachines();
 
             function setupSimpleImages (simpleImages, networks, isFree) {
                 if (simpleImages && simpleImages.length > 0) {
@@ -177,6 +200,7 @@
                                             delete simpleImage.packageName;
                                             delete simpleImage.datasetName;
                                             if (simpleImage.imageData.package) {
+                                                simpleImage.limit = checkLimit(simpleImage.imageData.dataset);
                                                 $scope.simpleImages.push(simpleImage);
                                             }
                                         }
@@ -188,13 +212,21 @@
                 }
             }
 
+            function checkLimit (dataset) {
+                return $scope.isProvisioningLimitsEnable && $scope.limits.some(function (limit) {
+                    return (limit.dataset === dataset && limit.limit < 1);
+                });
+            }
+
             $q.all([
                 $q.when(Account.getKeys()),
                 $q.when(Datacenter.datacenter()),
                 $q.when($scope.preSelectedImage),
                 $q.when(Machine.getSimpleImgList()),
                 $q.when($scope.freeTierOptions),
-                $q.when(recentInstances)
+                $q.when(recentMachines),
+                $q.when(Machine.machine()),
+                $q.when($scope.getLimits)
             ]).then(function (result) {
                 $scope.keys = result[0];
                 if ($scope.keys.length <= 0) {
@@ -208,6 +240,22 @@
                 $scope.submitTitle = $scope.keys.length > 0 ? 'Create Instance' : 'Next';
                 $scope.datacenters = result[1];
                 $scope.simpleImages = [];
+                $scope.datasetsInfo = [];
+                $scope.limits = result[7];
+                if ($scope.isProvisioningLimitsEnable) {
+                    $scope.machines = result[6];
+                    $scope.machines.forEach(function (machine) {
+                        Dataset.dataset(machine.image).then(function (dataset) {
+                            $scope.limits.forEach(function (limit) {
+                                if (limit.datacenter === machine.datacenter && limit.name === dataset.name) {
+                                    limit.limit--;
+                                    limit.dataset = dataset.id;
+                                }
+                            });
+
+                        });
+                    });
+                }
                 var simpleImages = result[3].images;
                 var networks = result[3].networks;
                 if ($scope.features.freetier === 'enabled') {
@@ -278,7 +326,7 @@
                         $scope.filterModel = provisionBundle.filterModel;
                         $scope.filterProps = provisionBundle.filterProps;
                         $scope.filterValues = provisionBundle.filterValues;
-                        $scope.reconfigure(2);
+                        $scope.reconfigure(REVIEW_STEP);
                         if (provisionBundle.allowCreate) {
                             provision();
                         }
@@ -430,9 +478,9 @@
                                         $scope.createdMachines.$load(function (error, config) {
                                             config.createdMachines = config.createdMachines || [];
                                             var creationDate = new Date(newMachine.created).getTime();
-                                            var listedMachine = config.createdMachines.find(function (machine) {
-                                                return machine.dataset === machineData.dataset &&
-                                                        machine.package === machineData.package;
+                                            var listedMachine = config.createdMachines.find(function (m) {
+                                                return m.dataset === machineData.dataset &&
+                                                        m.package === machineData.package;
                                             });
 
                                             if (listedMachine) {
@@ -462,7 +510,7 @@
                 var submitBillingInfo = {btnTitle: 'Next'};
                 if ($scope.keys.length > 0) {
                     submitBillingInfo.btnTitle = 'Submit and Create Instance';
-                    submitBillingInfo.appendPopupMessage = 'Provisioning will now commence.'
+                    submitBillingInfo.appendPopupMessage = 'Provisioning will now commence.';
                 }
                 Account.checkProvisioning(submitBillingInfo, function () {
                     $scope.account.provisionEnabled = true;
@@ -568,7 +616,11 @@
                             }
                             provision();
                         } else {
-                            // TODO: Throw an error
+                            loggingService.log('error', 'Unable to retrieve datacenters list.');
+                            errorContext.emit(new Error(localization.translate(null,
+                                'machine',
+                                'Unable to retrieve datacenters list'
+                            )));
                         }
                     });
                 } else {
@@ -621,7 +673,7 @@
             };
 
             $scope.sortPackages = function (pkg) {
-                return parseInt(pkg.memory);
+                return parseInt(pkg.memory, 10);
             };
 
             var expandLastSection = function () {
@@ -631,17 +683,10 @@
                 }
             };
 
-            $scope.reconfigure = function (goto) {
+            $scope.reconfigure = function (step) {
                 $scope.showReConfigure = false;
                 $scope.showFinishConfiguration = false;
-                // TODO: Change magic numbers to constants
-                if (goto !== 1 && goto !== 2) {
-                    $scope.selectedPackage = null;
-                    $scope.selectedPackageInfo = null;
-                    $scope.packageType = null;
-                }
-
-                if (goto !== 2) {
+                if (step !== REVIEW_STEP) {
                     if ($scope.networks && $scope.networks.length) {
                         $scope.selectedNetworks = [];
                         $scope.networks.forEach(function (network) {
@@ -664,20 +709,23 @@
                         name: null,
                         dataset: $scope.data.dataset
                     };
+
+                    if (step === SELECT_PACKAGE_STEP) {
+                        $scope.data.package = instancePackage;
+                        expandLastSection();
+                    } else {
+                        $scope.selectedPackage = null;
+                        $scope.selectedPackageInfo = null;
+                        $scope.packageType = null;
+                    }
                 }
-                if (goto === 1) {
-                    $scope.data.package = instancePackage;
-                }
-                if (goto === 1) {
-                    expandLastSection();
-                }
-                $scope.setCurrentStep(goto);
+                $scope.setCurrentStep(step);
                 ng.element('.carousel-inner').scrollTop($scope.previousPos);
                 if ($scope.features.instanceMetadata === 'enabled') {
                     ng.element('#metadata-configuration').fadeOut('fast');
                 }
                 ng.element('#network-configuration').fadeOut('fast');
-                ng.element('.carousel').carousel(goto);
+                ng.element('.carousel').carousel(step);
                 if ($scope.keys.length > 0) {
                     $scope.provisionSteps = $scope.provisionSteps.filter(function (item) {
                         return item.name != 'SSH Key';
@@ -689,7 +737,7 @@
             };
 
             function getNr(el) {
-                if (!el || !(el === el)) {
+                if (!el || isNaN(el)) {
                     return false;
                 }
 
@@ -847,6 +895,7 @@
                     if (item[prop] && item[prop].toLowerCase().indexOf($scope.filterModel.searchText.toLowerCase()) !== -1) {
                         return true;
                     }
+                    return false;
                 });
             };
 
@@ -871,7 +920,7 @@
                 $scope.instanceType = type;
                 if (type === 'Public') {
                     $location.path('/compute/create');
-                    Machine.setCreateInstancePage('')
+                    Machine.setCreateInstancePage('');
                 } else if (type === 'Saved') {
                     $location.path('/compute/create/custom');
                     Machine.setCreateInstancePage('custom');
@@ -1016,6 +1065,8 @@
                     var datasetName = dataset.name;
                     var datasetVersion = dataset.version;
 
+                    dataset.limit = checkLimit(dataset.id);
+
                     if (!dataset_names[datasetName] && dataset.public) {
                         dataset_names[datasetName] = true;
                         unique_datasets.push(dataset);
@@ -1086,7 +1137,7 @@
                     $scope.selectDataset($scope.preSelectedImageId, externalInstanceParams);
                     if (externalInstanceParams) {
                         $scope.selectPackage(requestContext.getParam('package'));
-                        $scope.reconfigure(2);
+                        $scope.reconfigure(REVIEW_STEP);
                     }
                 }
             }
@@ -1192,7 +1243,7 @@
                                     $scope.networks.push(network);
                                 }
                             });
-                            $scope.networks = $scope.networks.filter(function(e){return e});
+                            $scope.networks = $scope.networks.filter(function (e) { return e; });
                             if ($scope.networks.length === 0) {
                                 loggingService.log('warn', 'Networks are not loaded for datacenter: ' + newVal);
                             }
@@ -1260,6 +1311,11 @@
             $scope.clickBackToQuickStart = function () {
                 $location.path('/compute/create/simple');
                 Machine.setCreateInstancePage('simple');
+            };
+
+            $scope.goTo = function (path) {
+                $location.path(path);
+                $location.replace();
             };
 
         }

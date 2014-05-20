@@ -929,9 +929,26 @@
     background-color: #f7f8f9;
     padding: 0;
     margin-right: 20px;
-    margin-top: 20px;
+    margin-top: 25px;
     text-transform: none !important ;
 }
+
+.limit-links {
+    margin: 25px auto 0;
+    width: 110px;
+    text-align: center;
+    line-height: 16px;
+}
+
+.simple-image .limit-links {
+    margin-top: 15px;
+    padding-right: 20px;
+}
+
+.limit-links a {
+    font-weight: 400;
+}
+
 .advanced-table{
     width: 1020px;
 }

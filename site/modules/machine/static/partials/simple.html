@@ -38,7 +38,7 @@
             </div>
 
             <div class="row-fluid">
-                <div class="simple-image" data-ng-repeat="image in simpleImages | filter: {imageData.datacenter: data.datacenter}" data-ng-class="image.className" ng-click="createSimple(image.imageData)">
+                <div class="simple-image" data-ng-repeat="image in simpleImages | filter: {imageData.datacenter: data.datacenter}" data-ng-class="image.className" ng-click="image.limit && goTo('/limits') || !image.limit && createSimple(image.imageData)">
                     <div class="name">
                         <p>{{image.name}}</p>
                     </div>
@@ -54,17 +54,22 @@
                     <div class="info">
                         <p>Disk</p><span><p>{{ image.description.disk }} GB</p></span>
                     </div>
-                    <div data-ng-show="image.imageData.freetier" class="freetier-info">
+                    <div data-ng-show="image.imageData.freetier && !image.limit" class="freetier-info">
                         <span>Free Dev Tier is valid until {{image.imageData.freeTierValidUntil | date:'yyyy-MM-dd'}}</span>
                     </div>
 
-                    <div class="btn-block" data-ng-class="{'freetier-btn-block': image.imageData.freetier}">
-                        <span class="price">{{ image.imageData.freetier && 'FREE' || '$' + image.description.price }}</span>
-                        <span class="hour">{{ image.imageData.freetier && 'dev tier' || 'per hour' }}</span>
-                        <button type="button"
-                                class="btn select-btn small">
-                                <b>Launch</b>
-                        </button>
+                    <div class="btn-block" data-ng-class="{'freetier-btn-block': image.imageData.freetier || image.limit}">
+                        <div data-ng-hide="image.limit">
+                            <span class="price">{{ image.imageData.freetier && 'FREE' || '$' + image.description.price }}</span>
+                            <span class="hour">{{ image.imageData.freetier && 'dev tier' || 'per hour' }}</span>
+                            <button type="button"
+                                    class="btn select-btn small">
+                                    <b>Launch</b>
+                            </button>
+                        </div>
+                        <div data-ng-show="image.limit" class="hotlinks limit-links">
+                            <a href="#!/limits" class="">Provisioning limit is reached</a>
+                        </div>
                     </div>
                 </div>
 
