@@ -101,7 +101,7 @@
 
             $scope.$on(
                 'event:forceUpdate',
-                function (){
+                function () {
                     Machine.updateMachines();
                     Machine.machine(machineid).then(function (m) {
                         $scope.machine = m;
@@ -119,7 +119,7 @@
 
             $scope.$on(
                 'event:pollComplete',
-                function (){
+                function () {
                     $q.when(Machine.machine(machineid)).then(function (machine) {
                         $scope.machine = machine;
                     }, function () {
@@ -165,9 +165,9 @@
                     if (ds.tags && ds.tags.default_user) {
                         $scope.defaultSshUser = ds.tags.default_user;
                     } else if (!ds.public && ds.origin) {
-                        Dataset.dataset({datacenter: m.datacenter, id: ds.origin}).then(function (ds) {
-                            if (ds.tags && ds.tags.default_user) {
-                                $scope.defaultSshUser = ds.tags.default_user;
+                        Dataset.dataset({datacenter: m.datacenter, id: ds.origin}).then(function (dataset) {
+                            if (dataset.tags && dataset.tags.default_user) {
+                                $scope.defaultSshUser = dataset.tags.default_user;
                             }
                         });
                     }
@@ -226,7 +226,7 @@
                         'Start this instance?'
                     ), function () {
                         $$track.event('machine', 'start');
-                        var job = Machine.startMachine(machineid);
+                        Machine.startMachine(machineid);
                     });
             };
 
@@ -260,7 +260,7 @@
                         'Restart this instance?'
                     ), function () {
                         $$track.event('machine', 'reboot');
-                        var job  = Machine.rebootMachine(machineid);
+                        Machine.rebootMachine(machineid);
                     });
             };
 
@@ -331,7 +331,7 @@
                     var message = $scope.imageCreateNotSupported ||
                         'This instance will be stopped as the first step in creating an image from it.';
                 }
-                    if (!$scope.imageCreateNotSupported) {
+                if (!$scope.imageCreateNotSupported) {
                     if ($scope.machine.state === 'stopped') {
                         createImage();
                     } else {
@@ -347,9 +347,9 @@
                                 message
                             ), function () {
                                 createImage();
-                    }
-                        );
                             }
+                        );
+                    }
                 } else {
                     PopupDialog.message(
                         localization.translate(
@@ -490,7 +490,7 @@
                     loggingService.log('info', 'User is ordering instance package from support', obj);
                     Zenbox.show(null, contactSupportParams);
                 });
-            }
+            };
 
             $scope.tagsArray = [];
             $scope.metadataArray = [];
