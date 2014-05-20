@@ -139,8 +139,8 @@
                                     </span>
                                 <span data-ng-switch-when="date">{{object[prop.id] | date:'yyyy-MM-dd HH:mm'}}</span>
                                 <span data-ng-switch-when="async">
-                                    <span class="loading-small" data-ng-hide="!!prop._getter(object) || prop._getter(object) == 0"></span>
-                                    {{prop._getter && prop._getter(object)}}
+                                    <span class="loading-small" data-ng-hide="!!object[prop.name + 'async'] || object[prop.name + 'async'] == 0"></span>
+                                    {{object[prop.name + 'async']}}
                                 </span>
                                 <span data-ng-switch-default>
                                     {{prop._getter && prop._getter(object) || prop.id2 && object[prop.id][prop.id2] || object[prop.id]}}
@@ -156,12 +156,7 @@
         <div class="row-fluid" data-ng-show="paginated && pageNumSum">
             <div class="pull-left select_position grid-small-font">
                 <select ui-select2="{minimumResultsForSearch: -1}" data-ng-model="perPage" value="25" class="no-search-box" style="width: 65px !important;">
-                    <option value="25">25</option>
-                    <option value="50">50</option>
-                    <option value="100">100</option>
-                    <option value="200">200</option>
-                    <!--TODO get rid of 10k items per page, it will become a problem on manta jobs-->
-                    <option value="10000">All</option>
+                    <option data-ng-repeat="size in pageSizes" value="{{size.value}}">{{size.name}}</option>
                 </select>
                 <span class="grid-small-font">&nbsp;records per page</span>
             </div>

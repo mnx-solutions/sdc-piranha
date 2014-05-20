@@ -95,10 +95,9 @@
                         type: 'async',
                         hideSorter: true,
                         _getter: function (object) {
-                            getJobDetails(object).then(function (details) {
-                                object._name = details.name;
+                            return getJobDetails(object).then(function (details) {
+                                return details.name;
                             });
-                            return object._name;
                         }
                     },
                     {
@@ -108,10 +107,9 @@
                         type: 'async',
                         hideSorter: true,
                         _getter: function (object) {
-                            getJobDetails(object).then(function (details) {
-                                object.tasks = details.stats.tasks;
+                            return getJobDetails(object).then(function (details) {
+                                return details.stats.tasks;
                             });
-                            return object.tasks;
                         }
                     },
                     {
@@ -121,10 +119,9 @@
                         type: 'async',
                         hideSorter: true,
                         _getter: function (object) {
-                            getJobDetails(object).then(function (details) {
-                                object.state = details.state;
+                            return getJobDetails(object).then(function (details) {
+                                return details.state;
                             });
-                            return object.state;
                         }
                     },
                     {
@@ -134,10 +131,9 @@
                         type: 'async',
                         hideSorter: true,
                         _getter: function (object) {
-                            getJobDetails(object).then(function (details) {
-                                object.errors = details.stats.errors;
+                            return getJobDetails(object).then(function (details) {
+                                return details.stats.errors;
                             });
-                            return object.errors;
                         }
                     },
                     {
@@ -147,15 +143,17 @@
                         type: 'async',
                         hideSorter: true,
                         _getter: function (object) {
-                            getJobDetails(object).then(function (details) {
-                                object.outputs = details.stats.outputs;
-                            }, function (err) {
-                                var posErrJob = $scope.jobs.indexOf(object);
-                                if (posErrJob !== -1) {
-                                    $scope.jobs.splice(posErrJob, 1)
+                            return getJobDetails(object).then(
+                                function (details) {
+                                    return details.stats.outputs;
+                                },
+                                function () {
+                                    var posErrJob = $scope.jobs.indexOf(object);
+                                    if (posErrJob !== -1) {
+                                        $scope.jobs.splice(posErrJob, 1)
+                                    }
                                 }
-                            });
-                            return object.outputs;
+                            );
                         }
                     },
                     {
