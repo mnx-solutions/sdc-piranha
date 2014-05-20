@@ -14,10 +14,8 @@
                     .then(function (result) {
                         if (result === 'ok') {
                             callbackOk();
-                        } else if (result === 'cancel') {
-                            callbackCancel();
                         } else {
-                            callbackOk();
+                            callbackCancel();
                         }
                     });
         };
@@ -74,7 +72,7 @@
             };
 
             if (typeof (showPopUp) === 'boolean' && !showPopUp) {
-                callback();
+                return callback();
             } else {
                 return factory.message('Attention', 'Please complete profile information before proceeding.', callback);
             }
