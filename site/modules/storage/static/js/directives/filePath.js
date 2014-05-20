@@ -6,8 +6,16 @@
             return {
                 require: 'ngModel',
                 link: function (scope, elm, attrs, ctrl) {
+                    scope.$watch('filePath', function (path) {
+                        if (path && path.length > 0) {
+                            ctrl.$setValidity('filePath', path[0] === '/');
+                        }
+                    });
                     ctrl.$parsers.unshift(function (viewValue) {
-                        ctrl.$setValidity('filePath', viewValue[0] === '/');
+                        var LOGIN_RE = /^[a-zA-Z][a-zA-Z0-9_\.@]+$/;
+                        var splittedPath = viewValue.split('/');
+                        var isValidPath = viewValue[0] === '/' && LOGIN_RE.test(splittedPath[1]);
+                        ctrl.$setValidity('filePath', isValidPath);
                         return viewValue;
                     });
                 }
