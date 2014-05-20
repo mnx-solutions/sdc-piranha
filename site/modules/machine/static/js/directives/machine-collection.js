@@ -85,9 +85,14 @@
                     var persistCollection = function () {
                         if (scope.machineId) {
                             scope.saving = true;
-                            Machine[scope.collectionName](scope.machineId, newCollection).then(function () {
+                            Machine[scope.collectionName](scope.machineId, newCollection).then(function (job) {
                                 scope.loadCollection();
                                 scope.saving = false;
+                            }, function () {
+                                scope.saving = false;
+                                scope.internalCollection.forEach(function (item) {
+                                    item.saving = false;
+                                });
                             });
                         } else {
                             scope.collection = newCollection;

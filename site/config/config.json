@@ -111,6 +111,7 @@
   }
 , "polling": {
     "machineTags": 5000
+  , "machineTagsTimeout": 120000 
   , "machineMetadata": 5000
   , "machineMetadataTimeout": 120000
   , "machineState": 10000

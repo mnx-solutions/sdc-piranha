@@ -533,68 +533,64 @@
             return job;
         };
 
-        var bindCollectionListUpdate = function (collectionName) {
-            var upperCollectionName = collectionName.charAt(0).toUpperCase() + collectionName.slice(1);
-            service[collectionName] = function (id, data) {
-            if (!id) {
-                return false;
-            }
+            var bindCollectionListUpdate = function (collectionName) {
+                var upperCollectionName = collectionName.charAt(0).toUpperCase() + collectionName.slice(1);
+                service[collectionName] = function (id, data) {
+                    if (!id) {
+                        return false;
+                    }
+                    var d = $q.defer();
 
-                var machine = service.machine(id);
+                    var machine = service.machine(id);
 
-                function list() {
-                    if (machine[collectionName]) {
+                    function list() {
+                        if (machine[collectionName]) {
+                            return machine[collectionName];
+                        }
+
+                        var job = serverTab.call({
+                            name: 'Machine' + upperCollectionName + 'List',
+                            data: {uuid: id, datacenter: machine.datacenter}
+                        });
+
+                        machine[collectionName] = job.deferred;
                         return machine[collectionName];
-                }
+                    }
 
-                var job = serverTab.call({
-                        name: 'Machine' + upperCollectionName + 'List',
-                        data: {uuid: id, datacenter: machine.datacenter}
-                });
+                    function save() {
+                        var callData = {uuid: id, datacenter: machine.datacenter};
+                        callData[collectionName] = data;
+                        var job = serverTab.call({
+                            name: 'Machine' + upperCollectionName + 'Save',
+                            data: callData
+                        });
 
-                    machine[collectionName] = job.deferred;
-                    return machine[collectionName];
-            }
+                        job.deferred.then(function (response) {
+                            machine[collectionName] = response;
+                            d.resolve(response);
+                        }, function (err) {
+                            d.reject(err);
+                            PopupDialog.error(
+                                localization.translate(null, null, 'Error'),
+                                localization.translate(null, 'machine',
+                                    'Unable to save ' + collectionName + '.'
+                                )
+                            );
+                        });
+                    }
 
-            function save() {
-                    var callData = {uuid: id, datacenter: machine.datacenter};
-                    callData[collectionName] = data;
-                var job = serverTab.call({
-                        name: 'Machine' + upperCollectionName + 'Save',
-                        data: callData
-                });
+                    $q.when(machine).then(function (updatedMachine) {
+                        machine = updatedMachine;
+                        if (data) {
+                            save();
+                        } else {
+                            d.resolve(list());
+                        }
+                    });
 
-                job.deferred.then(function (response) {
-                        machine[collectionName] = response;
-                }, function (err) {
-                    PopupDialog.error(
-                        localization.translate(
-                            null,
-                            null,
-                            'Error'
-                        ),
-                        localization.translate(
-                            null,
-                            'machine',
-                            'Unable to save ' + collectionName + '.'
-                        ),
-                        function () {}
-                    );
-                });
-
-                return job.deferred;
-            }
-
-            var d = $q.defer();
-
-            $q.when(machine).then(function (updatedMachine) {
-                    machine = updatedMachine;
-                    d.resolve(data ? save() : list());
-            });
-
-            return d.promise;
-        };
-        };
+                    return d.promise;
+                };
+            };
 
         bindCollectionListUpdate('tags');
         bindCollectionListUpdate('metadata');
