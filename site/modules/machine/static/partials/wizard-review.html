@@ -11,8 +11,8 @@
                     <p data-ng-show="manyVersions[selectedDataset.name]">INSTANCE VERSION:</p>
                     <div class="text-small image-container" data-ng-show="manyVersions[selectedDataset.name]">
                         <div class="btn-group pull-left">
-                            <button class="btn datacenter-select dd-fixed-width" data-ng-show="selectedVersions[selectedDataset.name]" data-toggle="dropdown">
-                                {{selectedVersions[selectedDataset.name].version}}
+                            <button class="btn datacenter-select dd-fixed-width" data-ng-show="selectedDataset || selectedVersions[selectedDataset.name]" data-toggle="dropdown">
+                                {{selectedDataset.version || selectedVersions[selectedDataset.name].version}}
                             </button>
 
                             <button class="btn datacenter-select dropdown-toggle" data-toggle="dropdown">
@@ -20,7 +20,7 @@
                             </button>
 
                             <ul class="dropdown-menu dd-fixed-width">
-                                <li data-ng-repeat="version in versions[selectedDataset.name]">
+                                <li data-ng-repeat="version in filteredVersions">
                                     <a data-ng-click="selectVersion(selectedDataset.name, version)">
                                         {{version.version}}
                                     </a>
