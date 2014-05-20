@@ -63,4 +63,13 @@ public class Dashboard extends AbstractPageObject {
         $(".tooltip-inner").waitUntil(exist, baseTimeout);
         return $(".tooltip-inner").getText();
     }
+
+    public SelenideElement getCompleteBillingButton() {
+        return $(byText("Complete Account Information"));
+    }
+
+    public EditBillingInformation clickCompleteBillingButton(){
+        getCompleteBillingButton().click();
+        return  page(EditBillingInformation.class);
+    }
 }
