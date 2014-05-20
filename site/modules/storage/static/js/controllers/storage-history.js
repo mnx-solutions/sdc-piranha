@@ -17,7 +17,10 @@
                         if ($scope.account.provisionEnabled) {
                             Storage.ping().then(function () {
                                 $scope.gridUserConfig = Account.getUserConfig().$child('job_history');
-                                $scope.jobs = getJobsList();
+                                getJobsList().then(function (jobs) {
+                                    $scope.jobs = jobs;
+                                });
+
                             }, function () {
                                 $location.url('/manta/intro');
                                 $location.replace();
@@ -59,7 +62,9 @@
                     };
                     Account.checkProvisioning(submitBillingInfo, function () {
                         $scope.gridUserConfig = Account.getUserConfig().$child('job_history');
-                        $scope.jobs = getJobsList();
+                        getJobsList().then(function (jobs) {
+                            $scope.jobs = jobs;
+                        });
                     }, null, null, false);
                 };
 
@@ -144,6 +149,11 @@
                         _getter: function (object) {
                             getJobDetails(object).then(function (details) {
                                 object.outputs = details.stats.outputs;
+                            }, function (err) {
+                                var posErrJob = $scope.jobs.indexOf(object);
+                                if (posErrJob !== -1) {
+                                    $scope.jobs.splice(posErrJob, 1)
+                                }
                             });
                             return object.outputs;
                         }
