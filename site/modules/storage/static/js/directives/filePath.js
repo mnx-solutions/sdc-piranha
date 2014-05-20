@@ -12,7 +12,10 @@
                         }
                     });
                     ctrl.$parsers.unshift(function (viewValue) {
-                        ctrl.$setValidity('filePath', viewValue[0] === '/' && viewValue.length > 1 && viewValue[1] !== '/');
+                        var LOGIN_RE = /^[a-zA-Z][a-zA-Z0-9_\.@]+$/;
+                        var splittedPath = viewValue.split('/');
+                        var isValidPath = viewValue[0] === '/' && LOGIN_RE.test(splittedPath[1]);
+                        ctrl.$setValidity('filePath', isValidPath);
                         return viewValue;
                     });
                 }

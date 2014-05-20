@@ -16,7 +16,7 @@
                         });
                     });
                     $scope.close = function (form, res) {
-                        if (form.$invalid) {
+                        if (form.$invalid && res !== 'cancel') {
                             return;
                         }
                         if (res === 'cancel') {
