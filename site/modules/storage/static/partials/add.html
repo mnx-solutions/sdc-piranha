@@ -22,6 +22,6 @@
     </div>
     <div class="modal-footer">
         <p data-ng-show="message.footer" data-ng-bind-html-unsafe="message.footer"></p>
-        <button data-tabindex="{{btn.datatabindex}}" data-ng-disabled="folderNameForm.filePath.$invalid && btn.result != 'cancel'" data-button-focus="{{ btn.setFocus }}" data-ng-repeat="btn in buttons" data-ng-click="close(btn.result)" class="btn" data-ng-class="btn.cssClass">{{ btn.label }}</button>
+        <button data-tabindex="{{btn.datatabindex}}" data-button-focus="{{ btn.setFocus }}" data-ng-repeat="btn in buttons" data-ng-click="close(folderNameForm, btn.result)" class="btn" data-ng-class="btn.cssClass">{{ btn.label }}</button>
     </div>
 </div>

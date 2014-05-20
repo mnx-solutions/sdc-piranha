@@ -15,7 +15,10 @@
                             $scope.fullFilePath = '/' + account.login + filePath;
                         });
                     });
-                    $scope.close = function (res) {
+                    $scope.close = function (form, res) {
+                        if (form.$invalid) {
+                            return;
+                        }
                         if (res === 'cancel') {
                             dialog.close({
                                 value: res
