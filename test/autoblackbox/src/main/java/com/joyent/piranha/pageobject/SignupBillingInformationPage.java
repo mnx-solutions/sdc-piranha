@@ -20,7 +20,7 @@ import static com.codeborne.selenide.Configuration.timeout;
 import static com.codeborne.selenide.Selenide.$;
 import static com.codeborne.selenide.Selenide.page;
 import static org.junit.Assert.assertTrue;
-
+@Deprecated
 public class SignupBillingInformationPage extends AbstractPageObject {
 
     public static final String TITLE = "Billing Information";
@@ -80,10 +80,6 @@ public class SignupBillingInformationPage extends AbstractPageObject {
         //slowest elements on the page
         $("#firstName").waitUntil(not(empty), timeout);
         $("#lastName").waitUntil(not(empty), timeout);
-    }
-
-    public void setPromotionalCode(String promoCode) {
-        setValue($(By.id("promoCode")), promoCode);
     }
 
     public void assertPromocode() throws IOException, JSONException {
