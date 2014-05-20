@@ -2313,6 +2313,8 @@ label.checkbox {
     filter: alpha(opacity=35);
     cursor: default !important;
 }
+
+.btn.transform-off,
 .btn.submit-payment {
     text-transform: none;
 }

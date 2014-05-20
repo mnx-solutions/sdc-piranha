@@ -1,9 +1,14 @@
-<div class="container-fluid container-position" data-ng-controller="Storage.JobBuilderController">
-    <div data-breadcrumbs></div>
+<div class="container-fluid container-position" data-ng-class="{'container-min-width': !account.provisionEnabled}" data-ng-controller="Storage.JobBuilderController">
+    <div data-breadcrumbs data-ng-show="account.provisionEnabled && !loading"></div>
+    <div class="page-header">
+        <h3 class="page-title">Job Builder</h3>
+        <div class="beta-sticker">beta</div>
+    </div>
 
-    <h3 class="page-title">Job Builder</h3>
 
-    <div class="inl-table">
+    <div data-ng-include="'storage/static/partials/ocean.html'" data-ng-show="!account.provisionEnabled && !loading"></div>
+    <div class="loading-large" data-ng-show="loading"></div>
+    <div class="inl-table" data-ng-show="account.provisionEnabled && !loading">
         <div class="table-row">
             <div class="left-part">
                 <div class="job-name">
