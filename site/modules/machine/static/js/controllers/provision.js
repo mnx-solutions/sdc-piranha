@@ -609,6 +609,7 @@
                     }
                     if (datacenterName) {
                         $scope.data.datacenter = datacenterName;
+                        $rootScope.commonConfig('datacenter', datacenterName);
                     }
                 });
             };
