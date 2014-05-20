@@ -566,6 +566,9 @@ select::-ms-expand {
     padding: 7px 0;
     text-transform: capitalize;
 }
+label.control-label {
+    cursor: text;
+}
 .modal-footer-text {
     display: inline-block;
     padding: 0 10px;

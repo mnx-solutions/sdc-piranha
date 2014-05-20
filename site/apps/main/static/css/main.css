@@ -243,6 +243,13 @@ h4 {
     text-shadow: 1px 1px 1px #fff;
 }
 
+label.control-label,
+.rickshaw_legend .line,
+.rickshaw_legend label,
+.rickshaw_legend .label {
+    cursor: text !important;
+}
+
 .label {
     text-align: center;
     display: block;
