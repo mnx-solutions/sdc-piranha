@@ -85,7 +85,7 @@
                     var persistCollection = function () {
                         if (scope.machineId) {
                             scope.saving = true;
-                            Machine[scope.collectionName](scope.machineId, newCollection).then(function (job) {
+                            Machine[scope.collectionName](scope.machineId, newCollection).then(function () {
                                 scope.loadCollection();
                                 scope.saving = false;
                             }, function () {

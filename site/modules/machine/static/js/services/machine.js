@@ -545,16 +545,20 @@
 
                     function list() {
                         if (machine[collectionName]) {
-                            return machine[collectionName];
+                            return d.resolve(machine[collectionName]);
+                        }
+                        
+                        if (!machine[collectionName + 'Job']) {
+                            machine[collectionName + 'Job'] = serverTab.call({
+                                name: 'Machine' + upperCollectionName + 'List',
+                                data: {uuid: id, datacenter: machine.datacenter}
+                            }).deferred;
                         }
 
-                        var job = serverTab.call({
-                            name: 'Machine' + upperCollectionName + 'List',
-                            data: {uuid: id, datacenter: machine.datacenter}
+                        machine[collectionName + 'Job'].then(function (result) {
+                            machine[collectionName] = result;
+                            d.resolve(result);
                         });
-
-                        machine[collectionName] = job.deferred;
-                        return machine[collectionName];
                     }
 
                     function save() {
@@ -584,7 +588,7 @@
                         if (data) {
                             save();
                         } else {
-                            d.resolve(list());
+                            list();
                         }
                     });
 
