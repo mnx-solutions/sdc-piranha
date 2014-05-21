@@ -135,6 +135,9 @@ window.fn = [];
                 var listVersions = [];
 
                 data.forEach(function (dataset) {
+                    if (!dataset.public) {
+                        return;
+                    }
                     if (!listDatasets[dataset.name]) {
                         listDatasets[dataset.name] = {};
                     }
