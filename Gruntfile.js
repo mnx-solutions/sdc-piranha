@@ -261,7 +261,6 @@ module.exports = function (grunt) {
     grunt.registerMultiTask('jsLint', 'javascript lint', function () {
 
         var done = this.async();
-        var files = this.filesSrc;
         var self = this;
         function runLinter(files, conf, callback) {
             conf = conf || 'node';
@@ -303,7 +302,7 @@ module.exports = function (grunt) {
         }
         if (this.target === 'diff') {
             exec(diffCommand, function (error, stdout) {
-                files = stdout.split(/\n/).slice(0, -1);
+                var files = stdout.split(/\n/).slice(0, -1);
                 var jsLintConfig = grunt.config.data.jsLint;
                 var calls = 2;
                 var nodeFiles = grunt.file.match(jsLintConfig.node.files.src, files);
@@ -318,7 +317,7 @@ module.exports = function (grunt) {
                 runLinter(webFiles, 'web', callback);
             });
         } else {
-            runLinter(files);
+            runLinter(this.filesSrc);
         }
     });
 
