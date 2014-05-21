@@ -88,6 +88,11 @@
                             Machine[scope.collectionName](scope.machineId, newCollection).then(function () {
                                 scope.loadCollection();
                                 scope.saving = false;
+                            }, function () {
+                                scope.saving = false;
+                                scope.internalCollection.forEach(function (item) {
+                                    item.saving = false;
+                                });
                             });
                         } else {
                             scope.collection = newCollection;
