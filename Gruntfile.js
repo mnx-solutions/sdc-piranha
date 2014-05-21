@@ -69,7 +69,7 @@ module.exports = function (grunt) {
                     src: []
                 },
                 conf: './tools/jsl.node.conf',
-                options: '--nologo --nofilelisting --conf=<%= jsLint.node.conf %>'
+                options: '--nologo --nofilelisting'
             },
             node: {
                 path: './<%= deps.jsLint.path %>/build/install/jsl',
@@ -263,9 +263,10 @@ module.exports = function (grunt) {
         var done = this.async();
         var files = this.filesSrc;
         var self = this;
-        function runLinter() {
-            var command = self.data.path + ' ' + self.data.options + ' ' + files.join(' ');
-            exec(command, function(lintError, stdout, stderr) {
+        function runLinter(files, conf, callback) {
+            conf = conf || 'node';
+            var command = self.data.path + ' ' + self.data.options + ' --conf=./tools/jsl.' + conf + '.conf ' + files.join(' ');
+            exec(command, function (lintError, stdout, stderr) {
 
                 if (stderr) {
                     throw new Error(stderr);
@@ -294,20 +295,30 @@ module.exports = function (grunt) {
                         ' file' + (files.length === 1 ? '' : 's') +
                         ' without fatal warnings/errors.');
                 }
-
-                done();
+                if (!callback) {
+                    done();
+                }
 
             });
         }
-
         if (this.target === 'diff') {
-            exec(diffCommand, function(error, stdout) {
-                files = stdout.split(/\n/);
-                files.pop();
-                runLinter();
+            exec(diffCommand, function (error, stdout) {
+                files = stdout.split(/\n/).slice(0, -1);
+                var jsLintConfig = grunt.config.data.jsLint;
+                var calls = 2;
+                var nodeFiles = grunt.file.match(jsLintConfig.node.files.src, files);
+                var webFiles = grunt.file.match(jsLintConfig.client.files.src, files);
+                var callback = function () {
+                    calls -= 1;
+                    if (!calls) {
+                        done();
+                    }
+                };
+                runLinter(nodeFiles, 'node', callback);
+                runLinter(webFiles, 'web', callback);
             });
         } else {
-            runLinter();
+            runLinter(files);
         }
     });
 
