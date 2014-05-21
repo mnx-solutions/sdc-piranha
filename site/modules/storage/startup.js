@@ -71,11 +71,9 @@ module.exports = function execute(scope) {
             }
             var result = [];
             res.on(dataKey, function (data) {
-                if (nameFilterRegex) {
-                    if (nameFilterRegex.test(data.name)) {
-                        result.push(data);
-                    }
-                } else {
+                if (!nameFilterRegex) {
+                    result.push(data);
+                } else if (nameFilterRegex.test(data.name)) {
                     result.push(data);
                 }
             });
@@ -94,8 +92,8 @@ module.exports = function execute(scope) {
 
     server.onCall('JobList', function (call) {
         var client = Manta.createClient(call);
-        var nameFilterRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/;
-        client.jobs(processJobRequest(call, 'job', null, null, nameFilterRegex));
+        var NAME_FILTER_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/;
+        client.jobs(processJobRequest(call, 'job', null, null, NAME_FILTER_REGEX));
     });
 
     server.onCall('JobGet', function (call) {

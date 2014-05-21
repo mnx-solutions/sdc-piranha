@@ -17,6 +17,9 @@ window.fn = [];
                     done: function (error, job) {
                         if (error) {
                             deferred.reject(error);
+                            if (!suppressError) {
+                                PopupDialog.error(null, error);
+                            }
                             return;
                         }
                         var jobResult = job.__read();
