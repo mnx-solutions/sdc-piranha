@@ -128,12 +128,32 @@
                 </li>
             </ul>
         </li>
-        <li class="nested" data-ng-show="features.rbac == 'enabled'" data-ng-class="{'active open': location.path().search('limits') == 1}">
+        <li class="nested" data-ng-show="features.rbac == 'enabled'" data-ng-class="{'active open': location.path().search('rbac') == 1}">
             <a href="#!/rbac">
                 <i class="glyphicon glyphicon ax"></i>
-                <span class="title">Account Maintenance</span>
+                <span class="title">Accounts</span>
                 <span class="selected"></span>
             </a>
+            <ul class="sub-menu">
+                <li left-list-item class="sub" data-ng-class="{active: location.path().search('rbac') == 1}">
+                    <a href="#!/rbac">
+                        <span class="titles" data-translate>Users</span>
+                        <span class="selected-sub"></span>
+                    </a>
+                </li>
+                <li left-list-item class="sub" data-ng-class="{active: location.path().search('rbac/roles') == 1}">
+                    <a href="#!/rbac/roles">
+                        <span class="titles" data-translate>Roles</span>
+                        <span class="selected-sub"></span>
+                    </a>
+                </li>
+                <li left-list-item class="sub" data-ng-class="{active: location.path().search('rbac/policies') == 1}">
+                    <a href="#!/rbac/policies">
+                        <span class="titles" data-translate>Policies</span>
+                        <span class="selected-sub"></span>
+                    </a>
+                </li>
+            </ul>
         </li>
         <li>
             <div class="sidebar-toggler" data-ng-class="{'sidebar-toggler-back': sideBarMin}" data-ng-click="toggleSideBar()"></div>

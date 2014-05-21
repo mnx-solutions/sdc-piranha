@@ -1,0 +1,188 @@
+<form name="subAccountForm">
+    <div class="control-group">
+        <span class="edit-name" data-translate>
+            First Name
+        </span>
+        <span class="edit-value">
+            <input type="text"
+                   id="subFirstName"
+                   name="firstName"
+                   data-ng-model="account.firstName"
+                   data-ng-class="{error: isError('firstName')}"
+                   required/>
+        </span>
+        <span class="edit-error">
+            <div class="error"
+                 data-translate
+                 data-ng-show="isError('firstName', 'required')">
+                 Missing first name
+            </div>
+        </span>
+    </div>
+
+    <div class="control-group">
+        <span class="edit-name" data-translate>
+            Last Name
+        </span>
+        <span class="edit-value">
+             <input type="text"
+                    id="subLastName"
+                    name="lastName"
+                    data-ng-model="account.lastName"
+                    data-ng-class="{error: isError('lastName')}"
+                    required/>
+        </span>
+        <span class="edit-error">
+            <div class="error"
+                 data-translate
+                 data-ng-show="isError('lastName', 'required')">
+                 Missing last name
+            </div>
+        </span>
+    </div>
+
+    <div class="control-group">
+        <span class="edit-name">Email Address</span>
+        <span class="edit-value">
+            <input type="email"
+                   id="subEmail"
+                   name="email"
+                   data-ng-model="account.email"
+                   data-ng-class="{error: isError('email')}"
+                   required/>
+        </span>
+        <span class="edit-error">
+            <div class="error"
+                 data-translate
+                 data-ng-show="isError('email', 'required')">
+                 Missing email address
+            </div>
+            <div class="error"
+                 data-translate
+                 data-ng-show="isError('email', 'email')">
+                 Please provide valid email address
+            </div>
+        </span>
+    </div>
+
+    <div class="control-group">
+        <span class="edit-name">Company Name</span>
+        <span class="edit-value">
+            <input type="text"
+                   id="subCompanyName"
+                   name="companyName"
+                   data-ng-model="account.companyName"
+                   required/>
+        </span>
+        <span class="edit-error">
+            <div class="error"
+                 data-translate
+                 data-ng-show="isError('companyName', 'required')">
+                 Missing company name
+            </div>
+        </span>
+    </div>
+
+    <div class="control-group">
+        <span class="edit-name">Username</span>
+        <span class="edit-value">
+            <input type="text"
+                   id="subLogin"
+                   name="login"
+                   data-ng-model="account.login"
+                   required/>
+        </span>
+        <span class="edit-error">
+            <div class="error"
+                 data-translate
+                 data-ng-show="isError('login', 'required')">
+                Missing Username
+            </div>
+        </span>
+    </div>
+
+    <div class="control-group">
+        <span class="edit-name">Address</span>
+        <span class="edit-value">
+            <input type="text"
+                   id="subAddress"
+                   name="adress"
+                   data-ng-model="account.address"/>
+        </span>
+        <span class="edit-error">
+            <div class="error"></div>
+        </span>
+    </div>
+
+    <div class="control-group">
+        <span class="edit-name">Country</span>
+        <span class="edit-value">
+            <select id="subCountry"
+                    name="country"
+                    data-ng-class="{error: isError('country')}"
+                    data-ng-model="account.country"
+                    data-ng-options="country.iso3 as country.name group by country.group for country in countries.data | orderBy: ['-group','name']"
+                    data-ng-required="true">
+            </select>
+        </span>
+        <span class="edit-error">
+            <div class="error"></div>
+        </span>
+    </div>
+
+    <div class="control-group">
+        <span class="edit-name">City</span>
+        <span class="edit-value">
+            <input type="text"
+                   id="subCity"
+                   name="city"
+                   data-ng-model="account.city"/>
+        </span>
+        <span class="edit-error">
+            <div class="error"></div>
+        </span>
+    </div>
+
+    <div class="control-group">
+        <span class="edit-name">State</span>
+        <span class="edit-value">
+            <input type="text"
+                   id="subState"
+                   name="state"
+                   data-ng-model="form.cardHolderInfo.state"/>
+        </span>
+        <span class="edit-error">
+            <div class="error"></div>
+        </span>
+    </div>
+
+    <div class="control-group">
+        <span class="edit-name">Zip</span>
+        <span class="edit-value">
+            <input type="text"
+                   id="subZip"
+                   name="zipCode"
+                   data-ng-class="{error: isError('zipCode')}"
+                   data-ng-model="account.zipCode"
+                   data-ng-required="true"
+                   data-ng-maxlength="20"/>
+        </span>
+        <span class="edit-error">
+            <div class="error"
+                 data-translate
+                 data-ng-show="isError('zipCode', 'maxlength')">
+                Zip code is too long
+            </div>
+            <div class="error"
+                 data-translate
+                 data-ng-show="isError('zipCode', 'required') || isError('zipCode', 'submitRequired')">
+                Missing zip code
+            </div>
+        </span>
+    </div>
+
+    <div class="control-group">
+        <span class="edit-name">Phone Number</span>
+        <div data-phone-number data-number="account.phone" data-country="{{account.country}}" data-is-error="isError(field, type)"></div>
+    </div>
+</form>

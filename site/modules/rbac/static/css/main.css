@@ -1,0 +1,90 @@
+select,
+input,
+.ms-container .ms-selectable li.ms-elem-selectable,
+.ms-container .ms-selection li.ms-elem-selection {
+    font-weight: 200;
+    font-size: 16px;
+}
+select {
+    padding: 4px 6px;
+    width: 282px !important;
+    line-height: 20px;
+}
+input {
+    width: 270px;
+    text-overflow: ellipsis;
+}
+form {
+    width: 550px;
+}
+
+h4 {
+    padding: 0 0 10px 0;
+}
+
+.edit-value {
+    width: auto;
+}
+.edit-value-double {
+    width: 285px!important;
+}
+.edit-value-double .input-prepend input {
+    width: 100px !important;
+}
+.edit-value-double select {
+    padding-right: 22px;
+    width: 92px !important;
+}
+.ms-container ul.ms-list {
+    overflow-y: auto;
+    padding: 0;
+    width: 160px;
+    height: 200px;
+}
+.ms-container .ms-list {
+    -webkit-border-radius: 0;
+    -moz-border-radius: 0;
+    border-radius: 0;
+}
+.ms-container .ms-selectable li.ms-hover,
+.ms-container .ms-selection li.ms-hover,
+.ms-container .ms-selectable li[vs="none"]:nth-child(even).ms-hover,
+.ms-container .ms-selection li[vs="none"]:nth-child(even).ms-hover {
+    background-color: #f60;
+}
+.ms-container ul.ms-list {
+    min-width: 200px;
+    width: auto;
+    height: 300px;
+}
+.ms-container {
+    background-position: center center;
+}
+.ms-container .ms-selectable li.ms-elem-selectable,
+.ms-container .ms-selection li.ms-elem-selection,
+.ms-container .select-header {
+    padding: 4px 10px;
+}
+.ms-container .select-header {
+    border: solid 1px #ccc;
+    background-color: #cecece;
+    color: black;
+    font-weight: 500;
+    font-size: 14px;
+}
+.ms-container .ms-list.ms-focus {
+    border-color: #ccc;
+}
+.ms-container .ms-selectable {
+     margin-right: 0;
+}
+.ms-container .ms-selection {
+    margin-left: 45px;
+}
+.striped {
+    background-color: #f4f4f4;
+}
+.btn-bottom-block {
+    padding-top: 20px;
+    border-top: 1px solid #ccc;
+}
