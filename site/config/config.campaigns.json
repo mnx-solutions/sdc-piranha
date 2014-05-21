@@ -34,8 +34,7 @@
     },
     "701800000015696": {
         "promoCode": "NODE.JS CORE SUPPORT",
-        "signupRedirectUrl": "/main/#!/support/cloud",
-        "redirect": ""
+        "signupRedirectUrl": "/main/#!/support/cloud"
     },
     "70180000000ShEu": {
         "redirect": "701800000015696"
