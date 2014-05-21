@@ -145,4 +145,9 @@ public class CreateInstance extends AbstractPageObject {
     public void openSection(String sectionName) {
         $("#packagesAccordion").$(byText(sectionName)).click();
     }
+
+    public CreateInstance clickAllPublicImagesLink() {
+        $(byText("All Public Images")).click();
+        return page(CreateInstance.class);
+    }
 }

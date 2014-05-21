@@ -10,7 +10,6 @@ import static com.codeborne.selenide.Selenide.page;
 
 
 public class Login extends AbstractPageObject {
-    private static final By SIGNIN_BUTTON_SELECTOR = byAttribute("type", "button");
     private static final By USERNAME_INPUT_SELECTOR = byAttribute("name", "username");
     private static final By PASSWORD_INPUT_SELECTOR = byAttribute("name", "password");
     private static final String LP_SIGNIN_BUTTON_SELECTOR = "[data-ng-click=\"login();\"]";
@@ -22,9 +21,6 @@ public class Login extends AbstractPageObject {
         }
     */
     public void login(final String userName, final String password) {
-        if ($(SIGNIN_BUTTON_SELECTOR).isDisplayed()) {
-            clickSignInOnLandingPage();
-        }
         setUserName(userName);
         setPassword(password);
         clickSignIn();
@@ -39,23 +35,12 @@ public class Login extends AbstractPageObject {
         return page(CreateAccountPage.class);
     }
 
-    public void clickSignInOnLandingPage() {
-        $(LP_SIGNIN_BUTTON_SELECTOR).click();
-    }
-
     public SelenideElement setPassword(String password) {
         return $(PASSWORD_INPUT_SELECTOR).setValue(password);
     }
 
     public SelenideElement setUserName(String userName) {
         return $(USERNAME_INPUT_SELECTOR).setValue(userName);
-    }
-
-    public CreateAccountPage clickSignupOnLandingPage() {
-        if ($(SIGNIN_BUTTON_SELECTOR).isDisplayed()) {
-            clickSignInOnLandingPage();
-        }
-        return page(CreateAccountPage.class);
     }
 
     public String createTestAccount(CreateAccountPage createAccountPage) {

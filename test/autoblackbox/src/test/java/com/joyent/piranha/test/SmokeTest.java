@@ -135,6 +135,7 @@ public class SmokeTest extends TestWrapper {
         String[] inst = Common.instanceProperties();
         final Dashboard dashboard = sideBarMenu.clickDashboard();
         final CreateInstance createInstance = dashboard.clickCreateComputeInstance();
+        createInstance.clickAllPublicImagesLink();
         createInstance.selectDataCenter(DATACENTER);
         createInstance.waitUntilPageIsActive(0);
         createInstance.selectOsFilter("smartos");
