@@ -71,9 +71,7 @@ module.exports = function execute(scope) {
             }
             var result = [];
             res.on(dataKey, function (data) {
-                if (!nameFilterRegex) {
-                    result.push(data);
-                } else if (nameFilterRegex.test(data.name)) {
+                if (!nameFilterRegex || nameFilterRegex.test(data.name)) {
                     result.push(data);
                 }
             });
