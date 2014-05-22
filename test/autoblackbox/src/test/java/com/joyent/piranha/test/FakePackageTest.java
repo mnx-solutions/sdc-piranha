@@ -41,6 +41,7 @@ public class FakePackageTest extends TestWrapper {
     public void selectHighPerformancePackage() {
         CreateInstance createInstance = sideBarMenu.clickDashboard().clickCreateComputeInstance();
         createInstance.waitForMediumSpinnerDisappear();
+        createInstance.clickAllPublicImagesLink();
         createInstance.selectOsFilter("smartos");
         createInstance.selectOsImage("base");
         createInstance.filterPackages("VCPUS", "32 vCPUs");
