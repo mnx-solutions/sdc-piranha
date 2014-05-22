@@ -1,24 +1,23 @@
 <div>
     <h3 class="page-title" data-ng-click="enableRename(object.name)" data-ng-show="!changingName && !renaming">
-        {{ newName || object.name }}
+        {{ object.name }}
         <div class="edit-text-icon"></div>
     </h3>
     <div class="loading-medium wait_rename" data-ng-show="loadingNewName"></div>
     <form name="renameForm" class="machine-edit-form">
         <div class="error"
-             data-ng-show="renameForm.renameObject.$error.machineName && changingName && newName != object.name"
+             data-ng-show="renameForm.renameObject.$error[type + 'Name'] && changingName && newName != object.name"
              data-translate>
-            {{type}} name&nbsp;{{incorrectNameMessage}}
+            {{type}} name&nbsp;can contain only letters, digits and signs like '.' and '-'.
         </div>
-
         <div class="error"
-             data-ng-show="renameForm.renameObject.$error.imageUnique && changingName && newName != object.name"
+             data-ng-show="renameForm.renameObject.$error[type + 'Unique'] && changingName && newName != object.name"
              data-translate>
-            {{type}} name is already in use
+            {{type}} name&nbsp;is already in use
         </div>
 
         <div class="pull-left machine-edit" data-ng-show="changingName && !renaming">
-            <input class="span2 machine-name-edit" id="renameObject" name="renameObject" data-ng-model="newName" type="text" data-machine-name="renameObject" data-{{type}}-unique data-blur/>
+            <input class="span2 machine-name-edit" id="renameObject" name="renameObject" data-ng-model="newName" type="text" data-machine-name="type" data-unique="type" data-blur/>
             <div class="btn-group machine-edit-buttons">
                 <button class="btn btn-height" data-ng-click="clickRename()" data-ng-disabled="renameForm.renameObject.$invalid || newName.length <= 0 || newName==object.name" type="button"><i class="icon-ok"/></button>
                 <button class="btn" data-ng-click="cancelRename()" type="button"><i class="icon-remove"/></button>
