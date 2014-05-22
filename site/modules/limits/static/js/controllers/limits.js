@@ -5,7 +5,9 @@
         '$scope',
         'PopupDialog',
         'Limits',
-        function ($scope, PopupDialog, Limits) {
+        '$rootScope',
+        'Account',
+        function ($scope, PopupDialog, Limits, $rootScope, Account) {
             $scope.limits = [];
             $scope.loading = true;
 
@@ -18,6 +20,8 @@
                 $scope.limits = limits;
             });
 
+            $scope.gridUserConfig = Account.getUserConfig().$child('limits');
+
             $scope.gridOrder = ['datacenter'];
             $scope.exportFields = {};
 
@@ -29,26 +33,29 @@
                     sequence: 1
                 },
                 {
-                    id: 'type',
-                    name: 'Type',
+                    id: 'limit',
+                    name: 'Limit',
                     active: true,
                     sequence: 2
                 },
                 {
-                    id: 'limit',
-                    name: 'Limit',
-                    active: true,
-                    sequence: 3
-                },
-                {
                     id: 'datacenter',
                     name: 'Datacenter',
-                    active: true,
-                    sequence: 4
+                    active: false,
+                    sequence: 3
                 }
             ];
             $scope.gridActionButtons = [];
             $scope.columnsButton = false;
+            $scope.tabFilterField = 'datacenter';
+            $scope.tabFilterDefault = $rootScope.commonConfig($scope.tabFilterField);
+            $scope.$on('gridViewChangeTab', function (event, tab) {
+                if (tab === 'all') {
+                    $rootScope.clearCommonConfig($scope.tabFilterField);
+                } else {
+                    $rootScope.commonConfig($scope.tabFilterField, tab);
+                }
+            });
 
         }
     ]);
