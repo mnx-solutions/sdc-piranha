@@ -654,7 +654,8 @@
 .centos-logo,
 .node-logo,
 .joyent-logo,
-.mongodb-logo {
+.mongodb-logo,
+.postgresql-logo {
     background: #eef0f2 no-repeat 190px 10px;
     background-size: 38px;
 }
@@ -680,6 +681,9 @@
 }
 .mongodb-logo {
     background-image: url(../img/mongodb-logo.png);
+}
+.postgresql-logo {
+    background-image: url(../img/postgresql-logo.png);
 }
 .simple-image .info {
     margin-left: 20px;
