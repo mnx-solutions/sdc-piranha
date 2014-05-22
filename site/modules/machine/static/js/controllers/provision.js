@@ -629,7 +629,7 @@
                 if (lastSectionHeader.hasClass('collapsed')) {
                     $timeout(function () {
                         lastSectionHeader.click();
-                    })
+                    });
                 }
             };
 
