@@ -249,7 +249,7 @@
                 return deferred.promise;
             };
 
-            service.userConfig = {};
+            service.userConfig = null;
             service.getUserConfig = function () {
                 function load(callback) {
                     serverTab.call({
@@ -266,12 +266,16 @@
                 }
 
                 function UserConfig(config, parent) {
+                    if (!parent && service.userConfig) {
+                        return service.userConfig;
+                    }
                     if (!(this instanceof UserConfig)) {
                         return new UserConfig(config, parent);
                     }
 
+                    service.userConfig = this;
                     angular.extend(this, config);
-                    this._parent = parent || this;
+                    this._parent = parent || service.userConfig;
                     this._dirty = false;
                 }
                 UserConfig.prototype.dirty = function (value) {
@@ -326,7 +330,7 @@
                     return config;
                 };
 
-                return new UserConfig(service.userConfig);
+                return new UserConfig({});
             };
 
             service.setUserConfig = function (config) {
