@@ -670,6 +670,10 @@ legend + .control-group {
     font-weight: normal;
 }
 
+.alert-icon span {
+    margin-left: 20px;
+}
+
 #phone {
     width: 150px;
     font-size: 16px;
