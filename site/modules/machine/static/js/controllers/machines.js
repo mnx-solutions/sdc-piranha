@@ -202,6 +202,7 @@
             };
 
             $scope.gridOrder = [stateOrder, '-created'];
+            $scope.fantomSort = {primary: {name: 'Status'} , secondary: {name: 'Created', order: 1}};
             $scope.gridProps = [
                 {
                     id: 'label',

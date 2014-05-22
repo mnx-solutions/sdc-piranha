@@ -122,6 +122,30 @@
         };
 
         $scope.orderGridMachinesBy = function (prop, reverse) {
+            if ($scope.fantomSort) {
+                var primary = $scope.fantomSort.primary;
+                var secondary = $scope.fantomSort.secondary;
+
+                if (primary.name === prop.name && !$scope.fantomSort.active) {
+                    $scope.fantomSort.active = true;
+                    $scope.orderGridMachinesBy(prop);
+                    $scope.multisort = true;
+                    $scope.props.forEach(function (secondaryProp) {
+                        if (secondary.name === secondaryProp.name) {
+                            var orderIndex = $scope.order.indexOf(secondaryProp.order);
+                            if (orderIndex !== -1) {
+                                $scope.order.splice(orderIndex, secondary.order);
+                            }
+                            $scope.orderGridMachinesBy(secondaryProp);
+                            secondaryProp.columnActive = false;
+                            $scope.multisort = 'false';
+                        }
+                    });
+                    prop.columnActive = true;
+                    $scope.fantomSort.active = false;
+                    return;
+                }
+            }
             if (prop.hideSorter) {
                 return;
             }
@@ -409,6 +433,7 @@
                 itemsType: '@',
                 placeHolderText: '=',
                 multisort: '@',
+                fantomSort: '=',
                 userConfig: '=',
                 tabFilterField: '=',
                 tabFilterDefault: '=',
