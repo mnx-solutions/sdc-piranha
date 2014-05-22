@@ -346,10 +346,10 @@
             if (!$scope.enabledCheckboxes) {
                 return;
             }
-            var id = item && (item.id || item.uuid);
+            var id = item && (item.id || item.uuid || item.$$hashKey);
 
             $scope.pagedItems.forEach(function (el) {
-                var itemId = el.id || el.uuid;
+                var itemId = el.id || el.uuid || el.$$hashKey;
                 if (itemId === id && !el.fireWallActionRunning && (!el.job || el.job.finished)) {
                     el.checked = !el.checked;
                 }
