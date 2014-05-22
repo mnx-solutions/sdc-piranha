@@ -1,7 +1,7 @@
 'use strict';
 
 (function (ng, app) {
-    app.controller('GridViewController', ['$scope', '$filter', '$http', '$location', 'Account', '$rootScope', '$q', 'Datacenter', function ($scope, $filter, $http, $location, Account, $rootScope, $q, Datacenter) {
+    app.controller('GridViewController', ['$scope', '$filter', '$http', '$location', 'Account', '$rootScope', 'Datacenter', '$qe', function ($scope, $filter, $http, $location, Account, $rootScope, Datacenter, $qe) {
         $scope.location = $location;
 
         function refreshGrid() {
@@ -13,6 +13,24 @@
             });
             $scope.checkedAllCheckBox = areAllPagedItemsChecked();
         }
+
+        $scope.$watch('pagedItems', function (items) {
+            var asyncProps = $scope.props.filter(function (prop) {
+                return prop.type === 'async';
+            });
+
+            if (items && items.length && asyncProps.length) {
+                var iterator = function (item, callback) {
+                    asyncProps.forEach(function (prop) {
+                        $qe.when(prop._getter(item)).then(function (result) {
+                            item[prop.name + 'async'] = result;
+                            callback();
+                        });
+                    });
+                };
+                $qe.eachLimit(items, 25, iterator);
+            }
+        });
 
         function areAllPagedItemsChecked() {
             if ($scope.pagedItems && $scope.pagedItems.length) {
@@ -412,7 +430,8 @@
                 userConfig: '=',
                 tabFilterField: '=',
                 tabFilterDefault: '=',
-                tabFilterUpdate: '='
+                tabFilterUpdate: '=',
+                hideLargePagerOptions: '@'
             },
             controller: 'GridViewController',
             templateUrl: 'machine/static/partials/grid-view.html',
@@ -434,6 +453,36 @@
                     $scope.hideExport = true;
                 }
 
+                var pageSizes = [
+                    {
+                        value: 25,
+                        name: 25
+                    },
+                    {
+                        value: 50,
+                        name: 50
+                    },
+                    {
+                        value: 100,
+                        name: 100
+                    }
+                ];
+
+                if (attrs.hideLargePagerOptions !== 'true') {
+                    pageSizes = pageSizes.concat([
+                        {
+                            value: 200,
+                            name: 200
+                        },
+                        {
+                            value: 10000,
+                            name: 'All'
+                        }
+                    ]);
+                }
+
+                $scope.pageSizes = pageSizes;
+
                 var onPropsChanges = function (scope, props) {
                     $scope.props = props || $scope.props;
                     $scope.props.forEach(function (el) {
@@ -446,12 +495,12 @@
                                 el.active = false;
                             }
                         }
-                        var initOrder = function (customOrder, el) {
-                            el.order = customOrder;
+                        var initOrder = function (customOrder, initEl) {
+                            initEl.order = customOrder;
                             if (typeof (customOrder) === 'string') {
-                                el.rorder = '-' + customOrder;
+                                initEl.rorder = '-' + customOrder;
                             } else if (typeof (customOrder) === 'function') {
-                                el.rorder = function (obj) {
+                                initEl.rorder = function (obj) {
                                     var next;
                                     var value = customOrder(obj);
                                     if (typeof (value) === 'number') {
@@ -485,7 +534,7 @@
                             el.rorder = '-' + el.id + '.' + el.id2;
                         }
 
-                    })
+                    });
                 };
                 $scope.$on('propsChanged', onPropsChanges);
                 onPropsChanges();
