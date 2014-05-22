@@ -1178,6 +1178,7 @@
                             processRecentInstances(result[2], datasets);
                         }
                         if (newVal === $scope.data.datacenter) {
+                            $scope.selectedNetworks.length = 0;
                             var confNetwork = {
                                 'Joyent-SDC-Private': 0,
                                 'Joyent-SDC-Public': 1
@@ -1196,7 +1197,6 @@
                             if ($scope.networks.length === 0) {
                                 loggingService.log('warn', 'Networks are not loaded for datacenter: ' + newVal);
                             }
-                            $scope.selectedNetworks.length = 0;
                         }
                         $scope.reloading = false;
                     });
