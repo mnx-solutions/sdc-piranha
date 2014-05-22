@@ -59,7 +59,7 @@
              data-ng-class="dataset.name | logo"
              data-toggle="tooltip"
              data-tooltip-text="{{dataset.description}}"
-             data-ng-click="selectDataset((dataset.id))">
+             data-ng-click="dataset.limit && goTo('/limits') || !dataset.limit && selectDataset((dataset.id))">
             <div class="advanced-instance-title">
                 <p>{{dataset.name}}</p>
             </div>
@@ -71,9 +71,13 @@
                    id="dataset-{{dataset.id}}"
                    name="dataset"
                    value="{{dataset.id}}"
+                   data-ng-hide="dataset.limit"
                    data-ng-checked="selectedDataset.id == dataset.id"
                         class="btn advaced-instance-btn pull-right"><b>Select</b>
                 </button>
+                <div data-ng-show="dataset.limit" class="hotlinks limit-links">
+                    <a href="#!/limits">Provisioning limit is reached</a>
+                </div>
             </div>
         </div>
     </div>
