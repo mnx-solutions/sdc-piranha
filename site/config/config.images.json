@@ -81,6 +81,19 @@
                 "disk": 131,
                 "price": 0.128
             }
+        },
+        {
+            "name": "PostgreSQL",
+            "className": "postgresql-logo",
+            "datasetName": "postgresql",
+            "packageName": "g3-standard-4-smartos",
+            "description": {
+                "text": "A SmartOS 64-bit image pre-configured and optimized as a PostgreSQL 9.3.0 64-bit server with PgAdmin and monitoring plugins.",
+                "memory": 4,
+                "cpu": 1,
+                "disk": 131,
+                "price": 0.128
+            }
         }
     ]
 }
