@@ -122,13 +122,13 @@
         service.getSimpleImgList = function() {
             var job = serverTab.call({
                 name: 'ImagesSimpleList',
-                done: function (err, job) {
+                done: function (err, data) {
                     if (err) {
                         console.error(err);
-                        return;
+                        return false;
                     }
 
-                    return job;
+                    return data;
                 }
             });
             return job.deferred;
@@ -297,6 +297,7 @@
                             break;
                         default :
                             stateChanged = false;
+                            break;
                     }
 
                     if (!machine.job || machine.job.finished) {
@@ -305,12 +306,12 @@
                         opts.data.datacenter = machine.datacenter;
 
                         if (!opts.progress) {
-                            opts.progress = function (err, job) {
-                                var step = job.step;
+                            opts.progress = function (err, data) {
+                                var step = data.step;
                                 if (step && typeof step === 'object'){
                                     Object.keys(step).forEach(function (k) {
                                         if (!stateChanged || k !== 'state') {
-                                            job.machine[k] = step[k];
+                                            data.machine[k] = step[k];
                                         }
                                     });
                                 }
@@ -318,7 +319,7 @@
                         }
 
                         if (!opts.done) {
-                            opts.done = function (err, job) {
+                            opts.done = function (err, data) {
                                 if (err) {
                                     PopupDialog.error(
                                         localization.translate(
@@ -331,8 +332,8 @@
                                             'machine',
                                             'Unable to execute command "{{command}}" for instance {{uuid}}.',
                                             {
-                                                command: job.name,
-                                                uuid: job.machine.id
+                                                command: data.name,
+                                                uuid: data.machine.id
                                             }
                                         ),
                                         function () {}
@@ -341,10 +342,10 @@
                                     return;
                                 }
 
-                                var result = job.__read();
+                                var result = data.__read();
                                 if (result && typeof result === 'object') {
                                     Object.keys(result).forEach(function (k){
-                                        job.machine[k] = result[k];
+                                        data.machine[k] = result[k];
                                     });
                                 }
                             };
@@ -414,13 +415,13 @@
                     machineId: uuid,
                     datacenter: machine.datacenter
                 },
-                done: function(err, job) {
+                done: function(err, data) {
                     if (err) {
                         return;
                     }
                 },
 
-                error: function(err, job) {
+                error: function(err, data) {
                 }
             });
 
@@ -461,9 +462,9 @@
             machines.list.push(machine);
             machines.index[id] = machine;
 
-            function copy(data) {
-                Object.keys(data).forEach(function (k) {
-                    machine[k] = data[k];
+            function copy(records) {
+                Object.keys(records).forEach(function (k) {
+                    machine[k] = records[k];
                 });
             }
 
@@ -476,10 +477,10 @@
                             name: (instance.name || ''),
                             uuid: (instance.id || '')
                         }
-                ) + '. ' + (err.message || err));
+                ) + ' ' + (err.message || err));
             }
 
-            var job = serverTab.call({
+            var jobCall = serverTab.call({
                 name: 'MachineCreate',
                 data: data,
                 initialized: function (err, job) {
@@ -529,8 +530,8 @@
                 }
             });
 
-            machine.job = job.getTracker();
-            return job;
+            machine.job = jobCall.getTracker();
+            return jobCall;
         };
 
             var bindCollectionListUpdate = function (collectionName) {
