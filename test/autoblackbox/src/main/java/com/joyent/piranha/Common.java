@@ -3,7 +3,9 @@ package com.joyent.piranha;
 import com.codeborne.selenide.ElementsCollection;
 import com.codeborne.selenide.SelenideElement;
 import com.codeborne.selenide.WebDriverRunner;
+import com.google.gson.JsonObject;
 import org.apache.commons.io.IOUtils;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.openqa.selenium.NoSuchElementException;
@@ -21,7 +23,7 @@ import static com.codeborne.selenide.Condition.*;
 import static com.codeborne.selenide.Selectors.byAttribute;
 import static com.codeborne.selenide.Selectors.byText;
 import static com.codeborne.selenide.Selenide.*;
-import static org.junit.Assert.assertTrue;
+import static com.thoughtworks.selenium.SeleneseTestBase.assertTrue;
 
 /**
  * Common interaction methods for UI elements
@@ -74,7 +76,7 @@ public class Common {
     }
 
     public static String[] instanceProperties() {
-        if (PropertyHolder.containsDatacenter(0,"us-west-b","local-x")) {
+        if (PropertyHolder.containsDatacenter(0, "us-west-b", "local-x")) {
             return new String[]{
                     "base",
                     "13.3.0",
@@ -158,12 +160,42 @@ public class Common {
     public static String getUserCreateDate(String datacenter) throws IOException, JSONException {
         String userName = PropertyHolder.getTestUserLogin();
         ProcessBuilder processBuilder = new ProcessBuilder(PropertyHolder.getSdcPath() + "sdc-getaccount", "--" + userName + "");
+        setSdcProcessEnv(processBuilder, userName, datacenter);
+        Process p = processBuilder.start();
+        JSONObject outJSON = new JSONObject(IOUtils.toString(p.getInputStream()));
+        return outJSON.get("created").toString().substring(0, 10);
+    }
+
+    public static String getImageID(String imageName, String datacenter, String imageVersion) throws IOException, JSONException {
+        String userName = PropertyHolder.getTestUserLogin();
+        ProcessBuilder processBuilder = new ProcessBuilder(PropertyHolder.getSdcPath() + "sdc-listimages");
+        setSdcProcessEnv(processBuilder, userName, datacenter);
+        Process p = processBuilder.start();
+        JSONArray jsonArray = new JSONArray(IOUtils.toString(p.getInputStream()));
+        String result = null;
+        for (int i = 0; i < jsonArray.length(); i++) {
+            String imName = jsonArray.getJSONObject(i).get("name").toString();
+            String imVersion = jsonArray.getJSONObject(i).get("version").toString();
+            if (imName.equals(imageName) && imVersion.equals(imageVersion)) {
+                result = jsonArray.getJSONObject(i).get("id").toString();
+                break;
+            }
+        }
+        return result;
+    }
+
+    private static void setSdcProcessEnv(ProcessBuilder processBuilder, String userName, String datacenter) {
         processBuilder.environment().put("SDC_ACCOUNT", userName);
         processBuilder.environment().put("SDC_KEY_ID", PropertyHolder.getSdcKeyID());
         processBuilder.environment().put("SDC_URL", PropertyHolder.getSdcURL(datacenter));
         processBuilder.environment().put("SDC_TESTING", "true");
+    }
+
+    public static JSONObject getMachineInfo(String instanceId) throws IOException, JSONException {
+        String userName = PropertyHolder.getTestUserLogin();
+        ProcessBuilder processBuilder = new ProcessBuilder(PropertyHolder.getSdcPath() + "sdc-getmachine", instanceId);
+        setSdcProcessEnv(processBuilder, userName, PropertyHolder.getDatacenter(0));
         Process p = processBuilder.start();
-        JSONObject outJSON = new JSONObject(IOUtils.toString(p.getInputStream()));
-        return outJSON.get("created").toString().substring(0, 10);
+        return new JSONObject(IOUtils.toString(p.getInputStream()));
     }
 }

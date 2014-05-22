@@ -1,6 +1,5 @@
 *.class
 *.classpath
-*.json
 *.txt
 build/
 .gradle/

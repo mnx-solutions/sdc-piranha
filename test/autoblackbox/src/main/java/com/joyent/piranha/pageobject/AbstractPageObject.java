@@ -14,6 +14,7 @@ public abstract class AbstractPageObject {
     private static final String GLOBAL_TIMEOUT_KEY = "selenium.globaltimeout";
     private static final String GLOBAL_TIMEOUT_DEF = "15000";
     private static final Integer CHANGE_STATUS_TIMEOUT = Integer.parseInt(PropertyHolder.getChangeStatusTimeout());
+    public static final String GRID_ROW_REPEATER = "object in pagedItems";
 
 
     static final String DASHBOARD_MENU_TITLE = "Dashboard";
@@ -23,7 +24,7 @@ public abstract class AbstractPageObject {
     static final String IMAGES_MENU_TITLE = "Images";
     static final String SLB_MENU_TITLE = "Load Balancers";
 
-    static int baseTimeout;
+    public static int baseTimeout;
 
     public AbstractPageObject() {
         this(Integer.parseInt(System.getProperty(GLOBAL_TIMEOUT_KEY, GLOBAL_TIMEOUT_DEF)));
@@ -120,7 +121,13 @@ public abstract class AbstractPageObject {
     }
 
     public void addGridColumn(String columnName) {
-        clickColumnsButton();
-        $(By.xpath("//div[@data-ng-repeat=\"prop in props | orderBy:'sequence'\" and contains (.,\"" + columnName + "\")]//div")).click();
+        if (!$(By.xpath("//thead//th[contains(.,\"" + columnName + "\") and not(contains(@style,\"display: none;\"))]")).exists()) {
+            clickColumnsButton();
+            $("#checkbox-list-columns").waitUntil(visible, baseTimeout);
+            SelenideElement column = $(By.xpath("//div[@data-ng-repeat=\"prop in props | orderBy:'sequence'\" and contains (.,\"" + columnName + "\")]//div"));
+            column.waitUntil(visible, baseTimeout);
+            column.click();
+            clickColumnsButton();
+        }
     }
 }

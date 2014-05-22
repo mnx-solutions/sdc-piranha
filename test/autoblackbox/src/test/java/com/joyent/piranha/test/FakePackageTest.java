@@ -3,6 +3,8 @@ package com.joyent.piranha.test;
 import com.joyent.piranha.Common;
 import com.joyent.piranha.PropertyHolder;
 import com.joyent.piranha.pageobject.*;
+import com.joyent.piranha.pageobject.CreateInstanceManual;
+import com.joyent.piranha.pageobject.instancedetails.InstanceDetails;
 import com.joyent.piranha.util.TestWrapper;
 import org.junit.*;
 
@@ -39,15 +41,15 @@ public class FakePackageTest extends TestWrapper {
 
     @Test
     public void selectHighPerformancePackage() {
-        CreateInstance createInstance = sideBarMenu.clickDashboard().clickCreateComputeInstance();
-        createInstance.waitForMediumSpinnerDisappear();
-        createInstance.clickAllPublicImagesLink();
-        createInstance.selectOsFilter("smartos");
-        createInstance.selectOsImage("base");
-        createInstance.filterPackages("VCPUS", "32 vCPUs");
-        createInstance.openSection("High CPU");
-        createInstance.selectPackage("High CPU 32");
-        Zenbox zenbox = createInstance.clickReviewBtn("fakePackage");
+        CreateInstanceManual createInstanceManual = sideBarMenu.clickDashboard().clickCreateComputeInstance();
+        createInstanceManual.waitForMediumSpinnerDisappear();
+        createInstanceManual.clickAllPublicImagesLink();
+        createInstanceManual.selectOsFilter("smartos");
+        createInstanceManual.chooseImage("base");
+        createInstanceManual.filterPackages("VCPUS", "32 vCPUs");
+        createInstanceManual.openSection("High CPU");
+        createInstanceManual.selectPackage("High CPU 32");
+        Zenbox zenbox = createInstanceManual.clickReviewBtn("fakePackage");
         $("#dropbox").shouldBe(visible);
         assertTrue(zenbox.getQuestionInput().val().equals("I want to order High CPU-CC 32 GB RAM 32 vCPUs 1200 GB Disk compute instance"));
         assertTrue(zenbox.getNameInput().val().equals(USER_NAME));

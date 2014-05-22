@@ -1,0 +1,56 @@
+[
+    {
+        "datacenter" : ["local-x", "us-west-b", "us-east-1"],
+        "imageName" : "base",
+        "version": "13.4.0",
+        "packageName" : "Standart",
+        "packageVersion" : "Standard 0.25",
+        "description" : "A 32-bit SmartOS",
+        "RAM" : "256 MB",
+        "diskSpace" : "16 GB",
+        "CPU" : "0.125 vCPUs",
+        "pricePerHour" : "$0.008",
+        "pricePerMonth" : "$5.84",
+        "freeTierName" : "TestFree",
+        "scope" : {
+            "manual" : true,
+            "quick" : {"free" : false, "paid" : false}
+        }
+    },
+    {
+        "datacenter" : ["us-west-1"],
+        "imageName" : "base",
+        "version": "13.4.0",
+        "packageName" : "Standart",
+        "packageVersion" : "Standard 0.25",
+        "description" : "A 32-bit SmartOS",
+        "RAM" : "256 MB",
+        "diskSpace" : "16 GB",
+        "CPU" : "0.125 and bursting",
+        "pricePerHour" : "$0.008",
+        "pricePerMonth" : "$5.84",
+        "freeTierName" : "TestFree",
+        "scope" : {
+            "manual" : true,
+            "quick" : {"free" : false, "paid" : false}
+        }
+    },
+    {
+        "datacenter" : ["us-east-1", "us-sw-1", "local-x"],
+        "imageName" : "base64",
+        "version": "13.4.0",
+        "packageName" : "Standart",
+        "packageVersion" : "Standard 0.25",
+        "description" : "A 32-bit SmartOS",
+        "RAM" : "256 MB",
+        "diskSpace" : "16 GB",
+        "CPU" : "0.125 and bursting",
+        "pricePerHour" : "$0.008",
+        "pricePerMonth" : "$5.84",
+        "freeTierName" : "SmartOS Base64",
+        "scope" : {
+            "manual" : false,
+            "quick" : {"free" : false , "paid" : true}
+        }
+    }
+]
