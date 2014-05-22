@@ -16,13 +16,13 @@
             return {
                 restrict: 'A',
                 replace: true,
-                scope: true,
-
+                scope: {
+                    user: '='
+                },
                 controller: function($scope, $element, $attrs, $transclude) {
                     localization.bind('account', $scope);
                 },
-
-                link: function ($scope) {
+                link: function ($scope, $attrs) {
                     $scope.error = null;
                     $scope.loading = false;
 

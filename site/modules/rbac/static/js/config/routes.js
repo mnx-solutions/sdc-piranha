@@ -13,6 +13,9 @@ window.JP.main.config(['routeProvider', function (routeProvider) {
         }).when('/rbac/user/:id', {
             title: 'User Summary',
             action: 'rbac.user'
+        }).when('/rbac/user/create', {
+            title: 'Create User',
+            action: 'rbac.user'
         }).when('/rbac/roles', {
             title: 'Roles',
             action: 'rbac.roles'

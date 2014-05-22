@@ -7,7 +7,7 @@
             <input type="text"
                    id="subFirstName"
                    name="firstName"
-                   data-ng-model="account.firstName"
+                   data-ng-model="user.firstName"
                    data-ng-class="{error: isError('firstName')}"
                    required/>
         </span>
@@ -28,7 +28,7 @@
              <input type="text"
                     id="subLastName"
                     name="lastName"
-                    data-ng-model="account.lastName"
+                    data-ng-model="user.lastName"
                     data-ng-class="{error: isError('lastName')}"
                     required/>
         </span>
@@ -47,7 +47,7 @@
             <input type="email"
                    id="subEmail"
                    name="email"
-                   data-ng-model="account.email"
+                   data-ng-model="user.email"
                    data-ng-class="{error: isError('email')}"
                    required/>
         </span>
@@ -71,7 +71,7 @@
             <input type="text"
                    id="subCompanyName"
                    name="companyName"
-                   data-ng-model="account.companyName"
+                   data-ng-model="user.companyName"
                    required/>
         </span>
         <span class="edit-error">
@@ -89,7 +89,7 @@
             <input type="text"
                    id="subLogin"
                    name="login"
-                   data-ng-model="account.login"
+                   data-ng-model="user.login"
                    required/>
         </span>
         <span class="edit-error">
@@ -101,13 +101,41 @@
         </span>
     </div>
 
+    <div data-ng-show="user.isNew">
+        <div class="control-group">
+            <span class="edit-name">Password</span>
+            <span class="edit-value">
+                <input type="password" data-ng-model="user.password"
+                       id="password"
+                       name="password"
+                       required/>
+            </span>
+            <span class="edit-error">
+                <div class="error"></div>
+            </span>
+        </div>
+
+        <div class="control-group">
+            <span class="edit-name">Repeat Password</span>
+            <span class="edit-value">
+                <input type="password" data-ng-model="user.password_confirmation"
+                       id="password-repeat"
+                       name="password-repeat"
+                       required/>
+            </span>
+            <span class="edit-error">
+                <div class="error"></div>
+            </span>
+        </div>
+    </div>
+
     <div class="control-group">
         <span class="edit-name">Address</span>
         <span class="edit-value">
             <input type="text"
                    id="subAddress"
                    name="adress"
-                   data-ng-model="account.address"/>
+                   data-ng-model="user.address"/>
         </span>
         <span class="edit-error">
             <div class="error"></div>
@@ -120,7 +148,7 @@
             <select id="subCountry"
                     name="country"
                     data-ng-class="{error: isError('country')}"
-                    data-ng-model="account.country"
+                    data-ng-model="user.country"
                     data-ng-options="country.iso3 as country.name group by country.group for country in countries.data | orderBy: ['-group','name']"
                     data-ng-required="true">
             </select>
@@ -136,7 +164,7 @@
             <input type="text"
                    id="subCity"
                    name="city"
-                   data-ng-model="account.city"/>
+                   data-ng-model="user.city"/>
         </span>
         <span class="edit-error">
             <div class="error"></div>
@@ -149,7 +177,7 @@
             <input type="text"
                    id="subState"
                    name="state"
-                   data-ng-model="form.cardHolderInfo.state"/>
+                   data-ng-model="user.state"/>
         </span>
         <span class="edit-error">
             <div class="error"></div>
@@ -163,7 +191,7 @@
                    id="subZip"
                    name="zipCode"
                    data-ng-class="{error: isError('zipCode')}"
-                   data-ng-model="account.zipCode"
+                   data-ng-model="user.postalCode"
                    data-ng-required="true"
                    data-ng-maxlength="20"/>
         </span>
@@ -183,6 +211,6 @@
 
     <div class="control-group">
         <span class="edit-name">Phone Number</span>
-        <div data-phone-number data-number="account.phone" data-country="{{account.country}}" data-is-error="isError(field, type)"></div>
+        <div data-phone-number data-number="user.phone" data-country="{{user.country}}" data-is-error="isError(field, type)"></div>
     </div>
 </form>

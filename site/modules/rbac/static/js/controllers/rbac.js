@@ -7,8 +7,8 @@
         function ($scope, Account) {
             $scope.loading = true;
             $scope.users = [];
-            Account.getAccount(true).then(function (account) {
-                $scope.users.push(account);
+            Account.listUsers().then(function (users) {
+                $scope.users = users || [];
                 $scope.loading = false;
             });
 

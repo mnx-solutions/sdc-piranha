@@ -52,14 +52,19 @@
                 $scope.account = account;
                 $scope.loading = false;
 
-                setTimeout(function () {
-                    angular.element('#policies').jstree({
-                        "checkbox" : {
-                            "keep_selected_style" : false
-                        },
-                        "plugins" : [ "checkbox" ]
-                    });
-                });
+//                setTimeout(function () {
+//                    angular.element('#policies').jstree({
+//                        "core": {
+//                            "themes": {
+//                                "icons": false
+//                            }
+//                        },
+//                        "checkbox" : {
+//                            "keep_selected_style" : false
+//                        },
+//                        "plugins" : [ "checkbox" ]
+//                    });
+//                });
 
             });
 

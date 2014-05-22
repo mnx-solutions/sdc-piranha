@@ -1,0 +1,10 @@
+<ul>{{objects}}
+    <li data-ng-repeat="object in objects">
+        {{object.name}}
+        <ul>
+            <li data-ng-repeat="i in object[arrayName]">
+                {{i}}
+            </li>
+        </ul>
+    </li>
+</ul>

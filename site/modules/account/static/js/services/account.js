@@ -60,6 +60,138 @@
                 }
             };
 
+            service.listUsers = function () {
+                var deferred = $q.defer();
+
+                serverTab.call({
+                    name: 'listUsers',
+                    done: function (err, job) {
+                        if (err) {
+                            deferred.reject(err);
+                            return;
+                        }
+                        var users = job.__read();
+                        deferred.resolve(users);
+                    }
+                });
+
+                return deferred.promise;
+
+            };
+
+            service.getUser = function (id) {
+                var deferred = $q.defer();
+                serverTab.call({
+                    name: 'getUser',
+                    data: {
+                        id: id
+                    },
+                    done: function (err, job) {
+                        if (err) {
+                            deferred.reject(err);
+                            return;
+                        }
+                        var user = job.__read();
+                        deferred.resolve(user);
+                    }
+                });
+
+                return deferred.promise;
+
+            };
+
+            service.updateUser = function (ops) {
+                var deferred = $q.defer();
+                serverTab.call({
+                    name: 'updateUser',
+                    data: ops,
+                    done: function (err, job) {
+                        if (err) {
+                            deferred.reject(err);
+                            return;
+                        }
+                        var data = job.__read();
+                        deferred.resolve(data);
+                    }
+                });
+                return deferred.promise;
+            };
+            service.createUser = function (ops) {
+                var deferred = $q.defer();
+                serverTab.call({
+                    name: 'createUser',
+                    data: ops,
+                    done: function (err, job) {
+                        if (err) {
+                            deferred.reject(err);
+                            return;
+                        }
+                        var data = job.__read();
+                        deferred.resolve(data);
+                    }
+                });
+                return deferred.promise;
+            };
+
+            service.deleteUser = function (id) {
+                var deferred = $q.defer();
+                debugger;
+                serverTab.call({
+                    name: 'deleteUser',
+                    data: {
+                        id: id
+                    },
+                    done: function (err, job) {
+                        if (err) {
+                            deferred.reject(err);
+                            return;
+                        }
+                        var data = job.__read();
+                        deferred.resolve(data);
+                    }
+                });
+                return deferred.promise;
+            };
+
+            service.changeUserPassword = function (id, password, passwordConfirmation) {
+                var deferred = $q.defer();
+                serverTab.call({
+                    name: 'changeUserPassword',
+                    data: {
+                        id: id,
+                        password: password,
+                        password_confirmation: passwordConfirmation
+                    },
+                    done: function (err, job) {
+                        if (err) {
+                            deferred.reject(err);
+                            return;
+                        }
+                        var data = job.__read();
+                        deferred.resolve(data);
+                    }
+                });
+                return deferred.promise;
+            };
+
+            service.listRoles = function () {
+                var deferred = $q.defer();
+                serverTab.call({
+                    name: 'listRoles',
+                    done: function (err, job) {
+                        if (err) {
+                            deferred.reject(err);
+                            return;
+                        }
+                        var roles = job.__read();
+                        deferred.resolve(roles);
+                    }
+                });
+
+                return deferred.promise;
+
+            };
+
             /**
              * @ngdoc
              * @name account.service:account#getAccount

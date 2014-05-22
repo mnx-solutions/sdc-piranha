@@ -1,7 +1,8 @@
 select,
 input,
 .ms-container .ms-selectable li.ms-elem-selectable,
-.ms-container .ms-selection li.ms-elem-selection {
+.ms-container .ms-selection li.ms-elem-selection,
+.jstree {
     font-weight: 200;
     font-size: 16px;
 }

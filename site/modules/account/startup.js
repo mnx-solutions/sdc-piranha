@@ -58,6 +58,64 @@ module.exports = function execute(scope) {
             });
         });
     });
+    server.onCall('listUsers', function (call) {
+        call.cloud.listUsers(function (err, data) {
+            call.done(err,data);
+
+        });
+    });
+    server.onCall('getUser', function (call) {
+        call.cloud.getUser(call.data.id, function (err, data) {
+            call.done(err, data);
+        });
+    });
+
+    server.onCall('listRoles', function (call) {
+        call.cloud.listRoles(function (err, data) {
+            call.done(err, data);
+        });
+    });
+
+    server.onCall('createRole', function (call) {
+        call.cloud.createRole(data, function (err, data) {
+            call.done(err, data);
+        });
+    });
+
+    server.onCall('updateUser', function (call) {
+        var data = {};
+        updateable.forEach(function (f) {
+            data[f] = call.data[f] || null;
+        });
+        data.id = call.data.id;
+        call.cloud.updateUser(data, function (err, data) {
+            call.done(err, data);
+        });
+    });
+
+    server.onCall('createUser', function (call) {
+        var data = {};
+        accountFields.forEach(function (f) {
+            data[f] = call.data[f] || null;
+        });
+        data.password = call.data.password;
+        call.cloud.createUser(data, function (err, data) {
+            call.done(err, data);
+        });
+    });
+
+    server.onCall('deleteUser', function (call) {
+        call.cloud.deleteUser(call.data.id, function (err, data) {
+            call.done(err, data);
+        });
+    });
+
+    server.onCall('changeUserPassword', function (call) {
+        call.cloud.changeUserPassword(call.data, function (err, data) {
+            call.done(err, data);
+        });
+    });
+
 
     server.onCall('updateAccount', function (call) {
         // update account using cloudapi

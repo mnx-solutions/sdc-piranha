@@ -59,18 +59,7 @@
                         </div>
                         <div id="collapse_policies" class="accordion-body collapse in">
                             <div class="accordion-inner">
-                                <div id="policies">{{policies}}
-                                    <ul>
-                                        <li data-ng-repeat="policie in policies">
-                                            {{policie.name}}
-                                            <ul>
-                                                <li data-ng-repeat="rule in policie.rules">
-                                                    {{rule}}
-                                                </li>
-                                            </ul>
-                                        </li>
-                                    </ul>
-                                </div>
+                                <div id="policies" data-tree data-objects="policies" data-array-name="'rules'"></div>
                             </div>
                         </div>
                     </div>
@@ -83,7 +72,8 @@
         <div class="row-fluid btn-bottom-block">
             <div class="pull-right">
                 <button class="btn light effect-orange-button" data-ng-click="">Cancel</button>
-                <button class="btn orange" data-ng-click="">Create Role</button>
+                <button class="btn orange" data-ng-click="createRole()" data-ng-hide="roleID">Create Role</button>
+                <button class="btn orange" data-ng-click="createRole()" data-ng-show="roleID">Save Role</button>
             </div>
         </div>
 

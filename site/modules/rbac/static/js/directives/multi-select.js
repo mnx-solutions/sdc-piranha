@@ -4,8 +4,10 @@
     app.directive('multiSelect', [function () {
         return {
             restrict: 'EA',
+            scope: {
+                selectedRoles: '='
+            },
             link: function ($scope, $element, $attrs) {
-                $scope.selectedRoles = [];
                 var striped = function () {
                     angular.element('.ms-selectable' + ' li:visible').filter(":even").addClass("striped");
                     angular.element('.ms-selectable' + ' li:visible').filter(":odd").removeClass("striped");
