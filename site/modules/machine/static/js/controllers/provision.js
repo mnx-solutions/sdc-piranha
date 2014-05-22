@@ -1145,6 +1145,7 @@
             }
 
             function processRecentInstances(recentInstances, datasets) {
+                recentInstances = angular.copy(recentInstances);
                 if (recentInstances.length > 0) {
                     datasets.forEach(function (dataset) {
                         recentInstances = recentInstances.map(function (instance) {
