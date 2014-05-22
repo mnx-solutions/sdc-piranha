@@ -14,12 +14,11 @@
      * Account module
      */
     app.factory('Account', [
-        '$http',
         '$q',
         'serverTab',
         '$$track',
         'PopupDialog',
-        function ($http, $q, serverTab, $$track, PopupDialog) {
+        function ($q, serverTab, $$track, PopupDialog) {
             var service = {};
 
             var account = null;
@@ -51,10 +50,10 @@
             service.setCurrentUserId = function (accountId) {
                 if (!lastAccountId) {
                     lastAccountId = accountId;
-                    localStorage.lastAccountId = accountId;
+                    window.localStorage.lastAccountId = accountId;
                     setInterval(function () {
-                        if (lastAccountId !== localStorage.lastAccountId) {
-                            location.reload();
+                        if (lastAccountId !== window.localStorage.lastAccountId) {
+                            window.location.reload();
                         }
                     }, 1000);
                 }
@@ -104,8 +103,8 @@
                 var defaultCb = angular.noop;
                 cbEnabled = cbEnabled || defaultCb;
                 cbDisabled = cbDisabled || defaultCb;
-                service.getAccount().then(function (account) {
-                    if (!account.provisionEnabled) {
+                service.getAccount().then(function (provisionAccount) {
+                    if (!provisionAccount.provisionEnabled) {
                         PopupDialog.errorProvision(submitBillingInfo, locationCb, showPopUp);
                         cbDisabled();
                     } else {
@@ -162,7 +161,7 @@
                         name: name,
                         key: keyData
                     },
-                    progress: function (err, job) {
+                    progress: function (err) {
                         if (err) {
                             keys = null;
                             deferred.resolve(err);
@@ -249,7 +248,7 @@
                 return deferred.promise;
             };
 
-            service.userConfig = {};
+            service.userConfig = null;
             service.getUserConfig = function () {
                 function load(callback) {
                     serverTab.call({
@@ -266,13 +265,18 @@
                 }
 
                 function UserConfig(config, parent) {
+                    if (!parent && service.userConfig) {
+                        return service.userConfig;
+                    }
                     if (!(this instanceof UserConfig)) {
                         return new UserConfig(config, parent);
                     }
 
+                    service.userConfig = this;
                     angular.extend(this, config);
-                    this._parent = parent || this;
+                    this._parent = parent || service.userConfig;
                     this._dirty = false;
+                    return this;
                 }
                 UserConfig.prototype.dirty = function (value) {
                     if (Boolean(value) === value) {
@@ -326,7 +330,7 @@
                     return config;
                 };
 
-                return new UserConfig(service.userConfig);
+                return new UserConfig({});
             };
 
             service.setUserConfig = function (config) {
