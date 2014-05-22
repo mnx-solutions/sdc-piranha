@@ -53,7 +53,7 @@ h4 {
     background-color: #f60;
 }
 .ms-container ul.ms-list {
-    min-width: 200px;
+    min-width: 220px;
     width: auto;
     height: 300px;
 }
@@ -87,4 +87,44 @@ h4 {
 .btn-bottom-block {
     padding-top: 20px;
     border-top: 1px solid #ccc;
+}
+
+/*TODO Move*/
+.accordion-group {
+    margin-bottom: 5px;
+    border: 0 none;
+}
+.accordion-heading {
+    border-bottom: 0;
+    background: #f5f5f5;
+}
+.accordion-inner {
+    border-top: 0 !important;
+    padding: 9px 0;
+}
+.accordion-heading .accordion-toggle {
+    display: block;
+    padding: 8px 15px;
+    cursor: pointer;
+}
+.accordion-heading a {
+    color: black;
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 16px;
+}
+/*end*/
+
+label.name {
+    vertical-align: middle;
+    padding-right: 10px;
+    height: 25px;
+    font-size: 16px;
+}
+.role-name {
+    width: 415px;
+}
+.edit-error {
+    width: 80px;
+    margin-left: 5px;
 }

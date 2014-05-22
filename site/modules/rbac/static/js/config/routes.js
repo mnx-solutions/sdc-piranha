@@ -16,5 +16,8 @@ window.JP.main.config(['routeProvider', function (routeProvider) {
         }).when('/rbac/roles', {
             title: 'Roles',
             action: 'rbac.roles'
+        }).when('/rbac/role-edit', {
+            title: 'Create Role',
+            action: 'rbac.role-edit'
         });
 }]);

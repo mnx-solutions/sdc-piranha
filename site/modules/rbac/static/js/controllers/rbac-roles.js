@@ -4,16 +4,16 @@
     app.controller('rbacRolesController', [
         '$scope',
         'Account',
-        function ($scope, Account) {
+        '$location',
+        function ($scope, Account, $location) {
             $scope.loading = true;
             $scope.account;
 
-            $scope.roles = [
-                { label: 'Operations', value: 1 },
-                { label: 'Engineering', value: 2 },
-                { label: 'Support', value: 3 },
-                { label: 'Release Management', value: 4 }
-            ];
+            $scope.roles = [];
+
+            $scope.addNewRole = function () {
+                $location.path('rbac/role-edit');
+            };
 
             Account.getAccount(true).then(function (account) {
                 $scope.account = account;
@@ -45,6 +45,29 @@
                     id: 'policies',
                     name: 'Policies',
                     sequence: 4,
+                    active: true
+                },
+                {
+                    id: 'edit',
+                    name: 'Edit',
+                    type: 'button',
+                    getClass: function () {
+                        return 'pull-right span1';
+                    },
+                    btn: {
+                        label: 'Edit',
+                        getClass: function () {
+                            return 'btn-edit ci effect-orange-button';
+                        },
+                        disabled: function () {
+                            return $scope.loading;
+                        },
+                        action: function (object) {
+                            // TODO
+                        },
+                        tooltip: 'Edit the rule'
+                    },
+                    sequence: 5,
                     active: true
                 }
             ];
