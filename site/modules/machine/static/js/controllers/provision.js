@@ -627,7 +627,9 @@
             var expandLastSection = function () {
                 var lastSectionHeader = ng.element('#packagesAccordion .accordion-toggle:last');
                 if (lastSectionHeader.hasClass('collapsed')) {
-                    lastSectionHeader.click();
+                    $timeout(function () {
+                        lastSectionHeader.click();
+                    })
                 }
             };
 
