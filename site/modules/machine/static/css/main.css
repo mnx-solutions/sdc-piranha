@@ -16,17 +16,6 @@
     vertical-align: middle;
 }
 
-.alert-icon{
-    background-image: url("../img/alert-icon.png");
-    background-repeat: no-repeat;
-    background-position: 0 0;
-    font-weight: normal;
-}
-
-.alert-icon span {
-    margin-left: 20px;
-}
-
 .machines button.create-instance {
     margin-bottom: 20px;
     width: 100%;
