@@ -26,11 +26,19 @@ module.exports = function (scope, app) {
                 filePath = filePath.replace(/\/+/g, '/');
 
                 req.log.info({filePath: filePath}, 'Uploading file');
-                client.put(filePath, rs, {size: file.size}, callback);
+                client.put(filePath, rs, {size: file.size}, function (error) {
+                    if (error) {
+                        error.message = 'Error occurred while uploading file "' + file.originalFilename + '": ' + error.message;
+                    }
+                    callback(error, null);
+                });
             }
         }, function (error) {
             if (error) {
                 req.log.error({error: error}, 'Error while uploading files');
+                var firstError = Array.isArray(error.ase_errors) && error.ase_errors[0];
+                res.send(firstError.statusCode || 500, firstError.message);
+                return;
             }
             res.json({success: true, status: 200});
         });

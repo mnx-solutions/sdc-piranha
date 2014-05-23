@@ -376,22 +376,22 @@
                 });
                 };
 
-            $scope.completeAccount = function () {
-                var submitBillingInfo = {
-                    btnTitle: 'Submit and Access Manta',
-                    appendPopupMessage: 'Manta access will now be granted.'
+                $scope.completeAccount = function () {
+                    var submitBillingInfo = {
+                        btnTitle: 'Submit and Access Manta',
+                        appendPopupMessage: 'Manta access will now be granted.'
+                    };
+                    Account.checkProvisioning(submitBillingInfo, $scope.drawFileMan.bind($scope), null, null, false);
                 };
-                Account.checkProvisioning(submitBillingInfo, $scope.drawFileMan.bind($scope), null, null, false);
-            };
-
-            Account.getAccount().then(function (account) {
-                $scope.provisionEnabled = account.provisionEnabled;
-                if ($scope.provisionEnabled) {
-                    $scope.drawFileMan();
-                } else {
-                    $scope.loading = false;
-                }
-            });
+    
+                Account.getAccount().then(function (account) {
+                    $scope.provisionEnabled = account.provisionEnabled;
+                    if ($scope.provisionEnabled) {
+                        $scope.drawFileMan();
+                    } else {
+                        $scope.loading = false;
+                    }
+                });
 
                 $scope.construction = function () {
                     showPopupDialog('message', 'Message', 'Construction works.');
