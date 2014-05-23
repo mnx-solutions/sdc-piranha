@@ -114,7 +114,7 @@
         });
 
         $scope.$watch('tabFilterUpdate', function() {
-            if ($scope.tabFilter !== $scope.tabFilterUpdate) {
+            if ($scope.tabFilter !== $scope.tabFilterUpdate && $scope.tabFilterUpdate) {
                 $scope.tabFilter = $scope.tabFilterUpdate;
             }
         });
@@ -150,9 +150,9 @@
                     $scope.multisort = true;
                     $scope.props.forEach(function (secondaryProp) {
                         if (secondary.name === secondaryProp.name) {
-                            var orderIndexSecondary = $scope.order.indexOf(secondaryProp.order);
-                            if (orderIndexSecondary !== -1) {
-                                $scope.order.splice(orderIndexSecondary, secondary.order);
+                            var orderIdx = $scope.order.indexOf(secondaryProp.order);
+                            if (orderIdx !== -1) {
+                                $scope.order.splice(orderIdx, secondary.order);
                             }
                             $scope.orderGridMachinesBy(secondaryProp);
                             secondaryProp.columnActive = false;
@@ -298,7 +298,7 @@
                     $scope.iframe = '<iframe src="machine/export/' + id + '/' + format + '/' + $scope.itemsType + '"></iframe>';
                 })
                 .error(function () {
-                    console.log('err', arguments);
+                    window.console.log('err', arguments);
                 });
         };
 
