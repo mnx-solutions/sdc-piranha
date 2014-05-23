@@ -32,7 +32,7 @@
                     return obj;
                 }
 
-                var final = false;
+                var _final = false;
 
                 function emit(event, data) {
                     if (self.finished) {
@@ -50,12 +50,12 @@
                         }
                     }
 
-                    if (!final) {
+                    if (!_final) {
                         eventer.$emit(event, self.err, data); // always add err object as first
                     }
 
                     if (self.finished) {
-                        final = true;
+                        _final = true;
                     }
                 }
 
@@ -113,10 +113,17 @@
                         }
                     },
                     error: {
-                        value: function(err) {
+                        value: function (err) {
                             if (err) {
                                 self.err = err;
                                 self.status('error');
+                                if (err.status === 0) {
+                                    if (err.name !== 'GetUserConfig' && err.name !== 'SetUserConfig') {
+                                        var message = err.name ? 'Unable to retrieve ' + err.name : '';
+                                        $rootScope.$emit('crashRequest', message);
+                                    }
+                                }
+
                             }
                         }
                     },
@@ -165,16 +172,15 @@
                                 params: {
                                     tab: self.tab.id
                                 }
-                            })
-                            .success(function (data, code) {
+                            }).then(function (data, code) {
                                 if (code === 202) {
                                     self.tab.poll();
                                 } else {
                                     self.initialize(data);
                                 }
-                            })
-                            .error(function (o) {
+                            }, function (o) {
                                 var err = o || new Error('Internal server error');
+                                err.name = self.name;
                                 self.error(err);
                             });
                         }

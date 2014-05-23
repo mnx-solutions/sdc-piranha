@@ -10,8 +10,10 @@
         '$$track',
         'requestContext',
         '$location',
+        'errorContext',
+        'localization',
 
-        function ($scope, $rootScope, $route, $routeParams, $window, $$track, requestContext, $location) {
+        function ($scope, $rootScope, $route, $routeParams, $window, $$track, requestContext, $location, errorContext, localization) {
             $rootScope.features = window.JP.get('features') || {};
 
             $scope.windowTitle = 'Joyent Cloud';
@@ -67,17 +69,21 @@
                     if (!$route.current.action) {
                         return;
                     }
-                    // Appropriate redirect for signup steps
-                    var currentStep = $('#signupStep').val();
-                    if (currentStep
-                        && !(currentStep === 'complete' || currentStep === 'completed')
-                        && $route.current.action.indexOf('signup') === -1) {
-                        requestContext.setContext('signup.'+currentStep, $routeParams);
-                    } else if ($scope.features.slb !== 'enabled' && $route.current.action.indexOf('slb') === 0) {
-                        requestContext.setContext('dashboard.index', $routeParams);
+
+                    if (navigator.onLine) {
+                        var currentStep = $('#signupStep').val();
+                        if (currentStep
+                            && !(currentStep === 'complete' || currentStep === 'completed')
+                            && $route.current.action.indexOf('signup') === -1) {
+                            requestContext.setContext('signup.' + currentStep, $routeParams);
+                        } else if ($scope.features.slb !== 'enabled' && $route.current.action.indexOf('slb') === 0) {
+                            requestContext.setContext('dashboard.index', $routeParams);
+                        } else {
+                            // Update the current request action change.
+                            requestContext.setContext($route.current.action, $routeParams);
+                        }
                     } else {
-                        // Update the current request action change.
-                        requestContext.setContext($route.current.action, $routeParams);
+                        $rootScope.$emit('lostConnection');
                     }
 
                     // Announce the change in render conditions.
@@ -91,10 +97,31 @@
 
             $rootScope.$on(
                 'forceUpdate',
-                function (){
+                function () {
                     $scope.$broadcast('event:forceUpdate');
                 }
             );
+
+            $rootScope.$on(
+                'lostConnection',
+                function () {
+                    errorContext.emit(new Error(localization.translate(null,
+                        "main",
+                        "Can't connect to joyent.com. Confirm you are online and not experiencing any connectivity or DNS issues."
+                    )));
+                }
+            );
+
+            $rootScope.$on(
+                'crashRequest',
+                function (event, message) {
+                    errorContext.emit(new Error(localization.translate(null,
+                        "main",
+                        message || 'Unable to retrieve data from server.'
+                    )));
+                }
+            );
+
 
             $scope.requireLogin = function () {
                 $rootScope.$broadcast('event:auth-loginRequired');
@@ -128,6 +155,7 @@
                 }
 
                 commonConfig[name] = value;
+                return commonConfig;
             };
 
             $rootScope.clearCommonConfig = function (name) {

@@ -3262,3 +3262,18 @@ label.checkbox {
 .modal form {
     margin: 0;
 }
+
+.modulizer-module-error .container {
+    margin-left: 10px;
+}
+
+.page-reloader {
+    color: #08c;
+    cursor: pointer;
+}
+
+.page-reloader:hover,
+.page-reloader:focus {
+    color: #005580;
+    text-decoration: underline;
+}
