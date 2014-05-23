@@ -5,10 +5,17 @@
 }
 
 .utilization .tile {
+    width: 200px;
     min-width: 200px;
     cursor: pointer;
     display: table-cell;
     vertical-align: top;
+
+}
+
+.container-details .utilization .tile,
+.container-details .chart-container {
+    cursor: auto;
 }
 
 .utilization .tile h4 {
@@ -22,14 +29,19 @@
 .utilization .tile .right-block {
     float: left;
     padding-left: 15px;
-    padding-right: 10px;
+    padding-right: 5px;
     display: inline-block;
     line-height: 20px;
     margin-top: 5px;
+    max-width: 100%;
 }
 
-.utilization .tile .left-block {
-    width: 100%;
+.utilization .tile .right-block {
+    max-width: 40%;
+}
+
+.utilization .tile .left-block.has-right-block {
+    max-width: 38%;
 }
 
 .utilization .tile .left-block .desc,
@@ -49,12 +61,8 @@
     color: #fff;
 }
 
-.tile.orange .right-block .desc {
+.right-block {
     color: #333;
-}
-
-.tile.blue .right-block .desc {
-    color: #00096B;
 }
 
 .utilization,
@@ -82,15 +90,13 @@
     color: #333333;
 }
 
-.tile.blue .right-block .num {
-    color: #00096B;
-}
 
 .left-block .num,
 .right-block .num {
     font-size: 20px;
     font-weight: 500;
     padding-bottom: 10px;
+    word-wrap: break-word;
 }
 
 .left-block .num.small,
@@ -180,6 +186,7 @@
     background-color: #f5f5f5;
     height: 230px;
     overflow: hidden;
+    cursor: pointer;
 }
 
 .rickshaw_graph {
@@ -187,20 +194,19 @@
 }
 
 .y-axis {
-    max-width: 70px;
+    max-width: 100px;
     display: table-cell;
     vertical-align: top;
 }
 
 .y-axis svg {
     height: 230px;
-    width: 70px;
 }
 
 .x-axis {
     width: 570px;
     float: left;
-    padding-left: 70px;
+    padding-left: 95px;
     margin-top: -35px;
     background-color: transparent;
 }
@@ -220,10 +226,18 @@
     vertical-align: top;
     float: left;
     margin-top: -250px;
-    margin-left: 650px;
+    margin-left: 675px;
+}
+
+.rickshaw_legend .line {
+    padding-right: 0;
 }
 
 .loading-medium-transparent {
     height: 230px;
     min-width: 760px;
+}
+
+.container-fluid {
+    min-height: 750px;
 }

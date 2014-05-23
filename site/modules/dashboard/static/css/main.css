@@ -129,7 +129,7 @@
 .widget .details .number,
 .widget .details .desc-title {
     text-align: left;
-    font-weight: 600;
+    font-weight: 400;
     color: #fff;
     line-height: 28px;
 }
@@ -143,6 +143,18 @@
 
 .widget .details .measure {
     font-size: 26px;
+}
+
+.widget .details-utilization .measure {
+    font-size: 20px;
+}
+
+.widget .details .measure-number {
+    font-size: 24px;
+}
+.widget .details .measure-usage {
+    font-size: 15px;
+    line-height: 15px;
 }
 
 .widget .details .desc,
@@ -164,8 +176,9 @@
     letter-spacing: 0px;
 }
 
-.details-subinfo {
-    border-left: 1px solid #979797;
+.widget .details-subinfo.details-utilization .desc {
+    line-height: 0;
+    text-align: left;
 }
 
 .widget .details {
@@ -177,6 +190,32 @@
     padding-left: 15px;
     max-height: 84px;
     line-height: 14px;
+}
+
+.widget .details-utilization {
+    padding: 0 7px;
+    word-wrap: break-word;
+    min-width: 30%;
+    max-width: 40%;
+    max-height: 90px;
+}
+
+.widget .details-utilization,
+.widget .details-utilization .desc {
+    text-align: right;
+}
+
+.widget .details-subinfo {
+    border-left: 1px solid #979797;
+    max-width: 48%;
+}
+
+.widget .details-subinfo.details-utilization {
+    margin-top: 1px;
+    padding-right: 5px;
+}
+.utilization-icon h4 {
+    margin-bottom: 7px;
 }
 
 .m-icon-white-arrow {

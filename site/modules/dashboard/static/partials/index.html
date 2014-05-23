@@ -73,13 +73,19 @@
             <div class="pull-left widget-margin" data-ng-show="usageDataFeatureEnabled">
                 <a data-ng-href="{{utilization.url}}">
                     <div class="widget grey links2 utilization-icon">
-                        <h4>Month to date Usage</h4>
-                        <div class="details details-subinfo" data-ng-show="utilization">
+                        <h4>Current Usage</h4>
+                        <div class="details details-utilization" data-ng-show="utilization">
+                            <span class="number measure">$</span><span class="number measure-number">{{currentspend}}</span>
+                            <p class="desc">spent</p>
+                        </div>
+                        <div class="details details-subinfo details-utilization" data-ng-show="utilization">
                             <div class="desc">
-                                {{utilization.dram.format(utilization.dram.total)}} DRAM GB hours
+                                <span class="number measure-number">{{utilization.dram.total}}</span>
+                                <span class="number measure-usage">DRAM GB&nbsp;hours</span>
                             </div>
                             <div class="desc">
-                                {{utilization.bandwidth.format(utilization.bandwidth.total)}} bandwidth
+                                <span class="number measure-number">{{bandwidth.value}}</span>
+                                <span class="number measure-usage">{{bandwidth.measure}} bandwidth</span>
                             </div>
                         </div>
                     </div>
