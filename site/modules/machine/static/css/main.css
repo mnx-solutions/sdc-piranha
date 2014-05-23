@@ -910,16 +910,15 @@
     min-height: 65px;
 }
 
-.advaced-instance-btn{
-    width: 56px!important;
-    height: 24px;
-    margin-left: 16px;
-    color: #f60;
-    background-color: #f7f8f9;
+.advaced-instance-btn {
+    margin: 25px 20px 0 16px;
     padding: 0;
-    margin-right: 20px;
-    margin-top: 25px;
+    width: 56px !important;
+    height: 24px;
+    background-color: #f7f8f9;
+    color: #f60;
     text-transform: none !important ;
+    text-shadow: none;
 }
 
 .limit-links {
