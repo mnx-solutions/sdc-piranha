@@ -169,7 +169,7 @@ window.fn = [];
                             versions[newMajor].push(version);
 
                             if (selectedMajor < lastMajor) {
-                                selectedMajor = newMajor;
+                                selectedMajor = lastMajor;
                             }
                             lastMajor = newMajor;
                         }
