@@ -128,7 +128,6 @@
                     var checkedArray = scope.getCheckedItems(scope.objects);
 
                     if (checkedArray.length) {
-                        var message = '';
                         PopupDialog.confirm(
                             localization.translate(
                                 scope,
@@ -138,13 +137,13 @@
                             localization.translate(
                                 scope,
                                 null,
-                                message = function () {
+                                (function () {
                                     var result = messageBody.single;
                                     if (checkedArray.length > 1) {
                                         result = messageBody.plural;
                                     }
                                     return result;
-                                }
+                                }())
                             ), function () {
                                 scope.objects = scope.objects.filter(function (el) {
                                     return !el.checked;

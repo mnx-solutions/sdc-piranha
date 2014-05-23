@@ -1,4 +1,8 @@
 <div data-ng-switch="subview">
-    <div data-ng-switch-when="index" data-ng-include="'utilization/static/partials/index.html'" data-ng-controller="Utilization.IndexController"></div>
-    <div data-ng-switch-when="details" data-ng-include="'utilization/static/partials/details.html'" data-ng-controller="Utilization.DetailsController"></div>
+    <div data-ng-switch-when="index" data-ng-controller="Utilization.IndexController">
+        <div data-ng-include="'utilization/static/partials/index.html'"></div>
+    </div>
+    <div data-ng-switch-when="details" data-ng-controller="Utilization.DetailsController">
+        <div data-ng-include="'utilization/static/partials/details.html'"></div>
+    </div>
 </div>

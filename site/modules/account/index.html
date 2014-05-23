@@ -1,7 +1,17 @@
 <div data-ng-switch="subview">
-    <div data-ng-switch-when="index" data-ng-include="'account/static/partials/index.html'"></div>
-    <div data-ng-switch-when="edit" data-ng-include="'account/static/partials/edit.html'"></div>
-    <div data-ng-switch-when="ssh" data-ng-include="'account/static/partials/ssh.html'"></div>
-    <div data-ng-switch-when="payment" data-ng-include="'account/static/partials/payment.html'"></div>
-    <div data-ng-switch-when="invoices" data-ng-include="'account/static/partials/invoices.html'"></div>
+    <div data-ng-switch-when="index">
+        <div data-ng-include="'account/static/partials/index.html'"></div>
+    </div>
+    <div data-ng-switch-when="edit">
+        <div data-ng-include="'account/static/partials/edit.html'"></div>
+    </div>
+    <div data-ng-switch-when="ssh">
+        <div data-ng-include="'account/static/partials/ssh.html'"></div>
+    </div>
+    <div data-ng-switch-when="payment">
+        <div data-ng-include="'account/static/partials/payment.html'"></div>
+    </div>
+    <div data-ng-switch-when="invoices">
+        <div data-ng-include="'account/static/partials/invoices.html'"></div>
+    </div>
 </div>

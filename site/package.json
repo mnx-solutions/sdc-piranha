@@ -7,6 +7,8 @@
 				"/vendor/angular/angular.js",
 				"/vendor/angular/angular-resource.js",
                 "/vendor/angular/angular-cookies.js",
+                "/vendor/angular/angular-route.js",
+                "/vendor/angular/angular-sanitize.js",
                 "/vendor/zendesk/zenbox.js",
 				"/js/jp.js",
 				"/js/app.js",

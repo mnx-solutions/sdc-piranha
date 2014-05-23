@@ -137,7 +137,7 @@
                         <table class="servers-bg">
                             <tr>
                                 <td>
-                                    <div class="server" data-ng-repeat="datacenter in datacenters">
+                                    <div class="server" data-ng-repeat="datacenter in datacenters track by $index">
                                         <p data-ng-show="datacenter.name"
                                            class="pull-left tooltip-hover"
                                            data-toggle="tooltip"

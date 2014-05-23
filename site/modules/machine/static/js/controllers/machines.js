@@ -48,8 +48,8 @@
                 });
             }, true);
 
-            $scope.$watch('machines.final', function (final) {
-                if (final) {
+            $scope.$watch('machines.final', function (result) {
+                if (result) {
                     $q.when($scope.machines, function (machines) {
                         machines.forEach(function (machine) {
                             Dataset.dataset({datacenter: machine.datacenter}).then(function (datasets) {
@@ -108,7 +108,6 @@
             function makeMachineAction(action, messageTitle, messageBody) {
                 var checkedInstances = $scope.getCheckedItems();
                 if (checkedInstances.length) {
-                    var message = '';
                     var checkedFreeMachines = true;
                     var checkedMachines = $scope.machines.filter(function (machine) {
                         if (machine.checked) {
@@ -121,22 +120,26 @@
                                     return true;
                                 }
                                 machine.checked = false;
-                                break;
+                                return false;
                             case 'stop':
                                 if (machine.state === 'running') {
                                     return true;
                                 }
                                 machine.checked = false;
-                                break;
+                                return false;
                             case 'reboot':
                                 if (machine.state !== 'stopped') {
                                     return true;
                                 }
                                 machine.checked = false;
-                                break;
+                                return false;
                             case 'delete':
                                 return true;
+                            default:
+                                return false;
                             }
+                        } else {
+                            return false;
                         }
                         return false;
                     });
@@ -150,7 +153,7 @@
                         localization.translate(
                             $scope,
                             null,
-                            message = function () {
+                            (function () {
                                 var result = messageBody.single;
                                 if (checkedInstances.length > 1) {
                                     result = checkedFreeMachines && messageBody.freetier_plural ?
@@ -159,7 +162,7 @@
                                     result = messageBody.freetier_single;
                                 }
                                 return result;
-                            }
+                            }())
                         ), function () {
                             checkedMachines.forEach(function (el) {
                                 if (action === 'delete') {
@@ -452,14 +455,14 @@
             $scope.gridActionButtons = [
                 {
                     label: 'Start',
-                    action: function (object) {
+                    action: function () {
                         makeMachineAction('start', 'Confirm: Start instances', gridMessages.start);
                     },
                     sequence: 1
                 },
                 {
                     label: 'Stop',
-                    action: function (object) {
+                    action: function () {
                         makeMachineAction('stop', 'Confirm: Stop instances', gridMessages.stop);
                     },
                     sequence: 2
