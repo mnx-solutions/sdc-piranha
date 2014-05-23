@@ -33,20 +33,23 @@
             });
             var SELECT_PACKAGE_STEP = 1;
             var REVIEW_STEP = 2;
+            var REVIEW_STEP_NAME = 'Review';
+            var ACCOUNT_STEP_NAME = 'Account Information';
+            var SSH_STEP_NAME = 'SSH Key';
 
             $scope.setCreateInstancePage = Machine.setCreateInstancePage;
             $scope.provisionSteps = [
                 {
-                    name:'Choose Image',
-                    template:'machine/static/partials/wizard-choose-image.html'
+                    name: 'Choose Image',
+                    template: 'machine/static/partials/wizard-choose-image.html'
                 },
                 {
-                    name:'Select Package',
-                    template:'machine/static/partials/wizard-select-package.html'
+                    name: 'Select Package',
+                    template: 'machine/static/partials/wizard-select-package.html'
                 },
                 {
-                    name:'Review',
-                    template:'machine/static/partials/wizard-review.html'
+                    name: REVIEW_STEP_NAME,
+                    template: 'machine/static/partials/wizard-review.html'
                 }
             ];
             $scope.filterModel = {};
@@ -68,7 +71,7 @@
                 if (!account.provisionEnabled) {
                     $scope.provisionSteps.push(
                             {
-                                name:'Account Information',
+                                name: ACCOUNT_STEP_NAME,
                                 template:'machine/static/partials/wizard-account-info.html'
                             }
                     );
@@ -112,9 +115,9 @@
 
             $scope.filterValues = {
                 'No filter': [],
-                'vcpus': [],
-                'memory': [],
-                'disk': []
+                vcpus: [],
+                memory: [],
+                disk: []
             };
 
             $scope.isMantaEnabled = $scope.features.manta === 'enabled';
@@ -232,8 +235,8 @@
                 if ($scope.keys.length <= 0) {
                     $scope.provisionSteps.push(
                             {
-                                name:'SSH Key',
-                                template:'machine/static/partials/wizard-ssh-key.html'
+                                name: SSH_STEP_NAME,
+                                template: 'machine/static/partials/wizard-ssh-key.html'
                             }
                     );
                 }
@@ -377,6 +380,12 @@
                 return false;
             };
 
+            function deleteProvisionStep(stepName) {
+                $scope.provisionSteps = $scope.provisionSteps.filter(function (item) {
+                    return item.name !== stepName;
+                });
+            }
+
             $scope.$on('creditCardUpdate', function (event, cc) {
                 $scope.account.provisionEnabled = true;
                 if ($scope.keys.length > 0) {
@@ -385,9 +394,7 @@
                     $scope.setCurrentStep(4);
                     $scope.slideCarousel();
                     $timeout(function () {
-                        $scope.provisionSteps = $scope.provisionSteps.filter(function (item) {
-                            return item.name != 'Account Information';
-                        });
+                        deleteProvisionStep(ACCOUNT_STEP_NAME);
                         $scope.setCurrentStep(3);
                     }, 600);
                 }
@@ -395,6 +402,22 @@
             });
 
             $scope.$on('ssh-form:onKeyUpdated', function (event, keys) {
+                var sshStepExists = $scope.provisionSteps.some(function (step) {
+                    return step.name === SSH_STEP_NAME;
+                });
+
+                if (keys.length > 0 && sshStepExists && $scope.currentStep !== REVIEW_STEP_NAME) {
+                    deleteProvisionStep(SSH_STEP_NAME);
+                } else {
+                    if (!sshStepExists) {
+                        $scope.provisionSteps.push(
+                            {
+                                name: SSH_STEP_NAME,
+                                template: 'machine/static/partials/wizard-ssh-key.html'
+                            }
+                        );
+                    }
+                }
                 $scope.keys = keys;
             });
 
@@ -554,9 +577,7 @@
                             finalProvision,
                             function () {
                                 var stepsSize = $scope.provisionSteps.length;
-                                $scope.provisionSteps = $scope.provisionSteps.filter(function (item) {
-                                    return item.name != 'Account Information';
-                                });
+                                deleteProvisionStep(ACCOUNT_STEP_NAME);
                                 if (stepsSize !== $scope.provisionSteps.length) {
                                     $scope.reconfigure($scope.currentSlidePageIndex - 1);
                                     $scope.createInstanceTitle = null;
@@ -754,9 +775,7 @@
                 ng.element('#network-configuration').fadeOut('fast');
                 ng.element('.carousel').carousel(step);
                 if ($scope.keys.length > 0) {
-                    $scope.provisionSteps = $scope.provisionSteps.filter(function (item) {
-                        return item.name != 'SSH Key';
-                    });
+                    deleteProvisionStep(SSH_STEP_NAME);
                 }
                 if ($scope.currentSlidePageIndex === $scope.provisionSteps.length - 1) {
                     $scope.createInstanceTitle = null;
@@ -1086,7 +1105,7 @@
                 var versions = {};
                 var selectedVersions = {};
                 var manyVersions = {};
-                var operating_systems = {'All': 1};
+                var operating_systems = {All: 1};
 
                 $scope.datasetsLoading = false;
                 datasets.forEach(function (dataset) {
@@ -1299,7 +1318,7 @@
                     requester_name: $scope.account.firstName,
                     requester_email: $scope.account.email
                 });
-                Zenbox.show(null, props);
+                window.Zenbox.show(null, props);
             };
 
             $scope.reviewPage = function () {
