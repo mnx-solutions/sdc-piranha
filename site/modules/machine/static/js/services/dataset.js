@@ -7,10 +7,8 @@ window.fn = [];
         '$q',
         'localization',
         'PopupDialog',
-        'errorContext',
-        '$rootScope',
         'util',
-        function (serverTab, $q, localization, PopupDialog, errorContext, $rootScope, util) {
+        function (serverTab, $q, localization, PopupDialog, util) {
 
         var service = {};
         var datasets = { job: {}, index: {}, list: {}, search: {}, os_index: {}};
@@ -49,8 +47,8 @@ window.fn = [];
                                 function () {}
                             );
                             //datasets.job[datacenter].deferred.reject(err);
-                            Object.keys(datasets.search[datacenter]).forEach(function (job) {
-                                job.reject(err);
+                            Object.keys(datasets.search[datacenter]).forEach(function (jobObj) {
+                                jobObj.reject(err);
                             });
                             return;
                         }
