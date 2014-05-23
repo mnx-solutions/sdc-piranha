@@ -37,4 +37,4 @@
             }
         ]);
 
-}(window.angular, window.JP.getModule('error')));
+}(window.angular, window.JP.main));
