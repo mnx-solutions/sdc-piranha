@@ -80,6 +80,10 @@
             $scope.isProvisioningLimitsEnable = $scope.features.provisioningLimits === 'enabled';
             $scope.getLimits = [];
 
+            $scope.filterSimpleImagesByDatacenter = function (image) {
+                return image.imageData.datacenter === $scope.data.datacenter;
+            };
+
             function getUserLimits () {
                 var deferred = $q.defer();
                 Limits.getUserLimits(function (error, limits) {
