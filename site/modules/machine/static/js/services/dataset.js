@@ -159,13 +159,12 @@ window.fn = [];
                     listVersions[params.name].forEach(function (version) {
                         var re = /\w+/g;
                         var versionType = version.match(re);
+                        var newMajor = versionType[0];
+                        if (!versions[newMajor]) {
+                            versions[newMajor] = [];
+                        }
+                        versions[newMajor].push(version);
                         if (versionType.length > 1) {
-                            var newMajor = versionType[0];
-                            if (!versions[newMajor]) {
-                                versions[newMajor] = [];
-                            }
-                            versions[newMajor].push(version);
-
                             if (selectedMajor < lastMajor) {
                                 selectedMajor = lastMajor;
                             }
