@@ -1,6 +1,6 @@
 'use strict';
 
-(function (ng, app) {
+(function (app) {
     app.factory('serverCall', [
         '$http',
         '$rootScope',
@@ -162,8 +162,8 @@
                             _status = 'started';
 
                             $http({
-                                method:'POST',
-                                url:'server/call',
+                                method: 'POST',
+                                url: 'server/call',
                                 data: {
                                     id: self.id,
                                     name: self.name,
@@ -172,15 +172,19 @@
                                 params: {
                                     tab: self.tab.id
                                 }
-                            }).then(function (data, code) {
+                            }).success(function (data, code) {
                                 if (code === 202) {
                                     self.tab.poll();
                                 } else {
                                     self.initialize(data);
                                 }
-                            }, function (o) {
-                                var err = o || new Error('Internal server error');
-                                err.name = self.name;
+                            }).error(function (o) {
+                                var err = o;
+                                if (!err) {
+                                    err = new Error('Internal server error');
+                                    err.status = 0;
+                                    err.name = self.name;
+                                }
                                 self.error(err);
                             });
                         }
@@ -283,4 +287,4 @@
                 }
             };
         }]);
-}(window.angular, window.JP.getModule('Server')));
+}(window.JP.getModule('Server')));
