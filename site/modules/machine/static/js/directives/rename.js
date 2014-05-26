@@ -11,7 +11,6 @@
 
             link: function (scope) {
                 scope.type = String(scope.type);
-                scope.incorrectNameMessage = "can contain only letters, digits and signs like '.' and '-'.";
                 scope.enableRename = function (name) {
                     scope.changingName = true;
                     scope.newName = name;
@@ -34,7 +33,6 @@
                         return;
                     }
                     var currentName = scope.object.name;
-                    scope.object.name = scope.newName;
                     PopupDialog.confirm(
                         localization.translate(
                             scope,
@@ -51,15 +49,12 @@
                             scope.renaming = true;
 
                             if (scope.type && scope.type === 'image') {
-                                Image.renameImage(scope.object, function () {
-                                    renameFinished();
-                                });
+                                Image.renameImage(scope.object, renameFinished);
                             } else {
+                                scope.object.name = scope.newName;
                                 $$track.event('machine', 'rename');
                                 var job = Machine.renameMachine(scope.object.id, scope.newName);
-                                job.getJob().done(function () {
-                                    renameFinished();
-                                });
+                                job.getJob().done(renameFinished);
                             }
                         }, function () {
                             scope.object.name = currentName;

@@ -8,7 +8,6 @@
         'Machine',
         'Package',
         'Network',
-        'rule',
         'firewall',
         '$filter',
         '$$track',
@@ -18,12 +17,11 @@
         'PopupDialog',
         'Image',
         'FreeTier',
-        '$timeout',
         'Account',
         'loggingService',
 
-        function ($scope, requestContext, Dataset, Machine, Package, Network, rule, firewall, $filter, $$track,
-                  localization, $q, $location, PopupDialog, Image, FreeTier, $timeout, Account, loggingService) {
+        function ($scope, requestContext, Dataset, Machine, Package, Network, firewall, $filter, $$track,
+                  localization, $q, $location, PopupDialog, Image, FreeTier, Account, loggingService) {
             localization.bind('machine', $scope);
             requestContext.setUpRenderContext('machine.details', $scope, {
                 title: localization.translate(null, 'machine', 'View Joyent Instance Details')
@@ -44,7 +42,6 @@
             $scope.newInstanceName = null;
             $scope.networks = [];
             $scope.defaultSshUser = 'root';
-            $scope.incorrectNameMessage = "can contain only letters, digits and signs like '.' and '-'.";
 
             var reloadPackages = function (currentPackageName, datacenter) {
                 $q.all([Package.package({datacenter: datacenter}), Package.package(currentPackageName)]).then(function (results) {
@@ -133,7 +130,7 @@
 
             $scope.firewallRules = [];
 
-            $scope.$watch('machines', function (machines) {
+            $scope.$watch('machines', function () {
                 $q.when(Machine.machine(machineid)).then(
                     function (machine) {
                         $scope.machine = machine;
@@ -584,3 +581,4 @@
 
     ]);
 }(window.JP.getModule('Machine'), window.angular));
+

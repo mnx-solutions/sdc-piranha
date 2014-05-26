@@ -1,41 +1,28 @@
 'use strict';
 
 (function (app) {
-    app.directive('machineUnique',[
-        'Machine',
-        function (Machine) {
+    app.directive('unique', [
+        'Machine', 'Image',
+        function (Machine, Image) {
             return {
                 require: 'ngModel',
                 link: function (scope, elm, attrs, ctrl) {
-                    var machines = Machine.machine();
+                    var type = scope.$eval(attrs.unique);
+                    var items;
+                    switch (type) {
+                        case 'machine':
+                            items = Machine.machine();
+                            break;
+                        case 'image':
+                            items = Image.image();
+                            break;
+                        default:
+                            return;
+                    }
 
                     ctrl.$parsers.unshift(function (viewValue) {
-                        if (!machines.some(function (m) { return m.name === viewValue; })) {
-                            ctrl.$setValidity('machineUnique', true);
-                            return viewValue;
-                        }
-
-                        ctrl.$setValidity('machineUnique', false);
-                        return viewValue;
-                    });
-                }
-            };
-        }
-    ]).directive('imageUnique', [
-        'Image',
-        function (Image) {
-            return {
-                require: 'ngModel',
-                link: function (scope, elm, attrs, ctrl) {
-                    var images = Image.image();
-
-                    ctrl.$parsers.unshift(function (viewValue) {
-                        if (!images.some(function (m) { return m.name === viewValue; })) {
-                            ctrl.$setValidity('imageUnique', true);
-                            return viewValue;
-                        }
-
-                        ctrl.$setValidity('imageUnique', false);
+                        var isUnique = !items.some(function (e) { return e.name === viewValue; });
+                        ctrl.$setValidity(type + 'Unique', isUnique);
                         return viewValue;
                     });
                 }
