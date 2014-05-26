@@ -3,7 +3,7 @@
 (function (app) {
     app.controller(
         'Utilization.DetailsController',
-        ['$scope', '$location', 'Utilization', 'requestContext', 'loggingService', function ($scope, $location, Utilization, requestContext, loggingService) {
+        ['$scope', '$location', 'Utilization', 'requestContext', 'loggingService', 'Account', function ($scope, $location, Utilization, requestContext, loggingService, Account) {
             requestContext.setUpRenderContext('utilization.details', $scope);
             var baseProps = [
                 {
@@ -161,6 +161,10 @@
                     return;
                 }
                 $scope.type = requestContext.getParam('type');
+
+                if ($scope.features.manta === 'enabled') {
+                   $scope.gridUserConfig = Account.getUserConfig().$child($scope.type);
+                }
                 refreshProps();
                 $scope.caption = {
                     'bandwidth': 'Bandwidth Utilized',
