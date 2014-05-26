@@ -150,9 +150,9 @@
                     $scope.multisort = true;
                     $scope.props.forEach(function (secondaryProp) {
                         if (secondary.name === secondaryProp.name) {
-                            var orderIndex = $scope.order.indexOf(secondaryProp.order);
-                            if (orderIndex !== -1) {
-                                $scope.order.splice(orderIndex, secondary.order);
+                            var orderIndexSecondary = $scope.order.indexOf(secondaryProp.order);
+                            if (orderIndexSecondary !== -1) {
+                                $scope.order.splice(orderIndexSecondary, secondary.order);
                             }
                             $scope.orderGridMachinesBy(secondaryProp);
                             secondaryProp.columnActive = false;
@@ -644,7 +644,7 @@
                     });
                 };
 
-                $scope.$watch('userConfig', function (userConfig) {
+                $scope.$watch('userConfig', function () {
                     loadUserConfig();
                 });
 

@@ -167,22 +167,22 @@
                 }
                 refreshProps();
                 $scope.caption = {
-                    'bandwidth': 'Bandwidth Utilized',
-                    'dram': 'DRAM Utilized',
-                    'currentspend': 'Spend',
-                    'manta': 'Manta Utilized'
+                    bandwidth: 'Bandwidth Utilized',
+                    dram: 'DRAM Utilized',
+                    currentspend: 'Spend',
+                    manta: 'Manta Utilized'
                 }[$scope.type];
                 $scope.pageTitle = {
-                    'bandwidth': 'Bandwidth Usage',
-                    'dram': 'DRAM Usage',
-                    'currentspend': 'Spend',
-                    'manta': 'Manta Usage'
+                    bandwidth: 'Bandwidth Usage',
+                    dram: 'DRAM Usage',
+                    currentspend: 'Spend',
+                    manta: 'Manta Usage'
                 }[$scope.type];
                 $scope.colorDaily = {
-                    'currentspend': '#7d2c21'
+                    currentspend: '#7d2c21'
                 }[$scope.type];
                 $scope.colorTotal = {
-                    'currentspend': '#ed4f34'
+                    currentspend: '#ed4f34'
                 }[$scope.type];
                 var year = requestContext.getParam('year');
                 var month = requestContext.getParam('month');
