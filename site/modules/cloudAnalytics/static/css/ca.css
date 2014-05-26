@@ -148,9 +148,6 @@
     vertical-align: middle;
     cursor: default;
 }
-.rickshaw_legend label {
-    cursor: default;
-}
 .heatmap-pos{
     vertical-align: top;
     padding-left: 10px;

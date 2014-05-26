@@ -1584,11 +1584,11 @@
     vertical-align: middle;
     cursor: default;
 }
-.rickshaw_legend label, .rickshaw_legend .label {
-    cursor: default;
-    font-size: 12px;
+.rickshaw_legend label,
+.rickshaw_legend .label {
     padding: 0;
     vertical-align: middle;
+    font-size: 12px;
 }
 .heatmap-pos{
     vertical-align: top;
