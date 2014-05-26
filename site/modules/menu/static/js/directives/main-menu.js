@@ -1,7 +1,7 @@
 'use strict';
 
 (function (app) {
-    app.directive('mainMenu', ['Menu', '$$track', 'PopupDialog', '$location', function (Menu, $$track, PopupDialog, $location) {
+    app.directive('mainMenu', ['Menu', '$rootScope', '$$track', 'PopupDialog', '$location', function (Menu, $rootScope, $$track, PopupDialog, $location) {
         return {
             link: function (scope) {
                 scope.mainMenu = Menu.getMenu();
@@ -18,7 +18,7 @@
                     $scope.account = account;
                 });
 
-                $scope.$on('creditCardUpdate', function (event, credit) {
+                $scope.$on('creditCardUpdate', function () {
                     $scope.account.provisionEnabled = true;
                 });
 
@@ -44,6 +44,10 @@
                     $scope.mainMenu.forEach(function (item) {
                         item.active = requestContext.startsWith(item.link);
                     });
+                });
+                $scope.trackingSuccess = false;
+                $rootScope.$on('trackingSuccess', function () {
+                    $scope.trackingSuccess = true;
                 });
 
                 $scope.completeAccount = function () {
