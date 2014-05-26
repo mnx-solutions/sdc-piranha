@@ -38,7 +38,7 @@
             </div>
 
             <div class="row-fluid">
-                <div class="simple-image" data-ng-repeat="image in simpleImages | filter: {imageData.datacenter: data.datacenter}" data-ng-class="image.className" ng-click="image.limit && goTo('/limits') || !image.limit && createSimple(image.imageData)">
+                <div class="simple-image" data-ng-repeat="image in simpleImages | filter: data.datacenter" data-ng-class="image.className" ng-click="image.limit && goTo('/limits') || !image.limit && createSimple(image.imageData)">
                     <div class="name">
                         <p data-tooltip-full-text data-original-title="{{image.name}}">{{image.name}}</p>
                     </div>
