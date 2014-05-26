@@ -4,11 +4,23 @@
 <div class="left"></div>
 <div class="main">
     <div data-ng-switch="subview">
-        <div data-ng-switch-when="index" data-ng-include="'signup/static/partials/index.html'"></div>
-        <div data-ng-switch-when="phone" data-ng-include="'signup/static/partials/phone.html'"></div>
-        <div data-ng-switch-when="accountInfo" data-ng-include="'signup/static/partials/accountInfo.html'"></div>
-        <div data-ng-switch-when="billing" data-ng-include="'signup/static/partials/billing.html'"></div>
-        <div data-ng-switch-when="ssh" data-ng-include="'signup/static/partials/ssh.html'"></div>
-        <div data-ng-switch-when="blocked" data-ng-include="'signup/static/partials/blocked.html'"></div>
+        <div data-ng-switch-when="index">
+            <div data-ng-include="'signup/static/partials/index.html'"></div>
+        </div>
+        <div data-ng-switch-when="phone">
+            <div data-ng-include="'signup/static/partials/phone.html'"></div>
+        </div>
+        <div data-ng-switch-when="accountInfo">
+            <div data-ng-include="'signup/static/partials/accountInfo.html'"></div>
+        </div>
+        <div data-ng-switch-when="billing">
+            <div data-ng-include="'signup/static/partials/billing.html'"></div>
+        </div>
+        <div data-ng-switch-when="ssh">
+            <div data-ng-include="'signup/static/partials/ssh.html'"></div>
+        </div>
+        <div data-ng-switch-when="blocked">
+            <div data-ng-include="'signup/static/partials/blocked.html'"></div>
+        </div>
     </div>
 </div>
