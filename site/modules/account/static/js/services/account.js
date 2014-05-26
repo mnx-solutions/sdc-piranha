@@ -116,6 +116,7 @@
                 });
                 return deferred.promise;
             };
+
             service.createUser = function (ops) {
                 var deferred = $q.defer();
                 serverTab.call({
@@ -135,7 +136,6 @@
 
             service.deleteUser = function (id) {
                 var deferred = $q.defer();
-                debugger;
                 serverTab.call({
                     name: 'deleteUser',
                     data: {
@@ -174,6 +174,73 @@
                 return deferred.promise;
             };
 
+            service.createRole = function (ops) {
+                var deferred = $q.defer();
+                serverTab.call({
+                    name: 'createRole',
+                    data: ops,
+                    done: function (err, job) {
+                        if (err) {
+                            deferred.reject(err);
+                            return;
+                        }
+                        var data = job.__read();
+                        deferred.resolve(data);
+                    }
+                });
+                return deferred.promise;
+            };
+            service.getRole = function (id) {
+                var deferred = $q.defer();
+                serverTab.call({
+                    name: 'getRole',
+                    data: {id: id},
+                    done: function (err, job) {
+                        if (err) {
+                            deferred.reject(err);
+                            return;
+                        }
+                        var data = job.__read();
+                        deferred.resolve(data);
+                    }
+                });
+                return deferred.promise;
+            };
+
+            service.updateRole = function (ops) {
+                var deferred = $q.defer();
+                serverTab.call({
+                    name: 'updateRole',
+                    data: ops,
+                    done: function (err, job) {
+                        if (err) {
+                            deferred.reject(err);
+                            return;
+                        }
+                        var data = job.__read();
+                        deferred.resolve(data);
+                    }
+                });
+                return deferred.promise;
+            };
+
+            service.deleteRole = function (id) {
+                var deferred = $q.defer();
+                serverTab.call({
+                    name: 'deleteRole',
+                    data: {id: id},
+                    done: function (err, job) {
+                        if (err) {
+                            deferred.reject(err);
+                            return;
+                        }
+                        var data = job.__read();
+                        deferred.resolve(data);
+                    }
+                });
+                return deferred.promise;
+            };
+
             service.listRoles = function () {
                 var deferred = $q.defer();
                 serverTab.call({
@@ -191,6 +258,92 @@
                 return deferred.promise;
 
             };
+
+            service.listPolicies = function () {
+                var deferred = $q.defer();
+                serverTab.call({
+                    name: 'listPolicies',
+                    done: function (err, job) {
+                        if (err) {
+                            deferred.reject(err);
+                            return;
+                        }
+                        var roles = job.__read();
+                        deferred.resolve(roles);
+                    }
+                });
+
+                return deferred.promise;
+            };
+
+            service.getPolicy = function (id) {
+                var deferred = $q.defer();
+                serverTab.call({
+                    name: 'getPolicy',
+                    data: {id: id},
+                    done: function (err, job) {
+                        if (err) {
+                            deferred.reject(err);
+                            return;
+                        }
+                        var data = job.__read();
+                        deferred.resolve(data);
+                    }
+                });
+                return deferred.promise;
+            };
+
+            service.deletePolicy = function (id) {
+                var deferred = $q.defer();
+                serverTab.call({
+                    name: 'deletePolicy',
+                    data: {id: id},
+                    done: function (err, job) {
+                        if (err) {
+                            deferred.reject(err);
+                            return;
+                        }
+                        var data = job.__read();
+                        deferred.resolve(data);
+                    }
+                });
+                return deferred.promise;
+            };
+
+            service.createPolicy = function (ops) {
+                var deferred = $q.defer();
+                serverTab.call({
+                    name: 'createPolicy',
+                    data: ops,
+                    done: function (err, job) {
+                        if (err) {
+                            deferred.reject(err);
+                            return;
+                        }
+                        var data = job.__read();
+                        deferred.resolve(data);
+                    }
+                });
+                return deferred.promise;
+            };
+
+            service.updatePolicy = function (ops) {
+                var deferred = $q.defer();
+                serverTab.call({
+                    name: 'updatePolicy',
+                    data: ops,
+                    done: function (err, job) {
+                        if (err) {
+                            deferred.reject(err);
+                            return;
+                        }
+                        var data = job.__read();
+                        deferred.resolve(data);
+                    }
+                });
+                return deferred.promise;
+            };
+
 
             /**
              * @ngdoc

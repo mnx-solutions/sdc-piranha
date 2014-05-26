@@ -1,15 +1,18 @@
 'use strict';
 
 (function (app) {
-    app.controller('rbacController', [
+    app.controller('RBAC.UserListController', [
         '$scope',
+        'PopupDialog',
         'Account',
-        function ($scope, Account) {
+        function ($scope, PopupDialog, Account) {
             $scope.loading = true;
             $scope.users = [];
             Account.listUsers().then(function (users) {
                 $scope.users = users || [];
                 $scope.loading = false;
+            }, function (err) {
+                PopupDialog.errorObj(err);
             });
 
             $scope.gridUserConfig = Account.getUserConfig().$child('rbac') || {};
@@ -20,6 +23,10 @@
                     id: 'login',
                     name: 'Login',
                     sequence: 1,
+                    type: 'html',
+                    _getter: function (object) {
+                        return '<a href="#!/rbac/user/' + object.id+'">'+object.login+'</a>';
+                    },
                     active: true
                 },
                 {

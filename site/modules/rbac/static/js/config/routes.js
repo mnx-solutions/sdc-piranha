@@ -19,8 +19,20 @@ window.JP.main.config(['routeProvider', function (routeProvider) {
         }).when('/rbac/roles', {
             title: 'Roles',
             action: 'rbac.roles'
-        }).when('/rbac/role-edit', {
+        }).when('/rbac/role/:id', {
+            title: 'Role Summary',
+            action: 'rbac.role'
+        }).when('/rbac/role/create', {
             title: 'Create Role',
-            action: 'rbac.role-edit'
+            action: 'rbac.role'
+        }).when('/rbac/policies', {
+            title: 'Policies',
+            action: 'rbac.policies'
+        }).when('/rbac/policy/:id', {
+            title: 'Policy Summary',
+            action: 'rbac.policy'
+        }).when('/rbac/policy/create', {
+            title: 'Create Policies',
+            action: 'rbac.policy'
         });
 }]);

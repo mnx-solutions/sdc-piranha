@@ -13,7 +13,22 @@ module.exports = function execute(scope) {
     var MantaClient = scope.api('MantaClient');
 
     var accountFields = ['id', 'login', 'email', 'companyName', 'firstName', 'lastName', 'address', 'postalCode', 'city', 'state', 'country', 'phone', 'created'];
-    var updateable = ['email', 'companyName', 'firstName', 'lastName', 'address', 'postalCode', 'city', 'state', 'country', 'phone'];
+    var updatableAccountFields = ['email', 'companyName', 'firstName', 'lastName', 'address', 'postalCode', 'city', 'state', 'country', 'phone'];
+    var updatableUserFields = ['id', 'email', 'companyName', 'firstName', 'lastName', 'address', 'postalCode', 'city', 'state', 'country', 'phone'];
+    var roleFields = ['name', 'members', 'default_members', 'name', 'policies'];
+    var updatableRoleFields = ['id', 'name', 'members', 'default_members', 'policies'];
+    var policyFields = ['name', 'rules', 'description'];
+    var updatablePolicyFields = ['id', 'name', 'rules', 'description'];
+
+    var filterFields = function (callData, filter, skipIfEmpty) {
+        var data = {};
+        filter.forEach(function (f) {
+            if (!skipIfEmpty || (typeof (callData[f]) === 'string' || (callData[f] && callData[f].length > 0))) {
+                data[f] = callData[f] || null;
+            }
+        });
+        return data;
+    };
 
     server.onCall('getAccount', function (call) {
         // get account using cloudapi
@@ -60,7 +75,7 @@ module.exports = function execute(scope) {
     });
     server.onCall('listUsers', function (call) {
         call.cloud.listUsers(function (err, data) {
-            call.done(err,data);
+            call.done(err, data);
 
         });
     });
@@ -77,17 +92,69 @@ module.exports = function execute(scope) {
     });
 
     server.onCall('createRole', function (call) {
+        var data = filterFields(call.data, roleFields, true);
+
         call.cloud.createRole(data, function (err, data) {
             call.done(err, data);
         });
     });
 
-    server.onCall('updateUser', function (call) {
-        var data = {};
-        updateable.forEach(function (f) {
-            data[f] = call.data[f] || null;
+    server.onCall('updateRole', function (call) {
+        var data = filterFields(call.data, updatableRoleFields);
+
+        call.cloud.updateRole(data, function (err, data) {
+            call.done(err, data);
         });
-        data.id = call.data.id;
+    });
+
+    server.onCall('deleteRole', function (call) {
+        call.cloud.deleteRole(call.data.id, function (err, data) {
+            call.done(err, data);
+        });
+    });
+
+    server.onCall('getRole', function (call) {
+        call.cloud.getRole(call.data.id, function (err, data) {
+            call.done(err, data);
+        });
+    });
+
+    server.onCall('listPolicies', function (call) {
+        call.cloud.listPolicies(function (err, data) {
+            call.done(err, data);
+
+        });
+    });
+
+    server.onCall('getPolicy', function (call) {
+        call.cloud.getPolicy(call.data.id, function (err, data) {
+            call.done(err, data);
+        });
+    });
+
+    server.onCall('createPolicy', function (call) {
+        var data = filterFields(call.data, policyFields);
+        call.cloud.createPolicy(data, function (err, data) {
+            call.done(err, data);
+        });
+    });
+
+    server.onCall('updatePolicy', function (call) {
+        var data = filterFields(call.data, updatablePolicyFields, true);
+        call.cloud.updatePolicy(data, function (err, data) {
+            call.done(err, data);
+        });
+    });
+
+    server.onCall('deletePolicy', function (call) {
+        call.cloud.deletePolicy(call.data.id, function (err, data) {
+            call.done(err, data);
+        });
+    });
+
+    server.onCall('updateUser', function (call) {
+        var data = filterFields(call.data, updatableUserFields);
+
         call.cloud.updateUser(data, function (err, data) {
             call.done(err, data);
         });
@@ -116,11 +183,10 @@ module.exports = function execute(scope) {
         });
     });
 
-
     server.onCall('updateAccount', function (call) {
         // update account using cloudapi
         var data = {};
-        updateable.forEach(function (f) {
+        updatableAccountFields.forEach(function (f) {
             data[f] = call.data[f] || null;
         });
 
@@ -277,8 +343,8 @@ module.exports = function execute(scope) {
     });
 
     var getConfigPath = function (call, client, old) {
-        return '/' + client.user + '/stor' +  (old ? '' : '/.joyent') + '/portal/config.' +
-            call.req.session.userName + '.json';
+        return '/' + client.user + '/stor' + (old ? '' : '/.joyent') + '/portal/config.' +
+                call.req.session.userName + '.json';
     };
 
     var readFileContents = function (client, path, callback) {
@@ -321,7 +387,9 @@ module.exports = function execute(scope) {
                     call.req.log.info('Config for user not found');
                 } else if (err.name === 'AccountBlockedError' && err.code === 'AccountBlocked' && attempt > 0 && call.req.session.provisionEnabled) {
                     attempt -= 1;
-                    setTimeout(function () {readOldOrNewFile(call, client, callback); }, 2000);
+                    setTimeout(function () {
+                        readOldOrNewFile(call, client, callback)
+                    }, 2000);
                     return;
                 } else {
                     call.req.log.error({error: err}, 'Cannot read user config');

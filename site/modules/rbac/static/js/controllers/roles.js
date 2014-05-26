@@ -1,24 +1,30 @@
 'use strict';
 
 (function (app) {
-    app.controller('rbacRolesController', [
+    app.controller('RBAC.RoleListController', [
         '$scope',
+        'requestContext',
         'Account',
         '$location',
-        function ($scope, Account, $location) {
+        function ($scope, requestContext, Account, $location) {
             $scope.loading = true;
-            $scope.account;
 
             $scope.roles = [];
 
+            Account.listRoles().then(function (roles) {
+                $scope.roles = roles || [];
+                $scope.loading = false;
+            });
+
             $scope.addNewRole = function () {
-                $location.path('rbac/role-edit');
+                $location.path('rbac/role/create');
             };
 
             Account.getAccount(true).then(function (account) {
                 $scope.account = account;
                 $scope.loading = false;
             });
+
             $scope.gridUserConfig = Account.getUserConfig().$child('rbac') || {};
 
             $scope.gridOrder = ['-published_at'];
@@ -27,7 +33,12 @@
                     id: 'name',
                     name: 'Name',
                     sequence: 1,
-                    active: true
+                    active: true,
+                    type: 'html',
+                    _getter: function (object) {
+                        return '<a href="#!/rbac/role/' + object.id + '">' + object.name + '</a>';
+                    }
+
                 },
                 {
                     id: 'id',
@@ -39,35 +50,14 @@
                     id: 'members',
                     name: 'Members',
                     sequence: 3,
+                    type: 'array',
                     active: true
                 },
                 {
                     id: 'policies',
                     name: 'Policies',
                     sequence: 4,
-                    active: true
-                },
-                {
-                    id: 'edit',
-                    name: 'Edit',
-                    type: 'button',
-                    getClass: function () {
-                        return 'pull-right span1';
-                    },
-                    btn: {
-                        label: 'Edit',
-                        getClass: function () {
-                            return 'btn-edit ci effect-orange-button';
-                        },
-                        disabled: function () {
-                            return $scope.loading;
-                        },
-                        action: function (object) {
-                            // TODO
-                        },
-                        tooltip: 'Edit the rule'
-                    },
-                    sequence: 5,
+                    type: 'array',
                     active: true
                 }
             ];

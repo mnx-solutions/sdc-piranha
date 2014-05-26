@@ -16,6 +16,7 @@ input {
     text-overflow: ellipsis;
 }
 form {
+    margin: 0 0 10px;
     width: 550px;
 }
 
@@ -37,7 +38,7 @@ h4 {
     width: 92px !important;
 }
 .ms-container ul.ms-list {
-    overflow-y: auto;
+    overflow-y: hidden;
     padding: 0;
     width: 160px;
     height: 200px;
@@ -47,15 +48,15 @@ h4 {
     -moz-border-radius: 0;
     border-radius: 0;
 }
-.ms-container .ms-selectable li.ms-hover,
-.ms-container .ms-selection li.ms-hover,
-.ms-container .ms-selectable li[vs="none"]:nth-child(even).ms-hover,
-.ms-container .ms-selection li[vs="none"]:nth-child(even).ms-hover {
+.ms-container .ms-selectable li:hover,
+.ms-container .ms-selection li:hover {
     background-color: #f60;
+    color: white;
+    text-decoration: none;
+    cursor: pointer;
 }
 .ms-container ul.ms-list {
-    min-width: 220px;
-    width: auto;
+    width: 220px;
     height: 300px;
 }
 .ms-container {
@@ -64,7 +65,10 @@ h4 {
 .ms-container .ms-selectable li.ms-elem-selectable,
 .ms-container .ms-selection li.ms-elem-selection,
 .ms-container .select-header {
+    overflow: hidden;
     padding: 4px 10px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 .ms-container .select-header {
     border: solid 1px #ccc;
@@ -81,6 +85,9 @@ h4 {
 }
 .ms-container .ms-selection {
     margin-left: 45px;
+}
+.ms-list li:hover {
+    cursor: pointer;
 }
 .striped {
     background-color: #f4f4f4;
@@ -116,11 +123,19 @@ h4 {
 }
 /*end*/
 
-label.name {
+label.name,
+.policy label.name {
     vertical-align: middle;
     padding-right: 10px;
     height: 25px;
     font-size: 16px;
+}
+.policy label.name {
+    width: 125px;
+    text-align: right;
+}
+.new-rule label.name {
+    width: 55px;
 }
 .role-name {
     width: 415px;
@@ -128,4 +143,32 @@ label.name {
 .edit-error {
     width: 80px;
     margin-left: 5px;
+}
+input.policy-form {
+    width: 330px;
+}
+select.policy-form {
+    width: 345px !important;
+}
+.add-btn {
+    margin-left: 8px;
+    padding: 5px 0 7px 0;
+    min-width: 62px;
+    height: 30px;
+    vertical-align: top;
+}
+.controls {
+    padding-top: 5px;
+    height: 25px;
+    border-bottom: 1px solid #E9E9E9;
+}
+.controls div.policy-form {
+    overflow: hidden;
+    width: 400px;
+    vertical-align: top;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.new-rule {
+    margin-top: 15px;
 }

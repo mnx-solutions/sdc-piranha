@@ -1,8 +1,9 @@
-<div data-ng-controller="rbacUserController">
+<div data-ng-controller="RBAC.UserController">
     <div class="container-fluid container-position container-min-width">
         <div data-breadcrumbs></div>
         <div class="page-header row-fluid">
             <h3 class="page-title" data-ng-hide="user.isNew">User Summary</h3>
+
             <h3 class="page-title" data-ng-show="user.isNew">Create User</h3>
         </div>
         <div class="loading-large span12" data-ng-show="loading"></div>
@@ -10,26 +11,29 @@
         <div class="row-fluid" data-ng-show="!loading">
             <div class="pull-left span6">
                 <h4>Basic Information</h4>
+
                 <div data-add-sub-account data-user="user"></div>
             </div>
             <div class="pull-left span6">
                 <h4>Roles</h4>
-                <select id="rolesSelect"
-                        data-ng-model="rolesSelect"
-                        data-ng-options="role as role.name for role in roles"
-                        data-multi-select
-                        data-selected-roles="user.roles"
-                        data-selection-header="AVAILABLE"
-                        data-selected-header="ASSIGNED"
-                        multiple="multiple">
-                </select>
+                <div data-ng-hide="roles.length">Roles is not available, click to <a class="orange" href="#!/rbac/role/create">Create Role</a></div>
+                <div data-ng-show="roles.length">
+                    <multi-select id="rolesSelect"
+                                  data-items="roles"
+                                  data-option-label="'name'"
+                                  data-selected-items="userRoles"
+                                  data-selection-header="AVAILABLE"
+                                  data-selected-header="ASSIGNED">
+                    </multi-select>
+                </div>
             </div>
         </div>
 
         <div class="row-fluid btn-bottom-block" data-ng-show="!loading">
             <div class="pull-right" data-ng-hide="user.isNew">
                 <button class="btn light effect-orange-button" data-ng-click="deleteUser()">Delete</button>
-                <button class="btn light effect-orange-button" data-ng-click="changeUserPassword()">Change Password</button>
+                <button class="btn light effect-orange-button" data-ng-click="changeUserPassword()">Change Password
+                </button>
                 <button class="btn light effect-orange-button" data-ng-click="updateUser()">Save</button>
                 <button class="btn light effect-orange-button" data-ng-click="cancel()">Cancel</button>
             </div>

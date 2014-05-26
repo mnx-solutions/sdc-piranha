@@ -114,13 +114,6 @@
                         </td>
                         <td data-ng-repeat="prop in props | orderBy:'sequence' | filter:{active:true}" data-ng-switch="prop.id" data-ng-class="prop.columnClass">
                             <span data-ng-show="object.maintenanceStartTime && !object.compute_node" class="tooltip-hover warn-sign" data-toggle="tooltip" data-placement="right" data-html="true" data-original-title="This instance has been scheduled for <br />maintenance on <b>{{object.maintenanceStartTime}}</b>"><i class="warn-yellow"></i></span>
-                            <div data-ng-switch-when="name">
-                                <a href="#!/manta/jobs/{{object.name}}" data-ng-show="location.path().search('manta/jobs')==1">{{object.name}}</a>
-                                <a href="#!/images/{{object.id}}" data-ng-show="location.path().search('images')==1">{{object.name}}</a>
-                            </div>
-                            <div data-ng-switch-when="login">
-                                <a href="#!/rbac/user/{{object.id}}" data-ng-show="location.path().search('rbac')==1">{{object.login}}</a>
-                            </div>
                             <span data-ng-switch-when="state" data-ng-click="toggleDetails(object.id)">
                                 <div data-object-state data-object="object" data-type="{{itemsType}}" class="grid-small-font"></div>
                             </span>
@@ -144,6 +137,9 @@
                                     <span data-ng-bind-html="prop._getter(object)"></span>
                                 </span>
                                 <span data-ng-switch-when="date">{{object[prop.id] | date: prop.format || 'yyyy-MM-dd HH:mm'}}</span>
+                                <span data-ng-switch-when="array">
+                                    <span data-ng-repeat="item in object[prop.id]">{{item}}{{{true: '', false: ', '}[$last]}}</span>
+                                </span>
                                 <span data-ng-switch-when="async">
                                     <span class="loading-small loading-small-job pull-left" data-ng-show="object.deleteJob && prop.name == 'State'"></span>
                                     <span class="loading-small" data-ng-hide="!!object[prop.name + 'async'] || object[prop.name + 'async'] == 0"></span>

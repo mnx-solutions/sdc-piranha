@@ -1,7 +1,8 @@
 <div data-ng-switch="subview">
-    <div data-ng-switch-when="index" data-ng-include="'rbac/static/partials/index.html'"></div>
+    <div data-ng-switch-when="index" data-ng-include="'rbac/static/partials/users.html'"></div>
     <div data-ng-switch-when="user" data-ng-include="'rbac/static/partials/user.html'"></div>
     <div data-ng-switch-when="roles" data-ng-include="'rbac/static/partials/roles.html'"></div>
-    <div data-ng-switch-when="role-edit" data-ng-include="'rbac/static/partials/role-edit.html'"></div>
-    <div data-ng-switch-when="user-create" data-ng-include="'rbac/static/partials/user-create.html'"></div>
+    <div data-ng-switch-when="role" data-ng-include="'rbac/static/partials/role.html'"></div>
+    <div data-ng-switch-when="policies" data-ng-include="'rbac/static/partials/policies.html'"></div>
+    <div data-ng-switch-when="policy" data-ng-include="'rbac/static/partials/policy.html'"></div>
 </div>

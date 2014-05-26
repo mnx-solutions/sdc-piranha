@@ -129,13 +129,12 @@
             </ul>
         </li>
         <li class="nested" data-ng-show="features.rbac == 'enabled'" data-ng-class="{'active open': location.path().search('rbac') == 1}">
-            <a href="#!/rbac">
-                <i class="glyphicon glyphicon ax"></i>
+            <a href="#!/rbac" class="accounts-icon">
                 <span class="title">Accounts</span>
                 <span class="selected"></span>
             </a>
             <ul class="sub-menu">
-                <li left-list-item class="sub" data-ng-class="{active: location.path().search('rbac') == 1}">
+                <li left-list-item class="sub" data-ng-class="{active: location.path().search('rbac') == 1 && location.path().search('rbac/roles') != 1 && location.path().search('rbac/policies') != 1}">
                     <a href="#!/rbac">
                         <span class="titles" data-translate>Users</span>
                         <span class="selected-sub"></span>
