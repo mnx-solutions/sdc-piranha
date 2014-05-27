@@ -2,7 +2,7 @@
     <div data-breadcrumbs></div>
     <div class="loading-large span12" data-ng-show="loading"></div>
     <div data-ng-hide="loading">
-        <div class="container-min-width" data-ng-show="keys.length">
+        <div class="container-min-width">
             <h3 class="page-title no-breadcrumb-line container-min-width" data-translate>Recent Instances</h3>
             <div class="ci-desc">Select one of image / package combinations you seem to be liking most.</div>
             <div class="control-panel">
@@ -71,7 +71,5 @@
         <div data-ng-show="recentInstances.length == 0" class="container-min-width">
             No recent image / package combinations found.  You may need to provision some more instances.
         </div>
-
-        <div data-no-ssh-keys data-keys="keys"></div>
     </div>
 </div>
