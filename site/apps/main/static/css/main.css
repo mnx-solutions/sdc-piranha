@@ -2937,7 +2937,7 @@ label.checkbox {
     background-size: 14px 14px;
 }
 .popup-file-path {
-    width: 529px;
+    width: 530px;
 }
 .container-grid {
     float: left;
@@ -3285,18 +3285,17 @@ label.checkbox {
     text-decoration: underline;
 }
 
-.file-manager {
+.modal.file-manager {
+    margin-left: -290px;
     width: 580px;
 }
 
-.modal .folder-container {
-    display: inline-block;
-    padding-bottom: 0;
-    width: auto;
+.file-manager .modal-body {
+    overflow-y: hidden;
+    max-height: 450px;
 }
 
-.modal .folder-container-sub {
-    display: inline-block;
-    overflow-x: hidden;
-    width: auto;
+.modal .folder-container {
+    padding-bottom: 0;
+    width: 544px;
 }
