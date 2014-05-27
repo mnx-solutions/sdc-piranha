@@ -150,9 +150,9 @@
                     $scope.multisort = true;
                     $scope.props.forEach(function (secondaryProp) {
                         if (secondary.name === secondaryProp.name) {
-                            var orderIndex = $scope.order.indexOf(secondaryProp.order);
-                            if (orderIndex !== -1) {
-                                $scope.order.splice(orderIndex, secondary.order);
+                            var orderIndexSecondary = $scope.order.indexOf(secondaryProp.order);
+                            if (orderIndexSecondary !== -1) {
+                                $scope.order.splice(orderIndexSecondary, secondary.order);
                             }
                             $scope.orderGridMachinesBy(secondaryProp);
                             secondaryProp.columnActive = false;
@@ -566,87 +566,97 @@
                 $scope.$on('propsChanged', onPropsChanges);
                 onPropsChanges();
 
-                if (!$scope.userConfig) {
-                    $scope.userConfig = {
-                        $load: function (callback) {
-                            this._loaded = true;
-                            callback(null, $scope.userConfig);
-                        },
-                        $save: function () {
-                        },
-                        $child: function () {
-                            return $scope.userConfig;
-                        },
-                        dirty: function () {
-                         },
-                        _loaded: false,
-                        loaded: function () {
-                            return this._loaded;
+                var loadUserConfig = function () {
+                    if (!$scope.userConfig) {
+                        $scope.userConfig = {
+                            $load: function (callback) {
+                                this._loaded = true;
+                                callback(null, $scope.userConfig);
+                            },
+                            $save: function () {
+                            },
+                            $child: function () {
+                                return $scope.userConfig;
+                            },
+                            dirty: function () {
+                            },
+                            _loaded: false,
+                            loaded: function () {
+                                return this._loaded;
+                            }
+                        };
+                    }
+
+                    $scope.userConfig.$load(function (error, config) {
+                        if (error) {
+                            return;
                         }
-                    };
-                }
+                        var propKeys = {};
+                        $scope.gridUserConfig = {
+                            config: config,
+                            propKeys: propKeys
+                        };
 
-                $scope.userConfig.$load(function (error, config) {
-                    if (error) {
-                        return;
-                    }
-                    var propKeys = {};
-                    $scope.gridUserConfig = {
-                        config: config,
-                        propKeys: propKeys
-                    };
-
-                    if (Array.isArray(config.props)) {
-                        config.props.forEach(function (prop) {
-                            propKeys[prop.id] = prop;
-                        });
-                    } else {
-                        config.props = [];
-                        config.dirty(true);
-                    }
-
-                    if ($scope.paginated) {
-                        if (!ng.isDefined(config.perPage)) {
-                            config.perPage = $scope.perPage;
-                            config.dirty(true);
+                        if (Array.isArray(config.props)) {
+                            config.props.forEach(function (prop) {
+                                propKeys[prop.id] = prop;
+                            });
                         } else {
-                            $scope.perPage = config.perPage;
+                            config.props = [];
+                            config.dirty(true);
                         }
-                    } else {
-                        $scope.showAll();
-                    }
 
-                    $scope.$watch('perPage', function (num) {
-                        if (ng.isDefined(num) && $scope.paginated) {
+                        if ($scope.paginated) {
+                            if (!ng.isDefined(config.perPage)) {
+                                config.perPage = $scope.perPage;
+                                config.dirty(true);
+                            } else {
+                                $scope.perPage = config.perPage;
+                            }
+                        } else {
+                            $scope.showAll();
+                        }
+
+                        if (ng.isDefined(config.order)) {
+                            $scope.order.splice(0);
+                        }
+                        $scope.props.forEach(function (el) {
+                            if (propKeys[el.id]) {
+                                el.active = propKeys[el.id].active;
+                                if (!el.id2) {
+                                    if (propKeys[el.id].order) {
+                                        el.order = propKeys[el.id].order;
+                                    }
+                                    if (propKeys[el.id].reorder) {
+                                        el.reorder = propKeys[el.id].reorder;
+                                    }
+                                }
+                            } else {
+                                propKeys[el.id] = el;
+                                config.props.push(el);
+                                config.dirty(true);
+                            }
+                            if (ng.isDefined(config.order) && ng.isDefined(config.order[el.name])) {
+                                $scope.order.push(config.order[el.name] ? el.order : el.rorder);
+                            }
+                        });
+                        config.$save();
+                    });
+                };
+
+                $scope.$watch('userConfig', function () {
+                    loadUserConfig();
+                });
+
+                $scope.$watch('perPage', function (num) {
+                    if (ng.isDefined(num) && $scope.paginated) {
+                        var config = $scope.userConfig;
+                        if (config.loaded() && config.perPage != num) {
                             config.perPage = $scope.perPage;
                             config.dirty(true);
                             config.$save();
                         }
-                    });
-                    if (ng.isDefined(config.order)) {
-                        $scope.order.splice(0);
                     }
-                    $scope.props.forEach(function (el) {
-                        if (propKeys[el.id]) {
-                            el.active = propKeys[el.id].active;
-                            if (!el.id2) {
-                                if (propKeys[el.id].order) {
-                                    el.order = propKeys[el.id].order;
-                                }
-                                if (propKeys[el.id].reorder) {
-                                    el.reorder = propKeys[el.id].reorder;
-                                }
-                            }
-                        } else {
-                            propKeys[el.id] = el;
-                            config.props.push(el);
-                            config.dirty(true);
-                        }
-                        if (ng.isDefined(config.order) && ng.isDefined(config.order[el.name])) {
-                            $scope.order.push(config.order[el.name] ? el.order : el.rorder);
-                        }
-                    });
-                    config.$save();
                 });
             }
         };
