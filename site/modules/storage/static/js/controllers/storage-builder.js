@@ -41,13 +41,13 @@
                     var assets = cloneJob.phases[0].assets;
                     if (assets) {
                         $scope.dataAssets = assets.map(function (asset) {
-                            return {'filePath': asset};
+                            return {filePath: asset};
                         });
                     }
                     var inputs = cloneJob.inputs;
                     if (inputs) {
                         $scope.dataInputs = inputs.map(function (input) {
-                            return {'filePath': input};
+                            return {filePath: input};
                         });
                     }
                 }
@@ -67,6 +67,26 @@
                     var dataInputs = $scope.dataInputs.map(function (dataInput) {
                         return dataInput.filePath;
                     });
+
+                    var errorMessage = dataInputs.length ? '' : 'You must fill at least one Inputs.';
+                    if ($scope.mapStep.length === 0 && $scope.reduceStep.length === 0) {
+                        errorMessage = 'You must fill in Map Step and/or Reduce Step fields.';
+                    }
+
+                    if (errorMessage) {
+                        return PopupDialog.error(
+                            localization.translate(
+                                $scope,
+                                null,
+                                'Error'
+                            ),
+                            localization.translate(
+                                $scope,
+                                null,
+                                errorMessage
+                            )
+                        );
+                    }
                     var job = {
                         name: $scope.jobName,
                         mapStep: $scope.mapStep,
@@ -74,7 +94,6 @@
                         reduceStep: $scope.reduceStep,
                         inputs: dataInputs
                     };
-
                     $q.when(Storage.createJob(job, true)).then(
                         function (res) {
                             PopupDialog.message(
@@ -95,10 +114,6 @@
                             );
                         },
                         function (err) {
-                            var message = err;
-                            if ($scope.mapStep.length === 0 && $scope.reduceStep.length === 0) {
-                                message = 'You must fill in Map Step and/or Reduce Step fields.';
-                            }
                             PopupDialog.error(
                                 localization.translate(
                                     $scope,
@@ -108,12 +123,12 @@
                                 localization.translate(
                                     $scope,
                                     null,
-                                    message
+                                    err
                                 )
                             );
                         }
                     );
-
+                    return job;
                 };
             }]
     );
