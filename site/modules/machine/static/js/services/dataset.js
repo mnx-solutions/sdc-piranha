@@ -7,10 +7,8 @@ window.fn = [];
         '$q',
         'localization',
         'PopupDialog',
-        'errorContext',
-        '$rootScope',
         'util',
-        function (serverTab, $q, localization, PopupDialog, errorContext, $rootScope, util) {
+        function (serverTab, $q, localization, PopupDialog, util) {
 
         var service = {};
         var datasets = { job: {}, index: {}, list: {}, search: {}, os_index: {}};
@@ -49,8 +47,8 @@ window.fn = [];
                                 function () {}
                             );
                             //datasets.job[datacenter].deferred.reject(err);
-                            Object.keys(datasets.search[datacenter]).forEach(function (job) {
-                                job.reject(err);
+                            Object.keys(datasets.search[datacenter]).forEach(function (jobObj) {
+                                jobObj.reject(err);
                             });
                             return;
                         }
@@ -161,15 +159,14 @@ window.fn = [];
                     listVersions[params.name].forEach(function (version) {
                         var re = /\w+/g;
                         var versionType = version.match(re);
+                        var newMajor = versionType[0];
+                        if (!versions[newMajor]) {
+                            versions[newMajor] = [];
+                        }
+                        versions[newMajor].push(version);
                         if (versionType.length > 1) {
-                            var newMajor = versionType[0];
-                            if (!versions[newMajor]) {
-                                versions[newMajor] = [];
-                            }
-                            versions[newMajor].push(version);
-
                             if (selectedMajor < lastMajor) {
-                                selectedMajor = newMajor;
+                                selectedMajor = lastMajor;
                             }
                             lastMajor = newMajor;
                         }
