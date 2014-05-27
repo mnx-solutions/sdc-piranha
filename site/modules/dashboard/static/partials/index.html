@@ -169,7 +169,7 @@
                         </div>
                         <div class="desc" data-ng-show="loadedSystemStatusTopics && systemStatusTopics.length == 0">
                             <i class="checked-icon"></i>
-                            All services operating normally
+                            All systems nominal.
                         </div>
                         <div class="desc" data-ng-repeat="topic in systemStatusTopics">
                             <a target="_blank" href="https://help.joyent.com/entries/{{topic.id}}">{{topic.created_at | dateTime}} &nbsp;{{topic.title}}</a>
