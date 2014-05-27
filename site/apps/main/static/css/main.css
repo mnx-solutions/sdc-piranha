@@ -2937,7 +2937,7 @@ label.checkbox {
     background-size: 14px 14px;
 }
 .popup-file-path {
-    width: 516px;
+    width: 530px;
 }
 .container-grid {
     float: left;
@@ -3283,4 +3283,19 @@ label.checkbox {
 .page-reloader:focus {
     color: #005580;
     text-decoration: underline;
+}
+
+.modal.file-manager {
+    margin-left: -290px;
+    width: 580px;
+}
+
+.file-manager .modal-body {
+    overflow-y: hidden;
+    max-height: 450px;
+}
+
+.modal .folder-container {
+    padding-bottom: 0;
+    width: 544px;
 }
