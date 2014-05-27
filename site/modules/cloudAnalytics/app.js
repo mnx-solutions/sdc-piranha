@@ -60,8 +60,8 @@ function createCacheKey(instrumentationConfig) {
     ].join(':');
 }
 
-function recreateOnError(instrumentation, error) {
-    if (!error || error.statusCode !== 404) {
+function recreateOnError(instrumentation, err) {
+    if (!err || err.statusCode !== 404) {
         return false;
     }
     instrumentation.initialized = false;
@@ -96,6 +96,7 @@ function Instrumentation(cloud, options) {
     this.broken = false;
     this.lastUpdate = null;
     cache[key] = this;
+    return this;
 }
 
 Instrumentation.prototype.init = function (callback) {
@@ -136,7 +137,11 @@ Instrumentation.prototype.ping = function () {
     this.timeout = setTimeout(self.destroy.bind(self), config.cloudAnalytics.instrumentationTTL || 10000);
 };
 
-Instrumentation.prototype.getValue = function (options, callback) {
+Instrumentation.prototype.getValue = function (callback) {
+    if (!this.initialized) {
+        callback(null, []);
+        return;
+    }
     if (this.broken) {
         callback('Instrumentation is broken');
         return;
@@ -145,24 +150,24 @@ Instrumentation.prototype.getValue = function (options, callback) {
     var self = this;
     var arity = this.config['value-arity'];
     var method = 'getInstrumentationValue';
-    var config = {
+    var options = {
         id: this.id,
         start_time: (this.lastUpdate || Math.floor(this.config.crtime / 1000))
     };
 
     if (arity === 'numeric-decomposition') {
         method = 'getInstrumentationHeatmap';
-        config.width = this.config.width || HEATMAP_WIDTH;
-        config.height = this.config.height || HEATMAP_HEIGHT;
-        config.nbuckets = this.config.nbuckets || HEATMAP_NBUCKETS;
-        config.duration = this.config.duration || HEATMAP_DURATION;
-        config.hues = this.config.hues || HEATMAP_HUES;
-        config.ndatapoints = 1;
-        config.end_time = config.start_time;
-        delete config.start_time;
+        options.width = this.config.width || HEATMAP_WIDTH;
+        options.height = this.config.height || HEATMAP_HEIGHT;
+        options.nbuckets = this.config.nbuckets || HEATMAP_NBUCKETS;
+        options.duration = this.config.duration || HEATMAP_DURATION;
+        options.hues = this.config.hues || HEATMAP_HUES;
+        options.ndatapoints = 1;
+        options.end_time = options.start_time;
+        delete options.start_time;
     }
 
-    this.cloud[method](config, config, function (error, response) {
+    this.cloud[method](options, options, function (error, response) {
         if (error || !response) {
             if (recreateOnError(self, error)) {
                 callback(null, {});
@@ -184,6 +189,10 @@ Instrumentation.prototype.getValue = function (options, callback) {
 
 Instrumentation.prototype.getHeatmap = function (options, callback) {
     var self = this;
+    if (!this.initialized) {
+        callback(null, []);
+        return;
+    }
     if (this.broken) {
         callback('Instrumentation is broken');
         return;
@@ -206,8 +215,8 @@ Instrumentation.prototype.destroy = function (callback) {
     if (this.timeout) {
         clearTimeout(this.timeout);
     }
-    if (this.broken) {
-        callback();
+    if (!this.initialized || this.broken) {
+        callback(null, {});
         return;
     }
 
@@ -246,13 +255,13 @@ module.exports = function execute(scope, app) {
     function createInstrumentations(isNew, cloud, machineId, configs, callback) {
         vasync.forEachParallel({
             inputs: configs || [],
-            func: function (config, callback) {
+            func: function (options, cb) {
                 var instrumentation = new Instrumentation(cloud, {
                     machineId: machineId,
-                    config: config,
+                    config: options,
                     isNew: isNew
                 });
-                instrumentation.init(callback);
+                instrumentation.init(cb);
             }
         }, function (error, response) {
             callback(error, response.successes);
@@ -263,8 +272,8 @@ module.exports = function execute(scope, app) {
      * Get all instrumentations, specified to machine
      */
     app.get('/ca/:datacenter/:zoneId/describeInstrumentations', function (req, res) {
-        function getZoneId(config) {
-            var params = (config.predicate && config.predicate.eq) || [];
+        function getZoneId(options) {
+            var params = (options.predicate && options.predicate.eq) || [];
             return params[0] === 'zonename' ? params[1] : '*';
         }
 
@@ -274,15 +283,15 @@ module.exports = function execute(scope, app) {
                 res.json({error: error, res: []});
                 return;
             }
-            instrumentationConfigs.forEach(function (config) {
-                var zoneId = getZoneId(config);
+            instrumentationConfigs.forEach(function (options) {
+                var zoneId = getZoneId(options);
                 if (zoneId === req.params.zoneId || zoneId === '*') {
-                    configs.push(config);
+                    configs.push(options);
                 }
             });
             createInstrumentations(false, req.cloud.separate(req.params.datacenter), req.params.zoneId, configs,
-                function (error, result) {
-                    res.json({error: error, res: result});
+                function (err, result) {
+                    res.json({error: err, res: result});
                 });
         });
     });
@@ -294,7 +303,7 @@ module.exports = function execute(scope, app) {
         vasync.forEachParallel({
             inputs: instrumentationCache.toArray(req.params.zoneId),
             func: function (instrumentation, callback) {
-                instrumentation.getValue(req.query, function (error, response) {
+                instrumentation.getValue(function (error, response) {
                     var result = {
                         id: instrumentation.id,
                         value: null
