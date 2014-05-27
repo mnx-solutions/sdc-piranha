@@ -736,15 +736,14 @@
                 $scope.showFinishConfiguration = false;
                 if (step !== REVIEW_STEP) {
                     if ($scope.networks && $scope.networks.length) {
-                        $scope.selectedNetworks = [];
                         $scope.networks.forEach(function (network) {
-                            $scope.selectedNetworks.push(network.id);
-                            network.active = true;
+                            network.active = false;
                         });
-                        $scope.metadata = [];
-                        $scope.tags = [];
                     }
-                    var provisionForm = $scope.this.provisionForm;
+                    $scope.metadata = [];
+                    $scope.tags = [];
+
+                    var provisionForm = $scope.$$childTail.$$childTail.provisionForm;
                     if (provisionForm) {
                         provisionForm.machineName.$setValidity('machineName', true);
                         provisionForm.machineName.$setValidity('machineUnique', true);
@@ -760,7 +759,6 @@
 
                     if (step === SELECT_PACKAGE_STEP) {
                         $scope.data.package = instancePackage;
-                        expandLastSection();
                     } else {
                         $scope.selectedPackage = null;
                         $scope.selectedPackageInfo = null;
@@ -922,8 +920,6 @@
                     if (!$scope.networks.length) {
                         setNetworks($scope.data.datacenter);
                     }
-                    setTimeout(expandLastSection, 600);
-                    ng.element('.carousel').one('slid', expandLastSection);
                 });
             };
 
@@ -985,10 +981,6 @@
                     $scope.selectedPackageInfo = pkg;
 
                     $scope.data.package = pkg.id;
-                    ng.element('#network-configuration').fadeIn('fast');
-                    if ($scope.features.instanceMetadata === 'enabled') {
-                        ng.element('#metadata-configuration').fadeIn('fast');
-                    }
                 });
                 if (!$scope.account.provisionEnabled || $scope.keys.length <= 0) {
                     $scope.createInstanceTitle = 'Next';
@@ -1049,6 +1041,7 @@
             };
 
             function selectMinimalPackage(packageType, isPackageCollapsed) {
+                $scope.selectPackageType(packageType);
                 var minimalPackage;
                 $scope.packages
                     .filter($scope.filterPackagesByProp)
@@ -1083,6 +1076,9 @@
                 }, 200);
             };
             $scope.changeSelectedPackage = function (event, packageType) {
+                if ($scope.packageType) {
+                    return;
+                }
                 if (!event.target.classList.contains('collapsed')) {
                     if ($scope.filterModel.key !== 'No filter') {
                         $scope.collapsedPackageTypes.push(packageType);
