@@ -49,7 +49,14 @@
                     }
 
                     if (response.status === 0 && response.data === '') {
-                        $rootScope.$emit('crashRequest');
+                        var config = response.config;
+                        if (config.method === "GET" && config.url !== "server/call") {
+                            $rootScope.$emit('crashRequest');
+                        } else {
+                            setTimeout(function () {
+                                $rootScope.$emit('crashRequest');
+                            }, 0);
+                        }
                     }
                     (window.JP.get('timeoutRefresh') || angular.noop)();
                     // otherwise, default behaviour

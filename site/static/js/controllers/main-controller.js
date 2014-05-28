@@ -70,7 +70,7 @@
                         return;
                     }
 
-                    if (navigator.onLine) {
+                    if (window.navigator.onLine) {
                         var currentStep = $('#signupStep').val();
                         if (currentStep
                             && !(currentStep === 'complete' || currentStep === 'completed')
@@ -90,7 +90,7 @@
                     $scope.$broadcast('requestContextChanged', requestContext);
                 });
 
-            $scope.$on('errorContextChanged', function (scope, context) {
+            $scope.$on('errorContextChanged', function () {
                 requestContext.setContext('error.index', $routeParams);
                 $scope.subview = renderContext.getNextSection();
             });
@@ -117,7 +117,7 @@
                 function (event, message) {
                     errorContext.emit(new Error(localization.translate(null,
                         "main",
-                        message || 'Unable to retrieve data from server.'
+                            message || 'Unable to retrieve data from server.'
                     )));
                 }
             );

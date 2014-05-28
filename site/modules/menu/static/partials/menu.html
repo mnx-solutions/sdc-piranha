@@ -23,7 +23,7 @@
                 </a>
             </li>
             <li class="loading-small load-user-name" data-ng-hide="account.firstName"></li>
-            <li class="dropdown user">
+            <li class="dropdown user" data-ng-show="account.login">
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                     <span class="username">{{account.login}}</span>
                     <i class="icon-arrow-down-user"></i>
@@ -33,7 +33,7 @@
                         <i class="icon-user"></i> Account</a></li>
                     <li><a data-ng-click="changePassword()"><i class="icon-lock"></i> Change Password</a></li>
                     <li><a data-ng-click="changeTfa()"><i class="two-keys"></i> Two Factor Authentication</a></li>
-                    <li><a href="/landing/forgetToken"><i class="icon-signout"></i> Log Out</a></li>
+                    <li data-ng-show="trackingSuccess"><a href="/landing/forgetToken"><i class="icon-signout"></i> Log Out</a></li>
                 </ul>
             </li>
         </ul>
