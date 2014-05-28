@@ -68,7 +68,7 @@
                         return dataInput.filePath;
                     });
 
-                    var errorMessage = dataInputs.length ? '' : 'You must fill at least one Inputs.';
+                    var errorMessage = dataInputs.length ? '' : 'You must add at least one input file.';
                     if ($scope.mapStep.length === 0 && $scope.reduceStep.length === 0) {
                         errorMessage = 'You must fill in Map Step and/or Reduce Step fields.';
                     }
