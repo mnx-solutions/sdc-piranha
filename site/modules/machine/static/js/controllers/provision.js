@@ -190,7 +190,7 @@
                                                 simpleImage.className = smallLogoClass.indexOf('default') === -1 ?
                                                     smallLogoClass + '-logo' : 'joyent-logo';
                                                 simpleImage.imageData.freetier = true;
-                                                simpleImage.imageData.freeTierValidUntil = image.validUntil;
+                                                simpleImage.imageData.freeTierValidUntil = $scope.freeTierOptions.validUntil;
                                             } else {
                                                 simpleImage = image;
                                                 simpleImage.imageData = {};
@@ -243,6 +243,7 @@
                 $scope.submitTitle = $scope.keys.length > 0 ? 'Create Instance' : 'Next';
                 $scope.datacenters = result[1];
                 $scope.simpleImages = [];
+                $scope.freeTierOptions = result[4];
                 $scope.datasetsInfo = [];
                 $scope.limits = result[7];
                 if ($scope.isProvisioningLimitsEnable) {
@@ -723,9 +724,9 @@
                             $scope.networks.push(network);
                         }
                     });
-                    $scope.networks = $scope.networks.filter(function(e){return e});
+                    $scope.networks = $scope.networks.filter(function(e){return e;});
                     if ($scope.networks.length === 0) {
-                        loggingService.log('warn', 'Networks are not loaded for datacenter: ' + newVal);
+                        loggingService.log('warn', 'Networks are not loaded for datacenter: ' + datacenter);
                     }
                     $scope.selectedNetworks.length = 0;
                 });
