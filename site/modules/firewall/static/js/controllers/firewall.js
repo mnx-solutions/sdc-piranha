@@ -127,8 +127,7 @@
                     // FIXME:
                     //if(ng.isObject(machine) && machine.compute_node) {
                     if(ng.isObject(machine) && machine.type !== 'virtualmachine') {
-
-                        if(Object.keys(machine.tags).length) {
+                        if(ng.isObject(machine.tags) && Object.keys(machine.tags).length) {
                             for(var tag in machine.tags) {
                                 if($scope.tags.indexOf(tag) === -1) {
                                     $scope.tags.push({
