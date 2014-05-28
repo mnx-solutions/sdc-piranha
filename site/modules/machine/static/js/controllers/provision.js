@@ -875,7 +875,7 @@
                     }
 
                     if ($scope.features.freetier === 'enabled') {
-                        $scope.freeTierOptions.then(function (freeTierOptions) {
+                        $q.when($scope.freeTierOptions).then(function (freeTierOptions) {
                             $scope.packages.forEach(function (p) {
                                 p.freeTierHidden = freeTierOptions.some(function (option) {
                                     var packageMatches = p.id === option.package;
