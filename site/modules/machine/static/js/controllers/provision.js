@@ -697,14 +697,6 @@
                 return parseInt(pkg.memory, 10);
             };
 
-            var expandLastSection = function () {
-                var lastSectionHeader = ng.element('#packagesAccordion .accordion-toggle:last');
-                if (lastSectionHeader.hasClass('collapsed')) {
-                    $timeout(function () {
-                        lastSectionHeader.click();
-                    });
-                }
-            };
 
             function setNetworks (datacenter) {
                 Network.network(datacenter).then(function (result){
@@ -723,9 +715,9 @@
                             $scope.networks.push(network);
                         }
                     });
-                    $scope.networks = $scope.networks.filter(function(e){return e});
+                    $scope.networks = $scope.networks.filter(function(e){return e;});
                     if ($scope.networks.length === 0) {
-                        loggingService.log('warn', 'Networks are not loaded for datacenter: ' + newVal);
+                        loggingService.log('warn', 'Networks are not loaded for datacenter: ' + datacenter);
                     }
                     $scope.selectedNetworks.length = 0;
                 });
