@@ -216,6 +216,9 @@
             if ($scope.userConfig.loaded()) {
                 var userConfig = $scope.gridUserConfig.config;
                 userConfig.order = orderConfigMap;
+                if ($scope.fantomSort && $scope.fantomSort.active) {
+                    delete userConfig.order;
+                }
                 userConfig.dirty(true);
                 userConfig.$save();
             }
