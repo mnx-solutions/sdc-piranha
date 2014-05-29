@@ -770,11 +770,11 @@
             };
 
             function getNr(el) {
+                el = String(el).replace(/,/g, '');
                 if (!el || isNaN(el)) {
                     return false;
                 }
-
-                return +((el + '').replace(/,/g, ''));
+                return Number(el);
             }
 
             $scope.setCurrentStep = function (index) {
