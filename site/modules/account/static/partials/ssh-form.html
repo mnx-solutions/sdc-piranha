@@ -46,11 +46,11 @@
             </div>
         </div>
         <span data-ng-show="downloadLink" class="ssh-download-link"><a target="_blank" href="{{downloadLink}}">Click here to download "{{sshKeyName}}" key</a></span>
-        <div class="new-key-button pull-right" data-ng-hide="loading || !isCreateKeyEnabled || loadingKeys">
+        <div class="new-key-button pull-right" data-ng-hide="!isCreateKeyEnabled || loadingKeys">
             <div data-account-ssh-create></div>
             <div data-account-ssh-import></div>
         </div>
-        <div class="new-key-button pull-right" data-ng-show="!isCreateKeyEnabled && !loading && !loadingKeys">
+        <div class="new-key-button pull-right" data-ng-show="!isCreateKeyEnabled && !loadingKeys">
             <button class="btn orange"
                     data-ng-click="createInstanceFn()"
                     data-translate>Create Instance</button>

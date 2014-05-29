@@ -387,7 +387,7 @@
                 });
             }
 
-            $scope.$on('creditCardUpdate', function (event, cc) {
+            $scope.$on('creditCardUpdate', function () {
                 $scope.account.provisionEnabled = true;
                 if ($scope.keys.length > 0) {
                     $scope.clickProvision();
@@ -407,17 +407,13 @@
                     return step.name === SSH_STEP_NAME;
                 });
 
-                if (keys.length > 0 && sshStepExists && $scope.currentStep !== REVIEW_STEP_NAME) {
-                    deleteProvisionStep(SSH_STEP_NAME);
-                } else {
-                    if (!sshStepExists) {
-                        $scope.provisionSteps.push(
-                            {
-                                name: SSH_STEP_NAME,
-                                template: 'machine/static/partials/wizard-ssh-key.html'
-                            }
-                        );
-                    }
+                if (!sshStepExists && keys.length === 0) {
+                    $scope.provisionSteps.push(
+                        {
+                            name: SSH_STEP_NAME,
+                            template: 'machine/static/partials/wizard-ssh-key.html'
+                        }
+                    );
                 }
                 $scope.keys = keys;
             });
