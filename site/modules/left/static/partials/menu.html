@@ -76,7 +76,7 @@
                 </li>
             </ul>
         </li>
-        <li class="nested" data-ng-show="features.usageData == 'enabled'" data-ng-class="{active: location.path().search('usage') == 1, open: location.path().search('/dram') > 1 || location.path().search('/bandwidth') > 1}">
+        <li class="nested" data-ng-show="features.usageData == 'enabled'" data-ng-class="{active: location.path().search('usage') == 1, open: location.path().search('/currentspend') > 1 || location.path().search('/dram') > 1 || location.path().search('/bandwidth') > 1 || location.path().search('/manta') > 1}">
             <a data-ng-click="clickUsage()" class="usage-icon">
                 <span class="title">Usage</span>
                 <span class="selected"></span>
