@@ -124,7 +124,6 @@
                 name: 'ImagesSimpleList',
                 done: function (err, data) {
                     if (err) {
-                        console.error(err);
                         return false;
                     }
 
@@ -139,7 +138,8 @@
                 machines.list.final = false;
                 machines.job = serverTab.call({
                     name: 'MachineList',
-                    progress: function machineProgress(err, job) {
+                    progress: function (err, job) {
+
                         var data = job.__read();
 
                         function handleResponse(chunk) {
@@ -174,7 +174,7 @@
                         }
                     },
 
-                    done: function(err, job) {
+                    done: function(err) {
 
                         Object.keys(machines.search).forEach(function (id) {
                             if (!machines.index[id] && machines.search[id]) {
@@ -192,27 +192,27 @@
             return machines.job;
         };
 
-        service.pollMachines = function pollMachines (timeout) {
+        service.pollMachines = function (timeout) {
             function mapStates () {
                 var states = {};
 
-                machines.list.forEach(function iterateState (machine) {
+                machines.list.forEach(function (machine) {
                     states[machine.id] = machine.state;
                 });
 
                 return states;
             }
 
-            $timeout(function poll () {
+            $timeout(function () {
                 serverTab.call({
                     name: 'MachineState',
                     data: { states: mapStates() },
 
-                    done: function pollDone (err, job) {
+                    done: function (err, job) {
                         var data = job.__read();
 
                         if (data) {
-                            data.forEach(function iterateChunk (chunk) {
+                            data.forEach(function (chunk) {
                                 if (chunk.state.indexOf('delete') !== -1) {
                                     var index = -1;
                                     for (var i = 0, c = machines.list.length; i < c; i++) {
@@ -415,13 +415,10 @@
                     machineId: uuid,
                     datacenter: machine.datacenter
                 },
-                done: function(err, data) {
+                done: function(err) {
                     if (err) {
                         return;
                     }
-                },
-
-                error: function(err, data) {
                 }
             });
 
@@ -461,12 +458,6 @@
 
             machines.list.push(machine);
             machines.index[id] = machine;
-
-            function copy(records) {
-                Object.keys(records).forEach(function (k) {
-                    machine[k] = records[k];
-                });
-            }
 
             function showError(instance, err, callback) {
                 return PopupDialog.errorObj(err, callback, localization.translate(
@@ -521,8 +512,8 @@
                     }
                 },
 
-                error: function(err, job) {
-                    if (err.message && err.message.indexOf('QuotaExceeded:') !== 0) {
+                error: function(err) {
+                    if (err.message && err.message.indexOf('QuotaExceeded:') !== 0 || typeof (err) === 'string') {
                         showError(machine, err);
                     }
                     machines.list.splice(machines.list.indexOf(machine), 1);
@@ -603,7 +594,7 @@
         service.checkFirstInstanceCreated = function (id) {
             var job = serverTab.call({
                 name: 'checkFirstInstanceCreated',
-                data: {'uuid': id}
+                data: {uuid: id}
             });
             return job.deferred;
         };
