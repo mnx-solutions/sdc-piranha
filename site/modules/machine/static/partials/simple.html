@@ -40,10 +40,10 @@
             <div class="row-fluid">
                 <div class="simple-image" data-ng-repeat="image in simpleImages | filter: {imageData.datacenter: data.datacenter}" data-ng-class="image.className" ng-click="image.limit && goTo('/limits') || !image.limit && createSimple(image.imageData)">
                     <div class="name">
-                        <p>{{image.name}}</p>
+                        <p data-tooltip-full-text data-original-title="{{image.name}}">{{image.name}}</p>
                     </div>
                     <div class="description">
-                        <p>{{image.description.text}}</p>
+                        <p data-tooltip-full-text data-original-title="{{image.description.text}}">{{image.description.text}}</p>
                     </div>
                     <div class="info">
                         <p>MEMORY</p><span><p>{{ image.description.memory }} GB</p></span>
