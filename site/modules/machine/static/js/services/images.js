@@ -179,25 +179,11 @@
                     data: { imageId: image.id, datacenter: image.datacenter },
                     done: function(err, job) {
                         if (!err) {
-                            PopupDialog.message(
-                                localization.translate(
-                                    null,
-                                    null,
-                                    'Message'
-                                ),
-                                localization.translate(
-                                    null,
-                                    'machine',
-                                    'Image "{{name}}" successfully deleted',
-                                    { name: image.name }
-                                ),
-                                function () {}
-                            );
-
                             images.list.splice(images.list.indexOf(image), 1);
                             delete images.index[image.id];
                             Dataset.updateDatasets('all', true);
                         } else {
+                            image.state = 'active';
                             PopupDialog.error(
                                 localization.translate(
                                     null,
@@ -209,8 +195,7 @@
                                     'machine',
                                     'Unable to delete image "{{name}}".',
                                     { name: image.name }
-                                ),
-                                function () {}
+                                )
                             );
                         }
                     }

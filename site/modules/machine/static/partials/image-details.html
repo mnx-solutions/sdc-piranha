@@ -9,53 +9,87 @@
     </h3>
 
     <div class="inl-table">
-        <div class="accordion" id="imageDetails">
-            <div class="accordion-group">
-                <div class="accordion-heading">
-                    <a class="accordion-toggle toggle-icon" data-toggle="collapse" data-parent="#imageDetails"
-                       data-target="#summary">
-                        Summary
-                    </a>
+        <div class="left-part">
+            <div class="accordion" id="imageDetails">
+                <div class="accordion-group">
+                    <div class="accordion-heading">
+                        <a class="accordion-toggle toggle-icon" data-toggle="collapse" data-parent="#imageDetails"
+                           data-target="#summary">
+                            Summary
+                        </a>
+                    </div>
+                    <div id="summary" class="accordion-body collapse in">
+                        <div class="accordion-inner">
+                            <table>
+                                <tr class="id-section">
+                                    <td>UUID</td>
+                                    <td>{{currentImage.id}}</td>
+                                </tr>
+                                <tr>
+                                    <td>Image name</td>
+                                    <td>{{currentImage.name}}</td>
+                                </tr>
+                                <tr>
+                                    <td>Type</td>
+                                    <td>{{currentImage.type}}</td>
+                                </tr>
+                                <tr>
+                                    <td>Version</td>
+                                    <td>{{currentImage.version}}</td>
+                                </tr>
+                                <tr>
+                                    <td>Description</td>
+                                    <td>{{currentImage.description}}</td>
+                                </tr>
+                                <tr>
+                                    <td>Published</td>
+                                    <td>{{currentImage.published_at | date:'yyyy-MM-dd HH:mm'}}</td>
+                                </tr>
+                                <tr>
+                                    <td>Datacenter</td>
+                                    <td>{{currentImage.datacenter}}</td>
+                                </tr>
+                                <tr>
+                                    <td>State</td>
+                                    <td>{{currentImage.state}}</td>
+                                </tr>
+                            </table>
+                            <div>
+                                <button class="pull-right btn orange" data-ng-click="deleteImage()">
+                                    <i class="delete-icon"></i> Delete
+                                </button>
+                                <div class="loading-medium loading-medium-inline" data-ng-show="currentImage.state == 'deleting'"></div>
+                            </div>
+                            <div class="clearfix"></div>
+                        </div>
+                    </div>
                 </div>
-                <div id="summary" class="accordion-body collapse in">
-                    <div class="accordion-inner">
-                        <table>
-                            <tr class="id-section">
-                                <td>UUID</td>
-                                <td>{{currentImage.id}}</td>
-                            </tr>
-                            <tr>
-                                <td>Image name</td>
-                                <td>{{currentImage.name}}</td>
-                            </tr>
-                            <tr>
-                                <td>Type</td>
-                                <td>{{currentImage.type}}</td>
-                            </tr>
-                            <tr>
-                                <td>Version</td>
-                                <td>{{currentImage.version}}</td>
-                            </tr>
-                            <tr>
-                                <td>Description</td>
-                                <td>{{currentImage.description}}</td>
-                            </tr>
-                            <tr>
-                                <td>Published</td>
-                                <td>{{currentImage.published_at | date:'yyyy-MM-dd HH:mm'}}</td>
-                            </tr>
-                            <tr>
-                                <td>Datacenter</td>
-                                <td>{{currentImage.datacenter}}</td>
-                            </tr>
-                            <tr>
-                                <td>State</td>
-                                <td>{{currentImage.state}}</td>
-                            </tr>
-                        </table>
+                <div class="accordion-group">
+                    <div class="accordion-heading">
+                        <a class="accordion-toggle toggle-icon" data-toggle="collapse" data-parent="#imageDetails"
+                           data-target="#instances">
+                            Instances
+                        </a>
+                    </div>
+                    <div id="instances" class="accordion-body collapse">
+                        <div class="accordion-inner">
+                            <div data-grid-view
+                                 data-user-config="machinesGridUserConfig"
+                                 data-props="machinesGridProps"
+                                 data-items="machines"
+                                 data-order="machinesGridOrder"
+                                 data-export-fields="machinesGridExportFields"
+                                 data-items-type="object">
+                            </div>
+                            <a data-ng-href="#!/compute/create/{{currentImage.id}}" class="pull-right btn orange">
+                                Create Instance
+                            </a>
+                            <div class="clearfix"></div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
+        <div class="right-part"></div>
     </div>
 </div>
