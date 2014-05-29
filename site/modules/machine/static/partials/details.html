@@ -280,14 +280,14 @@
                             Image name is already in use
                         </div>
                         <div class="error"
-                             data-ng-show="imageForm.imageName.$error.machineName"
+                             data-ng-show="imageForm.imageName.$error.imageName"
                              data-translate>
-                            Image name&nbsp;{{incorrectNameMessage}}
+                            Image name&nbsp;can contain only letters, digits and signs like '.' and '-'.
                         </div>
                         <div class="error"
-                             data-ng-show="imageForm.imageVersion.$error.machineName"
+                             data-ng-show="imageForm.imageVersion.$error.imageName"
                              data-translate>
-                            Image version&nbsp;{{incorrectNameMessage}}
+                            Image version&nbsp;can contain only letters, digits and signs like '.' and '-'.
                         </div>
                         <div>
                             <div class="dbl-inline">
@@ -296,7 +296,8 @@
                                        name="imageName"
                                        data-ng-model="imageName"
                                        data-ng-disabled="imageJob && !imageJob.finished"
-                                       data-machine-name
+                                       data-machine-name="'image'"
+                                       data-unique="'image'"
                                        value=""
                                        class="key-width"/>
                             </div>
@@ -306,7 +307,7 @@
                                        name="imageVersion"
                                        data-ng-model="imageVersion"
                                        data-ng-disabled="imageJob && !imageJob.finished"
-                                       data-machine-name
+                                       data-machine-name="'image'"
                                        value=""
                                        class="key-width image-version"/>
 
