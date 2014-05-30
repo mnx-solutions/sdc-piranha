@@ -537,7 +537,8 @@
 
                     function list() {
                         if (machine[collectionName]) {
-                            return d.resolve(machine[collectionName]);
+                            d.resolve(machine[collectionName]);
+                            return;
                         }
                         
                         if (!machine[collectionName + 'Job']) {
@@ -562,6 +563,9 @@
                         });
 
                         job.deferred.then(function (response) {
+                            if (collectionName === 'metadata' && machine[collectionName].credentials) {
+                                response.credentials = machine[collectionName].credentials;
+                            }
                             machine[collectionName] = response;
                             d.resolve(response);
                         }, function (err) {
