@@ -154,9 +154,6 @@
     }
   , "earliest_date": "2013-12-18"
 }
-, "skinChange": {
-    "url": "https://betaportal.joyent.com"
-}
 , "manta": {
     "url": "https://us-east.manta.joyent.com"
 }
@@ -173,7 +170,7 @@
   , "imageUse": "enabled"
   , "imageCreate": "enabled"
   , "firewall": "enabled"
-  , "skinChange": "yes"
+  , "skinChange": "no"
   , "useBrandingOrange": "yes"
   , "promoBillingConfirmation": "disabled"
   , "phoneVerification": "disabled"
