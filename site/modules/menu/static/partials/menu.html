@@ -29,11 +29,11 @@
                     <i class="icon-arrow-down-user"></i>
                 </a>
                 <ul class="dropdown-menu dd-account">
-                    <li><a id="link-account" href="#!/account">
-                        <i class="icon-user"></i> Account</a></li>
-                    <li><a data-ng-click="changePassword()"><i class="icon-lock"></i> Change Password</a></li>
-                    <li><a data-ng-click="changeTfa()"><i class="two-keys"></i> Two Factor Authentication</a></li>
-                    <li data-ng-show="trackingSuccess"><a href="/landing/forgetToken"><i class="icon-signout"></i> Log Out</a></li>
+                    <li><a id="link-account" href="#!/account"><span class="icon-user"></span> Account</a></li>
+                    <li data-ng-show="features.provisioningLimits == 'enabled'"><a href="#!/limits" class="limit-icon">Provisioning Limits</a></li>
+                    <li><a data-ng-click="changePassword()"><span class="icon-lock"></span> Change Password</a></li>
+                    <li><a data-ng-click="changeTfa()"><span class="two-keys"></span> Two Factor Authentication</a></li>
+                    <li data-ng-show="trackingSuccess"><a href="/landing/forgetToken"><span class="icon-signout"></span> Log Out</a></li>
                 </ul>
             </li>
         </ul>
