@@ -1,21 +1,18 @@
 'use strict';
 
-(function (ng, app) {
+(function (app) {
     app.controller('Machine.ImagesController', [
         '$scope',
-        '$cookieStore',
-        '$filter',
         '$$track',
-        '$q',
         'requestContext',
         'Image',
         'localization',
         'PopupDialog',
-        '$http',
         '$location',
         'Account',
+        '$rootScope',
 
-        function ($scope, $cookieStore, $filter, $$track, $q, requestContext, Image, localization, PopupDialog, $http, $location, Account) {
+        function ($scope, $$track, requestContext, Image, localization, PopupDialog, $location, Account, $rootScope) {
             localization.bind('machine', $scope);
             requestContext.setUpRenderContext('machine.images', $scope, {
                 title: localization.translate(null, 'machine', 'Image List')
@@ -23,8 +20,8 @@
 
             $scope.loading = true;
 
-            $scope.$watch('images.final', function (final) {
-                if (final) {
+            $scope.$watch('images.final', function (isFinal) {
+                if (isFinal) {
                     $scope.loading = false;
                 }
             });
@@ -159,6 +156,16 @@
             $scope.imgForm = true;
             $scope.searchForm = true;
             $scope.placeHolderText = 'filter images';
+
+            $scope.tabFilterField = 'datacenter';
+            $scope.tabFilterDefault = $rootScope.commonConfig($scope.tabFilterField);
+            $scope.$on('gridViewChangeTab', function (event, tab) {
+                if (tab === 'all') {
+                    $rootScope.clearCommonConfig($scope.tabFilterField);
+                } else {
+                    $rootScope.commonConfig($scope.tabFilterField, tab);
+                }
+            });
         }
     ]);
-}(window.angular, window.JP.getModule('Machine')));
+}(window.JP.getModule('Machine')));

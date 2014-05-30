@@ -23,7 +23,7 @@
 
     app.controller('Firewall.IndexController', [
         '$scope',
-        '$cookieStore',
+        '$rootScope',
         '$filter',
         '$q',
         'requestContext',
@@ -37,12 +37,12 @@
         '$location',
         '$anchorScroll',
 
-        function ($scope, $cookieStore, $filter, $q, requestContext, localization, rule, Datacenter, Machine, $http, PopupDialog, Account, $location,
+        function ($scope, $rootScope, $filter, $q, requestContext, localization, rule, Datacenter, Machine, $http, PopupDialog, Account, $location,
                   $anchorScroll) {
 
             localization.bind('firewall', $scope);
             requestContext.setUpRenderContext('firewall.index', $scope);
-
+            $scope.tabFilterDefault = $rootScope.commonConfig('datacenter');
             $scope.openRuleForm = false;
 
             function scrollTo(id) {
@@ -116,10 +116,6 @@
                 return query(o, 'Instances');
             }
 
-            function tagsQuery(o) {
-                return query(o, 'Tags');
-            }
-
             function reverseQuery(o) {
                 o.reverse = true;
                 return query(o);
@@ -163,10 +159,10 @@
 
             }
 
-            function createCombobox(id, objId, propId, query, addOnSelect) {
+            function createCombobox (id, objId, propId, q, addOnSelect) {
                 return $(id).select2({
                     width: '100%',
-                    query: query,
+                    query: q,
                     initSelection : function () {}
                 }).change(function(e){
                     var val = ng.fromJson(e.val);
@@ -257,7 +253,7 @@
             }, true);
 
             $scope.$watch('current.code', function(n) {
-                if (!n || n == '') {
+                if (!n || n === '') {
                     $scope.protocolForm.code.$setValidity('range', true);
                 }
             });
@@ -270,9 +266,9 @@
                         $scope.$apply(function () {
                             $scope[objId + 'Form'].$pristine = false;
                         });
-                                    }
-                })
-                                }
+                    }
+                });
+            }
 
             function formWatch(obj, oldObj, formName, formId) {
                 if (obj && (!oldObj || oldObj.type !== 'vm' || obj.text) && obj.type === 'vm') {
@@ -285,8 +281,8 @@
 
                         selectVm(fromInstanceSelect, formName);
                     }, 1);
-                                    }
-                                }
+                }
+            }
 
             $scope.$watch('current.from', function (obj, oldObj) {
                 formWatch(obj, oldObj, 'from', 'fromInstanceSelect');
@@ -336,7 +332,6 @@
                 }]
             }];
             $scope.datacenters = Datacenter.datacenter();
-            $scope.datacenter = null;
 
 	        $scope.selectDatacenter = function (name) {
 		        $scope.datacenter = name;
@@ -395,6 +390,7 @@
                             $scope.selected.action = action.text;
                             return true;
                         }
+                        return false;
                     });
                 });
             }).select2('val', $scope.actions[0].id);
@@ -411,6 +407,7 @@
                             $scope.selected.protocol = action.text;
                             return true;
                         }
+                        return false;
                     });
                 });
             }).select2('val', $scope.protocols[0].id);
@@ -427,6 +424,7 @@
                             $scope.selected.status = action.text;
                             return true;
                         }
+                        return false;
                     });
                 });
             }).select2('val', $scope.states[1].id);
@@ -452,10 +450,10 @@
             $scope.setRules = function (rules) {
                 var dcRules = [];
                 Object.keys(rules).forEach(function (datacenter) {
-                    rules[datacenter].forEach(function (rule) {
-                        rule.id = '';
-                        rule.datacenter = datacenter;
-                        dcRules.push(rule);
+                    rules[datacenter].forEach( function (r) {
+                        r.id = '';
+                        r.datacenter = datacenter;
+                        dcRules.push(r);
                     });
                 });
 	            $scope.rules = dcRules;
@@ -503,7 +501,9 @@
                         $scope.machinesLoading = false;
                     }
                 });
-                $scope.datacenter = $scope.tabFilterUpdate = lists[2][0].name;
+                if ($scope.tabFilterDefault) {
+                    $scope.tabFilterUpdate = $scope.tabFilterDefault;
+                }
                 $scope.$watch('datacenter', function(dc){
                     if(dc) {
                         $scope.resetCurrent('from');
@@ -603,7 +603,7 @@
                 }
 
                 if(targets.indexOf($scope.current.port) === -1
-                    && targets.indexOf(parseInt($scope.current.port)) === -1) {
+                    && targets.indexOf(parseInt($scope.current.port, 0)) === -1) {
                     targets.push($scope.current.port);
                 }
                 $scope.current.port = '';
@@ -712,19 +712,19 @@
             $scope.addFrom = addTarget.bind(addTarget, 'from', 'to');
             $scope.addTo = addTarget.bind(addTarget, 'to', 'from');
 
-            $scope.removeFrom = function(i) {
-                $scope.data.parsed.from.splice(i, 1);
+            $scope.removeFrom = function(index) {
+                $scope.data.parsed.from.splice(index, 1);
                 if(!$scope.data.parsed.from.length && !$scope.isAny($scope.data.parsed.to[0])) {
                     $scope.data.parsed.from = [];
                 }
             };
 
-            $scope.removeProtocolTarget = function(i) {
-                $scope.data.parsed.protocol.targets.splice(i, 1);
+            $scope.removeProtocolTarget = function(index) {
+                $scope.data.parsed.protocol.targets.splice(index, 1);
             };
 
-            $scope.removeTo = function(i) {
-                $scope.data.parsed.to.splice(i, 1);
+            $scope.removeTo = function(index) {
+                $scope.data.parsed.to.splice(index, 1);
                 if(!$scope.data.parsed.to.length && !$scope.isAny($scope.data.parsed.from[0])) {
                     $scope.data.parsed.to = [];
                 }
@@ -765,12 +765,12 @@
                 }
             });
 
-            $scope.stringifyRule = function (el, rule) {
-                if(typeof $scope[rule] === 'function') {
-                    rule = $scope[rule]();
+            $scope.stringifyRule = function (el, r) {
+                if(typeof $scope[r] === 'function') {
+                    r = $scope[r]();
                 }
 
-                $http.post('./firewall/stringify', rule).then(function(response) {
+                $http.post('./firewall/stringify', r).then(function(response) {
                     var stringifiedRule = response.data.rule;
                     ng.element(el).popover('destroy');
                     ng.element(el).popover(
@@ -799,7 +799,7 @@
             $scope.saveRule = function () {
                 if (!$scope.validData) {
                     showErrorMessage($scope.invalidReason);
-                    return;
+                    return false;
                 }
                 return ($scope.data.uuid ? $scope.updateRule : $scope.createRule)();
             };
@@ -857,8 +857,8 @@
 				        return 'span2 padding-5';
 			        },
 			        _getter: function (object) {
-				        var arr = object.parsed.from.map(function (from) {
-					        return $filter('targetInfo')(from);
+				        var arr = object.parsed.from.map(function (value) {
+					        return $filter('targetInfo')(value);
 				        });
 				        return arr.join('; ');
 			        },
@@ -872,8 +872,8 @@
 				        return 'span2 padding-5';
 			        },
 			        _getter: function (object) {
-				        var arr = object.parsed.to.map(function (to) {
-					        return $filter('targetInfo')(to);
+				        var arr = object.parsed.to.map(function (value) {
+					        return $filter('targetInfo')(value);
 				        });
 				        return arr.join('; ');
 			        },
@@ -965,12 +965,11 @@
                 }
             }
 
-            function makeRuleAction(object, action, message) {
+            function makeRuleAction(action, message) {
                 if($scope.actionButton()) {
-                    var checkedRules = $scope.rules.filter(function (rule) {
-                        return rule.checked;
+                    var checkedRules = $scope.rules.filter(function (r) {
+                        return r.checked;
                     });
-                    var message = message;
                     message += checkedRules.length > 1 ?
                         ' selected rules?':
                         ' selected rule?' ;
@@ -1005,7 +1004,7 @@
                                                 deferred.reject(err);
                                                 setRuleState(action, el);
                                             }
-                                        )
+                                        );
                                 }
                                 el.checked = false;
                             });
@@ -1022,29 +1021,29 @@
             $scope.gridActionButtons = [
                 {
                     label: 'Delete',
-                    action: function (object) {
-                        makeRuleAction(object, 'deleteRule', 'Delete');
+                    action: function () {
+                        makeRuleAction('deleteRule', 'Delete');
                     },
                     sequence: 1
                 },
                 {
                     label: 'Enable',
-                    action: function (object) {
-                        makeRuleAction(object, 'enableRule', 'Enable');
+                    action: function () {
+                        makeRuleAction('enableRule', 'Enable');
                     },
                     sequence: 2
                 },
                 {
                     label: 'Disable',
-                    action: function (object) {
-                        makeRuleAction(object, 'disableRule', 'Disable');
+                    action: function () {
+                        makeRuleAction('disableRule', 'Disable');
                     },
                     sequence: 2
                 }
             ];
             $scope.actionButton = function () {
-                return $scope.rules.some(function (rule) {
-                    return rule.checked === true;
+                return $scope.rules.some(function (r) {
+                    return r.checked === true;
                 });
             };
             $scope.noCheckBoxChecked = function () {
@@ -1065,9 +1064,16 @@
 
             $scope.changeTab = '';
 
-            $scope.$watch('tabFilterUpdate', function() {
-                if (!$scope.data.uuid && $scope.tabFilterUpdate !== 'all') {
-                    $scope.datacenter = $scope.tabFilterUpdate;
+            $scope.$watch('tabFilterUpdate', function(tab) {
+                if (tab) {
+                    if (!$scope.data.uuid && tab !== 'all') {
+                        $scope.datacenter = tab;
+                    }
+                    if (tab === 'all') {
+                        $rootScope.clearCommonConfig('datacenter');
+                    } else {
+                        $rootScope.commonConfig('datacenter', tab);
+                    }
                 }
             });
 
