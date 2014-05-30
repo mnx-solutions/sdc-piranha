@@ -107,12 +107,6 @@ li.active a.storage-icon {
 li.active a.usage-icon {
     background-image: url("../img/utilization_i_orange.png") !important;
 }
-.limit-icon {
-    background-image: url("../img/limit-white.png");
-}
-li.active a.limit-icon {
-    background-image: url("../img/limit-orange.png") !important;
-}
 .support-icon {
     background-image: url("../img/phone-white.png");
 }
@@ -123,7 +117,6 @@ li.active a.support-icon {
 .compute-icon,
 .storage-icon,
 .usage-icon,
-.limit-icon,
 .support-icon {
     background-repeat: no-repeat;
     background-position: 20px 8px;
