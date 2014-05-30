@@ -10,7 +10,7 @@
     </div>
     <div data-ng-include="'storage/static/partials/ocean.html'" data-ng-show="!account.provisionEnabled && !loading"></div>
     <div class="loading-large" data-ng-show="loading"></div>
-    <div data-ng-hide="loading || !account.provisionEnabled">
+    <div data-ng-show="jobs.length">
         <div data-grid-view
              data-user-config="gridUserConfig"
              data-props="gridProps"
@@ -28,5 +28,7 @@
              data-hide-large-pager-options="true">
         </div>
     </div>
-
+    <div data-ng-show="jobs.length < 1 && !loading">
+        <div class="empty-job-history">You don't have any jobs</div>
+    </div>
 </div>

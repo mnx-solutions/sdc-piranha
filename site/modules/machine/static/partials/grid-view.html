@@ -106,7 +106,7 @@
                         <td width="10" data-ng-show="enabledCheckboxes">
                             <label class="checkbox">
                                 <div class="checker" data-ng-class="{hover:show}" data-ng-mouseenter="show = true" data-ng-mouseleave="show = false">
-                                <span data-ng-click="selectCheckbox(object)" data-ng-class="{checked: object.checked}" data-ng-disabled="(object.fireWallActionRunning) || (object.job && !object.job.finished)">
+                                <span data-ng-click="selectCheckbox(object)" data-ng-class="{checked: object.checked}" data-ng-disabled="(object.fireWallActionRunning) || (object.job && !object.job.finished) || object.deleteJob">
                                     <input type="checkbox" class="group-checkable" data-set=".checkboxes" value="">
                                 </span>
                                 </div>
@@ -142,6 +142,7 @@
                                     </span>
                                 <span data-ng-switch-when="date">{{object[prop.id] | date: prop.format || 'yyyy-MM-dd HH:mm'}}</span>
                                 <span data-ng-switch-when="async">
+                                    <span class="loading-small loading-small-job pull-left" data-ng-show="object.deleteJob && prop.name == 'State'"></span>
                                     <span class="loading-small" data-ng-hide="!!object[prop.name + 'async'] || object[prop.name + 'async'] == 0"></span>
                                     {{object[prop.name + 'async']}}
                                 </span>
