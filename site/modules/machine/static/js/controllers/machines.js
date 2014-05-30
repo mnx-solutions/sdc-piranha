@@ -1,10 +1,8 @@
 'use strict';
 
-(function (ng, app) {
+(function (app) {
     app.controller('Machine.IndexController', [
         '$scope',
-        '$cookieStore',
-        '$filter',
         '$$track',
         '$q',
         'requestContext',
@@ -19,7 +17,7 @@
         'Account',
         'FreeTier',
 
-        function ($scope, $cookieStore, $filter, $$track, $q, requestContext, Machine, Dataset, Package, localization, PopupDialog, $location, firewall, $rootScope, Account, FreeTier) {
+        function ($scope, $$track, $q, requestContext, Machine, Dataset, Package, localization, PopupDialog, $location, firewall, $rootScope, Account, FreeTier) {
             localization.bind('machine', $scope);
             requestContext.setUpRenderContext('machine.index', $scope, {
                 title: localization.translate(null, 'machine', 'See my Joyent Instances')
@@ -115,7 +113,7 @@
                     var checkedMachines = $scope.machines.filter(function (machine) {
                         if (machine.checked) {
                             if (!machine.freetier) {
-                                checkedFreeMachines = false
+                                checkedFreeMachines = false;
                             }
                             switch (action) {
                             case 'start':
@@ -138,9 +136,9 @@
                                 break;
                             case 'delete':
                                 return true;
-                                break;
                             }
                         }
+                        return false;
                     });
 
                     PopupDialog.confirm(
@@ -192,13 +190,17 @@
             };
 
             var ipToInt = function (object) {
-                var octets = object.primaryIp.split('.');
-                var buffer = new ArrayBuffer(4);
-                var dataView = new DataView(buffer);
-                for (var i = 0; i < 4; i++) {
-                    dataView.setUint8(i, octets[i]);
+                var result = 0;
+                if (object.primaryIp) {
+                    var octets = object.primaryIp.split('.');
+                    var buffer = new ArrayBuffer(4);
+                    var dataView = new DataView(buffer);
+                    for (var i = 0; i < 4; i++) {
+                        dataView.setUint8(i, octets[i]);
+                    }
+                    result = dataView.getUint32(0);
                 }
-                return dataView.getUint32(0);
+                return result;
             };
 
             $scope.gridOrder = [stateOrder, '-created'];
@@ -213,7 +215,7 @@
                     _getter: function (machine) {
                         var html = '<a href="#!/compute/instance/' + machine.id + '" style="min-width: 140px;">' + machine.label + '</a>';
                         if (machine.freetier) {
-                            html += '<span> *</span>'
+                            html += '<span> *</span>';
                         }
                         return html;
                    }
@@ -234,6 +236,7 @@
                         if (machine.image && $scope.datasetsInfo) {
                             return $scope.datasetsInfo[machine.image] || '';
                         }
+                        return '';
                     }
                 },
                 {
@@ -549,4 +552,4 @@
         }
 
     ]);
-}(window.angular, window.JP.getModule('Machine')));
+}(window.JP.getModule('Machine')));
