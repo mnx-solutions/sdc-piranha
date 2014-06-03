@@ -895,14 +895,15 @@
                     }
 
 
+                    var listVersions = $scope.listVersions[dataset.name];
                     var versions = $scope.versions[dataset.name];
-                    var filteredVersions = {};
-                    for (var version in versions) {
+                    var filteredVersions = [];
+                    listVersions.forEach(function (version) {
                         if (versions[version].public === dataset.public) {
-                            filteredVersions[version] = versions[version];
+                            filteredVersions.push(versions[version]);
                         }
-                    }
-                    $scope.filteredVersions = filteredVersions;
+                    });
+                    $scope.filteredVersions = filteredVersions.reverse();
 
                     if (!$scope.networks.length) {
                         setNetworks($scope.data.datacenter);
@@ -910,9 +911,8 @@
                 });
             };
 
-            $scope.selectVersion = function (name, version) {
-                $scope.selectedVersions[name] = version;
-                $scope.selectDataset($scope.selectedVersions[name].id, true);
+            $scope.selectVersion = function (version) {
+                $scope.selectDataset(version.id, true);
             };
 
             $scope.selectPackageType = function (packageType) {
@@ -1082,11 +1082,12 @@
             };
 
             function processDatasets(datasets) {
-                var unique_datasets = [];
-                var customDatasets = [];
-                var dataset_names = [];
+                var listVersions = {};
                 var versions = {};
-                var selectedVersions = {};
+                var selectedVersions = {
+                    public : {},
+                    custom : {}
+                };
                 var manyVersions = {};
                 var operating_systems = {All: 1};
 
@@ -1100,38 +1101,55 @@
 
                     dataset.limit = checkLimit(dataset.id);
 
-                    if (!dataset_names[datasetName] && dataset.public) {
-                        dataset_names[datasetName] = true;
-                        unique_datasets.push(dataset);
-                    }
-
-                    if (!dataset.public) {
-                        customDatasets.push(dataset);
-                    }
-
                     if (!versions[datasetName]) {
                         versions[datasetName] = {};
                         versions[datasetName][datasetVersion] = dataset;
-                        selectedVersions[datasetName] = dataset;
+                        listVersions[datasetName] = [];
+                        listVersions[datasetName].push(datasetVersion)
                     } else {
                         if (!versions[datasetName][datasetVersion]) {
                             manyVersions[datasetName] = true;
                             versions[datasetName][datasetVersion] = dataset;
-                        }
-
-                        if (isVersionHigher(datasetVersion, selectedVersions[datasetName].version)) {
-                            selectedVersions[datasetName] = dataset;
+                            listVersions[datasetName].push(datasetVersion)
                         }
                     }
+                    if (listVersions[datasetName].length > 1) {
+                        listVersions[datasetName].sort(function (a, b) {
+                            return util.cmpVersion(a, b);
+                        });
+                    }
+
+                    var filterVersions = function (datasetName, isPublic) {
+                        var result = [];
+                        listVersions[datasetName].forEach(function (value) {
+                            if (versions[datasetName][value].public === isPublic) {
+                                result.push(versions[datasetName][value]);
+                            }
+                        });
+                        if (result.length > 0) {
+                            result = result.slice(-1);
+                        }
+                        return result;
+                    };
+                    selectedVersions.public[datasetName] = filterVersions(datasetName, true);
+                    selectedVersions.custom[datasetName] = filterVersions(datasetName, false);
                 });
+
+                var customDatasets = Object.keys(selectedVersions.custom)
+                    .map(function (item) { return selectedVersions.custom[item][0]; });
+
+                var publicDatasets = Object.keys(selectedVersions.public)
+                    .map(function (item) { return selectedVersions.public[item][0]; });
+
                 $scope.operating_systems = Object.keys(operating_systems);
-                $scope.datasets = unique_datasets.concat(customDatasets);
+                $scope.datasets = publicDatasets.concat(customDatasets).filter(function (n) { return n; });
                 $scope.versions = versions;
+                $scope.listVersions = listVersions;
                 $scope.manyVersions = manyVersions;
                 $scope.selectedVersions = selectedVersions;
 
                 if ($scope.preSelectedImage) {
-                    $scope.selectedVersions[$scope.preSelectedImage.name] = $scope.preSelectedImage;
+                    $scope.selectVersion($scope.preSelectedImage);
                 }
             }
 

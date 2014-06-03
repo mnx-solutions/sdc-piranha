@@ -1,7 +1,7 @@
 <div class="item provisioning-item header row-fluid">
         <div data-ng-show="selectedPackageInfo" class="preselected pull-right">
             <div class="info small-icon"
-                 data-ng-class="selectedVersions[selectedDataset.name].name || selectedDataset.name | logo">
+                 data-ng-class="selectedDataset.name | logo">
                 <p>IMAGE:</p><button class="btn small-btn effect-orange-button" data-ng-click="reconfigure(0)" id="prev" data-slide="prev">Change</button>
                 <span><h2>{{selectedDataset.name}}</h2></span>
                 <div class="dataset-desc crop text-wrap">{{selectedDataset.description}}</div>
@@ -9,8 +9,8 @@
                 <p data-ng-show="manyVersions[selectedDataset.name]">INSTANCE VERSION:</p>
                 <div class="text-small image-container" data-ng-show="manyVersions[selectedDataset.name]">
                     <div class="btn-group pull-left">
-                        <button class="btn datacenter-select dd-fixed-width" data-ng-show="selectedDataset || selectedVersions[selectedDataset.name]" data-toggle="dropdown">
-                            {{selectedDataset.version || selectedVersions[selectedDataset.name].version}}
+                        <button class="btn datacenter-select dd-fixed-width" data-ng-show="selectedDataset" data-toggle="dropdown">
+                            {{selectedDataset.version}}
                         </button>
 
                         <button class="btn datacenter-select dropdown-toggle" data-toggle="dropdown">
@@ -19,7 +19,7 @@
 
                         <ul class="dropdown-menu dd-fixed-width">
                             <li data-ng-repeat="version in filteredVersions">
-                                <a data-ng-click="selectVersion(selectedDataset.name, version)">{{version.version}}</a>
+                                <a data-ng-click="selectVersion(version)">{{version.version}}</a>
                             </li>
                         </ul>
                     </div>
