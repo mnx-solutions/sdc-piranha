@@ -44,12 +44,12 @@
             }
         },
         {
-            "name": "Ubuntu Certified 13.10",
+            "name": "Ubuntu Certified 14.10",
             "className": "ubuntu-logo",
-            "datasetName": "ubuntu-certified-13.10",
+            "datasetName": "ubuntu-certified-14.10",
             "packageName": "g3-standard-4-kvm",
             "description": {
-                "text": "Ubuntu 13.10 (64-bit). Certified Ubuntu Server Cloud Image from Canonical.",
+                "text": "Ubuntu 14.10 (64-bit). Certified Ubuntu Server Cloud Image from Canonical.",
                 "memory": 4,
                 "cpu": 1,
                 "disk": 131,
