@@ -1,7 +1,7 @@
 'use strict';
 
 
-(function (app, ng) {
+(function (app) {
     function InstrumentationCache() {}
     InstrumentationCache.prototype = {
         findById: function (zoneId, id) {
@@ -97,7 +97,7 @@
             var ca = null;
             var palette = new Rickshaw.Color.Palette({ scheme: 'colorwheel' });
             var usedColors = {
-                'default': 'steelblue'
+                default: 'steelblue'
             };
 
             function getColor(key) {
@@ -200,7 +200,7 @@
                 service.getHeatmap({datacenter: this.datacenter, zoneId: this.machineId}, config, callback);
             };
 
-            Instrumentation.prototype.getSeries = function (instrumentations, time, service) {
+            Instrumentation.prototype.getSeries = function (instrumentations, time, iService) {
                 var seriesCollection = [];
                 var i;
                 for (i = 0; i < instrumentations.length; i += 1) {
@@ -209,7 +209,7 @@
                     var heatmap = instrumentation.config['value-arity'] === 'numeric-decomposition';
 
                     var series = instrumentation.data.getValues(this.id, {
-                        nr: this.range || service.range,
+                        nr: this.range || iService.range,
                         endTime: time
                     });
 
@@ -253,12 +253,12 @@
                         });
 
                         if (!seriesCollection.length) {
-                            var data = [];
-                            var range = this.range || service.range;
+                            var seriesData = [];
+                            var range = this.range || iService.range;
                             var endtime = times[times.length - 1];
 
-                            for(var i = range; range >= 0; --range ) {
-                                data.push({
+                            for (; range >= 0; --range ) {
+                                seriesData.push({
                                     x:endtime-range,
                                     y:0
                                 });
@@ -266,7 +266,7 @@
 
                             seriesCollection.push({
                                 name: 'default',
-                                data: data,
+                                data: seriesData,
                                 color: getColor('default')
                             });
                         }
@@ -303,11 +303,11 @@
                                 self.ca[k] = result[k];
                             }
                         }
-                        var createLabels = function createLabels(metric) {
+                        var createLabels = function (metric) {
                             var fields = {};
-                            var k;
-                            for (k = 0; k < metric.fields.length; k += 1) {
-                                var field = metric.fields[k];
+                            var l;
+                            for (l = 0; l < metric.fields.length; l += 1) {
+                                var field = metric.fields[l];
                                 if (self.ca.fields[field]) {
                                     fields[field] = self.ca.fields[field].label;
                                 }
@@ -316,7 +316,7 @@
                             var moduleName = self.ca.modules[metric.module].label;
                             metric.fields = fields;
                             metric.labelHtml = moduleName + ': ' + metric.label;
-                        }
+                        };
                         self.ca.metrics.forEach(createLabels);
                         d.resolve(self.ca);
                     }
@@ -334,7 +334,10 @@
                     return callback(null, [], cache);
                 }
                 service.createInstrumentations(options, configs, function (error, response) {
-                    var instrumentations = Array.isArray(response.res) ? response.res : [];
+                    var instrumentations = [];
+                    if (response && Array.isArray(response.res)) {
+                        instrumentations = response.res;
+                    }
                     var newInstrumentations = {};
                     instrumentations.forEach(function (instrumentation) {
                         instrumentation = new Instrumentation({
@@ -348,6 +351,7 @@
                     });
                     callback(error, newInstrumentations, cache);
                 });
+                return null;
             };
 
             CloudAnalytics.prototype.getValues = function (options, callback) {
