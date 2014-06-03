@@ -7,9 +7,9 @@ window.JP.main.config(['routeProvider', function (routeProvider) {
     }
 
     routeProvider
-        .when('/rbac', {
+        .when('/rbac/users', {
             title: 'Users',
-            action: 'rbac.index'
+            action: 'rbac.users'
         }).when('/rbac/user/:id', {
             title: 'User Summary',
             action: 'rbac.user'

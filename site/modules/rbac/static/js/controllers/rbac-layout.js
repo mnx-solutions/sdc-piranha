@@ -8,4 +8,4 @@
             requestContext.setUpRenderContext('rbac', $scope);
         }
     ]);
-}(window.JP.getModule('Rbac')));
+}(window.JP.getModule('rbac')));

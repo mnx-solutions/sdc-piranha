@@ -129,24 +129,24 @@
             </ul>
         </li>
         <li class="nested" data-ng-show="features.rbac == 'enabled'" data-ng-class="{'active open': location.path().search('rbac') == 1}">
-            <a href="#!/rbac" class="accounts-icon">
+            <a href="#!/rbac/users" class="accounts-icon">
                 <span class="title">Accounts</span>
                 <span class="selected"></span>
             </a>
             <ul class="sub-menu">
-                <li left-list-item class="sub" data-ng-class="{active: location.path().search('rbac') == 1 && location.path().search('rbac/roles') != 1 && location.path().search('rbac/policies') != 1}">
-                    <a href="#!/rbac">
+                <li left-list-item class="sub" data-ng-class="{active: location.path().search('rbac/users?') == 1}">
+                    <a href="#!/rbac/users">
                         <span class="titles" data-translate>Users</span>
                         <span class="selected-sub"></span>
                     </a>
                 </li>
-                <li left-list-item class="sub" data-ng-class="{active: location.path().search('rbac/roles') == 1}">
+                <li left-list-item class="sub" data-ng-class="{active: location.path().search('rbac/roles?') == 1}">
                     <a href="#!/rbac/roles">
                         <span class="titles" data-translate>Roles</span>
                         <span class="selected-sub"></span>
                     </a>
                 </li>
-                <li left-list-item class="sub" data-ng-class="{active: location.path().search('rbac/policies') == 1}">
+                <li left-list-item class="sub" data-ng-class="{active: location.path().search('rbac/polic(y|ies)') == 1}">
                     <a href="#!/rbac/policies">
                         <span class="titles" data-translate>Policies</span>
                         <span class="selected-sub"></span>

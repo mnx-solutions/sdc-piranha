@@ -1,19 +1,51 @@
 'use strict';
 
 (function (app) {
-    app.controller('RBAC.UserListController', [
+    app.controller('rbac.UserListController', [
+        '$q',
         '$scope',
         'PopupDialog',
         'Account',
-        function ($scope, PopupDialog, Account) {
+        'rbac.Service',
+        'localization',
+        function ($q, $scope, PopupDialog, Account, service, localization) {
             $scope.loading = true;
             $scope.users = [];
-            Account.listUsers().then(function (users) {
-                $scope.users = users || [];
+            var getUsersList = function () {
+                service.listUsers().then(function (users) {
+                    $scope.users = users || [];
+                    $scope.loading = false;
+                }, function (err) {
+                    PopupDialog.errorObj(err);
+                });
+            };
+            getUsersList();
+
+            var errorCallback = function (err) {
                 $scope.loading = false;
-            }, function (err) {
                 PopupDialog.errorObj(err);
-            });
+            };
+
+            $scope.getCheckedItems = function () {
+                return $scope.users.filter(function (el) {
+                    return el.checked;
+                });
+            };
+
+            $scope.noCheckBoxChecked = function(){
+                PopupDialog.error(
+                    localization.translate(
+                        $scope,
+                        null,
+                        'Error'
+                    ),
+                    localization.translate(
+                        $scope,
+                        null,
+                        'No user selected for the action.'
+                    ), function () {}
+                );
+            };
 
             $scope.gridUserConfig = Account.getUserConfig().$child('rbac') || {};
 
@@ -25,7 +57,7 @@
                     sequence: 1,
                     type: 'html',
                     _getter: function (object) {
-                        return '<a href="#!/rbac/user/' + object.id+'">'+object.login+'</a>';
+                        return '<a href="#!/rbac/user/' + object.id + '">' + object.login + '</a>';
                     },
                     active: true
                 },
@@ -50,6 +82,45 @@
                 }
             ];
             $scope.gridDetailProps = [];
+            $scope.gridActionButtons = [
+                {
+                    label: 'Delete',
+                    action: function (object) {
+                        var titleEnding = '';
+                        var checkedItems = $scope.getCheckedItems();
+                        if (checkedItems.length > 1) {
+                            titleEnding = 's';
+                        }
+                        if (checkedItems.length) {
+                            PopupDialog.confirm(
+                                localization.translate(
+                                    $scope,
+                                    null,
+                                    'Confirm: Delete user' + titleEnding
+                                ),
+                                localization.translate(
+                                    $scope,
+                                    null,
+                                    'Are you sure you want to delete the selected user' + titleEnding
+                                ),
+                                function () {
+                                    $scope.loading = true;
+                                    var deleteTasks = [];
+                                    checkedItems.forEach(function (item) {
+                                        deleteTasks.push($q.when(service.deleteUser(item.id)));
+                                    });
+                                    $q.all(deleteTasks).then(function () {
+                                        getUsersList();
+                                    }, errorCallback);
+                                }
+                            );
+                        } else {
+                            $scope.noCheckBoxChecked();
+                        }
+                    },
+                    sequence: 1
+                }
+            ];
 
             $scope.exportFields = {
                 ignore: []
@@ -62,4 +133,4 @@
 
         }
     ]);
-}(window.JP.getModule('Rbac')));
+}(window.JP.getModule('rbac')));

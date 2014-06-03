@@ -1,14 +1,15 @@
 'use strict';
 
 (function (app) {
-    app.controller('RBAC.PolicyListController', [
+    app.controller('rbac.PolicyListController', [
         '$scope',
         'Account',
+        'rbac.Service',
         '$location',
-        function ($scope, Account, $location) {
+        function ($scope, Account, service, $location) {
             $scope.loading = true;
             $scope.policies = [];
-            Account.listPolicies().then(function (policies) {
+            service.listPolicies().then(function (policies) {
                 $scope.policies = policies || [];
                 $scope.loading = false;
             });
@@ -72,4 +73,4 @@
 
         }
     ]);
-}(window.JP.getModule('Rbac')));
+}(window.JP.getModule('rbac')));

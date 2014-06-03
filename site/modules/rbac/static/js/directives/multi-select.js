@@ -67,4 +67,4 @@
             }
         };
     }]);
-}(window.angular, window.JP.getModule('Rbac')));
+}(window.angular, window.JP.getModule('rbac')));

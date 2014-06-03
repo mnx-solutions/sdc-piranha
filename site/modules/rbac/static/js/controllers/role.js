@@ -1,14 +1,15 @@
 'use strict';
 
 (function (app) {
-    app.controller('RBAC.RoleController', [
+    app.controller('rbac.RoleController', [
         '$q',
         '$location',
         '$scope',
         'PopupDialog',
         'Account',
+        'rbac.Service',
         'requestContext',
-        function ($q, $location, $scope, PopupDialog, Account, requestContext) {
+        function ($q, $location, $scope, PopupDialog, Account, service, requestContext) {
             $scope.role = {};
             $scope.policyGroups = [];
             $scope.users = [];
@@ -27,9 +28,9 @@
             if (!isNew) {
                 $scope.role.id = roleId;
                 $q.all([
-                    $q.when(Account.getRole(roleId)),
-                    $q.when(Account.listUsers()),
-                    $q.when(Account.listPolicies())
+                    $q.when(service.getRole(roleId)),
+                    $q.when(service.listUsers()),
+                    $q.when(service.listPolicies())
                 ]).then(function (result) {
                     $scope.role = result[0] || {};
                     var users = result[1] || [];
@@ -76,8 +77,8 @@
 
             } else {
                 $q.all([
-                    $q.when(Account.listUsers()),
-                    $q.when(Account.listPolicies())
+                    $q.when(service.listUsers()),
+                    $q.when(service.listPolicies())
                 ]).then(function (result) {
                     $scope.users = result[0] || [];
                     var policies = result[1] || [];
@@ -92,13 +93,12 @@
                     $scope.users.forEach(function (user) {
                         user.value = user.login;
                     });
-                    $scope.users = users;
 
                     $scope.loading = false;
                 });
             }
 
-            var role = function (action) {
+            var roleAction = function (action) {
                 $scope.loading = true;
                 $scope.role.members = [];
                 $scope.role.default_members = [];
@@ -106,6 +106,10 @@
                 $scope.roleUsers.forEach(function (user) {
                     $scope.role.members.push(user.login);
                 });
+
+                if (!$scope.roleUsers.length) {
+                    $scope.roleDefaultUsers = [];
+                }
 
                 $scope.roleDefaultUsers.forEach(function (user) {
                     $scope.role.default_members.push(user.login);
@@ -129,14 +133,14 @@
             };
 
             $scope.createRole = function () {
-                role(Account.createRole);
+                roleAction(service.createRole);
             };
             $scope.updateRole = function () {
-                role(Account.updateRole);
+                roleAction(service.updateRole);
             };
             $scope.cancel = function () {
                 $location.path('/rbac/roles');
             };
         }
     ]);
-}(window.JP.getModule('Rbac')));
+}(window.JP.getModule('rbac')));

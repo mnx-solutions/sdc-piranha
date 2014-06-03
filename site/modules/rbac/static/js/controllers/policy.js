@@ -1,14 +1,15 @@
 'use strict';
 
 (function (app) {
-    app.controller('RBAC.PolicyController', [
+    app.controller('rbac.PolicyController', [
         '$q',
         '$scope',
         'Account',
+        'rbac.Service',
         'PopupDialog',
         '$location',
         'requestContext',
-        function ($q, $scope, Account, PopupDialog, $location, requestContext) {
+        function ($q, $scope, Account, service, PopupDialog, $location, requestContext) {
             $scope.loading = true;
             $scope.model = {};
             $scope.model.newRule = '';
@@ -34,7 +35,7 @@
             if (!isNew) {
                 $scope.model.policy.id = policyId;
                 $q.all([
-                    $q.when(Account.getPolicy(policyId))
+                    $q.when(service.getPolicy(policyId))
                 ]).then(function (result) {
                     $scope.model.policy = result[0];
                     $scope.loading = false;
@@ -50,41 +51,28 @@
                 $location.path('/rbac/policies');
             };
 
-            $scope.createPolicy = function () {
+
+            var policyAction = function (action) {
                 $scope.loading = true;
-                Account.createPolicy($scope.model.policy).then(function (data) {
+                action.then(function (data) {
                     $scope.loading = false;
-                    $scope.model.policy = data;
-//                    $location.path('/rbac/policies');
+                    $location.path('/rbac/policies');
                 }, function (err) {
                     $scope.loading = false;
                     PopupDialog.errorObj(err);
                 });
 
+            };
+            $scope.createPolicy = function () {
+                policyAction(service.createPolicy($scope.model.policy));
             };
 
             $scope.updatePolicy = function () {
-                $scope.loading = true;
-                Account.updatePolicy($scope.model.policy).then(function (data) {
-                    $scope.loading = false;
-                    $location.path('/rbac/policies');
-                }, function (err) {
-                    $scope.loading = false;
-                    PopupDialog.errorObj(err);
-                });
-
+                policyAction(service.updatePolicy($scope.model.policy));
             };
 
             $scope.deletePolicy = function () {
-                $scope.loading = true;
-                Account.deletePolicy($scope.model.policy.id).then(function (data) {
-                    $scope.loading = false;
-                    $location.path('/rbac/policies');
-                }, function (err) {
-                    $scope.loading = false;
-                    PopupDialog.errorObj(err);
-                });
-
+                policyAction(service.deletePolicy($scope.model.policy.id));
             };
 
             $scope.addRule = function () {
@@ -101,4 +89,4 @@
 
         }
     ]);
-}(window.JP.getModule('Rbac')));
+}(window.JP.getModule('rbac')));

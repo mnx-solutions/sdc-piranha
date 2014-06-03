@@ -18,4 +18,4 @@
                 }
             };
         }]);
-}(window.JP.getModule('Rbac')));
+}(window.JP.getModule('rbac')));

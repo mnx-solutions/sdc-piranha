@@ -51,4 +51,4 @@
             templateUrl: 'rbac/static/partials/tree.html'
         };
     }]);
-}(window.angular, window.JP.getModule('Rbac')));
+}(window.angular, window.JP.getModule('rbac')));

@@ -1,18 +1,24 @@
 'use strict';
 
 (function (app) {
-    app.controller('RBAC.RoleListController', [
+    app.controller('rbac.RoleListController', [
+        '$q',
         '$scope',
         'requestContext',
         'Account',
+        'rbac.Service',
         '$location',
-        function ($scope, requestContext, Account, $location) {
+        function ($q, $scope, requestContext, Account, service, $location) {
             $scope.loading = true;
 
             $scope.roles = [];
 
-            Account.listRoles().then(function (roles) {
-                $scope.roles = roles || [];
+            $q.all([
+                $q.when(service.listRoles()),
+                $q.when(Account.getAccount())
+            ]).then(function (result) {
+                $scope.roles = result[0] || [];
+                $scope.account = result[1];
                 $scope.loading = false;
             });
 
@@ -20,10 +26,6 @@
                 $location.path('rbac/role/create');
             };
 
-            Account.getAccount(true).then(function (account) {
-                $scope.account = account;
-                $scope.loading = false;
-            });
 
             $scope.gridUserConfig = Account.getUserConfig().$child('rbac') || {};
 
@@ -75,4 +77,4 @@
 
         }
     ]);
-}(window.JP.getModule('Rbac')));
+}(window.JP.getModule('rbac')));
