@@ -569,7 +569,9 @@
           "description": "High I/O 15 GB RAM 2 vCPUs 360 GB Disk",
           "price": "0.76",
           "price_month": "554.8",
-          "vcpus": "2"
+          "vcpus": "2",
+          "default": "false",
+          "createdBySupport": true
       },
       "g3-highio-30-smartos": {
           "short_name": "High I/O 30",
@@ -578,7 +580,9 @@
           "description": "High I/O 30 GB RAM 4 vCPUs 725 GB Disk",
           "price": "1.52",
           "price_month": "1109.6",
-          "vcpus": "4"
+          "vcpus": "4",
+          "default": "false",
+          "createdBySupport": true
       },
       "g3-highstorage-32-smartos": {
           "short_name": "High Storage 32",
@@ -1250,7 +1254,9 @@
           "description": "High I/O 15 GB RAM 2 vCPUs 360 GB Disk",
           "price": "0.76",
           "price_month": "554.8",
-          "vcpus": "2"
+          "vcpus": "2",
+          "default": "false",
+          "createdBySupport": true
       },
       "g3-highio-30-kvm": {
           "short_name": "High I/O 30",
@@ -1259,7 +1265,9 @@
           "description": "High I/O 30 GB RAM 4 vCPUs 725 GB Disk",
           "price": "1.52",
           "price_month": "1109.6",
-          "vcpus": "4"
+          "vcpus": "4",
+          "default": "false",
+          "createdBySupport": true
       },
       "g3-highstorage-32-kvm": {
           "short_name": "High Storage 32",
