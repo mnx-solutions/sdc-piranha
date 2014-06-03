@@ -725,9 +725,7 @@
                 $scope.showFinishConfiguration = false;
                 if (step !== REVIEW_STEP) {
                     if ($scope.networks && $scope.networks.length) {
-                        $scope.networks.forEach(function (network) {
-                            network.active = false;
-                        });
+                        setNetworks($scope.data.datacenter);
                     }
                     $scope.metadata = [];
                     $scope.tags = [];
