@@ -43,25 +43,30 @@
         <div class="control-group">
             <span class="edit-name">Expiration<span class="orange-asterix"> *</span></span>
                     <span class="edit-value-two">
-                            <select id="expirationMonth"
-                                    name="expirationMonth"
-                                    class="date-month"
-                                    data-expiration-date
+                            <select ui-select2="{setPristine: true, minimumResultsForSearch: -1}"
                                     data-ng-model="form.expirationMonth"
+                                    id="expirationMonth"
+                                    name="expirationMonth"
+                                    class="edit-expiration-month"
+                                    data-expiration-date
                                     data-ng-class="{error: isError('creditCard.expirationMonth', 'invalidExpirationDate') || isError('creditCard.expirationMonth')}"
-                                    data-ng-options="value for value in months"
-                                    data-ng-required="true">
+                                    data-ng-required="true"
+                                    placeholder=" ">
+                                <option value=""></option>
+                                <option data-ng-repeat="value in months" value="{{value}}" ng-selected="form.expirationMonth == value">{{value}}</option>
                             </select>
                         <span class="selects-spacer"></span>
-                            <select id="expirationYear"
-                                    name="expirationYear"
-                                    class="date-year"
-                                    data-expiration-date
+                            <select ui-select2="{minimumResultsForSearch: -1}"
                                     data-ng-model="form.expirationYear"
+                                    id="expirationYear"
+                                    name="expirationYear"
+                                    class="edit-expiration-year"
+                                    data-expiration-date
                                     data-ng-class="{error: isError('creditCard.expirationYear', 'invalidExpirationDate') || isError('creditCard.expirationYear')}"
-                                    data-ng-options="value for value in years"
-                                    data-ng-required="true">
-
+                                    data-ng-required="true"
+                                    placeholder=" ">
+                                <option value=""></option>
+                                <option data-ng-repeat="value in years" value="{{value}}" ng-selected="form.expirationYear == value">{{value}}</option>
                             </select>
                     </span>
                     <span class="edit-error">
@@ -77,7 +82,7 @@
                             </div>
                             <div class="error"
                                  data-translate
-                                 data-ng-show="isError('creditCard.expirationYear', 'required') || isError('expirationYear', 'submitRequired') || isError('creditCard.expirationMonth', 'required') || isError('expirationMonth', 'submitRequired')">
+                                 data-ng-show="isError('expirationYear', 'submitRequired') || isError('expirationMonth', 'submitRequired')">
                                 Missing expiration info
                             </div>
                     </span>
@@ -220,13 +225,17 @@
         <div class="control-group">
             <span class="edit-name">Country<span class="orange-asterix"> *</span></span>
                     <span class="edit-value-one">
-                            <select id="country"
-                                    name="country"
-                                    data-ng-class="{error: isError('country')}"
-                                    data-ng-model="form.cardHolderInfo.country"
-                                    data-ng-options="country.iso3 as country.name group by country.group for country in countries.data | orderBy: ['-group','name']"
+                        <select data-select-two
+                                id="country"
+                                name="country"
+                                data-ng-class="{error: isError('country')}"
+                                class="edit-country"
+                                data-ng-model="form.cardHolderInfo.country"
+                                data-ng-change="form.cardHolderInfo.country"
+                                data-select="this.prev.cardHolderInfo.country"
+                                data-ng-options="country.iso3 as country.name group by country.group for country in countries.data | orderBy: ['-group','name']"
                                 data-ng-required="true">
-                            </select>
+                        </select>
                     </span>
                     <span class="edit-error">
                         <div class="error"
@@ -297,12 +306,16 @@
                 </span>
                 <span data-ng-switch-when="true">
                             <span class="edit-value-one">
-                                <select id="stateSel"
+                                <select ui-select2="{setPristine: true, minimumResultsForSearch: -1}"
+                                        data-ng-model="form.cardHolderInfo.state"
+                                        id="stateSel"
+                                        class="edit-state"
                                         name="state"
                                         data-ng-class="{error: isError('state')}"
-                                        data-ng-model="form.cardHolderInfo.state"
                                         data-ng-required="true"
-                                        data-ng-options="value as label for (value, label) in stateSel">
+                                        placeholder=" ">
+                                    <option value=""></option>
+                                    <option data-ng-repeat="(value, label) in stateSel" value="{{value}}" ng-selected="form.cardHolderInfo.state == value">{{label}}</option>
                                 </select>
                             </span>
                             <span class="edit-error">
@@ -313,7 +326,7 @@
                                 </div>
                                 <div class="error"
                                      data-translate
-                                     data-ng-show="isError('state', 'required') || isError('state', 'submitRequired')">
+                                     data-ng-show="isError('state', 'submitRequired')">
                                     Missing state
                                 </div>
                             </span>

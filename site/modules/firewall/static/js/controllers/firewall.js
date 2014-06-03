@@ -337,7 +337,8 @@
 		        $scope.datacenter = name;
 	        };
 
-            $scope.actions = [{
+            $scope.selectData = {};
+            $scope.selectData.actions = [{
                 id:'allow',
                 text:'Allow'
             },{
@@ -345,7 +346,7 @@
                 text:'Block'
             }];
 
-            $scope.states = [{
+            $scope.selectData.states = [{
                 id: 'true',
                 text:'Enabled'
             },{
@@ -353,7 +354,7 @@
                 text:'Disabled'
             }];
 
-            $scope.protocols = [{
+            $scope.selectData.protocols = [{
                 id:'tcp',
                 text:'TCP'
             },{
@@ -365,9 +366,9 @@
             }];
 
             $scope.selected = {
-                action: $scope.actions[0].text,
-                status: $scope.states[1].text,
-                protocol: $scope.protocols[0].text
+                action: $scope.selectData.actions[0].text,
+                status: $scope.selectData.states[1].id,
+                protocol: $scope.selectData.protocols[0].text
             };
 
             $scope.refreshSelects = function () {
@@ -378,72 +379,18 @@
                 $('#dcSelect').select2('enable').select2('val', $scope.data.datacenter);
             };
 
-            $('#actionSelect').select2({
-                data: $scope.actions,
-                minimumResultsForSearch: -1,
-                width: "100%"
-            }).change(function (e) {
-                $scope.$apply(function(){
-                    $scope.data.parsed.action = e.val;
-                    $scope.actions.some(function (action) {
-                        if(action.id === e.val) {
-                            $scope.selected.action = action.text;
-                            return true;
-                        }
-                        return false;
-                    });
-                });
-            }).select2('val', $scope.actions[0].id);
+            $scope.$watch('selected.datacenter', function (newVal) {
+                $scope.datacenter = newVal;
+            });
 
-            $('#protocolSelect').select2({
-                data: $scope.protocols,
-                minimumResultsForSearch: -1,
-                width: "100%"
-            }).change(function (e) {
-                $scope.$apply(function(){
-                    $scope.data.parsed.protocol.name = e.val;
-                    $scope.protocols.some(function (action) {
-                        if(action.id === e.val) {
-                            $scope.selected.protocol = action.text;
-                            return true;
-                        }
-                        return false;
-                    });
-                });
-            }).select2('val', $scope.protocols[0].id);
-
-            $('#stateSelect').select2({
-                data: $scope.states,
-                minimumResultsForSearch: -1,
-                width: "100%"
-            }).change(function (e) {
-                $scope.$apply(function(){
-                    $scope.data.enabled = e.val === 'true' ? true : false;
-                    $scope.states.some(function (action) {
-                        if(action.id === e.val) {
-                            $scope.selected.status = action.text;
-                            return true;
-                        }
-                        return false;
-                    });
-                });
-            }).select2('val', $scope.states[1].id);
+            $scope.$watch('selected.status', function (val) {
+                $scope.data.enabled = val === 'true';
+            });
 
             $scope.$watch('datacenters', function (newVal) {
                 if(newVal && ng.isArray(newVal) && newVal.length > 0) {
+                    $scope.selectData.datacenters = newVal.map(function (dc) { return {id: dc.name, text: dc.name}; });
                     $scope.selected.datacenter = $scope.selected.datacenter || newVal[0].name;
-                    $('#dcSelect').select2('destroy');
-                    $('#dcSelect').select2({
-                        data: newVal.map(function (dc) { return {id: dc.name, text: dc.name}; }),
-                        minimumResultsForSearch: -1,
-                        width: "100%"
-                    }).change(function (e) {
-                        $scope.$apply(function () {
-                            $scope.datacenter = e.val;
-                            $scope.selected.datacenter = e.val;
-                        });
-                    }).select2('val', $scope.selected.datacenter);
-
                 }
             });
 
@@ -788,7 +735,6 @@
 
             $scope.createRule = function() {
                 $scope.loading = true;
-
                 rule.createRule($scope.getData()).then(function(r){
                     if(r.id) {
                         $scope.refresh();

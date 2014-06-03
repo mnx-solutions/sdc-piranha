@@ -54,13 +54,21 @@
                     <td class="controls-wrapper">
                         <label class="fw-control-label name-field">Status</label>
                         <div class="value-field">
-                            <input type="hidden" id="stateSelect">
+                            <select ui-select2="{minimumResultsForSearch: -1, width: '100%'}" id="stateSelect" data-ng-model="selected.status">
+                                <option data-ng-repeat="state in selectData.states" value="{{state.id}}">
+                                    {{state.text}}
+                                </option>
+                            </select>
                         </div>
                     </td>
                     <td class="controls-wrapper">
-                        <label class="fw-control-label name-field">Data Center<span data-ng-show="data.uuid">: {{data.datacenter}}</span></label>
-                        <div class="value-field" data-ng-hide="data.uuid">
-                            <input type="hidden" id="dcSelect">
+                        <label class="fw-control-label name-field">Datacenter:</label>
+                        <div class="value-field">
+                            <select ui-select2="{minimumResultsForSearch: -1, width: '100%'}" id="dcSelect" data-ng-model="selected.datacenter">
+                                <option data-ng-repeat="datacenter in selectData.datacenters" value="{{datacenter.text}}">
+                                    {{datacenter.text}}
+                                </option>
+                            </select>
                         </div>
                     </td>
                 </tr>
@@ -70,9 +78,13 @@
                 <td class="column column-big min-height-table">
                     <legend data-translate>Protocol</legend>
                     <div>
-                        <input type="hidden" id="protocolSelect" />
+                        <select ui-select2="{minimumResultsForSearch: -1, width: '100%'}" id="protocolSelect" data-ng-model="data.parsed.protocol.name">
+                            <option data-ng-repeat="protocol in selectData.protocols" value="{{protocol.id}}">
+                                {{protocol.text}}
+                            </option>
+                        </select>
                     </div><br/>
-                    <div class="fixed-height120">
+                    <div class="fixed-height">
                         <div data-ng-form="protocolForm">
                             <label class="fw-control-label" data-ng-show="data.parsed.protocol.name && data.parsed.protocol.name != 'icmp'">Port</label>
                             <div class="fw-controls fw-port-controls warning" data-ng-show="data.parsed.protocol.name && data.parsed.protocol.name != 'icmp'">
@@ -146,7 +158,7 @@
                                             <input type="hidden" id="fromSelect" /><br /><br />
                                         </span>
                     </div>
-                    <div class="fixed-height120">
+                    <div class="fixed-height">
                                         <span class="text-medium" data-ng-form="fromForm">
                                         <span data-ng-switch="current.from.type">
                                             <span data-ng-switch-when="wildcard"></span>
@@ -239,7 +251,11 @@
                 <td class="column column-small min-height-table">
                     <legend data-translate>Action</legend>
                     <div>
-                        <input type="hidden" id="actionSelect">
+                        <select ui-select2="{minimumResultsForSearch: -1, width: '100%'}" id="actionSelect" data-ng-model="data.parsed.action">
+                            <option data-ng-repeat="action in selectData.actions" value="{{action.id}}">
+                                {{action.text}}
+                            </option>
+                        </select>
                     </div>
                 </td>
                 <td class="column column-big min-height-table">
@@ -249,7 +265,7 @@
                                             <input type="hidden" id="toSelect" /><br/><br/>
                                         </span>
                     </div>
-                    <div class="fixed-height120">
+                    <div class="fixed-height">
                                         <span class="text-medium" data-ng-form="toForm">
                                         <span data-ng-switch="current.to.type">
                                             <span data-ng-switch-when="wildcard">

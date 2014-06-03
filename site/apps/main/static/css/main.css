@@ -2,27 +2,6 @@ body {
     background-color: #fff;
 }
 
-textarea,
-input[type="text"],
-input[type="password"],
-input[type="datetime"],
-input[type="datetime-local"],
-input[type="date"],
-input[type="month"],
-input[type="time"],
-input[type="week"],
-input[type="number"],
-input[type="email"],
-input[type="url"],
-input[type="search"],
-input[type="tel"],
-input[type="color"],
-.uneditable-input {
-    -webkit-border-radius: 0;
-    -moz-border-radius: 0;
-    border-radius: 0;
-}
-
 .content-container > div {
     min-height: 100%;
 }
@@ -540,44 +519,40 @@ select.date-year {
     display: inline-block;
 }
 .edit-value input {
-    padding: 0;
+    padding: 0 0 0 10px;
     width: 445px;
-    border-radius: 0;
     height: 28px;
     border: 1px solid #ccc;
     background-color: #fafcfd;
     font-size: 16px;
     font-weight: 300;
-    padding-left: 10px;
 }
 
-.edit-value-two select,
-.edit-value select,
+.edit-value-two .select2-container,
+.edit-value .select2-container,
 .edit-value-double {
     display: inline-block;
     height: 30px;
-    border-radius: 0;
 }
 
-.edit-value select,
+.edit-value-one .select2-container,
+.edit-value-two .select2-container,
+.edit-value-double .select2-container {
+    margin-top: -10px;
+}
+
+.edit-value-one .select2-choice,
+.edit-value-two .select2-choice,
+.edit-value-double .select2-choice {
+    background-color: #fafcfd;
+}
+
 .edit-value-double {
     width: 205px !important;
 }
 
-.edit-value-two select {
-    width: 222px !important;
-}
-
-.edit-value-one select {
-    width: 457px !important;
-}
-
 .edit-value-double {
     width: 457px !important;
-}
-
-.edit-value-double select {
-    width: 200px !important;
 }
 
 .edit-value-double .input-prepend input {
@@ -588,11 +563,15 @@ select.date-year {
 .input-prepend .btn:first-child,
 .add-on {
     width: 50px;
-    border-radius: 0;
     float: left;
     text-shadow: none;
     font-size: 16px;
     color: #555555;
+}
+
+.phone-code {
+    width:50px;
+    text-align:left;
 }
 
 .edit-error {
@@ -613,9 +592,15 @@ select.date-year {
     padding: 0;
 }
 
-.edit-country {
-    width: 205px !important;
+.edit-country,
+.edit-state {
+    width: 457px;
     padding: 0;
+}
+
+.edit-expiration-month,
+.edit-expiration-year {
+    width: 224px;
 }
 
 .input-prepend {
@@ -1704,15 +1689,44 @@ i.glyphicon-question-sign {
     width: 1000px;
 }
 
+/*Select2*/
+
+.select2-results .select2-highlighted {
+    background: #eee;
+    color: #333;
+}
+
+.select2-container-active .select2-choice,
+.select2-container-multi.select2-container-active .select2-choices {
+    border: 1px solid #999;
+    outline: none;
+    -webkit-box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+    -moz-box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+}
+
 .select2-results .select2-result-label {
     padding-left: 10px;
 }
 
 .select2-choice span {
     color: rgb(51, 51, 51);
-    font-weight: normal;
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-    font-size: 14px;
+    padding: 0 0 0 5px;
+}
+
+.account .select2-choice span {
+    font-size: 16px;
+    font-weight: 300;
+    color: #555;
+}
+
+.select2-search input {
+    -webkit-border-radius: 4px;
+    -moz-border-radius: 4px;
+    border-radius: 4px;
+    box-shadow: none
+    border: 1px solid #999;
 }
 
 .no-breadcrumb {
@@ -1805,7 +1819,6 @@ table.table {
 }
 
 select {
-    border-radius: 0;
     -webkit-appearance: none;
     -moz-appearance: none !important;
     appearance: none;
@@ -1866,7 +1879,6 @@ select::-ms-expand {
 .edit-value-tfa input {
     padding: 0;
     width: 150px;
-    border-radius: 0;
     height: 28px;
     border: 1px solid #ccc;
     background-color: #fafcfd;
@@ -2616,70 +2628,9 @@ label.checkbox {
     -o-transition: background-position 0.1s linear;
     transition: background-position 0.1s linear;
 }
-.select2-drop {
-    width: 100%;
-    margin-top: -1px;
-    position: absolute;
-    z-index: 9992;
-    top: 100%;
-    background: #ffffff;
-    color: #000;
-    border: 1px solid #e5e5e5;
-    border-top: 0;
-}
-.select2-dropdown-open .select2-choice, .select2-dropdown-open .select2-choice a {
-    background-image: none !important;
-    background-color: white !important;
-}
-.select_position {
+.select-position {
     padding-top: 20px;
     color: #666;
-}
-.select2-container .select2-choice {
-    -webkit-border-radius: 0;
-    -moz-border-radius: 0;
-    border-radius: 0;
-}
-.select2-container .select2-choice div {
-    display: block;
-    width: 18px;
-    height: 100%;
-    position: absolute;
-    right: 0;
-    top: 0;
-    border-left: 1px solid #e5e5e5 !important;
-    -webkit-border-radius: 0 !important;
-    -moz-border-radius: 0 !important;
-    border-radius: 0 !important;
-    -webkit-background-clip: padding-box;
-    -moz-background-clip: padding-box;
-    background-clip: padding-box;
-    background: #ffffff !important;
-    background-image: none !important;
-}
-.select2-container .select2-choice {
-    display: block;
-    height: 25px;
-    padding: 0 0 0 15px;
-    padding-top: 3px;
-    overflow: hidden;
-    position: relative;
-    border: 1px solid #e5e5e5;
-    white-space: nowrap;
-    line-height: 20px;
-    color: #444;
-    text-decoration: none;
-    -webkit-background-clip: padding-box;
-    -moz-background-clip: padding-box;
-    background-clip: padding-box;
-    -webkit-touch-callout: none;
-    -webkit-user-select: none;
-    -khtml-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
-    background-image: none !important;
-    background-color: #ffffff  !important;
 }
 .pagination ul > li:first-child > a,
 .pagination ul > li:first-child > span {

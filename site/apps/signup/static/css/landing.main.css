@@ -368,73 +368,71 @@ div.error {
     text-align: right;
     font-size: 16px;
 }
-.edit-value{
+.edit-value {
     width: 218px;
     display: inline-block;
 }
-.edit-value input{
-    padding: 0;
+.edit-value input {
+    padding: 0 0 0 10px;
     width: 205px;
-    border-radius: 0;
     height: 28px;
     border: 1px solid #ccc;
     background-color: #fafcfd;
     font-size: 16px;
     font-weight: 300;
-    padding-left: 10px;
 }
-.edit-value-two select, .edit-value select, .edit-value-double{
+.edit-value-two .select2-container,
+.edit-value .select2-container,
+.edit-value-double {
     display: inline-block;
     height: 30px;
-    border-radius: 0;
-    padding-right: 10px;
 }
-.edit-value select, .edit-value-double{
+.edit-value .select2-container,
+.edit-value-double {
     padding-left: 0;
 }
-.edit-value-two select{
-    padding-left: 10px;
+.edit-value-one .select2-container,
+.edit-value-two .select2-container,
+.edit-value-double .select2-container {
+    margin-top: -10px;
 }
-.edit-value select{
-    width: 205px !important;
-}
-.edit-value-two select{
-    width: 107px !important;
-}
-.edit-value-one select,
-.edit-value-double select {
-    width: 218px !important;
-}
-.edit-value-double{
-    width: 455px !important;
-}
-.edit-value-double select {
+.edit-value-double .select2-container {
     display: inline-block;
     margin-right: 5px;
 }
-.edit-error{
+.edit-value-one .select2-choice,
+.edit-value-two .select2-choice,
+.edit-value-double .select2-choice {
+    background-color: #fafcfd;
+}
+.edit-error {
     width: 285px;
     display: inline-block;
     vertical-align: top;
     padding-left: 20px;
     margin-top: 5px;
 }
-.edit-phone{
+.edit-phone {
     width: 242px !important;
     padding: 0;
 }
-.edit-country{
-    width: 205px !important;
+.edit-country,
+.edit-state {
+    width: 217px;
     padding: 0;
 }
-.edit-form form{
+.edit-expiration-month,
+.edit-expiration-year {
+    width: 106px;
+}
+.edit-form form {
     margin: 0;
 }
-.orange-asterix{
+.orange-asterix {
     font-size: 20px;
     vertical-align: bottom;
 }
-.required-txt{
+.required-txt {
     display: inline-block;
     vertical-align: middle;
     float: right;
@@ -524,7 +522,6 @@ select {
     overflow: hidden;
     padding: 0 20px 0 10px;
     border: 1px solid #ccc;
-    border-radius: 0;
     background: #fafcfd url(../img/select-arrow.png) no-repeat right;
     /*Hack for hide button in FireFox*/
     text-indent: 0.01px;
@@ -546,15 +543,16 @@ select option{
 select::-ms-expand {
     display: none;
 }
-.input-prepend .add-on:first-child, .input-prepend .btn:first-child, .add-on{
+.input-prepend .add-on:first-child,
+.input-prepend .btn:first-child,
+.add-on {
     width: 50px;
-    border-radius: 0;
     float: left;
     text-shadow: none;
     font-size: 16px;
     color: #555555;
 }
-#phone{
+#phone {
     width: 150px;
     font-size: 16px;
 }
