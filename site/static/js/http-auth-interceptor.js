@@ -55,7 +55,7 @@
                         } else {
                             setTimeout(function () {
                                 $rootScope.$emit('crashRequest');
-                            }, 0);
+                            }, 50);
                         }
                     }
                     (window.JP.get('timeoutRefresh') || angular.noop)();

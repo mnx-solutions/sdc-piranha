@@ -112,6 +112,12 @@
                 }
             );
 
+            function pageRefresh() {
+                $rootScope.$$listeners = {};
+                $rootScope.$$watchers = [];
+            }
+            window.addEventListener('beforeunload', pageRefresh, false);
+
             $rootScope.$on(
                 'crashRequest',
                 function (event, message) {
