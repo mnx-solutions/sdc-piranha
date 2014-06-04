@@ -670,17 +670,6 @@ legend + .control-group {
     display: inline-block;
 }
 
-.alert-icon {
-    background-image: url("../img/alert-icon.png");
-    background-repeat: no-repeat;
-    background-position: 0 0;
-    font-weight: normal;
-}
-
-.alert-icon span {
-    margin-left: 20px;
-}
-
 #phone {
     width: 150px;
     font-size: 16px;

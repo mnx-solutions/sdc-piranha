@@ -194,12 +194,6 @@ body{
     font-weight: 300;
     margin-left: 23px;
 }
-.alert-icon{
-    background-image: url("../img/alert-icon.png");
-    background-repeat: no-repeat;
-    margin-left: 5px;
-    background-position: 0 3px;
-}
 .info-icon {
     margin-left: 5px;
     background: url("../img/info-icon.png") no-repeat left;
