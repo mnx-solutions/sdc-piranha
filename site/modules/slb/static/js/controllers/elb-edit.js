@@ -129,8 +129,8 @@
                         );
                         machine.selected = false;
                     }
-                    $scope.hasMachineSelected = $scope.machines.some(function (machine) {
-                        return machine.selected;
+                    $scope.hasMachineSelected = $scope.machines.some(function (machineItem) {
+                        return machineItem.selected;
                     });
                 };
 
