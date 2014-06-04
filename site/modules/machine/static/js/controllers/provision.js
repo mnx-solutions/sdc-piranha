@@ -1274,7 +1274,7 @@
                             localization.translate(
                                 null,
                                 'machine',
-                                'Datacenter {{name}} is currently not available.',
+                                'Datacenter {{name}} is currently not available. We are working on getting this datacenter back on.',
                                 { name: datacenter }
                             )
                         );
