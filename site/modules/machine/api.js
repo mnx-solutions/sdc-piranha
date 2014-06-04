@@ -184,7 +184,7 @@ module.exports = function execute(scope, register) {
                 pollForObjectStateChange(cloud, call, 'state', 'running', (60 * 60 * 1000), null, machine.id, callback);
             } else {
                 call.log.error(err);
-                call.done(err);
+                (callback || call.error)(err);
             }
         });
     };
@@ -197,7 +197,7 @@ module.exports = function execute(scope, register) {
                 pollForObjectStateChange(cloud, call, 'name', options.name, (60 * 60 * 1000), null, options.uuid, callback);
             } else {
                 call.log.error(err);
-                call.done(err);
+                (callback || call.error)(err);
             }
         });
     };
@@ -211,7 +211,7 @@ module.exports = function execute(scope, register) {
                 pollForObjectStateChange(cloud, call, 'package', options.package, null, null, options.uuid, callback);
             } else {
                 call.log.error(err);
-                call.error(err);
+                (callback || call.error)(err);
             }
         });
     };
@@ -224,7 +224,7 @@ module.exports = function execute(scope, register) {
                 pollForObjectStateChange(cloud, call, 'state', 'running', null, null, options.uuid, callback);
             } else {
                 call.log.error(err);
-                call.error(err);
+                (callback || call.error)(err);
             }
         });
     };
@@ -237,7 +237,7 @@ module.exports = function execute(scope, register) {
                 pollForObjectStateChange(cloud, call, 'state', 'stopped', null, null, options.uuid, callback);
             } else {
                 call.log.error(err);
-                call.error(err);
+                (callback || call.error)(err);
             }
         });
     };
@@ -250,7 +250,7 @@ module.exports = function execute(scope, register) {
                 pollForObjectStateChange(cloud, call, 'state', 'deleted', null, null, options.uuid, callback);
             } else {
                 call.log.error(err);
-                call.error(err);
+                (callback || call.error)(err);
             }
         });
     };
@@ -263,7 +263,7 @@ module.exports = function execute(scope, register) {
                 pollForObjectStateChange(cloud, call, 'state', 'running', null, null, options.uuid, callback);
             } else {
                 call.log.error(err);
-                call.error(err);
+                (callback || call.error)(err);
             }
         });
     };
@@ -304,7 +304,7 @@ module.exports = function execute(scope, register) {
                 }
             });
 
-            call.done(null, machines);
+            return call.done(null, machines);
         });
     };
 
@@ -320,21 +320,21 @@ module.exports = function execute(scope, register) {
         var keys = Object.keys(datacenters);
         var count = keys.length;
 
-        keys.forEach(function (name) {
-            var cloud = call.cloud.separate(name);
-            call.log.debug('List machines for datacenter %s', name);
+        keys.forEach(function (datacenterName) {
+            var cloud = call.cloud.separate(datacenterName);
+            call.log.debug('List machines for datacenter %s', datacenterName);
 
             var allMachines = [];
 
             cloud.listMachines({ credentials: true }, function (err, machines) {
                 var response = {
-                    name: name,
+                    name: datacenterName,
                     status: 'pending',
                     machines: []
                 };
 
                 if (err) {
-                    call.log.error('List machines failed for datacenter %s, url %s; err.message: %s', name, datacenters[name], err.message, err);
+                    call.log.error('List machines failed for datacenter %s, url %s; err.message: %s', datacenterName, datacenters[datacenterName], err.message, err);
                     response.status = 'error';
                     response.error = err;
                 } else {
@@ -347,7 +347,7 @@ module.exports = function execute(scope, register) {
                     });
 
                     machines.forEach(function (machine, i) {
-                        machine.datacenter = name;
+                        machine.datacenter = datacenterName;
                         machine.metadata.credentials = handleCredentials(machine);
                         machines[i] = filterFields(machine);
 
@@ -361,7 +361,7 @@ module.exports = function execute(scope, register) {
                     response.status = 'complete';
                     response.machines = machines;
 
-                    call.log.debug('List machines succeeded for datacenter %s', name);
+                    call.log.debug('List machines succeeded for datacenter %s', datacenterName);
                 }
 
                 if (progress) {
@@ -410,9 +410,9 @@ module.exports = function execute(scope, register) {
             });
 
             var filteredPackages = [];
-            for (var name in filteredPackagesMap) {
-                if (filteredPackagesMap.hasOwnProperty(name)) {
-                    filteredPackages.push(filteredPackagesMap[name]);
+            for (var packageName in filteredPackagesMap) {
+                if (filteredPackagesMap.hasOwnProperty(packageName)) {
+                    filteredPackages.push(filteredPackagesMap[packageName]);
                 }
             }
             callback(null, filteredPackages);
@@ -466,31 +466,31 @@ module.exports = function execute(scope, register) {
         var keys = Object.keys(datacenters);
         var count = keys.length;
 
-        keys.forEach(function (name) {
-            var cloud = call.cloud.separate(name);
-            call.log.debug('List images for datacenter %s', name);
+        keys.forEach(function (datacenterName) {
+            var cloud = call.cloud.separate(datacenterName);
+            call.log.debug('List images for datacenter %s', datacenterName);
 
             cloud.listImages(function (err, images) {
                 var response = {
-                    name: name,
+                    name: datacenterName,
                     status: 'pending',
                     images: []
                 };
 
                 if (err) {
-                    call.log.error('List images failed for datacenter %s, url %s; err.message: %s', name, datacenters[name], err.message, err);
+                    call.log.error('List images failed for datacenter %s, url %s; err.message: %s', datacenterName, datacenters[datacenterName], err.message, err);
                     response.status = 'error';
                     response.error = err;
                 } else {
                     /* add datacenter to every image */
                     images.forEach(function (image) {
-                        image.datacenter = name;
+                        image.datacenter = datacenterName;
                     });
 
                     response.status = 'complete';
                     response.images = images;
 
-                    call.log.debug('List images succeeded for datacenter %s', name);
+                    call.log.debug('List images succeeded for datacenter %s', datacenterName);
                 }
                 call.update(null, response);
 
