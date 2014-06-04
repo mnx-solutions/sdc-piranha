@@ -50,6 +50,7 @@ window.fn = [];
                             Object.keys(datasets.search[datacenter]).forEach(function (jobObj) {
                                 jobObj.reject(err);
                             });
+                            datasets.list[datacenter].final = true;
                             return;
                         }
 
@@ -76,7 +77,7 @@ window.fn = [];
                             }
                         });
 
-                        datasets.list[datacenter].final = true;
+                        datasets.list.final = datasets.list[datacenter].final = true;
                     }
                 });
             }
@@ -106,6 +107,8 @@ window.fn = [];
                 } else {
                     datasets.job[params.datacenter].deferred.then(function (value) {
                         ret.resolve(value);
+                    }, function (value) {
+                        ret.reject(value);
                     });
                 }
             } else {
