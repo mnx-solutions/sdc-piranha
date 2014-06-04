@@ -3,12 +3,10 @@
 (function (app) {
     // I provide information about the current route request.
     app.factory('BillingService', [
-        '$http',
-        '$q',
         'serverTab',
         'localization',
         'PopupDialog',
-        function ($http, $q, serverTab, localization, PopupDialog) {
+        function (serverTab, localization, PopupDialog) {
         var service = {};
 
         var creditCard = null;
@@ -17,9 +15,7 @@
             var call = serverTab.call({
                 name: 'listPaymentMethods',
                 data: {},
-                done: function (err, job) {
-
-                }
+                done: function () {}
             });
             return call.deferred;
         };
@@ -29,7 +25,7 @@
                 var call = serverTab.call({
                     name: 'defaultCreditCard',
                     data: {},
-                    done: function (err, job) {
+                    done: function (err) {
                         if(err) {
                             PopupDialog.error(
                                 localization.translate(
@@ -107,7 +103,7 @@
                 data: {
                     sku: sku
                 },
-                done: callback || function (err, job) {}
+                done: callback || function () {}
             });
             return call.deferred;
         };
@@ -138,7 +134,7 @@
             var call = serverTab.call({
                 name: 'getLastInvoice',
                 data: {},
-                done: callback || function (err, job) {
+                done: callback || function (err) {
                     if(err) {
                         PopupDialog.error(
                             localization.translate(

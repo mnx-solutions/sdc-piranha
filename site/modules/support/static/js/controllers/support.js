@@ -3,26 +3,28 @@
 (function (app) {
     app.controller(
         'Support.IndexController',
-        ['$rootScope', '$scope', '$location', 'Support', '$route', 'PopupDialog', 'BillingService', 'localization', 'Account', '$q', function ($rootScope, $scope, $location, Support, $route, PopupDialog, BillingService, localization, Account, $q) {
+        ['$rootScope', '$scope', '$location', 'Support', '$route', 'PopupDialog', 'BillingService', 'localization', 'Account', '$q', function ($rootScope, scope, $location, Support, $route, PopupDialog, BillingService, localization, Account, $q) {
 
-            $scope.loading = true;
-            $scope.subscribingInProgress = true;
+            scope.loading = true;
+            scope.subscribingInProgress = true;
             var supportPlanSelected = $rootScope.popCommonConfig('supportPlanSelected');
             var headLink = '/support';
 
-            $scope.getPageData = function () {
-                $scope.subscribingInProgress = true;
-                $scope.levelSupport = 0;
-                var supportPackages = $scope.supportPackages;
-                supportPackages && supportPackages.forEach(function (supportPackage) {
-                    if (headLink + supportPackage.link === $location.path()) {
-                        $scope.package = supportPackage;
-                        $scope.levelSupport = $scope.package.currentlevelSupport;
-                        $scope.packageHolders = supportPackage.packageHolders;
-                    }
-                });
-                $scope.loading = false;
-                $scope.subscribingInProgress = false;
+            scope.getPageData = function () {
+                scope.subscribingInProgress = true;
+                scope.levelSupport = 0;
+                var supportPackages = scope.supportPackages;
+                if (supportPackages) {
+                    supportPackages.forEach(function (supportPackage) {
+                        if (headLink + supportPackage.link === $location.path()) {
+                            scope.package = supportPackage;
+                            scope.levelSupport = scope.package.currentlevelSupport;
+                            scope.packageHolders = supportPackage.packageHolders;
+                        }
+                    });
+                }
+                scope.loading = false;
+                scope.subscribingInProgress = false;
 
                 if (supportPlanSelected) {
                     setupPackage(supportPlanSelected.package);
@@ -32,22 +34,22 @@
 
             var getSupportData = function () {
                 Support.support(function (error, supportPackages) {
-                    $scope.supportPackages = supportPackages;
-                    $scope.getPageData();
+                    scope.supportPackages = supportPackages;
+                    scope.getPageData();
                 });
             };
 
-            $scope.$on('$routeChangeStart', function(e, next, last) {
+            scope.$on('$routeChangeStart', function(e, next, last) {
                 if (next.$$route.controller === last.$$route.controller) {
                     e.preventDefault();
                     $route.current = last.$$route;
-                    $scope.loading = true;
-                    $scope.getPageData();
+                    scope.loading = true;
+                    scope.getPageData();
                 }
             });
 
             var subscribe = function (supportPackage) {
-                $scope.subscribingInProgress = true;
+                scope.subscribingInProgress = true;
                 BillingService.createSupportSubscription(supportPackage.ratePlanId, supportPackage.productId, function (err) {
                     if (err) {
                         PopupDialog.error(
@@ -62,7 +64,7 @@
                                 'Unable to subscribe to support plan, check your billing method.'
                             ),
                             function () {
-                                $scope.subscribingInProgress = false;
+                                scope.subscribingInProgress = false;
                             }
                         );
                     } else {
@@ -73,19 +75,19 @@
             };
 
             function setupPackage(supportPackage, isUpgrade) {
-                if (supportPackage.ratePlanId === '' || $scope.subscribingInProgress) {
+                if (supportPackage.ratePlanId === '' || scope.subscribingInProgress) {
                     return;
                 }
 
                 if (isUpgrade) {
                     PopupDialog.confirm(
                         localization.translate(
-                            $scope,
+                            scope,
                             null,
                                 'Confirm: ' + supportPackage.popUpTitle
                         ),
                         localization.translate(
-                            $scope,
+                            scope,
                             null,
                                 'Are you sure you want to upgrade for ' + supportPackage.popUpTitle + '?'
                         ), function () {
@@ -115,7 +117,7 @@
                 }
             }
 
-            $scope.clickSignUp = function (supportPackage, isUpgrade) {
+            scope.clickSignUp = function (supportPackage, isUpgrade) {
                 var returnUrl = $location.path();
                 Account.checkProvisioning({btnTitle: 'Submit and Upgrade Support'}, function () {
                     setupPackage(supportPackage, isUpgrade);
@@ -129,7 +131,7 @@
                 });
             };
 
-            $scope.clickCallSales = function (supportPackage) {
+            scope.clickCallSales = function (supportPackage) {
                 var confirmContactForm = function ($scope, dialog) {
 
                     $scope.popUpTitle = supportPackage.popUpTitle;
@@ -155,7 +157,7 @@
             };
 
             function supportTracking(supportPackage, comment) {
-                var type = $scope.package.type;
+                var type = scope.package.type;
                 $q.when(Account.getAccount(), function (account) {
                     var data = {
                         id: account.id,
@@ -166,7 +168,7 @@
                     var billingTag = type === 'portal' ? 'Support__BillingTag__c' : 'Support__BillingTag__Nodejs__c';
 
                     data.marketo[title] = supportPackage.ratePlanName || supportPackage.title;
-                    data.marketo[comments] = comment || 'I want to subscribe to support plan: ' + supportPackage.title;;
+                    data.marketo[comments] = comment || 'I want to subscribe to support plan: ' + supportPackage.title;
                     data.marketo[billingTag] = supportPackage.billingTag || supportPackage.ratePlanId;
 
                     Support.callTracking(data);
