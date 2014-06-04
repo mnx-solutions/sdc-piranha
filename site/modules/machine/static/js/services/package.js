@@ -47,6 +47,7 @@
                             Object.keys(packages.search[datacenter]).forEach(function (job) {
                                 job.reject(err);
                             });
+                            packages.list[datacenter].final = true;
                             return;
                         }
 
@@ -82,7 +83,7 @@
                             }
                         });
 
-                        packages.list.final = true;
+                        packages.list[datacenter].final = packages.list.final = true;
                     }
                 });
             }
@@ -112,6 +113,8 @@
                 } else {
                     packages.job[params.datacenter].deferred.then(function (value) {
                         ret.resolve(value);
+                    }, function (value) {
+                        ret.reject(value);
                     });
                 }
             } else {

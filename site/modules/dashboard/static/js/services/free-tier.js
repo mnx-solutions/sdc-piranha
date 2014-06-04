@@ -82,7 +82,7 @@
                     freeTierOptions.validUntil = new Date(createdDate.getFullYear() + 1, createdDate.getMonth(), createdDate.getDate());
                     freeTierOptions.valid = createdDate > freeTierAvailableDate && new Date() < freeTierOptions.validUntil;
                     var packageRequests = datacenters.map(function (datacenter) {
-                        return Package.package({datacenter: datacenter});
+                        return $q.when(Package.package({datacenter: datacenter}));
                     });
                     $q.all(packageRequests).then(function (packageResults) {
                         freeTierOptions.forEach(function (option) {
@@ -109,6 +109,8 @@
                             });
                         });
                         deferred.resolve(freeTierOptions);
+                    }, function () {
+                        deferred.resolve([]);
                     });
                 });
                 return deferred.promise;
