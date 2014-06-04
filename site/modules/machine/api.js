@@ -184,7 +184,7 @@ module.exports = function execute(scope, register) {
                 pollForObjectStateChange(cloud, call, 'state', 'running', (60 * 60 * 1000), null, machine.id, callback);
             } else {
                 call.log.error(err);
-                call.done(err);
+                (callback || call.error)(err);
             }
         });
     };
@@ -197,7 +197,7 @@ module.exports = function execute(scope, register) {
                 pollForObjectStateChange(cloud, call, 'name', options.name, (60 * 60 * 1000), null, options.uuid, callback);
             } else {
                 call.log.error(err);
-                call.done(err);
+                (callback || call.error)(err);
             }
         });
     };
@@ -211,7 +211,7 @@ module.exports = function execute(scope, register) {
                 pollForObjectStateChange(cloud, call, 'package', options.package, null, null, options.uuid, callback);
             } else {
                 call.log.error(err);
-                call.error(err);
+                (callback || call.error)(err);
             }
         });
     };
@@ -224,7 +224,7 @@ module.exports = function execute(scope, register) {
                 pollForObjectStateChange(cloud, call, 'state', 'running', null, null, options.uuid, callback);
             } else {
                 call.log.error(err);
-                call.error(err);
+                (callback || call.error)(err);
             }
         });
     };
@@ -237,7 +237,7 @@ module.exports = function execute(scope, register) {
                 pollForObjectStateChange(cloud, call, 'state', 'stopped', null, null, options.uuid, callback);
             } else {
                 call.log.error(err);
-                call.error(err);
+                (callback || call.error)(err);
             }
         });
     };
@@ -250,7 +250,7 @@ module.exports = function execute(scope, register) {
                 pollForObjectStateChange(cloud, call, 'state', 'deleted', null, null, options.uuid, callback);
             } else {
                 call.log.error(err);
-                call.error(err);
+                (callback || call.error)(err);
             }
         });
     };
@@ -263,7 +263,7 @@ module.exports = function execute(scope, register) {
                 pollForObjectStateChange(cloud, call, 'state', 'running', null, null, options.uuid, callback);
             } else {
                 call.log.error(err);
-                call.error(err);
+                (callback || call.error)(err);
             }
         });
     };

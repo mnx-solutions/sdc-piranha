@@ -73,6 +73,8 @@
                         return machine;
                     });
                     $scope.allLoading = true;
+                }, function () {
+                    $location.path('/slb');
                 });
 
                 $scope.protocols = [
