@@ -1261,24 +1261,51 @@
                 });
             }
 
+            var switchToOtherDatacenter = function (datacenter) {
+                if ($scope.datacenters && $scope.datacenters.length > 0) {
+                    var firstNonSelected = $scope.datacenters.find(function (dc) { return dc.name != datacenter; });
+                    if (firstNonSelected) {
+                        PopupDialog.error(
+                            localization.translate(
+                                null,
+                                null,
+                                'Error'
+                            ),
+                            localization.translate(
+                                null,
+                                'machine',
+                                'Datacenter {{name}} is currently not available. We are working on getting this datacenter back on.',
+                                { name: datacenter }
+                            )
+                        );
+                        $scope.data.datacenter = firstNonSelected.name;
+                    }
+                }
+            };
+
             // Watch datacenter change
             $scope.$watch('data.datacenter', function (newVal) {
                 if (newVal) {
                     $scope.reloading = true;
                     $scope.datasetsLoading = true;
-
                     $q.all([
                         $q.when(Dataset.dataset({ datacenter: newVal })),
                         $q.when(Package.package({ datacenter: newVal })),
                         $q.when(getCreatedMachines())
                     ]).then(function (result) {
                         var datasets = result[0];
+                        var packages = result[1];
                         processDatasets(datasets);
-                        processPackages(newVal, result[1]);
+                        processPackages(newVal, packages);
+                        if (datasets.length === 0 && packages.length === 0) {
+                            switchToOtherDatacenter(newVal);
+                        }
                         if ($scope.isRecentInstancesEnabled) {
                             processRecentInstances(result[2], datasets);
                         }
                         setNetworks(newVal);
+                    }, function () {
+                        switchToOtherDatacenter(newVal);
                     });
                 }
                 $scope.reloading = false;
