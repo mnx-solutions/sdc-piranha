@@ -112,11 +112,12 @@
             return call.deferred;
         };
 
-        service.createSupportSubscription = function (ratePlanId, callback) {
+        service.createSupportSubscription = function (ratePlanId, productId, callback) {
             serverTab.call({
                 name: 'BillingSubscriptionCreate',
                 data: {
-                    ratePlanId: ratePlanId
+                    ratePlanId: ratePlanId,
+                    productId: productId
                 },
                 done: function (err, job) {
                     if (err) {

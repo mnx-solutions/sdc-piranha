@@ -47,12 +47,24 @@
                             return result;
                         };
 
+                        var getProductId = function (skuResults, sku) {
+                            var result = null;
+                            skuResults.forEach(function (products) {
+                                var matchingProducts = products.filter(function (product) {
+                                    return product.sku === sku;
+                                });
+                                result = result || matchingProducts.length > 0 && matchingProducts[0].id;
+                            });
+                            return result;
+                        };
+
                         var fillRatePlans = function (subscribedRatePlanIds, fillCallback) {
                             $q.all(supportGroupSkuRequests).then(function (skuResults) {
                                 supportGroupsArr.forEach(function (supportGroup) {
                                     supportGroup.packageHolders.forEach(function (packageHolder) {
                                         if (packageHolder.billingTag) {
                                             packageHolder.ratePlanId = getRatePlanId(skuResults, packageHolder.billingTag);
+                                            packageHolder.productId = getProductId(skuResults, supportGroup.sku);
                                             if (packageHolder.ratePlanId && subscribedRatePlanIds.indexOf(packageHolder.ratePlanId) !== -1) {
                                                 packageHolder.active = true;
                                                 if (supportGroup.currentlevelSupport <= packageHolder.levelSupport) {

@@ -48,7 +48,7 @@
 
             var subscribe = function (supportPackage) {
                 $scope.subscribingInProgress = true;
-                BillingService.createSupportSubscription(supportPackage.ratePlanId, function (err) {
+                BillingService.createSupportSubscription(supportPackage.ratePlanId, supportPackage.productId, function (err) {
                     if (err) {
                         PopupDialog.error(
                             localization.translate(

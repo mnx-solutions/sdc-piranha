@@ -396,31 +396,76 @@ module.exports = function execute(scope, callback) {
 
         server.onCall('BillingSubscriptionCreate', {
             verify: function (data) {
-                return data && data.hasOwnProperty('ratePlanId');
+                return data && data.hasOwnProperty('ratePlanId') && data.hasOwnProperty('productId');
             },
 
             handler: function (call) {
-                zuora.subscription.create( {
-                    termType: 'EVERGREEN',
-                    accountKey: call.req.session.userId,
-                    contractEffectiveDate: moment().utc().subtract('hours', 8).format('YYYY-MM-DD'), // PST date
-                    subscribeToRatePlans: [
-                        {
-                            productRatePlanId: call.data.ratePlanId
-                        }
-                    ]
-                }, function (err, resp) {
-                    if (err) {
-                        // changing zuoras errorCode from 401's to 500
-                        if (err.statusCode === 401) {
-                            err.statusCode = 500;
-                        }
-                        call.req.log.warn({err: err, resp: resp}, 'Got zuora error while subscribing to support plan');
-                        call.error(err);
-                        return;
+                var sendErr = function (err) {
+                    // changing zuoras errorCode from 401's to 500
+                    if (err.statusCode === 401) {
+                        err.statusCode = 500;
                     }
+                    call.done(err);
+                };
+                var subscribe = function () {
+                    zuora.subscription.create( {
+                        termType: 'EVERGREEN',
+                        accountKey: call.req.session.userId,
+                        contractEffectiveDate: moment().utc().subtract('hours', 8).format('YYYY-MM-DD'), // PST date
+                        subscribeToRatePlans: [
+                            {
+                                productRatePlanId: call.data.ratePlanId
+                            }
+                        ]
+                    }, function (err, resp) {
+                        if (err) {
+                            call.req.log.warn({err: err, resp: resp}, 'Got zuora error while subscribing to support plan');
+                            return sendErr(err);
+                        }
 
-                    call.done(null, resp.subscriptions);
+                        call.done(null, resp.subscriptions);
+                    });
+                };
+                var unsubscribe = function (subscriptionId, callback) {
+                    zuora.subscription.cancel(subscriptionId, {
+                        cancellationPolicy: 'SpecificDate',
+                        invoiceCollect: true,
+                        cancellationEffectiveDate: moment().utc().subtract('hours', 8).format('YYYY-MM-DD')
+                    }, callback);
+                };
+                zuora.subscription.getByAccount(call.req.session.userId, function (subsErr, subsResult) {
+                    if (subsErr) {
+                        return sendErr(subsErr);
+                    }
+                    var currentSubscriptions = [];
+                    subsResult.subscriptions.forEach(function (subscription) {
+                        if (subscription.status !== 'Cancelled') {
+                            subscription.ratePlans.forEach(function (ratePlan) {
+                                if (ratePlan.productId === call.data.productId) {
+                                    currentSubscriptions.push(subscription.id);
+                                }
+                            });
+                        }
+                    });
+                    currentSubscriptions = currentSubscriptions.filter(function (subscriptionId, index) {
+                        return currentSubscriptions.indexOf(subscriptionId) === index;
+                    });
+                    if (currentSubscriptions.length === 0) {
+                        subscribe();
+                    } else {
+                        var activeSubscriptionsCount = currentSubscriptions.length;
+                        currentSubscriptions.forEach(function (currentSubscription) {
+                            unsubscribe(currentSubscription, function (unsubErr, unsubRes) {
+                                if (unsubErr) {
+                                    call.req.log.warn({err: unsubErr, resp: unsubRes}, 'Got zuora error while unsubscribing from support plan');
+                                }
+                                activeSubscriptionsCount -= 1;
+                                if (activeSubscriptionsCount === 0) {
+                                    subscribe();
+                                }
+                            });
+                        });
+                    }
                 });
             }
         });
