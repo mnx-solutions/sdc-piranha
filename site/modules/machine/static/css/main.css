@@ -637,43 +637,6 @@
     background-color: #eef0f2;
     cursor: pointer;
 }
-.smart-logo,
-.ubuntu-logo,
-.windows-logo,
-.centos-logo,
-.node-logo,
-.joyent-logo,
-.mongodb-logo,
-.postgresql-logo {
-    background: #eef0f2 no-repeat 190px 10px;
-    background-size: 38px;
-}
-
-
-.smart-logo {
-    background-image: url(../img/smart-logo.png);
-}
-.ubuntu-logo {
-    background-image: url(../img/ubuntu-logo.png);
-}
-.windows-logo {
-    background-image: url(../img/windows-logo.png);
-}
-.centos-logo {
-    background-image: url(../img/centos-logo.png);
-}
-.node-logo {
-    background-image: url(../img/node-logo.png);
-}
-.joyent-logo {
-    background-image: url(../img/joyent-logo.png);
-}
-.mongodb-logo {
-    background-image: url(../img/mongodb-logo.png);
-}
-.postgresql-logo {
-    background-image: url(../img/postgresql-logo.png);
-}
 .simple-image .info {
     margin-left: 20px;
     display: inline-block;
@@ -1412,44 +1375,109 @@
 .small-icon.elasticsearch,
 .small-icon.ghost,
 .small-icon.postgresql {
+    background-position: 162px 17px;
+    background-size: 20px;
     background-repeat: no-repeat;
-    background-position: 160px 15px;
-    background-size: 24px;
 }
 
 .review .left.small-icon {
-    background-position: 210px 25px;
+    background-position: 212px 26px;
 }
 .recent-image.small-icon {
-    background-position: 90% 13px;
+    background-position: 90% 14px;
 }
 .info.small-icon {
-    background-position: 210px 50px;
+    background-position: 212px 51px;
 }
 
-.small-icon.cassandra {background-image: url(../img/icons/cassandra.png);}
-.small-icon.centos {background-image: url(../img/icons/centos.png);}
-.small-icon.chef {background-image: url(../img/icons/chef.png);}
-.small-icon.debian {background-image: url(../img/icons/debian.png);}
-.small-icon.fedora {background-image: url(../img/icons/fedora.png);}
-.small-icon.freebsd {background-image: url(../img/icons/freebsd.png);}
-.small-icon.hadoop {background-image: url(../img/icons/hadoop.png);}
-.small-icon.java {background-image: url(../img/icons/java.png);}
-.small-icon.manta {background-image: url(../img/icons/manta.png);}
-.small-icon.node {background-image: url(../img/icons/node.png);}
-.small-icon.percona {background-image: url(../img/icons/percona.png);}
-.small-icon.riak {background-image: url(../img/icons/riak.png);}
-.small-icon.smart {background-image: url(../img/icons/smart.png);}
-.small-icon.smartmachine {background-image: url(../img/icons/smartmachine.png);}
-.small-icon.stingray {background-image: url(../img/icons/stingray.png);}
-.small-icon.ubuntu {background-image: url(../img/icons/ubuntu.png);}
-.small-icon.windows {background-image: url(../img/icons/windows.png);}
-.small-icon.mongodb {background-image: url(../img/icons/mongodb.png);}
-.small-icon.arch {background-image: url(../img/icons/arch.png);}
-.small-icon.elasticsearch {background-image: url(../img/icons/el-search.png);}
-.small-icon.ghost {background-image: url(../img/icons/ghost.png);}
-.small-icon.postgresql {background-image: url(../img/icons/postgresql.png);}
+.small-icon.cassandra {
+    background-image: url(../img/icons/cassandra.png);
+}
+.small-icon.centos,
+.centos-logo {
+    background-image: url(../img/icons/centos.png);
+}
+.small-icon.chef {
+    background-image: url(../img/icons/chef.png);
+}
+.small-icon.debian {
+    background-image: url(../img/icons/debian.png);
+}
+.small-icon.fedora {
+    background-image: url(../img/icons/fedora.png);
+}
+.small-icon.freebsd {
+    background-image: url(../img/icons/freebsd.png);
+}
+.small-icon.hadoop {
+    background-image: url(../img/icons/hadoop.png);
+}
+.small-icon.java {
+    background-image: url(../img/icons/java.png);
+}
+.small-icon.manta {
+    background-image: url(../img/icons/manta.png);
+}
+.small-icon.node,
+.node-logo {
+    background-image: url(../img/icons/node.png);
+}
+.small-icon.percona {
+    background-image: url(../img/icons/percona.png);
+}
+.small-icon.riak {
+    background-image: url(../img/icons/riak.png);
+}
+.small-icon.smart,
+.smart-logo {
+    background-image: url(../img/icons/smart.png);
+}
+.small-icon.smartmachine,
+.joyent-logo {
+    background-image: url(../img/icons/smartmachine.png);
+}
+.small-icon.stingray {
+    background-image: url(../img/icons/stingray.png);
+}
+.small-icon.ubuntu,
+.ubuntu-logo {
+    background-image: url(../img/icons/ubuntu.png);
+}
+.small-icon.windows,
+.windows-logo {
+    background-image: url(../img/icons/windows.png);
+}
+.small-icon.mongodb,
+.mongodb-logo {
+    background-image: url(../img/icons/mongodb.png);
+}
+.small-icon.arch {
+    background-image: url(../img/icons/arch.png);
+}
+.small-icon.elasticsearch {
+    background-image: url(../img/icons/el-search.png);
+}
+.small-icon.ghost {
+    background-image: url(../img/icons/ghost.png);
+}
+.small-icon.postgresql,
+.postgresql-logo {
+    background-image: url(../img/icons/postgresql.png);
+}
 
+.smart-logo,
+.ubuntu-logo,
+.windows-logo,
+.centos-logo,
+.node-logo,
+.joyent-logo,
+.mongodb-logo,
+.postgresql-logo {
+    background-color: #eef0f2;
+    background-position: 198px 10px;
+    background-size: 32px;
+    background-repeat: no-repeat;
+}
 .warn-yellow{
     background-image: url(../img/warn-yellow.png);
     background-repeat: no-repeat;
