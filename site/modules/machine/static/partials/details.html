@@ -275,11 +275,6 @@
                 <div>
                     <form name="imageForm">
                         <div class="error"
-                             data-ng-show="imageForm.imageName.$error.imageUnique"
-                             data-translate>
-                            Image name is already in use
-                        </div>
-                        <div class="error"
                              data-ng-show="imageForm.imageName.$error.imageName"
                              data-translate>
                             Image name&nbsp;can contain only letters, digits and signs like '.' and '-'.
@@ -297,7 +292,6 @@
                                        data-ng-model="imageName"
                                        data-ng-disabled="imageJob && !imageJob.finished"
                                        data-machine-name="'image'"
-                                       data-unique="'image'"
                                        value=""
                                        class="key-width"/>
                             </div>
