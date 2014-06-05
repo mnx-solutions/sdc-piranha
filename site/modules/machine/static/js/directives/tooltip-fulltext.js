@@ -8,7 +8,11 @@
                 link: function (scope, element) {
                     setTimeout(function () {
                         var elm = element[0];
-                        if (elm.offsetHeight < elm.scrollHeight || elm.offsetWidth < elm.scrollWidth) {
+
+                        // a tricky way to make this work correctly with different browsers
+                        var lineHeight = parseInt(element.css('line-height'), 10) / 2;
+                        var scrollHeight = elm.scrollHeight - lineHeight;
+                        if (elm.offsetHeight < scrollHeight || elm.offsetWidth < elm.scrollWidth) {
                             element
                                 .addClass('tooltip-hover')
                                 .attr('data-toggle', 'tooltip')
@@ -16,22 +20,12 @@
                                 .attr('data-html', 'true');
 
                             var text = elm.innerHTML.trim();
-                            if (elm.offsetHeight < (elm.scrollHeight - 5) && text.split(' ').length > 1) {
 
-                                var t = element.clone().hide().css({
-                                    'position': 'absolute',
-                                    'width': 'auto',
-                                    'overflow': 'visible',
-                                    'max-width': 'inherit'
-                                });
-
-                                element.after(t);
-
-                                while (text.length > 0 && t.context.scrollHeight > elm.offsetHeight) {
+                            if (elm.offsetHeight < scrollHeight && text.split(' ').length > 1) {
+                                while (text.length > 0 && element.context.scrollHeight > elm.offsetHeight) {
                                     text = text.substring(0, text.lastIndexOf(" "));
-                                    t.context.innerHTML = text + '...';
+                                    element.context.innerHTML = text + '...';
                                 }
-                                elm.innerHTML = text + '...';
                             }
 
                         }
