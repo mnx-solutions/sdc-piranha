@@ -874,12 +874,9 @@
 
 .advanced-instance-description p,
 .simple-image .description p {
-    display: -webkit-box;
     overflow: hidden;
     text-overflow: ellipsis;
     word-wrap: break-word;
-    -webkit-line-clamp: 4;
-    -webkit-box-orient: vertical;
 }
 
 .advanced-instance-description p {
@@ -889,9 +886,6 @@
     line-height: 16px;
 }
 
-.simple-image .description p {
-    -webkit-line-clamp: 3;
-}
 
 .advaced-instance-btn {
     margin: 25px 20px 0 16px;
