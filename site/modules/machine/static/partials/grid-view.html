@@ -90,10 +90,13 @@
                         data-ng-class="{active: prop.columnActive}"
                         data-ng-click="orderGridMachinesBy(prop)"
                         data-ng-show="prop.active">
-                        <div data-ng-show="!prop.hideSorter">
+                        <div data-ng-show="!isFantomSort(prop) && !prop.hideSorter">
                             <i class="icon-sort-up" data-ng-show="order.indexOf(prop.rorder) != -1"></i>
                             <i class="icon-sort-down" data-ng-show="order.indexOf(prop.order) != -1"></i>
-                            <i class="icon-sort-both" data-ng-show="order.indexOf(prop.order) == -1 && order.indexOf(prop.rorder) == -1"></i>
+                            <i class="icon-unsorted" data-ng-show="order.indexOf(prop.order) == -1 && order.indexOf(prop.rorder) == -1"></i>
+                        </div>
+                        <div data-ng-show="isFantomSort(prop)">
+                            <i class="icon-unsorted"></i>
                         </div>
                         <div class="block" data-translate-value>{{prop.name}}</div>
                     </th>
