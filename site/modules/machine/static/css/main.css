@@ -1374,7 +1374,8 @@
 .small-icon.arch,
 .small-icon.elasticsearch,
 .small-icon.ghost,
-.small-icon.postgresql {
+.small-icon.postgresql,
+.small-icon.scalearc {
     background-position: 162px 17px;
     background-size: 20px;
     background-repeat: no-repeat;
@@ -1464,6 +1465,10 @@
 .postgresql-logo {
     background-image: url(../img/icons/postgresql.png);
 }
+.small-icon.scalearc,
+.scalearc-logo {
+    background-image: url(../img/icons/scalearc.png);
+}
 
 .smart-logo,
 .ubuntu-logo,
@@ -1472,7 +1477,8 @@
 .node-logo,
 .joyent-logo,
 .mongodb-logo,
-.postgresql-logo {
+.postgresql-logo,
+.scalearc-logo {
     background-color: #eef0f2;
     background-position: 198px 10px;
     background-size: 32px;
