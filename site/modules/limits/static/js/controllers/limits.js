@@ -27,16 +27,22 @@
 
             $scope.gridProps = [
                 {
-                    id: 'imageName',
-                    name: 'Name',
+                    id: 'criteria',
+                    name: 'Criteria',
                     active: true,
-                    sequence: 1
+                    sequence: 1,
+                    _getter: function (limit) {
+                        return limit.check + ': ' + limit[limit.check];
+                    }
                 },
                 {
                     id: 'limit',
                     name: 'Limit',
                     active: true,
-                    sequence: 2
+                    sequence: 2,
+                    _getter: function (limit) {
+                        return limit.value + ' ' + limit.by;
+                    }
                 },
                 {
                     id: 'datacenter',
