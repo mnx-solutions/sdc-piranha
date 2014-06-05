@@ -19,9 +19,9 @@
 
                         var supportGroupsArr = [];
                         for (var supportGroupName in supportGroups) {
-                            var supportGroup = supportGroups[supportGroupName];
-                            supportGroup.name = supportGroupName;
-                            supportGroupsArr.push(supportGroup);
+                            var supportGroupData = supportGroups[supportGroupName];
+                            supportGroupData.name = supportGroupName;
+                            supportGroupsArr.push(supportGroupData);
                         }
 
                         var supportGroupSkuRequests = supportGroupsArr.map(function (supportGroup) {
@@ -77,9 +77,9 @@
                                 }
                             });
                             fillRatePlans(subscribedRatePlanIds, callback);
-                        }, function (err) {
+                        }, function (subsErr) {
                             fillRatePlans([], function (fillErr, fillResult) {
-                                callback(err, fillResult);
+                                callback(subsErr, fillResult);
                             });
                         });
                     }

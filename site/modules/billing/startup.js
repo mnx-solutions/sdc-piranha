@@ -411,15 +411,12 @@ module.exports = function execute(scope, callback) {
                     ]
                 }, function (err, resp) {
                     if (err) {
-                        // changing zuoras errorCode from 401's to 500
+                        call.req.log.warn({err: err, resp: resp}, 'Got zuora error while subscribing to support plan');
                         if (err.statusCode === 401) {
                             err.statusCode = 500;
                         }
-                        call.req.log.warn({err: err, resp: resp}, 'Got zuora error while subscribing to support plan');
-                        call.error(err);
-                        return;
+                        return call.done(err);
                     }
-
                     call.done(null, resp.subscriptions);
                 });
             }
@@ -427,26 +424,53 @@ module.exports = function execute(scope, callback) {
 
         server.onCall('BillingSubscriptionCancel', {
             verify: function (data) {
-                return data && data.hasOwnProperty('id');
+                return data && data.hasOwnProperty('ids');
             },
 
             handler: function (call) {
-                zuora.subscription.cancel(call.data.id, {
-                    cancellationPolicy: "SpecificDate",
-                    invoiceCollect: true,
-                    cancellationEffectiveDate: moment().utc().subtract('hours', 8).format('YYYY-MM-DD')
-                }, function (err, resp) {
-                    if (err) {
-                        // changing zuoras errorCode from 401's to 500
-                        if (err.statusCode === 401) {
-                            err.statusCode = 500;
+                var unsubscribe = function (subscriptionId, callback) {
+                    zuora.subscription.cancel(subscriptionId, {
+                        cancellationPolicy: 'SpecificDate',
+                        invoiceCollect: true,
+                        cancellationEffectiveDate: moment().utc().subtract('hours', 8).format('YYYY-MM-DD')
+                    }, callback);
+                };
+                zuora.subscription.getByAccount(call.req.session.userId, function (subsErr, subsResult) {
+                    if (subsErr) {
+                        if (subsErr.statusCode === 401) {
+                            subsErr.statusCode = 500;
                         }
-
-                        call.done(err);
-                        return;
+                        return call.done(subsErr);
                     }
-
-                    call.done(null, resp);
+                    var activeSubscriptions = [];
+                    subsResult.subscriptions.forEach(function (subscription) {
+                        if (subscription.status !== 'Cancelled') {
+                            subscription.ratePlans.forEach(function (ratePlan) {
+                                if (call.data.ids.indexOf(ratePlan.productRatePlanId) !== -1) {
+                                    activeSubscriptions.push(subscription.id);
+                                }
+                            });
+                        }
+                    });
+                    activeSubscriptions = activeSubscriptions.filter(function (subscriptionId, index) {
+                        return activeSubscriptions.indexOf(subscriptionId) === index;
+                    });
+                    if (activeSubscriptions.length === 0) {
+                        call.done();
+                    } else {
+                        var activeSubscriptionsCount = activeSubscriptions.length;
+                        activeSubscriptions.forEach(function (currentSubscription) {
+                            unsubscribe(currentSubscription, function (unsubErr, unsubRes) {
+                                if (unsubErr) {
+                                    call.req.log.warn({err: unsubErr, resp: unsubRes}, 'Got zuora error while unsubscribing from support plan');
+                                }
+                                activeSubscriptionsCount -= 1;
+                                if (activeSubscriptionsCount === 0) {
+                                    call.done();
+                                }
+                            });
+                        });
+                    }
                 });
             }
         });
