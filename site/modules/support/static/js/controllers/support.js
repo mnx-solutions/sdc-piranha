@@ -50,27 +50,35 @@
 
             var subscribe = function (supportPackage) {
                 scope.subscribingInProgress = true;
-                BillingService.createSupportSubscription(supportPackage.ratePlanId, supportPackage.productId, function (err) {
-                    if (err) {
-                        PopupDialog.error(
-                            localization.translate(
-                                null,
-                                null,
-                                'Error'
-                            ),
-                            localization.translate(
-                                null,
-                                'billing',
-                                'Unable to subscribe to support plan, check your billing method.'
-                            ),
-                            function () {
-                                scope.subscribingInProgress = false;
-                            }
-                        );
-                    } else {
-                        supportTracking(supportPackage);
+                var ratePlansToUnsubscribe = [];
+                scope.packageHolders.forEach(function (packageHolder) {
+                    if (packageHolder.ratePlanId) {
+                        ratePlansToUnsubscribe.push(packageHolder.ratePlanId);
                     }
-                    getSupportData();
+                });
+                BillingService.cancelSupportSubscriptions(ratePlansToUnsubscribe, function () {
+                    BillingService.createSupportSubscription(supportPackage.ratePlanId, function (err) {
+                        if (err) {
+                            PopupDialog.error(
+                                localization.translate(
+                                    null,
+                                    null,
+                                    'Error'
+                                ),
+                                localization.translate(
+                                    null,
+                                    'billing',
+                                    'Unable to subscribe to support plan, check your billing method.'
+                                ),
+                                function () {
+                                    scope.subscribingInProgress = false;
+                                }
+                            );
+                        } else {
+                            supportTracking(supportPackage);
+                        }
+                        getSupportData();
+                    });
                 });
             };
 

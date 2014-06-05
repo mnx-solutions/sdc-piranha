@@ -108,12 +108,11 @@
             return call.deferred;
         };
 
-        service.createSupportSubscription = function (ratePlanId, productId, callback) {
+        service.createSupportSubscription = function (ratePlanId, callback) {
             serverTab.call({
                 name: 'BillingSubscriptionCreate',
                 data: {
-                    ratePlanId: ratePlanId,
-                    productId: productId
+                    ratePlanId: ratePlanId
                 },
                 done: function (err, job) {
                     if (err) {
@@ -126,6 +125,18 @@
                     if (err) {
                         callback(err);
                     }
+                }
+            });
+        };
+
+        service.cancelSupportSubscriptions = function (ratePlanIds, callback) {
+            serverTab.call({
+                name: 'BillingSubscriptionCancel',
+                data: {
+                    ids: ratePlanIds
+                },
+                done: function (err, job) {
+                    callback(err, job && job.__read());
                 }
             });
         };
