@@ -123,12 +123,6 @@
 .info_icon {
     background-image: url("../img/exclamation_icon.png");
 }
-a.limit-icon,
-a:hover.limit-icon {
-    background: url("../img/limit-icon.png") no-repeat 14px center !important;
-    background-size: 14px 14px !important;
-    text-indent: 18px;
-}
 .icon-arrow-down-user {
     background-image: url("../img/user_arrow.png");
     width: 20px;
