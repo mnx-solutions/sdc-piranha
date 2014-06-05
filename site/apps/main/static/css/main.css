@@ -3277,3 +3277,16 @@ label.checkbox.folder-name-form-checkbox {
 .text-to-left {
     text-align: left !important;
 }
+.change-pass .name {
+    width: 135px;
+    height: 25px;
+    vertical-align: middle;
+}
+.change-pass input {
+    width: 375px;
+}
+.change-pass .edit-error {
+    margin-top: -7px;
+    padding-left: 135px;
+    width: 375px;
+}

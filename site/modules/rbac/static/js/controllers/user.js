@@ -118,22 +118,67 @@
                 }, errorCallback);
             };
 
-
             $scope.cancel = function () {
                 $location.path('/rbac/users');
             };
 
-            $scope.changeUserPassword = function (password, passwordConfirmation) {
-                $scope.loading = true;
-                service.changeUserPassword($scope.user.id, password, passwordConfirmation).then(function () {
-                    $scope.loading = false;
-                }, errorCallback);
-            };
+            $scope.changeUserPassword = function () {
+                var opts = {
+                    templateUrl: 'rbac/static/partials/change-password.html',
+                    openCtrl: function ($scope, dialog) {
+                        $scope.buttons = [
+                            {
+                                result: 'cancel',
+                                label: 'Cancel',
+                                cssClass: 'grey-new effect-orange-button',
+                                setFocus: false
+                            },
+                            {
+                                result: 'ok',
+                                label: 'Change Password',
+                                cssClass: 'orange',
+                                setFocus: false
+                            }
+                        ];
+                        $scope.buttonClick = function (passwords, res) {
+                            if (!res || (res && res !== 'ok')) {
+                                $scope.loading = false;
+                                dialog.close();
+                            } else {
+                                var viewValue = passwords[0];
+                                $scope.lengthError = (viewValue && viewValue.length >= 7 ? false : true);
+                                if (!$scope.lengthError) {
+                                    $scope.charactersError = (viewValue && /[A-z]/.test(viewValue) && (/\d/.test(viewValue))) ? false : true;
+                                }
+                                if (!$scope.lengthError && !$scope.charactersError) {
+                                    $scope.repeatError = (passwords[0] !== passwords[1]) ? true : false;
+                                }
+                            }
+                            if (!$scope.lengthError && !$scope.charactersError && !$scope.repeatError) {
+                                $scope.loading = true;
+                                dialog.close(passwords);
+                            }
+                        };
+                        $scope.removeErrors = function () {
+                            $scope.lengthError = $scope.charactersError = $scope.repeatError = false;
+                        }
+                    }
+                };
+                PopupDialog.custom(
+                    opts,
+                    function (passwords) {
+                        if (passwords) {
+                            service.changeUserPassword($scope.user.id, passwords[0], passwords[1]).then(function () {
+                                $scope.loading = false;
+                            }, errorCallback);
+                        }
+                    }
+                );
 
+            };
             $scope.cancel = function () {
                 $location.path('/rbac/users');
             };
-
         }
     ]);
 }(window.JP.getModule('rbac')));

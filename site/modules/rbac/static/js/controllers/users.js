@@ -32,7 +32,7 @@
                 });
             };
 
-            $scope.noCheckBoxChecked = function(){
+            $scope.noCheckBoxChecked = function () {
                 PopupDialog.error(
                     localization.translate(
                         $scope,

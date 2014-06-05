@@ -8,7 +8,9 @@
         'Account',
         'rbac.Service',
         '$location',
-        function ($q, $scope, requestContext, Account, service, $location) {
+        'PopupDialog',
+        'localization',
+        function ($q, $scope, requestContext, Account, service, $location, PopupDialog, localization) {
             $scope.loading = true;
 
             $scope.roles = [];
@@ -24,6 +26,33 @@
 
             $scope.addNewRole = function () {
                 $location.path('rbac/role/create');
+            };
+
+            var errorCallback = function (err) {
+                $scope.loading = false;
+                PopupDialog.errorObj(err);
+            };
+
+            $scope.getCheckedItems = function () {
+                return $scope.roles.filter(function (el) {
+                    return el.checked;
+                });
+            };
+
+            $scope.noCheckBoxChecked = function () {
+                PopupDialog.error(
+                    localization.translate(
+                        $scope,
+                        null,
+                        'Error'
+                    ),
+                    localization.translate(
+                        $scope,
+                        null,
+                        'No role selected for the action.'
+                    ), function () {
+                    }
+                );
             };
 
 
@@ -64,6 +93,48 @@
                 }
             ];
             $scope.gridDetailProps = [];
+            $scope.gridActionButtons = [
+                {
+                    label: 'Delete',
+                    action: function (object) {
+                        var titleEnding = '';
+                        var checkedItems = $scope.getCheckedItems();
+                        if (checkedItems.length > 1) {
+                            titleEnding = 's';
+                        }
+                        if (checkedItems.length) {
+                            PopupDialog.confirm(
+                                localization.translate(
+                                    $scope,
+                                    null,
+                                    'Confirm: Delete role' + titleEnding
+                                ),
+                                localization.translate(
+                                    $scope,
+                                    null,
+                                    'Are you sure you want to delete the selected role' + titleEnding
+                                ),
+                                function () {
+                                    $scope.loading = true;
+                                    var deleteTasks = [];
+                                    checkedItems.forEach(function (item) {
+                                        deleteTasks.push($q.when(service.deleteRole(item.id)));
+                                    });
+                                    $q.all(deleteTasks).then(function () {
+                                        service.listRoles().then(function (roles) {
+                                            $scope.roles = roles;
+                                            $scope.loading = false;
+                                        }, errorCallback);
+                                    }, errorCallback);
+                                }
+                            );
+                        } else {
+                            $scope.noCheckBoxChecked();
+                        }
+                    },
+                    sequence: 1
+                }
+            ];
 
             $scope.exportFields = {
                 ignore: []
