@@ -16,288 +16,94 @@
         function ($q, serverTab) {
             var service = {};
 
-            service.listUsers = function () {
+            var action = function (actionName, ops) {
+                //FIXME: Would be great to introduce caching for RBAC resources
                 var deferred = $q.defer();
 
-                serverTab.call({
-                    name: 'listUsers',
+                var context = {
+                    name: actionName,
                     done: function (err, job) {
                         if (err) {
                             deferred.reject(err);
                             return;
                         }
-                        var users = job.__read();
-                        deferred.resolve(users);
+                        var data = job.__read();
+                        deferred.resolve(data);
                     }
-                });
-
+                };
+                if (ops) {
+                    context.data = ops;
+                }
+                serverTab.call(context);
                 return deferred.promise;
-
             };
 
-            service.getUser = function (id) {
-                var deferred = $q.defer();
-                serverTab.call({
-                    name: 'getUser',
-                    data: {
-                        id: id
-                    },
-                    done: function (err, job) {
-                        if (err) {
-                            deferred.reject(err);
-                            return;
-                        }
-                        var user = job.__read();
-                        deferred.resolve(user);
-                    }
-                });
+            service.listUsers = function () {
+                return action('listUsers');
+            };
 
-                return deferred.promise;
-
+            service.getUser = function (userId) {
+                return action('getUser', {id: userId});
             };
 
             service.updateUser = function (ops) {
-                var deferred = $q.defer();
-                serverTab.call({
-                    name: 'updateUser',
-                    data: ops,
-                    done: function (err, job) {
-                        if (err) {
-                            deferred.reject(err);
-                            return;
-                        }
-                        var data = job.__read();
-                        deferred.resolve(data);
-                    }
-                });
-                return deferred.promise;
+                return action('updateUser', ops);
             };
 
             service.createUser = function (ops) {
-                var deferred = $q.defer();
-                serverTab.call({
-                    name: 'createUser',
-                    data: ops,
-                    done: function (err, job) {
-                        if (err) {
-                            deferred.reject(err);
-                            return;
-                        }
-                        var data = job.__read();
-                        deferred.resolve(data);
-                    }
-                });
-                return deferred.promise;
+                return action('createUser', ops);
             };
 
-            service.deleteUser = function (id) {
-                var deferred = $q.defer();
-                serverTab.call({
-                    name: 'deleteUser',
-                    data: {
-                        id: id
-                    },
-                    done: function (err, job) {
-                        if (err) {
-                            deferred.reject(err);
-                            return;
-                        }
-                        var data = job.__read();
-                        deferred.resolve(data);
-                    }
-                });
-                return deferred.promise;
+            service.deleteUser = function (userId) {
+                return action('deleteUser', {id: userId});
             };
 
-            service.changeUserPassword = function (id, password, passwordConfirmation) {
-                var deferred = $q.defer();
-                serverTab.call({
-                    name: 'changeUserPassword',
-                    data: {
-                        id: id,
-                        password: password,
-                        password_confirmation: passwordConfirmation
-                    },
-                    done: function (err, job) {
-                        if (err) {
-                            deferred.reject(err);
-                            return;
-                        }
-                        var data = job.__read();
-                        deferred.resolve(data);
-                    }
+            service.changeUserPassword = function (userId, password, passwordConfirmation) {
+                return action('changeUserPassword', {
+                    id: userId,
+                    password: password,
+                    password_confirmation: passwordConfirmation
                 });
-                return deferred.promise;
             };
 
             service.createRole = function (ops) {
-                var deferred = $q.defer();
-                serverTab.call({
-                    name: 'createRole',
-                    data: ops,
-                    done: function (err, job) {
-                        if (err) {
-                            deferred.reject(err);
-                            return;
-                        }
-                        var data = job.__read();
-                        deferred.resolve(data);
-                    }
-                });
-                return deferred.promise;
+                return action('createRole', ops);
             };
-            service.getRole = function (id) {
-                var deferred = $q.defer();
-                serverTab.call({
-                    name: 'getRole',
-                    data: {id: id},
-                    done: function (err, job) {
-                        if (err) {
-                            deferred.reject(err);
-                            return;
-                        }
-                        var data = job.__read();
-                        deferred.resolve(data);
-                    }
-                });
-                return deferred.promise;
+
+            service.getRole = function (roleId) {
+                return action('getRole', {id: roleId});
             };
 
             service.updateRole = function (ops) {
-                var deferred = $q.defer();
-                serverTab.call({
-                    name: 'updateRole',
-                    data: ops,
-                    done: function (err, job) {
-                        if (err) {
-                            deferred.reject(err);
-                            return;
-                        }
-                        var data = job.__read();
-                        deferred.resolve(data);
-                    }
-                });
-                return deferred.promise;
+                return action('updateRole', ops);
             };
 
-            service.deleteRole = function (id) {
-                var deferred = $q.defer();
-                serverTab.call({
-                    name: 'deleteRole',
-                    data: {id: id},
-                    done: function (err, job) {
-                        if (err) {
-                            deferred.reject(err);
-                            return;
-                        }
-                        var data = job.__read();
-                        deferred.resolve(data);
-                    }
-                });
-                return deferred.promise;
+            service.deleteRole = function (roleId) {
+                return action('deleteRole', {id: roleId});
             };
 
             service.listRoles = function () {
-                var deferred = $q.defer();
-                serverTab.call({
-                    name: 'listRoles',
-                    done: function (err, job) {
-                        if (err) {
-                            deferred.reject(err);
-                            return;
-                        }
-                        var roles = job.__read();
-                        deferred.resolve(roles);
-                    }
-                });
-
-                return deferred.promise;
-
+                return action('listRoles');
             };
 
             service.listPolicies = function () {
-                var deferred = $q.defer();
-                serverTab.call({
-                    name: 'listPolicies',
-                    done: function (err, job) {
-                        if (err) {
-                            deferred.reject(err);
-                            return;
-                        }
-                        var roles = job.__read();
-                        deferred.resolve(roles);
-                    }
-                });
-
-                return deferred.promise;
+                return action('listPolicies');
             };
 
-            service.getPolicy = function (id) {
-                var deferred = $q.defer();
-                serverTab.call({
-                    name: 'getPolicy',
-                    data: {id: id},
-                    done: function (err, job) {
-                        if (err) {
-                            deferred.reject(err);
-                            return;
-                        }
-                        var data = job.__read();
-                        deferred.resolve(data);
-                    }
-                });
-                return deferred.promise;
+            service.getPolicy = function (policyId) {
+                return action('getPolicy', {id: policyId});
             };
 
-            service.deletePolicy = function (id) {
-                var deferred = $q.defer();
-                serverTab.call({
-                    name: 'deletePolicy',
-                    data: {id: id},
-                    done: function (err, job) {
-                        if (err) {
-                            deferred.reject(err);
-                            return;
-                        }
-                        var data = job.__read();
-                        deferred.resolve(data);
-                    }
-                });
-                return deferred.promise;
+            service.deletePolicy = function (policyId) {
+                return action('deletePolicy', {id: policyId});
             };
 
             service.createPolicy = function (ops) {
-                var deferred = $q.defer();
-                serverTab.call({
-                    name: 'createPolicy',
-                    data: ops,
-                    done: function (err, job) {
-                        if (err) {
-                            deferred.reject(err);
-                            return;
-                        }
-                        var data = job.__read();
-                        deferred.resolve(data);
-                    }
-                });
-                return deferred.promise;
+                return action('createPolicy', ops);
             };
 
             service.updatePolicy = function (ops) {
-                var deferred = $q.defer();
-                serverTab.call({
-                    name: 'updatePolicy',
-                    data: ops,
-                    done: function (err, job) {
-                        if (err) {
-                            deferred.reject(err);
-                            return;
-                        }
-                        var data = job.__read();
-                        deferred.resolve(data);
-                    }
-                });
-                return deferred.promise;
+                return action('updatePolicy', ops);
             };
 
             return service;

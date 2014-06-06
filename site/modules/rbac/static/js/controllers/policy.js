@@ -11,6 +11,7 @@
         'requestContext',
         function ($q, $scope, Account, service, PopupDialog, $location, requestContext) {
             $scope.loading = true;
+            //FIXME: I don't see much sense in enclosing "model" property
             $scope.model = {};
             $scope.model.newRule = '';
             $scope.model.policy = {};
@@ -22,18 +23,22 @@
              {name: 'rule', value: '* can resizemachine *'}
              ];
              */
-
-            $scope.policiesGrouping = [
+            /*
                 'Machine',
                 'Images',
                 'Firewall',
                 'Networks'
+
+             */
+            $scope.policiesGrouping = [
+                'Miscellaneous'
             ];
 
             var policyId = requestContext.getParam('id');
             var isNew = policyId && policyId === 'create';
             if (!isNew) {
                 $scope.model.policy.id = policyId;
+                //FIXME: $q.all not needed for one promise
                 $q.all([
                     $q.when(service.getPolicy(policyId))
                 ]).then(function (result) {
@@ -54,7 +59,9 @@
 
             var policyAction = function (action) {
                 $scope.loading = true;
+                //FIXME: data parameter is not used
                 action.then(function (data) {
+                    //FIXME: No need in setting this flag before redirect
                     $scope.loading = false;
                     $location.path('/rbac/policies');
                 }, function (err) {

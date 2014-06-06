@@ -17,13 +17,6 @@
                 $scope.loading = false;
             });
 
-            $scope.policiesGrouping = [
-                'Machine',
-                'Images',
-                'Firewall',
-                'Networks'
-            ];
-
             $scope.addNewPolicy = function () {
                 $location.path('rbac/policy/create');
             };
@@ -94,6 +87,7 @@
                 {
                     label: 'Delete',
                     action: function (object) {
+                        //FIXME: Let's create simple "pluralize" method in utils and use it here
                         var titleEnding = 'y';
                         var checkedItems = $scope.getCheckedItems();
                         if (checkedItems.length > 1) {
@@ -114,6 +108,7 @@
                                 function () {
                                     $scope.loading = true;
                                     var deleteTasks = [];
+                                    //FIXME: Use Array.prototype.map here
                                     checkedItems.forEach(function (item) {
                                         deleteTasks.push($q.when(service.deletePolicy(item.id)));
                                     });

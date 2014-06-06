@@ -80,7 +80,7 @@ module.exports = function execute(scope) {
         });
     });
     server.onCall('getUser', function (call) {
-        call.cloud.getUser(call.data.id, function (err, data) {
+        call.cloud.getUser({id: call.data.id, membership: true}, function (err, data) {
             call.done(err, data);
         });
     });

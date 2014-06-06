@@ -17,6 +17,7 @@
             $scope.roleDefaultUsers = [];
             $scope.selectedUsersChanged = false;
 
+            //FIXME: Name starting with 'toggle' will better describe functionality
             $scope.refreshDefaultUsers = function () {
                 $scope.selectedUsersChanged = !$scope.selectedUsersChanged;
             };

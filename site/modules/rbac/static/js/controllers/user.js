@@ -146,11 +146,16 @@
                                 dialog.close();
                             } else {
                                 var viewValue = passwords[0];
+                                //FIXME: Just use !
                                 $scope.lengthError = (viewValue && viewValue.length >= 7 ? false : true);
                                 if (!$scope.lengthError) {
+                                    //FIXME: Optimize this to use one RegExp like \w\d and remove that ' ? false : true', use !
                                     $scope.charactersError = (viewValue && /[A-z]/.test(viewValue) && (/\d/.test(viewValue))) ? false : true;
                                 }
                                 if (!$scope.lengthError && !$scope.charactersError) {
+                                    //FIXME: Remove unneeded ' ? true : false'
+                                    //FIXME: passwords[0] was already copied in viewValue
+                                    //FIXME: declare variable for passwords[1] and give it name explaining what it does
                                     $scope.repeatError = (passwords[0] !== passwords[1]) ? true : false;
                                 }
                             }

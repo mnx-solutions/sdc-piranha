@@ -75,10 +75,19 @@
                     active: true
                 },
                 {
-                    id: 'role',
                     name: 'Role',
                     sequence: 4,
-                    active: true
+                    active: true,
+                    type: 'async',
+                    hideSorter: true,
+                    _getter: function (object) {
+                        return service.getUser(object.id).then(function (user) {
+                            return (user.roles || []).join(", ");
+                        }, function () {
+                            return "";
+                        });
+                    }
+
                 }
             ];
             $scope.gridDetailProps = [];
@@ -86,6 +95,7 @@
                 {
                     label: 'Delete',
                     action: function (object) {
+                        //FIXME: Let's create simple "pluralize" method in utils and use it here
                         var titleEnding = '';
                         var checkedItems = $scope.getCheckedItems();
                         if (checkedItems.length > 1) {
