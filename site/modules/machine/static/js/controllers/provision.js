@@ -357,34 +357,6 @@
             $scope.selectedNetworks = [];
             $scope.previousPos = 0;
 
-            // version number comparison
-            var isVersionHigher = function (v1, v2) {
-                var v1parts = v1.split('.');
-                var v2parts = v2.split('.');
-
-                for (var i = 0; i < v1parts.length; ++i) {
-                    if (v2parts.length == i) {
-                        return true;
-                    }
-
-                    if (v1parts[i] == v2parts[i]) {
-                        continue;
-                    }
-                    else if (v1parts[i] > v2parts[i]) {
-                        return true;
-                    }
-                    else {
-                        return false;
-                    }
-                }
-
-                if (v1parts.length != v2parts.length) {
-                    return false;
-                }
-
-                return false;
-            };
-
             function deleteProvisionStep(stepName) {
                 $scope.provisionSteps = $scope.provisionSteps.filter(function (item) {
                     return item.name !== stepName;
@@ -734,7 +706,7 @@
                     $scope.metadata = [];
                     $scope.tags = [];
 
-                    var provisionForm = $scope.$$childTail.$$childTail.provisionForm;
+                    var provisionForm = $scope.$$childTail.$$childTail && $scope.$$childTail.$$childTail.provisionForm;
                     if (provisionForm) {
                         provisionForm.machineName.$setValidity('machineName', true);
                         provisionForm.machineName.$setValidity('machineUnique', true);
@@ -1109,12 +1081,12 @@
                         versions[datasetName] = {};
                         versions[datasetName][datasetVersion] = dataset;
                         listVersions[datasetName] = [];
-                        listVersions[datasetName].push(datasetVersion)
+                        listVersions[datasetName].push(datasetVersion);
                     } else {
                         if (!versions[datasetName][datasetVersion]) {
                             manyVersions[datasetName] = true;
                             versions[datasetName][datasetVersion] = dataset;
-                            listVersions[datasetName].push(datasetVersion)
+                            listVersions[datasetName].push(datasetVersion);
                         }
                     }
                     if (listVersions[datasetName].length > 1) {
@@ -1123,11 +1095,11 @@
                         });
                     }
 
-                    var filterVersions = function (datasetName, isPublic) {
+                    var filterVersions = function (imageName, isPublic) {
                         var result = [];
-                        listVersions[datasetName].forEach(function (value) {
-                            if (versions[datasetName][value].public === isPublic) {
-                                result.push(versions[datasetName][value]);
+                        listVersions[imageName].forEach(function (value) {
+                            if (versions[imageName][value].public === isPublic) {
+                                result.push(versions[imageName][value]);
                             }
                         });
                         if (result.length > 0) {
