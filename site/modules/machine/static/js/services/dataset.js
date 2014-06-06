@@ -66,7 +66,6 @@ window.fn = [];
                         });
 
                         datasets.list.final = datasets.list[datacenter].final = true;
-                        console.log('updateDatasets.end', JSON.stringify(datasets.search), datasets.search);
                     }
                 });
             }
