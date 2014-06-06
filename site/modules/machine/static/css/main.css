@@ -1375,7 +1375,8 @@
 .small-icon.elasticsearch,
 .small-icon.ghost,
 .small-icon.postgresql,
-.small-icon.scalearc {
+.small-icon.scalearc,
+.small-icon.nginx {
     background-position: 162px 17px;
     background-size: 20px;
     background-repeat: no-repeat;
@@ -1469,6 +1470,10 @@
 .scalearc-logo {
     background-image: url(../img/icons/scalearc.png);
 }
+.small-icon.nginx,
+.nginx-logo {
+    background-image: url(../img/icons/nginx.png);
+}
 
 .smart-logo,
 .ubuntu-logo,
@@ -1478,7 +1483,8 @@
 .joyent-logo,
 .mongodb-logo,
 .postgresql-logo,
-.scalearc-logo {
+.scalearc-logo,
+.nginx-logo {
     background-color: #eef0f2;
     background-position: 198px 10px;
     background-size: 32px;
