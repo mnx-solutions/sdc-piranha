@@ -12,8 +12,8 @@
         '$http',
         '$rootScope',
         'PopupDialog',
-        '$cookies',
-        function (Account, localization, notification, $q, $window, $timeout, $http, $rootScope, PopupDialog, $cookies) {
+        '$sce',
+        function (Account, localization, notification, $q, $window, $timeout, $http, $rootScope, PopupDialog, $sce) {
             return {
                 restrict: 'EA',
                 replace: true,
@@ -70,7 +70,7 @@
                                                 if ($scope.updateKeys) {
                                                     $scope.updateKeys(function () {
                                                         // if we are in signup, show the download right away
-                                                        $scope.iframe = '<iframe src="' + downloadLink + '"></iframe>';
+                                                        $scope.iframe = $sce.trustAsHtml('<iframe src="' + downloadLink + '"></iframe>');
 
                                                         PopupDialog.message(
                                                             localization.translate(
@@ -88,7 +88,7 @@
                                                     });
                                                 } else {
                                                     // if we are in signup, show the download right away
-                                                    $scope.iframe = '<iframe src="' + downloadLink + '"></iframe>';
+                                                    $scope.iframe = $sce.trustAsHtml('<iframe src="' + downloadLink + '"></iframe>');
                                                     if ($scope.nextStep) {
                                                         setTimeout(function () {
                                                             $scope.passSsh('/main/#!/account/ssh');

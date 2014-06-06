@@ -16,7 +16,7 @@
     <div class="container-fluid content-container">
         <div class="container content-container-inner" data-ng-switch="el.type">
             <textarea style="width:600px; height: 600px;" data-ng-model="data" data-ng-switch-when="json"></textarea>
-            <div id="editor" style="width:600px; height: 600px;" data-ng-switch-when="html" contenteditable="true" data-ng-bind-html-unsafe="data"></div>
+            <div id="editor" style="width:600px; height: 600px;" data-ng-switch-when="html" contenteditable="true" data-ng-bind-html="data"></div>
         </div>
         <div data-ng-show="error">
             {{error}}

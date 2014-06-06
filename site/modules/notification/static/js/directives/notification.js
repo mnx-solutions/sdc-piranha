@@ -33,7 +33,7 @@
             template: '<div class="notification-wrapper">' +
                 '<div data-ng-repeat="(ctx, groups) in notifications">' +
                 '<alert data-ng-repeat="(type, group) in groups" type="type" close="close(ctx, type)">' +
-                '<div data-ng-repeat="notification in group" data-ng-bind-html-unsafe="notification.message"></div>' +
+                '<div data-ng-repeat="notification in group" data-ng-bind-html="notification.message"></div>' +
                 '</alert>' +
                 '</div>' +
                 '</div>'

@@ -1,7 +1,7 @@
 'use strict';
 
 (function (ng, app) {
-    app.controller('GridViewController', ['$scope', '$filter', '$http', '$location', 'Account', '$rootScope', 'Datacenter', '$qe', function ($scope, $filter, $http, $location, Account, $rootScope, Datacenter, $qe) {
+    app.controller('GridViewController', ['$scope', '$filter', '$http', '$location', 'Account', '$rootScope', 'Datacenter', '$qe', '$sce', function ($scope, $filter, $http, $location, Account, $rootScope, Datacenter, $qe, $sce) {
         $scope.location = $location;
 
         function refreshGrid() {
@@ -298,7 +298,7 @@
         $scope.export = function (format) {
             $http.post('machine/export', getJSONData())
                 .success(function (id) {
-                    $scope.iframe = '<iframe src="machine/export/' + id + '/' + format + '/' + $scope.itemsType + '"></iframe>';
+                    $scope.iframe = $sce.trustAsHtml('<iframe src="machine/export/' + id + '/' + format + '/' + $scope.itemsType + '"></iframe>');
                 })
                 .error(function () {
                     window.console.log('err', arguments);

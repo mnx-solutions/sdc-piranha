@@ -350,7 +350,7 @@
                                 }
                             };
                         }
-                        var job = serverTab.call(opts);
+                        var job = serverTab.call(ng.copy(opts));
                         job.machine = machine;
                         machine.job = job.getTracker();
                     }

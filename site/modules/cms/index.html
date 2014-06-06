@@ -2,7 +2,7 @@
 
     <div data-ng-switch-when="index" data-ng-controller="CMSController" data-ng-cloak>
         <div class="container-fluid content-container" data-ng-show="!error">
-            <div class="container content-container-inner" data-ng-bind-html-unsafe="data"></div>
+            <div class="container content-container-inner" data-ng-bind-html="data"></div>
         </div>
         <div class="container-fluid content-container" data-ng-show="error">
             <div class="container content-container-inner">

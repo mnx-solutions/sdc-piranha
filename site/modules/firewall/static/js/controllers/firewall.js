@@ -127,8 +127,7 @@
                     // FIXME:
                     //if(ng.isObject(machine) && machine.compute_node) {
                     if(ng.isObject(machine) && machine.type !== 'virtualmachine') {
-
-                        if(Object.keys(machine.tags).length) {
+                        if(ng.isObject(machine.tags) && Object.keys(machine.tags).length) {
                             for(var tag in machine.tags) {
                                 if($scope.tags.indexOf(tag) === -1) {
                                     $scope.tags.push({
@@ -159,10 +158,10 @@
 
             }
 
-            function createCombobox (id, objId, propId, q, addOnSelect) {
+            function createCombobox(id, objId, propId, handler, addOnSelect) {
                 return $(id).select2({
                     width: '100%',
-                    query: q,
+                    query: handler,
                     initSelection : function () {}
                 }).change(function(e){
                     var val = ng.fromJson(e.val);
@@ -450,10 +449,10 @@
             $scope.setRules = function (rules) {
                 var dcRules = [];
                 Object.keys(rules).forEach(function (datacenter) {
-                    rules[datacenter].forEach( function (r) {
-                        r.id = '';
-                        r.datacenter = datacenter;
-                        dcRules.push(r);
+                    rules[datacenter].forEach(function (dcRule) {
+                        dcRule.id = '';
+                        dcRule.datacenter = datacenter;
+                        dcRules.push(dcRule);
                     });
                 });
 	            $scope.rules = dcRules;
@@ -765,12 +764,12 @@
                 }
             });
 
-            $scope.stringifyRule = function (el, r) {
-                if(typeof $scope[r] === 'function') {
-                    r = $scope[r]();
+            $scope.stringifyRule = function (el, ruleToStringify) {
+                if (typeof $scope[ruleToStringify] === 'function') {
+                    ruleToStringify = $scope[ruleToStringify]();
                 }
 
-                $http.post('./firewall/stringify', r).then(function(response) {
+                $http.post('./firewall/stringify', ruleToStringify).then(function(response) {
                     var stringifiedRule = response.data.rule;
                     ng.element(el).popover('destroy');
                     ng.element(el).popover(
@@ -857,8 +856,8 @@
 				        return 'span2 padding-5';
 			        },
 			        _getter: function (object) {
-				        var arr = object.parsed.from.map(function (value) {
-					        return $filter('targetInfo')(value);
+				        var arr = object.parsed.from.map(function (fromItem) {
+					        return $filter('targetInfo')(fromItem);
 				        });
 				        return arr.join('; ');
 			        },
@@ -872,8 +871,8 @@
 				        return 'span2 padding-5';
 			        },
 			        _getter: function (object) {
-				        var arr = object.parsed.to.map(function (value) {
-					        return $filter('targetInfo')(value);
+				        var arr = object.parsed.to.map(function (toItem) {
+					        return $filter('targetInfo')(toItem);
 				        });
 				        return arr.join('; ');
 			        },
@@ -965,11 +964,12 @@
                 }
             }
 
-            function makeRuleAction(action, message) {
+            function makeRuleAction(action, msg) {
                 if($scope.actionButton()) {
-                    var checkedRules = $scope.rules.filter(function (r) {
-                        return r.checked;
+                    var checkedRules = $scope.rules.filter(function (item) {
+                        return item.checked;
                     });
+                    var message = msg;
                     message += checkedRules.length > 1 ?
                         ' selected rules?':
                         ' selected rule?' ;
@@ -1042,8 +1042,8 @@
                 }
             ];
             $scope.actionButton = function () {
-                return $scope.rules.some(function (r) {
-                    return r.checked === true;
+                return $scope.rules.some(function (ruleItem) {
+                    return ruleItem.checked === true;
                 });
             };
             $scope.noCheckBoxChecked = function () {

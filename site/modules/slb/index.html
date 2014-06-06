@@ -1,6 +1,14 @@
 <div data-ng-switch="subview">
-    <div data-ng-switch-when="index" data-ng-include="'slb/static/partials/index.html'" data-ng-controller="slb.IndexController"></div>
-    <div data-ng-switch-when="list" data-ng-include="'slb/static/partials/list.html'"></div>
-    <div data-ng-switch-when="edit" data-ng-include="'slb/static/partials/edit.html'"></div>
-    <div data-ng-switch-when="detail" data-ng-include="'slb/static/partials/detail.html'"></div>
+    <div data-ng-switch-when="index" data-ng-controller="slb.IndexController">
+        <div data-ng-include="'slb/static/partials/index.html'"></div>
+    </div>
+    <div data-ng-switch-when="list">
+        <div data-ng-include="'slb/static/partials/list.html'"></div>
+    </div>
+    <div data-ng-switch-when="edit">
+        <div data-ng-include="'slb/static/partials/edit.html'"></div>
+    </div>
+    <div data-ng-switch-when="detail">
+        <div data-ng-include="'slb/static/partials/detail.html'"></div>
+    </div>
 </div>

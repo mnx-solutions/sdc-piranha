@@ -21,10 +21,10 @@
         </div>
         <div class="actions pull-right" data-ng-show="controls" data-ng-class="{'actions-down': tabFilterField}">
             <div class="btn-group">
-                <a id="button-actions" class="btn dropdown-toggle grid-small-font" data-toggle="dropdown" href="#" data-ng-hide="!getActionButtons(object).length | orderBy:'sequence'">
+                <span id="button-actions" class="btn dropdown-toggle grid-small-font" data-toggle="dropdown" data-ng-hide="!getActionButtons(object).length | orderBy:'sequence'">
                     Actions
                     <i class="icon-drop-down"></i>
-                </a>
+                </span>
                 <ul id="option-list-actions" class="dropdown-menu grid-action-btn" data-ng-hide="!getActionButtons(object).length | orderBy:'sequence'">
                     <li data-ng-repeat="btn in getActionButtons(object) | orderBy:'sequence'">
                         <a data-action-button data-action-fn="btn.action" data-show-fn="btn.show" data-label="btn.label" data-object="object" class="grid-action-btn grid-small-font"></a>
@@ -33,13 +33,13 @@
             </div>
             <div class="btn-group">
                 <button type="button" class="btn grid-small-font btn-original-text" data-ng-disabled="!pageNumSum" data-ng-hide="hideExport" data-ng-click="export('csv')">Export.csv</button>
-                <div style="display:none;" data-ng-bind-html-unsafe="exportIframe"></div>
+                <div style="display:none;" data-ng-bind-html="exportIframe"></div>
             </div>
             <div class="btn-group" data-ng-show="areColumnsEnabled()">
-                <a id="button-columns" class="btn grid-small-font" href="#" data-toggle="dropdown" data-ng-click="noClose()">
+                <span id="button-columns" class="btn grid-small-font" data-toggle="dropdown" data-ng-click="noClose()">
                     Columns
                     <i class="icon-drop-down"></i>
-                </a>
+                </span>
                 <div id="checkbox-list-columns" class="dropdown-menu hold-on-click dropdown-checkboxes pull-right">
                     <div data-ng-repeat="prop in props | orderBy:'sequence'">
                         <label class="dpl-inline">
@@ -132,10 +132,10 @@
                                 <span data-ng-switch-when="button">
                                     <div class="grid-small-font" data-action-button data-label-fn="prop.btn.getLabel" data-action-fn="prop.btn.action" data-class-fn="prop.btn.getClass" data-show-fn="prop.btn.show" data-disabled-fn="prop.btn.disabled" data-label="prop.btn.label" data-tooltip-text="prop.btn.tooltip" data-object="object"></div>
                                 </span>
-                                <span data-ng-switch-when="html" data-ng-bind-html-unsafe="prop._getter(object)"></span>
+                                <span data-ng-switch-when="html" data-ng-bind-html="prop._getter(object)"></span>
                                     <span data-ng-switch-when="firewall_state">
                                         <span data-ng-show="(object.fireWallActionRunning) || (object.job && !object.job.finished)" class="loading-small loading-small-firewall pull-left"></span>
-                                        <span data-ng-bind-html-unsafe="prop._getter(object)"></span>
+                                        <span data-ng-bind-html="prop._getter(object)"></span>
                                     </span>
                                 <span data-ng-switch-when="date">{{object[prop.id] | date: prop.format || 'yyyy-MM-dd HH:mm'}}</span>
                                 <span data-ng-switch-when="async">
@@ -164,6 +164,6 @@
                 <div class="grid-view-pagination" data-pagination data-num-pages="lastPage" data-current-page="page" data-max-size="showPages" data-on-select-page="changePage(page)"></div>
             </div>
         </div>
-        <div style="display:none;" data-ng-bind-html-unsafe="iframe"></div>
+        <div style="display:none;" data-ng-bind-html="iframe"></div>
     </div>
 </div>

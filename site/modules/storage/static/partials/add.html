@@ -21,7 +21,7 @@
         <div data-file-manager data-show-controls="false" data-current-path="filePath" data-popup="true"></div>
     </div>
     <div class="modal-footer">
-        <p data-ng-show="message.footer" data-ng-bind-html-unsafe="message.footer"></p>
+        <p data-ng-show="message.footer" data-ng-bind-html="message.footer"></p>
         <button data-tabindex="{{btn.datatabindex}}" data-button-focus="{{ btn.setFocus }}" data-ng-repeat="btn in buttons" data-ng-click="close(folderNameForm, btn.result)" class="btn" data-ng-class="btn.cssClass">{{ btn.label }}</button>
     </div>
 </div>
