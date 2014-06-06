@@ -11,17 +11,16 @@ window.fn = [];
         function (serverTab, $q, localization, PopupDialog, util) {
 
         var service = {};
-        var datasets = { job: {}, index: {}, list: {}, search: {}, os_index: {}};
+        var datasets = { job: {}, index: {}, list: {}, os_index: {}};
 
         service.updateDatasets = function (datacenter, force) {
             datacenter = datacenter || 'all';
             if (force && datacenter === 'all') {
-                datasets = { job: {}, index: {}, list: {}, search: {}, os_index: {}};
+                datasets = { job: {}, index: {}, list: {}, os_index: {}};
             }
             if (!datasets.index[datacenter]) {
                 datasets.index[datacenter] = {};
                 datasets.list[datacenter] = [];
-                datasets.search[datacenter] = {};
             }
 
             if (!datasets.job[datacenter]) {
@@ -43,13 +42,9 @@ window.fn = [];
                                     'machine',
                                     'Unable to retrieve datasets from datacenter {{name}}.',
                                     { name: datacenter }
-                                ),
-                                function () {}
+                                )
                             );
-                            //datasets.job[datacenter].deferred.reject(err);
-                            Object.keys(datasets.search[datacenter]).forEach(function (jobObj) {
-                                jobObj.reject(err);
-                            });
+                            datasets.job[datacenter].deferred.reject(err);
                             datasets.list[datacenter].final = true;
                             return;
                         }
@@ -63,13 +58,6 @@ window.fn = [];
 
                             datasets.index[datacenter][p.id] = p;
 
-                            if (datasets.search[datacenter][p.id]) {
-                                datasets.search[datacenter][p.id].forEach(function (r) {
-                                    r.resolve(p);
-                                });
-                                delete datasets.search[datacenter][p.id];
-                            }
-
                             if (old !== null) {
                                 datasets.list[datacenter][old] = p;
                             } else {
@@ -78,6 +66,7 @@ window.fn = [];
                         });
 
                         datasets.list.final = datasets.list[datacenter].final = true;
+                        console.log('updateDatasets.end', JSON.stringify(datasets.search), datasets.search);
                     }
                 });
             }
@@ -86,6 +75,7 @@ window.fn = [];
         };
 
         service.dataset = function (params) {
+            var ret = $q.defer();
             if (typeof params === 'string') {
                 params = { id: params };
             }
@@ -97,27 +87,25 @@ window.fn = [];
 
             if (params.id === true || (!params.id && !datasets.job[params.datacenter])) {
                 var job = service.updateDatasets(params.datacenter);
-                return job.deferred;
+                job.deferred.then(ret.resolve, ret.reject);
+                return ret.promise;
             }
 
-            var ret = $q.defer();
             if (!params.id) {
                 if (datasets.list[params.datacenter].final) {
                     ret.resolve(datasets.list[params.datacenter]);
                 } else {
-                    datasets.job[params.datacenter].deferred.then(function (value) {
-                        ret.resolve(value);
-                    }, function (value) {
-                        ret.reject(value);
-                    });
+                    datasets.job[params.datacenter].deferred.then(ret.resolve, ret.reject);
                 }
             } else {
                 if (!datasets.index[params.datacenter][params.id]) {
-                    service.updateDatasets(params.datacenter);
-                    if (!datasets.search[params.datacenter][params.id]) {
-                        datasets.search[params.datacenter][params.id] = [];
-                    }
-                    datasets.search[params.datacenter][params.id].push(ret);
+                    service.updateDatasets(params.datacenter).deferred.then(function () {
+                        if (datasets.index[params.datacenter][params.id]) {
+                            ret.resolve(datasets.index[params.datacenter][params.id]);
+                        } else {
+                            ret.reject();
+                        }
+                    }, ret.reject);
                 } else {
                     ret.resolve(datasets.index[params.datacenter][params.id]);
                 }
