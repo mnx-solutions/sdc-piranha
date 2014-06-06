@@ -679,16 +679,6 @@
     font-weight: normal;
     line-height: 16px;
 }
-.simple-image .name p {
-    font-size: 16px;
-    font-weight: bold;
-}
-.simple-image .name span p,
-.simple-image .description {
-    font-size: 12px;
-    font-weight: normal;
-    line-height: 16px;
-}
 .simple-image .description {
     padding: 5px 20px 0 20px;
     height: 50px;
@@ -843,35 +833,59 @@
     background-color: #FF6600;
     color: white;
 }
-.advanced-instance-title{
+.advanced-instance-title {
     padding: 15px 20px 0 22px;
 }
-.advanced-instance-title p{
-    font-size: 18px;
-    font-weight: bold;
-    line-height: 1.3em;
-    color: #3d3d3d;
+
+.advanced-instance-title p,
+.simple-image .name p {
     overflow: hidden;
-    text-overflow: ellipsis;
-    width: 136px;
     vertical-align: top;
-    white-space: nowrap;
+    text-overflow: ellipsis;
+    font-weight: bold;
 }
+
+.advanced-instance-title p {
+    width: 136px;
+    color: #3d3d3d;
+    white-space: nowrap;
+    font-size: 18px;
+    line-height: 1.3em;
+}
+
+.simple-image .name p {
+    font-size: 16px;
+    width: 160px;
+}
+
+.simple-image .name span p,
+.simple-image .description {
+    font-size: 12px;
+    font-weight: normal;
+    line-height: 16px;
+}
+
 .advanced-instance-description{
     padding: 0 10px 0 24px;
     max-height: 55px;
     min-height: 55px;
     margin-top: -6px;
 }
-.advanced-instance-description p{
+
+.advanced-instance-description p,
+.simple-image .description p {
     overflow: hidden;
     text-overflow: ellipsis;
-    font-size: 12px;
-    font-weight: 400;
-    line-height: 16px;
-    max-height: 65px;
-    min-height: 65px;
+    word-wrap: break-word;
 }
+
+.advanced-instance-description p {
+    height: 65px;
+    font-weight: 400;
+    font-size: 12px;
+    line-height: 16px;
+}
+
 
 .advaced-instance-btn {
     margin: 25px 20px 0 16px;

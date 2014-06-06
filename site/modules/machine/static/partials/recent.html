@@ -40,10 +40,10 @@
                      data-ng-class="instance.datasetName | logo"
                      data-ng-click="createRecent(instance)">
                     <div class="name">
-                        <p>{{instance.datasetName}}</p>
+                        <p data-tooltip-full-text data-original-title="{{instance.datasetName}}">{{instance.datasetName}}</p>
                     </div>
                     <div class="description">
-                        <p>{{instance.description}}</p>
+                        <p data-tooltip-full-text data-original-title="{{instance.description}}">{{instance.description}}</p>
                     </div>
                     <div class="info">
                         <p>MEMORY</p><span><p>{{ instance.memory | sizeFormat }}</p></span>

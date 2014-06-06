@@ -2797,10 +2797,12 @@ label.checkbox {
     margin-left: -12px;
 }
 .tooltip-inner {
-    color: #020001;
-    background-color: #fff2d2;
-    border-radius: 0;
+    overflow: hidden;
     border: 1px solid #ff6600;
+    border-radius: 0;
+    background-color: #fff2d2;
+    color: #020001;
+    word-wrap: break-word;
 }
 
 .tooltip.top .tooltip-inner {
