@@ -55,13 +55,13 @@
 
 //                $scope.forums      = Zendesk.getForumsList();
             $scope.forums = {
-                'Getting Started': 'http://wiki.joyent.com/gettingstarted',
+                'Getting Started': 'http://wiki.joyent.com/wiki/display/jpc2/Getting+Started+with+your+Joyent+Cloud+Account',
                 'Setting Up Your Application': 'http://wiki.joyent.com/wiki/display/jpc2/Setting+Up+an+Application',
-                'Managing Your SmartOS Instances': 'http://wiki.joyent.com/wiki/display/jpc2/Managing+a+SmartMachine',
+                'Managing Your SmartOS Instances': 'http://wiki.joyent.com/wiki/display/jpc2/Managing+a+SmartOS+Instance',
                 'Managing Your Linux and Windows Instances': 'http://wiki.joyent.com/wiki/display/jpc2/Managing+a+Virtual+Machine',
                 'Managing Your Infrastructure': 'http://wiki.joyent.com/wiki/display/jpc2/Managing+Infrastructure',
                 'Running Node.js Application on Joyent': 'http://wiki.joyent.com/wiki/display/jpc2/Using+Node.js',
-                'Images Available on Joyent': 'http://wiki.joyent.com/wiki/display/jpc2/Available+Joyent+Public+Cloud+Machine+Images'
+                'Images Available on Joyent': 'http://wiki.joyent.com/wiki/display/jpc2/Joyent+Cloud+Images'
             };
             $scope.softwareUpdateTopics = Zendesk.getSoftwareUpdateTopics();
             $scope.machines = Machine.machine();
