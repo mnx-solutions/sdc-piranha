@@ -48,10 +48,10 @@
                             scope.changingName = false;
                             scope.renaming = true;
 
+                            scope.object.name = scope.newName;
                             if (scope.type && scope.type === 'image') {
                                 Image.renameImage(scope.object, renameFinished);
                             } else {
-                                scope.object.name = scope.newName;
                                 $$track.event('machine', 'rename');
                                 var job = Machine.renameMachine(scope.object.id, scope.newName);
                                 job.getJob().done(renameFinished);
