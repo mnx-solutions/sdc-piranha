@@ -137,10 +137,8 @@
 
                     $scope.getMonthDesc = function () {
                         var desc = '';
-                        if ($scope.name !== 'currentspend') {
-                            desc = 'this month';
-                        } else if ($scope.month === now.getMonth() + 1 && $scope.year === now.getFullYear()) {
-                            desc = 'month to date';
+                        if ($scope.month === now.getMonth() + 1 && $scope.year === now.getFullYear()) {
+                            desc = $scope.name === 'currentspend' ? 'month to date' : 'this month';
                         }
                         return desc;
                     };
