@@ -20,7 +20,7 @@ import static com.codeborne.selenide.Configuration.timeout;
 import static com.codeborne.selenide.Selectors.byText;
 import static com.codeborne.selenide.Selenide.$;
 import static com.codeborne.selenide.Selenide.page;
-import static org.junit.Assert.assertTrue;
+import static junit.framework.Assert.assertTrue;
 
 public class EditBillingInformation extends AbstractPageObject {
     public static final String TITLE = "Edit Billing Information";

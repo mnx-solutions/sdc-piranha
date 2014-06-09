@@ -1,4 +1,7 @@
-package com.joyent.piranha.pageobject;
+package com.joyent.piranha.pageobject.instancedetails;
+
+import com.joyent.piranha.pageobject.AbstractPageObject;
+import com.joyent.piranha.pageobject.ImageList;
 
 import static com.codeborne.selenide.Selenide.$;
 import static com.codeborne.selenide.Selenide.page;

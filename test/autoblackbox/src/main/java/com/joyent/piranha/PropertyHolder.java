@@ -91,7 +91,7 @@ public final class PropertyHolder {
     }
 
     public static String getPrivateKeyPath() {
-        return System.getProperty("env.privateKeyPath");
+        return getPathToSShFolder() + System.getProperty("env.privateKey");
     }
 
     public static String getGlobalTimeout() {
@@ -104,5 +104,9 @@ public final class PropertyHolder {
 
     public static String getBaseUrl() {
         return System.getProperty("server.endpoint");
+    }
+
+    public static String getPathToSShFolder() {
+        return System.getProperty("env.sshFolderPath");
     }
 }

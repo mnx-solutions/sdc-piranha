@@ -32,9 +32,9 @@ public class Dashboard extends AbstractPageObject {
         checkTitle(DASHBOARD_MENU_TITLE);
     }
 
-    public CreateInstance clickCreateComputeInstance() {
+    public CreateInstanceManual clickCreateComputeInstance() {
         $("#button-create-instance").click();
-        return page(CreateInstance.class);
+        return page(CreateInstanceManual.class);
     }
 
     public LoadBalancers clickViewMoreLBDetails() {

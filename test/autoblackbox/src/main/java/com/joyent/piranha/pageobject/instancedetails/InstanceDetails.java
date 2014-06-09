@@ -1,9 +1,12 @@
-package com.joyent.piranha.pageobject;
+package com.joyent.piranha.pageobject.instancedetails;
 
+import com.codeborne.selenide.Condition;
 import com.codeborne.selenide.ElementsCollection;
 import com.codeborne.selenide.SelenideElement;
 import com.codeborne.selenide.WebDriverRunner;
 import com.joyent.piranha.Common;
+import com.joyent.piranha.pageobject.*;
+import org.apache.commons.lang3.text.WordUtils;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.support.ui.Select;
@@ -68,9 +71,9 @@ public class InstanceDetails extends AbstractPageObject {
     public void selectResizeOption(String packageDescription) {
         $("[href=\"#collapse_resize\"]").click();
         SelenideElement dropDown = $("#collapse_resize");
-        dropDown.$(".select2-container a").click();
         Select packages = new Select(dropDown.$("select[name=\"resize\"]"));
         packages.selectByVisibleText(packageDescription);
+        $("#select2-drop").waitWhile(Condition.visible, baseTimeout);
     }
 
     public void clickResizeButton() {
@@ -85,6 +88,71 @@ public class InstanceDetails extends AbstractPageObject {
 
     public String getInstanceId() {
         return $("#collapse_summary").$(byText("UUID")).$(By.xpath("../td[2]")).getText();
+    }
+
+    public String getSummaryValue(String fieldName) {
+        return $("#collapse_summary").$(By.xpath("//tr[contains(.,'" + fieldName + "')]/td[@class='ng-binding']")).text();
+    }
+
+    public String getImageUUID() {
+        return getSummaryValue("Image UUID");
+    }
+
+    public String getImageName() {
+        return getSummaryValue("Image");
+    }
+
+    public String gitImageVersion() {
+        return getSummaryValue("Image version");
+    }
+
+    public String getInstanceIP() {
+        return $(By.xpath("//tr[contains(.,'IP addresses')]/td/span")).text();
+    }
+
+    public MetadataSection openMetadataSection() {
+        $("[href=\"#collapse_metadata\"]").click();
+        return page(MetadataSection.class);
+    }
+
+    public String getMemory() {
+        return getSummaryValue("Memory");
+    }
+
+    public FirewallSection openResizeSection() {
+        $("[href=\"#collapse_firewall\"]").click();
+        return page(FirewallSection.class);
+    }
+
+    public void openSummarySection() {
+        $("[href=\"#collapse_summary\"]").click();
+    }
+
+    public void changeState(String state){
+        $("[data-ng-click=\"click"+WordUtils.capitalize(state)+"(machine.id)\"]").click();
+        clickButtonInModal("Yes");
+        waitForSmallSpinnerDisappear();
+    }
+
+    public void stopInstance(){
+        changeState("stop");
+    }
+
+    public void startInstance(){
+        changeState("start");
+    }
+
+    public void rebootInstance(){
+        changeState("reboot");
+    }
+
+    public void deleteInstance(){
+        changeState("delete");
+        clickButtonInModal("Ok");
+    }
+
+    public String getInstanceStatus(){
+        return $(".status.label").text();
     }
 }
 

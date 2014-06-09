@@ -1,3 +1,4 @@
+apply plugin: 'application'
 apply plugin: 'java'
 apply plugin: 'eclipse'
 
@@ -15,6 +16,8 @@ dependencies {
     testCompile 'com.saucelabs:sauce_junit:1.0.13'
     compile 'com.google.code.gson:gson:2.2.4'
     compile 'org.apache.commons:commons-lang3:3.0'
+    compile 'com.jcraft:jsch:0.1.51'
+
 }
 
 tasks.withType(Test) {
@@ -23,8 +26,8 @@ tasks.withType(Test) {
         env = '.lx'
     } else if (project.hasProperty('wb')) {
         env = '.wb'
-    } else if (project.hasProperty('wa')) {
-        env = '.wa'
+    } else if (project.hasProperty('bp')) {
+        env = '.bplt'
     }
     systemProperties = System.getProperties()
     systemProperties loadConf("build${env}.properties")
@@ -90,6 +93,11 @@ task FakePackageTest(type: Test) {
 task SLBPerformance(type: Test) {
     include '**/SLBPerformance.class'
 }
+
 task FreeTierTest(type: Test) {
     include '**/FreeTierTest.class'
+}
+
+task newImages(type: Test) {
+    include '**/InstanceOperabilityTestSuit.class'
 }

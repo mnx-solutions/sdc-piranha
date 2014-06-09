@@ -32,10 +32,10 @@ public class ImageList extends AbstractPageObject {
         row.$(byText(imageVersion)).shouldBe(visible);
     }
 
-    public CreateInstance clickCreateInstance(String imageName){
+    public CreateInstanceManual clickCreateInstance(String imageName){
        SelenideElement row = getRowByText(IMAGE_ROW, imageName);
         row.$("button").click();
-        return page(CreateInstance.class);
+        return page(CreateInstanceManual.class);
     }
 
     public String getImageUUID(String imageName) {

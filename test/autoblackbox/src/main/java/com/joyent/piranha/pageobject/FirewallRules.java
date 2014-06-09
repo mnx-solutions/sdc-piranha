@@ -13,8 +13,6 @@ import static org.junit.Assert.assertTrue;
 
 public class FirewallRules extends AbstractPageObject {
 
-    public static final String GRID_ROW_REPEATER = "object in pagedItems";
-
     public FirewallRuleDetails clickAddNewButton() {
         $(byText("+ Add New Rule")).click();
         return page(FirewallRuleDetails.class);

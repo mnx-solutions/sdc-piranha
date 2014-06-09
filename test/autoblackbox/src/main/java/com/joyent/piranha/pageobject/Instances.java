@@ -1,7 +1,11 @@
 package com.joyent.piranha.pageobject;
 
 import com.codeborne.selenide.SelenideElement;
+import com.codeborne.selenide.WebDriverRunner;
 import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.support.ui.ExpectedCondition;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
 import static com.codeborne.selenide.Selenide.$;
 import static com.codeborne.selenide.Selenide.page;
@@ -34,8 +38,13 @@ public class Instances extends AbstractPageObject {
         return $("[data-ng-show=\"freeTierFound()\"]").text();
     }
 
-    public CreateInstance clickCreateButton() {
-        $("[href=\"#!/compute/create/simple\"]").click();
-        return page(CreateInstance.class);
+    public void waitForInstanceRunning(){
+        WebDriverWait wait = new WebDriverWait(WebDriverRunner.getWebDriver(), baseTimeout);
+        wait.until(new ExpectedCondition<Boolean>() {
+            @Override
+            public Boolean apply(WebDriver input) {
+                return $(By.xpath("//*[@data-ng-repeat=\"object in pagedItems\"]//td[contains(.,'running')]")).exists();
+            }
+        });
     }
 }

@@ -2,14 +2,13 @@ package com.joyent.piranha.test;
 
 import com.joyent.piranha.Common;
 import com.joyent.piranha.PropertyHolder;
-import com.joyent.piranha.pageobject.InstanceDetails;
+import com.joyent.piranha.pageobject.instancedetails.InstanceDetails;
 import com.joyent.piranha.pageobject.Login;
 import com.joyent.piranha.pageobject.NavBarMenu;
 import com.joyent.piranha.pageobject.SideBarMenu;
 import com.joyent.piranha.util.TestWrapper;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import static com.codeborne.selenide.Condition.text;

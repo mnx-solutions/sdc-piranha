@@ -3,12 +3,10 @@ package com.joyent.piranha.pageobject;
 import com.codeborne.selenide.SelenideElement;
 import com.joyent.piranha.Common;
 import com.joyent.piranha.PropertyHolder;
+import com.joyent.piranha.pageobject.instancedetails.InstanceDetails;
+import org.openqa.selenium.By;
 
-import static com.codeborne.selenide.Condition.disappear;
-import static com.codeborne.selenide.Condition.hasText;
-import static com.codeborne.selenide.Condition.hidden;
-import static com.codeborne.selenide.Condition.text;
-import static com.codeborne.selenide.Condition.visible;
+import static com.codeborne.selenide.Condition.*;
 import static com.codeborne.selenide.Selectors.byText;
 import static com.codeborne.selenide.Selenide.$;
 import static com.codeborne.selenide.Selenide.$$;
@@ -75,13 +73,14 @@ public class InstanceList extends AbstractPageObject {
         getRowByText("object in pagedItems", instance).$("label.checkbox").click();
         performAction("Delete");
         clickButtonInModal("Yes");
+        waitForSmallSpinnerDisappear();
     }
 
     public String getFirstInstanceName() {
         waitForInstanceList();
         String name;
-        $("tbody tr", 1).shouldBe(visible);
-        $("tbody tr", 1).$(".status").shouldBe(visible);
+        $("tbody tr", 0).shouldBe(visible);
+        $("tbody tr", 0).$(".status").shouldBe(visible);
         name = $("tbody tr", 0).$("td", 1).$("div a").getText();
         return name;
     }
@@ -115,5 +114,19 @@ public class InstanceList extends AbstractPageObject {
     public InstanceDetails openInstanceDetails(String instanceName) {
         $(byText(instanceName)).click();
         return new InstanceDetails(instanceName);
+    }
+
+    public InstanceDetails openFirstInstanceDetails() {
+        String instanceName = getFirstInstanceName();
+        $(byText(instanceName)).click();
+        return new InstanceDetails(instanceName);
+    }
+
+    public void selectInstance(String name) {
+        getRowByText(GRID_ROW_REPEATER, name).$(".checkbox").click();
+    }
+
+    public void openGridTab(String tabName) {
+        $(By.xpath("//span[@data-ng-repeat=\"filter in tabFilters\" and contains(.,'" + tabName + "')]")).click();
     }
 }

@@ -4,6 +4,9 @@ import com.codeborne.selenide.WebDriverRunner;
 import com.joyent.piranha.Common;
 import com.joyent.piranha.PropertyHolder;
 import com.joyent.piranha.pageobject.*;
+import com.joyent.piranha.pageobject.CreateInstanceManual;
+import com.joyent.piranha.pageobject.Instances;
+import com.joyent.piranha.pageobject.instancedetails.InstanceDetails;
 import com.joyent.piranha.util.TestWrapper;
 import org.junit.*;
 
@@ -134,22 +137,22 @@ public class SmokeTest extends TestWrapper {
         String instanceName = "selenide-created-instance";
         String[] inst = Common.instanceProperties();
         final Dashboard dashboard = sideBarMenu.clickDashboard();
-        final CreateInstance createInstance = dashboard.clickCreateComputeInstance();
-        createInstance.clickAllPublicImagesLink();
-        createInstance.selectDataCenter(DATACENTER);
-        createInstance.waitUntilPageIsActive(0);
-        createInstance.selectOsFilter("smartos");
-        createInstance.selectOsImage(inst[0]);
-        createInstance.waitUntilPageIsActive(1);
-        createInstance.selectPackage(inst[3]);
-        createInstance.clickReviewBtn();
-        createInstance.checkSelectedImageDescription(inst[4]);
-        createInstance.checkPackageInfo(inst[5], inst[6], inst[7], inst[3]);
-        createInstance.checkPaymentInfo(inst[8], inst[9]);
-        createInstance.setInstanceNameValue(instanceName);
-        createInstance.selectNetwork(0);
-        createInstance.clickCreateInstanceButton();
-        createInstance.cancelInstanceCreation();
+        final CreateInstanceManual createInstanceManual = dashboard.clickCreateComputeInstance();
+        createInstanceManual.clickAllPublicImagesLink();
+        createInstanceManual.selectDataCenter(DATACENTER);
+        createInstanceManual.waitUntilPageIsActive(0);
+        createInstanceManual.selectOsFilter("smartos");
+        createInstanceManual.chooseImage(inst[0]);
+        createInstanceManual.waitUntilPageIsActive(1);
+        createInstanceManual.selectPackage(inst[3]);
+        createInstanceManual.clickReviewBtn();
+        createInstanceManual.checkSelectedImageDescription(inst[4]);
+        createInstanceManual.checkPackageInfo(inst[5], inst[6], inst[7], inst[3]);
+        createInstanceManual.checkPaymentInfo(inst[8], inst[9]);
+        createInstanceManual.setInstanceNameValue(instanceName);
+        createInstanceManual.selectNetwork(0);
+        createInstanceManual.clickCreateInstanceButton();
+        createInstanceManual.cancelInstanceCreation();
     }
 
     @Test
