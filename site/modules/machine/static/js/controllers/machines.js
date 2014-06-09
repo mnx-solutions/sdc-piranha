@@ -237,7 +237,7 @@
                     active: true,
                     _getter: function (machine) {
                         if (machine.image && $scope.datasetsInfo) {
-                            return $scope.datasetsInfo[machine.image] || '';
+                            return $scope.datasetsInfo[machine.image] || '– deleted –';
                         }
                         return '';
                     }

@@ -185,6 +185,8 @@
                     }
 
                     $scope.datasetType = type;
+                }, function () {
+                    $scope.dataset = {name: '– deleted –'};
                 });
             });
 
