@@ -3,14 +3,12 @@
 (function (ng, app) {
     app.controller('Dashboard.IndexController', [
         '$scope',
-        '$$track',
         '$q',
         'requestContext',
         'Account',
         'Zendesk',
         'Machine',
         'localization',
-        'BillingService',
         '$http',
         '$cookies',
         'slb.Service',
@@ -22,7 +20,7 @@
         'Datacenter',
         'FreeTier',
 
-        function ($scope, $$track, $q, requestContext, Account, Zendesk, Machine, localization, BillingService, $http, $cookies, slbService, $rootScope, Support, fileman, Utilization, util, Datacenter, FreeTier) {
+        function ($scope, $q, requestContext, Account, Zendesk, Machine, localization, $http, $cookies, slbService, $rootScope, Support, fileman, Utilization, util, Datacenter, FreeTier) {
             localization.bind('dashboard', $scope);
             requestContext.setUpRenderContext('dashboard.index', $scope);
             $scope.loading = true;
@@ -55,19 +53,17 @@
 
 //                $scope.forums      = Zendesk.getForumsList();
             $scope.forums = {
-                'Getting Started': 'http://wiki.joyent.com/gettingstarted',
+                'Getting Started': 'http://wiki.joyent.com/wiki/display/jpc2/Getting+Started+with+your+Joyent+Cloud+Account',
                 'Setting Up Your Application': 'http://wiki.joyent.com/wiki/display/jpc2/Setting+Up+an+Application',
-                'Managing Your SmartOS Instances': 'http://wiki.joyent.com/wiki/display/jpc2/Managing+a+SmartMachine',
+                'Managing Your SmartOS Instances': 'http://wiki.joyent.com/wiki/display/jpc2/Managing+a+SmartOS+Instance',
                 'Managing Your Linux and Windows Instances': 'http://wiki.joyent.com/wiki/display/jpc2/Managing+a+Virtual+Machine',
                 'Managing Your Infrastructure': 'http://wiki.joyent.com/wiki/display/jpc2/Managing+Infrastructure',
                 'Running Node.js Application on Joyent': 'http://wiki.joyent.com/wiki/display/jpc2/Using+Node.js',
-                'Images Available on Joyent': 'http://wiki.joyent.com/wiki/display/jpc2/Available+Joyent+Public+Cloud+Machine+Images'
+                'Images Available on Joyent': 'http://wiki.joyent.com/wiki/display/jpc2/Joyent+Cloud+Images'
             };
             $scope.softwareUpdateTopics = Zendesk.getSoftwareUpdateTopics();
             $scope.machines = Machine.machine();
             $scope.gotoCreatePage = Machine.gotoCreatePage;
-
-//                $scope.lastInvoice = BillingService.getLastInvoice();
 
             // get campaign id from the cookie
             $scope.campaignId = ($cookies.campaignId || 'default');
