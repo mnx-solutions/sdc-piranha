@@ -63,12 +63,7 @@
                 "ghost": "ghost",
                 "postgresql": "postgresql",
                 "debian-7": "debian",
-                "ScaleArc-MSSQL-Enterprise-2CPU-2GB": "scalearc",
-                "ScaleArc-MySQL-Enterprise-1CPU-1GB": "scalearc",
-                "ScaleArc-MySQL-Enterprise-2CPU-2GB": "scalearc",
-                "ScaleArc-MySQL-Enterprise-5CPU-10GB": "scalearc",
-                "ScaleArc-MySQL-Platinum-2CPU-2GB": "scalearc",
-                "ScaleArc-MySQL-Platinum-5CPU-32GB": "scalearc",
+                "scalearc": "scalearc",
                 "nginx": "nginx"
             };
 
