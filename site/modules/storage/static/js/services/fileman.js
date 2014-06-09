@@ -1,26 +1,37 @@
+"use strict";
+
 (function (app) {
-    "use strict";
 
     app.factory('fileman', [
         'serverTab', 'Account',
         function (serverTab, Account) {
             var fileman = {};
 
-            function createMethod(name) {
+            function createMethod(name, isAbsolutePath) {
                 return function (path, data, callback) {
                     if (typeof (data) === 'function') {
                         callback = data;
                         data = {};
                     }
-                    Account.getAccount().then(function (account) {
-                        data.path = '/' + account.login + '/' + path;
-                        data.originPath = path;
+
+                    data.originPath = path;
+                    if (isAbsolutePath) {
+                        data.path = path;
                         serverTab.call({
                             name: name,
                             data: data,
                             done: callback
                         });
-                    });
+                    } else {
+                        Account.getAccount().then(function (account) {
+                            data.path = '/' + account.login + '/' + path;
+                            serverTab.call({
+                                name: name,
+                                data: data,
+                                done: callback
+                            });
+                        });
+                    }
                 };
             }
 
@@ -30,12 +41,14 @@
 
             fileman.ls = createMethod('FileManList');
 
+            fileman.lsAbsolute = createMethod('FileManList', true);
+
             fileman.get = function (path, show) {
                 Account.getAccount().then(function (account) {
                     if (show) {
                         window.open('storage/show?path=' + path, '_blank');
                     } else {
-                        location.href = 'storage/download?path=' + '/' + account.login + '/' + path;
+                        window.location.href = 'storage/download?path=' + '/' + account.login + '/' + path;
                     }
                 });
             };
@@ -45,6 +58,8 @@
             fileman.unlink = createMethod('FileManDeleteFile');
 
             fileman.info = createMethod('FileManInfo');
+
+            fileman.infoAbsolute = createMethod('FileManInfo', true);
 
             fileman.put = createMethod('FileManPut');
 

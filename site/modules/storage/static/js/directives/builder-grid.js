@@ -1,7 +1,7 @@
 'use strict';
 
 (function (app) {
-    app.directive('builderGrid', ['PopupDialog', 'localization', 'Account', function (PopupDialog, localization, Account) {
+    app.directive('builderGrid', ['PopupDialog', 'localization', 'Account', 'fileman', function (PopupDialog, localization, Account, fileman) {
         return {
             restrict: 'EA',
             scope: {
@@ -48,6 +48,24 @@
                     ];
                 };
 
+                function showPopupDialog(level, title, message, callback) {
+                    return PopupDialog[level](
+                        title ? localization.translate(scope, null, title) : null,
+                        message ? localization.translate(scope, null, message) : null,
+                        callback
+                    );
+                }
+
+                function pushUnique(objects, path) {
+                    var isUnique = !objects.some(function (e) { return e.filePath === path; });
+                    if (isUnique) {
+                        objects.push({
+                            filePath: path,
+                            create_at: new Date()
+                        });
+                    }
+                }
+
                 scope.newFilePath = function () {
                     var opts = {
                         templateUrl: 'storage/static/partials/add.html',
@@ -58,10 +76,30 @@
                         opts,
                         function (result) {
                             if (result && result.value === 'add') {
-                                scope.objects.push({
-                                    filePath: result.filePath,
-                                    create_at: new Date(),
-                                    id: new Date().getTime()
+                                var filePath = result.filePath;
+                                fileman.infoAbsolute(filePath, function (error, info) {
+                                    if (error) {
+                                        return showPopupDialog('error', 'Error', error);
+                                    }
+                                    var filePathInfo = info.__read();
+                                    if (filePathInfo.extension === 'directory') {
+                                        fileman.lsAbsolute(filePath, function (err, ls) {
+                                            if (err) {
+                                               return showPopupDialog('error', 'Error', err);
+                                            }
+                                            var files = ls.__read();
+                                            files.forEach(function (file) {
+                                               if (file.type !== 'directory') {
+                                                   var path = file.parent + '/' + file.path;
+                                                   pushUnique(scope.objects, path);
+                                               }
+                                            });
+                                            return files;
+                                        });
+                                    } else {
+                                        pushUnique(scope.objects, filePath);
+                                    }
+                                    return filePath;
                                 });
                             }
                         }
@@ -104,18 +142,7 @@
                 scope.placeHolderText = 'filter';
 
                 var noCheckBoxChecked = function () {
-                    PopupDialog.error(
-                        localization.translate(
-                            scope,
-                            null,
-                            'Error'
-                        ),
-                        localization.translate(
-                            scope,
-                            null,
-                            'No item selected for the action.'
-                        ), function () {}
-                    );
+                    showPopupDialog('error', 'Error', 'No item selected for the action.');
                 };
 
                 scope.getCheckedItems = function (obj) {
