@@ -3,43 +3,55 @@
 (function (ng, app) {
     app.controller('Machine.ImageDetailsController', [
         '$scope',
-        '$cookieStore',
-        '$filter',
         '$$track',
-        '$q',
         'requestContext',
         'Image',
         'localization',
         'PopupDialog',
-        '$http',
         '$location',
-        'Account',
-        '$timeout',
+        'Machine',
 
-        function ($scope, $cookieStore, $filter, $$track, $q, requestContext, Image, localization, PopupDialog, $http, $location, Account, $timeout) {
+        function ($scope, $$track, requestContext, Image, localization, PopupDialog, $location, Machine) {
             localization.bind('machine', $scope);
             requestContext.setUpRenderContext('machine.images-details', $scope, {
-                title: localization.translate(null, 'machine', 'Image List')
+                title: localization.translate(null, 'machine', 'Image Details')
             });
 
-            var currentImage = requestContext.getParam('currentImage');
+            var currentImageId = requestContext.getParam('currentImage');
 
-            $scope.loading = true;
-            $scope.loadingNewName = false;
-            $scope.changingName = false;
-            $scope.incorrectNameMessage = "can contain only letters, digits and signs like '.' and '-'.";
-
-            $scope.$watch('images.final', function (final) {
-                if (final) {
-                    $scope.images.forEach(function (image) {
-                        if (image.id === currentImage) {
-                            $scope.currentImage = image;
-                        }
+            $scope.$watch('images.final', function (isFinal) {
+                if (isFinal) {
+                    $scope.currentImage = $scope.images.find(function (image) {
+                        return image.id === currentImageId;
                     });
-                    $scope.loading = false;
-                    $scope.loadingNewName = false;
                 }
             });
+
+            $scope.machines = Machine.machine();
+            $scope.$watch('machines.final', function (isFinal) {
+                if (isFinal) {
+                    $scope.machines = $scope.machines.filter(function (machine) {
+                        return machine.image === currentImageId;
+                    });
+                }
+            });
+            $scope.machinesGridOrder = [];
+
+            $scope.machinesGridProps = [
+                {
+                    id: 'machineName',
+                    name: 'Name',
+                    type: 'html',
+                    active: true,
+                    hideSorter: true,
+                    _getter: function (object) {
+                        return '<a href="#!/compute/instance/' + object.id + '">' + object.name + '</a>';
+                    }
+                }
+            ];
+            $scope.machinesGridExportFields = {
+                ignore: 'all'
+            };
 
             $scope.$on(
                 'event:forceUpdate',
@@ -47,6 +59,26 @@
                     $scope.images = Image.image(true);
                 }
             );
+
+            $scope.deleteImage = function () {
+                PopupDialog.confirm(
+                    localization.translate(
+                        $scope,
+                        null,
+                        'Confirm: Delete image'
+                    ),
+                    localization.translate(
+                        $scope,
+                        'machine',
+                        'Are you sure you want to delete this image?'
+                    ), function () {
+                        $$track.event('image', 'delete');
+                        Image.deleteImage($scope.currentImage).job.deferred.then(function () {
+                            $location.url('/images');
+                            $location.replace();
+                        });
+                    });
+            };
         }
     ]);
 }(window.angular, window.JP.getModule('Machine')));

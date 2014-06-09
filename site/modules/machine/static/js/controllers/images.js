@@ -87,10 +87,16 @@
                     reverseSort: true
                 },
                 {
+                    id: 'state',
+                    name: 'State',
+                    sequence: 5,
+                    active: true
+                },
+                {
                     id: 'parsed',
                     name: 'Action',
                     type: 'button',
-                    sequence: 5,
+                    sequence: 6,
                     active: true,
                     btn: {
                         label: 'Create instance',
@@ -108,19 +114,19 @@
                 {
                     id: 'datacenter',
                     name: 'Data Center',
-                    sequence: 6,
+                    sequence: 7,
                     active: false
                 },
                 {
                     id: 'version',
                     name: 'Version',
-                    sequence: 7,
+                    sequence: 8,
                     active: false
                 },
                 {
                     id: 'id',
                     name: 'UUID',
-                    sequence: 8,
+                    sequence: 9,
                     active: false
                 }
             ];
@@ -144,6 +150,51 @@
                     id: 'public',
                     name: "Public",
                     sequence: 4
+                }
+            ];
+
+            $scope.gridActionButtons = [
+                {
+                    label: 'Delete',
+                    action: function () {
+                        var checkedImages = $scope.images.filter(function (image) {
+                            return image.checked;
+                        });
+                        if (checkedImages.length > 0) {
+                            PopupDialog.confirm(
+                                localization.translate(
+                                    $scope,
+                                    null,
+                                    'Confirm: Delete images'
+                                ),
+                                localization.translate(
+                                    $scope,
+                                    null,
+                                    'Are you sure you want to delete these images?'
+                                ), function () {
+                                    checkedImages.forEach(function (image) {
+                                        $$track.event('image', 'delete');
+                                        Image.deleteImage(image);
+                                        image.checked = false;
+                                    });
+                                }
+                            );
+                        } else {
+                            PopupDialog.error(
+                                localization.translate(
+                                    $scope,
+                                    null,
+                                    'Error'
+                                ),
+                                localization.translate(
+                                    $scope,
+                                    null,
+                                    'No image selected for the action.'
+                                )
+                            );
+                        }
+                    },
+                    sequence: 1
                 }
             ];
 
