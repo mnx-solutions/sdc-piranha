@@ -42,11 +42,11 @@
 }
 
 .utilization .tile .right-block {
-    max-width: 40%;
+    max-width: 43%;
 }
 
 .utilization .tile .left-block.has-right-block {
-    max-width: 38%;
+    max-width: 49%;
 }
 
 .utilization .tile .left-block .desc,

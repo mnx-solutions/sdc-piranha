@@ -4,25 +4,25 @@
         <ul class="breadcrumb">
             <li><a href="#!/accounts/users">Users</a>&nbsp;/</li>
         </ul>
-        <div class="page-header row-fluid">
+        <div class="page-header row">
             <h3 class="page-title" data-ng-hide="user.isNew">User Details</h3>
             <h3 class="page-title" data-ng-show="user.isNew">Create User</h3>
             <div class="beta-sticker">beta</div>
         </div>
-        <div class="loading-large span12" data-ng-show="loading"></div>
-        <div class="row-fluid" data-ng-hide="loading">
-            <div class="pull-left span6">
-                <div class="accordion" id="accordionEditUserLeft">
-                    <div class="accordion-group">
-                        <div class="accordion-heading">
+        <div class="loading-large col-md-12" data-ng-show="loading"></div>
+        <div class="row" data-ng-hide="loading">
+            <div class="pull-left col-md-6 rbac-column">
+                <div class="panel-group" id="accordionEditUserLeft">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
                             <a class="accordion-toggle toggle-icon" data-toggle="collapse" data-target="#collapse_basic">
                                 Basic Information
                             </a>
                         </div>
-                        <div id="collapse_basic" class="accordion-body collapse in">
-                            <div class="accordion-inner">
+                        <div id="collapse_basic" class="panel-collapse collapse in">
+                            <div class="panel-body">
                                 <div data-ng-show="user.id.length">
-                                    <div class="control-group">
+                                    <div class="form-group">
                                         <span class="edit-name" data-translate>
                                             User ID
                                         </span>
@@ -36,7 +36,7 @@
                                 </div>
                                 <div data-add-sub-account data-user="user"></div>
                                 <div data-ng-show="user.created.length">
-                                    <div class="control-group">
+                                    <div class="form-group">
                                         <span class="edit-name" data-translate>
                                             Created
                                         </span>
@@ -49,7 +49,7 @@
                                     </div>
                                 </div>
                                 <div data-ng-show="user.updated.length">
-                                    <div class="control-group">
+                                    <div class="form-group">
                                         <span class="edit-name" data-translate>
                                             Updated
                                         </span>
@@ -67,16 +67,16 @@
                 </div>
             </div>
 
-            <div class="pull-left span6" data-ng-hide="loading">
-                <div class="accordion" id="accordionEditUserRight">
-                    <div class="accordion-group">
-                        <div class="accordion-heading">
+            <div class="pull-left col-md-6 rbac-column" data-ng-hide="loading">
+                <div class="panel-group" id="accordionEditUserRight">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
                             <a class="accordion-toggle toggle-icon" data-toggle="collapse" data-target="#collapse_roles">
                                 Roles
                             </a>
                         </div>
-                        <div id="collapse_roles" class="accordion-body collapse in">
-                            <div class="accordion-inner">
+                        <div id="collapse_roles" class="panel-collapse collapse in">
+                            <div class="panel-body">
                                 <div data-ng-hide="roles.length">Roles is not available, click to <a class="orange" href="#!/accounts/role/create">Create Role</a></div>
                                 <div data-ng-show="roles.length">
                                     <multi-select id="rolesSelect"
@@ -94,22 +94,22 @@
             </div>
         </div>
 
-        <div class="accordion" id="accordionSSH" data-ng-show="!loading && user.id">
-            <div class="accordion-group">
-                <div class="accordion-heading">
+        <div class="panel-group" id="accordionSSH" data-ng-show="!loading && user.id">
+            <div class="panel panel-default">
+                <div class="panel-heading">
                     <a class="accordion-toggle toggle-icon" data-toggle="collapse" data-target="#collapse_ssh">
                         SSH
                     </a>
                 </div>
-                <div id="collapse_ssh" class="accordion-body collapse in">
-                    <div class="accordion-inner">
+                <div id="collapse_ssh" class="panel-collapse collapse in">
+                    <div class="panel-body">
                         <div data-ssh-form></div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <div class="row-fluid btn-bottom-block" data-ng-show="!loading">
+        <div class="row btn-bottom-block" data-ng-show="!loading">
             <div class="pull-right" data-ng-hide="user.isNew">
                 <button class="btn light effect-orange-button" data-ng-click="cancel()">Cancel</button>
                 <button class="btn light effect-orange-button" data-ng-click="deleteUser()">Delete</button>

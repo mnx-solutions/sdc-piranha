@@ -3,9 +3,9 @@
         <span class="key-name">Key Name</span>
         <span class="key-hash"> / UUID</span>
     </div>
-    <div class="accordion" id="accordion-ssh-keys">
-        <div class="accordion-group" data-ng-repeat="key in keys | reverse">
-            <div class="accordion-heading">
+    <div class="panel-group" id="accordion-ssh-keys">
+        <div class="panel panel-default" data-ng-repeat="key in keys | reverse">
+            <div class="panel-heading">
                 <span class="accordion-toggle collapsed toggle-icon" data-toggle="collapse" data-parent="#accordion-ssh-keys"
                       data-target="#collapse_{{$id}}">
                     <span class="key-name">{{ getKeyName(key) }}</span>
@@ -16,16 +16,16 @@
 
                 </span>
             </div>
-            <div id="collapse_{{$id}}" class="accordion-body collapse">
-                <div class="accordion-inner">
+            <div id="collapse_{{$id}}" class="panel-collapse collapse">
+                <div class="panel-body">
                     <div class="key-info">
                         <div class="key-info-content">
-                            <div class="row-fluid">
+                            <div class="row">
                                 <span class="txt-name" data-translate>Fingerprint</span>
                                 <span class="txt-value">{{key.fingerprint}}</span>
                             </div>
 
-                            <div class="row-fluid">
+                            <div class="row">
                                 <span class="txt-name" data-translate>Key</span>
                                 <span class="ssh-key-value" >{{key.key}}</span>
                             </div>
@@ -36,7 +36,7 @@
         </div>
     </div>
         <!-- Part shown when user has keys -->
-    <div class="row-fluid">
+    <div class="row">
         <div class="item-list-container">
             <div data-ng-show="keys.length < 1 && !loadingKeys">
                 <div class="no-ssh-key-message">{{noKeysMessage || 'You don\'t have any SSH keys'}}</div>

@@ -6,35 +6,32 @@
         <li data-ng-show="!balancerId">Load Balancers&nbsp;/</li>
         <li data-ng-show="balancerId"><a href="#!/slb/detail/{{balancerId}}">Details</a>&nbsp;/</li>
     </ul>
-    <div class="page-header row-fluid">
+    <div class="page-header row">
         <h3 class="page-title" data-ng-show="balancerId" data-translate>Edit Load Balancer</h3>
         <h3 class="page-title" data-ng-hide="balancerId" data-translate>Create Load Balancer</h3>
         <div class="beta-sticker">beta</div>
     </div>
     <div data-ng-form name="editForm">
-        <div class="clearfix"></div>
         <div class="loading-large" data-ng-hide="allLoading"></div>
-        <div class="row-fluid lb-edit" data-ng-show="allLoading">
-            <div class="span5 table-right-border">
+        <div class="row lb-edit" data-ng-show="allLoading">
+            <div class="col-md-5 table-right-border">
                 <legend data-translate>Load Balancer</legend>
-                <div>
-                    <span class="span2 lb-label" data-translate>Name</span>
-                    <span class="span9 name-input">
+                <div class="clearfix">
+                    <span class="col-md-2 lb-label" data-translate>Name</span>
+                    <span class="col-md-9 name-input">
                         <input name="name" type="text" required data-ng-model="server.name"/>
                     </span>
                 </div>
-                <div class="clearfix"></div>
                 <div data-ng-show="balancerId">
-                    <span class="span2" data-translate>IP</span>
-                    <span class="span9 balancer-id">
+                    <span class="col-md-2 lb-label lb-label-ip" data-translate>IP</span>
+                    <span class="col-md-9 balancer-id">
                         {{server.host}}
                     </span>
                 </div>
-                <div class="clearfix"></div>
-                <div>
-                    <span class="span3 lb-label" data-translate>Protocol</span>
+                <div class="clearfix">
+                    <span class="col-md-3 lb-label" data-translate>Protocol</span>
 
-                    <div class="tooltip-hover span8 dd-margin protocol-pos"
+                    <div class="tooltip-hover col-md-8 dd-margin protocol-pos"
                          data-toggle="tooltip"
                          data-placement="bottom">
                         <select data-select-two id="protocolSelect" data-width="100px" class="slb-select" data-select="protocolSelected.name" data-fn="protocolSelect">
@@ -46,22 +43,18 @@
                             <span data-cert-upload model="server.certificate"></span>
                         </span>
                     </div>
-
-
                 </div>
-                <div class="clearfix"></div>
-                <div>
-                    <span class="span3 lb-label e-port" data-translate>Port</span>
+                <div class="clearfix">
+                    <span class="col-md-3 lb-label e-port" data-translate>Port</span>
                     <span class="port-input port-m">
                         <input name="fromPort" type="text" pattern="\d*" required data-ng-model="server.fromPort"
                                data-ng-change="validatePort('fromPort')"/>
                     </span>
                 </div>
-                <div class="clearfix"></div>
-                <div>
-                    <span class="span3 lb-label" data-translate>Data Center</span>
+                <div class="clearfix">
+                    <span class="col-md-3 lb-label" data-translate>Data Center</span>
 
-                    <div class="btn-group tooltip-hover span4 dd-margin protocol-pos"
+                    <div class="btn-group tooltip-hover dd-margin protocol-pos"
                          data-toggle="tooltip"
                          data-placement="bottom"
                          data-ng-hide="true">
@@ -76,27 +69,24 @@
                             </li>
                         </ul>
                     </div>
-                    <span class="span8 datacenter-name">
+                    <span class="col-md-8 datacenter-name">
                         {{datacenterSelected.name}}
                     </span>
                 </div>
-                <div class="clearfix"></div>
                 <div style="margin-top: 10px;" class="lb-line"></div>
 
                 <legend data-translate>Health Check</legend>
 
-                <div class="clearfix"></div>
-                <div data-ng-show="protocolSelected.name == 'HTTP' || protocolSelected.name == 'HTTPS'">
-                    <span class="span2 lb-label" data-translate>URL</span>
-                    <span class="span9 name-input">
+                <div class="clearfix" data-ng-show="protocolSelected.name == 'HTTP' || protocolSelected.name == 'HTTPS'">
+                    <span class="col-md-2 lb-label" data-translate>URL</span>
+                    <span class="col-md-9 name-input">
                         <input type="text" data-ng-model="server.health.url" class="url-input"/>
                     </span>
                 </div>
-                <div class="clearfix"></div>
-                <div>
-                    <span class="span3 lb-label" data-translate>Timeout</span>
+                <div class="clearfix">
+                    <span class="col-md-3 lb-label" data-translate>Timeout</span>
 
-                    <div class="tooltip-hover span3 dd-margin protocol-pos"
+                    <div class="btn-group tooltip-hover col-md-3 dd-margin protocol-pos"
                          data-toggle="tooltip"
                          data-placement="bottom">
 
@@ -107,11 +97,10 @@
                         </select>
                     </div>
                 </div>
-                <div class="clearfix"></div>
-                <div class="protocol-block">
-                    <span class="span3 hc-interval" data-translate>HC Interval</span>
+                <div class="protocol-block clearfix">
+                    <span class="col-md-3 hc-interval lb-label" data-translate>HC Interval</span>
 
-                    <div class="tooltip-hover span3 dd-margin protocol-pos"
+                    <div class="btn-group tooltip-hover col-md-3 dd-margin protocol-pos"
                          data-toggle="tooltip"
                          data-placement="bottom">
 
@@ -122,10 +111,9 @@
                         </select>
                     </div>
                 </div>
-                <div class="clearfix"></div>
-                <div class="protocol-block">
-                    <span class="span2 two-line" data-translate>Failure Threshold</span>
-                    <span class="span9">
+                <div class="protocol-block clearfix">
+                    <span class="col-md-2 two-line lb-label" data-translate>Failure Threshold</span>
+                    <span class="col-md-9">
                         <input name="failThreshold" type="text" class="short-input"
                                data-ng-model="server.health.failThreshold"
                                data-ng-change="checkInteger('failThreshold')"/>
@@ -133,16 +121,15 @@
                 </div>
             </div>
 
-            <div class="span7 table-overflow">
+            <div class="col-md-7 table-overflow">
                 <legend data-translate>Instances</legend>
                 <div>
-                    <span class="span3 lb-label" data-translate>Port</span>
-                    <span class="span3">
+                    <span class="col-md-3 lb-label" data-translate>Port</span>
+                    <span class="col-md-3">
                         <input class="short-input short-input-port" name="toPort" type="text" pattern="\d*" required data-ng-model="server.toPort"
                                data-ng-change="validatePort('toPort', true)"/>
                     </span>
                 </div>
-                <div class="clearfix"></div>
                 <table class="table table-striped table-bordered table-hover table-full-width">
                     <thead>
                     <tr>
@@ -187,18 +174,18 @@
             </div>
         </div>
 
-    <span class="span12" data-ng-show="allLoading">
-        <p class="logo-riverbed pull-left" data-translate>Powered by</p>
-        <button data-ng-disabled="saving" data-ng-click="save()"
-                class="btn orange pull-right edit-btn-pos">
-            <span data-ng-show="balancerId" class="ng-scope" data-translate>Update</span>
-            <span data-ng-hide="balancerId" class="ng-scope" data-translate>Create</span>
-        </button>
-        <button data-ng-show="balancerId" data-ng-disabled="!editForm.$valid" data-ng-click="delete()"
-                class="btn light pull-right delete-btn-pos" data-translate="">
-            <span class="ng-scope" data-translate>Delete</span>
-        </button>
-        <div class="pull-right loading-medium load-pos" data-ng-show="saving"></div>
-    </span>
+        <span class="col-md-10 clearfix" data-ng-show="allLoading">
+            <p class="logo-riverbed pull-left" data-translate>Powered by</p>
+            <button data-ng-disabled="saving" data-ng-click="save()"
+                    class="btn orange pull-right edit-btn-pos">
+                <span data-ng-show="balancerId" class="ng-scope" data-translate>Update</span>
+                <span data-ng-hide="balancerId" class="ng-scope" data-translate>Create</span>
+            </button>
+            <button data-ng-show="balancerId" data-ng-disabled="!editForm.$valid" data-ng-click="delete()"
+                    class="btn light pull-right delete-btn-pos" data-translate="">
+                <span data-translate>Delete</span>
+            </button>
+            <div class="pull-right loading-medium load-pos" data-ng-show="saving"></div>
+        </span>
     </div>
 </div>

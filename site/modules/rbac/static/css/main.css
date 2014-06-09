@@ -100,24 +100,24 @@ h4 {
 }
 
 /*TODO Move*/
-.accordion-group {
+.panel .panel-default {
     margin-bottom: 5px;
     border: 0 none;
 }
-.accordion-heading {
+.panel-heading {
     border-bottom: 0;
     background: #f5f5f5;
 }
-.accordion-inner {
+.panel-body {
     border-top: 0 !important;
     padding: 9px 0;
 }
-.accordion-heading .accordion-toggle {
+.panel-heading .accordion-toggle {
     display: block;
     padding: 8px 15px;
     cursor: pointer;
 }
-.accordion-heading a {
+.panel-heading a {
     color: black;
     text-decoration: none;
     font-weight: 500;
@@ -136,12 +136,13 @@ label.name {
     text-align: right;
 }
 .role label.name {
+    box-sizing: content-box;
     width: 45px;
 }
 .rules label.name,
 .new-rule label.name,
 .rule-edit label.name {
-    width: 56px;
+    width: 65px;
 }
 .rules label.name {
     height: 16px;
@@ -157,14 +158,17 @@ label.name {
 }
 .edit-error {
     display: block;
-    margin-top: -8px;
+    margin-top: 2px;
     width: 481px;
     text-align: right;
     letter-spacing: -0.1px;
 }
 
 input.policy-form {
-    width: 330px;
+    width: 345px;
+}
+.rule-edit input.policy-form {
+    margin-bottom: 10px;
 }
 select.policy-form {
     width: 345px !important;
@@ -212,6 +216,18 @@ select.policy-form {
 .container-position {
     padding-bottom: 25px;
 }
-.page-title-btn {
-    margin-top: -83px;
+.container-min-width {
+    box-sizing: content-box;
+}
+label {
+    font-weight: normal;
+    white-space: nowrap;
+}
+input {
+    height: 30px;
+    color: #555;
+    text-indent: 4px;
+}
+.sub-account-form .edit-value-double .input-group input {
+    width: 113px !important;
 }

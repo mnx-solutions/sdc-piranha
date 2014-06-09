@@ -1,8 +1,8 @@
-<div class="{{currentStep && 'row-fluid' || ''}} ">
-    <form name="accountForm" class="row-fluid">
+<div class="{{currentStep && 'row' || ''}} ">
+    <form name="accountForm" class="row">
         <fieldset class="line">
             <legend data-translate data-ng-hide="currentStep">Contact Information</legend>
-            <div class="control-group">
+            <div class="form-group">
                 <span class="edit-name" data-translate>
                     First Name
                 </span>
@@ -23,7 +23,7 @@
                 </span>
             </div>
 
-            <div class="control-group">
+            <div class="form-group">
                 <span class="edit-name" data-translate>
                     Last Name
                 </span>
@@ -44,7 +44,7 @@
                 </span>
             </div>
 
-            <div class="control-group">
+            <div class="form-group">
                 <span class="edit-name">Email Address</span>
                 <span class="edit-value">
                     <input type="email"
@@ -68,7 +68,7 @@
                 </span>
             </div>
 
-            <div class="control-group">
+            <div class="form-group">
                 <span class="edit-name">Company Name</span>
                 <span class="edit-value">
                     <input type="text"
@@ -85,7 +85,7 @@
                     </div>
                 </span>
             </div>
-            <div class="control-group">
+            <div class="form-group">
                 <span class="edit-name" data-translate>Phone</span>
                 <div data-phone-number data-number="account.phone" data-country="{{account.country}}"
                      data-is-error="isError(field, type)" data-required="true"></div>

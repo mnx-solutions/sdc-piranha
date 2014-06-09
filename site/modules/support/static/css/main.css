@@ -95,17 +95,17 @@
 }
 
 .package-holder .control p {
+    float: left;
+    margin-top: 13px;
+    padding-right: 10px;
+    vertical-align: bottom;
     font-size: 16px;
     line-height: 14px;
-    vertical-align: bottom;
-    float: left;
-    margin-top: 17px;
-    padding-right: 10px;
 }
 
 .control p.fees {
     float: none;
-    margin: -15px 0 45px;
+    margin: 0 0 45px;
     min-height: 20px;
     line-height: 19px;
 }
@@ -152,22 +152,23 @@
 }
 
 .package-holder .info {
+    display: inline-block;
+    box-sizing: content-box;
+    margin-left: 10px;
+    padding: 2px;
     width: 16px;
     height: 16px;
-    color: #e9eff3;
     -webkit-border-radius: 50%;
     -moz-border-radius: 50%;
     border-radius: 50%;
     background-color: #5d8096;
-    text-align: center;
-    padding: 2px;
-    line-height: 16px;
-    font-size: 16px;
-    font-weight: 400;
-    display: inline-block;
-    margin-left: 10px;
-    text-decoration: none;
+    color: #e9eff3;
     vertical-align: top;
+    text-align: center;
+    text-decoration: none;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 16px;
 }
 
 .package-holder:hover .info {

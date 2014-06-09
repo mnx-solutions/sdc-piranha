@@ -1,9 +1,5 @@
-.navbar-inner {
-    -webkit-border-radius: 0px;
-    -moz-border-radius: 0px;
+.navbar-container {
     border-radius: 0px;
-    -webkit-box-shadow: 0 1px 4px rgba(0, 0, 0, 0.065);
-    -moz-box-shadow: 0 1px 4px rgba(0, 0, 0, 0.065);
     box-shadow: 0 1px 4px rgba(0, 0, 0, 0.065);
 
 }
@@ -23,47 +19,24 @@
     padding:10px;
 }
 
-.navbar-inverse,.navbar-inner  {
-    background-color:#dee4e9 !important;
-    /*border-bottom:1px solid #d7dee2 !important;*/
-    color:#375775;
-    /*margin-bottom:30px;*/
-    /*overflow:hidden;*/
+.navbar-inverse,
+.navbar-container  {
     height:54px;
+    background-color:#dee4e9 !important;
+    color:#375775;
 }
 
-/*.navbar-inner .brand {*/
-    /*position:absolute;*/
-    /*z-index:10;*/
-    /*background-color:#375775;*/
-    /*background-image: url('../img/logo-white.png');*/
-    /*background-repeat:no-repeat;*/
-    /*background-position:50% 60%;*/
-    /*width:190px;*/
-    /*height:100px;*/
-    /*margin-top:-15px;*/
-    /*-webkit-border-radius: 3px;*/
-    /*-moz-border-radius: 3px;*/
-    /*border-radius: 3px;*/
-/*}*/
-
-.navbar-inner .user {
-    /*position: absolute;*/
-    /*right: 0;*/
-    /*margin-top: 40px;*/
-    /*margin-right: 180px;*/
-}
-
-.navbar-inner .top-menu span {
+.navbar-container .top-menu span {
     padding-right:10px;
     padding-left:10px;
     text-transform:uppercase;
     font-size:12px;
     border-right:1px solid #375775;
 }
-.navbar-inner .top-menu span.last {
+.navbar-container .top-menu span.last {
     border:none;
 }
+.navbar-container .top-menu span a,
 .navbar-inner .top-menu span a {
     color:#375775;
 }
@@ -78,7 +51,7 @@
     text-decoration: underline;
 }
 /*new styles*/
-.navbar-inner {
+.navbar-container {
     width: 100%;
     /*margin: 0 0 0 110px;*/
     border: 0;
@@ -89,14 +62,16 @@
     background-image: none !important;
     background-color: #ededed !important;
 }
-.navbar-inner .brand {
-    z-index: 999999;
+.navbar-container .container-fluid {
     padding-left: 0;
-    width: 155px;
-    height: 33px;
+}
+.navbar-container .navbar-brand {
+    margin-right: 0;
+    width: 175px;
+    height: 53px;
     background: #ff6600 url('../img/logo-orange.png') no-repeat center left;
 }
-.navbar-inner .brand img {
+.navbar-container .navbar-brand img {
     margin-left: -20px;
 }
 .nav > li.dropdown > a{
@@ -119,22 +94,18 @@
     background-image: url("../img/exclamation_icon.png");
 }
 .icon-arrow-down-user {
-    background-image: url("../img/user_arrow.png");
-    width: 20px;
-    margin-top: 0;
-    background-repeat: no-repeat;
-    background-color: transparent !important;
     display: inline-block;
-    background-position: 0 0;
+    width: 20px;
+    height: 14px;
+    background: transparent url("../img/user_arrow.png") no-repeat 0 0;
 }
-.navbar-inner .nav > li.dropdown:last-child {
+.navbar-container .nav > li.dropdown:last-child {
     padding-right: 2px;
-    /*padding-top: 10px;*/
 }
-.navbar-inner .nav .dropdown-menu {
-    margin-top: 3px;
+.navbar-container .nav .dropdown-menu {
+    margin-left: -70px;
 }
-.navbar-inner .nav .dropdown-menu >li a {
+.navbar-container .nav .dropdown-menu >li a {
     padding: 6px 0 6px 13px;
     color: #333333 !important;
     text-decoration: none;
@@ -144,29 +115,31 @@
     line-height: 18px;
     white-space: nowrap;
 }
-.navbar-inner .nav .dropdown-menu > li > a:hover > [class^="icon-"] {
+.navbar-container .nav .dropdown-menu > li > a:hover > [class^="icon-"] {
     background-image: url(../../../../static/vendor/bootstrap/img/glyphicons-halflings.png) !important;
 }
-.navbar-inner .nav .dropdown.open .dropdown-toggle {
+.navbar-container .nav .dropdown.open .dropdown-toggle {
     background-color: #ededed !important;
     color: #333333;
 }
-.navbar-inner .nav .dropdown-menu li > a:hover, .navbar-inner .nav .dropdown-menu .active > a, .navbar-inner .nav .dropdown-menu .active > a:hover {
+.navbar-container .nav .dropdown-menu li > a:hover,
+.navbar-container .nav .dropdown-menu .active > a,
+.navbar-container .nav .dropdown-menu .active > a:hover {
     text-decoration: none;
     background-image: none;
     background-color: #eee;
     color: #333;
     filter: none;
 }
-.load-user-name{
-    margin-top: 12px;
+.load-user-name {
+    margin-top: 18px;
 }
-.old-portal{
-    margin-top: 5px;
-    color: #57879e;
-    background-color: transparent;
-    border: 2px solid #57879e;
+.old-portal {
+    margin-top: 10px;
     margin-left: 15px;
+    border: 2px solid #57879e;
+    background-color: transparent;
+    color: #57879e;
 }
 .dd-account{
     min-width: 215px !important;

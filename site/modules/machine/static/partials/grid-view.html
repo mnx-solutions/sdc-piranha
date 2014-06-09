@@ -1,7 +1,7 @@
 <div class="container-grid">
-<div class="loading-large row-fluid" data-ng-show="loading"></div>
+<div class="loading-large row" data-ng-show="loading"></div>
 <div data-ng-hide="loading">
-    <div class="row-fluid">
+    <div class="row">
         <div class="page-row-info" data-ng-show="paginated">
             <span class="grid-small-font">
                 Showing <span data-ng-hide="pageNumFirst == pageNumLast || pageNumSum == 0"> {{pageNumFirst}} -</span> {{pageNumLast}} of {{pageNumSum}} entries
@@ -21,27 +21,27 @@
         </div>
         <div class="actions pull-right" data-ng-show="controls && pageNumSum" data-ng-class="{'actions-down': tabFilterField}">
             <div class="btn-group">
-                <span id="button-actions" class="btn dropdown-toggle grid-small-font" data-toggle="dropdown" data-ng-hide="!getActionButtons(object).length | orderBy:'sequence'">
+                <span id="button-actions" class="btn btn-default dropdown-toggle grid-small-font" data-toggle="dropdown" data-ng-hide="!getActionButtons(object).length | orderBy:'sequence'">
                     Actions
                     <i class="icon-drop-down"></i>
                 </span>
                 <ul id="option-list-actions" class="dropdown-menu grid-action-btn" data-ng-hide="!getActionButtons(object).length | orderBy:'sequence'">
-                    <li data-ng-repeat="btn in getActionButtons(object) | orderBy:'sequence'">
+                    <li data-ng-repeat="btn in getActionButtons(object) | orderBy:'sequence'" class="clearfix">
                         <a data-action-button data-action-fn="btn.action" data-show-fn="btn.show" data-label="btn.label" data-object="object" class="grid-action-btn grid-small-font"></a>
                     </li>
                 </ul>
             </div>
             <div class="btn-group">
-                <button type="button" class="btn grid-small-font btn-original-text" data-ng-disabled="!pageNumSum" data-ng-hide="hideExport" data-ng-click="export('csv')">Export.csv</button>
+                <button type="button" class="btn btn-default grid-small-font btn-original-text" data-ng-disabled="!pageNumSum" data-ng-hide="hideExport" data-ng-click="export('csv')">Export.csv</button>
                 <div style="display:none;" data-ng-bind-html="exportIframe"></div>
             </div>
             <div class="btn-group" data-ng-show="areColumnsEnabled()">
-                <span id="button-columns" class="btn grid-small-font" data-toggle="dropdown" data-ng-click="noClose()">
+                <span id="button-columns" class="btn btn-default grid-small-font" data-toggle="dropdown" data-ng-click="noClose()">
                     Columns
                     <i class="icon-drop-down"></i>
                 </span>
                 <div id="checkbox-list-columns" class="dropdown-menu hold-on-click dropdown-checkboxes pull-right">
-                    <div data-ng-repeat="prop in props | orderBy:'sequence'">
+                    <div data-ng-repeat="prop in props | orderBy:'sequence'" class="dropdown-checkboxes-item">
                         <label class="dpl-inline">
                             <div class="checker" data-ng-class="{hover:show}" data-ng-mouseenter="show = true" data-ng-mouseleave="show = false">
                             <span data-ng-class="{checked: prop.active}">
@@ -156,14 +156,14 @@
             <div class="grid-no-entries" data-ng-hide="pageNumSum">{{noEntriesMessage || 'No entries found.'}}</div>
         </div>
 
-        <div class="row-fluid" data-ng-show="paginated && pageNumSum">
+        <div class="row pagination-container" data-ng-show="paginated && pageNumSum">
             <div class="pull-left select-position grid-small-font">
                 <select ui-select2="{minimumResultsForSearch: -1}" data-ng-model="perPage" value="25" class="no-search-box" style="width: 65px !important;">
                     <option data-ng-repeat="size in pageSizes" value="{{size.value}}">{{size.name}}</option>
                 </select>
                 <span class="grid-small-font">&nbsp;records per page</span>
             </div>
-            <div class="pagination pagination-right grid-small-font">
+            <div class="pagination-right grid-small-font">
                 <div class="grid-view-pagination" data-pagination data-num-pages="lastPage" data-current-page="page" data-max-size="showPages" data-on-select-page="changePage(page)"></div>
             </div>
         </div>

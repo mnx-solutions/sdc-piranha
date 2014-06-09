@@ -4,17 +4,17 @@
             <h5><i class="glyphicon glyphicon-info-sign"></i><b>Import SSH Public Key</b></h5>
         </div>
         <div class="modal-body">
-            <div class="control-group">
+            <div class="form-group">
                 <label class="control-label">Key Name</label>
                 <div class="controls">
-                    <input type="text" class="span5" data-ng-model="data.keyName" placeholder="optional"
+                    <input type="text" class="col-md-12 ssh-key-name" data-ng-model="data.keyName" placeholder="optional"
                             data-ng-disabled="loadingKeys"/>
                 </div>
             </div>
-            <div class="control-group control-group-ssh">
+            <div class="form-group control-group-ssh">
                 <label class="control-label">Public Key</label>
-                <div class="controls">
-                    <textarea class="ssharea span5" rows="10"
+                <div class="row">
+                    <textarea class="ssharea col-md-12" rows="10"
                             data-ng-model="data.keyData"
                             data-ng-disabled="loadingKeys"></textarea>
                 </div>

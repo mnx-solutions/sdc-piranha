@@ -1,6 +1,6 @@
 <div class="container-fluid container-position" data-ng-controller="Firewall.IndexController">
     <div data-breadcrumbs></div>
-    <div class="page-header row-fluid">
+    <div class="page-header row">
         <h3 class="page-title">{{ pageTitle }}</h3>
         <div class="beta-sticker">beta</div>
     </div>
@@ -42,7 +42,7 @@
             <hr />
 
             <div data-ng-show="openRuleForm" id="create-rule">
-                <div class="row-fluid">
+                <div class="row">
                     <p class="description">Cloud Firewall rules limit network traffic for your SmartOS instances in one system. Cloud Firewall will enforce applicable rules for each instance that has Cloud Firewall enabled in its Instance Details.</p>
                     <p class="description">There is no ordering to your own rules. For incoming traffic, the least restrictive rule wins. For outgoing traffic, the most restrictive rule wins. ICMP 8:0 is always open to support echo requests using <code class="plain">ping.</code></p>
                 </div>
@@ -54,7 +54,7 @@
                     <td class="controls-wrapper">
                         <label class="fw-control-label name-field">Status</label>
                         <div class="value-field">
-                            <select ui-select2="{minimumResultsForSearch: -1, width: '100%'}" id="stateSelect" data-ng-model="selected.status">
+                            <select ui-select2="{minimumResultsForSearch: -1, width: '105px'}" id="stateSelect" data-ng-model="selected.status">
                                 <option data-ng-repeat="state in selectData.states" value="{{state.id}}">
                                     {{state.text}}
                                 </option>
@@ -64,7 +64,7 @@
                     <td class="controls-wrapper">
                         <label class="fw-control-label name-field">Datacenter:</label>
                         <div class="value-field">
-                            <select ui-select2="{minimumResultsForSearch: -1, width: '100%'}" id="dcSelect" data-ng-model="selected.datacenter">
+                            <select ui-select2="{minimumResultsForSearch: -1, width: '115px'}" id="dcSelect" data-ng-model="selected.datacenter">
                                 <option data-ng-repeat="datacenter in selectData.datacenters" value="{{datacenter.text}}">
                                     {{datacenter.text}}
                                 </option>
@@ -168,7 +168,7 @@
                                                 <div class="fw-controls">
                                                     <input type="text" data-ng-model="current.from.text" required/>
                                                 </div>
-                                                <div data-ng-show="current.from.text" class="row-fluid margin-top-10">
+                                                <div data-ng-show="current.from.text" class="row margin-top-10">
                                                     <label class="fw-control-label">Value</label>
                                                     <div class="fw-controls">
                                                         <input type="text" data-ng-model="current.from.value" />
@@ -183,7 +183,7 @@
                                                         <div class="fw-controls">
                                                             <input  type="text" name="fromValue" data-ng-model="fromSubnet.address" data-ip required/>
                                                         </div>
-                                                        <div data-ng-show="current.from.text" class="row-fluid margin-top-10">
+                                                        <div data-ng-show="current.from.text" class="row margin-top-10">
                                                             <label class="fw-control-label">CIDR</label>
                                                             <div class="fw-controls">
                                                                 <select data-ng-options="c for c in CIDRs" data-ng-model="fromSubnet.CIDR"> </select>
@@ -210,7 +210,7 @@
                                     <span data-ng-switch="current.from.type">
                                         <span data-ng-switch-when="wildcard">
                                             <span>
-                                                <span class="row-fluid">
+                                                <span class="row">
                                                     <div class="margin-top-10">
                                                         <button class="btn light pull-right effect-orange-button" data-ng-disabled="current.from.text != 'all vms' && current.from.text != 'any'" data-ng-click="addFrom()">Add</button>
                                                     </div>
@@ -218,14 +218,14 @@
                                             </span>
                                         </span>
                                         <span data-ng-switch-when="tag">
-                                            <span class="row-fluid">
+                                            <span class="row">
                                                 <div class="margin-top-10">
                                                     <button class="btn light pull-right effect-orange-button" data-ng-click="addFrom()" data-ng-disabled="fromForm.$invalid || fromForm.$pristine">Add</button>
                                                 </div>
                                             </span>
                                         </span>
                                         <span data-ng-switch-default>
-                                            <span class="row-fluid">
+                                            <span class="row">
                                                 <div class="margin-top-10">
                                                     <button class="btn light pull-right effect-orange-button" data-ng-click="addFrom()" data-ng-disabled="fromForm.$invalid || fromForm.$pristine">Add</button>
                                                 </div>
@@ -276,7 +276,7 @@
                                             <div class="fw-controls">
                                                 <input type="text" data-ng-model="current.to.text" required />
                                             </div>
-                                            <div data-ng-show="current.to.text" class="row-fluid margin-top-10">
+                                            <div data-ng-show="current.to.text" class="row margin-top-10">
                                                 <label class="fw-control-label">Value</label>
                                                 <div class="fw-controls">
                                                     <input type="text" data-ng-model="current.to.value" />
@@ -291,7 +291,7 @@
                                                     <div class="fw-controls">
                                                         <input type="text" name="toValue" data-ng-model="toSubnet.address" data-ip required />
                                                     </div>
-                                                    <div data-ng-show="current.to.text" class="row-fluid margin-top-10">
+                                                    <div data-ng-show="current.to.text" class="row margin-top-10">
                                                         <label class="fw-control-label">CIDR</label>
                                                         <div class="fw-controls">
                                                             <select data-ng-options="c for c in CIDRs" data-ng-model="toSubnet.CIDR"> </select>
@@ -319,7 +319,7 @@
                                     <span data-ng-switch="current.to.type">
                                         <span data-ng-switch-when="wildcard">
                                             <span>
-                                                <span class="row-fluid">
+                                                <span class="row">
                                                     <div class="margin-top-10">
                                                         <button class="btn light pull-right effect-orange-button" data-ng-disabled="current.to.text != 'all vms' && current.to.text != 'any'" data-ng-click="addTo()">Add</button>
                                                     </div>
@@ -327,14 +327,14 @@
                                             </span>
                                         </span>
                                         <span data-ng-switch-when="tag">
-                                            <span class="row-fluid">
+                                            <span class="row">
                                                 <div class="margin-top-10">
                                                     <button class="btn light pull-right effect-orange-button" data-ng-click="addTo()" data-ng-disabled="toForm.$invalid || toForm.$pristine">Add</button>
                                                 </div>
                                             </span>
                                         </span>
                                         <span data-ng-switch-default>
-                                            <span class="row-fluid">
+                                            <span class="row">
                                                 <div class="margin-top-10">
                                                     <button class="btn light pull-right effect-orange-button" data-ng-click="addTo()" data-ng-disabled="toForm.$invalid || toForm.$pristine">Add</button>
                                                 </div>
@@ -375,23 +375,23 @@
 
         <div class="item-list-container">
             <div class="notice-block-wrapper pull-right">
-                <div class="row-fluid notice-block" data-ng-show="notAffectedMachines.length > 0 || firewallDisabledMachines.length > 0 || kvmList.length > 0">
+                <div class="row notice-block" data-ng-show="notAffectedMachines.length > 0 || firewallDisabledMachines.length > 0 || kvmList.length > 0">
                     Cloud Firewall is a SmartDataCenter 7.0 platform feature. It currently supports SmartOS instances. <a href="http://wiki.joyent.com/wiki/display/jpc2/Working+With+Firewall+Rules">Click here to learn more about working with Firewall Rules</a>.
                     <br />
                 </div>
-                <div class="row-fluid notice-block" data-ng-show="notAffectedMachines.length > 0">
+                <div class="row notice-block" data-ng-show="notAffectedMachines.length > 0">
                     The following instances will not benefit from this feature until their global zone is upgraded by Joyent staff as part of the Q4 2013 through Q1 2014 maintenance:
                     <div data-ng-repeat="machine in notAffectedMachines">
                         <a href="#!/compute/instance/{{machine.id}}">{{$index+1}}. {{machine.name}} <span class="muted">({{machine.id}})</span></a>
                     </div>
                 </div>
-                <div class="row-fluid notice-block" data-ng-show="firewallDisabledMachines.length > 0">
+                <div class="row notice-block" data-ng-show="firewallDisabledMachines.length > 0">
                     The following instances do not have the Cloud Firewall feature enabled. You can view all of the rules that apply to each instance on their own Instance Details page. There you can also enable the Cloud Firewall or by using <a href="http://apidocs.joyent.com/cloudapi/#firewallrules">CloudAPI</a>:
                     <div data-ng-repeat="machine in firewallDisabledMachines">
                         <a href="#!/compute/instance/{{machine.id}}">{{$index+1}}. {{machine.name}} <span class="muted">({{machine.id}})</span></a>
                     </div>
                 </div>
-                <div class="row-fluid notice-block" data-ng-show="kvmList.length > 0">
+                <div class="row notice-block" data-ng-show="kvmList.length > 0">
                     Linux, BSD, and Windows instances are not yet supported:
                     <div data-ng-repeat="machine in kvmList">
                         <a href="#!/compute/instance/{{machine.id}}">{{$index+1}}. {{machine.name}} <span class="muted">({{machine.id}})</span></a>

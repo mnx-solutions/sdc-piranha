@@ -1,7 +1,7 @@
 <div data-ng-controller="rbac.PolicyListController">
     <div class="container-fluid container-position">
         <div data-breadcrumbs></div>
-        <div class="page-header row-fluid">
+        <div class="page-header row">
             <h3 class="page-title">Policies</h3>
             <div class="beta-sticker">beta</div>
             <div class="page-title-btn" data-ng-show="!loading">
@@ -13,7 +13,7 @@
             </div>
         </div>
 
-        <div class="loading-large span12" data-ng-show="loading"></div>
+        <div class="loading-large col-md-12" data-ng-show="loading"></div>
 
         <div data-ng-hide="loading">
             <div data-grid-view

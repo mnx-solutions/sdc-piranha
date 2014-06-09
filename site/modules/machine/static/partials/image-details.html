@@ -1,8 +1,8 @@
 <div class="container-fluid container-position" data-ng-controller="Machine.ImageDetailsController">
 
     <ul class="breadcrumb">
-        <li><a href="#!/compute">Compute</a>&nbsp;/</li>
-        <li><a href="#!/images">Images</a>&nbsp;/</li>
+        <li><a href="#!/compute">Compute</a></li>
+        <li><a href="#!/images">Images</a></li>
         <li>Image Details&nbsp;/</li>
     </ul>
     <div data-ng-show="features.imageRename == 'enabled'">
@@ -14,16 +14,16 @@
 
     <div class="inl-table">
         <div class="left-part">
-            <div class="accordion" id="imageDetails">
-                <div class="accordion-group">
-                    <div class="accordion-heading">
+            <div class="panel-group" id="imageDetails">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
                         <a class="accordion-toggle toggle-icon" data-toggle="collapse" data-parent="#imageDetails"
                            data-target="#summary">
                             Summary
                         </a>
                     </div>
-                    <div id="summary" class="accordion-body collapse in">
-                        <div class="accordion-inner">
+                    <div id="summary" class="panel-collapse collapse in">
+                        <div class="panel-body">
                             <table>
                                 <tr class="id-section">
                                     <td>UUID</td>
@@ -64,19 +64,18 @@
                                 </button>
                                 <div class="loading-medium loading-medium-inline" data-ng-show="currentImage.state == 'deleting'"></div>
                             </div>
-                            <div class="clearfix"></div>
                         </div>
                     </div>
                 </div>
-                <div class="accordion-group">
-                    <div class="accordion-heading">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
                         <a class="accordion-toggle toggle-icon" data-toggle="collapse" data-parent="#imageDetails"
                            data-target="#instances">
                             Instances
                         </a>
                     </div>
-                    <div id="instances" class="accordion-body collapse">
-                        <div class="accordion-inner">
+                    <div id="instances" class="panel-collapse collapse">
+                        <div class="panel-body">
                             <div data-grid-view
                                  data-user-config="machinesGridUserConfig"
                                  data-props="machinesGridProps"

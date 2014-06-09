@@ -21,26 +21,33 @@
     text-shadow: none;
     color: #a9a9a9;
 }
-.alert-info{
+.alert-info {
+    box-sizing: content-box;
+    padding: 25px 20px;
     width: 210px;
-    background: #fef1d2;
     border: 0;
-    color: #000000;
     border-radius: 0;
-    padding: 25px 20px 25px 20px;
+    background: #fef1d2;
+    color: #000000;
 }
-.alert-info h5{
+.alert-info h5 {
     text-shadow: none;
+}
+
+.alert-info select {
+    width: 210px;
+    height: 30px;
 }
 .alert-info .select2-container {
     margin-bottom: 10px;
 }
-.alert-info p{
+.alert-info p {
+    margin: 10px 0;
     font-size: 14px;
     font-weight: 300;
     text-shadow: none;
 }
-.rickshaw_legend ul>li{
+.rickshaw_legend ul>li {
     margin-left: 20px !important;
 }
 .rickshaw_legend {
@@ -129,7 +136,8 @@
 .toggle-graf-width button{
     background-color: #e9eff4!important;
 }
-.del-btn-graf{
+.del-btn-graf {
+    margin-right: -42px;
     width: 43px;
     height: 36px;
 }
@@ -179,4 +187,7 @@
 
 .separator-line {
     border-bottom: 1px solid #ccc;
+}
+.cloud-container {
+    box-sizing: content-box;
 }

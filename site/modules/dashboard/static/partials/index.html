@@ -210,8 +210,8 @@
                 <div class="span" data-ng-show="features.systemStatusTile != 'enabled'">
                     <h5>SYSTEM STATUS</h5>
                     <div class="separation-container separation-container-top">
-                        <div class="row-fluid" data-ng-repeat="topic in systemStatusTopics | limitTo:7">
-                            <span class="pull-left span12">{{topic.created_at | dateTime}} <a target="_blank" href="https://help.joyent.com/entries/{{topic.id}}">&nbsp;{{topic.title}}</a></span>
+                        <div class="row" data-ng-repeat="topic in systemStatusTopics | limitTo:7">
+                            <span class="pull-left col-md-12">{{topic.created_at | dateTime}} <a target="_blank" href="https://help.joyent.com/entries/{{topic.id}}">&nbsp;{{topic.title}}</a></span>
                         </div>
                     </div>
                     <a class="orange" href="https://help.joyent.com/forums/20715782-current-system-status#recent" target="_blank">View all System Updates</a>
@@ -219,11 +219,9 @@
                 <div class="span">
                     <h5>JOYENT BLOG</h5>
                     <div class="separation-container separation-container-top">
-                        <div class="row-fluid" data-ng-repeat="entry in rssentries">
-                            <span class="pull-left span12">
-                                <div class="blog-date dpl-inline">{{entry.publishedDate | dateTime}}</div>
-                                <a target="_blank" href="{{entry.link}}">&nbsp;<b>{{entry.title}}</b></a>
-                            </span>
+                        <div class="row" data-ng-repeat="entry in rssentries">
+                            <div class="blog-date dpl-inline">{{entry.publishedDate | dateTime}}</div>
+                            <a target="_blank" href="{{entry.link}}">&nbsp;<b>{{entry.title}}</b></a>
                         </div>
                     </div>
                     <a class="orange" href="http://www.joyent.com/blog" target="_blank">More News</a>
@@ -231,8 +229,8 @@
                 <div class="span">
                     <h5>SUPPORT FAQ</h5>
                     <div class="separation-container separation-container-top">
-                        <div class="row-fluid" data-ng-repeat="(name, url) in forums">
-                            <span class="pull-left span12"><a target="_blank" href="{{url}}">{{name}}</a></span>
+                        <div class="row" data-ng-repeat="(name, url) in forums">
+                            <a target="_blank" href="{{url}}">{{name}}</a>
                         </div>
                     </div>
                     <a class="orange" href="http://wiki.joyent.com/wiki/display/jpc2/FAQs" target="_blank">Visit DevCenter</a>

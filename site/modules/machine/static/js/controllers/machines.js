@@ -364,7 +364,7 @@
                         var state = '';
 
                         if (object.firewall_enabled) {
-                            state = '<span class="grid-enabled-text">On</span>';
+                            state = '<span class="grid-status-text grid-enabled-text">On</span>';
                         } else if (!object.firewall_supported || !object.hasOwnProperty("firewall_enabled")) {
                             state = 'N/A';
                         } else {

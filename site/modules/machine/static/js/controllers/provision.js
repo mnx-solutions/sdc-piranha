@@ -1149,9 +1149,9 @@
                     selectMinimalPackage();
                     $timeout(function () {
                         var accordion = ng.element('#packagesAccordion');
-                        var accordionBody = ng.element('.accordion-body');
+                        var accordionBody = ng.element('.panel-collapse');
                         if ($scope.filterModel.key === 'No filter') {
-                            accordion.find('.accordion-body').addClass('collapse').end()
+                            accordion.find('.panel-collapse').addClass('collapse').end()
                                 .find('a').addClass('collapsed').end()
                                 .find('.collapse.in').removeClass('in');
                             accordionBody.has('div.active').parent().has('a.collapsed').find('a').click();

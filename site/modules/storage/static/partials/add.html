@@ -5,7 +5,7 @@
     <div class="modal-body">
         <form name="folderNameForm">
             <p>File path</p>
-            <div class="row-fluid">
+            <div class="row">
                 <div class="error"
                      data-ng-show="folderNameForm.fullFilePath.$invalid && fullFilePath.length"
                      data-translate>
@@ -15,7 +15,7 @@
                        name="fullFilePath"
                        data-ng-model="fullFilePath"
                        data-file-path
-                       class="popup-file-path"/>
+                       class="file-path"/>
             </div>
             <div class="row-fluid">
                 <label class="checkbox folder-name-form-checkbox">
@@ -32,7 +32,7 @@
                        data-ng-model="mfind"
                        data-ng-show="useMfind"
                        data-ng-required="useMfind"
-                       class="popup-file-path" />
+                       class="file-path" />
 
                 <div class="error"
                      data-ng-show="formSubmitted && folderNameForm.mfind.$invalid"

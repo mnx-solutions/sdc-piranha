@@ -1,5 +1,5 @@
-<form name="subAccountForm">
-    <div class="control-group">
+<form name="subAccountForm" class="sub-account-form">
+    <div class="form-group">
         <span class="edit-name" data-translate>
             First Name
         </span>
@@ -27,7 +27,7 @@
         </span>
     </div>
 
-    <div class="control-group">
+    <div class="form-group">
         <span class="edit-name" data-translate>
             Last Name
         </span>
@@ -55,7 +55,7 @@
         </span>
     </div>
 
-    <div class="control-group">
+    <div class="form-group">
         <span class="edit-name">Email Address</span>
         <span class="edit-value">
             <input type="email"
@@ -80,7 +80,7 @@
         </span>
     </div>
 
-    <div class="control-group">
+    <div class="form-group">
         <span class="edit-name">Company Name</span>
         <span class="edit-value">
             <input type="text"
@@ -105,7 +105,7 @@
         </span>
     </div>
 
-    <div class="control-group">
+    <div class="form-group">
         <span class="edit-name">Username</span>
         <span class="edit-value">
             <input type="text"
@@ -135,7 +135,7 @@
 
 
     <div ng-if="user.isNew">
-        <div class="control-group">
+        <div class="form-group">
             <span class="edit-name">Password</span>
             <span class="edit-value">
                 <input type="password" data-ng-model="user.password"
@@ -154,7 +154,7 @@
             </span>
         </div>
 
-        <div class="control-group">
+        <div class="form-group">
             <span class="edit-name">Repeat Password</span>
             <span class="edit-value">
                 <input type="password" data-ng-model="user.password_confirmation"
@@ -170,7 +170,7 @@
         </div>
     </div>
 
-    <div class="control-group">
+    <div class="form-group">
         <span class="edit-name">Address</span>
         <span class="edit-value">
             <input type="text"
@@ -188,7 +188,7 @@
         </span>
     </div>
 
-    <div class="control-group">
+    <div class="form-group">
         <span class="edit-name">Country</span>
         <span class="edit-value">
             <select id="subCountry"
@@ -213,7 +213,7 @@
         </span>
     </div>
 
-    <div class="control-group">
+    <div class="form-group">
         <span class="edit-name">City</span>
         <span class="edit-value">
             <input type="text"
@@ -231,7 +231,7 @@
         </span>
     </div>
 
-    <div class="control-group">
+    <div class="form-group">
         <span class="edit-name">State</span>
         <span class="edit-value">
             <input type="text"
@@ -244,7 +244,7 @@
         </span>
     </div>
 
-    <div class="control-group">
+    <div class="form-group">
         <span class="edit-name">Zip</span>
         <span class="edit-value">
             <input type="text"
@@ -269,7 +269,7 @@
         </span>
     </div>
 
-    <div class="control-group">
+    <div class="form-group">
         <span class="edit-name">Phone Number</span>
         <div data-phone-number data-number="user.phone" data-country="{{angular.copy(user.country)}}" data-is-error="isError(field, type)"></div>
     </div>

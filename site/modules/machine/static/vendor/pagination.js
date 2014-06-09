@@ -41,7 +41,7 @@ angular.module('ui.bootstrap.pagination', [])
       onSelectPage: '&'
     },
     controller: 'PaginationController',
-    template: '<div class="pagination"><ul>' +
+    template: '<div><ul class="pagination pull-right">' +
         '<li ng-repeat="page in pages" ng-class="{active: page.active, disabled: page.disabled}"><a ng-click="selectPage(page.number)">{{page.text}}</a></li>' +
         '</ul>' +
         '</div>',
