@@ -219,7 +219,6 @@
           "vcpus": "24",
           "memory": 98304,
           "disk": 3225600,
-          "default": "false",
           "createdBySupport": true
       },
       "g3-standard-104-smartos": {
@@ -259,7 +258,6 @@
           "vcpus": "32",
           "memory": 131072,
           "disk": 4300800,
-          "default": "false",
           "createdBySupport": true
       },
       "g3-highmemory-17.125-smartos": {
@@ -344,7 +342,6 @@
           "vcpus": "18",
           "memory": 147456,
           "disk": 2419712,
-          "default": "false",
           "createdBySupport": true
       },
       "g3-highmemory-160-smartos": {
@@ -411,7 +408,6 @@
           "vcpus": "32",
           "memory": 262144,
           "disk": 4300800,
-          "default": "false",
           "createdBySupport": true
       },
       "g3-highcpu-1.75-smartos": {
@@ -559,7 +555,6 @@
           "vcpus": "32",
           "memory": 32768,
           "disk": 1228800,
-          "default": "false",
           "createdBySupport": true
       },
       "g3-highio-15-smartos": {
@@ -570,7 +565,6 @@
           "price": "0.76",
           "price_month": "554.8",
           "vcpus": "2",
-          "default": "false",
           "createdBySupport": true
       },
       "g3-highio-30-smartos": {
@@ -581,7 +575,6 @@
           "price": "1.52",
           "price_month": "1109.6",
           "vcpus": "4",
-          "default": "false",
           "createdBySupport": true
       },
       "g3-highstorage-32-smartos": {
@@ -594,7 +587,6 @@
           "vcpus": "8",
           "memory": 32768,
           "disk": 7864320,
-          "default": "false",
           "createdBySupport": true
       },
       "g3-highstorage-48-smartos": {
@@ -616,7 +608,6 @@
           "vcpus": "16",
           "memory": 65536,
           "disk": 15728640,
-          "default": "false",
           "createdBySupport": true
       },
       "g3-highstorage-96-smartos": {
@@ -638,7 +629,6 @@
           "vcpus": "32",
           "memory": 131072,
           "disk": 31457280,
-          "default": "false",
           "createdBySupport": true
       },
       "g3-highio-60.5-smartos": {
@@ -651,7 +641,6 @@
           "vcpus": "8",
           "memory": 61952,
           "disk": 1486848,
-          "default": "false",
           "createdBySupport": true
       },
       "g3-highio-96-smartos": {
@@ -673,7 +662,6 @@
           "vcpus": "16",
           "memory": 131072,
           "disk": 3145728,
-          "default": "false",
           "createdBySupport": true
       },
       "g3-highio-160-smartos": {
@@ -713,7 +701,6 @@
           "vcpus": "32",
           "memory": 262144,
           "disk": 6291456,
-          "default": "false",
           "createdBySupport": true
       },
       "g3-standard-0.25-kvm": {
@@ -1255,7 +1242,6 @@
           "price": "0.76",
           "price_month": "554.8",
           "vcpus": "2",
-          "default": "false",
           "createdBySupport": true
       },
       "g3-highio-30-kvm": {
@@ -1266,7 +1252,6 @@
           "price": "1.52",
           "price_month": "1109.6",
           "vcpus": "4",
-          "default": "false",
           "createdBySupport": true
       },
       "g3-highstorage-32-kvm": {
@@ -1279,7 +1264,6 @@
           "vcpus": "8",
           "memory": 32768,
           "disk": 7864320,
-          "default": "false",
           "createdBySupport": true
       },
       "g3-highstorage-48-kvm": {
@@ -1328,7 +1312,6 @@
           "vcpus": "8",
           "memory": 61952,
           "disk": 1486848,
-          "default": "false",
           "createdBySupport": true
       },
       "g3-highio-96-kvm": {
