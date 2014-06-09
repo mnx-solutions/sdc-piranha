@@ -1,21 +1,32 @@
 'use strict';
 
 (function (app, ng) {
-    app.directive('mainLeft', ['$rootScope', 'localization', 'Support', 'requestContext', function ($rootScope, localization, Support, requestContext) {
+    app.directive('mainLeft', ['$rootScope', 'Support', 'requestContext', function ($rootScope, Support, requestContext) {
         return {
             templateUrl: 'left/static/partials/menu.html',
             scope: true,
-            controller: function ($scope, $location) {
+            controller: function ($scope, $location, Account) {
                 $scope.location = $location;
                 $scope.sideBarMin = false;
-                var loadSupportPackages = function() {
-                    Support.support(function (error, supportPackages) {
-                        $scope.supportPackages = supportPackages;
-                    });
+                var supportPackagesCallback = function (error, supportPackages) {
+                    $scope.supportPackages = supportPackages;
+                };
+
+                var loadSupportPackages = function () {
+                    if ($scope.account && $scope.account.provisionEnabled) {
+                        Support.support(supportPackagesCallback);
+                    } else {
+                        Account.getAccount().then(function (account) {
+                            $scope.account = account;
+                            if (account.provisionEnabled) {
+                                Support.support(supportPackagesCallback);
+                            }
+                        });
+                    }
                 };
 
                 if ($scope.features.support === 'enabled') {
-                    $rootScope.$on('event:provisionChanged', function () {
+                    $rootScope.$on('creditCardUpdate', function () {
                         if (!$scope.supportPackages || $scope.supportPackages <= 0) {
                             loadSupportPackages();
                         }

@@ -6,11 +6,10 @@
         'Account',
         'PopupDialog',
         'localization',
-        'notification',
         'util',
         '$rootScope',
         '$q',
-        function (Account, PopupDialog,localization, notification, util, $rootScope, $q) {
+        function (Account, PopupDialog,localization, util, $rootScope, $q) {
             return {
                 restrict: 'A',
                 replace: true,
@@ -19,7 +18,7 @@
                     noKeysMessage: '@',
                     createInstanceFn: '&'
                 },
-                controller: function($scope, $element, $attrs, $transclude) {
+                controller: function($scope) {
                     localization.bind('account', $scope);
                 },
 
@@ -38,11 +37,17 @@
                         return key.name || '';
                     };
 
-                    $scope.updateKeys = function (cb) {
+                    $scope.updateKeys = function (notifyDataChanged, cb) {
+                        if (typeof (notifyDataChanged) === 'function') {
+                            cb = notifyDataChanged;
+                            notifyDataChanged = false;
+                        }
                         $scope.loadingKeys = true;
 
                         $q.when(Account.getKeys(true)).then(function (result) {
-                            $rootScope.$broadcast("ssh-form:onKeyUpdated", result);
+                            if (notifyDataChanged) {
+                                $rootScope.$broadcast("ssh-form:onKeyUpdated", result);
+                            }
                             $scope.keys = result;
 
                             if ($scope.singleKey) {
@@ -67,7 +72,7 @@
 
                                 $q.when(deleteKey, function () {
                                     $rootScope.$broadcast("ssh-form:onKeyDeleted");
-                                    $scope.updateKeys(function () {
+                                    $scope.updateKeys(true, function () {
                                         if ($rootScope.downloadLink && $rootScope.downloadLink.indexOf(fingerprint) !== -1) {
                                             $rootScope.downloadLink = null;
                                         }

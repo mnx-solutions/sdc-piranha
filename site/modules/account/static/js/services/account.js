@@ -22,6 +22,7 @@
             var service = {};
 
             var account = null;
+            var accountPromise = null;
             var keys = null;
 
             /**
@@ -76,12 +77,22 @@
                 var deferred = $q.defer();
 
                 if (!account) {
+                    if (!accountPromise || !accountPromise.pending) {
+                        accountPromise = {};
+                        accountPromise.deferred = deferred;
+                        accountPromise.pending = true;
+                    } else {
+                        accountPromise.deferred.promise.then(deferred.resolve, deferred.reject);
+                        return deferred.promise;
+                    }
+
                     serverTab.call({
                         name: 'getAccount',
                         data: {
                             noCache: noCache
                         },
                         done: function (err, job) {
+                            accountPromise.pending = false;
                             if (err) {
                                 deferred.reject(err);
                                 return;
@@ -251,15 +262,21 @@
             service.userConfig = null;
             service.getUserConfig = function () {
                 function load(callback) {
-                    serverTab.call({
-                        name: 'GetUserConfig',
-                        data: {},
-                        done: function (err, job) {
-                            if (err) {
-                                callback(err, {});
-                                return;
-                            }
-                            callback(null, job.__read());
+                    service.getAccount().then(function (provisionAccount) {
+                        if (provisionAccount.provisionEnabled) {
+                            serverTab.call({
+                                name: 'GetUserConfig',
+                                data: {},
+                                done: function (err, job) {
+                                    if (err) {
+                                        callback(err, {});
+                                        return;
+                                    }
+                                    callback(null, job.__read());
+                                }
+                            });
+                        } else {
+                            callback(null, {});
                         }
                     });
                 }
@@ -335,16 +352,24 @@
 
             service.setUserConfig = function (config) {
                 var deferred = $q.defer();
-                serverTab.call({
-                    name: 'SetUserConfig',
-                    data: config,
-                    done: function (err, job) {
-                        if (err) {
-                            deferred.reject(err);
-                            return;
-                        }
-                        deferred.resolve(job.__read());
+                service.getAccount().then(function (provisionAccount) {
+                    if (provisionAccount.provisionEnabled) {
+                        serverTab.call({
+                            name: 'SetUserConfig',
+                            data: config,
+                            done: function (err, job) {
+                                if (err) {
+                                    deferred.reject(err);
+                                    return;
+                                }
+                                deferred.resolve(job.__read());
+                            }
+                        });
+                    } else {
+                        deferred.resolve();
                     }
+                }, function (err) {
+                    deferred.reject(err);
                 });
 
                 return deferred.promise;

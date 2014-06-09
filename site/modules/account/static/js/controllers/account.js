@@ -7,15 +7,16 @@
             'Account',
             'localization',
             'requestContext',
-            'BillingService',
             '$q',
 
-            function ($scope, Account, localization, requestContext, BillingService, $q) {
+            function ($scope, Account, localization, requestContext, $q) {
                 localization.bind('account', $scope);
                 requestContext.setUpRenderContext('account.index', $scope);
 
                 $scope.loading = true;
-                $scope.account = Account.getAccount();
+                Account.getAccount().then(function (account) {
+                    $scope.account = account;
+                });
 
                 $q.all([
                     $scope.account

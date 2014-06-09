@@ -10,43 +10,33 @@
             var supportPlanSelected = $rootScope.popCommonConfig('supportPlanSelected');
             var headLink = '/support';
 
-            scope.getPageData = function () {
-                scope.subscribingInProgress = true;
-                scope.levelSupport = 0;
-                var supportPackages = scope.supportPackages;
-                if (supportPackages) {
-                    supportPackages.forEach(function (supportPackage) {
-                        if (headLink + supportPackage.link === $location.path()) {
-                            scope.package = supportPackage;
-                            scope.levelSupport = scope.package.currentlevelSupport;
-                            scope.packageHolders = supportPackage.packageHolders;
-                        }
-                    });
-                }
-                scope.loading = false;
-                scope.subscribingInProgress = false;
+            var supportTracking = function (supportPackage, comment) {
+                var type = scope.package.type;
+                $q.when(Account.getAccount(), function (account) {
+                    var data = {
+                        id: account.id,
+                        marketo: {}
+                    };
+                    var title = type === 'portal' ? 'Support__Title__c' : 'Support__Title__Nodejs__c';
+                    var comments = type === 'portal' ? 'Support__Comments__c' : 'Support__Comments__Nodejs__c';
+                    var billingTag = type === 'portal' ? 'Support__BillingTag__c' : 'Support__BillingTag__Nodejs__c';
 
-                if (supportPlanSelected) {
-                    setupPackage(supportPlanSelected.package);
-                    supportPlanSelected = null;
-                }
-            };
+                    data.marketo[title] = supportPackage.ratePlanName || supportPackage.title;
+                    data.marketo[comments] = comment || 'I want to subscribe to support plan: ' + supportPackage.title;
+                    data.marketo[billingTag] = supportPackage.billingTag || supportPackage.ratePlanId;
 
-            var getSupportData = function () {
-                Support.support(function (error, supportPackages) {
-                    scope.supportPackages = supportPackages;
-                    scope.getPageData();
+                    Support.callTracking(data);
                 });
             };
 
-            scope.$on('$routeChangeStart', function(e, next, last) {
-                if (next.$$route.controller === last.$$route.controller) {
-                    e.preventDefault();
-                    $route.current = last.$$route;
-                    scope.loading = true;
-                    scope.getPageData();
-                }
-            });
+            var getSupportData = function () {
+                Account.getAccount().then(function (account) {
+                    Support.support(function (error, supportPackages) {
+                        scope.supportPackages = supportPackages;
+                        scope.getPageData();
+                    }, !account.provisionEnabled);
+                });
+            };
 
             var subscribe = function (supportPackage) {
                 scope.subscribingInProgress = true;
@@ -82,7 +72,7 @@
                 });
             };
 
-            function setupPackage(supportPackage, isUpgrade) {
+            var setupPackage = function (supportPackage, isUpgrade) {
                 if (supportPackage.ratePlanId === '' || scope.subscribingInProgress) {
                     return;
                 }
@@ -123,7 +113,40 @@
                         function () {}
                     );
                 }
-            }
+            };
+
+
+
+            scope.$on('$routeChangeStart', function(e, next, last) {
+                if (next.$$route.controller === last.$$route.controller) {
+                    e.preventDefault();
+                    $route.current = last.$$route;
+                    scope.loading = true;
+                    scope.getPageData();
+                }
+            });
+
+            scope.getPageData = function () {
+                scope.subscribingInProgress = true;
+                scope.levelSupport = 0;
+                var supportPackages = scope.supportPackages;
+                if (supportPackages) {
+                    supportPackages.forEach(function (supportPackage) {
+                        if (headLink + supportPackage.link === $location.path()) {
+                            scope.package = supportPackage;
+                            scope.levelSupport = scope.package.currentlevelSupport;
+                            scope.packageHolders = supportPackage.packageHolders;
+                        }
+                    });
+                }
+                scope.loading = false;
+                scope.subscribingInProgress = false;
+
+                if (supportPlanSelected) {
+                    setupPackage(supportPlanSelected.package);
+                    supportPlanSelected = null;
+                }
+            };
 
             scope.clickSignUp = function (supportPackage, isUpgrade) {
                 var returnUrl = $location.path();
@@ -164,24 +187,6 @@
                 PopupDialog.custom(opts);
             };
 
-            function supportTracking(supportPackage, comment) {
-                var type = scope.package.type;
-                $q.when(Account.getAccount(), function (account) {
-                    var data = {
-                        id: account.id,
-                        marketo: {}
-                    };
-                    var title = type === 'portal' ? 'Support__Title__c' : 'Support__Title__Nodejs__c';
-                    var comments = type === 'portal' ? 'Support__Comments__c' : 'Support__Comments__Nodejs__c';
-                    var billingTag = type === 'portal' ? 'Support__BillingTag__c' : 'Support__BillingTag__Nodejs__c';
-
-                    data.marketo[title] = supportPackage.ratePlanName || supportPackage.title;
-                    data.marketo[comments] = comment || 'I want to subscribe to support plan: ' + supportPackage.title;
-                    data.marketo[billingTag] = supportPackage.billingTag || supportPackage.ratePlanId;
-
-                    Support.callTracking(data);
-                });
-            }
 
             getSupportData();
         }]);
