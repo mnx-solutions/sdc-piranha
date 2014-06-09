@@ -3,14 +3,12 @@
 (function (ng, app) {
     app.controller('Dashboard.IndexController', [
         '$scope',
-        '$$track',
         '$q',
         'requestContext',
         'Account',
         'Zendesk',
         'Machine',
         'localization',
-        'BillingService',
         '$http',
         '$cookies',
         'slb.Service',
@@ -22,7 +20,7 @@
         'Datacenter',
         'FreeTier',
 
-        function ($scope, $$track, $q, requestContext, Account, Zendesk, Machine, localization, BillingService, $http, $cookies, slbService, $rootScope, Support, fileman, Utilization, util, Datacenter, FreeTier) {
+        function ($scope, $q, requestContext, Account, Zendesk, Machine, localization, $http, $cookies, slbService, $rootScope, Support, fileman, Utilization, util, Datacenter, FreeTier) {
             localization.bind('dashboard', $scope);
             requestContext.setUpRenderContext('dashboard.index', $scope);
             $scope.loading = true;
@@ -66,8 +64,6 @@
             $scope.softwareUpdateTopics = Zendesk.getSoftwareUpdateTopics();
             $scope.machines = Machine.machine();
             $scope.gotoCreatePage = Machine.gotoCreatePage;
-
-//                $scope.lastInvoice = BillingService.getLastInvoice();
 
             // get campaign id from the cookie
             $scope.campaignId = ($cookies.campaignId || 'default');
