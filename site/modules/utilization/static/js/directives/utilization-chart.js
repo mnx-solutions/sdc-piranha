@@ -136,7 +136,11 @@
                     };
 
                     $scope.getMonthDesc = function () {
-                        return ($scope.name === 'currentspend') ? 'month to date' : 'this month';
+                        var desc = '';
+                        if ($scope.month === now.getMonth() + 1 && $scope.year === now.getFullYear()) {
+                            desc = $scope.name === 'currentspend' ? 'month to date' : 'this month';
+                        }
+                        return desc;
                     };
 
                     $scope.projected = function (num) {
