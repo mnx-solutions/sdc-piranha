@@ -112,9 +112,18 @@
                 }
             );
 
+            window.addEventListener('beforeunload', function () {
+                $rootScope.navigatedAwayAt = new Date().getTime();
+            });
+
+
             $rootScope.$on(
                 'crashRequest',
                 function (event, message) {
+                    // 5 seconds following page refresh don't react on broken requests
+                    if ($rootScope.navigatedAwayAt && new Date().getTime() < $rootScope.navigatedAwayAt + 5 * 1000) {
+                        return;
+                    }
                     errorContext.emit(new Error(localization.translate(null,
                         "main",
                             message || 'Unable to retrieve data from server.'
