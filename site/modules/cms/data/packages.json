@@ -565,6 +565,8 @@
           "price": "0.76",
           "price_month": "554.8",
           "vcpus": "2",
+          "memory": 15360,
+          "disk": 368640,
           "createdBySupport": true
       },
       "g3-highio-30-smartos": {
@@ -575,6 +577,8 @@
           "price": "1.52",
           "price_month": "1109.6",
           "vcpus": "4",
+          "memory": 30720,
+          "disk": 742400,
           "createdBySupport": true
       },
       "g3-highstorage-32-smartos": {
@@ -1242,6 +1246,8 @@
           "price": "0.76",
           "price_month": "554.8",
           "vcpus": "2",
+          "memory": 15360,
+          "disk": 368640,
           "createdBySupport": true
       },
       "g3-highio-30-kvm": {
@@ -1252,6 +1258,8 @@
           "price": "1.52",
           "price_month": "1109.6",
           "vcpus": "4",
+          "memory": 30720,
+          "disk": 742400,
           "createdBySupport": true
       },
       "g3-highstorage-32-kvm": {
