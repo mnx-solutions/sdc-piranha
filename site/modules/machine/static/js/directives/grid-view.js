@@ -421,6 +421,15 @@
             });
         };
 
+        $scope.isFantomSort = function (column) {
+            var result = false;
+            if ($scope.fantomSort && $scope.order.length > 1 && $scope.fantomSort.secondary.name === column.name) {
+                $scope.props[$scope.props.indexOf(column)].columnActive = false;
+                result = true;
+            }
+            return result;
+        };
+
     }]).constant('gridConfig', {
         paginated: true,
         perPage: 25,
@@ -511,6 +520,10 @@
 
                 $scope.pageSizes = pageSizes;
 
+                var setColumnActive = function(column) {
+                    column.columnActive = $scope.order.indexOf(column.order) !== -1 || $scope.order.indexOf(column.rorder) !== -1;
+                };
+
                 var onPropsChanges = function (scope, props) {
                     $scope.props = props || $scope.props;
                     $scope.props.forEach(function (el) {
@@ -523,7 +536,7 @@
                                 el.active = false;
                             }
                         }
-                        
+
                         var initOrder = function (customOrder, initEl) {
                             initEl.order = customOrder;
                             if (typeof (customOrder) === 'string') {
@@ -562,7 +575,7 @@
                             el.order = el.id + '.' + el.id2;
                             el.rorder = '-' + el.id + '.' + el.id2;
                         }
-
+                        setColumnActive(el);
                     });
                 };
 
@@ -623,6 +636,7 @@
                         if (ng.isDefined(config.order)) {
                             $scope.order.splice(0);
                         }
+
                         $scope.props.forEach(function (el) {
                             if (propKeys[el.id]) {
                                 el.active = propKeys[el.id].active;
@@ -642,6 +656,7 @@
                             if (ng.isDefined(config.order) && ng.isDefined(config.order[el.name])) {
                                 $scope.order.push(config.order[el.name] ? el.order : el.rorder);
                             }
+                            setColumnActive(el);
                         });
                         config.$save();
                     });

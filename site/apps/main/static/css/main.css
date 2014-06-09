@@ -2164,9 +2164,10 @@ label.checkbox {
     background-position: -1px 5px;
 }
 
-.icon-sort-up, .icon-sort-down, .icon-sort-both {
-    background-repeat: no-repeat;
-    background-position: 0 1px;
+.icon-sort-up,
+.icon-sort-down,
+.icon-unsorted {
+    background: no-repeat 0 1px;
     width: 12px;
     height: 16px;
     float: left;
@@ -2182,8 +2183,8 @@ label.checkbox {
     background-image: url("../img/sort_desc.png") !important;
 }
 
-.icon-sort-both {
-    background-image: url("../img/sort_both.png");
+.icon-unsorted {
+    background-image: url("../img/icon-unsorted.png");
 }
 
 .grid-action-btn {
