@@ -14,15 +14,15 @@
         "package": "9fcd9ab7-bd07-cb3c-9f9a-ac7ec3aa934e"
     },
     {
-        "name": "CentOS 6.5",
-        "datasetName": "centos-6",
+        "name": "Ubuntu Certified 14.04",
+        "datasetName": "ubuntu-certified-14.04",
         "networks": ["42325ea0-eb62-44c1-8eb6-0af3e2f83abc", "f7ed95d3-faaf-43ef-9346-15644403b963",
             "9ec60129-9034-47b4-b111-3026f9b1a10f", "1e7bb0e1-25a9-43b6-bb19-f79ae9540b39"],
         "package": "4dad8aa6-2c7c-e20a-be26-c7f4f1925a9a"
     },
     {
-        "name": "Ubuntu Certified 14.04",
-        "datasetName": "ubuntu-certified-14.04",
+        "name": "CentOS 6.5",
+        "datasetName": "centos-6",
         "networks": ["42325ea0-eb62-44c1-8eb6-0af3e2f83abc", "f7ed95d3-faaf-43ef-9346-15644403b963",
             "9ec60129-9034-47b4-b111-3026f9b1a10f", "1e7bb0e1-25a9-43b6-bb19-f79ae9540b39"],
         "package": "4dad8aa6-2c7c-e20a-be26-c7f4f1925a9a"
