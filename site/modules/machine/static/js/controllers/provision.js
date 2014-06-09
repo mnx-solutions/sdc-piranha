@@ -1226,7 +1226,10 @@
                         instance.dataset = datasetId;
                         instance.description = datasetDescription;
                     }
-                    if (!unique[instance.dataset] || unique[instance.dataset].package !== instance.package) {
+                    var imageExists = $scope.datasets.some(function (image) {
+                        return image.id === instance.dataset;
+                    });
+                    if (imageExists && (!unique[instance.dataset] || unique[instance.dataset].package !== instance.package)) {
                         uniqueRecentInstances.push(instance);
                         unique[instance.dataset] = instance;
                     }
