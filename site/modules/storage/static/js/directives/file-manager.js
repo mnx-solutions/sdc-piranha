@@ -150,10 +150,6 @@
                     var path = getObjectPath(file);
                     var method = (file.type === 'object') ? 'unlink' : 'rmr';
 
-                    if (file.type === 'directory' && file.parent.indexOf('/', 1) === -1) {
-                        var message = 'You can not delete "' + file.name + '" folder.';
-                        return showPopupDialog('error', 'Message', message);
-                    }
                     return PopupDialog.confirm(
                         null,
                         localization.translate(
@@ -169,7 +165,7 @@
                             lastSelectedFile = null;
                             fileman[method](path, function (error) {
                                 if (error) {
-                                    return showPopupDialog('error', 'Message', error.message, function () {
+                                    return showPopupDialog('error', 'Message', error.message || error, function () {
                                         scope.refreshingFolder = false;
                                     });
                                 }
