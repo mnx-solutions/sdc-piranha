@@ -8,7 +8,7 @@
         'notification',
         'errorContext',
 
-        function (serverTab, $q, localization, notification, errorContext) {
+        function (serverTab, $q) {
 
             var service = {};
             var networks = { job: {}, index: {}, list: {}};
@@ -16,16 +16,14 @@
 
             service.updateNetworks = function (datacenter) {
 
-
                 if (!networks.job[datacenter] || networks.job[datacenter].finished) {
                     networks.job[datacenter] = null;
                     networks.list[datacenter] = [];
 
-
                     networks.job[datacenter] = serverTab.call({
-                        name:'NetworksList',
+                        name: 'NetworksList',
                         data: {datacenter: datacenter},
-                        done: function(err, job) {
+                        done: function (err, job) {
                             // FIXME: Next lines should be uncommented
                             /*
                             if (err) {
@@ -47,18 +45,18 @@
                 return networks.job[datacenter];
             };
 
-            service.getNetwork = function(datacenter, id) {
+            service.getNetwork = function (datacenter, id) {
                 var d = $q.defer();
-                if(networksInfo[datacenter] && networksInfo[datacenter][id]) {
+                if (networksInfo[datacenter] && networksInfo[datacenter][id]) {
                     d.resolve(networksInfo[datacenter][id]);
                 } else {
-                    var job = serverTab.call({
+                    serverTab.call({
                         name: 'getNetwork',
                         data: {uuid: id, datacenter: datacenter},
-                        done: function(err, job) {
+                        done: function (err, job) {
                             var res = job.__read();
 
-                            if(!networksInfo[datacenter]) {
+                            if (!networksInfo[datacenter]) {
                                 networksInfo[datacenter] = {};
                             }
 
@@ -79,7 +77,8 @@
                 }
 
                 var ret = $q.defer();
-                if (!datacenter) {
+
+                if (datacenter) {
                     if (networks.list[datacenter].final) {
                         ret.resolve(networks.list[datacenter]);
                     } else {
@@ -95,11 +94,6 @@
             service.networks = function () {
                 return networks.list.length > 0 ? networks.list : null;
             };
-
-//            if(!networks.job) {
-//                // run updatePackages
-//                service.updateNetworks(null);
-//            }
 
             return service;
         }]);

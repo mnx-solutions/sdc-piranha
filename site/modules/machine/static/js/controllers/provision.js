@@ -103,6 +103,7 @@
             $scope.keys = [];
             $scope.datacenters = [];
             $scope.networks = [];
+            $scope.datacenterForNetworks = '';
             $scope.indexPackageTypes = {};
             $scope.packageTypes = [];
             $scope.packageType = null;
@@ -670,16 +671,15 @@
                 return parseInt(pkg.memory, 10);
             };
 
-
             function setNetworks (datacenter) {
-                Network.network(datacenter).then(function (result){
+                function configureNetworks (val) {
                     $scope.networks = ['',''];
                     $scope.selectedNetworks.length = 0;
                     var confNetwork = {
                         'Joyent-SDC-Private': 0,
                         'Joyent-SDC-Public': 1
                     };
-                    result.forEach(function (network) {
+                    val.forEach(function (network) {
                         var orederedNetwork = confNetwork[network.name];
                         network.active = orederedNetwork > -1;
                         if (orederedNetwork > -1) {
@@ -690,10 +690,19 @@
                         }
                     });
                     $scope.networks = $scope.networks.filter(function(e){return e;});
-                    if ($scope.networks.length === 0) {
-                        loggingService.log('warn', 'Networks are not loaded for datacenter: ' + datacenter);
-                    }
-                });
+                }
+
+                if ($scope.datacenterForNetworks === datacenter && $scope.networks.length > 0) {
+                    configureNetworks($scope.networks);
+                } else {
+                    $scope.datacenterForNetworks = datacenter;
+                    Network.network(datacenter).then(function (result) {
+                        configureNetworks(result);
+                        if ($scope.networks.length === 0) {
+                            loggingService.log('warn', 'Networks are not loaded for datacenter: ' + datacenter);
+                        }
+                    });
+                }
             }
 
             $scope.reconfigure = function (step) {
@@ -880,10 +889,6 @@
                         }
                     });
                     $scope.filteredVersions = filteredVersions.reverse();
-
-                    if (!$scope.networks.length) {
-                        setNetworks($scope.data.datacenter);
-                    }
                 });
             };
 
@@ -1267,6 +1272,7 @@
                 if (newVal) {
                     $scope.reloading = true;
                     $scope.datasetsLoading = true;
+                    setNetworks(newVal);
                     $q.all([
                         $q.when(Dataset.dataset({ datacenter: newVal })),
                         $q.when(Package.package({ datacenter: newVal })),
@@ -1282,7 +1288,6 @@
                         if ($scope.isRecentInstancesEnabled) {
                             processRecentInstances(result[2], datasets);
                         }
-                        setNetworks(newVal);
                     }, function () {
                         switchToOtherDatacenter(newVal);
                     });
