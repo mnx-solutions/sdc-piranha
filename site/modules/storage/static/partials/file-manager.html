@@ -24,10 +24,10 @@
             <div class="files-box" data-ng-class="{'column-files': loadingFolder && (splittedCurrentPath.length == 2)}">
                 <div class="loading-medium-transparent" data-ng-show="refreshingFolder && $last"></div>
                 <div data-ng-repeat="path in files"  class="finder-elements" data-ng-class="{active: path.active}">
-                    <a href="JavaScript:{}" data-ng-click="setCurrentPath(path, true)">
+                    <span data-ng-click="setCurrentPath(path, true)">
                         <div class="{{path.type}} path-name"></div>
-                        <div class="path-name">{{ path.name }}</div>
-                    </a>
+                        <div class="path-name" data-tooltip-full-text data-original-title="{{path.name}}">{{ path.name }}</div>
+                    </span>
                 </div>
             </div>
         </div>

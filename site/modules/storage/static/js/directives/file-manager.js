@@ -190,8 +190,13 @@
                         var infoModalCtrl = function ($scope, dialog) {
                             $scope.info = info.__read();
                             $scope.fileSize = util.getReadableFileSizeString($scope.info.size);
-                            $scope.title = $scope.info.name + " description";
-                            $scope.info.type = ($scope.info.extension === 'directory') ? 'directory' : $scope.info.type;
+
+                            if ($scope.info.extension === 'directory') {
+                                $scope.title = 'Folder Information';
+                                $scope.info.type = 'folder';
+                            } else {
+                                $scope.title = 'File Information';
+                            }
 
                             $scope.close = function (res) {
                                 dialog.close(res);

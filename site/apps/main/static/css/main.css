@@ -1614,9 +1614,17 @@ iframe {
 }
 
 .modal-header {
-    color: white;
     padding: 9px 15px;
     border-bottom: 1px solid #eee;
+    color: white;
+    word-wrap: break-word;
+}
+
+.modal-header b {
+    display: inline-block;
+    overflow: hidden;
+    width: 90%;
+    vertical-align: top;
 }
 
 .modal-footer {
@@ -2705,11 +2713,15 @@ label.checkbox {
 .info-table tr td:first-child {
     color: #5D80A7;
     padding-right: 20px;
+    vertical-align: top;
 }
 .info-table tr td:nth-child(2) {
+    overflow: hidden;
+    max-width: 390px;
+    color: #7d7d7d;
+    word-wrap: break-word;
     font-weight: 300;
     font-size: 16px;
-    color: #7d7d7d;
 }
 .grid-view-table {
     padding-top: 25px;
@@ -2804,8 +2816,11 @@ label.checkbox {
     background-color: #fff2d2;
     color: #020001;
     word-wrap: break-word;
+    font-size: 14px;
 }
-
+.tooltip.in {
+    opacity: 1;
+}
 .tooltip.top .tooltip-inner {
     border-bottom-width: 3px;
 }
@@ -2995,12 +3010,8 @@ label.checkbox {
 }
 .finder-column .finder-elements {
     display: block;
-    margin-bottom: 5px;
-    margin-top: 5px;
+    margin: 5px 0;
     padding-right: 10px;
-    text-overflow: ellipsis;
-    overflow: hidden;
-    white-space: nowrap;
 }
 .general-column .finder-elements {
     width: 80px;
@@ -3010,9 +3021,9 @@ label.checkbox {
     margin-bottom: 5px;
     border-radius: 5px;
 }
-.finder-elements a {
-    text-decoration: none;
+.finder-elements > span {
     margin-left: 5px;
+    cursor: pointer;
 }
 .finder-elements.active {
     background-color: #fef1d2;
@@ -3127,12 +3138,12 @@ label.checkbox {
     background-image: url("../img/fileman/word.png");
 }
 .path-name {
-    vertical-align: middle;
-    max-width: 190px;
-    text-overflow: ellipsis;
     overflow: hidden;
-    white-space: nowrap;
+    max-width: 170px;
     color: #969696;
+    vertical-align: middle;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 .general-column .finder-elements .path-name {
     display: block;
@@ -3280,6 +3291,11 @@ label.checkbox {
 .modal.file-manager {
     margin-left: -290px;
     width: 580px;
+}
+
+.modal-body {
+    overflow-x: hidden;
+    word-wrap: break-word;
 }
 
 .file-manager .modal-body {

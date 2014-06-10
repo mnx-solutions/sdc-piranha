@@ -1520,13 +1520,9 @@
 }
 .tooltip-inner {
     max-width: 300px;
-    font-size: 14px;
     text-align: left;
     text-decoration: none;
     padding: 10px 20px;
-}
-.tooltip.in {
-    opacity: 1;
 }
 .tooltip.top .tooltip-arrow,
 .tooltip.bottom .tooltip-arrow {
