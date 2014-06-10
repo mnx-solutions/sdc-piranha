@@ -70,6 +70,24 @@ var firewall = function execute (scope) {
         }
     });
 
+    function fwPoller(call, uuid, timeout, condition, errorMessage) {
+        var start = new Date().getTime();
+        var cloud = call.cloud.separate(call.data.datacenter);
+        condition = condition || function (err) { return !err; };
+        function getRule() {
+            cloud.getFwRule(uuid, function (error, result) {
+                if (condition(error, result)) {
+                    call.done(null, result);
+                } else if (new Date().getTime() - start < timeout) {
+                    setTimeout(getRule, config.polling.firewallRuleCheckingDelay);
+                } else {
+                    call.done(error && errorMessage, !error && result);
+                }
+            }, null, true);
+        }
+        getRule();
+    }
+
     server.onCall('RuleCreate', {
         verify: function (data) {
             return typeof data === 'object' &&
@@ -89,24 +107,7 @@ var firewall = function execute (scope) {
                     call.done(err);
                     return;
                 }
-                // Poll for rule
-                var timeout = null;
-                var poll = setInterval(function () {
-                    call.log.info('Polling firewall rule');
-                    cloud.getFwRule(rule.id, function (err, rule) {
-                        if (!err) {
-                            call.done(null, rule);
-                            clearInterval(poll);
-                            clearTimeout(timeout);
-                        }
-                    }, undefined, true);
-                }, 2000);
-
-                // When timeout reached
-                timeout = setTimeout(function () {
-                    call.done(new Error('Rule not created'));
-                    clearInterval(poll);
-                }, 20000);
+                fwPoller(call, rule.id, config.polling.firewallRuleCreateTimeout, null, 'Rule not created');
             });
         }
     });
@@ -134,24 +135,9 @@ var firewall = function execute (scope) {
                     call.done(err);
                     return;
                 }
-                // Poll for rule
-                var timeout = null;
-                var poll = setInterval(function () {
-                    call.log.info('Polling firewall rule');
-                    cloud.getFwRule(uuid, function (err, rule) {
-                        if (rule && rule.rule === newRule) {
-                            call.done(null, rule);
-                            clearInterval(poll);
-                            clearTimeout(timeout);
-                        }
-                    }, undefined, true);
-                }, 2000);
-
-                // When timeout reached
-                timeout = setTimeout(function () {
-                    call.done(new Error('Rule not updated'));
-                    clearInterval(poll);
-                }, 90000);
+                fwPoller(call, uuid, config.polling.firewallRuleUpdateTimeout, function (error, rule) {
+                    return !error && rule && rule.rule === newRule;
+                }, 'Rule not updated');
             });
         }
     });
@@ -168,29 +154,14 @@ var firewall = function execute (scope) {
             var cloud = call.cloud.separate(call.data.datacenter);
 
             call.log.info('Delete firewall rule ' + uuid);
-            cloud.deleteFwRule(uuid, function (err, rule) {
+            cloud.deleteFwRule(uuid, function (err) {
                 if (err) {
                     call.done(err);
                     return;
                 }
-                // Poll for rule
-                var timeout = null;
-                var poll = setInterval(function () {
-                    call.log.info('Polling firewall rule');
-                    cloud.getFwRule(uuid, function (err, rule) {
-                        if (err && err.statusCode === 404) {
-                            call.done(null, rule);
-                            clearInterval(poll);
-                            clearTimeout(timeout);
-                        }
-                    }, undefined, true);
-                }, 2000);
-
-                // When timeout reached
-                timeout = setTimeout(function () {
-                    call.done(new Error('Rule not deleted'));
-                    clearInterval(poll);
-                }, 90000);
+                fwPoller(call, uuid, config.polling.firewallRuleDeleteTimeout, function (error) {
+                    return error && error.statusCode === 404;
+                }, 'Rule not deleted');
             });
         }
     });
