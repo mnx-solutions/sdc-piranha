@@ -150,9 +150,6 @@
                     var path = getObjectPath(file);
                     var method = (file.type === 'object') ? 'unlink' : 'rmr';
 
-                    if (path === '/public' && file.name === 'public') {
-                        return showPopupDialog('error', 'Message', 'You can not delete public folder');
-                    }
                     return PopupDialog.confirm(
                         null,
                         localization.translate(
@@ -168,7 +165,7 @@
                             lastSelectedFile = null;
                             fileman[method](path, function (error) {
                                 if (error) {
-                                    return showPopupDialog('error', 'Message', error.message, function () {
+                                    return showPopupDialog('error', 'Message', error.message || error, function () {
                                         scope.refreshingFolder = false;
                                     });
                                 }
@@ -235,7 +232,7 @@
                     });
                 };
 
-                scope.setCurrentPath = function setCurrentPath(obj, userAction, callback) {
+                scope.setCurrentPath = function (obj, userAction, callback) {
                     if (typeof obj === 'string') {
                         obj = getLastSelectedObj(obj);
                     }
@@ -276,7 +273,6 @@
                     if (obj.type) {
                         scope.uploadPath = obj.type === 'object' ? getAbsolutePath(obj.parent) : scope.currentPath;
                     }
-
                     scope.splittedCurrentPath = scope.currentPath.split(/\//)
                         .filter(function (e) {
                             return !!e;
