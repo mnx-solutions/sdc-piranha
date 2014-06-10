@@ -51,6 +51,9 @@ module.exports = function (scope, app) {
             case 'machine':
                 prefix += 'instances-';
                 break;
+            case 'user':
+                prefix += 'users-';
+                break;
             default:
                 break;
         }

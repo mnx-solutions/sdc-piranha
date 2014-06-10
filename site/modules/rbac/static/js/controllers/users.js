@@ -49,33 +49,33 @@
 
             $scope.gridUserConfig = Account.getUserConfig().$child('rbac') || {};
 
-            $scope.gridOrder = ['-published_at'];
+            $scope.gridOrder = ['login'];
             $scope.gridProps = [
+                {
+                    id: 'id',
+                    name: 'ID',
+                    sequence: 1,
+                    active: false
+                },
                 {
                     id: 'login',
                     name: 'Login',
-                    sequence: 1,
+                    sequence: 2,
                     type: 'html',
+                    _order:'login',
                     _getter: function (object) {
-                        return '<a href="#!/rbac/user/' + object.id + '">' + object.login + '</a>';
+                        return '<a href="#!/accounts/user/' + object.id + '">' + object.login + '</a>';
                     },
                     active: true
                 },
                 {
                     id: 'email',
                     name: 'Email',
-                    sequence: 2,
-                    active: true
-                },
-                {
-                    id: 'created',
-                    name: 'Created Date',
                     sequence: 3,
-                    type: 'date',
                     active: true
                 },
                 {
-                    name: 'Role',
+                    name: 'Role(s)',
                     sequence: 4,
                     active: true,
                     type: 'async',
@@ -88,7 +88,69 @@
                         });
                     }
 
+                },
+                {
+                    id: 'companyName',
+                    name: 'Company Name',
+                    sequence: 5,
+                    active: false
+                },
+                {
+                    id: 'firstName',
+                    name: 'First Name',
+                    sequence: 6,
+                    active: false
+                },
+                {
+                    id: 'lastName',
+                    name: 'Last Name',
+                    sequence: 7,
+                    active: false
+                },
+                {
+                    id: 'address',
+                    name: 'Address',
+                    sequence: 8,
+                    active: false
+                },
+                {
+                    id: 'postalCode',
+                    name: 'Postal Code',
+                    sequence: 9,
+                    active: false
+                },
+                {
+                    id: 'city',
+                    name: 'City',
+                    sequence: 10,
+                    active: false
+                },
+                {
+                    id: 'state',
+                    name: 'State',
+                    sequence: 11,
+                    active: false
+                },
+                {
+                    id: 'country',
+                    name: 'Country',
+                    sequence: 12,
+                    active: false
+                },
+                {
+                    id: 'phone',
+                    name: 'Phone',
+                    sequence: 13,
+                    active: false
+                },
+                {
+                    id: 'created',
+                    name: 'Created Date',
+                    sequence: 3,
+                    type: 'date',
+                    active: true
                 }
+
             ];
             $scope.gridDetailProps = [];
             $scope.gridActionButtons = [

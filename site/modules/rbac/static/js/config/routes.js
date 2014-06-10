@@ -7,32 +7,58 @@ window.JP.main.config(['routeProvider', function (routeProvider) {
     }
 
     routeProvider
-        .when('/rbac/users', {
+        .when('/accounts', {
+            title: 'Accounts',
+            action: 'rbac',
+            showLatest: true,
+            showText: true,
+            resolve: {
+                data: ['$location', function ($location) {
+                    $location.path('/accounts/users');
+                }]
+            }
+        }).when('/accounts/users', {
             title: 'Users',
             action: 'rbac.users'
-        }).when('/rbac/user/:id', {
+        }).when('/accounts/user/:id', {
             title: 'User Summary',
-            action: 'rbac.user'
-        }).when('/rbac/user/create', {
+            action: 'rbac.user',
+            showText: true,
+            showLatest: true
+        }).when('/accounts/user/create', {
             title: 'Create User',
-            action: 'rbac.user'
-        }).when('/rbac/roles', {
+            action: 'rbac.user',
+            showText: true,
+            showLatest: true
+        }).when('/accounts/roles', {
             title: 'Roles',
-            action: 'rbac.roles'
-        }).when('/rbac/role/:id', {
+            action: 'rbac.roles',
+            showText: true,
+            showLatest: true
+        }).when('/accounts/role/:id', {
             title: 'Role Summary',
-            action: 'rbac.role'
-        }).when('/rbac/role/create', {
+            action: 'rbac.role',
+            showText: true,
+            showLatest: true
+        }).when('/accounts/role/create', {
             title: 'Create Role',
-            action: 'rbac.role'
-        }).when('/rbac/policies', {
+            action: 'rbac.role',
+            showText: true,
+            showLatest: true
+        }).when('/accounts/policies', {
             title: 'Policies',
-            action: 'rbac.policies'
-        }).when('/rbac/policy/:id', {
+            action: 'rbac.policies',
+            showText: true,
+            showLatest: true
+        }).when('/accounts/policy/:id', {
             title: 'Policy Summary',
-            action: 'rbac.policy'
-        }).when('/rbac/policy/create', {
+            action: 'rbac.policy',
+            showText: true,
+            showLatest: true
+        }).when('/accounts/policy/create', {
             title: 'Create Policies',
-            action: 'rbac.policy'
+            action: 'rbac.policy',
+            showText: true,
+            showLatest: true
         });
 }]);

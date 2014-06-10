@@ -4,12 +4,12 @@
     app.controller('rbac.UserController', [
         '$q',
         '$scope',
+        'localization',
         '$location',
         'requestContext',
         'PopupDialog',
-        'Account',
         'rbac.Service',
-        function ($q, $scope, $location, requestContext, PopupDialog, Account, service) {
+        function ($q, $scope, localization, $location, requestContext, PopupDialog, service) {
             $scope.loading = true;
             $scope.user = {};
             $scope.userRoles = [];
@@ -19,7 +19,10 @@
 
             var errorCallback = function (err) {
                 $scope.loading = false;
-                PopupDialog.errorObj(err);
+                if (err && err.message === 'passwordInHistory') {
+                    err.message = 'Password was already used';
+                    PopupDialog.errorObj(err);
+                }
             };
 
             $scope.user.isNew = userId && userId === 'create';
@@ -89,37 +92,93 @@
                 return updates;
             };
 
+            var isFormChanged = function () {
+                return $scope.subAccountForm.$dirty;
+            };
+
+            var validate = function () {
+                if ($scope.subAccountForm.$invalid) {
+                    PopupDialog.message(
+                            localization.translate(
+                                    $scope,
+                                    null,
+                                    'Message'
+                            ),
+                            localization.translate(
+                                    $scope,
+                                    null,
+                                    'Please validate your input.'
+                            ),
+                            function () {
+                            }
+                    );
+                    return false;
+                }
+                return true;
+            };
+
+            var isActionReady = function () {
+                if (!validate()) {
+                    return false;
+                }
+                if (!isFormChanged()) {
+                    $location.path('/accounts/users');
+                    return false;
+                }
+                return true;
+            };
+
             $scope.createUser = function () {
+                if (!isActionReady()) {
+                    return;
+                }
                 $scope.loading = true;
                 service.createUser($scope.user).then(function () {
                     var updates = updateRolesTasks();
                     $q.all(updates).then(function () {
                         $scope.loading = false;
-                        $location.path('/rbac/users');
+                        $location.path('/accounts/users');
                     }, errorCallback);
                 }, errorCallback);
             };
 
             $scope.updateUser = function () {
+                if (!isActionReady()) {
+                    return;
+                }
                 $scope.loading = true;
                 var updates = updateRolesTasks();
                 updates.push($q.when(service.updateUser($scope.user)));
                 $q.all(updates).then(function () {
                     $scope.loading = false;
-                    $location.path('/rbac/users');
+                    $location.path('/accounts/users');
                 }, errorCallback);
             };
 
             $scope.deleteUser = function () {
-                $scope.loading = true;
-                service.deleteUser($scope.user.id).then(function () {
-                    $scope.loading = false;
-                    $location.path('/rbac/users');
-                }, errorCallback);
+                PopupDialog.confirm(
+                        localization.translate(
+                                $scope,
+                                null,
+                                'Confirm: Delete user'
+                        ),
+                        localization.translate(
+                                $scope,
+                                null,
+                                'Are you sure you want to delete the selected user'
+                        ),
+                        function () {
+                            $scope.loading = true;
+                            service.deleteUser($scope.user.id).then(function () {
+                                $scope.loading = false;
+                                $location.path('/accounts/users');
+                            }, errorCallback);
+                        }
+                );
             };
 
             $scope.cancel = function () {
-                $location.path('/rbac/users');
+                $location.path('/accounts/users');
             };
 
             $scope.changeUserPassword = function () {
@@ -142,47 +201,37 @@
                         ];
                         $scope.buttonClick = function (passwords, res) {
                             if (!res || (res && res !== 'ok')) {
-                                $scope.loading = false;
                                 dialog.close();
                             } else {
-                                var viewValue = passwords[0];
-                                //FIXME: Just use !
-                                $scope.lengthError = (viewValue && viewValue.length >= 7 ? false : true);
-                                if (!$scope.lengthError) {
-                                    //FIXME: Optimize this to use one RegExp like \w\d and remove that ' ? false : true', use !
-                                    $scope.charactersError = (viewValue && /[A-z]/.test(viewValue) && (/\d/.test(viewValue))) ? false : true;
+                                if (!$scope.passForm.password.$dirty) {
+                                    $scope.passForm.password.$dirty = true;
                                 }
-                                if (!$scope.lengthError && !$scope.charactersError) {
-                                    //FIXME: Remove unneeded ' ? true : false'
-                                    //FIXME: passwords[0] was already copied in viewValue
-                                    //FIXME: declare variable for passwords[1] and give it name explaining what it does
-                                    $scope.repeatError = (passwords[0] !== passwords[1]) ? true : false;
+                                if ($scope.passForm.$invalid) {
+                                    return;
                                 }
-                            }
-                            if (!$scope.lengthError && !$scope.charactersError && !$scope.repeatError) {
-                                $scope.loading = true;
                                 dialog.close(passwords);
                             }
                         };
                         $scope.removeErrors = function () {
                             $scope.lengthError = $scope.charactersError = $scope.repeatError = false;
-                        }
+                        };
                     }
                 };
                 PopupDialog.custom(
-                    opts,
-                    function (passwords) {
-                        if (passwords) {
-                            service.changeUserPassword($scope.user.id, passwords[0], passwords[1]).then(function () {
-                                $scope.loading = false;
-                            }, errorCallback);
+                        opts,
+                        function (passwords) {
+                            $scope.loading = !!passwords;
+                            if (passwords) {
+                                service.changeUserPassword($scope.user.id, passwords[0], passwords[1]).then(function () {
+                                    $scope.loading = false;
+                                }, errorCallback);
+                            }
                         }
-                    }
                 );
 
             };
             $scope.cancel = function () {
-                $location.path('/rbac/users');
+                $location.path('/accounts/users');
             };
         }
     ]);

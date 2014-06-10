@@ -5,11 +5,11 @@
         </span>
         <span class="edit-value">
             <input type="text"
-                   id="subFirstName"
+                   id="firstName"
                    name="firstName"
                    data-ng-model="user.firstName"
                    data-ng-class="{error: isError('firstName')}"
-                   required/>
+                   />
         </span>
         <span class="edit-error">
             <div class="error"
@@ -26,11 +26,11 @@
         </span>
         <span class="edit-value">
              <input type="text"
-                    id="subLastName"
+                    id="lastName"
                     name="lastName"
                     data-ng-model="user.lastName"
                     data-ng-class="{error: isError('lastName')}"
-                    required/>
+                    />
         </span>
         <span class="edit-error">
             <div class="error"
@@ -45,8 +45,9 @@
         <span class="edit-name">Email Address</span>
         <span class="edit-value">
             <input type="email"
-                   id="subEmail"
+                   id="email"
                    name="email"
+                   data-ng-pattern="/^[a-z0-9!#$%&'*+/=?^_`{|}~.-]+@[a-z0-9-]+(\.[a-z0-9-]+)+$/i"
                    data-ng-model="user.email"
                    data-ng-class="{error: isError('email')}"
                    required/>
@@ -54,14 +55,14 @@
         <span class="edit-error">
             <div class="error"
                  data-translate
-                 data-ng-show="isError('email', 'required')">
-                 Missing email address
+                 ng-show="subAccountForm.email.$error.required && subAccountForm.email.$dirty">
+                Missing email address
             </div>
-            <div class="error"
-                 data-translate
-                 data-ng-show="isError('email', 'email')">
-                 Please provide valid email address
-            </div>
+             <div class="error"
+                  data-translate
+                  ng-show="!subAccountForm.email.$error.required && subAccountForm.email.$error.pattern && subAccountForm.email.$dirty">
+                 Please provide valid email address.
+             </div>
         </span>
     </div>
 
@@ -69,16 +70,16 @@
         <span class="edit-name">Company Name</span>
         <span class="edit-value">
             <input type="text"
-                   id="subCompanyName"
+                   id="companyName"
                    name="companyName"
                    data-ng-model="user.companyName"
-                   required/>
+                   />
         </span>
         <span class="edit-error">
             <div class="error"
                  data-translate
                  data-ng-show="isError('companyName', 'required')">
-                 Missing company name
+                 Missing company name.
             </div>
         </span>
     </div>
@@ -87,31 +88,44 @@
         <span class="edit-name">Username</span>
         <span class="edit-value">
             <input type="text"
-                   id="subLogin"
+                   id="login"
                    name="login"
+                   data-ng-class="{error: isError('login')}"
                    data-ng-model="user.login"
+                   data-ng-pattern="/^[A-z][A-z0-9]*$/"
                    required/>
         </span>
         <span class="edit-error">
             <div class="error"
                  data-translate
-                 data-ng-show="isError('login', 'required')">
-                Missing Username
+                 ng-show="subAccountForm.login.$error.required && subAccountForm.login.$dirty">Missing Username
+            </div>
+            <div class="error"
+                 data-translate
+                 ng-show="!subAccountForm.login.$error.minLength && !subAccountForm.login.$error.maxLength && subAccountForm.login.$error.pattern && subAccountForm.login.$dirty">
+                 Must start with a letter, and contain letters &amp; numbers only.
             </div>
         </span>
     </div>
 
-    <div data-ng-show="user.isNew">
+
+    <div ng-if="user.isNew">
         <div class="control-group">
             <span class="edit-name">Password</span>
             <span class="edit-value">
                 <input type="password" data-ng-model="user.password"
                        id="password"
                        name="password"
+                       data-ng-minlength="7"
+                       data-ng-maxlength="50"
+                       data-ng-pattern="/(?=.*[A-z])(?=.*[A-z])(?=.*[^A-z])/"
                        required/>
             </span>
             <span class="edit-error">
-                <div class="error"></div>
+                <div class="error" ng-show="subAccountForm.password.$error.required && subAccountForm.password.$dirty">Please enter new password.</div>
+                <div class="error" ng-show="!subAccountForm.password.$error.required && subAccountForm.password.$error.minlength && subAccountForm.password.$dirty">Password too short.</div>
+                <div class="error" ng-show="!subAccountForm.password.$error.required && subAccountForm.password.$error.maxlength && subAccountForm.password.$dirty">Password too long.</div>
+                <div class="error" ng-show="!subAccountForm.password.$error.required && !subAccountForm.password.$error.minlength && !subAccountForm.password.$error.maxlength && subAccountForm.password.$error.pattern && subAccountForm.password.$dirty">Must contain letters and numbers.</div>
             </span>
         </div>
 
@@ -119,12 +133,13 @@
             <span class="edit-name">Repeat Password</span>
             <span class="edit-value">
                 <input type="password" data-ng-model="user.password_confirmation"
-                       id="password-repeat"
-                       name="password-repeat"
+                       id="password_confirmation"
+                       name="password_confirmation"
+                       data-password-verify="password"
                        required/>
             </span>
             <span class="edit-error">
-                <div class="error"></div>
+                <div class="error" ng-show="subAccountForm.password_confirmation.$error.passwordVerify && subAccountForm.password.$dirty">Passwords don't match.</div>
             </span>
         </div>
     </div>
@@ -134,7 +149,7 @@
         <span class="edit-value">
             <input type="text"
                    id="subAddress"
-                   name="adress"
+                   name="address"
                    data-ng-model="user.address"/>
         </span>
         <span class="edit-error">
@@ -150,11 +165,20 @@
                     data-ng-class="{error: isError('country')}"
                     data-ng-model="user.country"
                     data-ng-options="country.iso3 as country.name group by country.group for country in countries.data | orderBy: ['-group','name']"
-                    data-ng-required="true">
+                    >
             </select>
         </span>
         <span class="edit-error">
-            <div class="error"></div>
+            <div class="error"
+                     data-translate
+                     data-ng-show="isError('country') || (formSubmitted && subAccountForm.country.$invalid && !subAccountForm.country.$error.required)">
+                    Invalid country
+                </div>
+            <div class="error"
+                     data-translate
+                     data-ng-show="isError('country', 'required') || isError('country', 'submitRequired')">
+                    Missing country
+                </div>
         </span>
     </div>
 
@@ -192,7 +216,6 @@
                    name="zipCode"
                    data-ng-class="{error: isError('zipCode')}"
                    data-ng-model="user.postalCode"
-                   data-ng-required="true"
                    data-ng-maxlength="20"/>
         </span>
         <span class="edit-error">
@@ -211,6 +234,6 @@
 
     <div class="control-group">
         <span class="edit-name">Phone Number</span>
-        <div data-phone-number data-number="user.phone" data-country="{{user.country}}" data-is-error="isError(field, type)"></div>
+        <div data-phone-number data-number="user.phone" data-country="{{user.country}}" data-is-error="isError(field, type)" data-skip="true"></div>
     </div>
 </form>

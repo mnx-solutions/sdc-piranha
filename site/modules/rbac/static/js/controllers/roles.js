@@ -67,7 +67,7 @@
                     active: true,
                     type: 'html',
                     _getter: function (object) {
-                        return '<a href="#!/rbac/role/' + object.id + '">' + object.name + '</a>';
+                        return '<a href="#!/accounts/role/' + object.id + '">' + object.name + '</a>';
                     }
 
                 },

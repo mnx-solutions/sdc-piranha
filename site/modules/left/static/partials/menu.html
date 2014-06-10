@@ -128,26 +128,26 @@
                 </li>
             </ul>
         </li>
-        <li class="nested" data-ng-show="features.rbac == 'enabled'" data-ng-class="{'active open': location.path().search('rbac') == 1}">
-            <a href="#!/rbac/users" class="accounts-icon">
+        <li class="nested" data-ng-show="features.rbac == 'enabled'" data-ng-class="{'active open': location.path().search('accounts') == 1}">
+            <a href="#!/accounts/users" class="accounts-icon">
                 <span class="title">Accounts</span>
                 <span class="selected"></span>
             </a>
             <ul class="sub-menu">
-                <li left-list-item class="sub" data-ng-class="{active: location.path().search('rbac/users?') == 1}">
-                    <a href="#!/rbac/users">
+                <li left-list-item class="sub" data-ng-class="{active: location.path().search('accounts/users?') == 1}">
+                    <a href="#!/accounts/users">
                         <span class="titles" data-translate>Users</span>
                         <span class="selected-sub"></span>
                     </a>
                 </li>
-                <li left-list-item class="sub" data-ng-class="{active: location.path().search('rbac/roles?') == 1}">
-                    <a href="#!/rbac/roles">
+                <li left-list-item class="sub" data-ng-class="{active: location.path().search('accounts/roles?') == 1}">
+                    <a href="#!/accounts/roles">
                         <span class="titles" data-translate>Roles</span>
                         <span class="selected-sub"></span>
                     </a>
                 </li>
-                <li left-list-item class="sub" data-ng-class="{active: location.path().search('rbac/polic(y|ies)') == 1}">
-                    <a href="#!/rbac/policies">
+                <li left-list-item class="sub" data-ng-class="{active: location.path().search('accounts/polic(y|ies)') == 1}">
+                    <a href="#!/accounts/policies">
                         <span class="titles" data-translate>Policies</span>
                         <span class="selected-sub"></span>
                     </a>

@@ -1,8 +1,20 @@
 <div data-ng-switch="subview">
-    <div data-ng-switch-when="users" data-ng-include="'rbac/static/partials/users.html'"></div>
-    <div data-ng-switch-when="user" data-ng-include="'rbac/static/partials/user.html'"></div>
-    <div data-ng-switch-when="roles" data-ng-include="'rbac/static/partials/roles.html'"></div>
-    <div data-ng-switch-when="role" data-ng-include="'rbac/static/partials/role.html'"></div>
-    <div data-ng-switch-when="policies" data-ng-include="'rbac/static/partials/policies.html'"></div>
-    <div data-ng-switch-when="policy" data-ng-include="'rbac/static/partials/policy.html'"></div>
+    <div data-ng-switch-when="users">
+        <div data-ng-include="'rbac/static/partials/users.html'"></div>
+    </div>
+    <div data-ng-switch-when="user">
+        <div data-ng-include="'rbac/static/partials/user.html'"></div>
+    </div>
+    <div data-ng-switch-when="roles">
+        <div data-ng-include="'rbac/static/partials/roles.html'"></div>
+    </div>
+    <div data-ng-switch-when="role">
+        <div data-ng-include="'rbac/static/partials/role.html'"></div>
+    </div>
+    <div data-ng-switch-when="policies">
+        <div data-ng-include="'rbac/static/partials/policies.html'"></div>
+    </div>
+    <div data-ng-switch-when="policy">
+        <div data-ng-include="'rbac/static/partials/policy.html'"></div>
+    </div>
 </div>

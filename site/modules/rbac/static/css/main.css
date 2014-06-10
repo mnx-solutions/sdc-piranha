@@ -141,9 +141,12 @@ label.name,
     width: 415px;
 }
 .edit-error {
-    width: 80px;
-    margin-left: 5px;
+    width: 418px;
+    display: block;
+    margin-top: -8px;
+    text-align: right;
 }
+
 input.policy-form {
     width: 330px;
 }

@@ -58,9 +58,8 @@
                     active: true,
                     type: 'html',
                     _getter: function (object) {
-                        return '<a href="#!/rbac/policy/' + object.id + '">' + object.name + '</a>';
+                        return '<a href="#!/accounts/policy/' + object.id + '">' + object.name + '</a>';
                     }
-
                 },
                 {
                     id: 'id',

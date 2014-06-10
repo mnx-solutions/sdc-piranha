@@ -53,7 +53,7 @@
             }
 
             $scope.cancel = function () {
-                $location.path('/rbac/policies');
+                $location.path('/accounts/policies');
             };
 
 
@@ -63,7 +63,7 @@
                 action.then(function (data) {
                     //FIXME: No need in setting this flag before redirect
                     $scope.loading = false;
-                    $location.path('/rbac/policies');
+                    $location.path('/accounts/policies');
                 }, function (err) {
                     $scope.loading = false;
                     PopupDialog.errorObj(err);

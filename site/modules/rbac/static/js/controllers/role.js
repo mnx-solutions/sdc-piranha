@@ -125,7 +125,7 @@
 
                 action($scope.role).then(function (role) {
                     $scope.loading = false;
-                    $location.path('/rbac/roles');
+                    $location.path('/accounts/roles');
                 }, function (err) {
                     $scope.loading = false;
                     PopupDialog.errorObj(err);
@@ -140,7 +140,7 @@
                 roleAction(service.updateRole);
             };
             $scope.cancel = function () {
-                $location.path('/rbac/roles');
+                $location.path('/accounts/roles');
             };
         }
     ]);
