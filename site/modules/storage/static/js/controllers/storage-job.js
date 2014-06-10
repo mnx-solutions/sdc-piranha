@@ -43,6 +43,11 @@
                                     });
                                 }
                             });
+                            var inputTasks = $scope.job.stats.tasks;
+                            if ($scope.steps.reduce && $scope.steps.reduce.length) {
+                                inputTasks -= $scope.steps.reduce.length;
+                            }
+                            $scope.inputsCount = Math.max(inputTasks, $scope.inputs.length);
                             $scope.loading = false;
                         },
                         function () {
