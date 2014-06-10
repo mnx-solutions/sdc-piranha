@@ -2244,12 +2244,7 @@ label.checkbox {
 .checked-icon {
     padding-right: 20px;
     background: url("../img/checked.png") no-repeat;
-    background-size: 16px 16px;
-}
-.margin-btn-dashboard {
-    padding-bottom: 10px;
-    padding-top: 10px;
-    padding-right: 5px;
+    background-size: 14px;
 }
 
 .hide {
@@ -2282,7 +2277,7 @@ label.checkbox {
     width: 42px;
     height: 108px;
     margin-top: 160px;
-    background: #999 url('../img/feedback-tab.png') 0 0 no-repeat;
+    background: #ccc url('../img/feedback-tab.png') 0 0 no-repeat;
     z-index: 10000
 }
 .feedback-tab-link {

@@ -19,8 +19,9 @@
         'util',
         'Datacenter',
         'FreeTier',
+        '$location',
 
-        function ($scope, $q, requestContext, Account, Zendesk, Machine, localization, $http, $cookies, slbService, $rootScope, Support, fileman, Utilization, util, Datacenter, FreeTier) {
+        function ($scope, $q, requestContext, Account, Zendesk, Machine, localization, $http, $cookies, slbService, $rootScope, Support, fileman, Utilization, util, Datacenter, FreeTier, $location) {
             localization.bind('dashboard', $scope);
             requestContext.setUpRenderContext('dashboard.index', $scope);
             $scope.loading = true;

@@ -95,7 +95,7 @@
     , "url":         "https://joyentcloud.zendesk.com"
     , "tabTooltip":  "Contact Support"
     , "tabImageURL": "/main/static/img/tab_support.png"
-    , "tabColor":    "#999"
+    , "tabColor":    "#ccc"
     , "tabPosition": "Right"
     , "dropboxOrderPackageId": ""
     }
