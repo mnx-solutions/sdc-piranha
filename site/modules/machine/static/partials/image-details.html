@@ -1,6 +1,10 @@
 <div class="container-fluid container-position" data-ng-controller="Machine.ImageDetailsController">
 
-    <div data-breadcrumbs></div>
+    <ul class="breadcrumb">
+        <li><a href="#!/compute">Compute</a>&nbsp;/</li>
+        <li><a href="#!/images">Images</a>&nbsp;/</li>
+        <li>Image Details&nbsp;/</li>
+    </ul>
     <div data-ng-show="features.imageRename == 'enabled'">
         <div data-rename data-object="currentImage" data-type="'image'"></div>
     </div>
