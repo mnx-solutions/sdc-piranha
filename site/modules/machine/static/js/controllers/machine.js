@@ -200,7 +200,7 @@
 
             var machineMessages = {
                 resizeMessage: 'Resize this instance?',
-                stopMessage: 'Stopping this instance does not stop billing, your instance can be started after it is stopped.',
+                stopMessage: 'Please confirm that you want to stop this instance. Once stopped, you can delete the instance in order to halt billing.',
                 deleteMessage: 'Destroy the information on this instance and stop billing for this instance?'
             };
 
@@ -440,9 +440,9 @@
                     return result;
                 },
                 stop: function () {
-                    var result = 'You can start your instance after stopping it.';
+                    var result = '';
                     if (!$scope.machine.freetier) {
-                        result = 'Stopping an instance does not stop billing. ' + result;
+                        result = 'Stopping an instance does not stop billing. Once stopped, you can delete the instance in order to halt billing.';
                     }
                     return result;
                 }

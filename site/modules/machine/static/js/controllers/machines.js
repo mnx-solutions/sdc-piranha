@@ -396,8 +396,8 @@
                     plural: 'Start selected instances?'
                 },
                 stop : {
-                    single: 'Stopping this instance does not stop billing, your instance can be started after it is stopped.',
-                    plural: 'Stopping selected instances does not stop billing, your instances can be started after they are stopped.',
+                    single: 'Please confirm that you want to stop this instance. Once stopped, you can delete the instance in order to halt billing.',
+                    plural: 'Please confirm that you want to stop selected instances. Once stopped, you can delete the instances in order to halt billing.',
                     freetier_single: 'Your instance can be started after it is stopped.',
                     freetier_plural: 'Your instances can be started after they are stopped.'
                 },
