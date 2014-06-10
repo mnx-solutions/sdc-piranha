@@ -13,9 +13,6 @@
                         case 'machine':
                             items = Machine.machine();
                             break;
-                        case 'image':
-                            items = Image.image();
-                            break;
                         default:
                             return;
                     }

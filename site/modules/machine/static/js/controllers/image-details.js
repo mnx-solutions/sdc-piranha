@@ -73,7 +73,7 @@
                         'Are you sure you want to delete this image?'
                     ), function () {
                         $$track.event('image', 'delete');
-                        Image.deleteImage($scope.currentImage).job.deferred.then(function () {
+                        Image.deleteImage($scope.currentImage).deferred.then(function () {
                             $location.url('/images');
                             $location.replace();
                         });
