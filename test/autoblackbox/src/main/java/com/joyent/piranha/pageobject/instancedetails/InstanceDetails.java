@@ -40,12 +40,12 @@ public class InstanceDetails extends AbstractPageObject {
     }
 
     public TagSection openTagsSection() {
-        $("[href=\"#collapse_tags\"]").click();
+        $("[data-target=\"#collapse_tags\"]").click();
         return page(TagSection.class);
     }
 
     public ImagesSection openImagesSection() {
-        $("#accordion1 a[href=\"#collapse_images\"]").click();
+        $("#accordion1 a[data-target=\"#collapse_images\"]").click();
         return page(ImagesSection.class);
     }
 
@@ -69,7 +69,7 @@ public class InstanceDetails extends AbstractPageObject {
     }
 
     public void selectResizeOption(String packageDescription) {
-        $("[href=\"#collapse_resize\"]").click();
+        $("[data-target=\"#collapse_resize\"]").click();
         SelenideElement dropDown = $("#collapse_resize");
         Select packages = new Select(dropDown.$("select[name=\"resize\"]"));
         packages.selectByVisibleText(packageDescription);
@@ -111,7 +111,7 @@ public class InstanceDetails extends AbstractPageObject {
     }
 
     public MetadataSection openMetadataSection() {
-        $("[href=\"#collapse_metadata\"]").click();
+        $("[data-target=\"#collapse_metadata\"]").click();
         return page(MetadataSection.class);
     }
 
@@ -120,12 +120,12 @@ public class InstanceDetails extends AbstractPageObject {
     }
 
     public FirewallSection openResizeSection() {
-        $("[href=\"#collapse_firewall\"]").click();
+        $("[data-target=\"#collapse_firewall\"]").click();
         return page(FirewallSection.class);
     }
 
     public void openSummarySection() {
-        $("[href=\"#collapse_summary\"]").click();
+        $("[data-target=\"#collapse_summary\"]").click();
     }
 
     public void changeState(String state){

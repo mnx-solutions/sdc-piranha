@@ -72,10 +72,12 @@ public abstract class AbstractPageObject {
 
     public void waitForMediumSpinnerDisappear() {
         $(".loading-medium[style=\"\"]").waitWhile(exist, CHANGE_STATUS_TIMEOUT);
+        $(".loading-medium[style=\"visibility: visible;\"]").waitWhile(exist, CHANGE_STATUS_TIMEOUT);
     }
 
     public void waitForLargeSpinnerDisappear() {
         $(".loading-large[style=\"\"]").waitWhile(exist, CHANGE_STATUS_TIMEOUT);
+        $(By.xpath("//div[contains(@class,'loading-large') and not(contains(@class,'ng-hide'))]")).waitWhile(exist, CHANGE_STATUS_TIMEOUT);
     }
 
     public ElementsCollection getErrorLabel() {
