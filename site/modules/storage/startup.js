@@ -45,13 +45,16 @@ module.exports = function execute(scope) {
         };
     }
 
-    function getArchivedJobFile(call, jobId, path, callback) {
+    function getArchivedJobFile(call, jobId, path, callback, fallback) {
         var client = Manta.createClient(call);
         var jobPath = manta.jobPath(jobId, call.req.session.userName) + path;
-
         client.get(jobPath, function (err, stream) {
             if (err) {
-                sendError(call, err);
+                if (fallback) {
+                   client[fallback](jobId, processJobRequest(call, 'key', jobId));
+                } else {
+                    sendError(call, err);
+                }
                 return;
             }
             var body = '';
@@ -146,15 +149,12 @@ module.exports = function execute(scope) {
 
     server.onCall('JobOutput', function (call) {
         var jobId = call.data.id;
-        var client = Manta.createClient(call);
-
-        client.jobOutput(jobId, processJobRequest(call, 'key', jobId, '/out.txt'));
+        getArchivedJobFile(call, jobId, '/out.txt', checkResponse(call), 'jobOutput');
     });
 
     server.onCall('JobInputs', function (call) {
         var jobId = call.data.id;
-        var client = Manta.createClient(call);
-        client.jobInput(jobId, processJobRequest(call, 'key', jobId, '/in.txt'));
+        getArchivedJobFile(call, jobId, '/in.txt', checkResponse(call), 'jobInput');
     });
 
     server.onCall('JobCancel', function (call) {
