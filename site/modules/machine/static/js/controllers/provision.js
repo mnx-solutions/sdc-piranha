@@ -317,8 +317,6 @@
                         $scope.indexPackageTypes = provisionBundle.indexPackageTypes;
                         $scope.packageTypes = provisionBundle.packageTypes;
                         $scope.packages = provisionBundle.packages;
-                        $scope.metadata = provisionBundle.metadata;
-                        $scope.tags = provisionBundle.tags;
 
                         $scope.datacenters = provisionBundle.datacenters;
                         $scope.selectedDataset = provisionBundle.selectedDataset;
@@ -352,6 +350,8 @@
             });
 
             $scope.data = {};
+            $scope.data.tags = {};
+            $scope.data.metadata = {};
             $scope.selectedDataset = null;
             $scope.selectedPackage = null;
             $scope.selectedNetworks = [];
@@ -570,8 +570,6 @@
                             packages: $scope.packages,
                             packageTypes: $scope.packageTypes,
                             indexPackageTypes: $scope.indexPackageTypes,
-                            metadata: $scope.metadata,
-                            tags: $scope.tags,
                             manualCreate: true,
                             allowCreate: false,
                             machine: $scope.data
@@ -596,8 +594,6 @@
             $scope.clickProvision = function () {
                 // add networks to data
                 $scope.data.networks = ($scope.selectedNetworks.length > 0) ? $scope.selectedNetworks : '';
-                $scope.data.metadata = this.metadata || {};
-                $scope.data.tags = this.tags || {};
 
                 if (!$scope.data.datacenter) {
                     Datacenter.datacenter().then(function (datacenters) {
@@ -703,8 +699,8 @@
                     if ($scope.networks && $scope.networks.length) {
                         setNetworks($scope.data.datacenter);
                     }
-                    $scope.metadata = [];
-                    $scope.tags = [];
+                    $scope.data.metadata = [];
+                    $scope.data.tags = [];
 
                     var provisionForm = $scope.$$childTail.$$childTail && $scope.$$childTail.$$childTail.provisionForm;
                     if (provisionForm) {
