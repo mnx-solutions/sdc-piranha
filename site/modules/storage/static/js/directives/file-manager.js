@@ -150,6 +150,11 @@
                     var path = getObjectPath(file);
                     var method = (file.type === 'object') ? 'unlink' : 'rmr';
 
+                    if (file.type === 'directory' && file.parent.indexOf('/', 1) === -1) {
+                        var message = 'System folder "' + file.name + '" cannot be deleted.';
+                        return showPopupDialog('error', 'Message', message);
+                    }
+
                     return PopupDialog.confirm(
                         null,
                         localization.translate(
