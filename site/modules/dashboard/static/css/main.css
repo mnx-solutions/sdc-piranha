@@ -159,10 +159,12 @@
 
 .widget .details .desc,
 .widget .details .desc a {
+    max-width: 215px;
     color: #fff;
     text-align: left;
     text-decoration: none;
     text-overflow: ellipsis;
+    word-wrap: break-word;
     font-size: 14px;
     line-height: 17px;
 }
@@ -190,6 +192,20 @@
     padding-left: 15px;
     max-height: 84px;
     line-height: 14px;
+}
+.widget.system-icon h4,
+.widget.system-icon .details .desc {
+    margin-bottom: 3px;
+}
+
+.widget.system-icon .details {
+    margin-top: 0;
+    max-height: 106px;
+}
+
+.widget.system-icon .details .desc a {
+    font-size: 12px;
+    line-height: 12px;
 }
 
 .widget .details-utilization {
