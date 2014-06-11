@@ -194,7 +194,7 @@
                             return new Date().getTime() < (new Date(topic.created_at).getTime() + 2 * 24 * 3600 * 1000);
                         });
                         if ($scope.systemStatusTopics.length > 1) {
-                            $scope.systemStatusTopics.length = 1;
+                            $scope.systemStatusTopics.length = 2;
                         }
                     } else {
                         $scope.systemStatusTopics = topics;
