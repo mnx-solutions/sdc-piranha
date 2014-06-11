@@ -11,9 +11,13 @@ module.exports = function execute(scope) {
     var server = scope.api('Server');
     var Billing = scope.api('Billing');
 
-    function sendError(call, error) {
+    function sendError(call, error, suppressErrorLog) {
         function done(error) {
-            call.done(error && (error.message || mantaNotAvailable));
+            if (error) {
+                call.done(error.message || mantaNotAvailable, suppressErrorLog);
+            } else {
+                call.done();
+            }
         }
         if (error) {
             done(error);
@@ -22,13 +26,22 @@ module.exports = function execute(scope) {
         return done;
     }
 
-    function checkResponse(call) {
+    function checkResponse(call, ignoreNotFound, forceDone) {
         return function (error, result) {
             if (error) {
-                sendError(call, error);
+                if (forceDone && error.statusCode === 404) {
+                    call.done();
+                    return;
+                }
+                if (ignoreNotFound && (error.statusCode === 404 || error.statusCode === 403)) {
+                    var message = 'The file path not found.';
+                    call.req.log.info(message);
+                    error.message = message;
+                }
+                sendError(call, error, ignoreNotFound);
                 return;
             }
-            call.done(null, result);
+            call.done(null, forceDone ? null : result);
         };
     }
 
@@ -246,12 +259,12 @@ module.exports = function execute(scope) {
 
     server.onCall('FileManDeleteTree', function (call) {
         var client = Manta.createClient(call);
-        client.rmr(call.data.path, sendError(call));
+        client.rmr(call.data.path, checkResponse(call, null, true));
     });
 
     server.onCall('FileManDeleteFile', function (call) {
         var client = Manta.createClient(call);
-        client.unlink(call.data.path, sendError(call));
+        client.unlink(call.data.path, checkResponse(call, null, true));
     });
 
     server.onCall('FileManPut', function (call) {
@@ -262,12 +275,12 @@ module.exports = function execute(scope) {
 
     server.onCall('FileManGet', function (call) {
         var client = Manta.createClient(call);
-        client.get(call.data.path, checkResponse(call));
+        client.get(call.data.path, checkResponse(call, true));
     });
 
     server.onCall('FileManInfo', function (call) {
         var client = Manta.createClient(call);
-        client.info(call.data.path, checkResponse(call));
+        client.info(call.data.path, checkResponse(call, true));
     });
 
     server.onCall('FileManCreateFolder', function (call) {
@@ -313,8 +326,7 @@ module.exports = function execute(scope) {
                                 setTimeout(pingManta, 1000);
                                 return;
                             }
-                            sendError(call, {message: 'Something went wrong.  Please try again in a minute.'});
-                            return;
+                            error = {message: 'Something went wrong.  Please try again in a minute.'};
                         }
                         sendError(call, error);
                         return;
