@@ -65,11 +65,11 @@
                     name: 'Name',
                     sequence: 1,
                     active: true,
+                    _order: 'name',
                     type: 'html',
                     _getter: function (object) {
                         return '<a href="#!/accounts/role/' + object.id + '">' + object.name + '</a>';
                     }
-
                 },
                 {
                     id: 'id',

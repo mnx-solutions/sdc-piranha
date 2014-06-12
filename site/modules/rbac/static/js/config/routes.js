@@ -28,9 +28,7 @@ window.JP.main.config(['routeProvider', function (routeProvider) {
             action: 'rbac.user'
         }).when('/accounts/roles', {
             title: 'Roles',
-            action: 'rbac.roles',
-            showText: true,
-            showLatest: true
+            action: 'rbac.roles'
         }).when('/accounts/role/:id', {
             title: 'Role Details',
             action: 'rbac.role',

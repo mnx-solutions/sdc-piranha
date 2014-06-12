@@ -17,10 +17,6 @@
                 $scope.loading = false;
             });
 
-            $scope.addNewPolicy = function () {
-                $location.path('rbac/policy/create');
-            };
-
             var errorCallback = function (err) {
                 $scope.loading = false;
                 PopupDialog.errorObj(err);

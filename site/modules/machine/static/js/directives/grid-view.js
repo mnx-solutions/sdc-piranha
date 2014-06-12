@@ -232,7 +232,7 @@
                             return false;
                         }
 
-                        var subject = (el._getter && el._getter(item)) || (el.id2 && item[el.id][el.id2]) || item[el.id] || '';
+                        var subject = (item[el.id] || el._getter && el._getter(item)) || (el.id2 && item[el.id][el.id2]) || '';
 
                         if (ng.isNumber(subject) || typeof subject === "boolean") {
                             subject = subject.toString();
