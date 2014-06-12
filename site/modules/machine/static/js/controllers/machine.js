@@ -186,7 +186,7 @@
 
                     $scope.datasetType = type;
                 }, function () {
-                    $scope.dataset = {name: '– deleted –'};
+                    $scope.dataset = {name: 'Image gone'};
                 });
             });
 

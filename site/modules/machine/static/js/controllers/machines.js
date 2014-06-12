@@ -56,6 +56,10 @@
                                 datasets.forEach(function (dataset) {
                                     $scope.datasetsInfo[dataset.id] = dataset.name + '/' + dataset.version;
                                 });
+                                var imageExists = datasets.some(function (image) { return image.id === machine.image; });
+                                if (!imageExists && !$scope.datasetsInfo[machine.image]) {
+                                    $scope.datasetsInfo[machine.image] = 'Image gone';
+                                }
                                 $scope.loading = false;
                             });
                         });
@@ -237,7 +241,7 @@
                     active: true,
                     _getter: function (machine) {
                         if (machine.image && $scope.datasetsInfo) {
-                            return $scope.datasetsInfo[machine.image] || '– deleted –';
+                            return $scope.datasetsInfo[machine.image];
                         }
                         return '';
                     }
