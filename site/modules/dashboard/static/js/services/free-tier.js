@@ -70,7 +70,7 @@
                     var datacenters = results[2].map(function (datacenter) {
                         return datacenter.name;
                     });
-                    var freeTierOptions = results[0].map(function (option) {
+                    var freeTierOptionsResult = results[0].map(function (option) {
                         option.datacenters = angular.copy(datacenters);
                         return option;
                     });
@@ -79,14 +79,14 @@
                     // from Mar 1, 2014
                     var freeTierAvailableDate = new Date(2014, 2, 1);
                     var createdDate = new Date(account.created);
-                    freeTierOptions.validUntil = new Date(createdDate.getFullYear() + 1, createdDate.getMonth(), createdDate.getDate());
-                    freeTierOptions.valid = createdDate > freeTierAvailableDate && new Date() < freeTierOptions.validUntil;
+                    freeTierOptionsResult.validUntil = new Date(createdDate.getFullYear() + 1, createdDate.getMonth(), createdDate.getDate());
+                    freeTierOptionsResult.valid = createdDate > freeTierAvailableDate && new Date() < freeTierOptionsResult.validUntil;
                     var packageRequests = datacenters.map(function (datacenter) {
                         return $q.when(Package.package({datacenter: datacenter}));
                     });
-                    $q.all(packageRequests).then(function (packageResults) {
-                        freeTierOptions.forEach(function (option) {
-                            packageResults.forEach(function (packages, datacenterIndex) {
+                    packageRequests.forEach(function (packageRequest, datacenterIndex) {
+                        $q.when(packageRequest).then(function (packages) {
+                            freeTierOptionsResult.forEach(function (option) {
                                 var matchingPackages = packages.filter(function (availPackage) {
                                     return availPackage.id === option.package;
                                 });
@@ -101,16 +101,16 @@
                                     var machinePackageId = findPackageIdByName(packages, machine.package);
                                     if (option.package === machinePackageId) {
                                         machine.freetier = true;
-                                        freeTierOptions.forEach(function (freeOption) {
+                                        freeTierOptionsResult.forEach(function (freeOption) {
                                             removeElement(freeOption.datacenters, machine.datacenter);
                                         });
                                     }
                                 });
                             });
+                            deferred.resolve(freeTierOptionsResult);
+                        }, function () {
+                            deferred.resolve([]);
                         });
-                        deferred.resolve(freeTierOptions);
-                    }, function () {
-                        deferred.resolve([]);
                     });
                 });
                 return deferred.promise;
