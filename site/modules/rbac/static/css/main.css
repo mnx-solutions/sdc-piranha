@@ -8,11 +8,11 @@ input,
 }
 select {
     padding: 4px 6px;
-    width: 282px !important;
+    width: 312px !important;
     line-height: 20px;
 }
 input {
-    width: 270px;
+    width: 300px;
     text-overflow: ellipsis;
 }
 form {
@@ -28,14 +28,14 @@ h4 {
     width: auto;
 }
 .edit-value-double {
-    width: 285px!important;
+    width: 350px!important;
 }
 .edit-value-double .input-prepend input {
     width: 100px !important;
 }
 .edit-value-double select {
     padding-right: 22px;
-    width: 92px !important;
+    width: 123px !important;
 }
 .ms-container ul.ms-list {
     overflow-y: hidden;
@@ -141,7 +141,7 @@ label.name,
     width: 415px;
 }
 .edit-error {
-    width: 418px;
+    width: 450px;
     display: block;
     margin-top: -8px;
     text-align: right;
@@ -174,4 +174,7 @@ select.policy-form {
 }
 .new-rule {
     margin-top: 15px;
+}
+.edit-name {
+    width: 130px;
 }

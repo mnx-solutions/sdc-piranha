@@ -21,15 +21,11 @@ window.JP.main.config(['routeProvider', function (routeProvider) {
             title: 'Users',
             action: 'rbac.users'
         }).when('/accounts/user/:id', {
-            title: 'User Summary',
-            action: 'rbac.user',
-            showText: true,
-            showLatest: true
+            title: 'User Details',
+            action: 'rbac.user'
         }).when('/accounts/user/create', {
             title: 'Create User',
-            action: 'rbac.user',
-            showText: true,
-            showLatest: true
+            action: 'rbac.user'
         }).when('/accounts/roles', {
             title: 'Roles',
             action: 'rbac.roles',

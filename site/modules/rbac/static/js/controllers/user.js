@@ -109,8 +109,7 @@
                                     null,
                                     'Please validate your input.'
                             ),
-                            function () {
-                            }
+                            function () {}
                     );
                     return false;
                 }
@@ -157,23 +156,23 @@
 
             $scope.deleteUser = function () {
                 PopupDialog.confirm(
-                        localization.translate(
-                                $scope,
-                                null,
-                                'Confirm: Delete user'
-                        ),
-                        localization.translate(
-                                $scope,
-                                null,
-                                'Are you sure you want to delete the selected user'
-                        ),
-                        function () {
-                            $scope.loading = true;
-                            service.deleteUser($scope.user.id).then(function () {
-                                $scope.loading = false;
-                                $location.path('/accounts/users');
-                            }, errorCallback);
-                        }
+                    localization.translate(
+                            $scope,
+                            null,
+                            'Confirm: Delete user'
+                    ),
+                    localization.translate(
+                            $scope,
+                            null,
+                            'Are you sure you want to delete the selected user?'
+                    ),
+                    function () {
+                        $scope.loading = true;
+                        service.deleteUser($scope.user.id).then(function () {
+                            $scope.loading = false;
+                            $location.path('/accounts/users');
+                        }, errorCallback);
+                    }
                 );
             };
 
