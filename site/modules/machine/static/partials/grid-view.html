@@ -142,8 +142,8 @@
                                 </span>
                                 <span data-ng-switch-when="async">
                                     <span class="loading-small loading-small-job pull-left" data-ng-show="object.deleteJob && prop.name == 'State'"></span>
-                                    <span class="loading-small" data-ng-hide="!!object[prop.name + 'async'] || object[prop.name + 'async'] == 0"></span>
-                                    {{object[prop.name + 'async']}}
+                                    <span class="loading-small" data-ng-hide="!!object[prop.name] || object[prop.name] == 0"></span>
+                                    {{object[prop.name]}}
                                 </span>
                                 <span data-ng-switch-default>
                                     {{prop._getter && prop._getter(object) || prop.id2 && object[prop.id][prop.id2] || object[prop.id]}}

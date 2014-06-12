@@ -23,7 +23,7 @@
                 var iterator = function (item, callback) {
                     asyncProps.forEach(function (prop) {
                         $qe.when(prop._getter(item)).then(function (result) {
-                            item[prop.name + 'async'] = result;
+                            item[prop.name] = result;
                             callback();
                         });
                     });

@@ -55,6 +55,10 @@
                     id: 'id',
                     name: 'ID',
                     sequence: 1,
+                    type: 'html',
+                    _getter: function (object) {
+                        return '<a href="#!/accounts/user/' + object.id + '">' + object.id + '</a>';
+                    },
                     active: false
                 },
                 {
@@ -62,7 +66,7 @@
                     name: 'Login',
                     sequence: 2,
                     type: 'html',
-                    _order:'login',
+                    _order: 'login',
                     _getter: function (object) {
                         return '<a href="#!/accounts/user/' + object.id + '">' + object.login + '</a>';
                     },
@@ -75,7 +79,7 @@
                     active: true
                 },
                 {
-                    name: 'Role(s)',
+                    name: 'Roles',
                     sequence: 4,
                     active: true,
                     type: 'async',
@@ -146,7 +150,7 @@
                 {
                     id: 'created',
                     name: 'Created Date',
-                    sequence: 3,
+                    sequence: 14,
                     type: 'date',
                     active: true
                 }
