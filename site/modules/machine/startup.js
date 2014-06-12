@@ -487,11 +487,13 @@ module.exports = function execute(scope) {
             return typeof data
                 && data.image.id
                 && data.image.name
+                && data.image.datacenter
         },
         handler: function (call) {
             var options = {
                 uuid: call.data.image.id,
-                name: call.data.image.name
+                name: call.data.image.name,
+                datacenter: call.data.image.datacenter
             };
             machine.ImageRename(call, options, call.done.bind(call));
         }
