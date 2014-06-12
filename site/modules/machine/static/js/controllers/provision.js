@@ -828,6 +828,12 @@
                 };
             };
 
+            $scope.selectLastDataset = function (dataset) {
+                var datasetVisibility = dataset.public ? 'public' : 'custom';
+                var versions = $scope.versions[datasetVisibility][dataset.name];
+                $scope.selectDataset(versions[$scope.listVersions[datasetVisibility][dataset.name].slice(-1)[0]].id);
+            };
+
             $scope.selectDataset = function (id, changeDataset) {
                 Dataset.dataset({ id: id, datacenter: $scope.data.datacenter }).then(function (dataset) {
                     if (dataset.type == 'virtualmachine') {
@@ -840,7 +846,7 @@
 
                     ng.element('#next').trigger('click');
                     ng.element('#step-configuration').fadeIn('fast');
-
+                    dataset.visibility = dataset.public ? 'public' : 'custom';
                     $scope.selectedDataset = dataset;
                     ng.element('#pricing').removeClass('alert-muted');
                     ng.element('#pricing').addClass('alert-info');
@@ -906,9 +912,9 @@
                         $scope.onFilterChange($scope.filterModel.key);
                     }
 
-
-                    var listVersions = $scope.listVersions[dataset.name];
-                    var versions = $scope.versions[dataset.name];
+                    var datasetVisibility = dataset.public ? 'public' : 'custom';
+                    var listVersions = $scope.listVersions[datasetVisibility][dataset.name];
+                    var versions = $scope.versions[datasetVisibility][dataset.name];
                     var filteredVersions = [];
                     listVersions.forEach(function (version) {
                         if (versions[version].public === dataset.public) {
@@ -1094,52 +1100,64 @@
             };
 
             function processDatasets(datasets) {
-                var listVersions = {};
-                var versions = {};
+                var listVersions = {
+                    public: {},
+                    custom: {}
+                };
+                var versions = {
+                    public: {},
+                    custom: {}
+                };
                 var selectedVersions = {
                     public : {},
                     custom : {}
                 };
-                var manyVersions = {};
+                var manyVersions = {
+                    public : {},
+                    custom : {}
+                };
                 var operating_systems = {All: 1};
 
                 $scope.datasetsLoading = false;
+                
                 datasets.forEach(function (dataset) {
                     operating_systems[dataset.os] = 1;
 
                     var datasetName = dataset.name;
                     var datasetVersion = dataset.version;
-
+                    var datasetVisibility = dataset.public ? 'public' : 'custom';
                     dataset.limit = checkLimit(dataset.id);
-
-                    if (!versions[datasetName]) {
-                        versions[datasetName] = {};
-                        versions[datasetName][datasetVersion] = dataset;
-                        listVersions[datasetName] = [];
-                        listVersions[datasetName].push(datasetVersion);
+                    var datasetListVersions = listVersions[datasetVisibility][datasetName] = listVersions[datasetVisibility][datasetName] || [];
+                    var datasetVersions = versions[datasetVisibility][datasetName];
+                    
+                    if (!datasetVersions) {
+                        datasetVersions = versions[datasetVisibility][datasetName] = {};
+                        datasetVersions[datasetVersion] = dataset;
+                        datasetListVersions = listVersions[datasetVisibility][datasetName] = [];
+                        datasetListVersions.push(datasetVersion);
                     } else {
-                        if (!versions[datasetName][datasetVersion]) {
-                            manyVersions[datasetName] = true;
-                            versions[datasetName][datasetVersion] = dataset;
-                            listVersions[datasetName].push(datasetVersion);
+                        if (!datasetVersions[datasetVersion]) {
+                            manyVersions[datasetVisibility][datasetName] = true;
+                            datasetVersions[datasetVersion] = dataset;
+                            datasetListVersions.push(datasetVersion);
                         }
                     }
-                    if (listVersions[datasetName].length > 1) {
-                        listVersions[datasetName].sort(function (a, b) {
+                    if (datasetListVersions.length > 1) {
+                        datasetListVersions.sort(function (a, b) {
                             return util.cmpVersion(a, b);
                         });
                     }
 
                     var filterVersions = function (imageName, isPublic) {
                         var result = [];
-                        listVersions[imageName].forEach(function (value) {
-                            if (versions[imageName][value].public === isPublic) {
-                                result.push(versions[imageName][value]);
-                            }
-                        });
-                        if (result.length > 0) {
-                            result = result.slice(-1);
+                        var visibility = isPublic ? 'public' : 'custom';
+                        if (!listVersions[visibility][imageName]) {
+                            return result;
                         }
+                        listVersions[visibility][imageName].forEach(function (value) {
+                            result.push(versions[visibility][imageName][value]);
+                        });
+
                         return result;
                     };
                     selectedVersions.public[datasetName] = filterVersions(datasetName, true);
@@ -1234,12 +1252,17 @@
                 var unique = {};
 
                 recentInstances.forEach(function (instance) {
-                    if ($scope.manyVersions[instance.datasetName]) {
+                    var instanceDataset = datasets.find(function (image) {
+                        return image.id === instance.dataset;
+                    });
+
+                    var datasetVisibility = instanceDataset && (instanceDataset.public ? 'public' : 'custom');
+                    if (instanceDataset && $scope.manyVersions[datasetVisibility][instance.datasetName]) {
                         var datasetId = null;
                         var datasetDescription = '';
                         var publishedAt = 0;
                         var latestVersion = 0;
-                        var versions = $scope.versions[instance.datasetName];
+                        var versions = $scope.versions[datasetVisibility][instance.datasetName];
 
                         for (var version in versions) {
                             if (versions[version].public) {
@@ -1261,10 +1284,8 @@
                         instance.dataset = datasetId;
                         instance.description = datasetDescription;
                     }
-                    var imageExists = $scope.datasets.some(function (image) {
-                        return image.id === instance.dataset;
-                    });
-                    if (imageExists && (!unique[instance.dataset] || unique[instance.dataset].package !== instance.package)) {
+
+                    if (instanceDataset && (!unique[instance.dataset] || unique[instance.dataset].package !== instance.package)) {
                         uniqueRecentInstances.push(instance);
                         unique[instance.dataset] = instance;
                     }
