@@ -123,16 +123,18 @@ h4 {
 }
 /*end*/
 
-label.name,
-.policy label.name {
-    vertical-align: middle;
+label.name {
     padding-right: 10px;
     height: 25px;
+    vertical-align: middle;
     font-size: 16px;
 }
 .policy label.name {
     width: 125px;
     text-align: right;
+}
+.role label.name {
+    width: 45px;
 }
 .new-rule label.name {
     width: 55px;
@@ -177,4 +179,7 @@ select.policy-form {
 }
 .edit-name {
     width: 130px;
+}
+.name-error {
+    padding-left: 60px;
 }

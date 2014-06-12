@@ -13,21 +13,25 @@
 
                     <div class="accordion-group">
                         <div class="accordion-heading">
-                            <a class="accordion-toggle toggle-icon" data-toggle="collapse" href="#collapse_summary">
+                            <a class="accordion-toggle toggle-icon" data-toggle="collapse" href="#collapse_policy_summary">
                                 Summary
                             </a>
                         </div>
-                        <div id="collapse_summary" class="accordion-body collapse in">
+                        <div id="collapse_policy_summary" class="accordion-body collapse in">
                             <div class="accordion-inner">
                                 <form name="policyForm">
-                                    <div class="error"
-                                         data-ng-show="policyForm.policyName.$error.roleName"
-                                         data-translate>
-                                         Policy name can contain only letters, digits and signs like '.' and '-'.
-                                    </div>
                                     <div>
                                         <label class="name dpl-inline">Name</label>
-                                        <input type="text" class="policy-form" name="policyName" data-ng-model="model.policy.name" data-role-name/>
+                                        <input type="text"
+                                               class="policy-form"
+                                               name="policyName"
+                                               data-ng-model="model.policy.name"
+                                               data-ng-pattern="/^[A-z][A-z0-9\s]*$/"/>
+                                    </div>
+                                    <div class="error"
+                                         data-ng-show="policyForm.policyName.$error.pattern"
+                                         data-translate>
+                                        Policy name does not allow non-latin letters.
                                     </div>
                                 </form>
                                 <div class="control-group"><label class="name dpl-inline">Description</label>

@@ -9,7 +9,8 @@
         'Account',
         'rbac.Service',
         'requestContext',
-        function ($q, $location, $scope, PopupDialog, Account, service, requestContext) {
+        'localization',
+        function ($q, $location, $scope, PopupDialog, Account, service, requestContext, localization) {
             $scope.role = {};
             $scope.policyGroups = [];
             $scope.users = [];
@@ -26,22 +27,24 @@
 
             var roleId = requestContext.getParam('id');
             var isNew = roleId && roleId === 'create';
+
             if (!isNew) {
                 $scope.role.id = roleId;
                 $q.all([
                     $q.when(service.getRole(roleId)),
                     $q.when(service.listUsers()),
-                    $q.when(service.listPolicies())
+                    $q.when(service.listPolicies()),
+                    $q.when(Account.getAccount(true))
                 ]).then(function (result) {
                     $scope.role = result[0] || {};
                     var users = result[1] || [];
-
                     var policies = result[2] || [];
+                    var account = result[3] || [];
                     policies.forEach(function (item) {
                         item.checked = $scope.role.policies.indexOf(item.name) > -1;
                     });
                     $scope.policyGroups = [
-                        {name: 'Miscellaneous', values: policies}
+                        {name: account.login + "'s policies", values: policies}
                     ];
 
                     $scope.role.members.forEach(function (login) {
@@ -79,16 +82,18 @@
             } else {
                 $q.all([
                     $q.when(service.listUsers()),
-                    $q.when(service.listPolicies())
+                    $q.when(service.listPolicies()),
+                    $q.when(Account.getAccount(true))
                 ]).then(function (result) {
                     $scope.users = result[0] || [];
                     var policies = result[1] || [];
+                    var account = result[2] || [];
                     policies.forEach(function (item) {
                         item.checked = false;
                     });
 
                     $scope.policyGroups = [
-                        {name: 'Miscellaneous', values: policies}
+                        {name: account.login + "'s policies", values: policies}
                     ];
 
                     $scope.users.forEach(function (user) {
@@ -98,6 +103,11 @@
                     $scope.loading = false;
                 });
             }
+
+            var errorCallback = function (err) {
+                $scope.loading = false;
+                PopupDialog.errorObj(err);
+            };
 
             var roleAction = function (action) {
                 $scope.loading = true;
@@ -138,6 +148,27 @@
             };
             $scope.updateRole = function () {
                 roleAction(service.updateRole);
+            };
+            $scope.deleteRole = function () {
+                PopupDialog.confirm(
+                    localization.translate(
+                        $scope,
+                        null,
+                        'Confirm: Delete role'
+                    ),
+                    localization.translate(
+                        $scope,
+                        null,
+                        'Are you sure you want to delete the selected role ?'
+                    ),
+                    function () {
+                        $scope.loading = true;
+                        service.deleteRole($scope.role.id).then(function () {
+                            $scope.loading = false;
+                            $location.path('/accounts/roles');
+                        }, errorCallback);
+                    }
+                );
             };
             $scope.cancel = function () {
                 $location.path('/accounts/roles');

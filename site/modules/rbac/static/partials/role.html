@@ -2,13 +2,12 @@
     <div class="container-fluid container-position container-min-width">
         <div data-breadcrumbs></div>
         <div class="page-header row-fluid">
-            <h3 class="page-title" data-ng-show="role.id">Edit Role</h3>
-
+            <h3 class="page-title" data-ng-show="role.id">Role Details</h3>
             <h3 class="page-title" data-ng-hide="role.id">Create Role</h3>
         </div>
         <div class="loading-large span12" data-ng-show="loading"></div>
 
-        <div class="row-fluid" data-ng-hide="loading">
+        <div class="row-fluid role" data-ng-hide="loading">
             <div class="pull-left span6">
                 <div class="accordion" id="accordionEditRoleLeft">
 
@@ -22,14 +21,22 @@
                             <div class="accordion-inner">
                                 <div class="dpl-inline">
                                     <form name="roleForm">
-                                        <div class="error"
-                                             data-ng-show="roleForm.roleName.$error.roleName"
-                                             data-translate>
-                                             Role name can contain only letters, digits and signs like '.' and '-'.
+                                        <div data-ng-show="role.id.length">
+                                            <label class="name dpl-inline">Id</label>
+                                            <input type="text" class="role-name" name="roleid" data-ng-model="role.id" data-ng-disabled="role.id"/>
                                         </div>
                                         <div>
                                             <label class="name dpl-inline">Name</label>
-                                            <input type="text" class="role-name" name="roleName" data-ng-model="role.name" data-role-name/>
+                                            <input type="text"
+                                                   class="role-name"
+                                                   name="roleName"
+                                                   data-ng-model="role.name"
+                                                   data-ng-pattern="/^[A-z][A-z0-9\s]*$/"/>
+                                        </div>
+                                        <div class="name-error error"
+                                             data-ng-show="roleForm.roleName.$error.pattern"
+                                             data-translate>
+                                             Role name does not allow non-latin letters.
                                         </div>
                                     </form>
                                 </div>
@@ -102,8 +109,9 @@
         <div class="row-fluid btn-bottom-block" data-ng-hide="loading">
             <div class="pull-right">
                 <button class="btn light effect-orange-button" data-ng-click="cancel()">Cancel</button>
-                <button class="btn orange" data-ng-click="createRole()" data-ng-hide="role.id" data-ng-disabled="roleForm.roleName.$error.roleName">Create Role</button>
-                <button class="btn orange" data-ng-click="updateRole()" data-ng-show="role.id" data-ng-disabled="roleForm.roleName.$error.roleName">Save Role</button>
+                <button class="btn light effect-orange-button" data-ng-show="role.id" data-ng-click="deleteRole()">Delete</button>
+                <button class="btn orange" data-ng-click="createRole()" data-ng-hide="role.id" data-ng-disabled="roleForm.roleName.$error.pattern">Create Role</button>
+                <button class="btn orange" data-ng-click="updateRole()" data-ng-show="role.id" data-ng-disabled="roleForm.roleName.$error.pattern">Save Role</button>
             </div>
         </div>
 

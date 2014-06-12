@@ -32,7 +32,7 @@ window.JP.main.config(['routeProvider', function (routeProvider) {
             showText: true,
             showLatest: true
         }).when('/accounts/role/:id', {
-            title: 'Role Summary',
+            title: 'Role Details',
             action: 'rbac.role',
             showText: true,
             showLatest: true
