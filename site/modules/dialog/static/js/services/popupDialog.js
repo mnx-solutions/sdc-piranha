@@ -53,7 +53,7 @@
                     setFocus: true
                 }
             ];
-            return messageBox(title, question, btns, 'dialog/static/partials/errorDialog.html', callback);
+            return messageBox(title, question, btns, 'dialog/static/partials/errorDialog.html', callback, callback);
         };
 
         factory.errorProvision = function (submitBillingInfo, locationCb, showPopUp) {
@@ -94,7 +94,7 @@
                     setFocus: true
                 }
             ];
-            return messageBox(title, question, btns, 'dialog/static/partials/messageDialog.html', callback);
+            return messageBox(title, question, btns, 'dialog/static/partials/messageDialog.html', callback, callback);
         };
 
         factory.custom = function (opts, callback) {

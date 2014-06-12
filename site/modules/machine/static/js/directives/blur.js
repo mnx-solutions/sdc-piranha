@@ -12,9 +12,10 @@
                     });
 
                     elm.on('blur', function () {
-                        setTimeout(function () {
+                        scope.clearNameTimeout = setTimeout(function () {
                             scope.$apply(function () {
                                 scope.changingName = false;
+                                scope.newName = '';
                             });
                         }, 200);
                     });

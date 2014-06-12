@@ -1,6 +1,6 @@
 <div>
     <h3 class="page-title" data-ng-click="enableRename(object.name)" data-ng-show="!changingName && !renaming">
-        {{ object.name }}
+        {{ newName || object.name }}
         <div class="edit-text-icon"></div>
     </h3>
     <div class="loading-medium wait_rename" data-ng-show="loadingNewName"></div>
