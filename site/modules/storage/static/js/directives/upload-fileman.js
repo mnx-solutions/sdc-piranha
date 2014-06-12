@@ -1,6 +1,6 @@
 'use strict';
 
-(function (app, ng) {
+(function (app) {
     app.directive('filemanUpload', ['PopupDialog', 'http', function (PopupDialog, http) {
         return {
             restrict: 'EA',
@@ -9,7 +9,7 @@
                 filemanUpload: '=',
                 existingFiles: '='
             },
-            link: function (scope, element, attrs) {
+            link: function (scope, element) {
                 function uploadFiles(files) {
                     http.uploadFiles('storage/upload', scope.filemanUpload, files, function (error) {
                         if (error) {
@@ -21,6 +21,7 @@
 
                 element.change(function (e) {
                     var selectedFilesArr = [].slice.call(e.target.files);
+                    var noExistingFiles = selectedFilesArr;
                     var selectedFileNames = selectedFilesArr.map(function (file) { return file.name; });
                     var existingFiles = [];
                     var existingFolders = [];
@@ -31,10 +32,13 @@
                             } else {
                                 existingFiles.push(file.path);
                             }
+                            noExistingFiles = noExistingFiles.filter(function (el) { return el.name !== file.path; });
                         }
                     });
-                    var finalUpload = function () {
-                        uploadFiles(selectedFilesArr);
+
+                    var finalUpload = function (files) {
+                        files = files || selectedFilesArr;
+                        uploadFiles(files);
                         e.target.value = '';
                         scope.$parent.$emit('uploadStart', true);
                     };
@@ -47,17 +51,21 @@
                     }
                     if (existingFiles.length > 0) {
                         var message = 'Are you sure you want to overwrite ' + existingFiles.join(', ') + '?';
-                        PopupDialog.confirm(
+                        return PopupDialog.confirm(
                             'Confirm: Add files',
                             message,
                             function () {
                                 finalUpload();
                             },
                             function () {
-                                e.target.value = '';
+                                if (noExistingFiles.length) {
+                                    finalUpload(noExistingFiles);
+                                } else {
+                                    e.target.value = '';
+                                }
                             });
                     } else {
-                        finalUpload();
+                        return finalUpload();
                     }
                 });
                 scope.upload = function () {
@@ -66,4 +74,4 @@
             }
         };
     }]);
-}(window.JP.getModule('Storage'), angular));
+}(window.JP.getModule('Storage')));
