@@ -45,12 +45,13 @@
 
             $scope.gridUserConfig = Account.getUserConfig().$child('rbac') || {};
 
-            $scope.gridOrder = ['-published_at'];
+            $scope.gridOrder = ['name'];
             $scope.gridProps = [
                 {
                     id: 'name',
                     name: 'Name',
                     sequence: 1,
+                    _order: 'name',
                     active: true,
                     type: 'html',
                     _getter: function (object) {
@@ -61,6 +62,10 @@
                     id: 'id',
                     name: 'ID',
                     sequence: 2,
+                    type: 'html',
+                    _getter: function (object) {
+                        return '<a href="#!/accounts/policy/' + object.id + '">' + object.id + '</a>';
+                    },
                     active: true
                 },
                 {

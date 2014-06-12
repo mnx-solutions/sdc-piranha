@@ -57,6 +57,9 @@ module.exports = function (scope, app) {
             case 'role':
                 prefix += 'roles-';
                 break;
+            case 'policy':
+                prefix += 'policies-';
+                break;
             default:
                 break;
         }
