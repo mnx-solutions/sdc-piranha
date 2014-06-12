@@ -56,9 +56,9 @@
             };
 
 
-            $scope.gridUserConfig = Account.getUserConfig().$child('rbac') || {};
+            $scope.gridUserConfig = Account.getUserConfig().$child('roles') || {};
 
-            $scope.gridOrder = ['-published_at'];
+            $scope.gridOrder = ['name'];
             $scope.gridProps = [
                 {
                     id: 'name',
@@ -137,7 +137,7 @@
             ];
 
             $scope.exportFields = {
-                ignore: []
+                ignore: ['checked']
             };
 
             $scope.columnsButton = true;

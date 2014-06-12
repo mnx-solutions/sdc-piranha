@@ -54,6 +54,9 @@ module.exports = function (scope, app) {
             case 'user':
                 prefix += 'users-';
                 break;
+            case 'role':
+                prefix += 'roles-';
+                break;
             default:
                 break;
         }
