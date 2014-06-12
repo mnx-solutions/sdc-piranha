@@ -116,6 +116,10 @@
   , "machineMetadataTimeout": 120000
   , "machineState": 10000
   , "packageChange": 1000
+  , "firewallRule": 2000
+  , "firewallRuleCreateTimeout": 20000
+  , "firewallRuleUpdateTimeout": 90000
+  , "firewallRuleDeleteTimeout": 90000
   }
 , "capishim": {
     "username": ""
