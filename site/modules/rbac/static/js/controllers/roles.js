@@ -75,7 +75,12 @@
                     id: 'id',
                     name: 'ID',
                     sequence: 2,
-                    active: true
+                    active: true,
+                    _order: 'id',
+                    type: 'html',
+                    _getter: function (object) {
+                        return '<a href="#!/accounts/role/' + object.id + '">' + object.id + '</a>';
+                    }
                 },
                 {
                     id: 'members',
