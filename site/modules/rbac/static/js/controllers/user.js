@@ -14,6 +14,8 @@
             $scope.user = {};
             $scope.userRoles = [];
             $scope.roles = [];
+            $scope.changePassword = {};
+            $scope.isFormSubmited = false;
 
             var userId = requestContext.getParam('id');
 
@@ -21,8 +23,8 @@
                 $scope.loading = false;
                 if (err && err.message === 'passwordInHistory') {
                     err.message = 'Password was already used';
-                    PopupDialog.errorObj(err);
                 }
+                PopupDialog.errorObj(err);
             };
 
             $scope.user.isNew = userId && userId === 'create';
@@ -92,43 +94,14 @@
                 return updates;
             };
 
-            var isFormChanged = function () {
-                return $scope.subAccountForm.$dirty;
-            };
+            var isFieldsInvalid = function () {
+                return $scope.subAccountForm.$invalid;
 
-            var validate = function () {
-                if ($scope.subAccountForm.$invalid) {
-                    PopupDialog.message(
-                            localization.translate(
-                                    $scope,
-                                    null,
-                                    'Message'
-                            ),
-                            localization.translate(
-                                    $scope,
-                                    null,
-                                    'Please validate your input.'
-                            ),
-                            function () {}
-                    );
-                    return false;
-                }
-                return true;
-            };
-
-            var isActionReady = function () {
-                if (!validate()) {
-                    return false;
-                }
-                if (!isFormChanged()) {
-                    $location.path('/accounts/users');
-                    return false;
-                }
-                return true;
             };
 
             $scope.createUser = function () {
-                if (!isActionReady()) {
+                $scope.isFormSubmited = true;
+                if (isFieldsInvalid()) {
                     return;
                 }
                 $scope.loading = true;
@@ -142,7 +115,8 @@
             };
 
             $scope.updateUser = function () {
-                if (!isActionReady()) {
+                $scope.isFormSubmited = true;
+                if (isFieldsInvalid()) {
                     return;
                 }
                 $scope.loading = true;
@@ -181,6 +155,7 @@
             };
 
             $scope.changeUserPassword = function () {
+                $scope.isPassFormSubmited = true;
                 var opts = {
                     templateUrl: 'rbac/static/partials/change-password.html',
                     openCtrl: function ($scope, dialog) {
@@ -202,9 +177,6 @@
                             if (!res || (res && res !== 'ok')) {
                                 dialog.close();
                             } else {
-                                if (!$scope.passForm.password.$dirty) {
-                                    $scope.passForm.password.$dirty = true;
-                                }
                                 if ($scope.passForm.$invalid) {
                                     return;
                                 }
