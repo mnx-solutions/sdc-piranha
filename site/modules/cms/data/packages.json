@@ -566,8 +566,7 @@
           "price_month": "554.8",
           "vcpus": "2",
           "memory": 15360,
-          "disk": 368640,
-          "createdBySupport": true
+          "disk": 368640
       },
       "g3-highio-30-smartos": {
           "short_name": "High I/O 30",
@@ -578,8 +577,7 @@
           "price_month": "1109.6",
           "vcpus": "4",
           "memory": 30720,
-          "disk": 742400,
-          "createdBySupport": true
+          "disk": 742400
       },
       "g3-highstorage-32-smartos": {
           "short_name": "High Storage 32",
@@ -644,8 +642,7 @@
           "price_month": "2,238.91",
           "vcpus": "8",
           "memory": 61952,
-          "disk": 1486848,
-          "createdBySupport": true
+          "disk": 1486848
       },
       "g3-highio-96-smartos": {
           "short_name": "High I/O 96",
@@ -1247,8 +1244,7 @@
           "price_month": "554.8",
           "vcpus": "2",
           "memory": 15360,
-          "disk": 368640,
-          "createdBySupport": true
+          "disk": 368640
       },
       "g3-highio-30-kvm": {
           "short_name": "High I/O 30",
@@ -1259,8 +1255,7 @@
           "price_month": "1109.6",
           "vcpus": "4",
           "memory": 30720,
-          "disk": 742400,
-          "createdBySupport": true
+          "disk": 742400
       },
       "g3-highstorage-32-kvm": {
           "short_name": "High Storage 32",
@@ -1319,8 +1314,7 @@
           "price_month": "2,238.91",
           "vcpus": "8",
           "memory": 61952,
-          "disk": 1486848,
-          "createdBySupport": true
+          "disk": 1486848
       },
       "g3-highio-96-kvm": {
           "short_name": "High I/O 96",
