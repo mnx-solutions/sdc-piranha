@@ -3,7 +3,6 @@ package com.joyent.piranha;
 import com.codeborne.selenide.ElementsCollection;
 import com.codeborne.selenide.SelenideElement;
 import com.codeborne.selenide.WebDriverRunner;
-import com.google.gson.JsonObject;
 import org.apache.commons.io.IOUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -166,12 +165,19 @@ public class Common {
         return outJSON.get("created").toString().substring(0, 10);
     }
 
-    public static String getImageID(String imageName, String datacenter, String imageVersion) throws IOException, JSONException {
+    public static String getImageID(String imageName, String datacenter, String imageVersion) throws IOException, JSONException, InterruptedException {
         String userName = PropertyHolder.getTestUserLogin();
         ProcessBuilder processBuilder = new ProcessBuilder(PropertyHolder.getSdcPath() + "sdc-listimages");
         setSdcProcessEnv(processBuilder, userName, datacenter);
         Process p = processBuilder.start();
-        JSONArray jsonArray = new JSONArray(IOUtils.toString(p.getInputStream()));
+        JSONArray jsonArray;
+        while (true) {
+            jsonArray = new JSONArray(IOUtils.toString(p.getInputStream()));
+            if(jsonArray.length() > 0){
+                break;
+            }
+            Thread.sleep(1000);
+        }
         String result = null;
         for (int i = 0; i < jsonArray.length(); i++) {
             String imName = jsonArray.getJSONObject(i).get("name").toString();

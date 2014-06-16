@@ -23,6 +23,7 @@ public abstract class AbstractPageObject {
     static final String FIREWALL_MENU_TITLE = "Firewall";
     static final String IMAGES_MENU_TITLE = "Images";
     static final String SLB_MENU_TITLE = "Load Balancers";
+    static final String USAGE_MENU_TITLE = "Usage";
 
     public static int baseTimeout;
 
@@ -73,6 +74,7 @@ public abstract class AbstractPageObject {
     public void waitForMediumSpinnerDisappear() {
         $(".loading-medium[style=\"\"]").waitWhile(exist, CHANGE_STATUS_TIMEOUT);
         $(".loading-medium[style=\"visibility: visible;\"]").waitWhile(exist, CHANGE_STATUS_TIMEOUT);
+        $(By.xpath("//*[contains(@class,'loading-medium-transparent') and not(contains(@class,'ng-hide'))]")).waitWhile(exist, CHANGE_STATUS_TIMEOUT);
     }
 
     public void waitForLargeSpinnerDisappear() {
