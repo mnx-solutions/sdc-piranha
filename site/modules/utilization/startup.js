@@ -156,11 +156,12 @@ module.exports = function execute(scope) {
                                 configs.date = result.date;
                                 lastConfig = configs;
                                 var ram = (configs.ram / 1024).toFixed(3) * 1;
+                                var gbHours = configs.hours * ram;
 
-                                overallResult.dram.usage.push(getUsageDataEntry(zone, configs, {'hours': configs.hours, 'ram' : ram}));
+                                overallResult.dram.usage.push(getUsageDataEntry(zone, configs, {'hours': configs.hours, 'ram' : ram, 'gb-hours': gbHours}));
                                 overallResult.currentspend.usage.push(getUsageDataEntry(zone, configs, {'cost': configs.cost}));
 
-                                overallResult.dram.amount[result.date] += configs.hours * ram;
+                                overallResult.dram.amount[result.date] += gbHours;
                                 overallResult.currentspend.amount[result.date] += configs.cost;
                             });
                             bandwidthOut = Math.max(zone.bandwidth.out, 0);
@@ -203,7 +204,7 @@ module.exports = function execute(scope) {
                         }, []);
                     };
                     overallResult.currentspend.usage = groupByMachineAndSumFields(overallResult.currentspend.usage, ['cost']);
-                    overallResult.dram.usage = groupByMachineAndSumFields(overallResult.dram.usage, ['hours']);
+                    overallResult.dram.usage = groupByMachineAndSumFields(overallResult.dram.usage, ['hours', 'gb-hours']);
                     overallResult.bandwidth.usage = groupByMachineAndSumFields(overallResult.bandwidth.usage, ['in', 'out']);
                 });
                 call.done(null, overallResult);
