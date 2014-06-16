@@ -1249,7 +1249,7 @@
                             localization.translate(
                                 null,
                                 'machine',
-                                'Datacenter {{name}} is currently not available. We are working on getting this datacenter back on.',
+                                'CloudAPI is not responding in the {{name}} data center. Our operations team is investigating.',
                                 { name: datacenter }
                             )
                         );
