@@ -138,7 +138,7 @@
                     $scope.getMonthDesc = function () {
                         var desc = '';
                         if ($scope.month === now.getMonth() + 1 && $scope.year === now.getFullYear()) {
-                            desc = $scope.name === 'currentspend' ? 'month to date' : 'this month';
+                            desc = $scope.name === 'currentspend' || $scope.name === 'manta' ? 'month to date' : 'this month';
                         }
                         return desc;
                     };
@@ -149,7 +149,7 @@
                     };
 
                     $scope.showProjected = function () {
-                        return ($scope.total >= 0 && $scope.name === 'currentspend' && $scope.month === now.getMonth() + 1);
+                        return ($scope.total >= 0 && ($scope.name === 'currentspend' || $scope.name === 'manta') && $scope.month === now.getMonth() + 1);
                     };
 
                     function daysInMonth(year, month) {
