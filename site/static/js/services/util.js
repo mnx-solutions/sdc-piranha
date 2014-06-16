@@ -45,6 +45,10 @@ window.JP.main.service('util', [
             };
         };
 
+        service.getReadableDramUsage = function (num) {
+            return num.toFixed(num > 1000 ? 0 : 2) * 1;
+        };
+
         service.getReadableCurrencyString =  function (amount) {
             if (!amount || isNaN(amount)) {
                 return '0.00';

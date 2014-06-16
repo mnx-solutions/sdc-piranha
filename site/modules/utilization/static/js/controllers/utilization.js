@@ -12,7 +12,7 @@
                     return;
                 }
                 Utilization.utilization(requestContext.getParam('year'), requestContext.getParam('month'), function (error, utilizationData) {
-                    $scope.dramChartData = utilizationData.dram;
+                    $scope.computeChartData = utilizationData.compute;
                     $scope.currentSpendChartData = utilizationData.currentspend;
                     $scope.mantaChartData = utilizationData.manta;
                     $scope.bandwidthChartData = utilizationData.bandwidth;

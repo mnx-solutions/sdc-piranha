@@ -2,9 +2,18 @@
 
     <div class="tile blue" data-ng-style="{'background-color': colorTotal}">
         <h4 class="title">{{getMonthTitle()}}{{caption}}</h4>
+        <div class="total-usage" data-ng-show="totalUsage">
+            <div class="num">
+                {{format(totalUsage)}}
+            </div>
+            <div class="desc" data-ng-show="getMonthDesc()">
+                <span class="num small"></span>
+                <div>this month</div>
+            </div>
+        </div>
         <div class="left-block" data-ng-class="{'has-right-block': showProjected()}">
             <div class="num">
-                {{format(total)}}
+                {{currencyFormat(total)}}
             </div>
             <div class="desc">
                 <span class="num small"></span>

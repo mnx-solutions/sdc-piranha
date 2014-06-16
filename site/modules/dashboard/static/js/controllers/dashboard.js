@@ -133,9 +133,10 @@
                 Utilization.utilization(year, month, function (error, utilizationData) {
                     $scope.utilization = utilizationData;
                     $scope.utilization.url = '#!/usage/' + year + '/' + month;
-                    $scope.bandwidth = util.getReadableFileSizeString(utilizationData.bandwidth.total);
+                    $scope.bandwidth = util.getReadableFileSizeString(utilizationData.bandwidth.totalOut);
                     var currentspendTotal = utilizationData.currentspend.total;
                     $scope.currentspend = util.getReadableCurrencyString(currentspendTotal, 2);
+                    $scope.dram = util.getReadableDramUsage(utilizationData.compute.totalUsage);
                 });
             }
 
