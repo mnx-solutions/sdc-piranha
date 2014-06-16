@@ -11,9 +11,14 @@
         function ($q, $scope, PopupDialog, Account, service, localization) {
             $scope.loading = true;
             $scope.users = [];
+            $scope.roles = [];
             var getUsersList = function () {
-                service.listUsers().then(function (users) {
-                    $scope.users = users || [];
+                $q.all([
+                    $q.when(service.listUsers()),
+                    $q.when(service.listRoles())
+                ]).then(function (result) {
+                    $scope.users = result[0] || [];
+                    $scope.roles = result[1] || [];
                     $scope.loading = false;
                 }, function (err) {
                     PopupDialog.errorObj(err);
@@ -83,13 +88,14 @@
                     sequence: 4,
                     active: true,
                     type: 'async',
-                    hideSorter: true,
                     _getter: function (object) {
-                        return service.getUser(object.id).then(function (user) {
-                            return (user.roles || []).join(", ");
-                        }, function () {
-                            return "";
+                        var roles = [];
+                        $scope.roles.forEach(function(role) {
+                            if (role.members && role.members.indexOf(object.login) > -1) {
+                                roles.push(role.name);
+                            }
                         });
+                        return (roles || []).join(", ");
                     }
 
                 },
