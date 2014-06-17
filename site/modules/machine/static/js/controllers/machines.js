@@ -222,7 +222,7 @@
                     _getter: function (machine) {
                         var html = '<a href="#!/compute/instance/' + machine.id + '" style="min-width: 140px;">' + machine.label + '</a>';
                         if (machine.freetier) {
-                            html += '<span> *</span>';
+                            html += '<span> * FREE</span>';
                         }
                         return html;
                    }

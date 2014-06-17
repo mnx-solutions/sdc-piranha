@@ -58,7 +58,7 @@
 
         factory.errorProvision = function (submitBillingInfo, locationCb, showPopUp) {
             var returnUrl = $location.path();
-            locationCb = locationCb || function (isSuccess) {
+            locationCb = locationCb || function () {
                 $location.path(returnUrl);
             };
             if (submitBillingInfo) {
@@ -74,7 +74,22 @@
             if (typeof (showPopUp) === 'boolean' && !showPopUp) {
                 return callback();
             } else {
-                return factory.message('Attention', 'Please complete profile information before proceeding.', callback);
+                var isFreeTier = function (cb) {
+                    var freeTierExists = false;
+                    setTimeout(function () {
+                        var provisionBundle = $rootScope.commonConfig('provisionBundle');
+                        freeTierExists = provisionBundle.machine.freetier;
+                        cb(null, freeTierExists);
+                    }, 100);
+                };
+                isFreeTier(function (err, freeTierExists) {
+                    var freeTierNote = '';
+                    if (freeTierExists) {
+                        freeTierNote = ' Note: Free Dev Tier customers will not be billed until the promotional term expires as this is merely a validation step.';
+                    }
+                    return factory.message('Attention', 'Please complete the profile information before proceeding.' + freeTierNote, callback);
+                });
+                return null;
             }
         };
 
