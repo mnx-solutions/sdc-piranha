@@ -59,6 +59,12 @@
             $scope.preSelectedImageId = requestContext.getParam('imageid');
             $scope.preSelectedImage = null;
 
+            $scope.preSelectedData = $rootScope.popCommonConfig('preSelectedData');
+
+            if ($scope.preSelectedData && $scope.preSelectedData.preSelectedImageId) {
+                $scope.preSelectedImageId = $scope.preSelectedData.preSelectedImageId;
+            }
+
             $scope.instanceType = $scope.preSelectedImageId || $location.path().indexOf('/custom') > -1 ? 'Saved' : 'Public';
 
             $scope.instanceMetadataEnabled = $scope.features.instanceMetadata === 'enabled';
@@ -1015,7 +1021,11 @@
                             minimalPackage = pkg;
                         }
                     });
-                if (minimalPackage) {
+                if ($scope.preSelectedData && $scope.preSelectedData.selectedPackageInfo) {
+                    $scope.selectedPackageInfo = $scope.preSelectedData.selectedPackageInfo;
+                    $scope.selectPackage($scope.selectedPackageInfo.id);
+                    $scope.reviewPage();
+                } else if (minimalPackage) {
                     $scope.selectPackage(minimalPackage.id);
                 }
             }
@@ -1331,13 +1341,24 @@
 
             $scope.reviewPage = function () {
                 if ($scope.selectedPackageInfo.createdBySupport) {
-                    var el = $scope.selectedPackageInfo;
-                    $scope.zenboxDialog({
-                        dropboxID: $rootScope.zenboxParams.dropboxOrderPackageId || $rootScope.zenboxParams.dropboxID,
-                        request_subject: 'I want to order ' + el.description + ' compute instance',
-                        request_description: 'API Name: ' + el.name
+                    var returnUrl = $location.path();
+                    Account.checkProvisioning({btnTitle: 'Submit and Create Instance'}, function () {
+                        var el = $scope.selectedPackageInfo;
+                        $scope.zenboxDialog({
+                            dropboxID: $rootScope.zenboxParams.dropboxOrderPackageId || $rootScope.zenboxParams.dropboxID,
+                            request_subject: 'I want to order ' + el.description + ' compute instance',
+                            request_description: 'API Name: ' + el.name
+                        });
+                        loggingService.log('info', 'User is ordering instance package from support', el);
+                    }, angular.noop, function (isSuccess) {
+                        $location.path(returnUrl);
+                        if (isSuccess) {
+                            $rootScope.commonConfig('preSelectedData', {
+                                selectedPackageInfo: $scope.selectedPackageInfo,
+                                preSelectedImageId: $scope.selectedDataset.id
+                            });
+                        }
                     });
-                    loggingService.log('info', 'User is ordering instance package from support', el);
                 } else {
                     $scope.slideCarousel();
                     $scope.setCurrentStep(2);
