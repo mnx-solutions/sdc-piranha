@@ -1016,7 +1016,11 @@
                             minimalPackage = pkg;
                         }
                     });
-                if (minimalPackage) {
+                if ($scope.preSelectedData && $scope.preSelectedData.selectedPackageInfo) {
+                    $scope.selectedPackageInfo = $scope.preSelectedData.selectedPackageInfo;
+                    $scope.selectPackage($scope.selectedPackageInfo.id);
+                    $scope.reviewPage();
+                } else if (minimalPackage) {
                     $scope.selectPackage(minimalPackage.id);
                 }
             }
@@ -1355,11 +1359,6 @@
                     $scope.setCurrentStep(2);
                 }
             };
-
-            if ($scope.preSelectedData && $scope.preSelectedData.selectedPackageInfo) {
-                $scope.selectedPackageInfo = $scope.preSelectedData.selectedPackageInfo;
-                $scope.reviewPage();
-            }
 
             $scope.clickBackToQuickStart = function () {
                 $location.path('/compute/create/simple');
