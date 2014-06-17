@@ -65,7 +65,7 @@
                 $scope.preSelectedImageId = $scope.preSelectedData.preSelectedImageId;
             }
 
-            $scope.instanceType = $scope.preSelectedImageId || $location.path().indexOf('/custom') > -1 ? 'Saved' : 'Public';
+            $scope.instanceType = $location.path().indexOf('/custom') > -1 ? 'Saved' : 'Public';
 
             $scope.instanceMetadataEnabled = $scope.features.instanceMetadata === 'enabled';
             $scope.metadataArray = [
@@ -743,6 +743,7 @@
                 if ($scope.currentSlidePageIndex === $scope.provisionSteps.length - 1) {
                     $scope.createInstanceTitle = null;
                 }
+                $scope.preSelectedData = null;
             };
 
             function getNr(el) {
