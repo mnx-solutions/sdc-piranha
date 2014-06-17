@@ -1,0 +1,76 @@
+<div class="container-fluid container-position" data-ng-controller="mdbController">
+    <div class="row-fluid">
+        <h3 class="page-title">Node Debugger</h3>
+    </div>
+    <div class="left-part">
+        <table style="width: 400px;">
+            <tr>
+                <td><select-file data-objects="objects" data-title="getFilePath() || 'select file from Manta'"></select-file></td>
+                <td>
+                <span>
+                    <label type="button" class="btn orange effect-orange-button grey-new upload-key-label pull-right" for="uploadInput">upload</label>
+                    <input type="file"
+                           id="uploadInput"
+                           name="uploadInput"
+                           style="display: none"
+                           data-ng-model="filePath"
+                           onchange="angular.element(this).scope().uploadFile(uploadInput)">
+                </span>
+                </td>
+            </tr>
+            <tr>
+                <td>Status : {{status}}<br/>
+                    <i>Estimating processed time : {{estimate}}</i>
+                </td>
+                <td><span class="btn orange effect-orange-button grey-new pull-right">Process Now</span></td>
+            </tr>
+            <tr>
+                <td>Node.js support status : {{supportStatus}}</td>
+                <td><span class="btn orange effect-orange-button grey-new pull-right">Signup for Node.js</span></td>
+            </tr>
+
+        </table>
+    </div>
+    <div class="right-part">
+        <fieldset>
+            <ul>
+                <table>
+                    <tr>
+                        <td># Heap objects</td>
+                        <td>: {{heapObjects}}</td>
+                    </tr>
+                    <tr>
+                        <td># Javascript Objects</td>
+                        <td>: {{javascriptObjects}}</td>
+                    </tr>
+                    <tr>
+                        <td># Processed Objects</td>
+                        <td>: {{processedObjects}}</td>
+                    </tr>
+                    <tr>
+                        <td># Processed Arrays</td>
+                        <td>: {{processedArrays}}</td>
+                    </tr>
+                </table>
+            </ul>
+        </fieldset>
+    </div>
+    <div class="loading-large span12" data-ng-show="loading"></div>
+    <div class="row-fluid">
+        <div>
+            <div data-grid-view
+                 data-user-config="gridUserConfig"
+                 data-props="gridProps"
+                 data-columns-button="columnsButton"
+                 data-image-button-show="false"
+                 data-items="objects"
+                 data-multisort="false"
+                 data-order="gridOrder"
+                 data-export-fields="exportFields"
+                 data-paginated="false"
+                 data-tab-filter-field="tabFilterField"
+                 data-tab-filter-default="tabFilterDefault">
+            </div>
+        </div>
+    </div>
+</div>

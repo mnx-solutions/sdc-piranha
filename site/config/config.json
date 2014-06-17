@@ -199,5 +199,6 @@
   , "recentInstances": "no"
   , "imageRename": "no"
   , "provisioningLimits": "no"
+  , "mdb": "no"
   }
 }
