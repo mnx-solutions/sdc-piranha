@@ -13,7 +13,7 @@
 
                     <div class="accordion-group">
                         <div class="accordion-heading">
-                            <a class="accordion-toggle toggle-icon" data-toggle="collapse" href="#collapse_summary">
+                            <a class="accordion-toggle toggle-icon" data-toggle="collapse" data-target="#collapse_summary" data-parent="#accordionEditRoleLeft">
                                 Summary
                             </a>
                         </div>
@@ -31,9 +31,9 @@
                                                    class="role-name"
                                                    name="roleName"
                                                    data-ng-model="role.name"
-                                                   data-ng-pattern="/^[A-z][A-z0-9\s]*$/"/>
+                                                   data-ng-pattern="/^[A-z0-9\s\-]*$/"/>
                                         </div>
-                                        <div class="name-error error"
+                                        <div class="role-name-error error"
                                              data-ng-show="roleForm.roleName.$error.pattern"
                                              data-translate>
                                              Role name does not allow non-latin letters.
@@ -46,7 +46,7 @@
 
                     <div class="accordion-group" data-ng-show="users.length">
                         <div class="accordion-heading">
-                            <a class="accordion-toggle toggle-icon" data-toggle="collapse" href="#collapse_members">
+                            <a class="accordion-toggle toggle-icon" data-toggle="collapse" data-target="#collapse_members">
                                 Members
                             </a>
                         </div>
@@ -66,7 +66,7 @@
 
                     <div class="accordion-group" data-ng-show="roleUsers.length">
                         <div class="accordion-heading">
-                            <a class="accordion-toggle toggle-icon" data-toggle="collapse" href="#collapse_dmembers">
+                            <a class="accordion-toggle toggle-icon" data-toggle="collapse" data-target="#collapse_dmembers">
                                 Default Members
                             </a>
                         </div>
@@ -90,7 +90,7 @@
 
                     <div class="accordion-group">
                         <div class="accordion-heading">
-                            <a class="accordion-toggle toggle-icon" data-toggle="collapse" href="#collapse_policies">
+                            <a class="accordion-toggle toggle-icon" data-toggle="collapse" data-target="#collapse_policies">
                                 Policies
                             </a>
                         </div>

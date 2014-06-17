@@ -13,11 +13,11 @@
 
                     <div class="accordion-group">
                         <div class="accordion-heading">
-                            <a class="accordion-toggle toggle-icon" data-toggle="collapse" href="#collapse_policy_summary">
+                            <a class="accordion-toggle toggle-icon" data-toggle="collapse" data-target="#collapse-policy-summary">
                                 Summary
                             </a>
                         </div>
-                        <div id="collapse_policy_summary" class="accordion-body collapse in">
+                        <div id="collapse-policy-summary" class="accordion-body collapse in">
                             <div class="accordion-inner">
                                 <div class="control-group" data-ng-show="model.policy.id">
                                     <label class="name dpl-inline">ID</label>
@@ -26,13 +26,14 @@
                                     </div>
                                 </div>
                                 <form name="policyForm">
-                                    <div>
+                                    <div class="control-group">
                                         <label class="name dpl-inline">Name</label>
                                         <input type="text"
                                                class="policy-form"
                                                name="policyName"
                                                data-ng-model="model.policy.name"
-                                               data-ng-pattern="/^[A-z0-9\s\-]*$/" />
+                                               data-ng-pattern="/^[A-z0-9\s\-]*$/"
+                                               required/>
                                     </div>
                                     <div class="error"
                                          data-ng-show="policyForm.policyName.$error.pattern"
@@ -56,24 +57,33 @@
 
                     <div class="accordion-group">
                         <div class="accordion-heading">
-                            <a class="accordion-toggle toggle-icon" data-toggle="collapse" href="#collapse_summary">
+                            <a class="accordion-toggle toggle-icon" data-toggle="collapse" data-target="#collapse_summary">
                                 Rules
                             </a>
                         </div>
                         <div id="collapse_summary" class="accordion-body collapse in">
                             <div class="accordion-inner">
-                                <div class="controls" data-ng-repeat="rule in model.policy.rules">
-                                    <label class="name dpl-inline">Rule {{$index}}</label>
-                                    <div class="policy-form dpl-inline">{{rule}}</div>
-                                    <div class="remove-icon delete pull-right tags-delete-pos dpl-inline"
-                                         data-ng-click="removeRule(rule)"
-                                         data-ng-show="!saving">
+                                <div data-ng-repeat="rule in rules">
+                                    <div class="controls rules" data-ng-show="!rule.edit">
+                                        <label class="name dpl-inline">Rule {{$index + 1}}</label>
+                                        <div data-ng-click="editRule(rule)" class="policy-form">{{rule.rule}}</div>
+                                        <div class="remove-icon delete pull-right dpl-inline"
+                                             data-ng-click="removeRule(rule)"
+                                             data-ng-show="!saving">
+                                        </div>
+                                    </div>
+                                    <div class="rule-edit" data-ng-show="rule.edit">
+                                        <label class="name dpl-inline">Rule {{$index + 1}}</label>
+                                        <input type="text" class="policy-form" data-ng-model="rule.rule"/>
+                                        <button class="btn orange add-btn pull-right" data-ng-click="saveRule(rule, $index)" data-ng-disabled="rule.rule.length == 0">Save</button>
                                     </div>
                                 </div>
-                                <div class="new-rule"><label class="name dpl-inline">Rule {{model.policy.rules.length}}</label>
-                                    <div class="dpl-inline">
+
+                                <div class="new-rule">
+                                    <label class="name dpl-inline">Rule {{rules.length + 1}}</label>
+                                    <div class="dpl-inline" data-ng-click="focusOut()">
                                         <input type="text" class="policy-form" data-ng-model="model.newRule"/>
-                                        <button class="btn orange add-btn" data-ng-click="addRule()">Add</button>
+                                        <button class="btn orange add-btn" data-ng-click="addRule()" data-ng-disabled="model.newRule.length == 0">Add</button>
                                     </div>
                                 </div>
                             </div>
@@ -86,12 +96,12 @@
         <div class="row-fluid btn-bottom-block" data-ng-show="!loading">
             <div class="pull-right" data-ng-hide="model.policy.id">
                 <button class="btn light effect-orange-button" data-ng-click="cancel()">Cancel</button>
-                <button class="btn orange" data-ng-click="createPolicy()" data-ng-disabled="policyForm.policyName.$error.roleName">Create Policy</button>
+                <button class="btn orange" data-ng-click="createPolicy(true)" data-ng-disabled="policyForm.policyName.$error.roleName || !model.policy.name.length">Create Policy</button>
             </div>
             <div class="pull-right" data-ng-show="model.policy.id">
                 <button class="btn light effect-orange-button" data-ng-click="cancel()">Cancel</button>
                 <button class="btn light effect-orange-button" data-ng-click="deletePolicy()">Delete</button>
-                <button class="btn orange" data-ng-click="updatePolicy()" data-ng-disabled="policyForm.policyName.$error.roleName">Save</button>
+                <button class="btn orange" data-ng-click="updatePolicy(true)" data-ng-disabled="policyForm.policyName.$error.roleName || !model.policy.name.length">Save</button>
             </div>
         </div>
     </div>

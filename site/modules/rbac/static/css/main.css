@@ -136,8 +136,19 @@ label.name {
 .role label.name {
     width: 45px;
 }
-.new-rule label.name {
+.rules label.name,
+.new-rule label.name,
+.rule-edit label.name {
     width: 55px;
+}
+.rules label.name {
+    height: 16px;
+}
+.rule-edit label.name {
+    height: 25px;
+}
+.rule-edit {
+    padding-top: 10px;
 }
 .role-name {
     width: 415px;
@@ -162,24 +173,36 @@ select.policy-form {
     height: 30px;
     vertical-align: top;
 }
-.controls {
-    padding-top: 5px;
-    height: 25px;
+.controls,
+.rule-edit {
     border-bottom: 1px solid #E9E9E9;
 }
+.controls {
+    height: 30px;
+}
 .controls div.policy-form {
+    display: inline-block;
     overflow: hidden;
     width: 400px;
-    vertical-align: top;
+    vertical-align: middle;
     text-overflow: ellipsis;
     white-space: nowrap;
+    line-height: 30px;
+    cursor: pointer;
 }
 .new-rule {
-    margin-top: 15px;
+    margin-top: 10px;
 }
 .edit-name {
     width: 130px;
 }
-.name-error {
+.role .error {
     padding-left: 60px;
+}
+.policy .error {
+    padding-left: 140px;
+    margin-top: -10px;
+}
+.remove-icon {
+    margin-top: 10px;
 }
