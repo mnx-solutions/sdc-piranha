@@ -93,10 +93,14 @@
                             id: 'hours',
                             name: 'Hours',
                             _order: 'hours',
-                            _getter: function (object) {
-                                return $scope.chartData.format(object.hours);
-                            },
                             sequence: 7,
+                            active: true
+                        },
+                        {
+                            id: 'gb-hours',
+                            name: 'GB Hours',
+                            _order: 'gb-hours',
+                            sequence: 8,
                             active: true
                         }
                     ]);
