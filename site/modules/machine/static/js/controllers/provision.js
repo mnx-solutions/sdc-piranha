@@ -202,6 +202,25 @@
                     } else {
                         Machine.provisionMachine(machineData).done(function (err, job) {
                             var quotaExceededHeader = 'QuotaExceeded: ';
+
+                            if (err && err.message.indexOf('Free tier') > -1) {
+                                var freeDatacenters = [];
+                                var messagePart2 = '.';
+                                $scope.datacenters.forEach(function (datacenter) {
+                                    var isFreeDatacenter = $scope.freeTierOptions.some(function (freeImage) {
+                                        return freeImage.datacenters.indexOf(datacenter.name) !== -1;
+                                    });
+                                    if (isFreeDatacenter) {
+                                        freeDatacenters.push(datacenter.name);
+                                    }
+                                });
+                                if (freeDatacenters.length > 0) {
+                                    freeDatacenters = freeDatacenters.join(', ');
+                                    messagePart2 = ', and you still have the capacity for free tier instances in ' + freeDatacenters + '.';
+                                }
+                                err.message = err.message + ' This limitation applies per data center' + messagePart2;
+                            }
+
                             if (err && err.message && err.message.indexOf(quotaExceededHeader) === 0) {
                                 $location.path('/dashboard');
                                 PopupDialog.error(null, err.message.substr(quotaExceededHeader.length), function () {
