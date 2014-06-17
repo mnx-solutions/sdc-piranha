@@ -200,7 +200,7 @@
             $scope.$on('requestContextChanged', loadData);
             loadData();
 
-            $scope.gridOrder = [];
+            $scope.gridOrder = ['-date'];
             $scope.searchForm = true;
             $scope.exportFields = {
                 ignore: []
