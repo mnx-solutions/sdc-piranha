@@ -66,7 +66,7 @@
                         var match;
                         var errorMessage = 'Error on:';
                         var ruleErrors = [];
-                        var regexp = new RegExp('(.+)\n[\-]+[^\^]+[^\n]+\n', 'g'); //expected message = "Parse error on line 1:\n*can createmachine*\n-----^\nExpecting 'CAN', got 'FUZZY_STRING'"
+                        var regexp = new RegExp('(.+)\n[\-]+[^\n]+\n', 'g'); //expected message = "Parse error on line 1:\n*can createmachine*\n-----^\nExpecting 'CAN', got 'FUZZY_STRING'"
                         while ((match = regexp.exec(message)) !== null) {
                             var ruleError = match[1];
                             $scope.rules.forEach(function (rule, index) {
@@ -131,7 +131,7 @@
                 if (!checkRuleDuplicate(newRule)) {
                     $scope.rules.push({rule: newRule, edit: false});
                     if (!isNew) {
-                        $scope.updatePolicy();
+                        $scope.updatePolicy(false);
                     }
                     $scope.model.newRule = '';
                 }
