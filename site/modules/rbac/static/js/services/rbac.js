@@ -55,18 +55,19 @@
 
             var action = function (actionName, ops, entityType, access, isList) {
                 var deferred = $q.defer();
+
+                var cachedData = getCache(ops, entityType, access, isList);
+                if (cachedData) {
+                    deferred.resolve(cachedData);
+                    return deferred.promise;
+                }
+
                 if (!promiseActions[actionName] || !promiseActions[actionName].pending) {
                     promiseActions[actionName] = {};
                     promiseActions[actionName].deferred = deferred;
                     promiseActions[actionName].pending = true;
                 } else {
                     promiseActions[actionName].deferred.promise.then(deferred.resolve, deferred.reject);
-                    return deferred.promise;
-                }
-
-                var cachedData = getCache(ops, entityType, access, isList);
-                if (cachedData) {
-                    deferred.resolve(cachedData);
                     return deferred.promise;
                 }
 
