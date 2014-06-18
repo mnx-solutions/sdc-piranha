@@ -102,11 +102,12 @@ module.exports = function execute(scope) {
                         amount: {},
                         usage: []
                     },
-                    dram: {
+                    compute: {
                         days: daysMax,
                         year: year,
                         month: month,
                         total: 0,
+                        totalUsage: 0,
                         amount: {},
                         usage: []
                     },
@@ -115,6 +116,8 @@ module.exports = function execute(scope) {
                         year: year,
                         month: month,
                         total: 0,
+                        totalUsage: 0,
+                        totalOut: 0,
                         amount: {},
                         usage: []
                     },
@@ -128,12 +131,12 @@ module.exports = function execute(scope) {
                     }
                 };
                 results.successes.forEach(function (result) {
-                    overallResult.dram.amount[result.date] = 0;
+                    overallResult.compute.amount[result.date] = 0;
                     overallResult.currentspend.amount[result.date] = 0;
                     overallResult.bandwidth.amount[result.date] = 0;
                     overallResult.manta.amount[result.date] = 0;
                     var bandwidthIn = 0;
-                    var bandwidthOut =0;
+                    var bandwidthOut = 0;
                     var mantaResult = result.manta;
                     if (mantaResult) {
                         var usage = mantaResult.usage;
@@ -158,24 +161,36 @@ module.exports = function execute(scope) {
                                 var ram = (configs.ram / 1024).toFixed(3) * 1;
                                 var gbHours = configs.hours * ram;
 
-                                overallResult.dram.usage.push(getUsageDataEntry(zone, configs, {'hours': configs.hours, 'ram' : ram, 'gb-hours': gbHours}));
-                                overallResult.currentspend.usage.push(getUsageDataEntry(zone, configs, {'cost': configs.cost}));
+                                overallResult.compute.usage.push(getUsageDataEntry(zone, configs, {'hours': configs.hours, 'ram' : ram, 'gb-hours': gbHours, 'cost': configs.cost}));
 
-                                overallResult.dram.amount[result.date] += gbHours;
-                                overallResult.currentspend.amount[result.date] += configs.cost;
+                                overallResult.compute.amount[result.date] += gbHours;
+                                overallResult.compute.total += configs.cost;
                             });
                             bandwidthOut = Math.max(zone.bandwidth.out, 0);
                             bandwidthIn = Math.max(zone.bandwidth.in, 0);
-                            overallResult.bandwidth.usage.push(getUsageDataEntry(zone, lastConfig, {'out': bandwidthOut, 'in': bandwidthIn}));
+                            var bandwidthCost = Math.max(zone.bandwidth.cost, 0);
+                            overallResult.bandwidth.usage.push(getUsageDataEntry(zone, lastConfig, {'out': bandwidthOut, 'in': bandwidthIn, 'cost': bandwidthCost}));
                             overallResult.bandwidth.amount[result.date] += (bandwidthOut + bandwidthIn);
+                            overallResult.bandwidth.total += bandwidthCost;
+                            overallResult.bandwidth.totalOut += bandwidthOut;
                         });
                     }
+                    var totalCost = 0;
+                    if (result.summary && result.summary.total && result.summary.total.cost) {
+                        totalCost = result.summary.total.cost;
+                        overallResult.currentspend.usage.push({
+                            cost: totalCost,
+                            date: result.date
+                        });
+                    }
+                    overallResult.currentspend.amount[result.date] = totalCost;
+
                     overallResult.manta.total += overallResult.manta.amount[result.date];
-                    overallResult.dram.total += overallResult.dram.amount[result.date];
+                    overallResult.compute.totalUsage += overallResult.compute.amount[result.date];
                     overallResult.currentspend.total += overallResult.currentspend.amount[result.date];
-                    overallResult.bandwidth.total += overallResult.bandwidth.amount[result.date];
-                    if (overallResult.dram.amount[result.date] === 0) {
-                        delete overallResult.dram.amount[result.date];
+                    overallResult.bandwidth.totalUsage += overallResult.bandwidth.amount[result.date];
+                    if (overallResult.compute.amount[result.date] === 0) {
+                        delete overallResult.compute.amount[result.date];
                     }
                     if (overallResult.currentspend.amount[result.date] === 0) {
                         delete overallResult.currentspend.amount[result.date];
@@ -203,8 +218,7 @@ module.exports = function execute(scope) {
                             return accumulated;
                         }, []);
                     };
-                    overallResult.currentspend.usage = groupByMachineAndSumFields(overallResult.currentspend.usage, ['cost']);
-                    overallResult.dram.usage = groupByMachineAndSumFields(overallResult.dram.usage, ['hours', 'gb-hours']);
+                    overallResult.compute.usage = groupByMachineAndSumFields(overallResult.compute.usage, ['hours', 'gb-hours', 'cost']);
                     overallResult.bandwidth.usage = groupByMachineAndSumFields(overallResult.bandwidth.usage, ['in', 'out']);
                 });
                 call.done(null, overallResult);

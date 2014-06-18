@@ -3,7 +3,7 @@
 (function (app) {
     app.controller(
         'Utilization.DetailsController',
-        ['$scope', '$location', 'Utilization', 'requestContext', 'loggingService', 'Account', function ($scope, $location, Utilization, requestContext, loggingService, Account) {
+        ['$scope', '$location', 'Utilization', 'requestContext', 'loggingService', 'Account', 'util', function ($scope, $location, Utilization, requestContext, loggingService, Account, util) {
             requestContext.setUpRenderContext('utilization.details', $scope);
             var baseProps = [
                 {
@@ -22,13 +22,13 @@
                     id: 'package_uuid',
                     name: 'Package UUID',
                     sequence: 3,
-                    active: true
+                    active: false
                 },
                 {
                     id: 'package_name',
                     name: 'Package Name',
                     sequence: 4,
-                    active: true
+                    active: false
                 },
                 {
                     id: 'datacenter_name',
@@ -37,11 +37,21 @@
                     active: true
                 },
                 {
+                    id: 'cost',
+                    name: 'Cost',
+                    _order: 'cost',
+                    _getter: function (object) {
+                        return '$' + util.getReadableCurrencyString(object.cost);
+                    },
+                    sequence: 9,
+                    active: true
+                },
+                {
                     id: 'first',
                     name: 'First',
                     type: 'date',
                     format: 'yyyy-MM-dd',
-                    sequence: 8,
+                    sequence: 10,
                     active: false
                 },
                 {
@@ -49,7 +59,7 @@
                     name: 'Last',
                     type: 'date',
                     format: 'yyyy-MM-dd',
-                    sequence: 9,
+                    sequence: 11,
                     active: false
                 }
             ];
@@ -81,7 +91,7 @@
                             }
                         ]
                     );
-                } else if ($scope.type === 'dram') {
+                } else if ($scope.type === 'compute') {
                     $scope.gridProps = $scope.gridProps.concat([
                         {
                             id: 'ram',
@@ -105,7 +115,15 @@
                         }
                     ]);
                 } else if ($scope.type === 'currentspend') {
-                    $scope.gridProps = $scope.gridProps.concat([
+                    $scope.gridProps = ([
+                        {
+                            id: 'date',
+                            name: 'Date',
+                            type: 'date',
+                            format: 'yyyy-MM-dd',
+                            sequence: 1,
+                            active: true
+                        },
                         {
                             id: 'cost',
                             name: 'Cost',
@@ -113,7 +131,7 @@
                             _getter: function (object) {
                                 return $scope.chartData.format(object.cost);
                             },
-                            sequence: 6,
+                            sequence: 2,
                             active: true
                         }
                     ]);
@@ -172,13 +190,13 @@
                 refreshProps();
                 $scope.caption = {
                     bandwidth: 'Bandwidth Utilized',
-                    dram: 'DRAM Utilized',
+                    compute: 'Compute Utilized',
                     currentspend: 'Spend',
                     manta: 'Manta Utilized'
                 }[$scope.type];
                 $scope.pageTitle = {
                     bandwidth: 'Bandwidth Usage',
-                    dram: 'DRAM Usage',
+                    compute: 'Compute Usage',
                     currentspend: 'Spend',
                     manta: 'Manta Usage'
                 }[$scope.type];

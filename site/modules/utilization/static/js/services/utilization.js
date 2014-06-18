@@ -26,8 +26,8 @@
                         }
                         utilizationCache[month] = job.__read();
                         var utilizationCacheByMonth = utilizationCache[month];
-                        utilizationCacheByMonth.dram.format = function (num) {
-                            return num.toFixed(num > 1000 ? 0 : 2) * 1 + ' GB Hours';
+                        utilizationCacheByMonth.compute.format = function (num) {
+                            return util.getReadableDramUsage(num) + ' GB Hours';
                         };
                         utilizationCacheByMonth.manta.format = utilizationCacheByMonth.currentspend.format = function (num) {
                             return '$' + util.getReadableCurrencyString(num);

@@ -1,8 +1,8 @@
 'use strict';
 
 (function (app) {
-    app.directive('utilizationChart', ['$location',
-        function ($location) {
+    app.directive('utilizationChart', ['$location', 'util',
+        function ($location, util) {
             return {
                 scope: {
                     usage: '=',
@@ -13,7 +13,7 @@
                 },
                 restrict: 'EA',
 
-                link: function ($scope, $element, $attrs) {
+                link: function ($scope, $element) {
                     var graph = null;
                     var legend = null;
                     var now = new Date();
@@ -89,6 +89,7 @@
                             $scope.format = data.format;
                         }
                         $scope.total = data.total;
+                        $scope.totalUsage = data.totalUsage;
                         $scope.year = data.year;
                         $scope.month = data.month;
                         var currentMonthDaysMax = daysMax;
@@ -135,21 +136,25 @@
                         return output;
                     };
 
+                    $scope.currencyFormat = function (num) {
+                        return '$' + util.getReadableCurrencyString(num);
+                    };
+
                     $scope.getMonthDesc = function () {
                         var desc = '';
                         if ($scope.month === now.getMonth() + 1 && $scope.year === now.getFullYear()) {
-                            desc = $scope.name === 'currentspend' || $scope.name === 'manta' ? 'month to date' : 'this month';
+                            desc = 'month to date';
                         }
                         return desc;
                     };
 
                     $scope.projected = function (num) {
                         var days = daysInMonth(now.getFullYear(), now.getMonth() + 1);
-                        return $scope.format((num * days) / now.getDate());
+                        return $scope.currencyFormat((num * days) / now.getDate());
                     };
 
                     $scope.showProjected = function () {
-                        return ($scope.total >= 0 && ($scope.name === 'currentspend' || $scope.name === 'manta') && $scope.month === now.getMonth() + 1);
+                        return ($scope.total >= 0 && $scope.month === now.getMonth() + 1);
                     };
 
                     function daysInMonth(year, month) {
