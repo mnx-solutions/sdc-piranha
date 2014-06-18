@@ -30,9 +30,9 @@ window.JP.createModule('timeout', [ 'notification' ])
 
         //Create a call to server to keep session from timing out
         function updateTimeout() {
-            $http.get('timeout/check').success(function () {
-                console.log('Updated sTimeout');
-            });
+           if (window.navigator.onLine) {
+                $http.get('timeout/check');
+           }
         }
         function logout() {
             window.location.href = '/landing/forgetToken';
