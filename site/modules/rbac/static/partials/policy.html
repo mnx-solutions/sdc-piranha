@@ -1,6 +1,9 @@
 <div data-ng-controller="rbac.PolicyController">
     <div class="container-fluid container-position container-min-width">
-        <div data-breadcrumbs></div>
+        <ul class="breadcrumb">
+            <li><a href="#!/accounts">Account</a>&nbsp;/</li>
+            <li><a href="#!/accounts/policies">Policies</a>&nbsp;/</li>
+        </ul>
         <div class="page-header row-fluid">
             <h3 class="page-title" data-ng-show="model.policy.id">Policy Details</h3>
             <h3 class="page-title" data-ng-hide="model.policy.id">Create Policy</h3>
@@ -38,7 +41,7 @@
                                     <div class="error"
                                          data-ng-show="policyForm.policyName.$error.pattern"
                                          data-translate>
-                                        Policy name does not allow non-latin letters.
+                                        Name can contain only letters, digits and signs like "." and "-"
                                     </div>
                                 </form>
                                 <div class="control-group"><label class="name dpl-inline">Description</label>
