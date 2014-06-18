@@ -61,6 +61,7 @@
             $scope.toggleOpenRuleForm = function () {
                 $scope.openRuleForm = !$scope.openRuleForm;
                 if ($scope.openRuleForm) {
+                    $scope.resetData();
                     scrollTo('create-rule');
                 }
             };
