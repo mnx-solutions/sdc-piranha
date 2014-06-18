@@ -222,7 +222,10 @@
                                     'Image "{{name}}" renamed',
                                     { name: image.name }
                                 ),
-                                callback
+                                function () {
+                                    Dataset.updateDatasets('all', true);
+                                    callback();
+                                }
                             );
                         } else {
                             PopupDialog.error(

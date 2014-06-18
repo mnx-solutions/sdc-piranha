@@ -10,6 +10,7 @@
             },
 
             link: function (scope) {
+                scope.clearNameTimeout = null;
                 scope.type = String(scope.type);
                 scope.enableRename = function (name) {
                     scope.changingName = true;
@@ -22,13 +23,17 @@
                 var renameFinished = function () {
                     scope.renaming = false;
                     scope.loadingNewName = false;
+                    scope.newName = '';
                 };
 
                 scope.cancelRename = function () {
                     scope.changingName = false;
+                    scope.newName = '';
                 };
 
                 scope.clickRename = function () {
+                    clearTimeout(scope.clearNameTimeout);
+                    scope.changingName = false;
                     if (scope.object.name === scope.newName) {
                         return;
                     }
@@ -58,6 +63,7 @@
                             }
                         }, function () {
                             scope.object.name = currentName;
+                            scope.newName = '';
                         }
                     );
                 };
