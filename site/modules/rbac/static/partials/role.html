@@ -1,6 +1,9 @@
 <div data-ng-controller="rbac.RoleController">
     <div class="container-fluid container-position container-min-width">
-        <div data-breadcrumbs></div>
+        <ul class="breadcrumb">
+            <li><a href="#!/accounts">Account</a>&nbsp;/</li>
+            <li><a href="#!/accounts/roles">Roles</a>&nbsp;/</li>
+        </ul>
         <div class="page-header row-fluid">
             <h3 class="page-title" data-ng-show="role.id">Role Details</h3>
             <h3 class="page-title" data-ng-hide="role.id">Create Role</h3>
@@ -36,7 +39,7 @@
                                         <div class="role-name-error error"
                                              data-ng-show="roleForm.roleName.$error.pattern"
                                              data-translate>
-                                             Role name does not allow non-latin letters.
+                                            Name can contain only letters, digits and signs like "." and "-"
                                         </div>
                                     </form>
                                 </div>
