@@ -6,19 +6,16 @@
         'localization',
         'PopupDialog',
         '$q',
-        '$http',
         '$location',
-        'TFAService',
-        '$$track',
         '$rootScope',
-        function (Account, localization, PopupDialog, $q, $http, $location, TFAService, $$track, $rootScope) {
+        function (Account, localization, PopupDialog, $q, $location, $rootScope) {
 
             return {
                 restrict: 'A',
                 replace: true,
                 scope: true,
 
-                controller: function($scope, $element, $attrs, $transclude) {
+                controller: function ($scope) {
                     localization.bind('account', $scope);
                 },
 
@@ -26,7 +23,7 @@
                     $scope.error = null;
                     $scope.loading = false;
 
-                    $scope.setAccount = function() {
+                    $scope.setAccount = function () {
                         $q.when(Account.getAccount(true), function (account) {
                             $scope.account = ng.copy(account);
                             if ($scope.account.phone && $scope.account.phone.indexOf('+') !== 0) {
@@ -108,7 +105,10 @@
                         }, function (err) {
                             $scope.error = null;
                             $scope.loading = false;
-
+                            var message = 'Account update failed.';
+                            if (err && err.message.search('email') > 0 && err.restCode === "InvalidArgument") {
+                                message = 'This email address is already in use.';
+                            }
                             PopupDialog.error(
                                 localization.translate(
                                     $scope,
@@ -118,7 +118,7 @@
                                 localization.translate(
                                     $scope,
                                     'account',
-                                    'Account update failed.'
+                                    message
                                 ),
                                 function () {}
                             );
