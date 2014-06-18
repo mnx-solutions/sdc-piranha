@@ -334,6 +334,9 @@
     display: inline-block;
     vertical-align: middle;
 }
+span.btn-success {
+    cursor: default;
+}
 .status.label {
     text-transform: none;
 }
