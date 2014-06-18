@@ -1,206 +1,196 @@
 <div class="container-fluid dash-container-position" data-ng-controller="Dashboard.IndexController">
     <div class="container-min-width row-fluid">
         <div class="row-fluid">
-            <h3 class="page-title white-line">Dashboard</h3>
+            <h3 class="page-title">Dashboard</h3>
         </div>
 
-        <div class="widget-block">
-            <div class="pull-left widget-margin">
-                <a href="#!/compute">
-                    <div class="widget grey links2 instance-icon">
-                        <h4>Instances</h4>
-                        <div class="details">
-                            <div id="count-instances-running" class="number">
-                                {{runningcount}}
-                            </div>
-                            <div class="desc">
-                                running
-                            </div>
+        <div class="pull-left tile-wrapper">
+            <div class="tile instance-bg" data-ng-click="gotoCreatePage()">
+                <div class="tile-body">
+                    <div class="title">Instances</div>
+                    <div class="left-column">
+                        <div id="count-instances-running" class="number">
+                            {{runningcount}}
                         </div>
-                        <div class="details details-subinfo">
-                            <div id="count-instances-stopped" class="number">
-                                {{othercount}}
-                            </div>
-                            <div class="desc">
-                                stopped
-                            </div>
-                        </div>
-                        <div class="more">
-                            View Instances<i class="m-icon-white-arrow"></i>
+                        <div class="info">
+                            running
                         </div>
                     </div>
-                </a>
-                <div class="widget-btn">
-                    <a class="more" data-ng-click="gotoCreatePage()"><button type="button" id="button-create-instance" class="btn btn-stat orange align-text-btn"><i class="plus-btn-icon"></i>&nbsp;&nbsp;Create
-                        Compute Instance</button></a>
+                    <div class="right-column">
+                        <div id="count-instances-stopped" class="number">
+                            {{othercount}}
+                        </div>
+                        <div class="info">
+                            stopped
+                        </div>
+                    </div>
                 </div>
+                <span class="tile-button" id="button-create-instance">+ Create Compute Instance</span>
             </div>
-            <div class="pull-left widget-margin" data-ng-show="slbFeatureEnabled">
-                <a href="#!/slb/list">
-                    <div class="widget grey links2 balancer-icon">
-                        <h4>Load Balancers</h4>
-                        <div class="details">
-                            <p class="number">{{balancers.length || 0}}</p>
-                            <p class="desc"> configured</p>
-                        </div>
-                        <div class="more">
-                            View Load Balancers<i class="m-icon-white-arrow"></i>
-                        </div>
-                    </div>
-                </a>
-                <div class="widget-btn">
-                    <a class="more" data-ng-href="{{(slbControllerCreated && '#!/slb/edit/') || '#!/slb/'}}"><button type="button" class="btn btn-stat orange align-text-btn"><i class="plus-btn-icon"></i>&nbsp;&nbsp;Create Load Balancer</button></a>
         </div>
+
+        <div class="pull-left tile-wrapper" data-ng-show="slbFeatureEnabled">
+            <div class="tile elb-bg">
+                <a data-ng-href="{{(slbControllerCreated && '#!/slb/edit/') || '#!/slb/'}}">
+                    <div class="tile-body">
+                        <div class="title">Load Balancers</div>
+                        <div class="single-column">
+                            <div class="number">
+                                {{balancers.length || 0}}
+                            </div>
+                            <div class="info">
+                                configured
+                            </div>
+                        </div>
                     </div>
-            <div class="pull-left widget-margin">
+                    <span class="tile-button">+ Create Load Balancer</span>
+                </a>
+            </div>
+        </div>
+
+        <div class="pull-left tile-wrapper">
+            <div class="tile manta-bg">
                 <a data-ng-href="{{(account.provisionEnabled && '#!/manta/files') || '#!/manta/intro'}}">
-                    <div class="widget grey links2 manta-icon">
-                        <h4>Manta Storage</h4>
-                        <div class="details">
-                            <div data-ng-show="mantaEnabled">
-                                <span class="number bignumber">{{mantaMemory.value || ((account.provisionEnabled && '0') || '')}}</span>
-                                <span class="number measure">{{mantaMemory.measure || ((account.provisionEnabled && 'GB') || '')}}</span>
+                    <div class="tile-body">
+                        <div class="title">Manta Storage</div>
+                        <div class="single-column">
+                            <div class="number dpl-inline">
+                                {{mantaMemory.value || ((account.provisionEnabled && '0') || '')}}
                             </div>
-
-                        </div>
-                        <div class="more">
-                           manage storage <i class="m-icon-white-arrow"></i>
+                            <div class="info dpl-inline">
+                                {{mantaMemory.measure || ((account.provisionEnabled && 'GB') || '')}}
+                            </div>
                         </div>
                     </div>
+                    <span class="tile-button" data-ng-href="{{(account.provisionEnabled && '#!/manta/files') || '#!/manta/intro'}}">Manage Storage</span>
                 </a>
-                <div class="widget-btn"></div>
             </div>
-            <div class="pull-left widget-margin" data-ng-show="usageDataFeatureEnabled">
+        </div>
+
+        <div class="pull-left tile-wrapper" data-ng-show="usageDataFeatureEnabled">
+            <div class="tile usage-bg">
                 <a data-ng-href="{{utilization.url}}">
-                    <div class="widget grey links2 utilization-icon">
-                        <h4>Current Usage</h4>
-                        <div class="details details-utilization" data-ng-show="utilization">
-                            <span class="number measure">$</span><span class="number measure-number">{{currentspend}}</span>
-                            <p class="desc">spent</p>
-                        </div>
-                        <div class="details details-subinfo details-utilization" data-ng-show="utilization">
-                            <div class="desc">
-                                <span class="number measure-number">{{dram}}</span>
-                                <span class="number measure-usage">DRAM GB&nbsp;hours</span>
+                    <div class="tile-body">
+                        <div class="title">Current Usage</div>
+                        <div class="left-column small" data-ng-show="utilization">
+                            <div class="number medium">
+                                ${{currentspend}}
                             </div>
-                            <div class="desc">
-                                <span class="number measure-number">{{bandwidth.value}}</span>
-                                <span class="number measure-usage">{{bandwidth.measure}} bandwidth Out</span>
+                            <div class="info">
+                                spent
+                            </div>
+                        </div>
+                        <div class="right-column small" data-ng-show="utilization">
+                            <div class="number medium dpl-inline">
+                                {{dram}}
+                            </div>
+                            <div class="info dpl-inline">
+                                DRAM GB&nbsp;hours
+                            </div>
+                            <div class="number medium">
+                                {{bandwidth.value}}
+                            </div>
+                            <div class="info">
+                                {{bandwidth.measure}} bandwidth
                             </div>
                         </div>
                     </div>
+                    <span class="tile-button">Explore Usage</span>
                 </a>
-                <div class="widget-btn">
-                    <a class="more" data-ng-href="{{utilization.url}}"><button type="button" class="btn btn-stat orange align-text-btn"><i class="chart-btn-icon"></i>&nbsp;&nbsp;
-                        Explore Usage</button>
-                    </a>
-                </div>
             </div>
+        </div>
 
-            <div class="pull-left widget-margin" data-ng-show="features.support == 'enabled'">
-                <a href="#!/support">
-                    <div class="widget grey links2 support-icon">
-                        <h4>Support</h4>
+        <div class="pull-left tile-wrapper" data-ng-show="features.support == 'enabled'">
+            <div class="tile support-bg">
+                <div class="tile-body">
+                    <div class="title">Support</div>
+                    <div class="left-column">
                         <a href="#!/support">
-                            <div class="details">
-                                <div class="desc-title">JPC</div>
-                                <div class="desc">{{supportTile[0] || 'Basic'}}</div>
+                            <div id="count-instances-running" class="number small">
+                                JPC
+                            </div>
+                            <div class="info">
+                                {{supportTile[0] || 'Basic'}}
                             </div>
                         </a>
+                    </div>
+                    <div class="right-column">
                         <a href="#!/support/cloud">
-                            <div class="details details-subinfo">
-                                <div class="desc-title">Node.js</div>
-                                <div class="desc">{{supportTile[1] || 'none'}}</div>
+                            <div id="count-instances-stopped" class="number small">
+                                Node.js
+                            </div>
+                            <div class="info">
+                                {{supportTile[1] || 'none'}}
                             </div>
                         </a>
-                        <a href="#!/support" class="more">
-                            UPGRADE <i class="m-icon-white-arrow"></i>
-                        </a>
                     </div>
-                </a>
-                <div class="widget-btn"></div>
-            </div>
-
-            <div class="pull-left widget-margin" data-ng-show="features.freetier == 'enabled' && validFreeTier">
-                    <div class="widget grey links2 host">
-                        <h4>Free Dev Tier</h4>
-                        <table class="details">
-                            <tr>
-                                <td class="desc">SmartOS</td>
-                                <td class="desc">CentOS</td>
-                            </tr>
-                            <tr>
-                                <td class="desc">Ubuntu</td>
-                                <td class="desc">Node.js</td>
-                            </tr>
-                        </table>
-                        <table class="servers-bg">
-                            <tr>
-                                <td>
-                                    <div class="server" data-ng-repeat="datacenter in datacenters track by $index">
-                                        <p data-ng-show="datacenter.name"
-                                           class="pull-left tooltip-hover"
-                                           data-toggle="tooltip"
-                                           data-placement="top"
-                                           data-html="true"
-                                           data-original-title="{{datacenter.tooltip}}">
-                                            {{datacenter.name}}
-                                        </p>
-                                        <div class="lightbulb" data-ng-class="{'lightbulb-enable': !datacenter.lightbulb && datacenter.name}"></div>
-                                    </div>
-                                </td>
-                            </tr>
-                        </table>
-                        <div class="more">valid until {{validUntil | date:'yyyy-MM-dd'}}</div>
-                    </div>
-                <div class="widget-btn">
-                    <a class="more" href="#!/compute/create/simple" data-ng-show="showAddFreeTier"><button type="button" class="btn btn-stat orange align-text-btn"><i class="plus-btn-icon"></i>&nbsp;&nbsp;
-                        Create Free Instance
-                    </button></a>
                 </div>
+                <a class="tile-button" href="#!/support">View Support Upgrades</a>
             </div>
+        </div>
 
-            <div class="pull-left widget-margin" data-ng-show="features.systemStatusTile == 'enabled'">
-                <div class="widget grey links2 system-icon">
-                    <h4>System Status</h4>
-                    <div class="details">
-                        <div class="desc" data-ng-hide="loadedSystemStatusTopics">
+        <div class="pull-left tile-wrapper" data-ng-show="features.freetier == 'enabled' && validFreeTier">
+            <div class="tile free-tier-bg">
+                <div class="tile-body">
+                    <div class="title">Free Dev Tier</div>
+                    <div class="single-column small">
+                        <div class="server tooltip-hover"
+                             data-ng-repeat="datacenter in datacenters track by $index"
+                             data-toggle="tooltip"
+                             data-placement="top"
+                             data-html="true"
+                             data-original-title="{{datacenter.tooltip}}">
+                            <p data-ng-show="datacenter.name"
+                               class="pull-left">
+                                {{datacenter.name}}
+                            </p>
+                            <div class="lightbulb" data-ng-class="{'lightbulb-enable': !datacenter.lightbulb && datacenter.name}"></div>
+                        </div>
+                    </div>
+                    <div class="small-text grey">SmartOS, CentOS, Ubuntu, Node.js</div>
+                    <div class="small-text grey">Valid until {{validUntil | date:'yyyy-MM-dd'}}</div>
+                </div>
+                <a class="tile-button grey"  data-ng-show="showAddFreeTier" href="#!/compute/create/simple">+ Create Free Instance</a>
+            </div>
+        </div>
+
+        <div class="pull-left tile-wrapper" data-ng-show="features.systemStatusTile == 'enabled'">
+            <div class="tile status-bg">
+                <div class="tile-body">
+                    <div class="title">System Status</div>
+                    <div class="single-column">
+                        <div class="small-text white" data-ng-hide="loadedSystemStatusTopics">
                             Getting system status...
                         </div>
-                        <div class="desc" data-ng-show="loadedSystemStatusTopics && systemStatusTopics.length == 0">
+                        <div class="small-text white" data-ng-show="loadedSystemStatusTopics && systemStatusTopics.length == 0">
                             <i class="checked-icon"></i>
                             All systems nominal.
                         </div>
-                        <div class="desc" data-ng-repeat="topic in systemStatusTopics">
+                        <div class="small-text white" data-ng-repeat="topic in systemStatusTopics">
                             <a target="_blank" href="https://help.joyent.com/entries/{{topic.id}}">{{topic.created_at | dateTime}} &nbsp;{{topic.title}}</a>
                         </div>
                     </div>
                 </div>
-                <div class="widget-btn">
-                    <a class="more" target="_blank" href="https://help.joyent.com/forums/21769270-Incidents-Notifications"><button type="button" class="btn btn-stat orange align-text-btn"><i class="view-btn-icon"></i>&nbsp;&nbsp;
-                        View Older System Updates</button>
-                    </a>
-                </div>
-            </div>
-
-            <div class="pull-left widget-margin" data-ng-show="features.devCenterNewsTile == 'enabled'">
-                <div class="widget warn-dash-icon">
-                    <div class="margin-text-block">
-                        <h5><b>New in Dev Center</b></h5>
-                        <h5>Securely back-up data, file</h5>
-                        <h5>and configurations on</h5>
-                        <h5>Joyent Cloud. <a href="http://www.joyent.com/developers/back-up" target="_blank"><b>See how</b></a></h5>
-                </div>
-            </div>
+                <a class="tile-button grey" target="_blank" href="https://help.joyent.com/forums/21769270-Incidents-Notifications">View Older System Updates</a>
             </div>
         </div>
+
+        <div class="pull-left tile-wrapper" data-ng-show="features.devCenterNewsTile == 'enabled'">
+            <div class="tile devcenter-bg">
+                <div class="tile-body devcenter">
+                    <h5>Securely back-up data, file and configurations on Joyent Cloud.</h5>
+                    <div class="small-text"><a class="orange" href="http://www.joyent.com/developers/back-up" target="_blank">See how in the DevCenter</a></div>
+                </div>
+            </div>
+        </div>
+
         <div class="dpl-inline">
-            <div class="pull-left first-colums">
+            <div class="pull-left first-column">
                 <div class="portlet-body manta-ad">
                     <div class="manta-ad-block">
                         <h4>Introducing Joyent Manta</h4>
                         <h4>Storage Service</h4>
-            </div>
+                    </div>
                     <div class="manta-ad-block2">
                         <h5>A highly scalable, distributed</h5>
                         <h5>object storage service with</h5>
@@ -214,7 +204,7 @@
                     </div>
                 </div>
             </div>
-            <div class="pull-left secont-colums">
+            <div class="pull-left second-column">
                 <div class="span" data-ng-show="features.systemStatusTile != 'enabled'">
                     <h5>SYSTEM STATUS</h5>
                     <div class="separation-container separation-container-top">
@@ -222,42 +212,30 @@
                             <span class="pull-left span12">{{topic.created_at | dateTime}} <a target="_blank" href="https://help.joyent.com/entries/{{topic.id}}">&nbsp;{{topic.title}}</a></span>
                         </div>
                     </div>
-                    <div class="margin-btn-dashboard">
-                        <a class="btn light-small pull-right effect-orange-button" href="https://help.joyent.com/forums/20715782-current-system-status#recent" target="_blank">
-                            View all System Updates
-                        </a>
+                    <a class="orange" href="https://help.joyent.com/forums/20715782-current-system-status#recent" target="_blank">View all System Updates</a>
+                </div>
+                <div class="span">
+                    <h5>JOYENT BLOG</h5>
+                    <div class="separation-container separation-container-top">
+                        <div class="row-fluid" data-ng-repeat="entry in rssentries">
+                            <span class="pull-left span12">
+                                <div class="blog-date dpl-inline">{{entry.publishedDate | dateTime}}</div>
+                                <a target="_blank" href="{{entry.link}}">&nbsp;<b>{{entry.title}}</b></a>
+                            </span>
+                        </div>
                     </div>
-                    <div class="line-spacer dpl-inline"></div>
+                    <a class="orange" href="http://www.joyent.com/blog" target="_blank">More News</a>
                 </div>
-                    <div class="span">
-                        <h5>JOYENT BLOG</h5>
-                        <div class="separation-container separation-container-top">
-                            <div class="row-fluid" data-ng-repeat="entry in rssentries">
-                                <span class="pull-left span12">{{entry.publishedDate | dateTime}} <a target="_blank" href="{{entry.link}}">&nbsp;{{entry.title}}</a></span>
-                            </div>
+                <div class="span">
+                    <h5>SUPPORT FAQ</h5>
+                    <div class="separation-container separation-container-top">
+                        <div class="row-fluid" data-ng-repeat="(name, url) in forums">
+                            <span class="pull-left span12"><a target="_blank" href="{{url}}">{{name}}</a></span>
+                        </div>
                     </div>
-                        <div class="margin-btn-dashboard"><a class="btn light-small pull-right effect-orange-button" href="http://www.joyent.com/blog" target="_blank">
-                            More News</a>
+                    <a class="orange" href="http://wiki.joyent.com/wiki/display/jpc2/FAQs" target="_blank">Visit DevCenter</a>
                 </div>
-                        <div class="line-spacer dpl-inline"></div>
-                <div>
-                </div>
-            </div>
-                    <div class="span">
-                        <h5>SUPPORT FAQ</h5>
-                        <div class="separation-container separation-container-top">
-                            <div class="row-fluid" data-ng-repeat="(name, url) in forums">
-                                <span class="pull-left span12"><a target="_blank" href="{{url}}">{{name}}</a></span>
-                            </div>
-                    </div>
-                        <div class="margin-btn-dashboard"><a class="btn light-small pull-right effect-orange-button" href="http://wiki.joyent.com/wiki/display/jpc2/FAQs" target="_blank">
-                            Visit DevCenter</a>
-                </div>
-                <div>
-                </div>
-            </div>
             </div>
         </div>
     </div>
 </div>
-

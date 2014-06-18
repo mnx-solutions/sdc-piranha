@@ -84,34 +84,34 @@ ul.page-sidebar-menu > li:hover > a {
     height: 20px;
 }
 .dashboard-icon {
-    background-image: url("../img/dash_i_white.png");
+    background-image: url("../img/dashboard-white.png");
 }
 li.active a.dashboard-icon {
-    background-image: url("../img/dash_i_orange.png") !important;
+    background-image: url("../img/dashboard-orange.png") !important;
 }
 .compute-icon {
-    background-image: url("../img/compute_i_white.png");
+    background-image: url("../img/compute-white.png");
 }
 li.active a.compute-icon {
-    background-image: url("../img/compute_i_orange.png") !important;
+    background-image: url("../img/compute-orange.png") !important;
 }
 .storage-icon {
-    background-image: url("../img/storage_i_white.png");
+    background-image: url("../img/storage-white.png");
 }
 li.active a.storage-icon {
-    background-image: url("../img/storage_i_orange.png") !important;
+    background-image: url("../img/storage-orange.png") !important;
 }
 .usage-icon {
-    background-image: url("../img/utilization_i_white.png");
+    background-image: url("../img/usage-white.png");
 }
 li.active a.usage-icon {
-    background-image: url("../img/utilization_i_orange.png") !important;
+    background-image: url("../img/usage-orange.png") !important;
 }
 .support-icon {
-    background-image: url("../img/phone-white.png");
+    background-image: url("../img/support-white.png");
 }
 li.active a.support-icon {
-    background-image: url("../img/phone-orange.png") !important;
+    background-image: url("../img/support-orange.png") !important;
 }
 .dashboard-icon,
 .compute-icon,
@@ -119,15 +119,16 @@ li.active a.support-icon {
 .usage-icon,
 .support-icon {
     background-repeat: no-repeat;
-    background-position: 20px 8px;
-    background-size: 18px 18px;
-    height: 21px;
+    background-position: 20px 5px;
+    background-size: 22px;
+    height: 22px;
 }
 
 .title {
     padding-left: 35px;
     color: #ffffff;
     font-weight: 400;
+    letter-spacing: 0.5px;
 }
 .active .title {
     color: #ff6600 !important;
