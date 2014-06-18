@@ -61,11 +61,11 @@
                     deferred.resolve(cachedData);
                     return deferred.promise;
                 }
-
-                if (!promiseActions[actionName] || !promiseActions[actionName].pending) {
-                    promiseActions[actionName] = {};
-                    promiseActions[actionName].deferred = deferred;
-                    promiseActions[actionName].pending = true;
+                var promiseKey = actionName + (ops ? ops.id || '':'');
+                if (!promiseActions[promiseKey] || !promiseActions[promiseKey].pending) {
+                    promiseActions[promiseKey] = {};
+                    promiseActions[promiseKey].deferred = deferred;
+                    promiseActions[promiseKey].pending = true;
                 } else {
                     promiseActions[actionName].deferred.promise.then(deferred.resolve, deferred.reject);
                     return deferred.promise;
@@ -74,7 +74,7 @@
                 var context = {
                     name: actionName,
                     done: function (err, job) {
-                        promiseActions[actionName].pending = false;
+                        promiseActions[promiseKey].pending = false;
                         if (err) {
                             deferred.reject(err);
                             return;
