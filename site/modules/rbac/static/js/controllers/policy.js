@@ -30,9 +30,6 @@
                 'Networks'
 
              */
-            $scope.policiesGrouping = [
-                'Miscellaneous'
-            ];
 
             var policyId = requestContext.getParam('id');
             var isNew = policyId && policyId === 'create';

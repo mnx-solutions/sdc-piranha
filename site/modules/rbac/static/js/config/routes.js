@@ -45,9 +45,8 @@ window.JP.main.config(['routeProvider', function (routeProvider) {
             showText: true,
             showLatest: true
         }).when('/accounts/policy/:id', {
-            title: 'Policy Summary',
+            title: 'Policies',
             action: 'rbac.policy',
-            showText: true,
             showLatest: true
         }).when('/accounts/policy/create', {
             title: 'Create Policies',

@@ -2,7 +2,7 @@
     <div class="container-fluid container-position container-min-width">
         <div data-breadcrumbs></div>
         <div class="page-header row-fluid">
-            <h3 class="page-title" data-ng-show="model.policy.id">Edit Policy</h3>
+            <h3 class="page-title" data-ng-show="model.policy.id">Policy Details</h3>
             <h3 class="page-title" data-ng-hide="model.policy.id">Create Policy</h3>
         </div>
         <div class="loading-large span12" data-ng-show="loading"></div>
@@ -19,6 +19,12 @@
                         </div>
                         <div id="collapse_policy_summary" class="accordion-body collapse in">
                             <div class="accordion-inner">
+                                <div class="control-group" data-ng-show="model.policy.id">
+                                    <label class="name dpl-inline">ID</label>
+                                    <div class="dpl-inline">
+                                        <input type="text" class="policy-form" name="policyId" value="{{ model.policy.id }}" disabled />
+                                    </div>
+                                </div>
                                 <form name="policyForm">
                                     <div>
                                         <label class="name dpl-inline">Name</label>
@@ -26,7 +32,7 @@
                                                class="policy-form"
                                                name="policyName"
                                                data-ng-model="model.policy.name"
-                                               data-ng-pattern="/^[A-z][A-z0-9\s]*$/"/>
+                                               data-ng-pattern="/^[A-z0-9\s\-]*$/" />
                                     </div>
                                     <div class="error"
                                          data-ng-show="policyForm.policyName.$error.pattern"
@@ -37,13 +43,6 @@
                                 <div class="control-group"><label class="name dpl-inline">Description</label>
                                     <div class="dpl-inline">
                                         <input type="text" class="policy-form" name="policyDescription" data-ng-model="model.policy.description"/>
-                                    </div>
-                                </div>
-                                <div class="control-group"><label class="name dpl-inline">Policy Grouping</label>
-                                    <div class="dpl-inline">
-                                        <select id="policiesGrouping" class="policy-form">
-                                            <option data-ng-repeat="group in policiesGrouping">{{group}}</option>
-                                        </select>
                                     </div>
                                 </div>
                             </div>
@@ -90,10 +89,9 @@
                 <button class="btn orange" data-ng-click="createPolicy()" data-ng-disabled="policyForm.policyName.$error.roleName">Create Policy</button>
             </div>
             <div class="pull-right" data-ng-show="model.policy.id">
-                <button class="btn orange" data-ng-click="updatePolicy()" data-ng-disabled="policyForm.policyName.$error.roleName">Save</button>
-                <button class="btn orange" data-ng-click="">Export .csv</button>
-                <button class="btn orange" data-ng-click="deletePolicy()">Delete</button>
                 <button class="btn light effect-orange-button" data-ng-click="cancel()">Cancel</button>
+                <button class="btn light effect-orange-button" data-ng-click="deletePolicy()">Delete</button>
+                <button class="btn orange" data-ng-click="updatePolicy()" data-ng-disabled="policyForm.policyName.$error.roleName">Save</button>
             </div>
         </div>
     </div>

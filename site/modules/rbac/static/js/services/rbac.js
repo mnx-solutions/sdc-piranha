@@ -61,7 +61,7 @@
                     deferred.resolve(cachedData);
                     return deferred.promise;
                 }
-                var promiseKey = actionName + (ops ? ops.id || '':'');
+                var promiseKey = actionName + (ops && ops.id || '');
                 if (!promiseActions[promiseKey] || !promiseActions[promiseKey].pending) {
                     promiseActions[promiseKey] = {};
                     promiseActions[promiseKey].deferred = deferred;
