@@ -26,13 +26,6 @@ function init(zuoraInit, callback) {
         zuora = zuoraInit;
     }
 
-    var options = config.zuora.soap;
-    options.password = config.zuora.password;
-    options.user = config.zuora.user;
-    options.tenantId = config.zuora.tenantId;
-
-    zuoraSoap.setConfig(config.zuora.soap);
-
     // Here we init the zuora errors (its a mess)
     fs.readFile(errorsFile, function (err, data) {
         // Ignore err and create empty object if file missing or unreadable
@@ -414,12 +407,12 @@ function createZuoraAccount(call, cb) {
 module.exports.createZuoraAccount = createZuoraAccount;
 
 function getInvoicePDF(req, res, next) {
-    zuoraSoap.queryPDF(req.params.account, req.params.id,function (err, data) {
+    zuoraSoap.queryPDF(req.params.account, req.params.id, function (err, data) {
         if (err) {
             next(err);
             return;
         }
-        var buffer = new Buffer(data.Body,'base64');
+        var buffer = new Buffer(data.Body, 'base64');
         res.set({
             'Accept-Ranges':'bytes',
             'Content-Disposition':'attachment; filename="Joyent_Invoice_' +
