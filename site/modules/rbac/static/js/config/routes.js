@@ -30,9 +30,8 @@ window.JP.main.config(['routeProvider', function (routeProvider) {
             title: 'Roles',
             action: 'rbac.roles'
         }).when('/accounts/role/:id', {
-            title: 'Role Details',
+            title: 'Roles',
             action: 'rbac.role',
-            showText: true,
             showLatest: true
         }).when('/accounts/role/create', {
             title: 'Create Role',
