@@ -209,6 +209,7 @@ module.exports = function execute(scope) {
             };
 
             var client = Manta.createClient(call);
+            console.log(job, inputs, 'CreateJob');
             client.createJob(job, function (err, jobId) {
                 if (err) {
                     sendError(call, err);

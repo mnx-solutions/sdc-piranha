@@ -5,7 +5,7 @@
     <div class="left-part">
         <table style="width: 400px;">
             <tr>
-                <td><select-file data-objects="objects" data-title="getFilePath() || 'select file from Manta'"></select-file></td>
+                <td><select-file data-objects="inputFile" data-title="getFilePath() || 'select file from Manta'"></select-file></td>
                 <td>
                 <span>
                     <label type="button" class="btn orange effect-orange-button grey-new upload-key-label pull-right" for="uploadInput">upload</label>
@@ -22,7 +22,9 @@
                 <td>Status : {{status}}<br/>
                     <i>Estimating processed time : {{estimate}}</i>
                 </td>
-                <td><span class="btn orange effect-orange-button grey-new pull-right">Process Now</span></td>
+                <td><span class="btn orange effect-orange-button grey-new pull-right"
+                          data-ng-class='{"disabled": inputFile.length == 0}'
+                          data-ng-click="process()">Process Now</span></td>
             </tr>
             <tr>
                 <td>Node.js support status : {{supportStatus}}</td>

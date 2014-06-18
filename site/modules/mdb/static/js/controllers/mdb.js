@@ -3,8 +3,10 @@
 (function (app) {
     app.controller('mdbController', [
         '$scope',
+        'mdb',
         'Account',
-        function ($scope, Account) {
+        function ($scope, mdb, Account) {
+            $scope.inputFile = [];
             $scope.objects = [];
             $scope.gridUserConfig = Account.getUserConfig().$child('mdb');
             $scope.gridProps = [
@@ -35,14 +37,23 @@
             $scope.searchForm = true;
             $scope.enabledCheckboxes = true;
             $scope.placeHolderText = 'filter';
-            
+
             $scope.status = 'Not Processed';
             $scope.supportStatus = 'Not signed up';
-            
-            $scope.getFilePath = function () {
-                var filename = $scope.objects.length ? $scope.objects[0].filePath : '';
-                filename = filename.replace(/.*\/([^$]+)$/g, '$1');
-                return filename;
+
+            $scope.getFilePath = function (full) {
+                var filename = $scope.inputFile.length ? $scope.inputFile[0].filePath : '';
+                return full ? filename : filename.replace(/.*\/([^$]+)$/g, '$1');
+            };
+
+            $scope.process = function () {
+                var callJob = mdb.process({coreFile: $scope.getFilePath(true)}, function (error, job) {
+                    $scope.status = job.__read().slice(-1)[0];
+                });
+                console.warn(callJob);
+                callJob.then(function (job) {
+                    console.log(job);
+                });
             };
         }
     ]);
