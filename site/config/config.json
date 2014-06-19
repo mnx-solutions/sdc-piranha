@@ -120,6 +120,7 @@
   , "firewallRuleCreateTimeout": 20000
   , "firewallRuleUpdateTimeout": 90000
   , "firewallRuleDeleteTimeout": 90000
+  , "mantaJob": 1000
   }
 , "capishim": {
     "username": ""

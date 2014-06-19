@@ -1,14 +1,19 @@
+'use strict';
+
 (function (app) {
     app.directive('selectFile', ['PopupDialog', 'localization', 'Account', 'fileman', function (PopupDialog, localization, Account, fileman) {
         return {
             restrict: 'EA',
-            transclude: true,
             scope: {
-                objects: '=',
-                title: '='
+                objects: '='
             },
-            link: function (scope) {
+            link: function (scope, element) {
                 scope.objects = Array.isArray(scope.objects) ? scope.objects : [];
+
+                element.bind('click', function () {
+                    scope.newFilePath();
+                });
+
                 var addFilePathCtrl = function ($scope, dialog) {
                     $scope.$watch('filePath', function (filePath) {
                         Account.getAccount().then(function (account) {
@@ -105,9 +110,7 @@
                         }
                     );
                 };
-            },
-
-            template: '<button class="btn light effect-orange-button pull-right" data-ng-click="newFilePath()"><i class="plus-icon"></i>{{title}}</button>'
+            }
         };
     }]);
 }(window.JP.getModule('Storage')));

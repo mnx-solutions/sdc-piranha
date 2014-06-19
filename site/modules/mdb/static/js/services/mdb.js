@@ -14,6 +14,13 @@
                 }).deferred;
             };
 
+            service.cancel = function (jobId, callback) {
+                serverTab.call({
+                    name: 'mdbCancel',
+                    data: {jobId: jobId},
+                    done: callback
+                });
+            };
             return service;
         }
     ]);

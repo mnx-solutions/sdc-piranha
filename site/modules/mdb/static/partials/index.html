@@ -5,31 +5,29 @@
     <div class="left-part">
         <table style="width: 400px;">
             <tr>
-                <td><select-file data-objects="inputFile" data-title="getFilePath() || 'select file from Manta'"></select-file></td>
+                <td>{{getFilePath()}}</td>
                 <td>
-                <span>
-                    <label type="button" class="btn orange effect-orange-button grey-new upload-key-label pull-right" for="uploadInput">upload</label>
-                    <input type="file"
-                           id="uploadInput"
-                           name="uploadInput"
-                           style="display: none"
-                           data-ng-model="filePath"
-                           onchange="angular.element(this).scope().uploadFile(uploadInput)">
-                </span>
+                    <button class="btn light effect-orange-button pull-right" data-select-file data-objects="inputFile">Select File</button>
                 </td>
             </tr>
             <tr>
-                <td>Status : {{status}}<br/>
-                    <i>Estimating processed time : {{estimate}}</i>
+                <td>Status : {{status}}<!--<br/>
+                    <i>Estimating processed time : {{estimate}}</i>-->
                 </td>
-                <td><span class="btn orange effect-orange-button grey-new pull-right"
+                <td data-ng-if="!jobId && !objects.length"><span class="btn orange effect-orange-button grey-new pull-right"
                           data-ng-class='{"disabled": inputFile.length == 0}'
                           data-ng-click="process()">Process Now</span></td>
+                <td data-ng-if="jobId && !objects.length"><span class="btn orange effect-orange-button grey-new pull-right"
+                          data-ng-click="cancel()">Cancel</span></td>
+                <td data-ng-if="objects.length"><span class="btn orange effect-orange-button grey-new pull-right"
+                          data-ng-click="process()">Re-Process</span></td>
             </tr>
+<!--
             <tr>
                 <td>Node.js support status : {{supportStatus}}</td>
                 <td><span class="btn orange effect-orange-button grey-new pull-right">Signup for Node.js</span></td>
             </tr>
+-->
 
         </table>
     </div>
@@ -37,21 +35,9 @@
         <fieldset>
             <ul>
                 <table>
-                    <tr>
-                        <td># Heap objects</td>
-                        <td>: {{heapObjects}}</td>
-                    </tr>
-                    <tr>
-                        <td># Javascript Objects</td>
-                        <td>: {{javascriptObjects}}</td>
-                    </tr>
-                    <tr>
-                        <td># Processed Objects</td>
-                        <td>: {{processedObjects}}</td>
-                    </tr>
-                    <tr>
-                        <td># Processed Arrays</td>
-                        <td>: {{processedArrays}}</td>
+                    <tr ng-repeat="(counter, nums) in counters">
+                        <td># {{counter}}</td>
+                        <td>: {{nums}}</td>
                     </tr>
                 </table>
             </ul>
@@ -68,6 +54,8 @@
                  data-items="objects"
                  data-multisort="false"
                  data-order="gridOrder"
+                 data-paginated="true"
+                 data-perPage="25"
                  data-export-fields="exportFields"
                  data-paginated="false"
                  data-tab-filter-field="tabFilterField"
