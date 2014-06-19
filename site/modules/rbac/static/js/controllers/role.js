@@ -17,6 +17,7 @@
             $scope.roleUsers = [];
             $scope.roleDefaultUsers = [];
             $scope.selectedUsersChanged = false;
+            $scope.isFormSubmited = false;
 
             //FIXME: Name starting with 'toggle' will better describe functionality
             $scope.refreshDefaultUsers = function () {
@@ -143,10 +144,22 @@
 
             };
 
+            function isFormInvalid() {
+                return $scope.roleForm.$invalid;
+            }
+
             $scope.createRole = function () {
+                $scope.isFormSubmited = true;
+                if (isFormInvalid()) {
+                    return;
+                }
                 roleAction(service.createRole);
             };
             $scope.updateRole = function () {
+                $scope.isFormSubmited = true;
+                if (isFormInvalid()) {
+                    return;
+                }
                 roleAction(service.updateRole);
             };
             $scope.deleteRole = function () {

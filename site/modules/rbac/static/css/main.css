@@ -17,7 +17,6 @@ input {
 }
 form {
     margin: 0 0 10px;
-    width: 550px;
 }
 
 h4 {
@@ -199,10 +198,10 @@ select.policy-form {
 .role .error {
     padding-left: 60px;
 }
-.policy .error {
-    padding-left: 140px;
-    margin-top: -10px;
-}
 .remove-icon {
     margin-top: 10px;
+}
+.policy-form-error {
+    padding-left: 140px;
+    margin-top: -10px;
 }

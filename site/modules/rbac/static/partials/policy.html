@@ -28,20 +28,26 @@
                                         <input type="text" class="policy-form" name="policyId" value="{{ model.policy.id }}" disabled />
                                     </div>
                                 </div>
-                                <form name="policyForm">
-                                    <div class="control-group">
+                                <form name="policyForm" class="policy-form">
+                                    <div lass="control-group">
                                         <label class="name dpl-inline">Name</label>
                                         <input type="text"
                                                class="policy-form"
                                                name="policyName"
                                                data-ng-model="model.policy.name"
-                                               data-ng-pattern="/^[A-z0-9\s\-]*$/"
-                                               required/>
+                                               data-ng-pattern="/^[A-z0-9\s\.\-]*$/"
+                                               required />
                                     </div>
-                                    <div class="error"
-                                         data-ng-show="policyForm.policyName.$error.pattern"
-                                         data-translate>
-                                        Name can contain only letters, digits and signs like "." and "-"
+                                    <div data-ng-show="isFormSubmited || policyForm.policyName.$dirty">
+                                        <div class="error policy-form-error"
+                                             data-translate
+                                             data-ng-show="policyForm.policyName.$error.required">Missing name
+                                        </div>
+                                        <div class="error policy-form-error"
+                                             data-ng-show="policyForm.policyName.$error.pattern"
+                                             data-translate>
+                                            Name can contain only letters, digits, spaces and signs like "." and "-"
+                                        </div>
                                     </div>
                                 </form>
                                 <div class="control-group"><label class="name dpl-inline">Description</label>
@@ -99,12 +105,12 @@
         <div class="row-fluid btn-bottom-block" data-ng-show="!loading">
             <div class="pull-right" data-ng-hide="model.policy.id">
                 <button class="btn light effect-orange-button" data-ng-click="cancel()">Cancel</button>
-                <button class="btn orange" data-ng-click="createPolicy(true)" data-ng-disabled="policyForm.policyName.$error.roleName || !model.policy.name.length">Create Policy</button>
+                <button class="btn orange" data-ng-click="createPolicy(true)">Create Policy</button>
             </div>
             <div class="pull-right" data-ng-show="model.policy.id">
                 <button class="btn light effect-orange-button" data-ng-click="cancel()">Cancel</button>
                 <button class="btn light effect-orange-button" data-ng-click="deletePolicy()">Delete</button>
-                <button class="btn orange" data-ng-click="updatePolicy(true)" data-ng-disabled="policyForm.policyName.$error.roleName || !model.policy.name.length">Save</button>
+                <button class="btn orange" data-ng-click="updatePolicy(true)">Save</button>
             </div>
         </div>
     </div>

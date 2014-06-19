@@ -18,10 +18,7 @@
             $scope.model.policy = {};
             $scope.model.policy.rules = [];
             $scope.rules = [];
-
-            $scope.policiesGrouping = [
-                'Miscellaneous'
-            ];
+            $scope.isFormSubmited = false;
 
             var policyId = requestContext.getParam('id');
             var isNew = policyId && policyId === 'create';
@@ -87,12 +84,24 @@
                 });
             };
 
+            function isFormInvalid() {
+                return $scope.policyForm.$invalid;
+            }
+
             $scope.createPolicy = function () {
+                $scope.isFormSubmited = true;
+                if (isFormInvalid()) {
+                    return;
+                }
                 convertRules();
                 policyAction(service.createPolicy($scope.model.policy), true);
             };
 
             $scope.updatePolicy = function (redirect) {
+                $scope.isFormSubmited = true;
+                if (isFormInvalid()) {
+                    return;
+                }
                 convertRules();
                 policyAction(service.updatePolicy($scope.model.policy), redirect);
             };

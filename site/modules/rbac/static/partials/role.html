@@ -34,12 +34,19 @@
                                                    class="role-name"
                                                    name="roleName"
                                                    data-ng-model="role.name"
-                                                   data-ng-pattern="/^[A-z0-9\s\-]*$/"/>
+                                                   data-ng-pattern="/^[A-z0-9\s\.\-]*$/"
+                                                   required />
                                         </div>
-                                        <div class="role-name-error error"
-                                             data-ng-show="roleForm.roleName.$error.pattern"
-                                             data-translate>
-                                            Name can contain only letters, digits and signs like "." and "-"
+                                        <div data-ng-show="isFormSubmited || roleForm.roleName.$dirty">
+                                            <div class="role-name-error error"
+                                                 data-translate
+                                                 data-ng-show="roleForm.roleName.$error.required">Missing name
+                                            </div>
+                                            <div class="role-name-error error"
+                                                 data-ng-show="roleForm.roleName.$error.pattern"
+                                                 data-translate>
+                                                Name can contain only letters, digits, spaces and signs like "." and "-"
+                                            </div>
                                         </div>
                                     </form>
                                 </div>
@@ -113,8 +120,8 @@
             <div class="pull-right">
                 <button class="btn light effect-orange-button" data-ng-click="cancel()">Cancel</button>
                 <button class="btn light effect-orange-button" data-ng-show="role.id" data-ng-click="deleteRole()">Delete</button>
-                <button class="btn orange" data-ng-click="createRole()" data-ng-hide="role.id" data-ng-disabled="roleForm.roleName.$error.pattern">Create Role</button>
-                <button class="btn orange" data-ng-click="updateRole()" data-ng-show="role.id" data-ng-disabled="roleForm.roleName.$error.pattern">Save Role</button>
+                <button class="btn orange" data-ng-click="createRole()" data-ng-hide="role.id">Create Role</button>
+                <button class="btn orange" data-ng-click="updateRole()" data-ng-show="role.id">Save Role</button>
             </div>
         </div>
 
