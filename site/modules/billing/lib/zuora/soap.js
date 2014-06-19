@@ -1,144 +1,159 @@
-'use strict';
-/**
- *
- * Gets the basic zuora client setup
- * loads the wsdl and logs into the zuora endpoint
- *
- * assume the wsdl is in the directory '../config' relative to this file
- *
- * TODO LD: add the following actions:
- *   subscribe, generate, queryMore, getUserInfo, amend
- *
- * TODO DM: http 500 errors happen. We need to retry if we hit them!
- */
-
-var path = require('path');
+var config = require('easy-config');
 var soap = require('soap');
-var url = require('url');
+var path = require('path');
 
-var defaultMaxClientAge = 2 * 60 * 60 * 1000; // 2 hour
-
-// client is cached and shared here
-var client;
-var config;
-var clientCreatedAt = 0;
-
-function setConfig(newConfig) {
-    config = newConfig;
-}
-/**
- * Connect: Creates a client
- * Overloaded function. It will create a new client, or use an existing one.
- *
- * @param {object} config (optional) Config object for SoapClient
- * @param {function} callback Fn called after connected
- */
-function connect (newConfig, callback) {
-
-    if (!callback) {
-        callback = newConfig;
-    } else {
-        config = newConfig;
+var ZuoraSoapClient = (function () {
+    function ZuoraSoapClient() {
+        this.client = null;
+        this.clientConnectedOn = 0;
+        this.clientTimeout = 2 * 60 * 60;
+        this.connecting = false;
+        this.callbacks = [];
     }
-
-    if (!config || typeof config !== 'object'
-        || !callback || typeof callback !== 'function') {
-
-        setImmediate(callback.bind(callback, new Error('Expected (config[object], callback[function]) as input')));
-        return;
-    }
-
-    var maxClientAge = config.maxClientAge || defaultMaxClientAge;
-    var clientExpired = (maxClientAge < Date.now() - clientCreatedAt);
-    if (client && !clientExpired) {
-        setImmediate(callback.bind(callback, null, client));
-        return;
-    }
-
-    var wsdl = path.resolve(__dirname, 'config', 'zuora.wsdl');
-    soap.createClient(wsdl, function (err, newClient) {
-        if (err) {
-            return callback(err);
+    ZuoraSoapClient.prototype.acquire = function (callback) {
+        if (this.client && new Date().getTime() < this.clientConnectedOn + this.clientTimeout) {
+            var self = this;
+            setImmediate(function () {
+                callback(null, self.client);
+            });
+        } else {
+            this.connect(callback);
         }
-        var endpoint = config.endpoint;
-        try {
-            var parsed = url.parse(newClient.wsdl.services.ZuoraService.ports.Soap.location);
-            endpoint += parsed.path;
-        } catch (e) {
-            callback(new Error('Invalid WSDL file. Expected to have services.ZuoraService.ports.Soap.location'));
+    };
+    ZuoraSoapClient.prototype.fireCallbacks = function (err, result) {
+        this.callbacks.forEach(function (finalCallback) {
+            finalCallback(err, result);
+        });
+        this.callbacks = [];
+    };
+    ZuoraSoapClient.prototype.connect = function (callback) {
+        this.callbacks.push(callback);
+        if (this.connecting) {
             return;
         }
-
-        newClient.setEndpoint(endpoint);
-        var loginCreds = {
-            username: config.user,
-            password: config.password
-        };
-        // TODO: dm: it may be possible for this to hang?
-        newClient.ZuoraService.Soap.login(loginCreds, function (err, resp) {
-            if (err) {
-                return callback(err);
+        this.connecting = true;
+        var self = this;
+        var wsdl = path.resolve(__dirname, 'config', 'zuora.a.56.0.wsdl');
+        soap.createClient(wsdl, {endpoint: config.zuora.soap.endpoint}, function (clientErr, client) {
+            if (clientErr) {
+                self.fireCallbacks(clientErr);
+                return;
             }
-
-            newClient.addSoapHeader({
-                SessionHeader: {
-                    session: resp.result.Session
+            var credentials = {
+                username: config.zuora.user,
+                password: config.zuora.password
+            };
+            client.ZuoraService.Soap.login(credentials, function (loginErr, login) {
+                if (loginErr) {
+                    self.fireCallbacks(loginErr);
+                    return;
                 }
+                client.addSoapHeader({
+                    SessionHeader: {
+                        session: login.result.Session
+                    }
+                });
+                self.client = client;
+                self.connecting = false;
+                self.clientConnectedOn = new Date().getTime();
+                self.fireCallbacks(null, self.client);
             });
-
-            client = newClient;
-            clientCreatedAt = Date.now();
-            callback(null, client);
         });
-    });
-}
-
-// TODO: move statusCode checking into a function that gets called after each action
-function checkResults(err, resp, body, callback) {
-    if (err) {
-        return callback(err);
-    }
-    if (resp && !resp.result) {
-        err = new Error({
-            message: 'HTTP statusCode: ' + resp.statusCode,
-            body: body,
-            statusCode: resp.statusCode,
-            code: 'error'
-        });
-    }
-    callback(err, resp.result);
-}
-
-/**
- *
- * BEWARE: malformed queries will not run the callback!
- * ie. [object Object] or if you misspell a fieldname
- * like using AccountName instead of Name
- *
- * TODO: put a setTimeout on this to ensure that callback happens if the query
- * is malformed?
- */
-function query (zObject, callback) {
-
-    // Safety checking:
-    if (typeof zObject === 'object' && zObject.queryString.indexOf('[object Object]') !== -1) {
-        setImmediate(callback.bind(callback, new Error('Query found [object Object] inside string.')));
-        return ;
-    }
-
-    connect(function (err, client) {
+    };
+    ZuoraSoapClient.prototype.handleUpdateResponse = function (callback, err, resp) {
         if (err) {
-            return callback(err);
+            callback(err);
+            return;
         }
-
-        client.ZuoraService.Soap.query(zObject, function (err, resp, body) {
-            checkResults(err, resp, body, callback);
+        if (!resp.result) {
+            callback('No result in Zuora response');
+            return;
+        }
+        var results = resp.result;
+        var hasErrors = results.some(function (result) { return !result.Success; });
+        if (hasErrors) {
+            var accumulatedErrors = results.reduce(function (prev, next) {
+                return prev.concat(next.Errors || []);
+            }, []);
+            callback(accumulatedErrors);
+            return;
+        }
+        callback(null, results);
+    };
+    ZuoraSoapClient.prototype.handleUpdateRequest = function (zObjects) {
+        if (!Array.isArray(zObjects)) {
+            zObjects = [zObjects];
+        }
+        zObjects.forEach(function (zObject) {
+            if (zObject.__type) {
+                zObject.attributes = zObject.attributes || {};
+                zObject.attributes.xsi_type = {
+                    type: zObject.__type,
+                    xmlns: 'http://object.api.zuora.com/',
+                    namespace: 'zo'
+                };
+                delete zObject.__type;
+            }
         });
-    });
-}
+        return {zObjects: zObjects};
+    };
+    ZuoraSoapClient.prototype.handleQueryResponse = function (callback, err, resp) {
+        if (err) {
+            callback(err);
+            return;
+        }
+        var records = resp && resp.result && resp.result.records;
+        if (!Array.isArray(records)) {
+            callback('No records in response', resp);
+            return;
+        }
+        callback(null, records);
+    };
 
-module.exports = {
-    connect:   connect,
-    query:     query,
-    setConfig: setConfig
-};
+    ZuoraSoapClient.prototype.query = function (queryString, callback) {
+        var self = this;
+        this.acquire(function (connectErr, client) {
+            if (connectErr) {
+                callback(connectErr);
+                return;
+            }
+            client.ZuoraService.Soap.query({queryString: queryString}, self.handleQueryResponse.bind(self, callback));
+        });
+    };
+    ZuoraSoapClient.prototype.create = function (data, callback) {
+        var self = this;
+        this.acquire(function (connectErr, client) {
+            if (connectErr) {
+                callback(connectErr);
+                return;
+            }
+            client.ZuoraService.Soap.create(self.handleUpdateRequest(data), self.handleUpdateResponse.bind(self, callback));
+        });
+    };
+    ZuoraSoapClient.prototype.update = function (data, callback) {
+        var self = this;
+        this.acquire(function (connectErr, client) {
+            if (connectErr) {
+                callback(connectErr);
+                return;
+            }
+            client.ZuoraService.Soap.update(self.handleUpdateRequest(data), self.handleUpdateResponse.bind(self, callback));
+        });
+    };
+    ZuoraSoapClient.prototype.delete = function (type, ids, callback) {
+        var self = this;
+        this.acquire(function (connectErr, client) {
+            if (connectErr) {
+                callback(connectErr);
+                return;
+            }
+            if (typeof ids === 'string') {
+                ids = [ids];
+            }
+            client.ZuoraService.Soap.delete({type: type, ids: ids}, callback);
+        });
+    };
+    return ZuoraSoapClient;
+})();
+
+module.exports = new ZuoraSoapClient();

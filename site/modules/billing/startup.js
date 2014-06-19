@@ -417,6 +417,32 @@ module.exports = function execute(scope, callback) {
                         }
                         return call.done(err);
                     }
+
+                    var queryString = 'SELECT id, batch, category__c FROM Account WHERE accountNumber = \'' + call.req.session.userId + '\'';
+                    zHelpers.zSoap.soap.query(queryString, function (queryErr, queryRes) {
+                        if (queryRes && queryRes[0]) {
+                            var acc = queryRes[0];
+                            if (acc.Category__c === 'Credit Card' || acc.Category__c === 'Invoice') {
+                                var batch = (acc.Category__c === 'Credit Card') ? 'Batch15' : 'Batch16';
+                                if (batch !== acc.Batch) {
+                                    var updateData = {
+                                        Id: acc.Id,
+                                        Batch: batch,
+                                        __type: 'Account'
+                                    };
+                                    zHelpers.zSoap.soap.update([updateData], function (updateErr, updateRes) {
+                                        var success = updateRes && updateRes[0] && updateRes[0].Success;
+                                        if (updateErr || !success) {
+                                            call.req.log.warn({err: updateErr, resp: updateRes}, 'Got zuora error while updating account');
+                                        } else {
+                                            call.req.log.info('Updating zuora account batch');
+                                        }
+                                        return acc;
+                                    });
+                                }
+                            }
+                        }
+                    });
                     call.done(null, resp.subscriptions);
                 });
             }
