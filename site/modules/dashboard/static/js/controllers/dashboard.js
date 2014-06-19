@@ -27,29 +27,12 @@
             $scope.loading = true;
 
             // populate all datasources
-            $scope.account     = Account.getAccount();
+            $scope.account = {};
             $scope.slbFeatureEnabled = $rootScope.features.slb === 'enabled';
             $scope.usageDataFeatureEnabled = $rootScope.features.usageData === 'enabled';
             $scope.mantaEnabled = $rootScope.features.manta === 'enabled';
             $scope.mantaMemory = {};
             $scope.systemStatusTopics = [];
-
-            if ($scope.slbFeatureEnabled) {
-
-                $scope.balancers = slbService.getBalancers();
-
-                slbService.getController().then(function (isEnabled) {
-                    $scope.slbControllerCreated = isEnabled;
-                });
-            }
-            if ($rootScope.features.support === 'enabled') {
-                $scope.supportTile = [];
-                Support.support(function (error, supportPackages) {
-                    for (var name in supportPackages) {
-                        $scope.supportTile.push(supportPackages[name].currentShortName);
-                    }
-                });
-            }
 
 
 //                $scope.forums      = Zendesk.getForumsList();
@@ -62,8 +45,7 @@
                 'Running Node.js Application on Joyent': 'http://wiki.joyent.com/wiki/display/jpc2/Using+Node.js',
                 'Images Available on Joyent': 'http://wiki.joyent.com/wiki/display/jpc2/Joyent+Cloud+Images'
             };
-            $scope.softwareUpdateTopics = Zendesk.getSoftwareUpdateTopics();
-            $scope.machines = Machine.machine();
+            $scope.machines = [];
             $scope.gotoCreatePage = Machine.gotoCreatePage;
 
             // get campaign id from the cookie
@@ -75,14 +57,51 @@
             $http.jsonp('//ajax.googleapis.com/ajax/services/feed/load?v=1.0&num=7&callback=dashboard_rss_feed_callback&q=' + encodeURIComponent('http://www.joyent.com/blog/feed'));
 
             // when all datasources are loaded, disable loader
-            $q.all(
-                [$q.when($scope.machines),
-                    $q.when($scope.forums),
-                    $q.when($scope.softwareUpdateTopics),
-                    $q.when($scope.account),
-                    $q.when($scope.rssentries),
-                    $q.when($scope.balancers)
-                ]).then( function(){
+            $q.all([
+                $q.when(Account.getAccount()),
+                $q.when($scope.rssentries)
+            ]).then(function (result) {
+                $scope.account = result[0] || {};
+
+                var tasks = [];
+                if ($scope.account.provisionEnabled) {
+                    if ($rootScope.features.support === 'enabled') {
+                        $scope.supportTile = [];
+                        Support.support(function (error, supportPackages) {
+                            supportPackages.forEach(function (supportPackage) {
+                                $scope.supportTile.push(supportPackage.currentShortName);
+                            });
+                        });
+                    }
+                    tasks.push($q.when(Machine.machine()));
+                    if ($scope.slbFeatureEnabled) {
+                        tasks.push($q.when(slbService.getBalancers()));
+                        tasks.push($q.when(slbService.getController()));
+                    }
+
+                    $q.all(tasks).then(function (tasksResult) {
+                        $scope.machines = tasksResult[0] || [];
+                        if ($scope.slbFeatureEnabled) {
+                            $scope.balancers = tasksResult[1];
+                            $scope.slbControllerCreated = tasksResult[2];
+                        }
+                    });
+                    if ($scope.mantaEnabled) {
+                        fileman.storageReport('latest', function (err, res) {
+                            if (err || !res.__read()) {
+                                return false;
+                            }
+                            var file = JSON.parse(res.__read());
+                            var memory = 0;
+                            ng.forEach(file.storage, function (storage) {
+                                memory += parseInt(storage.bytes, 10);
+                            });
+
+                            $scope.mantaMemory = util.getReadableFileSizeString(memory);
+                            return true;
+                        });
+                    }
+                }
                 $scope.loading = false;
             });
 
@@ -108,21 +127,6 @@
                 }
             }, true);
 
-            if ($scope.mantaEnabled) {
-                fileman.storageReport('latest', function (err, res) {
-                    if (err || !res.__read()) {
-                        return false;
-                    }
-                    var file = JSON.parse(res.__read());
-                    var memory = 0;
-                    ng.forEach(file.storage, function (storage) {
-                        memory += parseInt(storage.bytes, 10);
-                    });
-
-                    $scope.mantaMemory = util.getReadableFileSizeString(memory);
-                    return true;
-                });
-            }
 
             $scope.runningcount = 0;
             $scope.othercount = 0;

@@ -17,31 +17,33 @@
         'Account.InvoicesController', [
             '$scope',
             'requestContext',
-            '$http',
+            'Account',
             'BillingService',
             '$q',
-            function ($scope, requestContext, $http, BillingService, $q) {
+            function ($scope, requestContext, Account, BillingService, $q) {
             requestContext.setUpRenderContext('account.invoices', $scope);
 
             $scope.loading = true;
             $scope.isInvocesEnabled = true;
             $scope.invoices = [];
-            $scope.subscriptions = BillingService.getSubscriptions();
+            $scope.subscriptions = [];
 
-            $scope.subscriptions.then(function () {}, function (err) {
-                $scope.error = err;
-            });
-
-            $q.all([
-                $q.when(BillingService.getInvoices()),
-                $q.when($scope.subscriptions)
-            ]).then(function (results) {
-                $scope.invoices = results[0];
-                $scope.loading = false;
-            }, function (err) {
-                $scope.error = err;
-                if(err === "Not Implemented") {
-                    $scope.isInvocesEnabled = false;
+            Account.getAccount().then(function(account) {
+                if (account.provisionEnabled) {
+                    $q.all([
+                        $q.when(BillingService.getInvoices()),
+                        $q.when(BillingService.getSubscriptions())
+                    ]).then(function (results) {
+                        $scope.invoices = results[0] || [];
+                        $scope.subscriptions = results[1] || [];
+                        $scope.loading = false;
+                    }, function (err) {
+                        $scope.loading = false;
+                        $scope.error = err;
+                        if (err === "Not Implemented") {
+                            $scope.isInvocesEnabled = false;
+                        }
+                    });
                 }
             });
 

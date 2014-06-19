@@ -7,7 +7,7 @@
         function (serverTab, BillingService, $q) {
             var service = {};
 
-            service.support = function (callback) {
+            service.support = function (callback, skipSubscriptions) {
                 serverTab.call({
                     name: 'SupportListPackages',
                     done: function (err, job) {
@@ -66,22 +66,27 @@
                                 fillCallback(null, supportGroupsArr);
                             });
                         };
-
-                        BillingService.getSubscriptions().then(function (subscriptions) {
-                            var subscribedRatePlanIds = [];
-                            subscriptions.forEach(function (subscription) {
-                                if (subscription.status === 'Active') {
-                                    subscription.ratePlans.forEach(function (ratePlan) {
-                                        subscribedRatePlanIds.push(ratePlan.productRatePlanId);
-                                    });
-                                }
+                        if (!skipSubscriptions) {
+                            BillingService.getSubscriptions().then(function (subscriptions) {
+                                var subscribedRatePlanIds = [];
+                                subscriptions.forEach(function (subscription) {
+                                    if (subscription.status === 'Active') {
+                                        subscription.ratePlans.forEach(function (ratePlan) {
+                                            subscribedRatePlanIds.push(ratePlan.productRatePlanId);
+                                        });
+                                    }
+                                });
+                                fillRatePlans(subscribedRatePlanIds, callback);
+                            }, function (subsErr) {
+                                fillRatePlans([], function (fillErr, fillResult) {
+                                    callback(subsErr, fillResult);
+                                });
                             });
-                            fillRatePlans(subscribedRatePlanIds, callback);
-                        }, function (subsErr) {
+                        } else {
                             fillRatePlans([], function (fillErr, fillResult) {
-                                callback(subsErr, fillResult);
+                                callback(fillErr, fillResult);
                             });
-                        });
+                        }
                     }
                 });
 

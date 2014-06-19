@@ -3,22 +3,17 @@
 (function (app) {
 
     app.directive('accountSshCreate', [
-        'Account',
         'localization',
-        'notification',
-        '$q',
-        '$window',
-        '$timeout',
         '$http',
         '$rootScope',
         'PopupDialog',
         '$sce',
-        function (Account, localization, notification, $q, $window, $timeout, $http, $rootScope, PopupDialog, $sce) {
+        function (localization, $http, $rootScope, PopupDialog, $sce) {
             return {
                 restrict: 'EA',
                 replace: true,
                 scope: true,
-                controller: function ($scope, $element, $attrs, $transclude) {
+                controller: function ($scope) {
                     localization.bind('account', $scope);
 
                     $rootScope.downloadLink = null;
@@ -68,7 +63,7 @@
                                                 $rootScope.sshKeyName = data.name;
 
                                                 if ($scope.updateKeys) {
-                                                    $scope.updateKeys(function () {
+                                                    $scope.updateKeys(true, function () {
                                                         // if we are in signup, show the download right away
                                                         $scope.iframe = $sce.trustAsHtml('<iframe src="' + downloadLink + '"></iframe>');
 

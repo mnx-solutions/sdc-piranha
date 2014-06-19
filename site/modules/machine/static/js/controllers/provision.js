@@ -52,6 +52,7 @@
                     template: 'machine/static/partials/wizard-review.html'
                 }
             ];
+            $scope.reviewModel = {};
             $scope.filterModel = {};
             $scope.provisionStep = true;
             $scope.campaignId = ($cookies.campaignId || 'default');
@@ -72,39 +73,10 @@
                 {key: '', val: '', edit: true, conflict: false}
             ];
             $scope.key = {};
-            Account.getAccount(true).then(function (account) {
-                $scope.account = account;
-                if (!account.provisionEnabled) {
-                    $scope.provisionSteps.push(
-                            {
-                                name: ACCOUNT_STEP_NAME,
-                                template:'machine/static/partials/wizard-account-info.html'
-                            }
-                    );
-                }
-            });
+
             $scope.isProvisioningLimitsEnable = $scope.features.provisioningLimits === 'enabled';
             $scope.getLimits = [];
 
-            $scope.filterSimpleImagesByDatacenter = function (image) {
-                return image.imageData.datacenter === $scope.data.datacenter;
-            };
-
-            function getUserLimits () {
-                var deferred = $q.defer();
-                Limits.getUserLimits(function (error, limits) {
-                    if (error) {
-                        PopupDialog.error('Error', error);
-                        deferred.resolve([]);
-                    }
-                    deferred.resolve(limits);
-                });
-                return deferred.promise;
-            }
-
-            if ($scope.isProvisioningLimitsEnable) {
-                $scope.getLimits = getUserLimits();
-            }
 
             $scope.keys = [];
             $scope.datacenters = [];
@@ -121,8 +93,6 @@
             $scope.currentSlidePageIndex = 0;
             $scope.currentStep = '';
             $scope.datasetsLoading = false;
-            var osByDatasets = {};
-            var externalInstanceParams = requestContext.getParam('dc') && requestContext.getParam('package');
 
             $scope.filterValues = {
                 'No filter': [],
@@ -137,224 +107,6 @@
             $scope.filterProps = Object.keys($scope.filterValues);
 
             $scope.freeTierOptions = [];
-            if ($scope.features.freetier === 'enabled') {
-                $scope.freeTierOptions = FreeTier.freetier();
-            }
-            var provisionBundle = $rootScope.popCommonConfig('provisionBundle');
-            if (provisionBundle) {
-                $rootScope.commonConfig('datacenter', provisionBundle.machine.datacenter);
-            }
-            function getCreatedMachines() {
-                var deferred = $q.defer();
-                if ($scope.isMantaEnabled && $scope.isRecentInstancesEnabled) {
-                    var createdMachines = Account.getUserConfig().$child('createdMachines');
-                    createdMachines.$load(function (error, config) {
-                        var recentInstances = config.createdMachines || [];
-                        if (recentInstances.length > 0) {
-                            recentInstances.sort(function (a, b) {
-                                // if provisionTimes are equal take the newer one
-                                return b.provisionTimes - a.provisionTimes || b.creationDate - a.creationDate;
-                            });
-                        }
-                        deferred.resolve(recentInstances);
-                    });
-                } else {
-                    deferred.resolve([]);
-                }
-                return deferred.promise;
-            }
-
-            var recentMachines = getCreatedMachines();
-
-            function setupSimpleImages (simpleImages, networks, isFree) {
-                if (simpleImages && simpleImages.length > 0) {
-                    if ($scope.datacenters && $scope.datacenters.length > 0) {
-                        $scope.datacenters.forEach(function (datacenter) {
-                            Package.package({ datacenter: datacenter.name }).then(function (packages) {
-                                var packagesByName = {};
-                                packages.forEach(function (pkg) {
-                                    packagesByName[pkg.name] = pkg.id;
-                                });
-                                angular.copy(simpleImages).forEach(function (image) {
-                                    var params = {
-                                        datacenter: datacenter.name
-                                    };
-                                    params.name = image.datasetName;
-                                    params.forceMajorVersion = image.forceMajorVersion;
-                                    if (isFree && image.datacenters.indexOf(datacenter.name) === -1) {
-                                        return;
-                                    }
-                                    Dataset.datasetBySimpleImage(params).then(function (dataset) {
-                                        if (dataset) {
-                                            var simpleImage = {};
-                                            if (isFree) {
-                                                simpleImage.imageData = image;
-                                                simpleImage.name = image.name;
-                                                simpleImage.description = {
-                                                    text: image.original.description,
-                                                    memory: image.original.memory / 1024,
-                                                    cpu: image.original.vcpus,
-                                                    disk: image.original.disk / 1024,
-                                                    price: image.original.price
-                                                };
-                                                var smallLogoClass = $filter('logo')(simpleImage.imageData.name);
-                                                simpleImage.className = smallLogoClass.indexOf('default') === -1 ?
-                                                    smallLogoClass + '-logo' : 'joyent-logo';
-                                                simpleImage.imageData.freetier = true;
-                                                simpleImage.imageData.freeTierValidUntil = $scope.freeTierOptions.validUntil;
-                                            } else {
-                                                simpleImage = image;
-                                                simpleImage.imageData = {};
-                                                simpleImage.imageData.package = packagesByName[simpleImage.packageName];
-                                                simpleImage.imageData.networks = networks;
-                                            }
-                                            simpleImage.imageData.dataset = dataset;
-                                            simpleImage.imageData.datacenter = datacenter.name;
-                                            simpleImage.imageData.name = '';
-                                            delete simpleImage.packageName;
-                                            delete simpleImage.datasetName;
-                                            if (simpleImage.imageData.package) {
-                                                simpleImage.limit = checkLimit(simpleImage.imageData.dataset);
-                                                $scope.simpleImages.push(simpleImage);
-                                            }
-                                        }
-                                    });
-                                });
-                            });
-                        });
-                    }
-                }
-            }
-
-            function checkLimit (dataset) {
-                return $scope.isProvisioningLimitsEnable && $scope.limits.some(function (limit) {
-                    return (limit.dataset === dataset && limit.limit < 1);
-                });
-            }
-
-            $q.all([
-                $q.when(Account.getKeys()),
-                $q.when(Datacenter.datacenter()),
-                $q.when($scope.preSelectedImage),
-                $q.when(Machine.getSimpleImgList()),
-                $q.when($scope.freeTierOptions),
-                $q.when(recentMachines),
-                $q.when(Machine.machine()),
-                $q.when($scope.getLimits)
-            ]).then(function (result) {
-                $scope.keys = result[0];
-                if ($scope.keys.length <= 0) {
-                    $scope.provisionSteps.push(
-                            {
-                                name: SSH_STEP_NAME,
-                                template: 'machine/static/partials/wizard-ssh-key.html'
-                            }
-                    );
-                }
-                $scope.submitTitle = $scope.keys.length > 0 ? 'Create Instance' : 'Next';
-                $scope.datacenters = result[1];
-                $scope.simpleImages = [];
-                $scope.freeTierOptions = result[4];
-                $scope.datasetsInfo = [];
-                $scope.limits = result[7];
-                if ($scope.isProvisioningLimitsEnable) {
-                    $scope.machines = result[6];
-                    $scope.machines.forEach(function (machine) {
-                        Dataset.dataset(machine.image).then(function (dataset) {
-                            $scope.limits.forEach(function (limit) {
-                                if (limit.datacenter === machine.datacenter && limit.name === dataset.name) {
-                                    limit.limit--;
-                                    limit.dataset = dataset.id;
-                                }
-                            });
-
-                        });
-                    });
-                }
-                var simpleImages = result[3].images;
-                var networks = result[3].networks;
-                if ($scope.features.freetier === 'enabled') {
-                    var freeImages = result[4];
-                    if (freeImages.valid) {
-                        setupSimpleImages(freeImages, networks, true);
-                    }
-                }
-                setupSimpleImages(simpleImages, networks);
-                if ($scope.isMantaEnabled && !$scope.data.datacenter) {
-                    //TODO: Handle all other DC drop-downs
-                    $scope.userConfig = Account.getUserConfig().$child('datacenter');
-                    $scope.userConfig.$load(function (error, config) {
-                        if (config.value && !$scope.data.datacenter && !$scope.preSelectedImage) {
-                            $scope.selectDatacenter(config.value);
-                        }
-                        $scope.$watch('data.datacenter', function (dc) {
-                            if (config.value !== dc) {
-                                config.value = dc;
-                                config.dirty(true);
-                                config.$save();
-                            }
-                        });
-                    });
-                }
-
-                if ($scope.preSelectedImageId) {
-                    $scope.preSelectedImage = Image.image($scope.preSelectedImageId);
-                    $q.when($scope.preSelectedImage).then(function (image) {
-                        var datacenter = null;
-                        if (externalInstanceParams) {
-                            datacenter = requestContext.getParam('dc');
-                        } else if (image && image.datacenter) {
-                            datacenter = image.datacenter;
-                        }
-                        if (datacenter) {
-                            $scope.selectDatacenter(datacenter);
-                        } else {
-                            $location.url('/compute/create');
-                            $location.replace();
-                            setDatacenter();
-                        }
-                    });
-                } else {
-                    setDatacenter();
-                }
-
-                if (provisionBundle) {
-                    if (provisionBundle.manualCreate) {
-                        $scope.data = provisionBundle.machine;
-                        $scope.indexPackageTypes = provisionBundle.indexPackageTypes;
-                        $scope.packageTypes = provisionBundle.packageTypes;
-                        $scope.packages = provisionBundle.packages;
-
-                        $scope.datacenters = provisionBundle.datacenters;
-                        $scope.selectedDataset = provisionBundle.selectedDataset;
-                        $scope.datasetType = provisionBundle.datasetType;
-
-                        $scope.selectedPackage = $scope.data.package;
-                        $scope.selectedNetworks = $scope.data.networks;
-
-                        $scope.showFinishConfiguration = true;
-                        $scope.selectedPackageInfo = provisionBundle.selectedPackageInfo;
-
-                        $scope.instanceType = 'Public';
-                        $scope.filterModel = provisionBundle.filterModel;
-                        $scope.filterProps = provisionBundle.filterProps;
-                        $scope.filterValues = provisionBundle.filterValues;
-                        $scope.reconfigure(REVIEW_STEP);
-                        if (provisionBundle.allowCreate) {
-                            provision();
-                        }
-                    } else {
-                        if (provisionBundle.allowCreate) {
-                            provision(provisionBundle.machine);
-                        }
-                    }
-                } else {
-                    if (!$scope.data.opsys) {
-                        $scope.data.opsys = 'All';
-                    }
-                }
-                $scope.loading = provisionBundle && provisionBundle.manualCreate === false && provisionBundle.allowCreate === true;
-            });
 
             $scope.data = {};
             $scope.data.tags = {};
@@ -364,58 +116,62 @@
             $scope.selectedNetworks = [];
             $scope.previousPos = 0;
 
-            function deleteProvisionStep(stepName) {
+            var externalInstanceParams = requestContext.getParam('dc') && requestContext.getParam('package');
+            var provisionBundle = $rootScope.popCommonConfig('provisionBundle');
+            if (provisionBundle) {
+                $rootScope.commonConfig('datacenter', provisionBundle.machine.datacenter);
+            }
+
+            $scope.filterSimpleImagesByDatacenter = function (image) {
+                return image.imageData.datacenter === $scope.data.datacenter;
+            };
+            
+            var deleteProvisionStep = function (stepName) {
+                if (stepName === SSH_STEP_NAME) {
+                    $scope.reviewModel.createInstanceTitle = $scope.keys.length > 0 ? 'Create Instance' : 'Next';
+                }
                 $scope.provisionSteps = $scope.provisionSteps.filter(function (item) {
                     return item.name !== stepName;
                 });
-            }
+            };
 
-            $scope.$on('creditCardUpdate', function () {
-                $scope.account.provisionEnabled = true;
-                if ($scope.keys.length > 0) {
-                    $scope.clickProvision();
-                } else {
-                    $scope.setCurrentStep(4);
-                    $scope.slideCarousel();
-                    $timeout(function () {
-                        deleteProvisionStep(ACCOUNT_STEP_NAME);
-                        $scope.setCurrentStep(3);
-                    }, 600);
-                }
-
-            });
-
-            $scope.$on('ssh-form:onKeyUpdated', function (event, keys) {
-                var sshStepExists = $scope.provisionSteps.some(function (step) {
-                    return step.name === SSH_STEP_NAME;
+            var addProvisionStep = function (step) {
+                var isExists = $scope.provisionSteps.some(function (item) {
+                    return item.name === step.name;
                 });
 
-                if (!sshStepExists && keys.length === 0) {
-                    $scope.provisionSteps.push(
-                        {
-                            name: SSH_STEP_NAME,
-                            template: 'machine/static/partials/wizard-ssh-key.html'
-                        }
-                    );
+                if (step.name === SSH_STEP_NAME) {
+                    $scope.reviewModel.createInstanceTitle = $scope.keys.length > 0 ? 'Create Instance' : 'Next';
                 }
-                $scope.keys = keys;
-            });
-
-            $scope.selectNetwork = function (id) {
-                if ($scope.selectedNetworks.indexOf(id) > -1) {
-                    $scope.selectedNetworks.splice($scope.selectedNetworks.indexOf(id), 1);
-                } else {
-                    $scope.selectedNetworks.push(id);
+                if (!isExists) {
+                    $scope.provisionSteps.push(step);
                 }
             };
 
-            $scope.selectNetworkCheckbox = function (id) {
-                $scope.networks.forEach(function (el) {
-                    if (el.id == id) {
-                        el.active = (el.active) ? false : true;
+            var getUserLimits = function () {
+                var deferred = $q.defer();
+                Limits.getUserLimits(function (error, limits) {
+                    if (error) {
+                        PopupDialog.error('Error', error);
+                        deferred.resolve([]);
                     }
+                    deferred.resolve(limits);
                 });
-                $scope.selectNetwork(id);
+                return deferred.promise;
+            };
+
+            var setDatacenter = function () {
+                if ($rootScope.commonConfig('datacenter')) {
+                    $scope.data.datacenter = $rootScope.commonConfig('datacenter');
+                } else {
+                    $scope.selectDatacenter();
+                }
+            };
+
+            var checkLimit = function (dataset) {
+                return $scope.isProvisioningLimitsEnable && $scope.limits.some(function (limit) {
+                    return (limit.dataset === dataset && limit.limit < 1);
+                });
             };
 
             var filterSelectedNetworks = function (selectedNetworks, callback) {
@@ -428,16 +184,15 @@
                 });
             };
 
-            function provision(machine) {
+            var provision = function (machine) {
                 var finalProvision = function () {
                     if (machine && !machine.dataset) {
-                        PopupDialog.message('Error', 'Instance not found.', function () {
-                        });
+                        PopupDialog.message('Error', 'Instance not found.');
                         return;
                     }
                     var machineData = machine || $scope.data;
                     //we can return this back when make ssh not required for windows
-                    if ($scope.keys.length === 0 /* && osByDatasets[machineData.dataset] !== 'windows' */) {
+                    if ($scope.keys.length === 0) {
                         $rootScope.commonConfig('provisionBundle', {
                             manualCreate: false,
                             allowCreate: false,
@@ -560,7 +315,7 @@
                                 deleteProvisionStep(ACCOUNT_STEP_NAME);
                                 if (stepsSize !== $scope.provisionSteps.length) {
                                     $scope.reconfigure($scope.currentSlidePageIndex - 1);
-                                    $scope.createInstanceTitle = null;
+                                    $scope.reviewModel.createInstanceTitle = null;
                                 }
                             }
                     );
@@ -591,7 +346,276 @@
                     }
 
                 });
+            };
+
+            Account.getAccount(true).then(function (account) {
+                $scope.account = account;
+                if (!account.provisionEnabled) {
+                    addProvisionStep({
+                        name: ACCOUNT_STEP_NAME,
+                        template: 'machine/static/partials/wizard-account-info.html'
+                    });
+                }
+            });
+
+            if ($scope.isProvisioningLimitsEnable) {
+                $scope.getLimits = getUserLimits();
             }
+
+            if ($scope.features.freetier === 'enabled') {
+                $scope.freeTierOptions = FreeTier.freetier();
+            }
+
+
+            function getCreatedMachines() {
+                var deferred = $q.defer();
+                if ($scope.isMantaEnabled && $scope.isRecentInstancesEnabled) {
+                    var createdMachines = Account.getUserConfig().$child('createdMachines');
+                    createdMachines.$load(function (error, config) {
+                        var recentInstances = config.createdMachines || [];
+                        if (recentInstances.length > 0) {
+                            recentInstances.sort(function (a, b) {
+                                // if provisionTimes are equal take the newer one
+                                return b.provisionTimes - a.provisionTimes || b.creationDate - a.creationDate;
+                            });
+                        }
+                        deferred.resolve(recentInstances);
+                    });
+                } else {
+                    deferred.resolve([]);
+                }
+                return deferred.promise;
+            }
+
+            var recentMachines = getCreatedMachines();
+
+            function setupSimpleImages (simpleImages, networks, isFree) {
+                if (simpleImages && simpleImages.length > 0) {
+                    if ($scope.datacenters && $scope.datacenters.length > 0) {
+                        $scope.datacenters.forEach(function (datacenter) {
+                            Package.package({ datacenter: datacenter.name }).then(function (packages) {
+                                var packagesByName = {};
+                                packages.forEach(function (pkg) {
+                                    packagesByName[pkg.name] = pkg.id;
+                                });
+                                angular.copy(simpleImages).forEach(function (image) {
+                                    var params = {
+                                        datacenter: datacenter.name
+                                    };
+                                    params.name = image.datasetName;
+                                    params.forceMajorVersion = image.forceMajorVersion;
+                                    if (isFree && image.datacenters.indexOf(datacenter.name) === -1) {
+                                        return;
+                                    }
+                                    Dataset.datasetBySimpleImage(params).then(function (dataset) {
+                                        if (dataset) {
+                                            var simpleImage = {};
+                                            if (isFree) {
+                                                simpleImage.imageData = image;
+                                                simpleImage.name = image.name;
+                                                simpleImage.description = {
+                                                    text: image.original.description,
+                                                    memory: image.original.memory / 1024,
+                                                    cpu: image.original.vcpus,
+                                                    disk: image.original.disk / 1024,
+                                                    price: image.original.price
+                                                };
+                                                var smallLogoClass = $filter('logo')(simpleImage.imageData.name);
+                                                simpleImage.className = smallLogoClass.indexOf('default') === -1 ?
+                                                    smallLogoClass + '-logo' : 'joyent-logo';
+                                                simpleImage.imageData.freetier = true;
+                                                simpleImage.imageData.freeTierValidUntil = $scope.freeTierOptions.validUntil;
+                                            } else {
+                                                simpleImage = image;
+                                                simpleImage.imageData = {};
+                                                simpleImage.imageData.package = packagesByName[simpleImage.packageName];
+                                                simpleImage.imageData.networks = networks;
+                                            }
+                                            simpleImage.imageData.dataset = dataset;
+                                            simpleImage.imageData.datacenter = datacenter.name;
+                                            simpleImage.imageData.name = '';
+                                            delete simpleImage.packageName;
+                                            delete simpleImage.datasetName;
+                                            if (simpleImage.imageData.package) {
+                                                simpleImage.limit = checkLimit(simpleImage.imageData.dataset);
+                                                $scope.simpleImages.push(simpleImage);
+                                            }
+                                        }
+                                    });
+                                });
+                            });
+                        });
+                    }
+                }
+            }
+
+            $q.all([
+                $q.when(Account.getKeys()),
+                $q.when(Datacenter.datacenter()),
+                $q.when($scope.preSelectedImage),
+                $q.when(Machine.getSimpleImgList()),
+                $q.when($scope.freeTierOptions),
+                $q.when(recentMachines),
+                $q.when(Machine.machine()),
+                $q.when($scope.getLimits)
+            ]).then(function (result) {
+                $scope.keys = result[0];
+
+                if ($scope.keys.length <= 0) {
+                    addProvisionStep({
+                        name: SSH_STEP_NAME,
+                        template: 'machine/static/partials/wizard-ssh-key.html'
+                    });
+                }
+                $scope.datacenters = result[1];
+                $scope.simpleImages = [];
+                $scope.freeTierOptions = result[4];
+                $scope.datasetsInfo = [];
+                $scope.limits = result[7];
+                if ($scope.isProvisioningLimitsEnable) {
+                    $scope.machines = result[6];
+                    $scope.machines.forEach(function (machine) {
+                        Dataset.dataset(machine.image).then(function (dataset) {
+                            $scope.limits.forEach(function (limit) {
+                                if (limit.datacenter === machine.datacenter && limit.name === dataset.name) {
+                                    limit.limit--;
+                                    limit.dataset = dataset.id;
+                                }
+                            });
+
+                        });
+                    });
+                }
+                var simpleImages = result[3].images;
+                var networks = result[3].networks;
+                if ($scope.features.freetier === 'enabled') {
+                    var freeImages = result[4];
+                    if (freeImages.valid) {
+                        setupSimpleImages(freeImages, networks, true);
+                    }
+                }
+                setupSimpleImages(simpleImages, networks);
+                if ($scope.isMantaEnabled && !$scope.data.datacenter) {
+                    //TODO: Handle all other DC drop-downs
+                    $scope.userConfig = Account.getUserConfig().$child('datacenter');
+                    $scope.userConfig.$load(function (error, config) {
+                        if (config.value && !$scope.data.datacenter && !$scope.preSelectedImage) {
+                            $scope.selectDatacenter(config.value);
+                        }
+                        $scope.$watch('data.datacenter', function (dc) {
+                            if (config.value !== dc) {
+                                config.value = dc;
+                                config.dirty(true);
+                                config.$save();
+                            }
+                        });
+                    });
+                }
+
+                if ($scope.preSelectedImageId) {
+                    $scope.preSelectedImage = Image.image($scope.preSelectedImageId);
+                    $q.when($scope.preSelectedImage).then(function (image) {
+                        var datacenter = null;
+                        if (externalInstanceParams) {
+                            datacenter = requestContext.getParam('dc');
+                        } else if (image && image.datacenter) {
+                            datacenter = image.datacenter;
+                        }
+                        if (datacenter) {
+                            $scope.selectDatacenter(datacenter);
+                        } else {
+                            $location.url('/compute/create');
+                            $location.replace();
+                            setDatacenter();
+                        }
+                    });
+                } else {
+                    setDatacenter();
+                }
+
+                if (provisionBundle) {
+                    if (provisionBundle.manualCreate) {
+                        $scope.data = provisionBundle.machine;
+                        $scope.indexPackageTypes = provisionBundle.indexPackageTypes;
+                        $scope.packageTypes = provisionBundle.packageTypes;
+                        $scope.packages = provisionBundle.packages;
+
+                        $scope.datacenters = provisionBundle.datacenters;
+                        $scope.selectedDataset = provisionBundle.selectedDataset;
+                        $scope.datasetType = provisionBundle.datasetType;
+
+                        $scope.selectedPackage = $scope.data.package;
+                        $scope.selectedNetworks = $scope.data.networks;
+
+                        $scope.showFinishConfiguration = true;
+                        $scope.selectedPackageInfo = provisionBundle.selectedPackageInfo;
+
+                        $scope.instanceType = 'Public';
+                        $scope.filterModel = provisionBundle.filterModel;
+                        $scope.filterProps = provisionBundle.filterProps;
+                        $scope.filterValues = provisionBundle.filterValues;
+                        $scope.reconfigure(REVIEW_STEP);
+                        if (provisionBundle.allowCreate) {
+                            provision();
+                        }
+                    } else {
+                        if (provisionBundle.allowCreate) {
+                            provision(provisionBundle.machine);
+                        }
+                    }
+                } else {
+                    if (!$scope.data.opsys) {
+                        $scope.data.opsys = 'All';
+                    }
+                }
+                $scope.loading = provisionBundle && provisionBundle.manualCreate === false && provisionBundle.allowCreate === true;
+            });
+
+            $scope.$on('creditCardUpdate', function () {
+                $scope.account.provisionEnabled = true;
+                if ($scope.keys.length > 0) {
+                    $scope.clickProvision();
+                } else {
+                    $scope.setCurrentStep(4);
+                    $scope.slideCarousel();
+                    $timeout(function () {
+                        deleteProvisionStep(ACCOUNT_STEP_NAME);
+                        $scope.setCurrentStep(3);
+                    }, 600);
+                }
+
+            });
+
+            $scope.$on('ssh-form:onKeyUpdated', function (event, keys) {
+                $scope.keys = keys;
+                if (keys.length > 0 && $scope.currentStep !== REVIEW_STEP_NAME && $scope.currentStep !== SSH_STEP_NAME) {
+                    deleteProvisionStep(SSH_STEP_NAME);
+                } else {
+                    addProvisionStep({
+                        name: SSH_STEP_NAME,
+                        template: 'machine/static/partials/wizard-ssh-key.html'
+                    });
+                }
+            });
+
+            $scope.selectNetwork = function (id) {
+                if ($scope.selectedNetworks.indexOf(id) > -1) {
+                    $scope.selectedNetworks.splice($scope.selectedNetworks.indexOf(id), 1);
+                } else {
+                    $scope.selectedNetworks.push(id);
+                }
+            };
+
+            $scope.selectNetworkCheckbox = function (id) {
+                $scope.networks.forEach(function (el) {
+                    if (el.id == id) {
+                        el.active = (el.active) ? false : true;
+                    }
+                });
+                $scope.selectNetwork(id);
+            };
+
+
 
             var nextStep = function (step) {
                 $scope.setCurrentStep(step);
@@ -682,10 +706,10 @@
                         'Joyent-SDC-Public': 1
                     };
                     val.forEach(function (network) {
-                        var orederedNetwork = confNetwork[network.name];
-                        network.active = orederedNetwork > -1;
-                        if (orederedNetwork > -1) {
-                            $scope.networks[orederedNetwork] = network;
+                        var orderedNetwork = confNetwork[network.name];
+                        network.active = orderedNetwork > -1;
+                        if (orderedNetwork > -1) {
+                            $scope.networks[orderedNetwork] = network;
                             $scope.selectNetwork(network.id);
                         } else {
                             $scope.networks.push(network);
@@ -714,8 +738,8 @@
                     if ($scope.networks && $scope.networks.length) {
                         setNetworks($scope.data.datacenter);
                     }
-                    $scope.data.metadata = [];
-                    $scope.data.tags = [];
+                    $scope.data.metadata = {};
+                    $scope.data.tags = {};
 
                     var provisionForm = $scope.$$childTail.$$childTail && $scope.$$childTail.$$childTail.provisionForm;
                     if (provisionForm) {
@@ -750,7 +774,7 @@
                     deleteProvisionStep(SSH_STEP_NAME);
                 }
                 if ($scope.currentSlidePageIndex === $scope.provisionSteps.length - 1) {
-                    $scope.createInstanceTitle = null;
+                    $scope.reviewModel.createInstanceTitle = null;
                 }
                 $scope.preSelectedData = null;
             };
@@ -954,7 +978,7 @@
                     $scope.data.package = pkg.id;
                 });
                 if (!$scope.account.provisionEnabled || $scope.keys.length <= 0) {
-                    $scope.createInstanceTitle = 'Next';
+                    $scope.reviewModel.createInstanceTitle = 'Next';
                 }
             };
 
@@ -1082,7 +1106,6 @@
                 $scope.datasetsLoading = false;
                 datasets.forEach(function (dataset) {
                     operating_systems[dataset.os] = 1;
-                    osByDatasets[dataset.id] = dataset.os;
 
                     var datasetName = dataset.name;
                     var datasetVersion = dataset.version;
@@ -1302,13 +1325,6 @@
                 $scope.reloading = false;
             });
 
-            function setDatacenter() {
-                if ($rootScope.commonConfig('datacenter')) {
-                    $scope.data.datacenter = $rootScope.commonConfig('datacenter');
-                } else {
-                    $scope.selectDatacenter();
-                }
-            }
 
             ng.element('#provisionCarousel').carousel({
                 interval: false
