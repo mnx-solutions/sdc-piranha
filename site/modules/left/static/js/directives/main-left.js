@@ -13,16 +13,11 @@
                 };
 
                 var loadSupportPackages = function () {
-                    if ($scope.account && $scope.account.provisionEnabled) {
-                        Support.support(supportPackagesCallback);
-                    } else {
-                        Account.getAccount().then(function (account) {
-                            $scope.account = account;
-                            if (account.provisionEnabled) {
-                                Support.support(supportPackagesCallback);
-                            }
-                        });
-                    }
+                    Account.getAccount().then(function (account) {
+                        if (account.provisionEnabled) {
+                            Support.support(supportPackagesCallback);
+                        }
+                    });
                 };
 
                 if ($scope.features.support === 'enabled') {
