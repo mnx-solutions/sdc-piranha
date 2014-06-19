@@ -79,6 +79,7 @@
                         active: true
                     },
                     {
+                        id: 'id',
                         name: 'ID',
                         sequence: 2,
                         active: true,
@@ -89,6 +90,7 @@
                         }
                     },
                     {
+                        id: 'label',
                         name: 'Name',
                         sequence: 3,
                         active: true,
@@ -101,6 +103,7 @@
                         }
                     },
                     {
+                        id: 'tasks',
                         name: 'Tasks',
                         sequence: 4,
                         active: true,
@@ -113,6 +116,7 @@
                         }
                     },
                     {
+                        id: 'status',
                         name: 'State',
                         sequence: 5,
                         active: true,
@@ -128,6 +132,7 @@
                         }
                     },
                     {
+                        id: 'errors',
                         name: 'Errors',
                         sequence: 6,
                         active: true,
@@ -140,6 +145,7 @@
                         }
                     },
                     {
+                        id: 'outputs',
                         name: 'Outputs',
                         sequence: 7,
                         active: true,
