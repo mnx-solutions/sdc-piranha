@@ -18,7 +18,6 @@
                         var limits = [];
                         for (var datacenter in jobResult) {
                             jobResult[datacenter].forEach(function (limit) {
-                                limit.imageName = limit.name;
                                 limits.push(limit);
                             });
                         }
