@@ -48,35 +48,28 @@ module.exports = function execute(scope) {
     function getArchivedJobFile(call, jobId, path, callback, fallback) {
         var client = Manta.createClient(call);
         var jobPath = manta.jobPath(jobId, call.req.session.userName) + path;
-        client.get(jobPath, function (err, stream) {
+        client.getFileContent(jobPath, function (err, body) {
             if (err) {
                 if (fallback) {
-                   client[fallback](jobId, processJobRequest(call, 'key', jobId));
+                    client[fallback](jobId, processJobRequest(call, 'key', jobId));
                 } else {
                     sendError(call, err);
                 }
                 return;
             }
-            var body = '';
-            stream.on('data', function (data) {
-                body += data;
-            });
-            stream.on('end', function () {
-                if (path === '/job.json') {
-                    try {
-                        callback(null, JSON.parse(body));
-                    } catch (error) {
-                        callback('Cannot get job details');
-                    }
-                } else {
-                    callback(null, (body || '').split('\n').filter(function (item) {
-                        return item;
-                    }));
+            if (path === '/job.json') {
+                try {
+                    callback(null, JSON.parse(body));
+                } catch (error) {
+                    callback('Cannot get job details');
                 }
-            });
-            stream.on('error', sendError(call));
-        });
+            } else {
+                callback(null, (body || '').split('\n').filter(function (item) {
+                    return item;
+                }));
+            }
 
+        });
     }
 
     function processJobRequest(call, dataKey, jobId, fallbackPath, nameFilterRegex) {
@@ -292,20 +285,12 @@ module.exports = function execute(scope) {
     server.onCall('FileManStorageReport', function (call) {
         var client = Manta.createClient(call);
         var reportPath = '/' + client.user + '/reports/usage/storage/' + call.data.originPath;
-        client.get(reportPath, function (err, stream) {
-            if (err) {
-                sendError(call, err);
+        client.getFileContent(reportPath, 'utf8', function (error, data) {
+            if (error) {
+                sendError(call);
                 return;
             }
-            var data = '';
-            stream.setEncoding('utf8');
-            stream.on('data', function (chunk) {
-                data += chunk;
-            });
-            stream.on('end', function () {
-                call.done(null, data);
-            });
-            stream.on('error', sendError(call));
+            call.done(null, data);
         });
     });
 

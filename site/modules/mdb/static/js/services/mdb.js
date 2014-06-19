@@ -8,7 +8,7 @@
 
             service.process = function (data, progressCallback) {
                 return serverTab.call({
-                    name: 'mdbProcess',
+                    name: 'MdbProcess',
                     data: data,
                     progress: progressCallback
                 }).deferred;
@@ -16,7 +16,7 @@
 
             service.cancel = function (jobId, callback) {
                 serverTab.call({
-                    name: 'mdbCancel',
+                    name: 'MdbCancel',
                     data: {jobId: jobId},
                     done: callback
                 });

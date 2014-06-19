@@ -227,20 +227,12 @@ module.exports = function execute(scope) {
     };
 
     var readFileContents = function (client, path, callback) {
-        client.get(path, function (err, stream) {
-            if (err) {
-                callback(err);
+        client.getFileContent(path, 'utf8', function (error, data) {
+            if (error) {
+                callback(error);
                 return;
             }
-            var result = '';
-            stream.setEncoding('utf8');
-            stream.on('data', function (data) {
-                result += data;
-            });
-            stream.on('end', function () {
-                callback(null, result);
-            });
-            stream.on('error', callback);
+            callback(null, data);
         });
     };
 

@@ -5,6 +5,29 @@ var manta = require('manta');
 var fs = require('fs');
 
 module.exports = function execute(scope, register) {
+    function getFileContent(filepath, encoding, callback) {
+        if (!callback) {
+            callback = encoding;
+        }
+        this.get(filepath, function (error, stream) {
+            if (error) {
+                callback(error);
+                return;
+            }
+            var data = '';
+            stream.setEncoding('utf8');
+            stream.on('data', function (chunk) {
+                data += chunk;
+            });
+            stream.on('end', function () {
+                callback(null, data);
+            });
+            stream.on('error', function (err) {
+                callback(err);
+            });
+        });
+
+    }
     function createClient(call) {
 
         var client = manta.createClient({
@@ -29,6 +52,7 @@ module.exports = function execute(scope, register) {
             client.client.headers['X-Auth-Token'] = call.req.session.token || call.req.cloud._token;
         }
 
+        client.getFileContent = getFileContent;
         return client;
     }
 

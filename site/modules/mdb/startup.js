@@ -6,23 +6,25 @@ var errorMessage = 'Something went wrong, please try again.';
 
 function objectsParser(data) {
     var result = {counters: {}, data: []};
-    var i, tmp;
-    data = data.split(/\n/);
+    var i, line;
+    data = data.split('\n');
     for (i = 0; i < data.length; i += 1) {
-        tmp = data[i];
-        if (tmp.indexOf('findjsobjects:') === 0) {
-            tmp = /\s*[^:]+:\s*(.*) => (\d+).*$/.exec(tmp);
-            if (tmp) {
-                result.counters[tmp[1]] = parseInt(tmp[2], 10);
+        line = data[i];
+        if (line.indexOf('findjsobjects:') === 0) {
+            // example: findjsobjects:               processed arrays => 191922
+            line = /\s*[^:]+:\s*(.*) => (\d+).*$/.exec(line);
+            if (line) {
+                result.counters[line[1]] = parseInt(line[2], 10);
             }
         } else {
-            tmp = /\s*([0-9a-f]+)\s*(\d+)\s*(\d+)\s*(.*)/.exec(tmp);
-            if (tmp) {
+            // example: 81924609    28618        8 <anonymous> (as tree.Rule): name, value, ...
+            line = /\s*([0-9a-f]+)\s*(\d+)\s*(\d+)\s*(.*)/.exec(line);
+            if (line) {
                 result.data.push({
-                    object: tmp[1],
-                    objects: tmp[2],
-                    props: tmp[3],
-                    constr: tmp[4]
+                    object: line[1],
+                    objects: line[2],
+                    props: line[3],
+                    constr: line[4]
                 });
             }
         }
@@ -30,24 +32,24 @@ function objectsParser(data) {
     return result;
 }
 
-var mdb = function execute(scope) {
+var mdbApi = function execute(scope) {
     var Manta = scope.api('MantaClient');
     var server = scope.api('Server');
 
-    function waitJob(call, jobId, callback) {
+    function waitForJob(call, jobId, callback) {
         var client = Manta.createClient(call);
         function getJob() {
-            client.job(jobId, function (error, status) {
+            client.job(jobId, function (error, jobInfo) {
                 if (error) {
                     if (error.statusCode === 404) {
-                        callback(new Error(errorMessage));
+                        error.message = errorMessage;
                     }
                     error.message = error.message || errorMessage;
                     callback(error);
-                } else if (status.cancelled) {
+                } else if (jobInfo.cancelled) {
                     call.done(null, {status: 'Cancelled'});
-                } else if (status.state === 'done') {
-                    callback(null, status);
+                } else if (jobInfo.state === 'done') {
+                    callback(null, jobInfo);
                 } else {
                     setTimeout(getJob, config.polling.mantaJob);
                 }
@@ -58,25 +60,16 @@ var mdb = function execute(scope) {
 
     function getDebugJSObjects(call, jobId, callback) {
         var client = Manta.createClient(call);
-        client.get('/' + client.user + '/jobs/' + jobId + '/findjsobjects.txt', function (error, stream) {
+        client.getFileContent('/' + client.user + '/jobs/' + jobId + '/findjsobjects.txt', function (error, data) {
             if (error) {
                 if (error.statusCode === 404) {
-                    callback(new Error(errorMessage));
-                    return;
+                    error.message = errorMessage;
                 }
                 callback(error);
                 return;
             }
-            var data = '';
-            stream.on('data', function (chunk) {
-                data += chunk;
-            });
-            stream.on('end', function () {
-                callback(null, objectsParser(data));
-            });
-            stream.on('error', function (err) {
-                callback(err);
-            });
+
+            callback(null, objectsParser(data));
         });
     }
 
@@ -85,55 +78,65 @@ var mdb = function execute(scope) {
         call.done(error.message || error);
     }
 
-    server.onCall('mdbProcess', function (call) {
-        var client = Manta.createClient(call);
+    server.onCall('MdbProcess', {
+        verify: function (data) {
+            return data.coreFile;
+        },
+        handler: function (call) {
+            var client = Manta.createClient(call);
 
-        call.update(null, {status: 'Starting'});
-        client.createJob({
-            phases: [{
-                type: 'map',
-                assets: [config.mdb.processor],
-                exec: 'bash /assets/' + config.mdb.processor + ' | mdb $MANTA_INPUT_FILE'
-            }]
-        }, function (error, jobId) {
-            if (error) {
-                sendError(call, error);
-                return;
-            }
-            call.update(null, {jobId: jobId});
-            client.addJobKey(jobId, call.data.coreFile, {end: true}, function (error) {
+            call.update(null, {status: 'Starting'});
+            client.createJob({
+                phases: [{
+                    type: 'map',
+                    assets: [config.mdb.processor],
+                    exec: 'bash /assets/' + config.mdb.processor + ' | mdb $MANTA_INPUT_FILE'
+                }]
+            }, function (error, jobId) {
                 if (error) {
-                    client.cancelJob(jobId, function () {
-                        sendError(call, error);
-                    });
+                    sendError(call, error);
                     return;
                 }
-                call.update(null, {status: 'Processing'});
-                waitJob(call, jobId, function (error) {
-                    if (error) {
-                        sendError(call, error);
+                call.update(null, {jobId: jobId});
+                client.addJobKey(jobId, call.data.coreFile, {end: true}, function (addJobKeyError) {
+                    if (addJobKeyError) {
+                        client.cancelJob(jobId, function () {
+                            sendError(call, addJobKeyError);
+                        });
                         return;
                     }
-                    call.update(null, {status: 'Parsing'});
-                    getDebugJSObjects(call, jobId, function (error, stats) {
-                        if (error) {
-                            sendError(call, error);
+                    call.update(null, {status: 'Processing'});
+                    waitForJob(call, jobId, function (err) {
+                        if (err) {
+                            sendError(call, err);
                             return;
                         }
-                        call.update(null, {status: 'Complete'});
-                        call.done(error, stats);
+                        call.update(null, {status: 'Parsing'});
+                        getDebugJSObjects(call, jobId, function (getObjectsError, stats) {
+                            if (getObjectsError) {
+                                sendError(call, getObjectsError);
+                                return;
+                            }
+                            stats.status = 'Processed';
+                            call.done(getObjectsError, stats);
+                        });
                     });
                 });
             });
-        });
+        }
     });
 
-    server.onCall('mdbCancel', function (call) {
-        var client = Manta.createClient(call);
-        client.cancelJob(call.data.jobId, call.done.bind(call));
+    server.onCall('MdbCancel', {
+        verify: function (data) {
+            return data.jobId;
+        },
+        handler: function (call) {
+            var client = Manta.createClient(call);
+            client.cancelJob(call.data.jobId, call.done.bind(call));
+        }
     });
 };
 
 if (!config.features || config.features.mdb !== 'disabled') {
-    module.exports = mdb;
+    module.exports = mdbApi;
 }

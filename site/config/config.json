@@ -172,6 +172,9 @@
 , "twitter": {
     "signupTag": ""
 }
+, "mdb": {
+    "processor": "/NodeCore/public/manta-mdb-node-report.sh"
+}
 , "features": {
     "fullVersion": "enabled"
   , "instanceRename": "enabled"

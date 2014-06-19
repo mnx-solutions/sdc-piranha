@@ -48,7 +48,7 @@
             $scope.jobId = null;
             $scope.status = 'Not Processed';
             $scope.supportStatus = 'Not signed up';
-            $scope.processed = false;
+            $scope.processing = false;
 
             function flushAll() {
                 $scope.status = 'Not Processed';
@@ -57,29 +57,31 @@
             }
 
             $scope.getFilePath = function (full) {
+                // get last object from (Array)inputFile and return filePath 
                 var filename = $scope.inputFile.length ? $scope.inputFile.slice(-1)[0].filePath : '';
                 return full ? filename : filename.replace(/.*\/([^$]+)$/g, '$1');
             };
 
             $scope.process = function () {
                 flushAll();
-                $scope.processed = true;
+                $scope.processing = true;
                 var callJob = mdb.process({coreFile: $scope.getFilePath(true)}, function (error, job) {
-                    if (!$scope.processed) {
+                    if (!$scope.processing) {
                         return;
                     }
                     var result = job.__read().slice(-1)[0];
                     if (result) {
                         if (result.status) {
                             $scope.status = result.status;
-                        } else if (result.jobId) {
+                        }
+                        if (result.jobId) {
                             $scope.jobId = result.jobId;
                         }
                     }
                 });
 
                 callJob.then(function (result) {
-                    if (!$scope.processed) {
+                    if (!$scope.processing) {
                         return;
                     }
                     result = result.slice(-1)[0];
@@ -97,11 +99,9 @@
             };
 
             $scope.cancel = function () {
-                $scope.processed = false;
+                $scope.processing = false;
                 $scope.status = 'Canceling';
-                mdb.cancel($scope.jobId, function () {
-                    flushAll();
-                });
+                mdb.cancel($scope.jobId, flushAll);
             };
         }
     ]);
