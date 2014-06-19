@@ -175,7 +175,11 @@
                         }
                     ];
                 }
-                $scope.$broadcast('propsChanged', $scope.gridProps);
+                var propsChanged = {props: $scope.gridProps};
+                if ($scope.features.manta === 'enabled') {
+                    propsChanged.gridUserConfig = $scope.gridUserConfig;
+                }
+                $scope.$broadcast('propsChanged', propsChanged);
             };
 
             var loadData = function (event, context) {
@@ -185,7 +189,7 @@
                 $scope.type = requestContext.getParam('type');
 
                 if ($scope.features.manta === 'enabled') {
-                   $scope.gridUserConfig = Account.getUserConfig().$child($scope.type);
+                    $scope.gridUserConfig = Account.getUserConfig().$child($scope.type);
                 }
                 refreshProps();
                 $scope.caption = {

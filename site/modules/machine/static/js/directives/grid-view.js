@@ -578,8 +578,6 @@
                         setColumnActive(el);
                     });
                 };
-
-                $scope.$on('propsChanged', onPropsChanges);
                 onPropsChanges();
 
                 var loadUserConfig = function () {
@@ -663,6 +661,12 @@
                 };
 
                 $scope.$watch('userConfig', function () {
+                    loadUserConfig();
+                });
+
+                $scope.$on('propsChanged', function(event, args) {
+                    onPropsChanges(null, args.props);
+                    $scope.userConfig = args.gridUserConfig;
                     loadUserConfig();
                 });
 
