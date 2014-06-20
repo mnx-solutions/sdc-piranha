@@ -343,7 +343,10 @@
                     name: 'Firewall',
                     sequence: 4,
                     active: true,
-                    type: 'firewall_state',
+                    type: 'progress',
+                    _inProgress: function (object) {
+                        return object.fireWallActionRunning;
+                    },
                     _getter: function (object) {
                         var state = '';
 
