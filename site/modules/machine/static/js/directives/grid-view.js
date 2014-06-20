@@ -350,7 +350,7 @@
 
         $scope.disableSelectAllCheckbox = function () {
             $scope.isCheckedAllCheckBoxDisabled = $scope.items.some(function (el) {
-                return (el.fireWallActionRunning) || (el.job && !el.job.finished);
+                return (el.fireWallActionRunning) || (el.job && !el.job.finished) || el.deleteJob;
             });
         };
 
@@ -397,6 +397,9 @@
                 var itemId = el.id || el.uuid || el.$$hashKey;
                 if (itemId === id && !el.fireWallActionRunning && (!el.job || el.job.finished)) {
                     el.checked = !el.checked;
+                }
+                if (el.deleteJob) {
+                    el.checked = false;
                 }
             });
             $scope.checkedAllCheckBox = areAllPagedItemsChecked();

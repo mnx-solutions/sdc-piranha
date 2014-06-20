@@ -376,6 +376,13 @@
 .job-section-body {
     padding: 10px;
 }
+.loading-small-job {
+    padding: 5px 10px 0 0;
+}
+.empty-job-history {
+    margin-top: 10px;
+    font-size: 16px;
+}
 .state-label {
     display: inline-block;
     padding: 0 10px;
