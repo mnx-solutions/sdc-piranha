@@ -89,7 +89,7 @@ th.protocol{
 
 .fw-control-label {
     float: left;
-    padding-top: 5px;
+    padding: 5px 0 0 5px;
     text-align: right;
     font-weight: bold;
 }
@@ -134,8 +134,7 @@ th.protocol{
     font-weight: 400;
     color: rgb(51, 51, 51);
 }
-.value-field{
-    width: 50%;
+.value-field {
     padding-left: 20px;
     display: inline-block;
     vertical-align: top;
@@ -144,20 +143,33 @@ th.protocol{
     width: 100%;
 }
 
-.firewall-table{
+.firewall-table {
+    min-width: 700px;
     width: 100%;
     background-color: #fef1d2;
 }
+.firewall-table thead {
+    border-bottom: 2px solid white;
+    background-color: #eee;
+}
+.firewall-table tfoot td {
+    float: right;
+    padding: 15px 2.5%;
+}
+
 .firewall-table td.column {
     display: inline-block;
+    padding: 0 1%;
     vertical-align: top;
-    padding-left: 10px;
-    padding-right: 10px;
-    padding-bottom: 10px;
-    width: 22%;
 }
 .firewall-table td.column legend, .legend-line{
     border-bottom: 1px solid #cbc1a8;
+}
+td.column.column-big {
+    width: 26.4%;
+}
+td.column.column-small {
+    width: 11%;
 }
 
 .form-horizontal{
@@ -298,10 +310,12 @@ code.plain {
     border: none;
     background-color: transparent;
 }
-.padding-10{
-    padding: 10px;
+
+.controls-wrapper {
+    float: left;
+    padding: 10px 50px 10px 10px;
 }
-.bg-grey{
-    background-color: #eee !important;
-    border-bottom: 2px solid white;
+
+.value-field .select2-choice span {
+    margin-right: 35px;
 }

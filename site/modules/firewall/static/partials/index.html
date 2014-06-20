@@ -46,33 +46,28 @@
                     <p class="description">Cloud Firewall rules limit network traffic for your SmartOS instances in one system. Cloud Firewall will enforce applicable rules for each instance that has Cloud Firewall enabled in its Instance Details.</p>
                     <p class="description">There is no ordering to your own rules. For incoming traffic, the least restrictive rule wins. For outgoing traffic, the most restrictive rule wins. ICMP 8:0 is always open to support echo requests using <code class="plain">ping.</code></p>
                 </div>
-                <table class="firewall-table bg-grey">
-                    <thead>
-                        <legend data-ng-show="data.uuid" class="margin-top-10" id="edit-rule">Edit rule {{data.uuid}}</legend>
-                    </thead>
-                    <tbody>
-                    <tr>
-                        <td class="column padding-10">
-                            <label class="fw-control-label name-field">Status</label>
-                            <div class="value-field">
-                                <input type="hidden" id="stateSelect">
-                            </div>
-                        </td>
-                        <td class="column padding-10">
-                            <label class="fw-control-label name-field">Data Center<span data-ng-show="data.uuid">: {{data.datacenter}}</span></label>
-                            <div class="value-field" data-ng-hide="data.uuid">
-                                <input type="hidden" id="dcSelect">
-                            </div>
-                        </td>
-                    </tr>
-                    </tbody>
-                </table>
 
-
+                <legend data-ng-show="data.uuid" class="margin-top-10" id="edit-rule">Edit rule {{data.uuid}}</legend>
                 <table class="firewall-table">
+                <thead class="create-rule-header">
+                <tr>
+                    <td class="controls-wrapper">
+                        <label class="fw-control-label name-field">Status</label>
+                        <div class="value-field">
+                            <input type="hidden" id="stateSelect">
+                        </div>
+                    </td>
+                    <td class="controls-wrapper">
+                        <label class="fw-control-label name-field">Data Center<span data-ng-show="data.uuid">: {{data.datacenter}}</span></label>
+                        <div class="value-field" data-ng-hide="data.uuid">
+                            <input type="hidden" id="dcSelect">
+                        </div>
+                    </td>
+                </tr>
+                </thead>
                 <tbody>
                 <tr>
-                <td class="column min-height-table">
+                <td class="column column-big min-height-table">
                     <legend data-translate>Protocol</legend>
                     <div>
                         <input type="hidden" id="protocolSelect" />
@@ -144,7 +139,7 @@
                                         </span>
                     </div>
                 </td>
-                <td class="column min-height-table">
+                <td class="column column-big min-height-table">
                     <legend data-translate>From</legend>
                     <div>
                                         <span class="text-medium">
@@ -241,13 +236,13 @@
                                         </span>
                     </div>
                 </td>
-                <td class="column min-height-table">
+                <td class="column column-small min-height-table">
                     <legend data-translate>Action</legend>
                     <div>
                         <input type="hidden" id="actionSelect">
                     </div>
                 </td>
-                <td class="column min-height-table">
+                <td class="column column-big min-height-table">
                     <legend data-translate>To</legend>
                     <div>
                                         <span class="text-medium">
@@ -348,12 +343,16 @@
                 </td>
                 </tr>
                 </tbody>
+                <tfoot>
+                <tr>
+                    <td>
+                        <button class="btn light effect-orange-button" data-ng-show="data.uuid" data-ng-click="deleteRule(data)">Delete</button>
+                        <button class="btn light effect-orange-button" data-ng-click="cancelRule()" data-translate-value>Cancel</button>
+                        <button class="btn orange" data-ng-click="saveRule()" data-translate-value>{{data.uuid && 'Update Rule' || 'Create Rule'}}</button>
+                    </td>
+                </tr>
+                </tfoot>
                 </table>
-                <div class="create-update-btn" data-ng-show="openRuleForm">
-                    <button class="btn light effect-orange-button" data-ng-show="data.uuid" data-ng-click="deleteRule(data)">Delete</button>
-                    <button class="btn light effect-orange-button" data-ng-click="cancelRule()" data-translate-value>Cancel</button>
-                    <button class="btn orange" data-ng-click="saveRule()" data-translate-value>{{data.uuid && 'Update Rule' || 'Create Rule'}}</button>
-                </div>
             </div>
         </div>
 
