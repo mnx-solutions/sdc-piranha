@@ -30,7 +30,7 @@ module.exports = function execute(scope, callback) {
             if (err) {
 
                 // changing zuoras errorCode from 401's to 500
-                if(err.statusCode === 401) {
+                if (err.statusCode === 401) {
                     err.statusCode = 500;
                 }
 
@@ -45,13 +45,14 @@ module.exports = function execute(scope, callback) {
                         def = d;
                         return true;
                     }
+                    return false;
                 });
             }
             call.done(null, def);
         });
     });
 
-    function performFraudValidation(call, email, callback) {
+    function performFraudValidation(call, email, fraudCallback) {
         SignupProgress.setMinProgress(call, 'billing', function (err) {
             if (err) {
                 call.log.error(err);
@@ -62,7 +63,7 @@ module.exports = function execute(scope, callback) {
                     fraudErr.attempt = call.req.session.zuoraServiceAttempt;
 
                     call.log.error(fraudErr);
-                    callback(fraudErr);
+                    fraudCallback(fraudErr);
                     return;
                 }
 
@@ -100,11 +101,11 @@ module.exports = function execute(scope, callback) {
 
                         call.req.session.zuoraServiceAttempt = 0;
                         call.req.session.save();
-                        callback('User blocked');
+                        fraudCallback('User blocked');
                     });
                     return;
                 }
-                callback(null);
+                fraudCallback(null);
             });
 
         });
@@ -191,7 +192,7 @@ module.exports = function execute(scope, callback) {
                         soldToContact: billToContact
                     };
 
-                    zuora.account.update(call.req.session.userId, obj, function (err, res) {
+                    zuora.account.update(call.req.session.userId, obj, function () {
                         // Ignoring errors here
                         if (--count === 0) {
                             call.done(null, paymentMethodResponse);
@@ -217,16 +218,16 @@ module.exports = function execute(scope, callback) {
                 return;
             }
             if (data.creditCardNumber.indexOf('*') !== -1) {
-                zHelpers.getPaymentMethods(call, function (err, pms) {
-                    if (err) {
-                        zuoraError(call, err, data, 'CC number failed local validation');
+                zHelpers.getPaymentMethods(call, function (paymentErr, pms) {
+                    if (paymentErr) {
+                        zuoraError(call, paymentErr, data, 'CC number failed local validation');
                         return;
                     }
                     var defaultMethods = pms.creditCards.filter(function (creditCard) {
                         return creditCard.defaultPaymentMethod;
                     });
                     if (defaultMethods.length !== 1) {
-                        zuoraError(call, err, data, 'CC number failed local validation');
+                        zuoraError(call, paymentErr, data, 'CC number failed local validation');
                         return;
                     }
                     var defaultMethodId = defaultMethods[0].id;
@@ -249,13 +250,13 @@ module.exports = function execute(scope, callback) {
                 return;
             }
             // Create payment
-            zuora.payment.create(data, function (err, resp) {
-                if (err) {
+            zuora.payment.create(data, function (createErr, resp) {
+                if (createErr) {
                     // changing zuoras errorCode from 401's to 500
-                    if (err.statusCode === 401) {
-                        err.statusCode = 500;
+                    if (createErr.statusCode === 401) {
+                        createErr.statusCode = 500;
                     }
-                    zuoraError(call, err, resp);
+                    zuoraError(call, createErr, resp);
                     return;
                 }
                 call.log.debug('Zuora payment.create returned with', resp);
@@ -286,13 +287,13 @@ module.exports = function execute(scope, callback) {
 
                 call.log.debug('Creating new zuora account');
 
-                zHelpers.createZuoraAccount(call, function (err, data, user) {
-                    if (err) {
+                zHelpers.createZuoraAccount(call, function (createErr, data, user) {
+                    if (createErr) {
                         // changing zuoras errorCode from 401's to 500
-                        if (err.statusCode === 401) {
-                            err.statusCode = 500;
+                        if (createErr.statusCode === 401) {
+                            createErr.statusCode = 500;
                         }
-                        zuoraError(call, err, data, 'Zuora account.create failed');
+                        zuoraError(call, createErr, data, 'Zuora account.create failed');
                         return;
                     }
                     call.session(function (req) {
@@ -304,8 +305,8 @@ module.exports = function execute(scope, callback) {
                     call.log.debug('Updating user progress');
                     call._user = user;
 
-                    performFraudValidation(call, user.email, function (err) {
-                        call.done(err, data);
+                    performFraudValidation(call, user.email, function (fraudErr) {
+                        call.done(fraudErr, data);
                     });
                 });
                 return;
@@ -340,7 +341,7 @@ module.exports = function execute(scope, callback) {
             zuora.transaction.getInvoices(call.req.session.userId, function (err, resp) {
                 if (err) {
                     // changing zuoras errorCode from 401's to 500
-                    if(err.statusCode === 401) {
+                    if (err.statusCode === 401) {
                         err.statusCode = 500;
                     }
                     call.done(err);
@@ -364,7 +365,7 @@ module.exports = function execute(scope, callback) {
             zuora.subscription.getByAccount(call.req.session.userId, function (err, resp) {
                 if (err) {
                     // changing zuoras errorCode from 401's to 500
-                    if(err.statusCode === 401) {
+                    if (err.statusCode === 401) {
                         err.statusCode = 500;
                     }
                     if (resp && resp.reasons && !resp.success) {
@@ -383,7 +384,7 @@ module.exports = function execute(scope, callback) {
             zuora.catalog.query({sku: call.data.sku}, function (err, arr) {
                 if (err) {
                     // changing zuoras errorCode from 401's to 500
-                    if(err.statusCode === 401) {
+                    if (err.statusCode === 401) {
                         err.statusCode = 500;
                     }
 
@@ -443,7 +444,7 @@ module.exports = function execute(scope, callback) {
                             }
                         }
                     });
-                    call.done(null, resp.subscriptions);
+                    return call.done(null, resp.subscriptions);
                 });
             }
         });
@@ -454,48 +455,49 @@ module.exports = function execute(scope, callback) {
             },
 
             handler: function (call) {
-                var unsubscribe = function (subscriptionId, callback) {
+                var unsubscribe = function (subscriptionId, unsubscribeCallback) {
                     zuora.subscription.cancel(subscriptionId, {
                         cancellationPolicy: 'SpecificDate',
                         invoiceCollect: true,
                         cancellationEffectiveDate: moment().utc().subtract('hours', 8).format('YYYY-MM-DD')
-                    }, callback);
+                    }, unsubscribeCallback);
                 };
                 zuora.subscription.getByAccount(call.req.session.userId, function (subsErr, subsResult) {
                     if (subsErr) {
                         if (subsErr.statusCode === 401) {
                             subsErr.statusCode = 500;
                         }
-                        return call.done(subsErr);
-                    }
-                    var activeSubscriptions = [];
-                    subsResult.subscriptions.forEach(function (subscription) {
-                        if (subscription.status !== 'Cancelled') {
-                            subscription.ratePlans.forEach(function (ratePlan) {
-                                if (call.data.ids.indexOf(ratePlan.productRatePlanId) !== -1) {
-                                    activeSubscriptions.push(subscription.id);
-                                }
+                        call.done(subsErr);
+                    } else {
+                        var activeSubscriptions = [];
+                        subsResult.subscriptions.forEach(function (subscription) {
+                            if (subscription.status !== 'Cancelled') {
+                                subscription.ratePlans.forEach(function (ratePlan) {
+                                    if (call.data.ids.indexOf(ratePlan.productRatePlanId) !== -1) {
+                                        activeSubscriptions.push(subscription.id);
+                                    }
+                                });
+                            }
+                        });
+                        activeSubscriptions = activeSubscriptions.filter(function (subscriptionId, index) {
+                            return activeSubscriptions.indexOf(subscriptionId) === index;
+                        });
+                        if (activeSubscriptions.length === 0) {
+                            call.done();
+                        } else {
+                            var activeSubscriptionsCount = activeSubscriptions.length;
+                            activeSubscriptions.forEach(function (currentSubscription) {
+                                unsubscribe(currentSubscription, function (unsubErr, unsubRes) {
+                                    if (unsubErr) {
+                                        call.req.log.warn({err: unsubErr, resp: unsubRes}, 'Got zuora error while unsubscribing from support plan');
+                                    }
+                                    activeSubscriptionsCount -= 1;
+                                    if (activeSubscriptionsCount === 0) {
+                                        call.done();
+                                    }
+                                });
                             });
                         }
-                    });
-                    activeSubscriptions = activeSubscriptions.filter(function (subscriptionId, index) {
-                        return activeSubscriptions.indexOf(subscriptionId) === index;
-                    });
-                    if (activeSubscriptions.length === 0) {
-                        call.done();
-                    } else {
-                        var activeSubscriptionsCount = activeSubscriptions.length;
-                        activeSubscriptions.forEach(function (currentSubscription) {
-                            unsubscribe(currentSubscription, function (unsubErr, unsubRes) {
-                                if (unsubErr) {
-                                    call.req.log.warn({err: unsubErr, resp: unsubRes}, 'Got zuora error while unsubscribing from support plan');
-                                }
-                                activeSubscriptionsCount -= 1;
-                                if (activeSubscriptionsCount === 0) {
-                                    call.done();
-                                }
-                            });
-                        });
                     }
                 });
             }
