@@ -8,8 +8,8 @@
                     <span><h2>{{selectedDataset.name}}</h2></span>
                     <div class="dataset-desc crop text-wrap">{{selectedDataset.description}}</div>
 
-                    <p data-ng-show="manyVersions[selectedDataset.name]">INSTANCE VERSION:</p>
-                    <div class="text-small image-container" data-ng-show="manyVersions[selectedDataset.name]">
+                    <p data-ng-show="manyVersions[selectedDataset.visibility][selectedDataset.name]">INSTANCE VERSION:</p>
+                    <div class="text-small image-container" data-ng-show="manyVersions[selectedDataset.visibility][selectedDataset.name]">
                         <div class="btn-group pull-left">
                             <button class="btn datacenter-select dd-fixed-width" data-ng-show="selectedDataset" data-toggle="dropdown">
                                 {{selectedDataset.version}}
