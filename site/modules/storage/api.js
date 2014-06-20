@@ -5,7 +5,7 @@ var manta = require('manta');
 var fs = require('fs');
 
 module.exports = function execute(scope, register) {
-    function getFileContent(filepath, encoding, callback) {
+    function getFileContents(filepath, encoding, callback) {
         if (!callback) {
             callback = encoding;
         }
@@ -52,7 +52,7 @@ module.exports = function execute(scope, register) {
             client.client.headers['X-Auth-Token'] = call.req.session.token || call.req.cloud._token;
         }
 
-        client.getFileContent = getFileContent;
+        client.getFileContents = getFileContents;
         return client;
     }
 

@@ -48,7 +48,7 @@ module.exports = function execute(scope) {
     function getArchivedJobFile(call, jobId, path, callback, fallback) {
         var client = Manta.createClient(call);
         var jobPath = manta.jobPath(jobId, call.req.session.userName) + path;
-        client.getFileContent(jobPath, function (err, body) {
+        client.getFileContents(jobPath, function (err, body) {
             if (err) {
                 if (fallback) {
                     client[fallback](jobId, processJobRequest(call, 'key', jobId));
@@ -285,7 +285,7 @@ module.exports = function execute(scope) {
     server.onCall('FileManStorageReport', function (call) {
         var client = Manta.createClient(call);
         var reportPath = '/' + client.user + '/reports/usage/storage/' + call.data.originPath;
-        client.getFileContent(reportPath, 'utf8', function (error, data) {
+        client.getFileContents(reportPath, 'utf8', function (error, data) {
             if (error) {
                 sendError(call);
                 return;

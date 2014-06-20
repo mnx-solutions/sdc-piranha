@@ -2,14 +2,12 @@
 var config = require('easy-config');
 var restify = require('restify');
 var path = require('path');
-var errorMessage = 'Something went wrong, please try again.';
+var generalErrorMessage = 'Something went wrong, please try again.';
 
 function objectsParser(data) {
     var result = {counters: {}, data: []};
-    var i, line;
-    data = data.split('\n');
-    for (i = 0; i < data.length; i += 1) {
-        line = data[i];
+
+    data.split('\n').forEach(function (line) {
         if (line.indexOf('findjsobjects:') === 0) {
             // example: findjsobjects:               processed arrays => 191922
             line = /\s*[^:]+:\s*(.*) => (\d+).*$/.exec(line);
@@ -28,7 +26,7 @@ function objectsParser(data) {
                 });
             }
         }
-    }
+    });
     return result;
 }
 
@@ -42,9 +40,9 @@ var mdbApi = function execute(scope) {
             client.job(jobId, function (error, jobInfo) {
                 if (error) {
                     if (error.statusCode === 404) {
-                        error.message = errorMessage;
+                        error.message = generalErrorMessage;
                     }
-                    error.message = error.message || errorMessage;
+                    error.message = error.message || generalErrorMessage;
                     callback(error);
                 } else if (jobInfo.cancelled) {
                     call.done(null, {status: 'Cancelled'});
@@ -60,10 +58,10 @@ var mdbApi = function execute(scope) {
 
     function getDebugJSObjects(call, jobId, callback) {
         var client = Manta.createClient(call);
-        client.getFileContent('/' + client.user + '/jobs/' + jobId + '/findjsobjects.txt', function (error, data) {
+        client.getFileContents('/' + client.user + '/jobs/' + jobId + '/findjsobjects.txt', function (error, data) {
             if (error) {
                 if (error.statusCode === 404) {
-                    error.message = errorMessage;
+                    error.message = generalErrorMessage;
                 }
                 callback(error);
                 return;

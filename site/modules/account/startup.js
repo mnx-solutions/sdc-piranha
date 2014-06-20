@@ -227,13 +227,7 @@ module.exports = function execute(scope) {
     };
 
     var readFileContents = function (client, path, callback) {
-        client.getFileContent(path, 'utf8', function (error, data) {
-            if (error) {
-                callback(error);
-                return;
-            }
-            callback(null, data);
-        });
+        client.getFileContents(path, 'utf8', callback);
     };
 
     var readOldOrNewFile = function (call, client, callback) {
