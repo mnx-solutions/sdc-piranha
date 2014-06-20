@@ -188,7 +188,7 @@
                                                             <input type="text" name="fromValue" data-ng-model="current.from.text" data-ip required />
                                                         </div>
                                                     </span>
-                                                    <span data-ng-switch-default>
+                                                    <span data-ng-switch-when="vm">
                                                         <label class="fw-control-label">UUID</label>
                                                         <div class="fw-controls">
                                                             <input type="hidden" id="fromInstanceSelect" />
@@ -292,7 +292,7 @@
                                                         <input type="text" name="toValue" data-ng-model="current.to.text" data-ip required />
                                                     </div>
                                                 </span>
-                                                <span data-ng-switch-default>
+                                                <span data-ng-switch-when="vm">
                                                     <label class="fw-control-label">UUID</label>
                                                     <div class="fw-controls">
                                                         <input type="hidden" class="select2-input" id="toInstanceSelect" />
