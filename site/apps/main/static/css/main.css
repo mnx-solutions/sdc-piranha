@@ -2322,6 +2322,9 @@ label.checkbox {
 .btn.submit-payment {
     text-transform: none;
 }
+.orange.submit-payment {
+    font-size: 16px;
+}
 .btn.red-stripe {
     border-left: 3px solid #d84a38;
 }
