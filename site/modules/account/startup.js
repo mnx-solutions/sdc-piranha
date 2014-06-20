@@ -13,14 +13,14 @@ module.exports = function execute(scope) {
     var Marketo = scope.api('Marketo');
     var MantaClient = scope.api('MantaClient');
 
-    var accountFields = ['id','login','email','companyName','firstName','lastName','address','postalCode','city','state','country','phone','created'];
-    var updateable = ['email','companyName','firstName','lastName','address','postalCode','city','state','country','phone'];
+    var accountFields = ['id', 'login', 'email', 'companyName', 'firstName', 'lastName', 'address', 'postalCode', 'city', 'state', 'country', 'phone', 'created'];
+    var updateable = ['email', 'companyName', 'firstName', 'lastName', 'address', 'postalCode', 'city', 'state', 'country', 'phone'];
 
     server.onCall('getAccount', function (call) {
         // get account using cloudapi
-        call.cloud.getAccount(function (err, data) {
-            if (err) {
-                call.done(err);
+        call.cloud.getAccount(function (error, data) {
+            if (error) {
+                call.done(error);
                 return;
             }
 
@@ -43,17 +43,17 @@ module.exports = function execute(scope) {
                     call.log.error({error: err, data: marketoData}, 'Failed to update marketo account');
                 }
                 call.log.debug(marketoData, 'Associate Marketo lead with SOAP API');
-                TFA.get(data.id, function (err, secret) {
-                    if (err) {
-                        call.done(err);
+                TFA.get(data.id, function (tfaGetError, secret) {
+                    if (tfaGetError) {
+                        call.done(tfaGetError);
                         return;
                     }
 
                     response.tfaEnabled = !!secret;
-                    Billing.isActive(data.id, function (err, isActive) {
+                    Billing.isActive(data.id, function (billingError, isActive) {
                         call.req.session.provisionEnabled = response.provisionEnabled = isActive;
                         call.req.session.save();
-                        call.done(null, response);
+                        call.done(billingError, response);
                     });
                 });
             });
@@ -68,34 +68,34 @@ module.exports = function execute(scope) {
         });
 
         // get metadata
-        metadata.get(call.req.session.userId, metadata.ACCOUNT_HISTORY, function(err, accountHistory) {
-            if(err) {
+        metadata.get(call.req.session.userId, metadata.ACCOUNT_HISTORY, function (err, accountHistory) {
+            if (err) {
                 call.log.error({error: err}, 'Failed to get account history from metadata');
             }
 
             var obj = {};
             try {
                 obj = JSON.parse(accountHistory);
-            } catch(e) {
+            } catch (e) {
                 obj = {};
                 // json parsing failed
             }
-            if(!obj || obj === null || Object.keys(obj).length === 0)  {
+            if (!obj || obj === null || Object.keys(obj).length === 0) {
                 obj = {};
             }
 
-            if(!obj.email) {
+            if (!obj.email) {
                 obj.email = [];
             }
 
-            if(!obj.phone) {
+            if (!obj.phone) {
                 obj.phone = [];
             }
 
             obj.email.push({ 'previousValue': data.email, 'time': Date.now()});
             obj.phone.push({ 'previousValue': data.phone, 'time': Date.now()});
 
-            metadata.set(call.req.session.userId, metadata.ACCOUNT_HISTORY, JSON.stringify(obj), function() {});
+            metadata.set(call.req.session.userId, metadata.ACCOUNT_HISTORY, JSON.stringify(obj), function () {});
         });
 
         var marketoData = {
@@ -105,27 +105,27 @@ module.exports = function execute(scope) {
             Company: data.companyName,
             Phone: data.phone
         };
-        call.cloud.getAccount(function (err, account) {
-            if (err) {
-                call.done(err);
+        call.cloud.getAccount(function (error, account) {
+            if (error) {
+                call.done(error);
                 return;
             }
 
-            Marketo.update(account.id, marketoData, function (err) {
-                if (err) {
-                    call.log.error({error: err, data: marketoData}, 'Failed to update marketo account');
+            Marketo.update(account.id, marketoData, function (updateError) {
+                if (updateError) {
+                    call.log.error({error: updateError, data: marketoData}, 'Failed to update marketo account');
                 }
                 call.log.debug(marketoData, 'Associate Marketo lead with SOAP API');
                 call.log.debug('Updating account with', data);
-                call.cloud.updateAccount(data, function (err, result) {
-                    if (err) {
-                        call.done(err);
+                call.cloud.updateAccount(data, function (updateAccountError, result) {
+                    if (updateAccountError) {
+                        call.done(updateAccountError);
                         return;
                     }
                     Billing.updateActive(result.id, function (err, isActive) {
                         call.req.session.provisionEnabled = result.provisionEnabled = isActive;
                         call.req.session.save();
-                        call.done(null, result);
+                        call.done(err, result);
                     });
                 });
             });
@@ -151,15 +151,13 @@ module.exports = function execute(scope) {
         }
     });
 
-    function searchFromList(list, resp, cb) {
-        return Object.keys(list).some(function(key) {
-            if(list[key].fingerprint === resp.fingerprint) {
-                return true;
-            }
+    function searchFromList(list, resp) {
+        return Object.keys(list).some(function (key) {
+            return list[key].fingerprint === resp.fingerprint;
         });
     }
 
-    server.onCall('createKey', function(call) {
+    server.onCall('createKey', function (call) {
 
         // create new ssh key for this account
         if (!call.data.name) {
@@ -171,11 +169,11 @@ module.exports = function execute(scope) {
                 call.done({message: 'key is invalid'});
                 return;
             }
-
         }
-        call.cloud.createKey({name: call.data.name, key: call.data.key}, function (err, resp) {
-            if(err) {
-                call.done(err);
+
+        call.cloud.createKey({name: call.data.name, key: call.data.key}, function (error, resp) {
+            if (error) {
+                call.done(error);
                 return;
             }
 
@@ -183,38 +181,38 @@ module.exports = function execute(scope) {
 
             // hold this call until cloudApi really has this key in the list
             (function checkList() {
-                call.cloud.listKeys({login: 'my'}, function(err, data) {
+                call.cloud.listKeys({login: 'my'}, function (err, data) {
 
-                    if(searchFromList(data, resp)) {
+                    if (!err && searchFromList(data, resp)) {
                         SignupProgress.setMinProgress(call, 'ssh', function (err2) {
-                            if(err2) {
+                            if (err2) {
                                 call.log.error(err2);
                             }
                             call.done(null, resp);
                         });
                     } else {
-                        setTimeout(checkList, 2000)
+                        setTimeout(checkList, 2000);
                     }
                 }, true);
             })();
         });
     });
 
-    server.onCall('deleteKey', function(call) {
+    server.onCall('deleteKey', function (call) {
         // delete ssh key
         call.log.debug('server call, delete key:', call.data.fingerprint);
-        call.cloud.deleteKey(call.data.fingerprint, function(err) {
-            if(err) {
-                call.done(err);
+        call.cloud.deleteKey(call.data.fingerprint, function (error) {
+            if (error) {
+                call.done(error);
             }
 
             // hold this call until cloudApi really has this key in the list
             (function checkList() {
-                call.cloud.listKeys({login: 'my'}, function(err, data) {
-                    if(!searchFromList(data, call.data)) {
+                call.cloud.listKeys({login: 'my'}, function (err, data) {
+                    if (!searchFromList(data, call.data)) {
                         call.done(null);
                     } else {
-                        setTimeout(checkList, 2000)
+                        setTimeout(checkList, 2000);
                     }
                 }, true);
             })();
@@ -265,9 +263,8 @@ module.exports = function execute(scope) {
                 if (err.statusCode === 404) {
                     call.req.log.info('Config for user not found');
                 } else if (err.name === 'AccountBlockedError' && err.code === 'AccountBlocked' && attempt > 0 && call.req.session.provisionEnabled) {
-                    var client = MantaClient.createClient(call);
                     attempt -= 1;
-                    setTimeout(function () {readOldOrNewFile(call, client, callback)}, 2000);
+                    setTimeout(function () {readOldOrNewFile(call, client, callback); }, 2000);
                     return;
                 } else {
                     call.req.log.error({error: err}, 'Cannot read user config');
