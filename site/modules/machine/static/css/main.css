@@ -311,7 +311,10 @@
     border-radius: 0;
 }
 .advanced-instance-description .label,
+.advanced-instance-title .label,
 .description .label {
+    position: relative;
+    top: -2px;
     display: inline-block;
     padding: 0 .6em .3em;
     outline: none;
@@ -856,13 +859,14 @@ span.btn-success {
 .advanced-instance-title p,
 .simple-image .name p {
     overflow: hidden;
+    height: 23px;
     vertical-align: top;
     text-overflow: ellipsis;
+    word-wrap: break-word;
     font-weight: bold;
 }
 
 .advanced-instance-title p {
-    width: 136px;
     color: #3d3d3d;
     white-space: nowrap;
     font-size: 18px;
@@ -896,10 +900,17 @@ span.btn-success {
 
 .advanced-instance-description p,
 .description p {
-    height: 65px;
     font-weight: 400;
     font-size: 12px;
     line-height: 16px;
+}
+
+.advanced-instance-description p {
+    height: 70px;
+}
+
+.description p {
+    height: 65px;
 }
 
 .advaced-instance-btn {
@@ -1411,6 +1422,33 @@ span.btn-success {
     background-repeat: no-repeat;
 }
 
+.advanced-instance-title .cassandra,
+.advanced-instance-title .centos,
+.advanced-instance-title .chef,
+.advanced-instance-title .debian,
+.advanced-instance-title .fedora,
+.advanced-instance-title .freebsd,
+.advanced-instance-title .hadoop,
+.advanced-instance-title .java,
+.advanced-instance-title .manta,
+.advanced-instance-title .node,
+.advanced-instance-title .percona,
+.advanced-instance-title .riak,
+.advanced-instance-title .smart,
+.advanced-instance-title .smartmachine,
+.advanced-instance-title .stingray,
+.advanced-instance-title .ubuntu,
+.advanced-instance-title .windows,
+.advanced-instance-title .mongodb,
+.advanced-instance-title .arch,
+.advanced-instance-title .elasticsearch,
+.advanced-instance-title .ghost,
+.advanced-instance-title .postgresql,
+.advanced-instance-title .scalearc,
+.advanced-instance-title .nginx {
+    padding-right: 25px;
+}
+
 .review .left.small-icon {
     background-position: 212px 26px;
 }
@@ -1534,10 +1572,11 @@ span.btn-success {
     float: right;
 }
 .tooltip-inner {
+    padding: 10px 20px;
     max-width: 300px;
     text-align: left;
     text-decoration: none;
-    padding: 10px 20px;
+    font-weight: 400;
 }
 .tooltip.top .tooltip-arrow,
 .tooltip.bottom .tooltip-arrow {
