@@ -1,51 +1,21 @@
 <div class="container-fluid container-position" data-ng-controller="mdbController">
+    <div class="page-header">
+        <h3 class="page-title">Node Debugger Jobs</h3>
+        <div class="beta-sticker left-part">beta</div>
+        <div class="header-btn-ci create-new-job-btn-pos right-part">
+            <a href="#!/mdb/create" class="btn btn-big orange align-text-btn" ><i class="plus-btn-icon"></i> Create
+                New Debugger Job</a>
+        </div>
+    </div>
     <div class="row-fluid">
-        <h3 class="page-title">Node Debugger</h3>
+        <h3 class="page-title"></h3>
     </div>
-    <div class="left-part">
-        <table style="width: 400px;">
-            <tr>
-                <td>{{getFilePath()}}</td>
-                <td>
-                    <button class="btn light effect-orange-button pull-right" data-select-file data-objects="inputFile">Select File</button>
-                </td>
-            </tr>
-            <tr>
-                <td>Status : {{status}}<!--<br/>
-                    <i>Estimating processed time : {{estimate}}</i>-->
-                </td>
-                <td data-ng-if="!jobId && !objects.length"><span class="btn orange effect-orange-button grey-new pull-right"
-                          data-ng-class='{"disabled": inputFile.length == 0}'
-                          data-ng-click="process()">Process Now</span></td>
-                <td data-ng-if="jobId && !objects.length"><span class="btn orange effect-orange-button grey-new pull-right"
-                          data-ng-click="cancel()">Cancel</span></td>
-                <td data-ng-if="objects.length"><span class="btn orange effect-orange-button grey-new pull-right"
-                          data-ng-click="process()">Re-Process</span></td>
-            </tr>
-<!--
-            <tr>
-                <td>Node.js support status : {{supportStatus}}</td>
-                <td><span class="btn orange effect-orange-button grey-new pull-right">Signup for Node.js</span></td>
-            </tr>
--->
-
-        </table>
-    </div>
-    <div class="right-part">
-        <fieldset>
-            <ul>
-                <table>
-                    <tr ng-repeat="(counter, nums) in counters">
-                        <td># {{counter}}</td>
-                        <td>: {{nums}}</td>
-                    </tr>
-                </table>
-            </ul>
-        </fieldset>
-    </div>
-    <div class="loading-large span12" data-ng-show="loading"></div>
+    <div class="loading-large" data-ng-show="loading"></div>
     <div class="row-fluid">
-        <div>
+        <div data-ng-hide="loading || objects.length">
+            Standard limit of two instances per data center apply for you.
+        </div>
+        <div data-ng-show="objects.length">
             <div data-grid-view
                  data-user-config="gridUserConfig"
                  data-props="gridProps"
@@ -54,8 +24,6 @@
                  data-items="objects"
                  data-multisort="false"
                  data-order="gridOrder"
-                 data-paginated="true"
-                 data-perPage="25"
                  data-export-fields="exportFields"
                  data-paginated="false"
                  data-tab-filter-field="tabFilterField"

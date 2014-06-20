@@ -10,5 +10,9 @@ window.JP.main.config(['routeProvider', function (routeProvider) {
         .when('/mdb', {
             title: 'Node Debugger',
             action: 'mdb.index'
+        })
+        .when('/mdb/:jobId', {
+            title: 'Node Debugger Job',
+            action: 'mdb.detail'
         });
 }]);

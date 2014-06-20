@@ -2,7 +2,6 @@
 
 var config = require('easy-config');
 var metadata = require('./lib/metadata');
-var MemoryStream = require('memorystream');
 var ursa = require('ursa');
 
 module.exports = function execute(scope) {
@@ -285,9 +284,7 @@ module.exports = function execute(scope) {
 
     server.onCall('SetUserConfig', function (call) {
         var client = MantaClient.createClient(call);
-        var configData = JSON.stringify(call.data);
-        var fileStream = new MemoryStream(configData, {writable: false});
-        client.put(getConfigPath(call, client), fileStream, {mkdirs: true, size: configData.length}, function (error) {
+        client.putFileContents(getConfigPath(call, client), JSON.stringify(call.data), function (error) {
             if (error && error.statusCode !== 404) {
                 call.req.log.error({error: error}, 'Cannot write user config');
             }

@@ -4,8 +4,8 @@ var fs = require('fs');
 var path = require('path');
 var config = require('easy-config');
 var manta = require('manta');
-var MemoryStream = require('memorystream');
 var mantaNotAvailable = 'Manta service is not available.';
+
 module.exports = function execute(scope) {
     var Manta = scope.api('MantaClient');
     var server = scope.api('Server');
@@ -262,9 +262,8 @@ module.exports = function execute(scope) {
     });
 
     server.onCall('FileManPut', function (call) {
-        var fileStream = new MemoryStream(call.data.fileBody);
         var client = Manta.createClient(call);
-        client.put(call.data.path, fileStream, {size: call.data.fileBody.length}, checkResponse(call));
+        client.putFileContents(call.data.path, call.data.fileBody, checkResponse(call));
     });
 
     server.onCall('FileManGet', function (call) {

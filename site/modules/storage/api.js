@@ -3,6 +3,7 @@
 var config = require('easy-config');
 var manta = require('manta');
 var fs = require('fs');
+var MemoryStream = require('memorystream');
 
 module.exports = function execute(scope, register) {
     function getFileContents(filepath, encoding, callback) {
@@ -26,7 +27,11 @@ module.exports = function execute(scope, register) {
                 callback(err);
             });
         });
-
+    }
+    function putFileContents(filepath, data, callback) {
+        data = typeof data === 'string' ? data : JSON.stringify(data);
+        var fileStream = new MemoryStream(data);
+        this.put(filepath, fileStream, {size: data.length, mkdirp: true}, callback);
     }
     function createClient(call) {
 
@@ -53,6 +58,7 @@ module.exports = function execute(scope, register) {
         }
 
         client.getFileContents = getFileContents;
+        client.putFileContents = putFileContents;
         return client;
     }
 
