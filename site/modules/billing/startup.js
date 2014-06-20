@@ -367,7 +367,7 @@ module.exports = function execute(scope, callback) {
                     if(err.statusCode === 401) {
                         err.statusCode = 500;
                     }
-                    if (!resp.success) {
+                    if (resp && resp.reasons && !resp.success) {
                         err = resp.reasons[0];
                     }
                     call.req.log.warn({err: err, resp: resp}, 'Got zuora error while getting user subscriptions');
