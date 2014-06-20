@@ -86,6 +86,17 @@
             return call.deferred;
         };
 
+        service.getPayments = function (callback) {
+            var call = serverTab.call({
+                name: 'getPayments',
+                data: {},
+                done: callback || function (err) {
+                    billingResponseHandler(err, 'Unable to retrieve payments.');
+                }
+            });
+            return call.deferred;
+        };
+
         service.getSubscriptions = function (callback) {
             var call = serverTab.call({
                 name: 'getSubscriptions',

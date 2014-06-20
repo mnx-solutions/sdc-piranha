@@ -26,16 +26,25 @@
             $scope.loading = true;
             $scope.isInvocesEnabled = true;
             $scope.invoices = [];
-            $scope.subscriptions = [];
+            $scope.payments = [];
 
             Account.getAccount().then(function(account) {
                 if (account.provisionEnabled) {
                     $q.all([
                         $q.when(BillingService.getInvoices()),
-                        $q.when(BillingService.getSubscriptions())
+                        $q.when(BillingService.getPayments())
                     ]).then(function (results) {
-                        $scope.invoices = results[0] || [];
-                        $scope.subscriptions = results[1] || [];
+                        var paidInvoices = [];
+                        if (results[1].length) {
+                            paidInvoices = [].concat.apply([], results[1].map(function (payment) { return payment.paidInvoices.map(function(inv) { return inv.invoiceNumber; }); }));
+                        }
+                        if (results[0].length) {
+                            $scope.invoices = results[0].map(function (invoice) {
+                                invoice.paymentStatus = (paidInvoices.length && paidInvoices.indexOf(invoice.invoiceNumber) !== -1) ? 'Paid' : 'Unpaid';
+                                return invoice;
+                            });
+                        }
+
                         $scope.loading = false;
                     }, function (err) {
                         $scope.loading = false;
@@ -78,10 +87,16 @@
                     sequence: 4
                 },
                 {
+                    id: 'paymentStatus',
+                    name: 'Status',
+                    active: true,
+                    sequence: 5
+                },
+                {
                     id: 'label',
                     name: 'Download',
                     type: 'button',
-                    sequence: 5,
+                    sequence: 6,
                     active: true,
                     btn: {
                         label: 'PDF',
@@ -97,31 +112,31 @@
                     id: 'accountName',
                     name: 'Account Name',
                     active: false,
-                    sequence: 6
+                    sequence: 7
                 },
                 {
                     id: 'balance',
                     name: 'Balance',
                     active: false,
-                    sequence: 7
+                    sequence: 8
                 },
                 {
                     id: 'dueDate',
                     name: 'Due Date',
                     active: false,
-                    sequence: 8
+                    sequence: 9
                 },
                 {
                     id: 'invoiceTargetDate',
                     name: 'Invoice Target Date',
                     active: false,
-                    sequence: 9
+                    sequence: 10
                 },
                 {
                     id: 'status',
                     name: 'Status',
                     active: false,
-                    sequence: 10
+                    sequence: 11
                 }
             ];
             $scope.gridActionButtons = [];
