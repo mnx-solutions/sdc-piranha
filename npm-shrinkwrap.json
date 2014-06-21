@@ -633,8 +633,44 @@
       }
     },
     "easy-config": {
-      "version": "0.2.1",
-      "from": "easy-config@0.2.1"
+      "version": "0.3.1",
+      "from": "easy-config@0.3.1"
+    },
+    "cjson": {
+      "version": "0.3.0",
+      "from": "cjson@0.3.0",
+      "resolved": "https://registry.npmjs.org/cjson/-/cjson-0.3.0.tgz",
+      "dependencies": {
+        "jsonlint": {
+          "version": "1.6.0",
+          "from": "jsonlint@1.6.0",
+          "resolved": "https://registry.npmjs.org/jsonlint/-/jsonlint-1.6.0.tgz",
+          "dependencies": {
+            "nomnom": {
+              "version": "1.7.0",
+              "from": "nomnom@>= 1.5.x",
+              "resolved": "https://registry.npmjs.org/nomnom/-/nomnom-1.7.0.tgz",
+              "dependencies": {
+                "colors": {
+                  "version": "0.5.1",
+                  "from": "colors@0.5.x",
+                  "resolved": "https://registry.npmjs.org/colors/-/colors-0.5.1.tgz"
+                },
+                "underscore": {
+                  "version": "1.4.4",
+                  "from": "underscore@~1.4.4",
+                  "resolved": "https://registry.npmjs.org/underscore/-/underscore-1.4.4.tgz"
+                }
+              }
+            },
+            "JSV": {
+              "version": "4.0.2",
+              "from": "JSV@>= 4.0.x",
+              "resolved": "https://registry.npmjs.org/JSV/-/JSV-4.0.2.tgz"
+            }
+          }
+        }
+      }
     },
     "express-modulizer": {
       "version": "0.0.30",
