@@ -3,8 +3,36 @@
 var config = require('easy-config');
 var manta = require('manta');
 var fs = require('fs');
+var MemoryStream = require('memorystream');
 
 module.exports = function execute(scope, register) {
+    function getFileContents(filepath, encoding, callback) {
+        if (!callback) {
+            callback = encoding;
+        }
+        this.get(filepath, function (error, stream) {
+            if (error) {
+                callback(error);
+                return;
+            }
+            var data = '';
+            stream.setEncoding('utf8');
+            stream.on('data', function (chunk) {
+                data += chunk;
+            });
+            stream.on('end', function () {
+                callback(null, data);
+            });
+            stream.on('error', function (err) {
+                callback(err);
+            });
+        });
+    }
+    function putFileContents(filepath, data, callback) {
+        data = typeof data === 'string' ? data : JSON.stringify(data);
+        var fileStream = new MemoryStream(data);
+        this.put(filepath, fileStream, {size: data.length, mkdirp: true}, callback);
+    }
     function createClient(call) {
 
         var client = manta.createClient({
@@ -29,6 +57,8 @@ module.exports = function execute(scope, register) {
             client.client.headers['X-Auth-Token'] = call.req.session.token || call.req.cloud._token;
         }
 
+        client.getFileContents = getFileContents;
+        client.putFileContents = putFileContents;
         return client;
     }
 

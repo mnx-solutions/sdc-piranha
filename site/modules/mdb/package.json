@@ -1,0 +1,6 @@
+{
+    "em": {
+        "route": "/mdb",
+        "auth": true
+    }
+}

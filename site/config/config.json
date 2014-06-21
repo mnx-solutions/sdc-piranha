@@ -120,6 +120,7 @@
   , "firewallRuleCreateTimeout": 20000
   , "firewallRuleUpdateTimeout": 90000
   , "firewallRuleDeleteTimeout": 90000
+  , "mantaJob": 1000
   }
 , "capishim": {
     "username": ""
@@ -171,6 +172,9 @@
 , "twitter": {
     "signupTag": ""
 }
+, "mdb": {
+    "processor": "/NodeCore/public/manta-mdb-node-report.sh"
+}
 , "features": {
     "fullVersion": "enabled"
   , "instanceRename": "enabled"
@@ -199,5 +203,6 @@
   , "recentInstances": "no"
   , "imageRename": "no"
   , "provisioningLimits": "no"
+  , "mdb": "no"
   }
 }

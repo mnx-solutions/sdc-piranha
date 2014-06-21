@@ -27,7 +27,8 @@
             "support",
             "utilization",
             "zendesk",
-            "limits"
+            "limits",
+            "mdb"
 
         ],
 		"auth": true,

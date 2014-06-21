@@ -1,0 +1,67 @@
+<div class="container-fluid container-position" data-ng-controller="mdbDetailController">
+    <div class="row-fluid">
+        <h3 class="page-title">Node Debugger</h3>
+    </div>
+    <div class="left-part">
+        <table style="width: 400px;">
+            <tr>
+                <td>{{getFilePath()}}</td>
+                <td>
+                    <button class="btn light effect-orange-button pull-right" data-select-file data-objects="inputFile">Select File</button>
+                </td>
+            </tr>
+            <tr>
+                <td>Status : {{status}}<!--<br/>
+                    <i>Estimating processed time : {{estimate}}</i>-->
+                </td>
+                <td data-ng-if="!jobId && !objects.length"><span class="btn orange effect-orange-button grey-new pull-right"
+                                                                 data-ng-class='{"disabled": inputFile.length == 0}'
+                                                                 data-ng-click="process()">Process Now</span></td>
+                <td data-ng-if="jobId && !objects.length"><span class="btn orange effect-orange-button grey-new pull-right"
+                          data-ng-click="cancel()">Cancel</span></td>
+                <td data-ng-if="objects.length"><span class="btn orange effect-orange-button grey-new pull-right"
+                                                      data-ng-class='{"disabled": inputFile.length == 0}'
+                                                      data-ng-click="process()">Re-Process</span></td>
+            </tr>
+<!--
+            <tr>
+                <td>Node.js support status : {{supportStatus}}</td>
+                <td><span class="btn orange effect-orange-button grey-new pull-right">Signup for Node.js</span></td>
+            </tr>
+-->
+
+        </table>
+    </div>
+    <div class="right-part">
+        <fieldset>
+            <ul>
+                <table>
+                    <tr ng-repeat="(counter, nums) in counters">
+                        <td># {{counter}}</td>
+                        <td>: {{nums}}</td>
+                    </tr>
+                </table>
+            </ul>
+        </fieldset>
+    </div>
+    <div class="loading-large span12" data-ng-show="loading"></div>
+    <div class="row-fluid">
+        <div>
+            <div data-grid-view
+                 data-user-config="gridUserConfig"
+                 data-props="gridProps"
+                 data-columns-button="columnsButton"
+                 data-image-button-show="false"
+                 data-items="objects"
+                 data-multisort="false"
+                 data-order="gridOrder"
+                 data-paginated="true"
+                 data-perPage="25"
+                 data-export-fields="exportFields"
+                 data-paginated="false"
+                 data-tab-filter-field="tabFilterField"
+                 data-tab-filter-default="tabFilterDefault">
+            </div>
+        </div>
+    </div>
+</div>

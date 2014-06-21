@@ -76,6 +76,12 @@
                 </li>
             </ul>
         </li>
+        <li class="nested" data-ng-show="features.mdb == 'enabled'" data-ng-class="{'active open': location.path().search('mdb') == 1}">
+            <a href="#!/mdb" class="debug-icon">
+                <span class="title glyph-icon">Node Debugger</span>
+                <span class="selected"></span>
+            </a>
+        </li>
         <li class="nested" data-ng-show="features.usageData == 'enabled'" data-ng-class="{active: location.path().search('usage') == 1, open: location.path().search('/currentspend') > 1 || location.path().search('/compute') > 1 || location.path().search('/bandwidth') > 1 || location.path().search('/manta') > 1}">
             <a data-ng-click="clickUsage()" class="usage-icon">
                 <span class="title">Usage</span>
