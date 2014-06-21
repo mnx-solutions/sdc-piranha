@@ -101,3 +101,7 @@ task FreeTierTest(type: Test) {
 task newImages(type: Test) {
     include '**/InstanceOperabilityTestSuit.class'
 }
+
+task UploadSSHKeyTest(type: Test) {
+    include '**/UploadSSHKeyTest.class'
+}

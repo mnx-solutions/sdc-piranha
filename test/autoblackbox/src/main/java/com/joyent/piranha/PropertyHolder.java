@@ -109,4 +109,8 @@ public final class PropertyHolder {
     public static String getPathToSShFolder() {
         return System.getProperty("env.sshFolderPath");
     }
+
+    public static String getPublicKeyPath() {
+        return getPathToSShFolder() +  System.getProperty("env.publicKeyPath");
+    }
 }
