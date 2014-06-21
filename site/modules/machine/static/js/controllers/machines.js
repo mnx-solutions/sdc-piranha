@@ -282,63 +282,57 @@
                     active: false
                 },
                 {
-                    id: 'dataset',
-                    name: 'Dataset',
-                    sequence: 10,
-                    active: false
-                },
-                {
                     id: 'type',
                     name: 'Type',
-                    sequence: 11,
+                    sequence: 10,
                     active: false
                 },
                 {
                     id: 'memory',
                     name: 'Memory',
-                    sequence: 12,
+                    sequence: 11,
                     active: false
                 },
                 {
                     id: 'disk',
                     name: 'Disk',
-                    sequence: 13,
+                    sequence: 12,
                     active: false
                 },
                 {
                     id: 'tags',
                     name: 'Tags',
-                    sequence: 14,
+                    sequence: 13,
                     active: false
                 },
                 {
                     id: 'credentials',
                     name: 'Credentials',
-                    sequence: 15,
+                    sequence: 14,
                     active: false
                 },
                 {
                     id: 'package',
                     name: 'Package',
-                    sequence: 16,
+                    sequence: 15,
                     active: false
                 },
                 {
                     id: 'image',
                     name: 'Image ID',
-                    sequence: 17,
+                    sequence: 16,
                     active: false
                 },
                 {
                     id: 'ips',
                     name: 'IPs',
-                    sequence: 18,
+                    sequence: 17,
                     active: false
                 },
                 {
                     id: 'compute_node',
                     name: 'CN UUID',
-                    sequence: 19,
+                    sequence: 18,
                     active: false
                 }
             ];
