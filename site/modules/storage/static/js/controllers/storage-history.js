@@ -12,11 +12,11 @@
                 $scope.placeHolderText = 'filter jobs';
 
                 if ($scope.features.manta === 'enabled') {
+                    $scope.gridUserConfig = Account.getUserConfig().$child('job_history');
                     Account.getAccount().then(function (account) {
                         $scope.account = account;
                         if ($scope.account.provisionEnabled) {
                             Storage.ping().then(function () {
-                                $scope.gridUserConfig = Account.getUserConfig().$child('job_history');
                                 getJobsList().then(function (jobs) {
                                     $scope.jobs = jobs;
                                 });
