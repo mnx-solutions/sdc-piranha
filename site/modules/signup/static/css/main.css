@@ -35,21 +35,18 @@
     background-color:transparent !important;
 	padding-right:20px;
 }
-input{
-    border-radius: 0;
+input {
     font-size: 16px;
 }
-
-select.date-month, select.date-year {
+select.date-month,
+select.date-year {
     width: 108px;
 }
-
 .ssh-download-link {
     float:left;
     margin-top: 28px;
     width:380px;
 }
-
 body{
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
 }
@@ -460,9 +457,10 @@ legend {
     width:155px !important;
 }
 
-.input-prepend .add-on:first-child, .input-prepend .btn:first-child, .add-on{
+.input-prepend .add-on:first-child,
+.input-prepend .btn:first-child,
+.add-on{
     width: 50px;
-    border-radius: 0;
     float: left;
     text-shadow: none;
     font-size: 16px;
@@ -480,4 +478,12 @@ legend {
 
 .signup-btn-group {
     margin-bottom: 80px;
+}
+
+.pin-error {
+    margin-top: 4px;
+}
+
+.phone-input {
+    width: 150px;
 }

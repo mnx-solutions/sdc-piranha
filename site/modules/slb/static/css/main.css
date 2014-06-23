@@ -43,9 +43,7 @@
 
 .slb-select {
     background-color: white !important;
-    border: 1px solid #c5c5c5 !important;
     height: 32px;
-    padding-top: 5px;
 }
 .lb-edit{
     border: 2px solid #ececec;
@@ -224,10 +222,6 @@ input.ng-invalid-field{
     margin-left: 3px;
 }
 
-input {
-    border-radius: 0;
-}
-
 .clear-link {
     color: #333333;
     text-decoration: none;
@@ -290,21 +284,18 @@ table.table {
     line-height: 30px;
     vertical-align: middle;
 }
-.edit-value input{
-    padding: 0;
+.edit-value input {
+    padding: 0 0 0 10px;
     width: 250px;
-    border-radius: 0;
     height: 28px;
     border: 1px solid #ccc;
     background-color: #fafcfd;
     font-size: 16px;
     font-weight: 300;
-    padding-left: 10px;
 }
-.edit-value-two input{
+.edit-value-two input {
     display: inline-block;
     height: 30px;
-    border-radius: 0;
 }
 .control-group{
     height: 40px;

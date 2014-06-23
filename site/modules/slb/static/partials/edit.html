@@ -29,23 +29,14 @@
                 <div>
                     <span class="span3 lb-label" data-translate>Protocol</span>
 
-                    <div class="btn-group tooltip-hover span3 dd-margin protocol-pos"
+                    <div class="tooltip-hover span3 dd-margin protocol-pos"
                          data-toggle="tooltip"
                          data-placement="bottom">
-                        <button class="btn slb-select" data-toggle="dropdown">{{protocolSelected.name}}</button>
-
-                        <button class="btn dropdown-toggle slb-select" data-toggle="dropdown">
-                            <span class="caret"></span>
-                        </button>
-                        <ul class="dropdown-menu">
-                            <li data-ng-repeat="protocol in protocols">
-                                <a data-ng-click="protocolSelect(protocol.value)">{{protocol.name}}</a>
-                            </li>
-                        </ul>
-                        <div class="loading-medium loading-medium-inline" data-ng-show="datasetsLoading"></div>
-                        <span class="upload-btn" data-ng-show="protocolSelected.name == 'HTTPS'">
-                            <span data-cert-upload model="server.certificate"></span>
-                        </span>
+                        <select data-select-two id="protocolSelect" data-width="100px" class="slb-select" data-select="protocolSelected.name" data-fn="protocolSelect">
+                            <option data-ng-repeat="protocol in protocols" value="{{protocol.value}}">
+                                {{protocol.name}}
+                            </option>
+                        </select>
                     </div>
 
 
@@ -97,38 +88,30 @@
                 <div>
                     <span class="span3 lb-label" data-translate>Timeout</span>
 
-                    <div class="btn-group tooltip-hover span3 dd-margin protocol-pos"
+                    <div class="tooltip-hover span3 dd-margin protocol-pos"
                          data-toggle="tooltip"
                          data-placement="bottom">
 
-                        <button class="btn slb-select" data-toggle="dropdown">{{server.health.timeout}} sec</button>
-                        <button class="btn dropdown-toggle slb-select" data-toggle="dropdown">
-                            <span class="caret"></span>
-                        </button>
-                        <ul class="dropdown-menu">
-                            <li data-ng-repeat="timeout in timeouts">
-                                <a data-ng-click="timeoutSelect(timeout)">{{timeout}} sec</a>
-                            </li>
-                        </ul>
+                        <select data-select-two id="timeoutSelect" data-width="100px" class="slb-select" data-select="server.health.timeout + ' sec'" data-fn="timeoutSelect">
+                            <option data-ng-repeat="timeout in timeouts" value="{{timeout}}">
+                                {{timeout}} sec
+                            </option>
+                        </select>
                     </div>
                 </div>
                 <div class="clearfix"></div>
                 <div class="protocol-block">
                     <span class="span3 hc-interval" data-translate>HC Interval</span>
 
-                    <div class="btn-group tooltip-hover span3 dd-margin protocol-pos"
+                    <div class="tooltip-hover span3 dd-margin protocol-pos"
                          data-toggle="tooltip"
                          data-placement="bottom">
 
-                        <button class="btn slb-select" data-toggle="dropdown">{{server.health.delay}} mins</button>
-                        <button class="btn dropdown-toggle slb-select" data-toggle="dropdown">
-                            <span class="caret"></span>
-                        </button>
-                        <ul class="dropdown-menu">
-                            <li data-ng-repeat="hcDelay in hcDelays">
-                                <a data-ng-click="hcDelaySelect(hcDelay)">{{hcDelay}} mins</a>
-                            </li>
-                        </ul>
+                        <select data-select-two id="hcDelaySelect" data-width="100px" class="slb-select" data-select="server.health.delay + ' mins'" data-fn="hcDelaySelect">
+                            <option data-ng-repeat="hcDelay in hcDelays" value="{{hcDelay}}">
+                                {{hcDelay}} mins
+                            </option>
+                        </select>
                     </div>
                 </div>
                 <div class="clearfix"></div>

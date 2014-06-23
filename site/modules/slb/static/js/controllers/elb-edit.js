@@ -24,6 +24,13 @@
                     return port;
                 }
 
+                $scope.protocols = [
+                    {name: "HTTP", value: "http"},
+                    {name: "HTTPS", value: "https"},
+                    {name: "TCP", value: "tcp"},
+                    {name: "TCPS", value: "tcps"}
+                ];
+
                 $q.all([service.getBalancer($scope.balancerId), service.getBalancers(), service.getMachines()]).then(function (results) {
                     $scope.deletedCount = 0;
                     var server = results[0];
@@ -76,13 +83,6 @@
                 }, function () {
                     $location.path('/slb');
                 });
-
-                $scope.protocols = [
-                    {name: 'HTTP', value: 'http'},
-                    {name: 'HTTPS', value: 'https'},
-                    {name: 'TCP', value: 'tcp'},
-                    {name: 'TCPS', value: 'tcps'}
-                ];
 
                 $scope.protocolSelect = function (protocolValue) {
                     $scope.protocolSelected = $scope.protocols[0];

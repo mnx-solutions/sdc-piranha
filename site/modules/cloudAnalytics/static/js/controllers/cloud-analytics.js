@@ -293,6 +293,8 @@
                 $scope.current.decomposition.primary = null;
                 $scope.current.decomposition.secondary = null;
                 $scope.current.decomposition.secondaryF = null;
+                $('#decPrimarySelect').select2('val', '-- None --');
+                $('#decSecondarySelect').select2('val', '-- None --');
             };
 
             $scope.changeDecomposition = function () {

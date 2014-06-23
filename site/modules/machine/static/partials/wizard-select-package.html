@@ -9,19 +9,11 @@
                 <p data-ng-show="manyVersions[selectedDataset.visibility][selectedDataset.nam]">INSTANCE VERSION:</p>
                 <div class="text-small image-container" data-ng-show="manyVersions[selectedDataset.visibility][selectedDataset.name]">
                     <div class="btn-group pull-left">
-                        <button class="btn datacenter-select dd-fixed-width" data-ng-show="selectedDataset" data-toggle="dropdown">
-                            {{selectedDataset.version}}
-                        </button>
-
-                        <button class="btn datacenter-select dropdown-toggle" data-toggle="dropdown">
-                                <span class="caret"></span>
-                        </button>
-
-                        <ul class="dropdown-menu dd-fixed-width">
-                            <li data-ng-repeat="version in filteredVersions">
-                                <a data-ng-click="selectVersion(version)">{{version.version}}</a>
-                            </li>
-                        </ul>
+                        <select data-select-two id="selectVersion" data-item="version" data-select="selectedDataset.version" data-fn="selectVersion" data-ng-show="selectedDataset || selectedVersions[selectedDataset.name]">
+                            <option data-ng-repeat="version in filteredVersions" value="{{version}}">
+                                {{version.version}}
+                            </option>
+                        </select>
                     </div>
                 </div>
                 <div class="dataset-cost cost">
@@ -36,53 +28,21 @@
     <div class="filter-container">
         Filter:
         <div class="btn-group btn-group-filter">
-            <button class="btn datacenter-select filter-select" data-toggle="dropdown">
-                {{filterModel.key | uppercase}}
-            </button>
-
-            <button class="btn datacenter-select dropdown-toggle" data-toggle="dropdown">
-                <span class="caret"></span>
-            </button>
-
-            <ul class="dropdown-menu dd-fixed-width">
-                <li data-ng-repeat="prop in filterProps">
-                    <label class="filter-value">
-                        {{prop | uppercase}}
-                        <input type="radio"
-                               class="filter-radio"
-                               name="filterProperty"
-                               data-ng-model="filterModel.key"
-                               data-ng-change="$parent.onFilterChange(prop)"
-                               value="{{prop}}" />
-                    </label>
-                </li>
-            </ul>
+            <select ui-select2="{minimumResultsForSearch: -1}" class="filter-select" id="filterProperty" data-ng-model="filterModel.key" data-ng-change="$parent.onFilterChange(prop)">
+                <option data-ng-repeat="prop in filterProps" value="{{prop}}">
+                    {{prop | uppercase}}
+                </option>
+            </select>
         </div>
         <div class="btn-group btn-group-filter" data-ng-show="filterModel.key != 'No filter'">
-            <button class="btn datacenter-select filter-select" data-toggle="dropdown">
-                {{ formatFilterValue(filterModel.value) }}
-            </button>
-
-            <button class="btn datacenter-select dropdown-toggle" data-toggle="dropdown">
-                <span class="caret"></span>
-            </button>
-
-            <ul class="dropdown-menu dd-fixed-width">
-                <li data-ng-repeat="prop in filterValues[filterModel.key]">
-                    <label class="filter-value">
-                        {{ formatFilterValue(prop) }}
-                        <input type="radio"
-                               class="filter-radio"
-                               name="filterPropertyValue"
-                               data-ng-model="filterModel.value"
-                               data-ng-change="$parent.onFilterChange()"
-                               value="{{prop}}" />
-                    </label>
-                </li>
-            </ul>
+            <select ui-select2="{minimumResultsForSearch: -1}" class="filter-select" id="filterPropertyValue" data-ng-model="filterModel.value" data-ng-change="$parent.onFilterChange()">
+                <option data-ng-repeat="prop in filterValues[filterModel.key]" value="{{prop}}">
+                    {{formatFilterValue(prop)}}
+                </option>
+            </select>
         </div>
     </div>
-    <div class="">
+    <div>
         <div class="accordion-package-title">
             <span class="span-name">NAME</span>
             <span class="span-specification">SPECIFICATION</span>

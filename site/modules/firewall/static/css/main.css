@@ -162,7 +162,8 @@ th.protocol{
     padding: 0 1%;
     vertical-align: top;
 }
-.firewall-table td.column legend, .legend-line{
+.firewall-table td.column legend,
+.legend-line {
     border-bottom: 1px solid #cbc1a8;
 }
 td.column.column-big {
@@ -171,8 +172,10 @@ td.column.column-big {
 td.column.column-small {
     width: 11%;
 }
-
-.form-horizontal{
+.bg-grey td.column {
+    padding: 10px;
+}
+.form-horizontal {
     padding-bottom: 30px;
 }
 .form-horizontal .control-label {
@@ -183,11 +186,6 @@ td.column.column-small {
 .form-horizontal .controls {
     margin-left: 90px;
     min-height: 200px;
-}
-select, textarea, input[type="text"], input[type="password"], input[type="datetime"], input[type="datetime-local"], input[type="date"], input[type="month"], input[type="time"], input[type="week"], input[type="number"], input[type="email"], input[type="url"], input[type="search"], input[type="tel"], input[type="color"], .uneditable-input {
-    -webkit-border-radius: 0;
-    -moz-border-radius: 0;
-    border-radius: 0;
 }
 .yellow-bg{
     background-color: #fef1d2;
@@ -256,7 +254,7 @@ input.ng-invalid, input.ng-pristine {
     white-space: nowrap;
     text-overflow: ellipsis;
 }
-.fixed-height120{
+.fixed-height {
     min-height: 120px;
     max-height: 120px;
 }
@@ -314,6 +312,10 @@ code.plain {
 .controls-wrapper {
     float: left;
     padding: 10px 50px 10px 10px;
+}
+
+.padding-ten {
+    padding: 10px;
 }
 
 .value-field .select2-choice span {

@@ -154,7 +154,6 @@
     font-size: 30px;
     height: 30px;
     width: auto;
-    border-radius: 0;
 }
 
 .machine-edit-form {
@@ -457,71 +456,6 @@ span.btn-success {
     padding-top: 10px;
     padding-bottom: 15px;
 }
-.select2-container .select2-choice {
-    display: block;
-    height: 25px;
-    padding: 0 0 0 15px;
-    padding-top: 3px;
-    overflow: hidden;
-    position: relative;
-    border: 1px solid #e5e5e5;
-    white-space: nowrap;
-    line-height: 20px;
-    color: #444;
-    text-decoration: none;
-    -webkit-background-clip: padding-box;
-    -moz-background-clip: padding-box;
-    background-clip: padding-box;
-    -webkit-touch-callout: none;
-    -webkit-user-select: none;
-    -khtml-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
-    background-image: none !important;
-    background-color: #ffffff  !important;
-}
-.select2-container, .select2-drop, .select2-search, .select2-search input {
-    -webkit-box-sizing: border-box;
-    -khtml-box-sizing: border-box;
-    -moz-box-sizing: border-box;
-    -ms-box-sizing: border-box;
-    box-sizing: border-box;
-}
-.select2-container {
-    position: relative;
-    display: inline-block;
-    zoom: 1;
-    vertical-align: middle;
-}
-.select2-container .select2-choice {
-    -webkit-border-radius: 0;
-    -moz-border-radius: 0;
-    border-radius: 0;
-}
-.select2-container .select2-choice div {
-    display: block;
-    width: 18px;
-    height: 100%;
-    position: absolute;
-    right: 0;
-    top: 0;
-    border-left: 1px solid #e5e5e5 !important;
-    -webkit-border-radius: 0 !important;
-    -moz-border-radius: 0 !important;
-    border-radius: 0 !important;
-    -webkit-background-clip: padding-box;
-    -moz-background-clip: padding-box;
-    background-clip: padding-box;
-    background: #ffffff !important;
-    background-image: none !important;
-}
-.select2-container .select2-choice div b {
-    display: block;
-    width: 100%;
-    height: 100%;
-    background: url('../img/sselect2.png') no-repeat 0 3px !important;
-}
 .resize-block{
     padding-top: 20px;
     display: block;
@@ -560,7 +494,6 @@ span.btn-success {
     height: 80px;
 }
 .key-width, .value-width {
-    border-radius: 0;
     display: inline-block;
     overflow: hidden;
 }
@@ -813,11 +746,6 @@ span.btn-success {
     margin-top: 10px;
     padding-bottom: 20px;
 }
-
-.select2-result-label2 {
-    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif !important;font-weight: normal!important;
-}
-
 .hotlinks {
     color: #d3d3d3;
     font-size: 14px;
@@ -953,7 +881,7 @@ span.btn-success {
     font-size: 14px;
 }
 .dd-fixed-width {
-    min-width: 70px;
+    min-width: 80px;
     text-align: left;
     font-size: 14px;
 }
@@ -1318,31 +1246,28 @@ span.btn-success {
 }
 .instance-name-input {
     width: 310px;
-    border-radius: 0;
 }
-.networks-box-3 span{
+.networks-box-3 span {
     font-size: 14px;
     font-weight: 300;
 }
-.networks-box-3 input[type=checkbox]{
+.networks-box-3 input[type=checkbox] {
     margin-right: 5px;
 }
-.item-position{
+.item-position {
     line-height: 25px;
 }
-.tags-inputs{
+.tags-inputs {
     width: 137px;
-    border-radius: 0;
 }
-
-.tags-text-p{
+.tags-text-p {
     line-height: 20px;
 }
-.spacer-input{
+.spacer-input {
     display: inline-block;
     padding-left: 5px;
 }
-.addtag-btn{
+.addtag-btn {
     background-color: #fffbf2;
     width: 47px;
     height: 30px;
@@ -1351,13 +1276,13 @@ span.btn-success {
     padding: 0;
     margin-top: -9px;
 }
-.create-instance-btn-pos{
+.create-instance-btn-pos {
     margin-top: 27px;
 }
-.pb-top{
+.pb-top {
     padding-top: 7px;
 }
-.btn-machine-ctrl{
+.btn-machine-ctrl {
     margin-left: 5px;
 }
 .chart-icon {
@@ -1705,4 +1630,7 @@ span.btn-success {
 .id-section td:last-child {
     color: #333333 !important;
     font-weight: bold;
+}
+.select2-choice span {
+    font-size: 14px;
 }

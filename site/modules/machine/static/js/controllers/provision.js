@@ -945,6 +945,9 @@
             };
 
             $scope.selectVersion = function (version) {
+                if (typeof (version) === 'string') {
+                    version = JSON.parse(version);
+                }
                 $scope.selectDataset(version.id, true);
             };
 

@@ -32,10 +32,11 @@
                     <tr>
                         <td><label>Phone Number</label></td>
                         <td>
-                            <div class="input-prepend" style="border-radius: 0;">
-                                <span class="add-on" style="width: 45px;border-radius: 0;">+{{selectedCountryCode}}</span>
-                                <input style="width: 150px;border-radius: 0;" type="text"
+                            <div class="input-prepend">
+                                <span class="add-on phone-code">+{{selectedCountryCode}}</span>
+                                <input type="text"
                                        id="phone"
+                                       class="phone-input"
                                        name="phone"
                                        data-ng-model="phone"
                                        required/>
@@ -64,13 +65,13 @@
                         <tr>
                             <td><label>PIN Number</label></td>
                             <td>
-                                <input data-ng-model="pin" type="text" required style="border-radius: 0;">
+                                <input data-ng-model="pin" type="text" required>
                             </td>
                             <td>
-                                <div data-ng-show="pinError" class="error" style="margin-top: 4px;">
+                                <div data-ng-show="pinError" class="error pin-error">
                                     <span>{{pinError}}</span>
                                 </div>
-                                <div data-ng-show="pinIsInvalid" class="error" style="margin-top: 4px;">
+                                <div data-ng-show="pinIsInvalid" class="error pin-error">
                                     <span>Please use four-digit pins only</span>
                                 </div>
                             </td>

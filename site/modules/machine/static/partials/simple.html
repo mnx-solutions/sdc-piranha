@@ -8,15 +8,11 @@
             <div class="wizard-first-step row-fluid">
                 <span class="select-name">Data Center:</span>
                 <div class="btn-group">
-                    <button class="btn datacenter-select" data-ng-show="data.datacenter" data-toggle="dropdown">{{data.datacenter}}</button>
-                    <button class="btn dropdown-toggle datacenter-select" data-toggle="dropdown">
-                        <span class="caret"></span>
-                    </button>
-                    <ul class="dropdown-menu dd-datacenter">
-                        <li data-ng-repeat="datacenter in datacenters">
-                            <a data-ng-click="selectDatacenter(datacenter.name)">{{datacenter.name}}</a>
-                        </li>
-                    </ul>
+                    <select type="hidden" data-select-two id="selectDatacenter" data-item="datacenter" data-select="data.datacenter" data-fn="selectDatacenter">
+                        <option data-ng-repeat="datacenter in datacenters" value="{{datacenter.name}}">
+                            {{datacenter.name}}
+                        </option>
+                    </select>
                     <div class="loading-medium loading-medium-inline" data-ng-show="datasetsLoading"></div>
                 </div>
                 <div class="hotlinks pull-right">

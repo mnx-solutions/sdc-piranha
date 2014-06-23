@@ -47,7 +47,9 @@
                     $scope.form = {
                         cardHolderInfo: {
                         },
-                        promoCode: ''
+                        promoCode: '',
+                        expirationYear: '',
+                        expirationMonth: ''
                     };
 
                     $http.get('billing/campaign').then(function (code) {
@@ -156,7 +158,7 @@
                         $scope.prev = prev;
                         if (prev && prev.cardHolderInfo) {
                             $scope.form.expirationMonth = prev.expirationMonth < 10 ? '0' + prev.expirationMonth : prev.expirationMonth.toString();
-                            $scope.form.expirationYear = prev.expirationYear;
+                            $scope.form.expirationYear = prev.expirationYear.toString();
                             $scope.form.creditCardNumber = prev.cardNumber;
                             $scope.form.securityCode = prev.securityCode;
                             var nameSpaceIndex = prev.cardHolderInfo.cardHolderName.indexOf(' ');
