@@ -253,9 +253,7 @@
     resize: vertical;
 }
 .job-info-container {
-    padding-left: 20px;
-    padding-bottom: 50px;
-    white-space: nowrap;
+    padding: 0 0 50px 20px;
 }
 .column {
     display: inline-block;
@@ -271,7 +269,12 @@
     padding-top: 12px;
     padding-right: 20px;
 }
+.job-common td:last-child {
+    max-width: 300px;
+    word-wrap: break-word;
+}
 .job-table td {
+    vertical-align: top;
     text-transform: capitalize;
 }
 .job-table tr:first-child td {
