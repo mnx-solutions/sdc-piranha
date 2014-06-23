@@ -1,7 +1,7 @@
 .page-sidebar {
     position: absolute;
+    padding-top: 37px;
     width: 175px;
-    padding-top: 90px;
     background-color: #3d3d3d;
 }
 .page-sidebar-closed ul.page-sidebar-menu {
