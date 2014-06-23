@@ -73,5 +73,10 @@
     "JTB214964!": {
         "expirationDate": "2014-04-01",
         "startDate": "2014-02-14"
+    },
+    "TRYSDC7": {
+        "expirationDate": "2020-12-30",
+        "startDate": "2014-06-22",
+        "ratePlanName": "SDC7 Download"
     }
 }
