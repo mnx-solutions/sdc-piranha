@@ -222,11 +222,15 @@
                             }
 
                             if (err && err.message && err.message.indexOf(quotaExceededHeader) === 0) {
-                                $location.path('/dashboard');
+                                var redirectUrl = '/compute/create/simple';
                                 PopupDialog.error(null, err.message.substr(quotaExceededHeader.length), function () {
-                                    $scope.zenboxDialog({
-                                        request_subject: 'Please raise my provisioning limits'
-                                    });
+                                    if (err.message.indexOf('Free tier offering is limited') === -1) {
+                                        redirectUrl = '/dashboard';
+                                        $scope.zenboxDialog({
+                                            request_subject: 'Please raise my provisioning limits'
+                                        });
+                                    }
+                                    $location.path(redirectUrl);
                                 });
                                 return;
                             }
