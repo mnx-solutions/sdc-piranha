@@ -31,6 +31,7 @@
             requestContext.setUpRenderContext('machine.provision', $scope, {
                 title: localization.translate(null, 'machine', 'Create Instances on Joyent')
             });
+            var CHOOSE_IMAGE_STEP = 0;
             var SELECT_PACKAGE_STEP = 1;
             var REVIEW_STEP = 2;
             var REVIEW_STEP_NAME = 'Review';
@@ -62,11 +63,10 @@
 
             $scope.preSelectedData = $rootScope.popCommonConfig('preSelectedData');
 
+            $scope.instanceType = ($scope.preSelectedImageId || $location.path().indexOf('/custom') > -1) ? 'Saved' : 'Public';
             if ($scope.preSelectedData && $scope.preSelectedData.preSelectedImageId) {
                 $scope.preSelectedImageId = $scope.preSelectedData.preSelectedImageId;
             }
-
-            $scope.instanceType = $location.path().indexOf('/custom') > -1 ? 'Saved' : 'Public';
 
             $scope.instanceMetadataEnabled = $scope.features.instanceMetadata === 'enabled';
             $scope.metadataArray = [
@@ -753,6 +753,10 @@
             $scope.reconfigure = function (step) {
                 $scope.showReConfigure = false;
                 $scope.showFinishConfiguration = false;
+                if (step === CHOOSE_IMAGE_STEP) {
+                    $scope.preSelectedImage = null;
+                    $scope.preSelectedImageId = null;
+                }
                 if (step !== REVIEW_STEP) {
                     if ($scope.networks && $scope.networks.length) {
                         setNetworks($scope.data.datacenter);
