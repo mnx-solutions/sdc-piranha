@@ -335,4 +335,6 @@
 .state-label-cancelled {
     background-color: #8E8E8E;
 }
-
+.job-section-body {
+    word-wrap: break-word;
+}
