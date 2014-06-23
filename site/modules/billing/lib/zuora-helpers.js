@@ -184,19 +184,19 @@ function composeZuoraAccount(call, cb) {
             cb(err);
             return;
         }
-        call.cloud.getAccount(function (err, data) {
-            if (err) {
-                cb(err);
+        call.cloud.getAccount(function (accountErr, accountData) {
+            if (accountErr) {
+                cb(accountErr);
                 return;
             }
             function createObjects(ratePlanId) {
                 var obj = {
-                    accountNumber: data.id,
+                    accountNumber: accountData.id,
                     currency: 'USD',
                     paymentTerm: 'Due Upon Receipt',
                     Category__c: 'Credit Card',
                     billCycleDay: 1,
-                    name: data.companyName || ((data.firstName || call.data.firstName) + ' ' + (data.lastName || call.data.lastName)),
+                    name: accountData.companyName || ((accountData.firstName || call.data.firstName) + ' ' + (accountData.lastName || call.data.lastName)),
                     subscription: {
                         termType: 'EVERGREEN',
                         contractEffectiveDate: moment().utc().subtract('hours', 8).format('YYYY-MM-DD'), // PST date
@@ -217,13 +217,13 @@ function composeZuoraAccount(call, cb) {
                         || k);
                     obj.creditCard[key] = cc[k];
                 });
-                composeBillToContact(call, data, function (err3, billToContact) {
+                composeBillToContact(call, accountData, function (err3, billToContact) {
                     if (err3) {
                         cb(err3);
                         return;
                     }
                     obj.billToContact = billToContact;
-                    cb(null, obj, data);
+                    cb(null, obj, accountData);
                 });
             }
             // for unique SKU's, sku SKU-00000014 is pre-entered for 'Free Trial'
@@ -243,16 +243,16 @@ function composeZuoraAccount(call, cb) {
                 if (config.features.promocode !== 'disabled' && call.data.promoCode && config.ns['promo-codes']) {
                     var code = call.data.promoCode.toUpperCase();
                     var promo = config.ns['promo-codes'][code];
-                    var err = null;
+                    var productErr = null;
                     if (!promo) {
-                        err = {promoCode: code + ' is not a valid promotional code'};
+                        productErr = {promoCode: code + ' is not a valid promotional code'};
                     } else if ((promo.startDate && (new Date()) < (new Date(promo.startDate)))) {
-                        err = {promoCode: code + ' is not yet active - startDate = ' + promo.startDate};
+                        productErr = {promoCode: code + ' is not yet active - startDate = ' + promo.startDate};
                     } else if ((promo.expirationDate && (new Date()) > (new Date(promo.expirationDate)))) {
-                        err = {promoCode: code + ' has expired - expirationDate = ' + promo.expirationDate};
+                        productErr = {promoCode: code + ' has expired - expirationDate = ' + promo.expirationDate};
                     }
-                    if (err) {
-                        call.log.warn(err);
+                    if (productErr) {
+                        call.log.warn(productErr);
                         call.done({promoCode: 'Promo code is not valid'}, true);
                         return;
                     }
@@ -300,10 +300,10 @@ function composeZuoraAccount(call, cb) {
 
                 },
                 inputs: zuoraSkus
-            }, function (err, results) {
-                if (err) {
-                    call.log.error('SKU querying resulted in error', err, results);
-                    cb(err);
+            }, function (catalogErr, results) {
+                if (catalogErr) {
+                    call.log.error('SKU querying resulted in error', catalogErr, results);
+                    cb(catalogErr);
                     return;
                 }
                 var ratePlans = {};
@@ -406,22 +406,88 @@ function createZuoraAccount(call, cb) {
 
 module.exports.createZuoraAccount = createZuoraAccount;
 
+var getInvoiceFromCache = function (scope, req, invoiceId, callback) {
+    if (config.features.manta === 'enabled') {
+        var MantaClient = scope.api('MantaClient');
+        var client = MantaClient.createClient({req: req});
+        var invoiceFolder = '/' + req.session.userName + '/stor/.joyent/invoices/' + req.params.id;
+        var invoiceFound = false;
+        client.ls(invoiceFolder, function (listErr, listResult) {
+            if (listErr) {
+                callback(listErr);
+                return;
+            }
+            listResult.on('object', function (obj) {
+                var fullPath = invoiceFolder + '/' + obj.name;
+                invoiceFound = true;
+                client.get(fullPath, function (fileErr, fileStream) {
+                    callback(fileErr, {name: obj.name, stream: fileStream});
+                });
+            });
+            listResult.once('error', function (err) {
+                callback(err);
+            });
+            listResult.once('end', function () {
+                if (!invoiceFound) {
+                    callback('Invoice not found');
+                }
+            });
+        });
+    } else {
+        setImmediate(function () {
+            callback('Manta is disabled');
+        });
+    }
+};
+
+var addInvoiceToCache = function (scope, req, invoiceId, fileName, fileData) {
+    if (config.features.manta === 'enabled') {
+        var MantaClient = scope.api('MantaClient');
+        var MemoryStream = require('memorystream');
+        var client = MantaClient.createClient({req: req});
+        var folderPath = '/' + req.session.userName + '/stor/.joyent/invoices/' + invoiceId;
+        client.mkdirp(folderPath, function () {
+            var fullPath = folderPath + '/' + fileName;
+            var stream = new MemoryStream();
+            client.put(fullPath, stream, { size: fileData.length }, function (putErr) {
+                scope.log.warn({err: putErr}, 'Error while putting invoice in cache');
+            });
+            stream.end(fileData);
+        });
+    }
+};
+
 function getInvoicePDF(req, res, next) {
-    zuoraSoap.queryPDF(req.params.account, req.params.id, function (err, data) {
-        if (err) {
-            next(err);
+    var scope = this;
+    getInvoiceFromCache(scope, req, req.params.id, function (cacheErr, cacheResult) {
+        if (cacheErr) {
+            zuoraSoap.queryPDF(req.params.account, req.params.id, function (err, data) {
+                if (err) {
+                    next(err);
+                    return;
+                }
+                var buffer = new Buffer(data.Body,'base64');
+                var invoiceFileName = 'Joyent_Invoice_' + data.InvoiceNumber + '_' +
+                    moment(data.InvoiceDate).format('MMM_YYYY') + '.pdf';
+                res.set({
+                    'Accept-Ranges': 'bytes',
+                    'Content-Disposition': 'attachment; filename="' + invoiceFileName + '"',
+                    'Content-Length': buffer.length,
+                    'Content-Type': 'application/pdf'
+                });
+                res.send(buffer);
+                addInvoiceToCache(scope, req, req.params.id, invoiceFileName, buffer);
+            });
             return;
         }
-        var buffer = new Buffer(data.Body, 'base64');
         res.set({
-            'Accept-Ranges':'bytes',
-            'Content-Disposition':'attachment; filename="Joyent_Invoice_' +
-                data.InvoiceNumber + '_' + moment(data.InvoiceDate).format('MMM_YYYY') + '.pdf"',
-            'Content-Length': buffer.length,
+            'Content-Disposition':'attachment; filename="' + cacheResult.name + '"',
             'Content-Type':'application/pdf'
         });
-        res.send(buffer);
+        cacheResult.stream.pipe(res);
     });
+
+
 }
 module.exports.zSoap = zuoraSoap;
 

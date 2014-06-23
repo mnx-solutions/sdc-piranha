@@ -89,5 +89,5 @@ module.exports = function execute(scope, app) {
         res.send(200, String(amount));
     });
 
-    app.get('/invoice/:account/:id', zuoraHelpers.getInvoicePDF);
+    app.get('/invoice/:account/:id', zuoraHelpers.getInvoicePDF.bind(scope));
 };
