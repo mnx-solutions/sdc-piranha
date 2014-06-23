@@ -59,10 +59,10 @@
             // when all datasources are loaded, disable loader
             $q.all([
                 $q.when(Account.getAccount()),
-                $q.when($scope.rssentries)
+                $q.when($scope.rssentries),
+                $q.when(Machine.machine())
             ]).then(function (result) {
                 $scope.account = result[0] || {};
-
                 var tasks = [];
                 if ($scope.account.provisionEnabled) {
                     if ($rootScope.features.support === 'enabled') {
@@ -73,14 +73,13 @@
                             });
                         });
                     }
-                    tasks.push($q.when(Machine.machine()));
+                    $scope.machines = result[2] || [];
                     if ($scope.slbFeatureEnabled) {
                         tasks.push($q.when(slbService.getBalancers()));
                         tasks.push($q.when(slbService.getController()));
                     }
 
                     $q.all(tasks).then(function (tasksResult) {
-                        $scope.machines = tasksResult[0] || [];
                         if ($scope.slbFeatureEnabled) {
                             $scope.balancers = tasksResult[1];
                             $scope.slbControllerCreated = tasksResult[2];
