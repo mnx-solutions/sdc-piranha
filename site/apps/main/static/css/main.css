@@ -3290,3 +3290,11 @@ label.checkbox.folder-name-form-checkbox {
     padding-left: 135px;
     width: 375px;
 }
+.rule-error {
+    overflow: scroll;
+    max-height: 300px;
+}
+.rule-error p {
+    white-space: pre-line;
+    font-family: monospace;
+}

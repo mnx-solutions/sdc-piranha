@@ -59,22 +59,38 @@
                 }, function (err) {
                     $scope.loading = false;
                     if (err.message.indexOf('Parse error on line') > -1) {
-                        var message = err.message.replace(/Parse error on line \d+:\n/, '');
                         var match;
-                        var errorMessage = 'Error on:';
                         var ruleErrors = [];
-                        var regexp = new RegExp('(.+)\n[\-]+[^\n]+\n', 'g'); //expected message = "Parse error on line 1:\n*can createmachine*\n-----^\nExpecting 'CAN', got 'FUZZY_STRING'"
-                        while ((match = regexp.exec(message)) !== null) {
-                            var ruleError = match[1];
+                        var regexp = /(Parse\s*error\s*on\s*line\s*\d+\s*:\s*(.+)\n[\-]+[^\n]+\n.*\'),?/g; //expected message = "Parse error on line 1:\n*can createmachine*\n-----^\nExpecting 'CAN', got 'FUZZY_STRING'"
+                        while ((match = regexp.exec(err.message)) !== null) {
+                            var ruleError = match[2];
                             $scope.rules.forEach(function (rule, index) {
                                 if (ruleError === rule.rule) {
-                                    ruleErrors.push(' "Rule ' + (index + 1) + '"');
+                                    ruleErrors.push({index: index + 1, message: match[1]});
                                 }
                             });
                         }
-                        err.message = errorMessage + ruleErrors.join(', ');
+                        var opts = {
+                            templateUrl: 'rbac/static/partials/rules-error.html',
+                            openCtrl: function ($scope, dialog) {
+                                $scope.ruleErrors = ruleErrors;
+                                $scope.buttons = [
+                                    {
+                                        result: 'ok',
+                                        label: 'Ok',
+                                        cssClass: 'orange',
+                                        setFocus: false
+                                    }
+                                ];
+                                $scope.buttonClick = function (res) {
+                                    dialog.close(res);
+                                };
+                            }
+                        };
+                        PopupDialog.custom(opts);
+                    } else {
+                        PopupDialog.errorObj(err);
                     }
-                    PopupDialog.errorObj(err);
                 });
             };
 
