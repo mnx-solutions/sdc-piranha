@@ -4,6 +4,7 @@
 (function (ng, app) {
     app.factory('rule', [
         'serverTab',
+        'Dataset',
         '$rootScope',
         '$q',
         '$timeout',
@@ -11,7 +12,7 @@
         'util',
         'PopupDialog',
 
-        function (serverTab, $rootScope, $q, $timeout, localization, util, PopupDialog) {
+        function (serverTab, Dataset, $rootScope, $q, $timeout, localization, util, PopupDialog) {
 
             var service = {};
             var rules = { job: null, index: {}, map: {}, list: [], search: {} };
@@ -55,33 +56,46 @@
                 }
                 rules.map[rule.datacenter].push(rule);
 
-                function showError (err) {
-                    // add messages from errors to make it move convenient
-                    var errMsg = (err.message) ? '<br />' + err.message : '';
-                    if(err.body.errors && err.body.errors.length > 0) {
-                        err.body.errors.forEach(function(error) {
-                            errMsg += (error.message) ? '<br />' + error.message : '';
-                        });
-                    }
-                
-                    PopupDialog.error(
-                        localization.translate(
-                            null,
-                            null,
-                            'Error'
-                        ),
-                        localization.translate(
-                            null,
-                            'firewall',
-                            'Unable to a create rule: {{error}}.',
-                            {
-                                error: errMsg
-                            }
-                        ),
-                        function () {}
-                    );
+                function isDatacenterOn(callback) {
+                    return Dataset.dataset({datacenter: rule.datacenter}).catch(function (err) {
+                        return callback(null, err);
+                    });
+                }
 
-                    removeRule(rule);
+                function showError(err) {
+                    isDatacenterOn(function (err2, result) {
+                        // add messages from errors to make it move convenient
+                        var errMsg = (err.message) ? '<br />' + err.message : '';
+                        if (err.body.errors && err.body.errors.length > 0) {
+                            err.body.errors.forEach(function (error) {
+                                errMsg += (error.message) ? '<br />' + error.message : '';
+                            });
+                        }
+                        if (!!result.code) {
+                            errMsg = errMsg + 'Datacenter ' + rule.datacenter + ' is currently not available. We are working on getting this datacenter back on';
+                        }
+
+                        PopupDialog.error(
+                            localization.translate(
+                                null,
+                                null,
+                                'Error'
+                            ),
+                            localization.translate(
+                                null,
+                                'firewall',
+                                'Unable to a create rule: {{error}}.',
+                                {
+                                    error: errMsg
+                                }
+                            ),
+                            function () {
+                            }
+                        );
+
+                        removeRule(rule);
+
+                    });
                 }
 
                 // Create a new rule
