@@ -50,7 +50,7 @@
                     var year = parseInt(requestContext.getParam('year'), 10) || now.getFullYear();
                     var month = parseInt(requestContext.getParam('month'), 10) || now.getMonth() + 1;
                     usageType = usageType ? (usageType + '/') : '';
-                    window.location = '#!/usage/' + usageType + year + '/' + month;
+                    $location.path('/usage/' + usageType + year + '/' + month);
                 };
             }
         };
