@@ -184,6 +184,8 @@
                 });
             };
 
+            var provisioningInProgress = false;
+
             var provision = function (machine) {
                 var finalProvision = function () {
                     if (machine && !machine.dataset) {
@@ -199,8 +201,10 @@
                             machine: machineData
                         });
                         $location.path('/compute/ssh');
-                    } else {
+                    } else if (!provisioningInProgress) {
+                        provisioningInProgress = true;
                         Machine.provisionMachine(machineData).done(function (err, job) {
+                            provisioningInProgress = false;
                             var quotaExceededHeader = 'QuotaExceeded: ';
 
                             if (err && err.message.indexOf('Free tier') > -1) {
