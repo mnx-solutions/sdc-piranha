@@ -52,6 +52,7 @@ public class FreeInstanceTest extends TestWrapper {
         sideBarMenu.clickCompute();
         if ($("thead").exists()) {
             InstanceList instanceList = page(InstanceList.class);
+            instanceList.openGridTab(PropertyHolder.getDatacenter(0));
             instanceList.deleteInstance(instanceList.getFirstInstanceName());
         }
         sideBarMenu.clickDashboard().clickCreateComputeInstance();
@@ -114,10 +115,8 @@ public class FreeInstanceTest extends TestWrapper {
 //    check data in instance grid
         waitForCondition(concatNameAndVersion("/"));
         instances.addGridColumn("Image ID");
-        instances.addGridColumn("Dataset");
         final SelenideElement row = $(ROW_SELECTOR);
         String imageId = Common.getImageID(instance.getImageName(), instance.getDatacenter(), instance.getVersion());
-        waitForCondition(dataset);
         assertTrue(row.text().contains(imageId));
 
 //    check data in instance details

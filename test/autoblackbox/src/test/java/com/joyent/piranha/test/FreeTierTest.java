@@ -25,7 +25,7 @@ import static org.junit.Assert.assertTrue;
 public class FreeTierTest extends TestWrapper {
     public static final String USER_NAME = PropertyHolder.getTestUserLogin();
     public static final String PASSWORD = PropertyHolder.getTestUserPassword();
-    public static final String DATACENTER = PropertyHolder.getDatacenter(0);
+    public static final String DATACENTER = PropertyHolder.getDatacenter(1);
     private static NavBarMenu navBarMenu;
     private static SideBarMenu sideBarMenu;
     private static Dashboard dashboard;
@@ -57,7 +57,7 @@ public class FreeTierTest extends TestWrapper {
         CreateInstanceQuickStart createInstance = dashboard.clickCreateFreeTier();
         createInstance.selectDataCenter(DATACENTER);
         createInstance.waitForMediumSpinnerDisappear();
-        final String imageName = "testImage";
+        final String imageName = "TestFree";
         String checkThisDate = createInstance.getFreeTierInfo(imageName);
         String freeTierEndDate = Common.addOneYearToDate(Common.getUserCreateDate(DATACENTER));
         assertFreeTierEndDate(freeTierEndDate, checkThisDate);

@@ -35,6 +35,7 @@ public class SmokeTest extends TestWrapper {
     public static final String DATACENTER = PropertyHolder.getDatacenter(0);
     private static NavBarMenu navBarMenu;
     private static SideBarMenu sideBarMenu;
+    private static Dashboard dashboard;
 
     @BeforeClass
     public static void openDashboard() {
@@ -43,7 +44,9 @@ public class SmokeTest extends TestWrapper {
 
         Login loginPage = open("/", Login.class);
         loginPage.login(USER_NAME, PASSWORD);
-        page(Dashboard.class).getCountInstancesRunning().shouldNotHave(text("0"));
+        dashboard = page(Dashboard.class);
+        dashboard.getFreeTierWidget().shouldBe(visible);
+        dashboard.getCountInstancesRunning().shouldNotHave(text("0"));
         navBarMenu = page(NavBarMenu.class);
         sideBarMenu = page(SideBarMenu.class);
     }
@@ -65,7 +68,7 @@ public class SmokeTest extends TestWrapper {
 
     @Test
     public void dashboardIsVisible() {
-        final Dashboard dashboard = sideBarMenu.clickDashboard();
+        dashboard = sideBarMenu.clickDashboard();
         dashboard.checkHeadingDashboard();
         dashboard.getCountInstancesRunning().shouldNotHave(text("0"));
 
@@ -93,14 +96,12 @@ public class SmokeTest extends TestWrapper {
         Instances instances = sideBarMenu.clickCompute();
         instances.waitingLoading();
         instances.checkTitle();
-        instances.errorNotPresent();
-
-        InstanceDetails instanceDetails = instances.getInstanceList().clickFirstInstance();
-
+        InstanceList instanceList = instances.getInstanceList();
+        instanceList.openGridTab(DATACENTER);
+        InstanceDetails instanceDetails = instanceList.clickFirstInstance();
         instanceDetails.checkTitle();
         instanceDetails.getChartElements().shouldHaveSize(3);
         final Analytics analytics = instanceDetails.clickDetailedAnalytics();
-
         analytics.getSelectInstanceLabel().shouldBe(visible);
         analytics.getStartAnalyticsButton().shouldBe(visible);
     }
@@ -139,12 +140,12 @@ public class SmokeTest extends TestWrapper {
     public void createInstanceCarouselIsVisible() throws FileNotFoundException {
         String instanceName = "selenide-created-instance";
         InstanceVO inst = InstanceParser.popInstance(PropertyHolder.getDatacenter(0));
-        final Dashboard dashboard = sideBarMenu.clickDashboard();
+        dashboard = sideBarMenu.clickDashboard();
         final CreateInstanceManual createInstanceManual = dashboard.clickCreateComputeInstance();
         createInstanceManual.clickAllPublicImagesLink();
-        createInstanceManual.selectDataCenter(DATACENTER);
         createInstanceManual.waitUntilPageIsActive(0);
         createInstanceManual.selectOsFilter("smartos");
+        createInstanceManual.selectDataCenter(DATACENTER);
         createInstanceManual.chooseImage(inst.getImageName());
         createInstanceManual.waitUntilPageIsActive(1);
         createInstanceManual.selectPackage(inst.getPackageName());
@@ -173,7 +174,7 @@ public class SmokeTest extends TestWrapper {
 
     @Test
     public void changePassword() {
-        page(Dashboard.class).getFreeTierWidget().waitUntil(visible, timeout);
+        dashboard.getFreeTierWidget().waitUntil(visible, timeout);
         ChangePassword changePassword = navBarMenu.clickAccountMenu().clickChangePassword();
         Common.switchWindow($(byText("Repeat password")));
 
@@ -193,6 +194,6 @@ public class SmokeTest extends TestWrapper {
         changePassword.getErrorLabel().get(1).shouldHave(text("You used this password recently. Please choose a new password."));
 
         WebDriverRunner.getWebDriver().close();
-        Common.switchWindow(page(Dashboard.class).getCountInstancesRunning());
+        Common.switchWindow(dashboard.getCountInstancesRunning());
     }
 }

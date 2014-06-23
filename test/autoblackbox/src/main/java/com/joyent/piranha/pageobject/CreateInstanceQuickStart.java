@@ -35,18 +35,18 @@ public class CreateInstanceQuickStart extends AbstractPageObject implements Crea
     }
 
     public Instances clickLaunchButton(String tierName) {
-        getImageRepeater(tierName, null, false).click();
+        getImageRepeater(tierName, null, free).click();
         // by the reason i can't understand first click not always perform an action
         sleep(7000);
         if (!$("thead").exists()) {
-            getImageRepeater(tierName, null, false).click();
+            getImageRepeater(tierName, null, free).click();
         }
         return page(Instances.class);
     }
 
     public Instances clickLaunchButton(String tierName, String anotherText) {
-        getImageRepeater(tierName, anotherText, false).waitUntil(Condition.visible, baseTimeout);
-        getImageRepeater(tierName, anotherText, false).click();
+        getImageRepeater(tierName, anotherText, free).waitUntil(Condition.visible, baseTimeout);
+        getImageRepeater(tierName, anotherText, free).click();
         return page(Instances.class);
     }
 
@@ -57,7 +57,7 @@ public class CreateInstanceQuickStart extends AbstractPageObject implements Crea
     }
 
     public SelenideElement getImageRepeater(String tierName) {
-        return getImageRepeater(tierName, null, false);
+        return getImageRepeater(tierName, null, free);
     }
 
     public SelenideElement getImageRepeater(String tierName, String anotherText, boolean isFree) {
