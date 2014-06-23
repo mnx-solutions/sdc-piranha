@@ -43,4 +43,9 @@ public class SideBarMenu extends AbstractPageObject {
         waitForLargeSpinnerDisappear();
         return page(aClass);
     }
+
+    public Usage clickUsage(){
+        clickMenu(USAGE_MENU_TITLE);
+        return page(Usage.class);
+    }
 }

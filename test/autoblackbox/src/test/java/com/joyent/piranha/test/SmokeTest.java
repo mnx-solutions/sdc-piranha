@@ -8,7 +8,10 @@ import com.joyent.piranha.pageobject.CreateInstanceManual;
 import com.joyent.piranha.pageobject.Instances;
 import com.joyent.piranha.pageobject.instancedetails.InstanceDetails;
 import com.joyent.piranha.util.TestWrapper;
+import com.joyent.piranha.utils.InstanceParser;
 import org.junit.*;
+
+import java.io.FileNotFoundException;
 
 import static com.codeborne.selenide.Condition.text;
 import static com.codeborne.selenide.Condition.visible;
@@ -133,22 +136,21 @@ public class SmokeTest extends TestWrapper {
     }
 
     @Test
-    public void createInstanceCarouselIsVisible() {
+    public void createInstanceCarouselIsVisible() throws FileNotFoundException {
         String instanceName = "selenide-created-instance";
-        String[] inst = Common.instanceProperties();
+        InstanceVO inst = InstanceParser.popInstance(PropertyHolder.getDatacenter(0));
         final Dashboard dashboard = sideBarMenu.clickDashboard();
         final CreateInstanceManual createInstanceManual = dashboard.clickCreateComputeInstance();
         createInstanceManual.clickAllPublicImagesLink();
         createInstanceManual.selectDataCenter(DATACENTER);
         createInstanceManual.waitUntilPageIsActive(0);
         createInstanceManual.selectOsFilter("smartos");
-        createInstanceManual.chooseImage(inst[0]);
+        createInstanceManual.chooseImage(inst.getImageName());
         createInstanceManual.waitUntilPageIsActive(1);
-        createInstanceManual.selectPackage(inst[3]);
+        createInstanceManual.selectPackage(inst.getPackageName());
         createInstanceManual.clickReviewBtn();
-        createInstanceManual.checkSelectedImageDescription(inst[4]);
-        createInstanceManual.checkPackageInfo(inst[5], inst[6], inst[7], inst[3]);
-        createInstanceManual.checkPaymentInfo(inst[8], inst[9]);
+        createInstanceManual.checkPackageInfo(inst.getRam(), inst.getDiskSpace(), inst.getCpu(), inst.getPackageVersion());
+        createInstanceManual.checkPaymentInfo(inst.getPricePerHour(), inst.getPricePerMonth());
         createInstanceManual.setInstanceNameValue(instanceName);
         createInstanceManual.selectNetwork(0);
         createInstanceManual.clickCreateInstanceButton();

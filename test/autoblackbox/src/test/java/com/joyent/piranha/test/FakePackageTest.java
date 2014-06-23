@@ -1,20 +1,18 @@
 package com.joyent.piranha.test;
 
-import com.joyent.piranha.Common;
 import com.joyent.piranha.PropertyHolder;
 import com.joyent.piranha.pageobject.*;
-import com.joyent.piranha.pageobject.CreateInstanceManual;
 import com.joyent.piranha.pageobject.instancedetails.InstanceDetails;
 import com.joyent.piranha.util.TestWrapper;
-import org.junit.*;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
 import static com.codeborne.selenide.Condition.text;
 import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Configuration.baseUrl;
 import static com.codeborne.selenide.Configuration.timeout;
-import static com.codeborne.selenide.Selenide.$;
-import static com.codeborne.selenide.Selenide.open;
-import static com.codeborne.selenide.Selenide.page;
+import static com.codeborne.selenide.Selenide.*;
 import static org.junit.Assert.assertTrue;
 
 public class FakePackageTest extends TestWrapper {
@@ -58,7 +56,8 @@ public class FakePackageTest extends TestWrapper {
 
     @Test
     public void resizeInstanceHighPerformance() {
-        InstanceDetails instanceDetails = sideBarMenu.clickCompute().getInstanceList().openInstanceDetails(Common.getTestInstanceName());
+        InstanceList instanceList = sideBarMenu.clickCompute().getInstanceList();
+         InstanceDetails instanceDetails= instanceList.openInstanceDetails(instanceList.getFirstInstanceName());
         String instanceId = instanceDetails.getInstanceId();
         instanceDetails.selectResizeOption("Mem: 128 GB Disk: 4200 GB VCPU: 32 and bursting");
         Zenbox zenbox = instanceDetails.clickResizeButton("fakePackage");

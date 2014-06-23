@@ -164,6 +164,7 @@ public class FreeInstanceTest extends TestWrapper {
             }
             Thread.sleep(1000);
         }
+        session.disconnect();
         assertTrue(stdOutBuilder.toString().contains(concatNameAndVersion(" ")));
     }
 

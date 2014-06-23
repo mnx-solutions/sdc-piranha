@@ -159,16 +159,14 @@ public class CreateInstanceManual extends AbstractPageObject implements CreateIn
 
     @Override
     public Instances createInstance(InstanceVO instanceVO) {
-        while ($$(".checker").size() == 0) {
-            page(SideBarMenu.class).clickDashboard().clickCreateComputeInstance();
-            clickAllPublicImagesLink();
-            selectDataCenter(instanceVO.getDatacenter());
-            chooseImage(instanceVO.getImageName());
-            selectPackage(instanceVO.getPackageVersion());
-            selectPackageVersion(instanceVO.getVersion());
-            clickReviewBtn();
-            sleep(1000);
-        }
+
+        page(SideBarMenu.class).clickDashboard().clickCreateComputeInstance();
+        clickAllPublicImagesLink();
+        selectDataCenter(instanceVO.getDatacenter());
+        chooseImage(instanceVO.getImageName());
+        selectPackage(instanceVO.getPackageVersion());
+        selectPackageVersion(instanceVO.getVersion());
+        clickReviewBtn();
         selectNetwork(0);
         setInstanceNameValue(instanceVO.getImageName());
         clickCreateInstanceButton();

@@ -2,10 +2,6 @@ package com.joyent.piranha.test.recentimageversion;
 
 import com.joyent.piranha.PropertyHolder;
 import com.joyent.piranha.pageobject.*;
-import com.joyent.piranha.pageobject.CreateInstanceManual;
-import com.joyent.piranha.pageobject.InstanceList;
-import com.joyent.piranha.pageobject.InstanceVO;
-import com.joyent.piranha.pageobject.Instances;
 import com.joyent.piranha.pageobject.instancedetails.FirewallSection;
 import com.joyent.piranha.pageobject.instancedetails.InstanceDetails;
 import com.joyent.piranha.pageobject.instancedetails.MetadataSection;
@@ -100,10 +96,12 @@ public class InstanceMainOperationsTest extends TestWrapper {
         instanceList.openGridTab(PropertyHolder.getDatacenter(0));
         instanceDetails = instanceList.openFirstInstanceDetails();
         Analytics analytics = instanceDetails.clickDetailedAnalytics();
+        String metricsName = "CPU: aggregated CPU usage";
+        analytics.selectMetrics(metricsName);
         analytics.getStartAnalyticsButton().click();
 
         final String cpuRepeater = "i in graphs";
-        analytics.getGraphTitleElement(cpuRepeater, "CPU: aggregated CPU usage").shouldBe(visible);
+        analytics.getGraphTitleElement(cpuRepeater, metricsName).shouldBe(visible);
 
         long i = 0;
         String q;
