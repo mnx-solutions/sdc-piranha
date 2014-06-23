@@ -6,10 +6,9 @@
         '$scope',
         'Account',
         'rbac.Service',
-        '$location',
         'PopupDialog',
         'localization',
-        function ($q, $scope, Account, service, $location, PopupDialog, localization) {
+        function ($q, $scope, Account, service, PopupDialog, localization) {
             $scope.loading = true;
             $scope.policies = [];
             service.listPolicies().then(function (policies) {
@@ -43,7 +42,7 @@
                 );
             };
 
-            $scope.gridUserConfig = Account.getUserConfig().$child('rbac') || {};
+            $scope.gridUserConfig = Account.getUserConfig().$child('rbac-policies') || {};
 
             $scope.gridOrder = ['name'];
             $scope.gridProps = [
@@ -86,7 +85,7 @@
             $scope.gridActionButtons = [
                 {
                     label: 'Delete',
-                    action: function (object) {
+                    action: function () {
                         //FIXME: Let's create simple "pluralize" method in utils and use it here
                         var titleEnding = 'y';
                         var checkedItems = $scope.getCheckedItems();

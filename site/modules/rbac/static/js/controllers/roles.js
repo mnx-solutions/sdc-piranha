@@ -4,13 +4,12 @@
     app.controller('rbac.RoleListController', [
         '$q',
         '$scope',
-        'requestContext',
         'Account',
         'rbac.Service',
         '$location',
         'PopupDialog',
         'localization',
-        function ($q, $scope, requestContext, Account, service, $location, PopupDialog, localization) {
+        function ($q, $scope, Account, service, $location, PopupDialog, localization) {
             $scope.loading = true;
 
             $scope.roles = [];
@@ -56,7 +55,7 @@
             };
 
 
-            $scope.gridUserConfig = Account.getUserConfig().$child('roles') || {};
+            $scope.gridUserConfig = Account.getUserConfig().$child('rbac-roles') || {};
 
             $scope.gridOrder = ['name'];
             $scope.gridProps = [
@@ -101,7 +100,7 @@
             $scope.gridActionButtons = [
                 {
                     label: 'Delete',
-                    action: function (object) {
+                    action: function () {
                         var titleEnding = '';
                         var checkedItems = $scope.getCheckedItems();
                         if (checkedItems.length > 1) {

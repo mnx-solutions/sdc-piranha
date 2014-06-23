@@ -52,7 +52,7 @@
                 );
             };
 
-            $scope.gridUserConfig = Account.getUserConfig().$child('rbac') || {};
+            $scope.gridUserConfig = Account.getUserConfig().$child('rbac-users') || {};
 
             $scope.gridOrder = ['login'];
             $scope.gridProps = [
@@ -166,7 +166,7 @@
             $scope.gridActionButtons = [
                 {
                     label: 'Delete',
-                    action: function (object) {
+                    action: function () {
                         //FIXME: Let's create simple "pluralize" method in utils and use it here
                         var titleEnding = '';
                         var checkedItems = $scope.getCheckedItems();
