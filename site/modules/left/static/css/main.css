@@ -113,11 +113,18 @@ li.active a.usage-icon {
 li.active a.support-icon {
     background-image: url("../img/support-orange.png") !important;
 }
+.debug-icon {
+    background-image: url("../img/debug-white.png");
+}
+li.active a.debug-icon {
+    background-image: url("../img/debug-orange.png") !important;
+}
 .dashboard-icon,
 .compute-icon,
 .storage-icon,
 .usage-icon,
-.support-icon {
+.support-icon,
+.debug-icon {
     background-repeat: no-repeat;
     background-position: 20px 5px;
     background-size: 22px;
