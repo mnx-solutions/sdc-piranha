@@ -443,12 +443,17 @@ module.exports = function execute(scope, register) {
     };
 
     api.ImageCreate = function (call, options, callback) {
-
+        if (call.getImmediate) {
+            call.getImmediate();
+        }
         call.log.info({ options: options }, 'Creating image %s', options.name);
 
         var cloud = call.cloud.separate(options.datacenter);
         cloud.createImageFromMachine(options, function(err, image) {
             if (!err) {
+                if (call.immediate) {
+                    call.immediate(null, {image: image});
+                }
                 pollForObjectStateChange(cloud, call, 'state', 'active', (60 * 60 * 1000), 'Image', image.id, callback);
             } else {
                 callback(err);

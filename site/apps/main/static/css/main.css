@@ -1819,7 +1819,7 @@ table.table {
 }
 
 .dpl-inline {
-    display: inline-block !important;
+    display: inline-block;
 }
 
 select {

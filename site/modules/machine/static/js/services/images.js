@@ -13,6 +13,29 @@
             var service = {};
             var images = {index: {}, job: {}, list: [], search: {}};
 
+            function handleChunk (image) {
+                var old = null;
+
+                if (images.index[image.id]) {
+                    old = images.list.indexOf(images.index[image.id]);
+                }
+
+                images.index[image.id] = image;
+
+                if (images.search[image.id]) {
+                    images.search[image.id].forEach(function (r) {
+                        r.resolve(image);
+                    });
+                    delete images.search[image.id];
+                }
+
+                if (old === null) {
+                    images.list.push(image);
+                } else {
+                    images.list[old] = image;
+                }
+            }
+
             service.updateImages = function (force, showPublic) {
                 if (!showPublic) {
                     showPublic = false;
@@ -117,7 +140,42 @@
 
 
             service.createImage = function (machineId, datacenter, name, description, version) {
-                var newImage = serverTab.call({
+                var id = window.uuid.v4();
+                var image = {
+                    state: 'creating',
+                    published_at: Date.now(),
+                    machineId: machineId,
+                    name: name,
+                    description: description,
+                    datacenter: datacenter,
+                    version: version,
+                    id: id
+                };
+
+                images.list.push(image);
+                images.index[id] = image;
+
+                function showError(image, err) {
+                    var detailMessage = (err.body && err.body.message) || err.message || String(err);
+                    if (err.code === 'PrepareImageDidNotRun') {
+                        detailMessage += '. You likely need to <a href="http://wiki.joyent.com/wiki/display/jpc2/Upgrading+Linux+Guest+Tools">upgrade Joyent Linux Guest Tools</a>.';
+                    }
+                    return PopupDialog.error(
+                        localization.translate(
+                            null,
+                            null,
+                            'Error'
+                        ),
+                        localization.translate(
+                            null,
+                            'machine',
+                                'Unable to create image "{{name}}": ' + detailMessage,
+                            { name: image.name }
+                        )
+                    );
+                }
+
+                var jobCall = serverTab.call({
                     name: 'ImageCreate',
                     data: {
                         machineId: machineId,
@@ -126,47 +184,53 @@
                         datacenter: datacenter,
                         version: version
                     },
-                    done: function (err, image) {
-                        if (!err) {
-                            PopupDialog.message(
-                                localization.translate(
-                                    null,
-                                    null,
-                                    'Message'
-                                ),
-                                localization.translate(
-                                    null,
-                                    'machine',
-                                    'Image "{{name}}" successfully created.',
-                                    { name: image.data.name }
-                                ),
-                                function () {}
-                            );
-                            service.updateImages(true);
-                            Dataset.updateDatasets('all', true);
-                        } else {
-                            var detailMessage = (err.body && err.body.message) || err.message || String(err);
-                            if (err.code === 'PrepareImageDidNotRun') {
-                                detailMessage += '. You likely need to <a href="http://wiki.joyent.com/wiki/display/jpc2/Upgrading+Linux+Guest+Tools">upgrade Joyent Linux Guest Tools</a>.';
-                            }
-                            PopupDialog.error(
-                                localization.translate(
-                                    null,
-                                    null,
-                                    'Error'
-                                ),
-                                localization.translate(
-                                    null,
-                                    'machine',
-                                    'Unable to create image "{{name}}": ' + detailMessage,
-                                    { name: image.data.name }
-                                )
-                            );
+                    initialized: function (err, job) {
+                        if (err) {
+                            showError(image, err);
+                            return;
                         }
+
+                         var index = images.list.indexOf(image);
+                         delete images.index[id];
+                         image = job.initial.image;
+                         image.datacenter = datacenter;
+                         image.published_at = Date.now();
+                         image.job = job.getTracker();
+                         images.index[image.id] = image;
+                         images.list[index] = image;
+                    },
+                    done: function (err, job) {
+                        if (err) {
+                            showError(image, err);
+                            images.list.splice(images.list.indexOf(image), 1);
+                            delete images.index[id];
+                            return;
+                        }
+
+                        var result = job.__read();
+                        result.datacenter = datacenter;
+                        handleChunk(result);
+                        Dataset.updateDatasets('all', true);
+                    },
+                    progress: function (err, job) {
+                        var step = job.step;
+                        if (step) {
+                            Object.keys(step).forEach(function (k) {
+                                image[k] = step[k];
+                            });
+                        }
+                    },
+                    error: function (err) {
+                        if (err) {
+                            showError(image, err);
+                        }
+                        images.list.splice(images.list.indexOf(image), 1);
+                        delete images.index[id];
                     }
                 });
 
-                return newImage;
+                image.job = jobCall.getTracker();
+                return jobCall;
             };
 
             service.deleteImage = function (image) {
@@ -198,6 +262,7 @@
                     }
                 });
 
+                image.job = job.getTracker();
                 return job;
             };
 
@@ -206,27 +271,12 @@
                 image.state = 'renaming'; // Override state manually
                 var job = serverTab.call({
                     name: 'ImageRename',
-                    data: { image: image },
+                    data: { id: image.id, name: image.name, datacenter: image.datacenter },
                     done: function (err) {
                         image.state = oldState;
                         if (!err) {
-                            PopupDialog.message(
-                                localization.translate(
-                                    null,
-                                    null,
-                                    'Message'
-                                ),
-                                localization.translate(
-                                    null,
-                                    'image',
-                                    'Image "{{name}}" renamed',
-                                    { name: image.name }
-                                ),
-                                function () {
-                                    Dataset.updateDatasets('all', true);
-                                    callback();
-                                }
-                            );
+                            Dataset.updateDatasets('all', true);
+                            callback();
                         } else {
                             PopupDialog.error(
                                 localization.translate(
@@ -245,6 +295,7 @@
                     }
                 });
 
+                image.job = job.getTracker();
                 return job;
             };
 

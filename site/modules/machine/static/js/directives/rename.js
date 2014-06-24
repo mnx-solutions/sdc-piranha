@@ -12,12 +12,19 @@
             link: function (scope) {
                 scope.clearNameTimeout = null;
                 scope.type = String(scope.type);
+
+                scope.isRenameAvailable = function () {
+                    return !(scope.object && scope.object.job && !scope.object.job.finished);
+                };
+
                 scope.enableRename = function (name) {
-                    scope.changingName = true;
-                    scope.newName = name;
-                    $timeout(function () {
-                        angular.element('#renameObject').focus();
-                    });
+                    if (scope.isRenameAvailable()) {
+                        scope.changingName = true;
+                        scope.newName = name;
+                        $timeout(function () {
+                            angular.element('#renameObject').focus();
+                        });
+                    }
                 };
 
                 var renameFinished = function () {
