@@ -207,7 +207,7 @@
                             provisioningInProgress = false;
                             var quotaExceededHeader = 'QuotaExceeded: ';
 
-                            if (err && err.message.indexOf('Free tier') > -1) {
+                            if (err && err.message && err.message.indexOf('Free tier') > -1) {
                                 var freeDatacenters = [];
                                 var messagePart2 = '.';
                                 $scope.datacenters.forEach(function (datacenter) {
