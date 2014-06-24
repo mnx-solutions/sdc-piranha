@@ -116,7 +116,7 @@
                                 localization.translate(
                                     $scope,
                                     null,
-                                    'Are you sure you want to delete the selected role' + titleEnding
+                                    'Are you sure you want to delete the selected role' + titleEnding + '?'
                                 ),
                                 function () {
                                     $scope.loading = true;
@@ -141,13 +141,13 @@
             ];
 
             $scope.exportFields = {
-                ignore: ['checked']
+                ignore: ['checked', 'value']
             };
 
             $scope.columnsButton = true;
             $scope.searchForm = true;
             $scope.enabledCheckboxes = true;
-            $scope.placeHolderText = 'filter';
+            $scope.placeHolderText = 'filter roles';
 
 
         }

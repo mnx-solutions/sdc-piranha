@@ -17,7 +17,7 @@
                     $q.when(service.listUsers()),
                     $q.when(service.listRoles())
                 ]).then(function (result) {
-                    $scope.users = result[0] || [];
+                    $scope.users = angular.copy(result[0]) || [];
                     $scope.roles = result[1] || [];
                     $scope.loading = false;
                 }, function (err) {
@@ -68,7 +68,7 @@
                 },
                 {
                     id: 'login',
-                    name: 'Login',
+                    name: 'Username',
                     sequence: 2,
                     type: 'html',
                     _order: 'login',
@@ -125,7 +125,7 @@
                 },
                 {
                     id: 'postalCode',
-                    name: 'Postal Code',
+                    name: 'Zip code',
                     sequence: 9,
                     active: false
                 },
@@ -159,6 +159,13 @@
                     sequence: 14,
                     type: 'date',
                     active: true
+                },
+                {
+                    id: 'updated',
+                    name: 'Updated Date',
+                    sequence: 15,
+                    type: 'date',
+                    active: false
                 }
 
             ];
@@ -183,7 +190,7 @@
                                 localization.translate(
                                     $scope,
                                     null,
-                                    'Are you sure you want to delete the selected user' + titleEnding
+                                    'Are you sure you want to delete the selected user' + titleEnding + '?'
                                 ),
                                 function () {
                                     $scope.loading = true;
@@ -205,13 +212,13 @@
             ];
 
             $scope.exportFields = {
-                ignore: []
+                ignore: ['checked', 'value']
             };
 
             $scope.columnsButton = true;
             $scope.searchForm = true;
             $scope.enabledCheckboxes = true;
-            $scope.placeHolderText = 'filter';
+            $scope.placeHolderText = 'filter users';
 
         }
     ]);

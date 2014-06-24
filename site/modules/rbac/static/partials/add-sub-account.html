@@ -95,7 +95,7 @@
                    name="login"
                    data-ng-class="{error: isError('login')}"
                    data-ng-model="user.login"
-                   data-ng-pattern="/^[A-z][A-z0-9]*$/"
+                   data-ng-pattern="/^[A-Za-z0-9]+[A-Za-z0-9\.\-\s]*$/"
                    required/>
         </span>
         <span class="edit-error" data-ng-show="isFormSubmited || subAccountForm.login.$dirty">

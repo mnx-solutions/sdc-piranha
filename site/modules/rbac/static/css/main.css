@@ -6,6 +6,9 @@ input,
     font-weight: 200;
     font-size: 16px;
 }
+input[disabled] {
+    background-color: #eee !important;
+}
 select {
     padding: 4px 6px;
     width: 312px !important;
@@ -27,7 +30,7 @@ h4 {
     width: auto;
 }
 .edit-value-double {
-    width: 350px!important;
+    width: 340px!important;
 }
 .edit-value-double .input-prepend input {
     width: 100px !important;
@@ -37,10 +40,10 @@ h4 {
     width: 123px !important;
 }
 .ms-container ul.ms-list {
-    overflow-y: hidden;
+    overflow-x: hidden;
     padding: 0;
-    width: 160px;
-    height: 200px;
+    width: 220px;
+    height: 300px;
 }
 .ms-container .ms-list {
     -webkit-border-radius: 0;
@@ -53,10 +56,6 @@ h4 {
     color: white;
     text-decoration: none;
     cursor: pointer;
-}
-.ms-container ul.ms-list {
-    width: 220px;
-    height: 300px;
 }
 .ms-container {
     background-position: center center;
@@ -204,4 +203,8 @@ select.policy-form {
 .policy-form-error {
     padding-left: 140px;
     margin-top: -10px;
+}
+.filter-field {
+    font-size: 14px;
+    width: 190px;
 }

@@ -29,7 +29,9 @@
                     $q.when(service.getPolicy(policyId))
                 ]).then(function (result) {
                     var policy = result[0];
+                    $scope.storPolicy = angular.copy(policy);
                     $scope.model.policy.name = policy.name;
+                    $scope.model.policy.description = policy.description;
                     policy.rules.forEach(function (res) {
                         $scope.rules.push({rule: res, edit: false});
                     });
@@ -119,11 +121,31 @@
                     return;
                 }
                 convertRules();
-                policyAction(service.updatePolicy($scope.model.policy), redirect);
+                if (!redirect) {
+                    $scope.storPolicy.rules = $scope.model.policy.rules;
+                    policyAction(service.updatePolicy($scope.storPolicy), redirect);
+                } else {
+                    policyAction(service.updatePolicy($scope.model.policy), redirect);
+                }
             };
 
             $scope.deletePolicy = function () {
-                policyAction(service.deletePolicy($scope.model.policy.id), true);
+                PopupDialog.confirm(
+                    localization.translate(
+                        $scope,
+                        null,
+                        'Confirm: Delete policy'
+                    ),
+                    localization.translate(
+                        $scope,
+                        null,
+                        'Are you sure you want to delete the selected policy?'
+                    ),
+                    function () {
+                        $scope.loading = true;
+                        policyAction(service.deletePolicy($scope.model.policy.id), true);
+                    }
+                );
             };
 
             var checkRuleDuplicate = function (rule, index) {

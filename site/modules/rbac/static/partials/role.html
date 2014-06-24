@@ -1,7 +1,7 @@
 <div data-ng-controller="rbac.RoleController">
     <div class="container-fluid container-position container-min-width">
         <ul class="breadcrumb">
-            <li><a href="#!/accounts">Account</a>&nbsp;/</li>
+            <li><a href="#!/accounts">Accounts</a>&nbsp;/</li>
             <li><a href="#!/accounts/roles">Roles</a>&nbsp;/</li>
         </ul>
         <div class="page-header row-fluid">
@@ -25,7 +25,7 @@
                                 <div class="dpl-inline">
                                     <form name="roleForm">
                                         <div data-ng-show="role.id.length">
-                                            <label class="name dpl-inline">Id</label>
+                                            <label class="name dpl-inline">ID</label>
                                             <input type="text" class="role-name" name="roleid" data-ng-model="role.id" data-ng-disabled="role.id"/>
                                         </div>
                                         <div>
@@ -34,7 +34,7 @@
                                                    class="role-name"
                                                    name="roleName"
                                                    data-ng-model="role.name"
-                                                   data-ng-pattern="/^[A-z0-9\s\.\-]*$/"
+                                                   data-ng-pattern="/^[A-Za-z0-9]+[A-Za-z0-9\.\-\s]*$/"
                                                    required />
                                         </div>
                                         <div data-ng-show="isFormSubmited || roleForm.roleName.$dirty">
@@ -56,7 +56,7 @@
 
                     <div class="accordion-group" data-ng-show="users.length">
                         <div class="accordion-heading">
-                            <a class="accordion-toggle toggle-icon" data-toggle="collapse" data-target="#collapse_members">
+                            <a class="accordion-toggle toggle-icon" data-toggle="collapse" data-target="#collapse_members" data-parent="#accordionEditRoleLeft">
                                 Members
                             </a>
                         </div>

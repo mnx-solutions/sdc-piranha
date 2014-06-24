@@ -128,13 +128,13 @@
             ];
 
             $scope.exportFields = {
-                ignore: []
+                ignore: ['checked']
             };
 
             $scope.columnsButton = true;
             $scope.searchForm = true;
             $scope.enabledCheckboxes = true;
-            $scope.placeHolderText = 'filter';
+            $scope.placeHolderText = 'filter policies';
 
         }
     ]);

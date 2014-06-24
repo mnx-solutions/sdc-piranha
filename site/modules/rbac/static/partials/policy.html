@@ -1,7 +1,7 @@
 <div data-ng-controller="rbac.PolicyController">
     <div class="container-fluid container-position container-min-width">
         <ul class="breadcrumb">
-            <li><a href="#!/accounts">Account</a>&nbsp;/</li>
+            <li><a href="#!/accounts">Accounts</a>&nbsp;/</li>
             <li><a href="#!/accounts/policies">Policies</a>&nbsp;/</li>
         </ul>
         <div class="page-header row-fluid">
@@ -35,7 +35,7 @@
                                                class="policy-form"
                                                name="policyName"
                                                data-ng-model="model.policy.name"
-                                               data-ng-pattern="/^[A-z0-9\s\.\-]*$/"
+                                               data-ng-pattern="/^[A-Za-z0-9]+[A-Za-z0-9\.\-\s]*$/"
                                                required />
                                     </div>
                                     <div data-ng-show="isFormSubmited || policyForm.policyName.$dirty">

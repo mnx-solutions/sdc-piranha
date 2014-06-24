@@ -17,7 +17,7 @@
         function ($q, serverTab, $cacheFactory) {
             var ACCESS = {READ: 0, WRITE: 1};
             var ENTITY_TYPE = {USER: 'user', ROLE: 'role', POLICY: 'policy'};
-            var CACHE_DEPENDENCIES = {policy: 'role'/*, role: 'user'*/};
+            var CACHE_DEPENDENCIES = {policy: 'role', user: 'role'};
 
             var service = {};
             var promiseActions = {};

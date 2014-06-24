@@ -23,7 +23,7 @@
                                 <div data-ng-show="user.id.length">
                                     <div class="control-group">
                                         <span class="edit-name" data-translate>
-                                            User Id
+                                            User ID
                                         </span>
                                         <span class="edit-value">
                                             <input type="text"
@@ -34,6 +34,32 @@
                                    </div>
                                 </div>
                                 <div data-add-sub-account data-user="user"></div>
+                                <div data-ng-show="user.created.length">
+                                    <div class="control-group">
+                                        <span class="edit-name" data-translate>
+                                            Created
+                                        </span>
+                                        <span class="edit-value">
+                                            <input type="text"
+                                                   name="created"
+                                                   data-ng-disabled="user.created"
+                                                   value="{{ user.created | date:'yyyy-MM-dd HH:mm'}}"/>
+                                        </span>
+                                    </div>
+                                </div>
+                                <div data-ng-show="user.updated.length">
+                                    <div class="control-group">
+                                        <span class="edit-name" data-translate>
+                                            Updated
+                                        </span>
+                                        <span class="edit-value">
+                                            <input type="text"
+                                                   name="updated"
+                                                   value="{{ user.updated | date:'yyyy-MM-dd HH:mm'}}"
+                                                   data-ng-disabled="user.updated"/>
+                                        </span>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>

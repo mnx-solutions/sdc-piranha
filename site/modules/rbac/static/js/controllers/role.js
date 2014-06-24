@@ -29,6 +29,12 @@
             var roleId = requestContext.getParam('id');
             var isNew = roleId && roleId === 'create';
 
+            var orderByLogin = function (items) {
+                return items.sort(function (a, b) {
+                    return a.login.localeCompare(b.login);
+                });
+            };
+
             if (!isNew) {
                 $scope.role.id = roleId;
                 $q.all([
@@ -37,9 +43,10 @@
                     $q.when(service.listPolicies()),
                     $q.when(Account.getAccount(true))
                 ]).then(function (result) {
-                    $scope.role = result[0] || {};
+                    $scope.role = angular.copy(result[0]) || {};
                     var users = result[1] || [];
-                    var policies = result[2] || [];
+                    orderByLogin(users);
+                    var policies = angular.copy(result[2]) || [];
                     var account = result[3] || [];
                     policies.forEach(function (item) {
                         item.checked = $scope.role.policies.indexOf(item.name) > -1;
@@ -57,6 +64,7 @@
                             $scope.roleUsers.push(members[0]);
                         }
                     });
+                    orderByLogin($scope.roleUsers);
 
                     $scope.role.default_members.forEach(function (login) {
                         var members = users.filter(function (user) {
@@ -67,6 +75,7 @@
                             $scope.roleDefaultUsers.push(members[0]);
                         }
                     });
+                    orderByLogin($scope.roleDefaultUsers);
 
                     users.forEach(function (user) {
                         user.value = user.login;
@@ -172,7 +181,7 @@
                     localization.translate(
                         $scope,
                         null,
-                        'Are you sure you want to delete the selected role ?'
+                        'Are you sure you want to delete the selected role?'
                     ),
                     function () {
                         $scope.loading = true;

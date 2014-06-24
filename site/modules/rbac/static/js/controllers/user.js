@@ -33,8 +33,11 @@
                     $q.when(service.getUser(userId)),
                     $q.when(service.listRoles())
                 ]).then(function (result) {
-                    $scope.user = result[0];
+                    $scope.user = angular.copy(result[0]);
                     $scope.roles = result[1] || [];
+                    $scope.roles.sort(function (a, b) {
+                        return a.name.localeCompare(b.name);
+                    });
                     $scope.roles.forEach(function (role) {
                         if (role.members.indexOf($scope.user.login) >= 0) {
                             $scope.userRoles.push(role);
@@ -131,14 +134,14 @@
             $scope.deleteUser = function () {
                 PopupDialog.confirm(
                     localization.translate(
-                            $scope,
-                            null,
-                            'Confirm: Delete user'
+                        $scope,
+                        null,
+                        'Confirm: Delete user'
                     ),
                     localization.translate(
-                            $scope,
-                            null,
-                            'Are you sure you want to delete the selected user?'
+                        $scope,
+                        null,
+                        'Are you sure you want to delete the selected user?'
                     ),
                     function () {
                         $scope.loading = true;
@@ -189,20 +192,17 @@
                     }
                 };
                 PopupDialog.custom(
-                        opts,
-                        function (passwords) {
-                            $scope.loading = !!passwords;
-                            if (passwords) {
-                                service.changeUserPassword($scope.user.id, passwords[0], passwords[1]).then(function () {
-                                    $scope.loading = false;
-                                }, errorCallback);
-                            }
+                    opts,
+                    function (passwords) {
+                        $scope.loading = !!passwords;
+                        if (passwords) {
+                            service.changeUserPassword($scope.user.id, passwords[0], passwords[1]).then(function () {
+                                $scope.loading = false;
+                            }, errorCallback);
                         }
+                    }
                 );
 
-            };
-            $scope.cancel = function () {
-                $location.path('/accounts/users');
             };
         }
     ]);
