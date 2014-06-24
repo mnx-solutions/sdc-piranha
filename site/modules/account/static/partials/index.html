@@ -72,11 +72,11 @@
                 <fieldset data-ng-controller="Account.InvoicesController" ng-show="isInvocesEnabled">
                     <legend><span>Invoices</span></legend>
                     <div class="row-fluid">
-                        <div class="loading-large row-fluid" data-ng-show="loading && !!invoices.length"></div>
-                        <div data-ng-hide="invoices.length && !loading">
+                        <div class="loading-large row-fluid" data-ng-show="loading"></div>
+                        <div data-ng-show="!loading && !invoices.length">
                             <div>You don't have any invoices yet</div>
                         </div>
-                        <div data-ng-show="invoices.length && !loading">
+                        <div data-ng-show="!loading && !error && invoices.length">
                             <div data-grid-view
                                  data-user-config="gridUserConfig"
                                  data-props="gridProps"
