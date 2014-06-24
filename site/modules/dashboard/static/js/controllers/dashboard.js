@@ -81,8 +81,8 @@
 
                     $q.all(tasks).then(function (tasksResult) {
                         if ($scope.slbFeatureEnabled) {
-                            $scope.balancers = tasksResult[1];
-                            $scope.slbControllerCreated = tasksResult[2];
+                            $scope.balancers = tasksResult[0];
+                            $scope.slbControllerCreated = tasksResult[1];
                         }
                     });
                     if ($scope.mantaEnabled) {
