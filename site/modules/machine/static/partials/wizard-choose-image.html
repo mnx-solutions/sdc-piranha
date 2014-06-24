@@ -52,7 +52,7 @@
              data-tooltip-text="{{dataset.description}}"
              data-ng-click="dataset.limit && goTo('/limits') || !dataset.limit && selectLastDataset(dataset)">
             <div class="advanced-instance-title">
-                <p data-tooltip-full-text data-original-title="{{dataset.name}}">{{dataset.name}}</p>
+                <p data-tooltip-full-text data-original-title="{{dataset.name}}" data-ng-class="dataset.name | logo">{{dataset.name}}</p>
             </div>
             <div class="advanced-instance-description">
                 <p data-tooltip-full-text data-original-title="{{dataset.description}}">{{dataset.description}}</p>
