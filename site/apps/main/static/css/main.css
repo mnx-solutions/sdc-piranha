@@ -3255,3 +3255,12 @@ label.checkbox {
     padding-bottom: 0;
     width: 544px;
 }
+label.checkbox.folder-name-form-checkbox {
+    padding-left: 0;
+    margin-bottom: 5px;
+}
+.folder-name-form-checkbox,
+.folder-name-form-checkbox code,
+.folder-name-form-checkbox a {
+    vertical-align: top;
+}

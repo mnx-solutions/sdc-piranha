@@ -1,4 +1,5 @@
-<div>
+<div class="loading-medium" data-ng-show="loading"></div>
+<div data-ng-hide="loading">
     <div data-grid-view
          data-user-config="gridUserConfig"
          data-props="gridProps"
@@ -12,5 +13,5 @@
          data-enabled-checkboxes="enabledCheckboxes"
          data-items-type="object">
     </div>
-    <button data-select-file class="btn light effect-orange-button pull-right" data-objects="objects"><i class="plus-icon"></i>Add</button>
+    <button data-select-file class="btn light effect-orange-button pull-right" data-objects="objects" data-loading="loading"><i class="plus-icon"></i>Add</button>
 </div>
