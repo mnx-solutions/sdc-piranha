@@ -161,6 +161,10 @@
     padding: 0;
 }
 
+.machine-edit-form .error {
+    padding: 8px 0 0 10px;
+}
+
 .machine-edit {
     position: relative;
     padding-bottom: 23px;
