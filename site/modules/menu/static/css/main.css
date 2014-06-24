@@ -90,16 +90,11 @@
     background-color: #ededed !important;
 }
 .navbar-inner .brand {
-    background-image: url('../img/logo-orange.png');
-    background-repeat:no-repeat;
-    background-position:center left;
-    display: inline-block;
-    background-color: #ff6600;
-    margin-right: 0;
+    z-index: 999999;
     padding-left: 0;
-    padding-right: 0;
-    width: 175px;
+    width: 155px;
     height: 33px;
+    background: #ff6600 url('../img/logo-orange.png') no-repeat center left;
 }
 .navbar-inner .brand img {
     margin-left: -20px;

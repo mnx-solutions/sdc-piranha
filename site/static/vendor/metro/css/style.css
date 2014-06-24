@@ -33,10 +33,11 @@
 }
 .modulizer-module-left {
     position: fixed;
-    height: 100%;
+    top: 53px;
+    z-index: 999999;
     width: 175px;
+    height: 100%;
     background-color: #3d3d3d;
-    z-index: 1001;
 }
 .sidebar-toggler-closed{
     width: 55px !important;
