@@ -337,6 +337,24 @@ module.exports = function execute(scope, callback) {
             });
         });
 
+        server.onCall('getPayments', function (call) {
+            zuora.transaction.getPayments(call.req.session.userId, function (err, resp) {
+                if (err) {
+                    // changing zuoras errorCode from 401's to 500
+                    if (err.statusCode === 401) {
+                        err.statusCode = 500;
+                    }
+                    if (resp && resp.reasons && !resp.success) {
+                        err = resp.reasons[0];
+                    }
+                    call.done(err);
+                    return;
+                }
+
+                call.done(null, resp.payments);
+            });
+        });
+
         server.onCall('getLastInvoice', function (call) {
             zuora.transaction.getInvoices(call.req.session.userId, function (err, resp) {
                 if (err) {
