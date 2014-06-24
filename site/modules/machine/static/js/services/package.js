@@ -5,9 +5,8 @@
         '$q',
         'localization',
         'PopupDialog',
-        'errorContext',
 
-        function (serverTab, $q, localization, PopupDialog, errorContext) {
+        function (serverTab, $q, localization, PopupDialog) {
 
         var service = {};
         var packages = { job: {}, index: {}, nameIndex: {}, list: {}, error: {}, search: {}};
@@ -183,7 +182,6 @@
             // get the new machine list.
             var job = service.updatePackages();
 
-            var deferred = $q.defer();
             job.done(function (err, job) {
                 deferred.resolve(findPackage(packageName));
             });

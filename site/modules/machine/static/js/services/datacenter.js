@@ -5,10 +5,9 @@
         'serverTab',
         '$q',
         'localization',
-        'notification',
         'errorContext',
 
-        function (serverTab, $q, localization, notification, errorContext) {
+        function (serverTab, $q, localization, errorContext) {
 
         var service = {};
         var datacenters = { job: null, index: {}, list: [], search: {} };
@@ -78,7 +77,7 @@
                         ret.resolve(datacenters.list);
                     }
                 } else {
-                    datacenters.job.deferred.then(function () {
+                    datacenters.job.promise.then(function () {
                         ret.resolve(datacenters.list);
                     }, function (err) {
                         ret.reject(err);

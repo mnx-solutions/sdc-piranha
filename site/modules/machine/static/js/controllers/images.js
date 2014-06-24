@@ -182,7 +182,7 @@
                                     checkedImages.forEach(function (image) {
                                         $$track.event('image', 'delete');
 
-                                        Image.deleteImage(image).deferred.then(function () {
+                                        Image.deleteImage(image).promise.then(function () {
                                             if (requestContext.getParam('currentImage') === image.id) {
                                                 $location.url('/images');
                                                 $location.replace();

@@ -102,7 +102,7 @@
                 var job = serverTab.call({
                     name: 'RuleCreate',
                     data: rule,
-                    done: function(err, job) {
+                    done: function (err, job) {
                         if (err) {
                             showError(err);
                             return;
@@ -114,7 +114,7 @@
                         rules.index[rule.uuid] = rule;
                     },
 
-                    error: function(err, job) {
+                    error: function (err) {
                         if (err) {
                             showError(err);
                             return;
@@ -123,13 +123,13 @@
                 });
 
                 job.getTracker();
-                return job.deferred;
+                return job.promise;
             };
 
             service.updateState = function (action) {
                 return function (rule) {
-	                rule = cleanRule(rule);
-                    function showError (err) {
+                    rule = cleanRule(rule);
+                    function showError(err) {
                         PopupDialog.error(
                             localization.translate(
                                 null,
@@ -148,14 +148,14 @@
                         );
                     }
 
-                    if(rule.job) {
+                    if (rule.job) {
                         delete rule.job;
                     }
                     // Update the rule
                     var job = serverTab.call({
                         name: action || 'RuleUpdate',
                         data: rule,
-                        done: function(err, job) {
+                        done: function (err, job) {
                             if (err) {
                                 showError(err);
                                 return;
@@ -163,7 +163,7 @@
                             updateLocal(action, rule);
                         },
 
-                        error: function(err, job) {
+                        error: function (err, job) {
                             if (err) {
                                 showError(err);
                                 return;
@@ -172,7 +172,7 @@
                     });
 
                     job.getTracker();
-                    return job.deferred;
+                    return job.promise;
                 };
             };
 
@@ -197,7 +197,7 @@
                             if (rules.job.finished) {
                                 deferred.resolve(rules.map);
                             } else {
-                                rules.job.deferred.then(function () {
+                                rules.job.promise.then(function () {
                                     deferred.resolve(rules.map);
                                 }, function (err) {
                                     deferred.reject(err);
@@ -313,14 +313,13 @@
                                 handleResponse(data);
                             }
                         },
-
                         done: function(err, job) {
                             rules.list.final = !err;
                         }
                     });
                 }
 
-                return rules.job.deferred;
+                return rules.job.promise;
             };
 
             if (!rules.job && $rootScope.features.firewall === 'enabled') {

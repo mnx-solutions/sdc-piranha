@@ -72,8 +72,11 @@
                     tab: {
                         value: opts.tab
                     },
-                    deferred: {
+                    promise: {
                         value: deferred.promise
+                    },
+                    deferred: {
+                        value: deferred
                     },
                     step: {
                         get: function () {
