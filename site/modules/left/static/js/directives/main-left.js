@@ -5,7 +5,7 @@
         return {
             templateUrl: 'left/static/partials/menu.html',
             scope: true,
-            controller: function ($scope, $location, Account) {
+            controller: function ($scope, $location) {
                 $scope.location = $location;
                 $scope.sideBarMin = false;
                 var supportPackagesCallback = function (error, supportPackages) {
@@ -13,11 +13,7 @@
                 };
 
                 var loadSupportPackages = function () {
-                    Account.getAccount().then(function (account) {
-                        if (account.provisionEnabled) {
-                            Support.support(supportPackagesCallback);
-                        }
-                    });
+                    Support.support(supportPackagesCallback, true);
                 };
 
                 if ($scope.features.support === 'enabled') {

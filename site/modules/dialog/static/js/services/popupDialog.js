@@ -78,7 +78,9 @@
                     var freeTierExists = false;
                     setTimeout(function () {
                         var provisionBundle = $rootScope.commonConfig('provisionBundle');
-                        freeTierExists = provisionBundle.machine.freetier;
+                        if (provisionBundle) {
+                            freeTierExists = provisionBundle.machine.freetier;
+                        }
                         cb(null, freeTierExists);
                     }, 100);
                 };
