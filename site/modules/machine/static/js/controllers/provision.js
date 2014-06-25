@@ -318,13 +318,8 @@
                     var popupContent = billingStartMessage;
                     if (dataset && dataset.eula || description && description.indexOf('Stingray') > -1) {
                         title = 'Accept End-User License Agreement';
-
-                        var eulaLink = dataset.eula || 'slb/static/templates/eula.html';
-                        var popupTpl = document.createElement("div");
-                        popupTpl.setAttribute("ng-include", '"' + eulaLink + '"');
-
                         popupContent = {
-                            body: $compile(popupTpl)($scope),
+                            templatePath: dataset.eula || 'slb/static/templates/eula.html',
                             footer: billingStartMessage
                         };
                     }
