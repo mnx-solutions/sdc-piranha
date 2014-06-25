@@ -51,6 +51,11 @@ body {
     background-color: #fff;
 }
 
+.navbar-fixed-top,
+.navbar-fixed-bottom {
+    z-index: 99999;
+}
+
 h1, h2 {
     font-weight: normal;
 }
