@@ -30,6 +30,18 @@ module.exports = function execute(scope) {
         return data;
     };
 
+    var updateRoleTags = function(cloudapi, roles) {
+        var validResources = [
+            '', 'machines', 'users', 'roles', 'packages',
+            'images', 'policies', 'keys', 'datacenters',
+            'analytics', 'fwrules', 'networks', 'instrumentations'
+        ];
+
+        validResources.forEach(function (resource) {
+            cloudapi.setRoleTags('/my/' + resource, roles, function (err, data) {});
+        });
+    };
+
     server.onCall('getAccount', function (call) {
         // get account using cloudapi
         call.cloud.getAccount(function (error, data) {
@@ -96,6 +108,9 @@ module.exports = function execute(scope) {
 
         call.cloud.createRole(data, function (err, data) {
             call.done(err, data);
+            if (!err) {
+                updateRoleTags(call.cloud, [data.name]);
+            }
         });
     });
 
@@ -104,6 +119,9 @@ module.exports = function execute(scope) {
 
         call.cloud.updateRole(data, function (err, data) {
             call.done(err, data);
+            if (!err) {
+                updateRoleTags(call.cloud, [data.name]);
+            }
         });
     });
 
@@ -141,8 +159,8 @@ module.exports = function execute(scope) {
 
     server.onCall('updatePolicy', function (call) {
         var data = filterFields(call.data, updatablePolicyFields, true);
-        call.cloud.updatePolicy(data, function (err, data) {
-            call.done(err, data);
+        call.cloud.updatePolicy(data, function (err, policy) {
+            call.done(err, policy);
         });
     });
 
