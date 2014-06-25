@@ -183,7 +183,6 @@ module.exports = function execute(scope, register) {
                 // poll for machine status to get running (provisioning)
                 pollForObjectStateChange(cloud, call, 'state', 'running', (60 * 60 * 1000), null, machine.id, callback);
             } else {
-                call.log.error(err);
                 (callback || call.error)(err);
             }
         });
@@ -196,7 +195,6 @@ module.exports = function execute(scope, register) {
                 // poll for machine name change (rename)
                 pollForObjectStateChange(cloud, call, 'name', options.name, (60 * 60 * 1000), null, options.uuid, callback);
             } else {
-                call.log.error(err);
                 (callback || call.error)(err);
             }
         });
@@ -210,7 +208,6 @@ module.exports = function execute(scope, register) {
                 // poll for machine package change (resize)
                 pollForObjectStateChange(cloud, call, 'package', options.package, null, null, options.uuid, callback);
             } else {
-                call.log.error(err);
                 (callback || call.error)(err);
             }
         });
@@ -223,7 +220,6 @@ module.exports = function execute(scope, register) {
             if (!err) {
                 pollForObjectStateChange(cloud, call, 'state', 'running', null, null, options.uuid, callback);
             } else {
-                call.log.error(err);
                 (callback || call.error)(err);
             }
         });
@@ -236,7 +232,6 @@ module.exports = function execute(scope, register) {
             if (!err) {
                 pollForObjectStateChange(cloud, call, 'state', 'stopped', null, null, options.uuid, callback);
             } else {
-                call.log.error(err);
                 (callback || call.error)(err);
             }
         });
@@ -249,7 +244,6 @@ module.exports = function execute(scope, register) {
             if (!err) {
                 pollForObjectStateChange(cloud, call, 'state', 'deleted', null, null, options.uuid, callback);
             } else {
-                call.log.error(err);
                 (callback || call.error)(err);
             }
         });
@@ -262,7 +256,6 @@ module.exports = function execute(scope, register) {
             if (!err) {
                 pollForObjectStateChange(cloud, call, 'state', 'running', null, null, options.uuid, callback);
             } else {
-                call.log.error(err);
                 (callback || call.error)(err);
             }
         });
@@ -426,7 +419,6 @@ module.exports = function execute(scope, register) {
                 // poll for image name change (rename)
                 pollForObjectStateChange(cloud, call, 'name', options.name, (60 * 60 * 1000), 'Image', options.uuid, callback);
             } else {
-                call.log.error(err);
                 call.done(err);
             }
         });
@@ -440,7 +432,6 @@ module.exports = function execute(scope, register) {
             if (!err) {
                 pollForObjectStateChange(cloud, call, 'state', 'deleted', (60 * 60 * 1000), 'Image', options.imageId, callback);
             } else {
-                call.log.error(err);
                 callback(err);
             }
         });
@@ -455,7 +446,6 @@ module.exports = function execute(scope, register) {
             if (!err) {
                 pollForObjectStateChange(cloud, call, 'state', 'active', (60 * 60 * 1000), 'Image', image.id, callback);
             } else {
-                call.log.error(err);
                 callback(err);
             }
         });
@@ -508,7 +498,6 @@ module.exports = function execute(scope, register) {
             if (!err) {
                 pollForObjectStateChange(cloud, call, 'firewall_enabled', true, null, null, call.data.machineId, callback);
             } else {
-                call.log.error(err);
                 call.error(err);
             }
         });
@@ -521,7 +510,6 @@ module.exports = function execute(scope, register) {
             if (!err) {
                 pollForObjectStateChange(cloud, call, 'firewall_enabled', false, null, null, call.data.machineId, callback);
             } else {
-                call.log.error(err);
                 call.error(err);
             }
         });
