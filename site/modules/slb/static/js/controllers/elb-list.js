@@ -27,7 +27,9 @@
                             $scope.listLoaded = false;
                             $scope.deleting = true;
                             service.deleteController().then(function () {
-                                $location.path('/');
+                                if ($location.path().search('slb') !== -1) {
+                                    $location.path('/');
+                                }
                             }, function () {
                                 $scope.deleting = false;
                                 $scope.listLoaded = true;
