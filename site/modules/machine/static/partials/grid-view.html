@@ -136,10 +136,10 @@
                                     <div class="grid-small-font" data-action-button data-label-fn="prop.btn.getLabel" data-action-fn="prop.btn.action" data-class-fn="prop.btn.getClass" data-show-fn="prop.btn.show" data-disabled-fn="prop.btn.disabled" data-label="prop.btn.label" data-tooltip-text="prop.btn.tooltip" data-object="object"></div>
                                 </span>
                                 <span data-ng-switch-when="html" data-ng-bind-html="prop._getter(object)"></span>
-                                    <span data-ng-switch-when="firewall_state">
-                                        <span data-ng-show="(object.fireWallActionRunning) || (object.job && !object.job.finished)" class="loading-small loading-small-firewall pull-left"></span>
-                                        <span data-ng-bind-html="prop._getter(object)"></span>
-                                    </span>
+                                <span data-ng-switch-when="progress">
+                                    <span data-ng-show="prop._inProgress(object)" class="loading-small loading-small-firewall pull-left"></span>
+                                    <span data-ng-bind-html="prop._getter(object)"></span>
+                                </span>
                                 <span data-ng-switch-when="date">{{object[prop.id] | date: prop.format || 'yyyy-MM-dd HH:mm'}}</span>
                                 <span data-ng-switch-when="async">
                                     <span class="loading-small loading-small-job pull-left" data-ng-show="object.deleteJob && prop.name == 'State'"></span>

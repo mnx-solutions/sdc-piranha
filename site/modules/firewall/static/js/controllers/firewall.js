@@ -894,7 +894,10 @@
                     id: 'enabled',
                     name: 'Status',
                     columnClass: 'status-column',
-                    type: 'firewall_state',
+                    type: 'progress',
+                    _inProgress: function (object) {
+                        return (object.job && !object.job.finished) || object.deleteJob;
+                    },
                     _getter: function (object) {
                         return object.enabled ? '<span class="grid-enabled-text">Enabled</span>' : '<span class="grid-disabled-text">Disabled</span>';
                     },
