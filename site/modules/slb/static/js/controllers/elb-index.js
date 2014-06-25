@@ -51,6 +51,7 @@
                     }
                 });
             };
+            // TODO get rid of this code. Angular makes this stuff natively via data-ng-model directive on checkbox.
             $scope.licenseAcceptCheck = false;
 
             $scope.licenseAccept = function () {

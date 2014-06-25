@@ -5,7 +5,8 @@
         return {
             restrict: 'EA',
             scope: {
-                objects: '='
+                objects: '=',
+                loading: '='
             },
             link: function (scope, element) {
                 scope.objects = Array.isArray(scope.objects) ? scope.objects : [];
@@ -21,6 +22,7 @@
                         });
                     });
                     $scope.close = function (form, res) {
+                        $scope.formSubmitted = true;
                         if (form.$invalid && res !== 'cancel') {
                             return;
                         }
@@ -32,7 +34,9 @@
                         }
                         dialog.close({
                             value: 'add',
-                            filePath: $scope.fullFilePath
+                            filePath: $scope.fullFilePath,
+                            useMfind: $scope.useMfind,
+                            mfind: $scope.mfind
                         });
                     };
                     $scope.filePath = '';
@@ -71,6 +75,25 @@
                     }
                 }
 
+                function getFiles(promise) {
+                    var files = promise.__read();
+
+                    if (files.length > 0) {
+                        files.forEach(function (file) {
+                            if (file.type !== 'directory') {
+                                var path = file.parent + '/' + file.path;
+                                pushUnique(scope.objects, path);
+                            }
+                        });
+                    } else {
+                        showPopupDialog('message', 'Message', 'Nothing found with your criteria.');
+                    }
+
+                    return files;
+                }
+
+                scope.loading = false;
+
                 scope.newFilePath = function () {
                     var opts = {
                         templateUrl: 'storage/static/partials/add.html',
@@ -81,31 +104,37 @@
                         opts,
                         function (result) {
                             if (result && result.value === 'add') {
+                                scope.loading = true;
                                 var filePath = result.filePath;
-                                fileman.infoAbsolute(filePath, function (error, info) {
-                                    if (error) {
-                                        return showPopupDialog('error', 'Error', error);
-                                    }
-                                    var filePathInfo = info.__read();
-                                    if (filePathInfo.extension === 'directory') {
-                                        fileman.lsAbsolute(filePath, function (err, ls) {
-                                            if (err) {
-                                                return showPopupDialog('error', 'Error', err);
-                                            }
-                                            var files = ls.__read();
-                                            files.forEach(function (file) {
-                                                if (file.type !== 'directory') {
-                                                    var path = file.parent + '/' + file.path;
-                                                    pushUnique(scope.objects, path);
+
+                                if (result.useMfind) {
+                                    fileman.mfind(filePath, {mfind: result.mfind}, function (error, files) {
+                                        scope.loading = false;
+                                        if (error) {
+                                            return showPopupDialog('error', 'Error', 'An error occurred.');
+                                        }
+                                        return getFiles(files);
+                                    });
+                                } else {
+                                    fileman.infoAbsolute(filePath, function (error, info) {
+                                        scope.loading = false;
+                                        if (error) {
+                                            return showPopupDialog('error', 'Error', error);
+                                        }
+                                        var filePathInfo = info.__read();
+                                        if (filePathInfo.extension === 'directory') {
+                                            fileman.lsAbsolute(filePath, function (err, ls) {
+                                                if (err) {
+                                                    return showPopupDialog('error', 'Error', err);
                                                 }
+                                                return getFiles(ls);
                                             });
-                                            return files;
-                                        });
-                                    } else {
-                                        pushUnique(scope.objects, filePath);
-                                    }
-                                    return filePath;
-                                });
+                                        } else {
+                                            pushUnique(scope.objects, filePath);
+                                        }
+                                        return filePath;
+                                    });
+                                }
                             }
                         }
                     );

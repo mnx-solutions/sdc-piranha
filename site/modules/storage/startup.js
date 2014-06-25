@@ -322,4 +322,80 @@ module.exports = function execute(scope) {
         }
         pingManta();
     });
+
+    server.onCall('FileManMfind', {
+        verify: function (data) {
+            return data &&
+                   typeof (data.path) === 'string' &&
+                   typeof (data.mfind) === 'string';
+        },
+        handler: function (call) {
+            var client = Manta.createClient(call);
+            var path = call.data.path;
+            var opts = {};
+            var optsMap = {
+                l: 'limit',
+                n: 'name',
+                p: 'parallel',
+                s: 'size',
+                t: 'type',
+                limit: 'limit',
+                name: 'name',
+                parallel: 'parallel',
+                size: 'size',
+                type: 'type',
+                maxdepth: 'maxdepth',
+                mindepth: 'mindepth'
+            };
+
+            var parts = call.data.mfind.split('-');
+            parts.forEach(function (part) {
+                part = part.split(' ');
+                var key = optsMap[part[0]];
+                var value = part[1];
+
+                if (key && value) {
+                    if (key === 'name') {
+                        value = new RegExp(value);
+                    }
+                    opts[key] = value;
+                }
+            });
+
+            if (Object.keys(opts).length === 0) {
+                return call.done(null, []);
+            }
+
+            client.info(path, function (err, res) {
+                if (err) {
+                    return call.done(err);
+                }
+                if (res.extension !== 'directory') {
+                    path = path.slice(0, path.lastIndexOf('/') + 1);
+                }
+
+                client.ftw(path, opts, function (err, res) {
+                    if (err) {
+                        return call.done(err);
+                    }
+
+                    var files = [];
+
+                    function onEntry(e) {
+                        e.path = e.name;
+                        files.push(e);
+                    }
+
+                    res.on('object', onEntry);
+
+                    res.once('error', sendError(call));
+
+                    res.once('end', function () {
+                        call.done(null, files);
+                    });
+
+                });
+            });
+        }
+    });
 };

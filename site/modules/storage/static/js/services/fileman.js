@@ -67,6 +67,8 @@
 
             fileman.storageReport = createMethod('FileManStorageReport');
 
+            fileman.mfind = createMethod('FileManMfind', true);
+
             return fileman;
         }
     ]);
