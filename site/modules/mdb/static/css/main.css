@@ -1,0 +1,17 @@
+.new-debbuger-job-btn {
+    margin-top: -85px;
+}
+
+.new-debbuger-job-btn .btn-big {
+    width: 235px !important;
+}
+
+.header-btn-ci {
+    position: relative;
+    display: inline-block;
+    float: right;
+}
+
+.debugger-action-btn {
+    width: 153px;
+}
