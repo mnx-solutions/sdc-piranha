@@ -8,7 +8,7 @@ window.JP.main.config(['routeProvider', function (routeProvider) {
 
     routeProvider
         .when('/mdb', {
-            title: 'Node.js Debugger',
+            title: 'Debugger Jobs',
             action: 'mdb.index'
         })
         .when('/mdb/:jobId', {

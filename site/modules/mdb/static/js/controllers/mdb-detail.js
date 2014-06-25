@@ -9,7 +9,8 @@
         'localization',
         'requestContext',
         '$location',
-        function ($scope, mdb, PopupDialog, Account, localization, requestContext, $location) {
+        'Support',
+        function ($scope, mdb, PopupDialog, Account, localization, requestContext, $location, Support) {
             localization.bind('mdb', $scope);
             requestContext.setUpRenderContext('mdb.index', $scope);
             var jobId = requestContext.getParam('jobId');
@@ -53,7 +54,7 @@
 
             $scope.jobId = jobId !== 'create' ? jobId : null;
             $scope.status = 'Not Processed';
-            $scope.supportStatus = 'Not signed up';
+            $scope.supportStatus = '';
             $scope.processing = false;
 
             function flushAll() {
@@ -130,12 +131,33 @@
                 });
             }
 
+            $scope.clickSignup = function () {
+                $location.path('/support/cloud');
+            };
+
             $scope.$watch('jobId', function (val) {
                 if (!val || val === 'create') {
                     return;
                 }
                 $location.path('/mdb' + (val ? '/' + val : ''), true);
             });
+
+            var getSupportStatus = function () {
+                Support.support(function (error, supportPackages) {
+                    supportPackages.forEach(function (packages) {
+                        if (packages.name === 'node') {
+                            var supportStatus;
+                            packages.packageHolders.forEach(function (nodePackage) {
+                                if (nodePackage.active) {
+                                    supportStatus = nodePackage.title;
+                                }
+                            });
+                            $scope.supportStatus = supportStatus || 'Not signed up';
+                        }
+                    });
+                });
+            };
+            getSupportStatus();
         }
     ]);
 }(window.JP.getModule('mdb')));

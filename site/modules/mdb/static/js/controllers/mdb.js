@@ -8,7 +8,8 @@
         'mdb',
         'Account',
         'PopupDialog',
-        function ($scope, requestContext, localization, mdb, Account, PopupDialog) {
+        '$location',
+        function ($scope, requestContext, localization, mdb, Account, PopupDialog, $location) {
             localization.bind('mdb', $scope);
             requestContext.setUpRenderContext('mdb.index', $scope);
 
@@ -56,6 +57,10 @@
                 $scope.loading = false;
                 PopupDialog.error(null, error);
             });
+
+            $scope.addNewJob = function () {
+                $location.path('/mdb/create');
+            };
         }
     ]);
 }(window.JP.getModule('mdb')));
