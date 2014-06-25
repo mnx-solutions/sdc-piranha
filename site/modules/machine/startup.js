@@ -400,7 +400,9 @@ module.exports = function execute(scope) {
                 data.hasOwnProperty('datacenter');
         },
         handler: function (call) {
-            machine.Create(call, call.data, call.done);
+            machine.Create(call, call.data, function (err, result) {
+                return (call.immediate || call.done)(err, result);
+            });
         }
     });
 
@@ -418,9 +420,9 @@ module.exports = function execute(scope) {
                 call.done(null, instance);
                 return;
             }
-            metadata.set(req.session.userId, metadata.FIRST_INSTANCE, uuid, function (err) {
-                if (err) {
-                    call.log.error(err);
+            metadata.set(req.session.userId, metadata.FIRST_INSTANCE, uuid, function (setErr) {
+                if (setErr) {
+                    call.log.error(setErr);
                 } else {
                     call.log.info('Set first instance in metadata uuid: %s', uuid);
                 }
@@ -487,7 +489,7 @@ module.exports = function execute(scope) {
             return typeof data
                 && data.image.id
                 && data.image.name
-                && data.image.datacenter
+                && data.image.datacenter;
         },
         handler: function (call) {
             var options = {
