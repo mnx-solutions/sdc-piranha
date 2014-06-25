@@ -315,6 +315,7 @@
 }
 .advanced-instance-description .label,
 .advanced-instance-title .label,
+.simple-image .label,
 .description .label {
     position: relative;
     top: -2px;
