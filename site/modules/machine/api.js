@@ -183,7 +183,12 @@ module.exports = function execute(scope, register) {
                 // poll for machine status to get running (provisioning)
                 pollForObjectStateChange(cloud, call, 'state', 'running', (60 * 60 * 1000), null, machine.id, callback);
             } else {
-                (callback || call.error)(err);
+                var noErrorLog = err.message && err.message.indexOf('QuotaExceeded') === 0;
+                if (noErrorLog) {
+                    // log QuotaExceeded error with level 30 instead of 50 like regular call does
+                    call.log.info(err);
+                }
+                (callback || call.error)(err, noErrorLog);
             }
         });
     };
