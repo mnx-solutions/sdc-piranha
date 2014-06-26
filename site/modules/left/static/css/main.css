@@ -171,7 +171,7 @@ li.active a.debug-icon {
 
 .sidebar-min .nested:hover,
 .sidebar-min .single:hover {
-    width: 175px;
+    width: 180px;
     height: 34px;
 }
 .sidebar-min .nested:hover .sub-menu {
