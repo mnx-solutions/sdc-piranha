@@ -15,3 +15,33 @@
 .debugger-action-btn {
     width: 153px;
 }
+
+.column {
+    display: inline-block;
+    vertical-align: top;
+}
+
+.mdb-common-container {
+    width: 50%;
+    max-width: 600px;
+    padding: 0 20px;
+}
+
+.mdb-counters-container {
+    padding: 0 0 0 50px;
+    border-left: 1px solid #ccc;
+}
+
+.mdb-common-table {
+    width: 100%;
+}
+
+.mdb-counter-row td {
+    padding-top: 7px;
+    padding-right: 10px;
+}
+
+.mdb-counter-row td:first-child {
+    font-weight: bold;
+    text-align: right;
+}
