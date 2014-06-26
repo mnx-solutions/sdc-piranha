@@ -2,12 +2,14 @@
     <div class="page-header">
         <h3 class="page-title">Node.js Debugger Jobs</h3>
         <div class="beta-sticker">beta</div>
-        <div class="header-btn-ci new-debbuger-job-btn">
+        <div class="header-btn-ci new-debbuger-job-btn" data-ng-hide="loading">
             <button type="button" data-ng-click="addNewJob()" class="btn btn-big orange align-text-btn"><i class="plus-btn-icon"></i>Create
                 New Debugger Job</button>
         </div>
     </div>
+
     <div class="loading-large" data-ng-show="loading"></div>
+    <div data-ng-hide="objects.length || loading">You don't have any Node.js debugger jobs.</div>
     <div class="row-fluid">
         <div data-ng-show="objects.length">
             <div data-grid-view
