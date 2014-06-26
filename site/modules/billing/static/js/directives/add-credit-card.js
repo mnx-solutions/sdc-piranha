@@ -221,7 +221,7 @@
                     var c = (new Date()).getFullYear();
                     var i = c;
                     for (i; i < c + 20; i++) {
-                        $scope.years.push(i);
+                        $scope.years.push(i.toString());
                     }
 
                     $scope.$watch('form.cardHolderInfo.country', function (newVal, oldVal) {

@@ -13,8 +13,7 @@
                         scope.$watch(attrs.ngModel, function (val) {
                             var yearCtrl = scope.paymentForm.expirationYear;
                             var monthCtrl = scope.paymentForm.expirationMonth;
-
-                            var valid = false;
+                            var valid = true;
                             var currentYear = (new Date()).getFullYear();
                             var inputYear = parseInt(yearCtrl.$viewValue);
 
