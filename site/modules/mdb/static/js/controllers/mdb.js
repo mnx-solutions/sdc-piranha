@@ -14,6 +14,9 @@
             requestContext.setUpRenderContext('mdb.index', $scope);
 
             $scope.gridUserConfig = Account.getUserConfig().$child('MdbJobs');
+            Account.getAccount(true).then(function (account) {
+                $scope.provisionEnabled = account.provisionEnabled;
+            });
             $scope.objects = [];
             $scope.loading = true;
 
@@ -50,16 +53,39 @@
             $scope.enabledCheckboxes = true;
             $scope.placeHolderText = 'filter';
 
-            mdb.getDebugJobsList().then(function (list) {
+            if ($scope.provisionEnabled) {
+                mdb.getDebugJobsList().then(function (list) {
+                    $scope.loading = false;
+                    $scope.objects = list;
+                }, function (err) {
+                    $scope.loading = false;
+                    if (!err.message) {
+                        err.message = err.code || err.errno || 'Internal error';
+                    }
+                    PopupDialog.error(null, err.message);
+                });
+            } else {
                 $scope.loading = false;
-                $scope.objects = list;
-            }, function (error) {
-                $scope.loading = false;
-                PopupDialog.error(null, error);
-            });
+            }
+
 
             $scope.addNewJob = function () {
-                $location.path('/mdb/create');
+                if ($scope.provisionEnabled) {
+                    $location.path('/mdb/create');
+                } else {
+                    var submitBillingInfo = {
+                        btnTitle: 'Submit and Access Debug Node.js'
+                    };
+                    Account.checkProvisioning(submitBillingInfo, null, null, function (isSuccess) {
+                        $scope.loading = false;
+                        if (isSuccess) {
+                            $scope.provisionEnabled = true;
+                            $location.path('/mdb/create');
+                        } else {
+                            $location.path('/mdb');
+                        }
+                    }, true);
+                }
             };
         }
     ]);
