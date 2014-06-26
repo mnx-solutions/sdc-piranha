@@ -1275,11 +1275,10 @@ div .disabled {
     min-width: 732px;
 }
 #accordion-ssh-keys .accordion-group {
-    min-height: 50px;
+    min-height: 53px;
 }
 #accordion-ssh-keys .accordion-inner {
-    padding: 0;
-    padding-bottom: 25px;
+    padding: 0 0 25px;
     border: 1px solid #dadcdd;
     margin-left: 18px;
     margin-top: 10px;
