@@ -30,8 +30,8 @@
                 ]).then(function (result) {
                     var policy = result[0];
                     $scope.storPolicy = angular.copy(policy);
-                    $scope.model.policy.name = policy.name;
-                    $scope.model.policy.description = policy.description;
+                    $scope.model.policy.dirtyName = $scope.model.policy.name = policy.name;
+                    $scope.model.policy.dirtyDescription = $scope.model.policy.description = policy.description;
                     policy.rules.forEach(function (res) {
                         $scope.rules.push({rule: res, edit: false});
                     });
@@ -125,6 +125,8 @@
                     $scope.storPolicy.rules = $scope.model.policy.rules;
                     policyAction(service.updatePolicy($scope.storPolicy), redirect);
                 } else {
+                    $scope.model.policy.name = $scope.model.policy.dirtyName;
+                    $scope.model.policy.description = $scope.model.policy.dirtyDescription;
                     policyAction(service.updatePolicy($scope.model.policy), redirect);
                 }
             };

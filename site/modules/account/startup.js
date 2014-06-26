@@ -30,15 +30,23 @@ module.exports = function execute(scope) {
         return data;
     };
 
-    var updateRoleTags = function(cloudapi, roles) {
+    var updateRoleTags = function(cloudapi) {
         var validResources = [
             '', 'machines', 'users', 'roles', 'packages',
             'images', 'policies', 'keys', 'datacenters',
             'analytics', 'fwrules', 'networks', 'instrumentations'
         ];
-
-        validResources.forEach(function (resource) {
-            cloudapi.setRoleTags('/my/' + resource, roles, function (err, data) {});
+        cloudapi.listRoles(function (err, roles) {
+            roles = roles || [];
+            var roleNames = [];
+            
+            // FIXME: Array.map is more obvious here (c) Alexander
+            roles.forEach(function (role) {
+                roleNames.push(role.name);
+            });
+            validResources.forEach(function (resource) {
+                cloudapi.setRoleTags('/my/' + resource, roleNames, function (err, data) {});
+            });
         });
     };
 
@@ -109,7 +117,7 @@ module.exports = function execute(scope) {
         call.cloud.createRole(data, function (err, data) {
             call.done(err, data);
             if (!err) {
-                updateRoleTags(call.cloud, [data.name]);
+                updateRoleTags(call.cloud);
             }
         });
     });
@@ -120,7 +128,7 @@ module.exports = function execute(scope) {
         call.cloud.updateRole(data, function (err, data) {
             call.done(err, data);
             if (!err) {
-                updateRoleTags(call.cloud, [data.name]);
+                updateRoleTags(call.cloud);
             }
         });
     });

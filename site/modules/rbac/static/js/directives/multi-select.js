@@ -51,6 +51,17 @@
                 scope.$watch('notifyDataSetChanged', function () {
                     if (typeof (scope.notifyDataSetChanged) === 'boolean') {
                         if (angular.element('#ms-' + scope.id).length) {
+                            // Removing not existing elements
+                            scope.selectedItems.some(function (selectedItem, index) {
+                                var existingElements = scope.items.filter(function (item) {
+                                    return item.id === selectedItem.id;
+                                });
+                                var isSelectedExists = existingElements.length > 0;
+                                if (!isSelectedExists) {
+                                    scope.selectedItems.splice(index, 1);
+                                }
+                                return !isSelectedExists;
+                            });
                             angular.element('#' + scope.id).multiSelect('refresh');
                         } else {
                             initSelect();
