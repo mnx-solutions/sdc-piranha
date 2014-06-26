@@ -1099,7 +1099,7 @@
                 setTimeout(function () {
                     var accordionGroup = ng.element('.accordion-group');
                     if ($scope.filterModel.key === 'No filter') {
-                        accordionGroup.not('div.active').find('.collapse').removeClass('in').css('height', 0).end()
+                        accordionGroup.not('div.active').find('.collapse').css('height', 0).end()
                             .find('.accordion-toggle').addClass('collapsed').end()
                             .has('div.active').find('a.collapsed').click();
                     } else {
