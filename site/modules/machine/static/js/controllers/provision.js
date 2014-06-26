@@ -1094,20 +1094,21 @@
                 if (newVal) {
                     $scope.filterModel.value = $scope.filterValues[newVal][0];
                 }
-                selectMinimalPackage();
-
-                setTimeout(function () {
-                    var accordionGroup = ng.element('.accordion-group');
-                    if ($scope.filterModel.key === 'No filter') {
-                        accordionGroup.not('div.active').find('.collapse').css('height', 0).end()
-                            .find('.accordion-toggle').addClass('collapsed').end()
-                            .has('div.active').find('a.collapsed').click();
-                    } else {
-                        $scope.collapsedPackageTypes = [];
-                        accordionGroup.find('a.collapsed').removeClass('collapsed').end()
-                            .find('.collapse').addClass('in');
-                    }
-                }, 200);
+                if ($scope.packages) {
+                    selectMinimalPackage();
+                    setTimeout(function () {
+                        var accordionGroup = ng.element('.accordion-group');
+                        if ($scope.filterModel.key === 'No filter') {
+                            accordionGroup.not('div.active').find('.collapse').css('height', 0).end()
+                                .find('.accordion-toggle').addClass('collapsed').end()
+                                .has('div.active').find('a.collapsed').click();
+                        } else {
+                            $scope.collapsedPackageTypes = [];
+                            accordionGroup.find('a.collapsed').removeClass('collapsed').end()
+                                .find('.collapse').addClass('in');
+                        }
+                    }, 200);
+                }
             };
             $scope.changeSelectedPackage = function (event, packageType) {
                 if ($scope.packageType) {
