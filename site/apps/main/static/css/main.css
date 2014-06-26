@@ -3264,3 +3264,6 @@ label.checkbox.folder-name-form-checkbox {
 .folder-name-form-checkbox a {
     vertical-align: top;
 }
+.modal-backdrop {
+    z-index: 999999;
+}
