@@ -237,7 +237,7 @@ function Call(opts) {
                     if (err) {
                         self.removeAllListeners();
                         opts.remove(self);
-                        self.error(err);
+                        self.error(err, data);
                     }
 
                     if (done) {
