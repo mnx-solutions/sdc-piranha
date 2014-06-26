@@ -74,7 +74,13 @@ var mdbApi = function execute(scope) {
 
     function sendError(call, error) {
         call.update(null, {status: 'Failed'});
-        call.done(error.message || error);
+        updateJobInList(call, call.jobId, {status: 'Failed'}, function (err) {
+            if (err) {
+                call.done(err);
+                return;
+            }
+            call.done(error.message || error);
+        });
     }
 
     function getJobsList(call, callback) {
@@ -106,17 +112,118 @@ var mdbApi = function execute(scope) {
             list.push({
                 coreFile: call.data.coreFile,
                 date: new Date(),
-                jobId: jobId
+                jobId: jobId,
+                status: 'Processing'
             });
             client.putFileContents('/' + client.user + '/' + mdbJobsListPath, list, callback);
         });
     }
 
-    server.onCall('MdbDebugJobsList', function (call) {
+    function waitForJobInList(call, jobId, callback) {
+        var jobList = function () {
+            getJobsList(call, function (error, list) {
+                if (error) {
+                    callback(error);
+                    return;
+                }
+                var matchingJobs = list.filter(function (item) {
+                    return item.jobId === jobId;
+                });
+                if (matchingJobs.length > 0) {
+                    callback(null, list);
+                    return;
+                } else {
+                    setTimeout(jobList, config.polling.mantaJob);
+                }
+            });
+        };
+        jobList();
+    }
+
+    function updateJobInList(call, jobId, updateData, callback) {
+        var client = Manta.createClient(call);
+        callback = callback || function () {};
+        waitForJobInList(call, jobId, function (err, list) {
+            if (err) {
+                callback(err);
+                return;
+            }
+            list.some(function (job) {
+                if (job.jobId === jobId) {
+                    Object.keys(updateData).forEach(function (key) {
+                        job[key] = updateData[key];
+                    });
+                    return true;
+                }
+                return false;
+            });
+            client.putFileContents('/' + client.user + '/' + mdbJobsListPath, list, callback);
+        });
+    }
+
+    server.onCall('MdbGetJobFromList', {
+        verify: function (data) {
+            return data.jobId;
+        },
+        handler: function (call) {
+            getJobsList(call, function (error, list) {
+                if (error) {
+                    call.done(error);
+                    return;
+                }
+                var result = list.find(function (job) {
+                    return job.jobId === call.data.jobId;
+                });
+                if (result) {
+                    var client = Manta.createClient(call);
+                    client.job(result.jobId, function (getJobError, jobInfo) {
+                        var status;
+                        if (getJobError) {
+                            status = 'Failed';
+                        } else if (jobInfo.cancelled) {
+                            status = 'Cancelled';
+                        } else if (jobInfo.state === 'done') {
+                            status = 'Processed';
+                        } else if (jobInfo.state === 'running') {
+                            status = 'Processing';
+                        }
+                        if (status !== 'Processing') {
+                            getDebugJSObjects(call, result.jobId, function (getObjectsError) {
+                                if (getObjectsError) {
+                                    status = (status === 'Cancelled' ? 'Cancelled' : 'Failed');
+                                }
+                                var data = {status: status};
+                                if (status === 'Processed') {
+                                    data.dateEnd = jobInfo.timeDone;
+                                }
+                                if (!status || result.status !== status) {
+                                    updateJobInList(call, result.jobId, data, function (updateJobError) {
+                                        if (updateJobError) {
+                                            sendError(call, updateJobError);
+                                            return;
+                                        }
+                                        call.done(null, result);
+                                    });
+                                } else {
+                                    call.done(null, result);
+                                }
+                            });
+                        } else {
+                            call.done(null, result);
+                        }
+                    });
+                } else {
+                    call.done(null, result);
+                }
+            });
+        }
+    });
+
+    server.onCall('MdbGetJobsList', function (call) {
         getJobsList(call, call.done.bind(call));
     });
 
-    server.onCall('getDebugJob', {
+    server.onCall('MdbGetJob', {
         verify: function (data) {
             return data && data.jobId;
         },
@@ -127,9 +234,9 @@ var mdbApi = function execute(scope) {
                     return;
                 }
 
-                var thisJob = list.filter(function (job) {
+                var thisJob = list.find(function (job) {
                     return job.jobId === call.data.jobId;
-                })[0];
+                });
                 getDebugJSObjects(call, call.data.jobId, function (getObjectsError, stats) {
                     if (getObjectsError) {
                         sendError(call, getObjectsError);
@@ -179,13 +286,25 @@ var mdbApi = function execute(scope) {
                             return;
                         }
                         call.update(null, {status: 'Parsing'});
-                        getDebugJSObjects(call, jobId, function (getObjectsError, stats) {
-                            if (getObjectsError) {
-                                sendError(call, getObjectsError);
+                        updateJobInList(call, jobId, {status: 'Parsing'}, function (firstUpdateJobError) {
+                            if (firstUpdateJobError) {
+                                sendError(call, firstUpdateJobError);
                                 return;
                             }
-                            stats.status = 'Processed';
-                            call.done(getObjectsError, stats);
+                            getDebugJSObjects(call, jobId, function (getObjectsError, stats) {
+                                if (getObjectsError) {
+                                    sendError(call, getObjectsError);
+                                    return;
+                                }
+                                stats.status = 'Processed';
+                                updateJobInList(call, jobId, {status: 'Processed', dateEnd: new Date()}, function (secondUpdateJobError) {
+                                    if (secondUpdateJobError) {
+                                        sendError(call, secondUpdateJobError);
+                                        return;
+                                    }
+                                    call.done(getObjectsError, stats);
+                                });
+                            });
                         });
                     });
                 });
@@ -199,7 +318,13 @@ var mdbApi = function execute(scope) {
         },
         handler: function (call) {
             var client = Manta.createClient(call);
-            client.cancelJob(call.data.jobId, call.done.bind(call));
+            client.cancelJob(call.data.jobId, function (error) {
+                if (error) {
+                    call.done(error);
+                    return;
+                }
+                call.done(null, 'Cancelled');
+            });
         }
     });
 };

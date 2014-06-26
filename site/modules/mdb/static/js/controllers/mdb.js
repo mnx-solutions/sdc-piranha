@@ -34,6 +34,28 @@
             $scope.objects = [];
             $scope.loading = true;
 
+            $scope.getStatus = function (item) {
+                var getStatus = function () {
+                    mdb.getJobFromList(item.jobId).then(function (job) {
+                        if (job.status === 'Processed' || job.status === 'Failed' || item.status === 'Cancelled') {
+                            $scope.objects.some(function (object) {
+                                if (object.jobId === item.jobId) {
+                                    object.dateEnd = job.dateEnd;
+                                    return true;
+                                }
+                                return false;
+                            });
+                            item.status = job.status;
+                        } else {
+                            item.status = job.status;
+                            setTimeout(getStatus, 10000);
+                        }
+                    });
+                };
+                getStatus();
+                return item.status;
+            };
+
             $scope.gridProps = [
                 {
                     id: 'jobId',
@@ -59,7 +81,52 @@
                     id: 'date',
                     name: 'Created',
                     sequence: 2,
+                    type: 'date',
                     active: true
+                },
+                {
+                    id: 'status',
+                    name: 'Status',
+                    sequence: 3,
+                    active: true,
+                    type: 'async',
+                    _getter: function (item) {
+                        if (item.status === 'Processed' || item.status === 'Failed' || item.status === 'Cancelled') {
+                            return item.status;
+                        } else {
+                            return $scope.getStatus(item);
+                        }
+                    }
+                },
+                {
+                    id: 'dateEnd',
+                    name: 'Completed',
+                    sequence: 4,
+                    active: true,
+                    type: 'html',
+                    _getter: function (item) {
+                        var result = 'N/A';
+                        if (item.dateEnd) {
+                            result = window.moment(item.dateEnd).format('YYYY-MM-DD HH:mm');
+                        }
+                        return result;
+                    }
+                },
+                {
+                    id: 'time',
+                    name: 'Time',
+                    sequence: 4,
+                    active: true,
+                    type: 'html',
+                    _getter: function (item) {
+                        var result = 'N/A';
+                        if (item.dateEnd && item.date) {
+                            var time = (new Date(item.dateEnd).getTime() - new Date(item.date).getTime()) / 1000;
+                            time /= 60;
+                            result = Math.round(time % 60).toString() + 'm';
+                        }
+                        return result;
+                    }
                 }
             ];
             $scope.gridActionButtons = [];
@@ -70,6 +137,14 @@
             $scope.searchForm = true;
             $scope.enabledCheckboxes = true;
             $scope.placeHolderText = 'filter';
+
+            mdb.getDebugJobsList().then(function (list) {
+                $scope.loading = false;
+                $scope.objects = list;
+            }, function (error) {
+                $scope.loading = false;
+                PopupDialog.error(null, error);
+            });
 
             $scope.addNewJob = function () {
                 if ($scope.provisionEnabled) {

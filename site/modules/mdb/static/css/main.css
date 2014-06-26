@@ -45,3 +45,7 @@
     font-weight: bold;
     text-align: right;
 }
+
+.estimate-time {
+    height: 34px;
+}
