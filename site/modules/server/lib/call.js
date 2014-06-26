@@ -70,15 +70,15 @@ function Call(opts) {
         return obj;
     }
 
-    var final = false;
+    var isFinal = false;
 
     function emit(event, data) {
-        if (!final && !_noEmit) {
+        if (!isFinal && !_noEmit) {
             self.emit(event, self.err, data);
         }
 
         if (self.finished) {
-            final = true;
+            isFinal = true;
         }
     }
 
@@ -108,7 +108,7 @@ function Call(opts) {
             value: function (fn) {
                 if (fn) {
                     _session.push(fn);
-                    return;
+                    return null;
                 }
 
                 if (_session.length < 1) {
@@ -116,8 +116,8 @@ function Call(opts) {
                 }
 
                 return function (req) {
-                    _session.forEach(function (fn) {
-                        fn(req);
+                    _session.forEach(function (sessionFunc) {
+                        sessionFunc(req);
                     });
                 };
             }
@@ -192,7 +192,7 @@ function Call(opts) {
                     if (err) {
                         return self.error(err, result);
                     }
-                    self.result(result, done);
+                    return self.result(result, done);
                 }
 
                 if (!_bind) {
@@ -237,7 +237,7 @@ function Call(opts) {
                     if (err) {
                         self.removeAllListeners();
                         opts.remove(self);
-                        self.error(err);
+                        self.error(err, data);
                     }
 
                     if (done) {
@@ -269,7 +269,7 @@ function Call(opts) {
                 if (status) {
                     _status = status;
                     emit(status, self);
-                    return;
+                    return null;
                 }
                 return {
                     id: self.id,
@@ -285,7 +285,7 @@ function Call(opts) {
         }
     }));
 
-    self.start();
+    return self.start();
 }
 
 util.inherits(Call, events.EventEmitter);
