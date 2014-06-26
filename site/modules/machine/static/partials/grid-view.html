@@ -114,7 +114,9 @@
                         </td>
                         <td data-ng-repeat="prop in props | orderBy:'sequence' | filter:{active:true}" data-ng-switch="prop.id" data-ng-class="prop.columnClass">
                             <span data-ng-show="object.maintenanceStartTime && !object.compute_node" class="tooltip-hover warn-sign" data-toggle="tooltip" data-placement="right" data-html="true" data-original-title="This instance has been scheduled for <br />maintenance on <b>{{object.maintenanceStartTime}}</b>"><i class="warn-yellow"></i></span>
-
+                            <span data-ng-switch-when="state" data-ng-click="toggleDetails(object.id)">
+                                <div data-object-state data-object="object" data-type="{{itemsType}}" class="grid-small-font"></div>
+                            </span>
                             <span data-ng-switch-when="actionButtons">
                                 <div data-ng-show="getActionButtons(object).length && imageButtonShow">
                                     <div class="grid-small-font" data-ng-repeat="btn in getActionButtons(object) | orderBy:sequence">
