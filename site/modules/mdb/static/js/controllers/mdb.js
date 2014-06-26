@@ -74,7 +74,7 @@
                     $location.path('/mdb/create');
                 } else {
                     var submitBillingInfo = {
-                        btnTitle: 'Submit and Access Debug Node.js'
+                        btnTitle: 'Submit and Access Node.js Debugger'
                     };
                     Account.checkProvisioning(submitBillingInfo, null, null, function (isSuccess) {
                         $scope.loading = false;
