@@ -7,8 +7,9 @@
                 New Debugger Job</button>
         </div>
     </div>
+
     <div class="loading-large" data-ng-show="loading"></div>
-    <div data-ng-hide="objects.length">You don't have any Node.js debugger jobs.</div>
+    <div data-ng-hide="objects.length || loading">You don't have any Node.js debugger jobs.</div>
     <div class="row-fluid">
         <div data-ng-show="objects.length">
             <div data-grid-view

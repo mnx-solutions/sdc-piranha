@@ -16,6 +16,20 @@
             $scope.gridUserConfig = Account.getUserConfig().$child('MdbJobs');
             Account.getAccount(true).then(function (account) {
                 $scope.provisionEnabled = account.provisionEnabled;
+                if ($scope.provisionEnabled) {
+                    mdb.getDebugJobsList().then(function (list) {
+                        $scope.loading = false;
+                        $scope.objects = list;
+                    }, function (err) {
+                        $scope.loading = false;
+                        if (!err.message) {
+                            err.message = err.code || err.errno || 'Internal error';
+                        }
+                        PopupDialog.error(null, err.message);
+                    });
+                } else {
+                    $scope.loading = false;
+                }
             });
             $scope.objects = [];
             $scope.loading = true;
@@ -52,22 +66,6 @@
             $scope.searchForm = true;
             $scope.enabledCheckboxes = true;
             $scope.placeHolderText = 'filter';
-
-            if ($scope.provisionEnabled) {
-                mdb.getDebugJobsList().then(function (list) {
-                    $scope.loading = false;
-                    $scope.objects = list;
-                }, function (err) {
-                    $scope.loading = false;
-                    if (!err.message) {
-                        err.message = err.code || err.errno || 'Internal error';
-                    }
-                    PopupDialog.error(null, err.message);
-                });
-            } else {
-                $scope.loading = false;
-            }
-
 
             $scope.addNewJob = function () {
                 if ($scope.provisionEnabled) {

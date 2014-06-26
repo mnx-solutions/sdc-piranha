@@ -6,7 +6,7 @@
             restrict: 'EA',
             scope: {
                 objects: '=',
-                loading: '='
+                loading: '=?'
             },
             link: function (scope, element) {
                 scope.objects = Array.isArray(scope.objects) ? scope.objects : [];
