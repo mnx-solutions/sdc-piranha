@@ -18,7 +18,6 @@ window.JP.main.config(['routeProvider', function (routeProvider) {
             title: 'Edit Billing Information',
             action: 'account.payment'
         });
-
     var features = window.JP.get('features');
     if (features && features.invoices !== 'disabled') {
         routeProvider.when('/account/invoices', {

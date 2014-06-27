@@ -27,6 +27,9 @@
                 };
 
                 $scope.changePassword = function () {
+                    if ($scope.account.isSubuser) {
+                        return;
+                    }
                     $$track.event('Window Open', 'Change Password');
                     var dialogWidth = $scope.features.useBrandingOrange === 'enabled' ? 580 : 980;
                     window.open('account/changepassword/' + $scope.account.id, 'change_password', 'width=' + dialogWidth +
@@ -34,6 +37,9 @@
                 };
 
                 $scope.changeTfa = function () {
+                    if ($scope.account.isSubuser) {
+                        return;
+                    }
                     var opts = {
                         templateUrl: 'account/static/template/dialog/tfa-modal.html'
                     };

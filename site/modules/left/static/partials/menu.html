@@ -52,7 +52,9 @@
                         <span class="selected-sub"></span>
                     </a>
                 </li>
-                <li class="sub" data-ng-class="{active: location.path().search('manta/files') == 1}">
+                <li class="sub"
+                    data-ng-class="{active: location.path().search('manta/files') == 1}"
+                    data-ng-show="features.manta == 'enabled'">
                     <a href="#!/manta/files">
                         <span class="titles" data-translate>File Manager</span>
                         <span class="selected-sub"></span>
