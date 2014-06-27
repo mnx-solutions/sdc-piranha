@@ -3237,6 +3237,7 @@ label.checkbox {
 }
 
 .modal.file-manager {
+    top: 6%;
     margin-left: -290px;
     width: 580px;
 }
@@ -3248,7 +3249,7 @@ label.checkbox {
 
 .file-manager .modal-body {
     overflow-y: hidden;
-    max-height: 450px;
+    max-height: 479px;
 }
 
 .modal .folder-container {
