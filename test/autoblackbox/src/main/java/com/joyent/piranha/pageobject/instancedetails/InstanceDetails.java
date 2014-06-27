@@ -5,10 +5,11 @@ import com.codeborne.selenide.ElementsCollection;
 import com.codeborne.selenide.SelenideElement;
 import com.codeborne.selenide.WebDriverRunner;
 import com.joyent.piranha.Common;
-import com.joyent.piranha.pageobject.*;
+import com.joyent.piranha.pageobject.AbstractPageObject;
+import com.joyent.piranha.pageobject.Analytics;
+import com.joyent.piranha.pageobject.Zenbox;
 import org.apache.commons.lang3.text.WordUtils;
 import org.openqa.selenium.By;
-import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.support.ui.Select;
 
 import static com.codeborne.selenide.Selectors.byText;
@@ -49,18 +50,12 @@ public class InstanceDetails extends AbstractPageObject {
         return page(ImagesSection.class);
     }
 
-    public void clickRenameInstanceIcon() {
-        //need this crutch because clickable element is always invisible
-        JavascriptExecutor executor = (JavascriptExecutor) WebDriverRunner.getWebDriver();
-        executor.executeScript("$('.edit-text-icon').click()");
-    }
-
     public SelenideElement getInstanceNameField() {
         return $("#renameObject").isDisplayed() ? $("#renameObject") : $(".page-title");
     }
 
     public void rename(String name) {
-        clickRenameInstanceIcon();
+        getInstanceNameField().click();
         getInstanceNameField().clear();
         getInstanceNameField().setValue(name);
         $("[data-ng-click=\"clickRename()\"]").click();
@@ -70,8 +65,9 @@ public class InstanceDetails extends AbstractPageObject {
 
     public void selectResizeOption(String packageDescription) {
         $("[data-target=\"#collapse_resize\"]").click();
-        SelenideElement dropDown = $("#collapse_resize");
-        Select packages = new Select(dropDown.$("select[name=\"resize\"]"));
+        SelenideElement dropDown = $("#collapse_resize").$("select[name=\"resize\"]");
+        dropDown.shouldBe(Condition.visible);
+        Select packages = new Select(dropDown);
         packages.selectByVisibleText(packageDescription);
         $("#select2-drop").waitWhile(Condition.visible, baseTimeout);
     }
@@ -128,30 +124,30 @@ public class InstanceDetails extends AbstractPageObject {
         $("[data-target=\"#collapse_summary\"]").click();
     }
 
-    public void changeState(String state){
-        $("[data-ng-click=\"click"+WordUtils.capitalize(state)+"(machine.id)\"]").click();
+    public void changeState(String state) {
+        $("[data-ng-click=\"click" + WordUtils.capitalize(state) + "(machine.id)\"]").click();
         clickButtonInModal("Yes");
         waitForSmallSpinnerDisappear();
     }
 
-    public void stopInstance(){
+    public void stopInstance() {
         changeState("stop");
     }
 
-    public void startInstance(){
+    public void startInstance() {
         changeState("start");
     }
 
-    public void rebootInstance(){
+    public void rebootInstance() {
         changeState("reboot");
     }
 
-    public void deleteInstance(){
+    public void deleteInstance() {
         changeState("delete");
         clickButtonInModal("Ok");
     }
 
-    public String getInstanceStatus(){
+    public String getInstanceStatus() {
         return $(".status.label").text();
     }
 }

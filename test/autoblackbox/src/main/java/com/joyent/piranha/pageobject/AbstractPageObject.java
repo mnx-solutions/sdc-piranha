@@ -68,7 +68,7 @@ public abstract class AbstractPageObject {
     }
 
     public void waitForSmallSpinnerDisappear() {
-        $(By.xpath("//span[contains(@class,'loading-small') and not(@style=\"display: none;\")]")).waitWhile(exist, CHANGE_STATUS_TIMEOUT);
+        $(By.xpath("//span[contains(@class,'loading-small') and not(@class=\"ng-hide\")]")).waitWhile(exist, CHANGE_STATUS_TIMEOUT);
     }
 
     public void waitForMediumSpinnerDisappear() {
@@ -125,7 +125,7 @@ public abstract class AbstractPageObject {
     }
 
     public void addGridColumn(String columnName) {
-        if (!$(By.xpath("//thead//th[contains(.,\"" + columnName + "\") and not(contains(@style,\"display: none;\"))]")).exists()) {
+        if (!$(By.xpath("//thead//th[contains(.,\"" + columnName + "\") and not(contains(@class,\"ng-hide\"))]")).exists()) {
             clickColumnsButton();
             $("#checkbox-list-columns").waitUntil(visible, baseTimeout);
             SelenideElement column = $(By.xpath("//div[@data-ng-repeat=\"prop in props | orderBy:'sequence'\" and contains (.,\"" + columnName + "\")]//div"));

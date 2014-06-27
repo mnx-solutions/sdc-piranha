@@ -7,6 +7,7 @@ import com.joyent.piranha.PropertyHolder;
 import org.openqa.selenium.By;
 import org.openqa.selenium.interactions.HasInputDevices;
 import org.openqa.selenium.interactions.Mouse;
+import org.openqa.selenium.support.ui.Select;
 
 import static com.codeborne.selenide.Condition.*;
 import static com.codeborne.selenide.Selectors.byAttribute;
@@ -34,16 +35,15 @@ public class CreateInstanceManual extends AbstractPageObject implements CreateIn
         if (!$(byText("Quick Start: Create Instance")).isDisplayed()) {
             waitForMediumSpinnerDisappear();
         }
-        $("#button-select-datacenter").click();
+        $(By.xpath("//option[@data-ng-repeat=\"datacenter in datacenters\" and contains(.,\"" + zone + "\")]")).waitUntil(exist, baseTimeout);
+        $("#selectDatacenter").click();
         $(byText(zone)).click();
     }
 
     public void selectOsFilter(String os) {
-        waitForListingUpdate();
-        SelenideElement dropList = $(byAttribute("data-original-title", "Filter by operating system"));
-        $("#button-select-os").click();
-        SelenideElement toClick = dropList.$("ul.dropdown-menu").$(byText(os));
-        toClick.click();
+        $("#selectOS").click();
+        $(By.xpath("//option[@data-ng-repeat=\"opsys in operating_systems\" and contains(.,\"" + os + "\")]")).waitUntil(exist, baseTimeout);
+        $(byText(os)).click();
     }
 
     public void waitForListingUpdate() {
@@ -77,13 +77,15 @@ public class CreateInstanceManual extends AbstractPageObject implements CreateIn
     }
 
     public void checkPackageInfo(String mem, String disk, String cpu, String instancePackage) {
-        ElementsCollection elements = $$(".center .value");
-        String[] texts = elements.getTexts();
-        assertTrue(texts[0].equals(instancePackage));
-        assertTrue(texts[1].equals(mem));
-        assertTrue(texts[2].equals(disk));
-        assertTrue(texts[3].equals(cpu));
-        assertTrue(texts[4].equals(PropertyHolder.getDatacenter(0)));
+        String cssSelector = ".center .value";
+        assertTrue($(cssSelector, 0).text().equals(instancePackage));
+        assertTrue($(cssSelector, 1).text().equals(mem));
+        assertTrue($(cssSelector, 2).text().equals(disk));
+        assertTrue($(cssSelector, 3).text().equals(cpu));
+        assertTrue($(cssSelector, 4).text().equals(PropertyHolder.getDatacenter(0)));
+    }
+
+    public void assertPackageInfo() {
     }
 
     public void checkPaymentInfo(String h, String d) {
@@ -135,12 +137,10 @@ public class CreateInstanceManual extends AbstractPageObject implements CreateIn
     }
 
     public void filterPackages(String parameter, String value) {
-        String dropDownButton = ".dropdown-toggle span";
-        ElementsCollection dropList = $$(".filter-container .btn-group");
-        dropList.get(0).$(dropDownButton).click();
-        $(byText(parameter)).click();
-        dropList.get(1).$(dropDownButton).click();
-        $(byText(value)).click();
+        Select select = new Select($("#filterProperty"));
+        select.selectByVisibleText(parameter);
+        select = new Select($("#filterPropertyValue"));
+        select.selectByVisibleText(value);
     }
 
     public void openSection(String sectionName) {
@@ -150,11 +150,6 @@ public class CreateInstanceManual extends AbstractPageObject implements CreateIn
     public CreateInstanceManual clickAllPublicImagesLink() {
         $(byText("All Public Images")).click();
         return page(CreateInstanceManual.class);
-    }
-
-    public CreateInstanceQuickStart clickQuickLink() {
-        $(By.xpath("//a[contains(text(),'Quick')]")).click();
-        return page(CreateInstanceQuickStart.class);
     }
 
     @Override

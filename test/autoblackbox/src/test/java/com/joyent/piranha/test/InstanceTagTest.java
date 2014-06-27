@@ -1,10 +1,10 @@
 package com.joyent.piranha.test;
 
-import com.joyent.piranha.Common;
 import com.joyent.piranha.PropertyHolder;
-import com.joyent.piranha.pageobject.*;
 import com.joyent.piranha.pageobject.InstanceList;
 import com.joyent.piranha.pageobject.Instances;
+import com.joyent.piranha.pageobject.Login;
+import com.joyent.piranha.pageobject.SideBarMenu;
 import com.joyent.piranha.pageobject.instancedetails.InstanceDetails;
 import com.joyent.piranha.pageobject.instancedetails.TagSection;
 import com.joyent.piranha.util.TestWrapper;
@@ -46,7 +46,7 @@ public class InstanceTagTest extends TestWrapper {
         instances.checkTitle();
         InstanceList instanceList = instances.getInstanceList();
         instanceList.waitForInstanceList();
-        String instanceName = Common.getTestInstanceName();
+        String instanceName = instanceList.getFirstInstanceName();
         InstanceDetails instanceDetails = instanceList.openInstanceDetails(instanceName);
         instanceDetails.getPageTitle().shouldHave(text(instanceName));
         String key1 = "tagName1";

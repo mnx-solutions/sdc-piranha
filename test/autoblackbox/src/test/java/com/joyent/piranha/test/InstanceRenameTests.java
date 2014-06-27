@@ -1,11 +1,11 @@
 package com.joyent.piranha.test;
 
-import com.joyent.piranha.Common;
 import com.joyent.piranha.PropertyHolder;
-import com.joyent.piranha.pageobject.instancedetails.InstanceDetails;
+import com.joyent.piranha.pageobject.InstanceList;
 import com.joyent.piranha.pageobject.Login;
 import com.joyent.piranha.pageobject.NavBarMenu;
 import com.joyent.piranha.pageobject.SideBarMenu;
+import com.joyent.piranha.pageobject.instancedetails.InstanceDetails;
 import com.joyent.piranha.util.TestWrapper;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -16,9 +16,7 @@ import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Configuration.baseUrl;
 import static com.codeborne.selenide.Configuration.timeout;
 import static com.codeborne.selenide.Selectors.byText;
-import static com.codeborne.selenide.Selenide.$;
-import static com.codeborne.selenide.Selenide.open;
-import static com.codeborne.selenide.Selenide.page;
+import static com.codeborne.selenide.Selenide.*;
 
 public class InstanceRenameTests extends TestWrapper {
 
@@ -27,7 +25,7 @@ public class InstanceRenameTests extends TestWrapper {
     public static NavBarMenu navBarMenu;
     public static SideBarMenu sideBarMenu;
     public static InstanceDetails instanceDetails;
-    public static final String TEST_INSTANCE_NAME = Common.getTestInstanceName();
+    public static String TEST_INSTANCE_NAME = "dnd-forImageAutoTests";
 
     @BeforeClass
     public static void openDashboard() {
@@ -37,7 +35,8 @@ public class InstanceRenameTests extends TestWrapper {
         loginPage.login(USER_NAME, PASSWORD);
         navBarMenu = page(NavBarMenu.class);
         sideBarMenu = page(SideBarMenu.class);
-        instanceDetails = sideBarMenu.clickCompute().getInstanceList().openInstanceDetails(TEST_INSTANCE_NAME);
+        InstanceList instanceList = sideBarMenu.clickCompute().getInstanceList();
+        instanceDetails = instanceList.openInstanceDetails(TEST_INSTANCE_NAME);
     }
 
     @AfterClass
@@ -47,7 +46,7 @@ public class InstanceRenameTests extends TestWrapper {
 
     @Test
     public void renameInstanceValidation() {
-        instanceDetails.clickRenameInstanceIcon();
+        instanceDetails.getInstanceNameField().click();
         instanceDetails.getInstanceNameField().sendKeys("!!!");
         instanceDetails.waitForMediumSpinnerDisappear();
         $(byText("Machine name can contain only letters, digits and signs like '.' and '-'.")).shouldBe(visible);
@@ -62,7 +61,7 @@ public class InstanceRenameTests extends TestWrapper {
         instanceDetails.rename(instName);
         instanceDetails.getInstanceNameField().shouldHave(text(instName));
         sideBarMenu.clickCompute().getInstanceList().openInstanceDetails(instName);
-        instanceDetails.rename(Common.getTestInstanceName());
-        instanceDetails.getInstanceNameField().shouldHave(text(Common.getTestInstanceName()));
+        instanceDetails.rename(TEST_INSTANCE_NAME);
+        instanceDetails.getInstanceNameField().shouldHave(text(TEST_INSTANCE_NAME));
     }
 }

@@ -2,6 +2,7 @@ package com.joyent.piranha.pageobject;
 
 import com.codeborne.selenide.SelenideElement;
 import org.openqa.selenium.By;
+import org.openqa.selenium.support.ui.Select;
 
 import static com.codeborne.selenide.Selectors.byText;
 import static com.codeborne.selenide.Selenide.$;
@@ -106,5 +107,10 @@ public class FirewallRuleDetails extends AbstractPageObject {
 
     public void clickCancelCreateButton() {
         $("[data-ng-click=\"cancelRule()\"]").click();
+    }
+
+    public void selectDatacenter(String datacenter) {
+        Select select = new Select($("#dcSelect"));
+        select.selectByVisibleText(datacenter);
     }
 }

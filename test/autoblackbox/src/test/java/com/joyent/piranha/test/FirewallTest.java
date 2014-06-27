@@ -37,11 +37,6 @@ public class FirewallTest extends TestWrapper {
         navBarMenu.clickAccountMenu().clickLogout();
     }
 
-    @After
-    public void checkErrors() {
-        sideBarMenu.errorNotPresent();
-    }
-
     @Before
     public void goToFirewall() {
         sideBarMenu.openFirewallPage();
@@ -50,6 +45,7 @@ public class FirewallTest extends TestWrapper {
     @Test
     public void ruleCreateValidation() {
         FirewallRuleDetails firewallRuleDetails = firewallRules.clickAddNewButton();
+        firewallRuleDetails.selectDatacenter(PropertyHolder.getDatacenter(0));
         firewallRuleDetails.getCreateRuleButton().shouldBe(visible);
         firewallRuleDetails.selectProtocol("UDP");
         firewallRuleDetails.clickUseAllButton();
@@ -79,6 +75,7 @@ public class FirewallTest extends TestWrapper {
         String tag = firewallRules.createTestRule();
         firewallRules.waitForLargeSpinnerDisappear();
         FirewallRuleDetails firewallRuleDetails = firewallRules.editRule(tag);
+        firewallRuleDetails.selectDatacenter(PropertyHolder.getDatacenter(0));
         firewallRuleDetails.removeFirstOption("Protocol");
         firewallRuleDetails.removeFirstOption("From");
         firewallRuleDetails.removeFirstOption("To");
@@ -95,6 +92,7 @@ public class FirewallTest extends TestWrapper {
     @Test
     public void createRule() {
         FirewallRuleDetails firewallRuleDetails = firewallRules.clickAddNewButton();
+        firewallRuleDetails.selectDatacenter(PropertyHolder.getDatacenter(0));
         firewallRuleDetails.clickUseAllButton();
         firewallRuleDetails.selectTargetValue("From", "Instance", "dnd-forFIre\n");
         String instanceTag = "notAnInstance";

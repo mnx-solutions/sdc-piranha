@@ -25,7 +25,7 @@ public class Dashboard extends AbstractPageObject {
     }
 
     public SelenideElement getFreeTierWidget() {
-        return $(By.xpath("//div[@class=\"widget grey links2 host\" and contains(.,\"Free Dev Tier\") ]"));
+        return $(".tile.free-tier-bg");
     }
 
     public void checkHeadingDashboard() {
@@ -43,8 +43,8 @@ public class Dashboard extends AbstractPageObject {
     }
 
     public CreateInstanceQuickStart clickCreateFreeTier() {
-        $(By.xpath("//button[contains(.,'Create Free Dev Tier')]")).click();
-        return page(CreateInstanceQuickStart.class);
+        getFreeTierWidget().$(byText("+ Create Free Instance")).click();
+        return new CreateInstanceQuickStart(true);
     }
 
     public boolean checkForFreeTierInDatacenter(String datacenter) {

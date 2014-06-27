@@ -57,7 +57,8 @@ public class FakePackageTest extends TestWrapper {
     @Test
     public void resizeInstanceHighPerformance() {
         InstanceList instanceList = sideBarMenu.clickCompute().getInstanceList();
-         InstanceDetails instanceDetails= instanceList.openInstanceDetails(instanceList.getFirstInstanceName());
+        instanceList.openGridTab(PropertyHolder.getDatacenter(0));
+        InstanceDetails instanceDetails = instanceList.openInstanceDetails(instanceList.getFirstInstanceName());
         String instanceId = instanceDetails.getInstanceId();
         instanceDetails.selectResizeOption("Mem: 128 GB Disk: 4200 GB VCPU: 32 and bursting");
         Zenbox zenbox = instanceDetails.clickResizeButton("fakePackage");
