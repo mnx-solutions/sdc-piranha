@@ -149,7 +149,7 @@ module.exports = function execute(scope, callback) {
                 req.session.save();
             });
             var isInSignup = call.req.session.signupStep && call.req.session.signupStep !== 'completed';
-            if (isInSignup || config.features.allowSkipBilling === 'enabled') {
+            if (isInSignup) {
                 var email = acc.billToContact.workEmail || acc.soldToContact.workEmail;
                 performFraudValidation(call, email, function (err) {
                     if (err) {
