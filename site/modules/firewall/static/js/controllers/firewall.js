@@ -29,6 +29,7 @@
         'requestContext',
         'localization',
         'rule',
+        'Dataset',
         'Datacenter',
         'Machine',
         '$http',
@@ -37,7 +38,7 @@
         '$location',
         '$anchorScroll',
 
-        function ($scope, $rootScope, $filter, $q, requestContext, localization, rule, Datacenter, Machine, $http, PopupDialog, Account, $location,
+        function ($scope, $rootScope, $filter, $q, requestContext, localization, rule, Dataset, Datacenter, Machine, $http, PopupDialog, Account, $location,
                   $anchorScroll) {
 
             localization.bind('firewall', $scope);
@@ -376,11 +377,49 @@
                 $('#actionSelect').select2('val', $scope.data.parsed.action);
                 $('#stateSelect').select2('val', $scope.data.enabled.toString());
                 $('#protocolSelect').select2('val', $scope.data.parsed.protocol.name);
-                $('#dcSelect').select2('enable').select2('val', $scope.data.datacenter);
+                $('#dcSelect').select2('enable').select2('val', $scope.selected.datacenter);
             };
 
+            // FIXME: Get rid of copy-paste from provision.js!!!
+            var switchToOtherDatacenter = function (datacenter) {
+                if ($scope.selectData.datacenters && $scope.selectData.datacenters.length > 0) {
+                    var firstNonSelected = $scope.selectData.datacenters.find(function (dc) { return dc.text !== datacenter; });
+                    if (firstNonSelected) {
+                        PopupDialog.error(
+                            localization.translate(
+                                null,
+                                null,
+                                'Error'
+                            ),
+                            localization.translate(
+                                null,
+                                'machine',
+                                'CloudAPI is not responding in the {{name}} data center. Our operations team is investigating.',
+                                { name: datacenter }
+                            )
+                        );
+
+                        $scope.selected.datacenter = firstNonSelected.text;
+                    }
+                }
+            };
+
+            // Watch datacenter change
             $scope.$watch('selected.datacenter', function (newVal) {
-                $scope.datacenter = newVal;
+                if (newVal) {
+                    $scope.datasetsLoading = true;
+                    $q.when(Dataset.dataset({ datacenter: newVal })).then(function (result) {
+                        if (result.length === 0) {
+                            switchToOtherDatacenter(newVal);
+                        } else {
+                            $('#dcSelect').select2('val', newVal);
+                            $scope.datacenter = newVal;
+                        }
+                    }, function () {
+                        switchToOtherDatacenter(newVal);
+                    });
+                }
+                $scope.datasetsLoading = false;
             });
 
             $scope.$watch('selected.status', function (val) {
