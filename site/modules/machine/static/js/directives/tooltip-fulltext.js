@@ -15,7 +15,11 @@
                         var text = elm.innerHTML.trim();
                         var label = ' <span class="label label-default tooltip-hover" data-toggle="tooltip" data-placement="top" data-html="true" data-original-title=" ' + text + '">...</span>';
                         function setLabel() {
-                            text = text.substring(0, text.length - 1);
+                            if (text.split(' ').length > 1) {
+                                text = text.substring(0, text.lastIndexOf(' '));
+                            } else {
+                                text = text.substring(0, text.length - 1);
+                            }
                             element.context.innerHTML = text + label;
                         }
                         if (elm.offsetHeight < scrollHeight && elm.offsetWidth >= elm.scrollWidth) {

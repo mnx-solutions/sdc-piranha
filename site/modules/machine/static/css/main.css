@@ -803,7 +803,7 @@ span.btn-success {
     color: #3d3d3d;
     white-space: nowrap;
     font-size: 18px;
-    line-height: 1.3em;
+    line-height: 20px;
 }
 
 .simple-image .name p {
@@ -1376,7 +1376,7 @@ span.btn-success {
 .advanced-instance-title .postgresql,
 .advanced-instance-title .scalearc,
 .advanced-instance-title .nginx {
-    padding-right: 25px;
+    width: 130px;
 }
 
 .review .left.small-icon {
