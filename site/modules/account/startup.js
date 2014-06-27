@@ -284,11 +284,31 @@ module.exports = function execute(scope) {
 
     server.onCall('SetUserConfig', function (call) {
         var client = MantaClient.createClient(call);
-        client.putFileContents(getConfigPath(call, client), JSON.stringify(call.data), function (error) {
-            if (error && error.statusCode !== 404) {
+        var configPath = getConfigPath(call, client);
+
+        function checkResponse(call, error) {
+            if (error) {
                 call.req.log.error({error: error}, 'Cannot write user config');
             }
             call.done(null, !!error);
-        });
+        }
+
+        var putConfig = function (call, client) {
+            return client.putFileContents(configPath, JSON.stringify(call.data), function (error) {
+
+                if (error && error.statusCode === 404) {
+                    client.mkdirp(configPath.substring(0, configPath.lastIndexOf('/')), function (err) {
+                        if (err) {
+                            checkResponse(call, err);
+                        } else {
+                            putConfig(call, client);
+                        }
+                    });
+                } else {
+                    checkResponse(call, error);
+                }
+            });
+        };
+        putConfig(call, client);
     });
 };
