@@ -471,7 +471,8 @@
                 tabFilterField: '=',
                 tabFilterDefault: '=',
                 tabFilterUpdate: '=',
-                hideLargePagerOptions: '@'
+                hideLargePagerOptions: '@',
+                noEntriesMessage: '@'
             },
             controller: 'GridViewController',
             templateUrl: 'machine/static/partials/grid-view.html',
