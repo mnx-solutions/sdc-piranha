@@ -598,11 +598,14 @@
                 if ($scope.keys.length > 0) {
                     $scope.clickProvision();
                 } else {
-                    $scope.setCurrentStep(4);
-                    $scope.slideCarousel();
+                    var sshStepIndex = 4;
+                    var isSSHStep = nextStep(sshStepIndex);
                     $timeout(function () {
                         deleteProvisionStep(ACCOUNT_STEP_NAME);
-                        $scope.setCurrentStep(3);
+                        if (isSSHStep) {
+                            sshStepIndex = 3;
+                            $scope.setCurrentStep(sshStepIndex);
+                        }
                     }, 600);
                 }
 
@@ -638,10 +641,13 @@
             };
 
 
-
             var nextStep = function (step) {
-                $scope.setCurrentStep(step);
-                $scope.slideCarousel();
+                var isNextStep = step - $scope.currentSlidePageIndex === 1;
+                if (isNextStep) {
+                    $scope.setCurrentStep(step);
+                    $scope.slideCarousel();
+                }
+                return isNextStep;
             };
 
             $scope.clickProvision = function () {
