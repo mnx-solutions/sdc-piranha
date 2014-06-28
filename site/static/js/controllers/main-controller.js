@@ -12,8 +12,9 @@
         '$location',
         'errorContext',
         'localization',
+        '$http',
 
-        function ($scope, $rootScope, $route, $routeParams, $window, $$track, requestContext, $location, errorContext, localization) {
+        function ($scope, $rootScope, $route, $routeParams, $window, $$track, requestContext, $location, errorContext, localization, $http) {
             $rootScope.features = window.JP.get('features') || {};
 
             $scope.windowTitle = 'Joyent Cloud';
@@ -21,6 +22,8 @@
             $scope.setWindowTitle = function (title) {
                 $scope.windowTitle = title;
             };
+
+            $rootScope.isOnline = true;
 
             $rootScope.zenboxParams = window.JP.get('zendesk') || {};
             if (typeof(window.Zenbox) !== "undefined" && $rootScope.zenboxParams.dropboxID) {
@@ -36,6 +39,7 @@
             var renderContext = requestContext.getRenderContext();
 
             var commonConfig = {};
+            var checkConnectionTimer;
 
             // The subview indicates which view is going to be rendered on the page.
             $scope.subview = renderContext.getNextSection();
@@ -70,7 +74,7 @@
                         return;
                     }
 
-                    if (window.navigator.onLine) {
+                    if (window.navigator.onLine && $rootScope.isOnline) {
                         var currentStep = $('#signupStep').val();
                         if (currentStep
                             && !(currentStep === 'complete' || currentStep === 'completed')
@@ -116,12 +120,34 @@
                 $rootScope.navigatedAwayAt = new Date().getTime();
             });
 
+            window.addEventListener("offline", function () {
+                $rootScope.isOnline = false;
+                checkConnectionTimer = setInterval(function () {
+                    $rootScope.checkConnection();
+                }, 15000);
+                $rootScope.$emit('lostConnection');
+            });
+
+            $rootScope.checkConnection = function () {
+                $http({
+                    method: 'HEAD',
+                    url: '/',
+                    params: {rand: Math.floor((1 + Math.random()) * 0x10000)}
+                })
+                .success(function () {
+                    if (checkConnectionTimer) {
+                        clearInterval(checkConnectionTimer);
+                    }
+                    $rootScope.isOnline = true;
+                    $route.reload();
+                });
+            };
 
             $rootScope.$on(
                 'crashRequest',
                 function (event, message) {
                     // 5 seconds following page refresh don't react on broken requests
-                    if ($rootScope.navigatedAwayAt && new Date().getTime() < $rootScope.navigatedAwayAt + 5 * 1000) {
+                    if ($rootScope.navigatedAwayAt && new Date().getTime() < $rootScope.navigatedAwayAt + 5 * 1000 || !$rootScope.isOnline) {
                         return;
                     }
                     errorContext.emit(new Error(localization.translate(null,

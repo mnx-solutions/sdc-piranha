@@ -9,7 +9,7 @@
                 requestContext.setUpRenderContext('error.index', $scope);
 
                 $scope.pageReload = function () {
-                    $route.reload();
+                    $rootScope.checkConnection();
                 };
 
                 $scope.$on('errorContextChanged', function (scope, context) {
