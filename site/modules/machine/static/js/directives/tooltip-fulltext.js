@@ -14,7 +14,20 @@
                         var scrollHeight = elm.scrollHeight - lineHeight;
                         var text = elm.innerHTML.trim();
                         var label = ' <span class="label label-default tooltip-hover" data-toggle="tooltip" data-placement="top" data-html="true" data-original-title=" ' + text + '">...</span>';
-                        function setTooltip() {
+                        function setLabel() {
+                            if (text.split(' ').length > 1) {
+                                text = text.substring(0, text.lastIndexOf(' '));
+                            } else {
+                                text = text.substring(0, text.length - 1);
+                            }
+                            element.context.innerHTML = text + label;
+                        }
+                        if (elm.offsetHeight < scrollHeight && elm.offsetWidth >= elm.scrollWidth) {
+                            while (text.length > 0 && element.context.scrollHeight > elm.offsetHeight) {
+                                setLabel();
+                            }
+                        }
+                        if (elm.offsetWidth < elm.scrollWidth && elm.offsetHeight >= scrollHeight) {
                             if (type === 'dotdotdot') {
                                 element
                                     .addClass('tooltip-hover')
@@ -22,18 +35,10 @@
                                     .attr('data-placement', 'top')
                                     .attr('data-html', 'true');
                             } else {
-                                text = text.substring(0, text.length - 1);
-                                element.context.innerHTML = text + label;
+                                while (text.length > 0 && element.context.scrollWidth > elm.offsetWidth) {
+                                    setLabel();
+                                }
                             }
-                        }
-
-                        if (elm.offsetHeight < scrollHeight && elm.offsetWidth >= elm.scrollWidth) {
-                            while (text.length > 0 && element.context.scrollHeight > elm.offsetHeight) {
-                                setTooltip();
-                            }
-                        }
-                        if (elm.offsetWidth < elm.scrollWidth && elm.offsetHeight >= scrollHeight) {
-                            setTooltip();
                         }
                     }, 0);
                 }
