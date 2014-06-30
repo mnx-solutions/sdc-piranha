@@ -51,7 +51,8 @@ module.exports = function execute(scope) {
                                     return false;
                                 }
                                 var getUserRules = policy.rules.filter(function (rule) {
-                                    return rule.toLowerCase().indexOf('getuser') !== -1;
+                                    return rule.toLowerCase().indexOf('getuser') !== -1 ||
+                                        rule.toLowerCase().indexOf('updateuser') !== -1;
                                 });
                                 return getUserRules.length > 0;
                             });
@@ -92,6 +93,14 @@ module.exports = function execute(scope) {
         });
     };
 
+    var getBillingAndComplete = function (call, response) {
+        Billing.isActive(response.id, function (billingError, isActive) {
+            call.req.session.provisionEnabled = response.provisionEnabled = isActive;
+            call.req.session.save();
+            call.done(billingError, response);
+        });
+    };
+
     server.onCall('getAccount', function (call) {
         // get account using cloudapi
         call.cloud.getAccount(function (error, data) {
@@ -105,34 +114,43 @@ module.exports = function execute(scope) {
                 response[field] = data[field] || '';
             });
 
-            var marketoData = {
-                Email: data.email,
-                FirstName: data.firstName,
-                LastName: data.lastName,
-                Username: data.login,
-                Company: data.companyName,
-                Phone: data.phone
-            };
-
-            Marketo.update(data.id, marketoData, function (err) {
-                if (err) {
-                    call.log.error({error: err, data: marketoData}, 'Failed to update marketo account');
-                }
-                call.log.debug(marketoData, 'Associate Marketo lead with SOAP API');
-                TFA.get(data.id, function (tfaGetError, secret) {
-                    if (tfaGetError) {
-                        call.done(tfaGetError);
-                        return;
+            response.isSubuser = !!call.req.session.subId;
+            if (response.isSubuser) {
+                call.cloud.getUser(call.req.session.subId, function (userErr, userData) {
+                    if (userErr) {
+                        return call.error(userErr);
                     }
+                    accountFields.forEach(function (field) {
+                        response[field] = userData[field] || response[field];
+                    });
+                    return getBillingAndComplete(call, response);
+                });
+            } else {
+                var marketoData = {
+                    Email: response.email,
+                    FirstName: response.firstName,
+                    LastName: response.lastName,
+                    Username: response.login,
+                    Company: response.companyName,
+                    Phone: response.phone
+                };
 
-                    response.tfaEnabled = !!secret;
-                    Billing.isActive(data.id, function (billingError, isActive) {
-                        call.req.session.provisionEnabled = response.provisionEnabled = isActive;
-                        call.req.session.save();
-                        call.done(billingError, response);
+                Marketo.update(response.id, marketoData, function (err) {
+                    if (err) {
+                        call.log.error({error: err, data: marketoData}, 'Failed to update marketo account');
+                    }
+                    call.log.debug(marketoData, 'Associate Marketo lead with SOAP API');
+                    TFA.get(response.id, function (tfaGetError, secret) {
+                        if (tfaGetError) {
+                            call.done(tfaGetError);
+                            return;
+                        }
+
+                        response.tfaEnabled = !!secret;
+                        getBillingAndComplete(call, response);
                     });
                 });
-            });
+            }
         });
     });
     server.onCall('listUsers', function (call) {
@@ -259,70 +277,79 @@ module.exports = function execute(scope) {
             data[f] = call.data[f] || null;
         });
 
-        // get metadata
-        metadata.get(call.req.session.userId, metadata.ACCOUNT_HISTORY, function (err, accountHistory) {
-            if (err) {
-                call.log.error({error: err}, 'Failed to get account history from metadata');
-            }
-
-            var obj = {};
-            try {
-                obj = JSON.parse(accountHistory);
-            } catch (e) {
-                obj = {};
-                // json parsing failed
-            }
-            if (!obj || obj === null || Object.keys(obj).length === 0) {
-                obj = {};
-            }
-
-            if (!obj.email) {
-                obj.email = [];
-            }
-
-            if (!obj.phone) {
-                obj.phone = [];
-            }
-
-            obj.email.push({ 'previousValue': data.email, 'time': Date.now()});
-            obj.phone.push({ 'previousValue': data.phone, 'time': Date.now()});
-
-            metadata.set(call.req.session.userId, metadata.ACCOUNT_HISTORY, JSON.stringify(obj), function () {});
-        });
-
-        var marketoData = {
-            Email: data.email,
-            FirstName: data.firstName,
-            LastName: data.lastName,
-            Company: data.companyName,
-            Phone: data.phone
-        };
-        call.cloud.getAccount(function (error, account) {
-            if (error) {
-                call.done(error);
-                return;
-            }
-
-            Marketo.update(account.id, marketoData, function (updateError) {
-                if (updateError) {
-                    call.log.error({error: updateError, data: marketoData}, 'Failed to update marketo account');
+        if (call.req.session.subId) {
+            data.id = call.req.session.subId;
+            call.cloud.updateUser(data, function (userErr, userData) {
+                if (userErr) {
+                    return call.done(userErr);
                 }
-                call.log.debug(marketoData, 'Associate Marketo lead with SOAP API');
-                call.log.debug('Updating account with', data);
-                call.cloud.updateAccount(data, function (updateAccountError, result) {
-                    if (updateAccountError) {
-                        call.done(updateAccountError);
-                        return;
+                return getBillingAndComplete(call, userData);
+            });
+        } else {
+            // get metadata
+            metadata.get(call.req.session.userId, metadata.ACCOUNT_HISTORY, function (err, accountHistory) {
+                if (err) {
+                    call.log.error({error: err}, 'Failed to get account history from metadata');
+                }
+
+                var obj = {};
+                try {
+                    obj = JSON.parse(accountHistory);
+                } catch (e) {
+                    obj = {};
+                    // json parsing failed
+                }
+                if (!obj || obj === null || Object.keys(obj).length === 0) {
+                    obj = {};
+                }
+
+                if (!obj.email) {
+                    obj.email = [];
+                }
+
+                if (!obj.phone) {
+                    obj.phone = [];
+                }
+
+                obj.email.push({ 'previousValue': data.email, 'time': Date.now()});
+                obj.phone.push({ 'previousValue': data.phone, 'time': Date.now()});
+
+                metadata.set(call.req.session.userId, metadata.ACCOUNT_HISTORY, JSON.stringify(obj), function () {});
+            });
+
+            var marketoData = {
+                Email: data.email,
+                FirstName: data.firstName,
+                LastName: data.lastName,
+                Company: data.companyName,
+                Phone: data.phone
+            };
+            call.cloud.getAccount(function (error, account) {
+                if (error) {
+                    call.done(error);
+                    return;
+                }
+
+                Marketo.update(account.id, marketoData, function (updateError) {
+                    if (updateError) {
+                        call.log.error({error: updateError, data: marketoData}, 'Failed to update marketo account');
                     }
-                    Billing.updateActive(result.id, function (err, isActive) {
-                        call.req.session.provisionEnabled = result.provisionEnabled = isActive;
-                        call.req.session.save();
-                        call.done(err, result);
+                    call.log.debug(marketoData, 'Associate Marketo lead with SOAP API');
+                    call.log.debug('Updating account with', data);
+                    call.cloud.updateAccount(data, function (updateAccountError, result) {
+                        if (updateAccountError) {
+                            call.done(updateAccountError);
+                            return;
+                        }
+                        Billing.updateActive(result.id, function (err, isActive) {
+                            call.req.session.provisionEnabled = result.provisionEnabled = isActive;
+                            call.req.session.save();
+                            call.done(err, result);
+                        });
                     });
                 });
             });
-        });
-
+        }
     });
 
     server.onCall('listKeys', function (call) {
