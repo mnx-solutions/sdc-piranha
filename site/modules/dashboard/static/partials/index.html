@@ -5,33 +5,35 @@
         </div>
 
         <div class="pull-left tile-wrapper">
-            <div class="tile instance-bg" data-ng-click="gotoCreatePage()">
-                <div class="tile-body">
-                    <div class="title">Instances</div>
-                    <div class="left-column">
-                        <div id="count-instances-running" class="number">
-                            {{runningcount}}
+            <div class="tile instance-bg">
+                <a data-ng-href="{{'#!/compute'}}">
+                    <div class="tile-body">
+                        <div class="title">Instances</div>
+                        <div class="left-column">
+                            <div id="count-instances-running" class="number">
+                                {{runningcount}}
+                            </div>
+                            <div class="info">
+                                running
+                            </div>
                         </div>
-                        <div class="info">
-                            running
+                        <div class="right-column">
+                            <div id="count-instances-stopped" class="number">
+                                {{othercount}}
+                            </div>
+                            <div class="info">
+                                stopped
+                            </div>
                         </div>
                     </div>
-                    <div class="right-column">
-                        <div id="count-instances-stopped" class="number">
-                            {{othercount}}
-                        </div>
-                        <div class="info">
-                            stopped
-                        </div>
-                    </div>
-                </div>
-                <span class="tile-button" id="button-create-instance">+ Create Compute Instance</span>
+                </a>
+                <div class="tile-button" id="button-create-instance" data-ng-click="gotoCreatePage()">+ Create Compute Instance</div>
             </div>
         </div>
 
         <div class="pull-left tile-wrapper" data-ng-show="slbFeatureEnabled">
             <div class="tile elb-bg">
-                <a data-ng-href="{{(slbControllerCreated && '#!/slb/edit/') || '#!/slb/'}}">
+                <a data-ng-href="{{(slbControllerCreated && '#!/slb/list') || '#!/slb/'}}">
                     <div class="tile-body">
                         <div class="title">Load Balancers</div>
                         <div class="single-column">
@@ -43,8 +45,8 @@
                             </div>
                         </div>
                     </div>
-                    <span class="tile-button">+ Create Load Balancer</span>
                 </a>
+                <a class="tile-button" data-ng-href="{{(slbControllerCreated && '#!/slb/edit/') || '#!/slb/'}}">+ Create Load Balancer</a>
             </div>
         </div>
 
@@ -62,8 +64,8 @@
                             </div>
                         </div>
                     </div>
-                    <span class="tile-button" data-ng-href="{{(account.provisionEnabled && '#!/manta/files') || '#!/manta/intro'}}">Manage Storage</span>
                 </a>
+                <a class="tile-button" data-ng-href="{{(account.provisionEnabled && '#!/manta/builder') || '#!/manta/intro'}}">Create Job</a>
             </div>
         </div>
 
