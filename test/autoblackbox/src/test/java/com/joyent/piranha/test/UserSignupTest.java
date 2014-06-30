@@ -9,6 +9,8 @@ import com.joyent.piranha.util.TestWrapper;
 import org.junit.*;
 import org.openqa.selenium.support.ui.Select;
 
+import java.io.FileNotFoundException;
+
 import static com.codeborne.selenide.Condition.*;
 import static com.codeborne.selenide.Configuration.baseUrl;
 import static com.codeborne.selenide.Configuration.timeout;
@@ -16,7 +18,7 @@ import static com.codeborne.selenide.Selectors.byAttribute;
 import static com.codeborne.selenide.Selectors.byText;
 import static com.codeborne.selenide.Selenide.*;
 import static org.junit.Assert.assertTrue;
-
+//TODO:refactor deprecated tests
 public class UserSignupTest extends TestWrapper {
 
     private static Login loginPage;
@@ -53,6 +55,7 @@ public class UserSignupTest extends TestWrapper {
         assertTrue(createAccountPage.isErrorDisplayed("Password mismatch"));
     }
 
+    @Ignore
     @Test
     public void paymentInformationValidation() {
         CreateAccountPage createAccountPage = loginPage.clickSignUp();
@@ -73,6 +76,7 @@ public class UserSignupTest extends TestWrapper {
         assertTrue(signupBillInfoPage.isErrorDisplayed("Please provide valid 16-digit card number"));
     }
 
+    @Ignore
     @Test
     public void passBillingStep() {
         CreateAccountPage createAccountPage = loginPage.clickSignUp();
@@ -84,6 +88,7 @@ public class UserSignupTest extends TestWrapper {
         signupSshPage.checkTitle();
     }
 
+    @Ignore
     @Test
     public void blockedByBlackList() {
         CreateAccountPage createAccountPage = loginPage.clickSignUp();
@@ -97,8 +102,21 @@ public class UserSignupTest extends TestWrapper {
     }
 
     @Test
-    public void useExistingUsername(){
+    public void useExistingUsername() throws FileNotFoundException {
         CreateAccountPage createAccountPage = loginPage.clickSignUp();
+        createAccountPage.setLogin(PropertyHolder.getTestUserLogin());
+        createAccountPage.getSigninLink().shouldBe(visible);
+        createAccountPage.getSigninLink().click();
+        loginPage.login(PropertyHolder.getTestUserLogin(), PropertyHolder.getTestUserPassword());
+        String logEntry = Common.getLogEntry(PropertyHolder.getTestUserLogin());
+        assertTrue(logEntry.contains("Existing user logged in"));
+        page(Dashboard.class).checkTitle();
+    }
+
+    @Test
+    public void useExistingUsernameWithCampaignID() {
+        open("/landing/signup/701800000015696");
+        CreateAccountPage createAccountPage = page(CreateAccountPage.class);
         createAccountPage.setLogin(PropertyHolder.getTestUserLogin());
         createAccountPage.getSigninLink().shouldBe(visible);
         createAccountPage.getSigninLink().click();
@@ -107,14 +125,14 @@ public class UserSignupTest extends TestWrapper {
     }
 
     @Test
-    public void useExistingUsernameWithCampaignID(){
-        open("/landing/signup/701800000015696");
+    public void createNewAccount() throws FileNotFoundException {
         CreateAccountPage createAccountPage = page(CreateAccountPage.class);
-        createAccountPage.setLogin(PropertyHolder.getTestUserLogin());
-        createAccountPage.getSigninLink().shouldBe(visible);
-        createAccountPage.getSigninLink().click();
-        loginPage.login(PropertyHolder.getTestUserLogin(), PropertyHolder.getTestUserPassword());
+        loginPage.clickSignUp();
+        String lastName = loginPage.createTestAccount(createAccountPage);
+        createAccountPage.clickCreateAcccount(Dashboard.class);
         page(Dashboard.class).checkTitle();
+        String logEntry = Common.getLogEntry(lastName);
+        assertTrue(logEntry.contains("New user logged in"));
     }
 
     @Ignore //for now PhoneConfirmation feature is turned off on production

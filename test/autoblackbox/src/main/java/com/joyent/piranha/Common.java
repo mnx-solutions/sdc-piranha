@@ -121,14 +121,20 @@ public class Common {
     }
 
     public static String getValueFromLog(String key) throws FileNotFoundException, JSONException {
+        String line = getLogEntry(key);
+        JSONObject newJson = new JSONObject(line);
+        return newJson.get(key).toString();
+    }
+
+    public static String getLogEntry(String filter) throws FileNotFoundException {
         File log = new File(PropertyHolder.getServerLogPath());
         String result = null;
         Scanner scanner = new Scanner(log);
         while (scanner.hasNext()) {
             String line = scanner.nextLine();
-            if (line.contains(key)) {
-                JSONObject newJson = new JSONObject(line);
-                result = newJson.get(key).toString();
+            if (line.contains(filter)) {
+                result = line;
+                break;
             }
         }
         return result;
@@ -173,7 +179,7 @@ public class Common {
         JSONArray jsonArray;
         while (true) {
             jsonArray = new JSONArray(IOUtils.toString(p.getInputStream()));
-            if(jsonArray.length() > 0){
+            if (jsonArray.length() > 0) {
                 break;
             }
             Thread.sleep(1000);
