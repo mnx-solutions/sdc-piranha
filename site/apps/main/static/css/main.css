@@ -2707,7 +2707,9 @@ label.checkbox {
     top: 38px;
 }
 .grid-no-entries {
+    margin-top: 10px;
     padding-bottom: 20px;
+    font-size: 16px;
 }
 .grid-no-entries hr {
     margin-top: 0;
