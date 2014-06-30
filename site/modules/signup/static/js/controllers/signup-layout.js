@@ -107,6 +107,7 @@
                         }
                     });
                 };
+                $scope.currentYear = new Date().getFullYear();
             }
         ]);
 }(window.JP.getModule('Signup'), window.jQuery));

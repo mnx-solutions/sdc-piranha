@@ -11,30 +11,6 @@
     min-height:30px;
 }
 
-.footer .brand {
-	background-image: url('../img/logo-gray.png');
-    background-repeat:no-repeat;
-    background-position:50% 60%;
-    width:120px;
-    height:30px;
-}
-
-.footer {
-	padding-top:20px;
-	margin-bottom:65px;
-}
-.footer .nav {
-	padding-top:8px;
-}
-.footer .nav li {
-	float:left;
-	font-size:11px;
-}
-.footer a {
-    color:#999;
-    background-color:transparent !important;
-	padding-right:20px;
-}
 input {
     font-size: 16px;
 }
@@ -71,9 +47,26 @@ body{
     top: 53px;
     left: 0;
     z-index: 999999;
+    display: table;
     width: 175px;
     height: 100%;
     background-color: #3d3d3d;
+}
+.left div {
+    display: table-cell;
+    padding-bottom: 55px;
+    vertical-align: bottom;
+}
+.left ul {
+    margin: 0 0 10px 0;
+    list-style: none;
+}
+.left p,
+.left a {
+    margin: 0 0 10px 20px;
+    color: #999;
+    text-decoration: none;
+    font-size: 12px;
 }
 .page-title {
     display: block;

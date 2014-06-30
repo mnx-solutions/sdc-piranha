@@ -18,22 +18,3 @@ html(lang='en',data-ng-app='JoyentPortal',id="ng-app", data-ng-controller='MainC
     input#signupStep(type='hidden',value='#{signupStep}')
     each partial in partials
       script(type='text/ng-template',id='#{partial._id}')!= partial._content
-    div(class="")
-        div(class="footer")
-            div(class="pull-left")
-                ul(class="nav pull-left")
-                    li
-                        a(href="http://www.joyent.com/", target="_blank") Joyent.com
-                    li
-                        a(href="http://www.joyent.com/tos", target="_blank") Terms of Service
-                    li
-                        a(href="http://www.joyent.com/company/policies", target="_blank") Policies
-                    li
-                        a(href="http://www.joyent.com/company/security-and-compliance", target="_blank") Compliance
-                    li
-                        a(href="https://help.joyent.com/forums/20715782-current-system-status", target="_blank") System Status
-                    li
-                        a(href="http://apidocs.joyent.com/cloudapi/", target="_blank") API
-            div(class="pull-right nav")
-                a &copy; #{currentYear} Joyent, Inc.
-            div(class="clearfix")
