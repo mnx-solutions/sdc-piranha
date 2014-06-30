@@ -34,7 +34,8 @@
                                                    class="role-name"
                                                    name="roleName"
                                                    data-ng-model="role.name"
-                                                   data-ng-pattern="/^[A-Za-z0-9]+[A-Za-z0-9\.\-\s]*$/"
+                                                   data-pattern="^[A-Za-z0-9]+[A-Za-z0-9\.\-\s]*$"
+                                                   data-role-name-verify
                                                    required />
                                         </div>
                                         <div data-ng-show="isFormSubmited || roleForm.roleName.$dirty">
@@ -43,9 +44,14 @@
                                                  data-ng-show="roleForm.roleName.$error.required">Missing name
                                             </div>
                                             <div class="role-name-error error"
-                                                 data-ng-show="roleForm.roleName.$error.pattern"
+                                                 data-ng-show="roleForm.roleName.$error.pattern && !roleForm.roleName.$error.required"
                                                  data-translate>
                                                 Name can contain only letters, digits, spaces and signs like "." and "-"
+                                            </div>
+                                            <div class="role-name-error error"
+                                                 data-ng-show="roleForm.roleName.$error.reserved && !roleForm.roleName.$error.pattern && !roleForm.roleName.$error.required"
+                                                 data-translate>
+                                                '{{roleForm.roleName.$viewValue}}' is a reserved word
                                             </div>
                                         </div>
                                     </form>

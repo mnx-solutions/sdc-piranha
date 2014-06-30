@@ -10,9 +10,15 @@
                    data-ng-maxlength="60"
                    data-ng-model="user.firstName"
                    data-ng-class="{error: isError('firstName')}"
+                   ng-required="!!user.roFirstName"
                    />
         </span>
-        <span class="edit-error">
+        <span class="edit-error" data-ng-show="isFormSubmited || subAccountForm.firstName.$dirty">
+            <div class="error"
+                 data-translate
+                 data-ng-show="subAccountForm.firstName.$error.required">
+                Missing first name
+            </div>
             <div class="error"
                  data-translate
                  data-ng-show="isError('firstName', 'maxlength')">
@@ -32,13 +38,19 @@
                     data-ng-maxlength="60"
                     data-ng-model="user.lastName"
                     data-ng-class="{error: isError('lastName')}"
+                    ng-required="!!user.roLastName"
                     />
         </span>
-        <span class="edit-error">
+        <span class="edit-error" data-ng-show="isFormSubmited || subAccountForm.lastName.$dirty">
+            <div class="error"
+                 data-translate
+                 data-ng-show="subAccountForm.lastName.$error.required">
+                Missing last name
+            </div>
             <div class="error"
                  data-translate
                  data-ng-show="isError('lastName', 'maxlength')">
-                 Last Name too long.
+                Last Name too long.
             </div>
         </span>
     </div>
@@ -76,13 +88,19 @@
                    name="companyName"
                    data-ng-maxlength="50"
                    data-ng-model="user.companyName"
+                   ng-required="!!user.roCompanyName"
                    />
         </span>
-        <span class="edit-error">
+        <span class="edit-error" data-ng-show="isFormSubmited || subAccountForm.companyName.$dirty">
+            <div class="error"
+                 data-translate
+                 data-ng-show="subAccountForm.companyName.$error.required">
+                Missing company name
+            </div>
             <div class="error"
                  data-translate
                  data-ng-show="isError('companyName', 'maxlength')">
-                 Company Name too long.
+                Company Name too long.
             </div>
         </span>
     </div>
@@ -96,6 +114,7 @@
                    data-ng-class="{error: isError('login')}"
                    data-ng-model="user.login"
                    data-ng-pattern="/^[A-Za-z0-9]+[A-Za-z0-9\.\-\s]*$/"
+                   data-ng-disabled="!!user.roLogin"
                    required/>
         </span>
         <span class="edit-error" data-ng-show="isFormSubmited || subAccountForm.login.$dirty">
@@ -152,12 +171,17 @@
         <span class="edit-name">Address</span>
         <span class="edit-value">
             <input type="text"
-                   id="subAddress"
+                   id="address"
                    name="address"
-                   data-ng-model="user.address"/>
+                   data-ng-model="user.address"
+                   ng-required="!!user.roAddress"/>
         </span>
-        <span class="edit-error">
-            <div class="error"></div>
+        <span class="edit-error" data-ng-show="isFormSubmited || subAccountForm.address.$dirty">
+            <div class="error"
+                 data-translate
+                 data-ng-show="subAccountForm.address.$error.required">
+                Missing address
+            </div>
         </span>
     </div>
 
@@ -192,10 +216,15 @@
             <input type="text"
                    id="subCity"
                    name="city"
-                   data-ng-model="user.city"/>
+                   data-ng-model="user.city"
+                   ng-required="!!user.roCity"/>
         </span>
-        <span class="edit-error">
-            <div class="error"></div>
+        <span class="edit-error" data-ng-show="isFormSubmited || subAccountForm.city.$dirty">
+            <div class="error"
+                 data-translate
+                 data-ng-show="subAccountForm.city.$error.required">
+                Missing city
+            </div>
         </span>
     </div>
 
@@ -220,9 +249,10 @@
                    name="zipCode"
                    data-ng-class="{error: isError('zipCode')}"
                    data-ng-model="user.postalCode"
-                   data-ng-maxlength="20"/>
+                   data-ng-maxlength="20"
+                   ng-required="!!user.roPostalCode"/>
         </span>
-        <span class="edit-error">
+        <span class="edit-error" data-ng-show="isFormSubmited || subAccountForm.zipCode.$dirty">
             <div class="error"
                  data-translate
                  data-ng-show="isError('zipCode', 'maxlength')">

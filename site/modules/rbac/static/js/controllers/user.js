@@ -34,6 +34,13 @@
                     $q.when(service.listRoles())
                 ]).then(function (result) {
                     $scope.user = angular.copy(result[0]);
+                    $scope.user.roFirstName = $scope.user.firstName;
+                    $scope.user.roLastName = $scope.user.lastName;
+                    $scope.user.roLogin = $scope.user.login;
+                    $scope.user.roCompanyName = $scope.user.companyName;
+                    $scope.user.roPostalCode = $scope.user.postalCode;
+                    $scope.user.roAddress = $scope.user.address;
+                    $scope.user.roCity = $scope.user.city;
                     $scope.roles = result[1] || [];
                     $scope.roles.sort(function (a, b) {
                         return a.name.localeCompare(b.name);
