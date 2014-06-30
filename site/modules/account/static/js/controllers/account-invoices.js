@@ -53,6 +53,8 @@
                             $scope.isInvocesEnabled = false;
                         }
                     });
+                } else {
+                    $scope.loading = false;
                 }
             });
 
