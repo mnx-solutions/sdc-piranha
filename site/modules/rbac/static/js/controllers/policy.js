@@ -112,6 +112,8 @@
                     return;
                 }
                 convertRules();
+                $scope.model.policy.name = $scope.model.policy.dirtyName;
+                $scope.model.policy.description = $scope.model.policy.dirtyDescription;
                 policyAction(service.createPolicy($scope.model.policy), true);
             };
 
