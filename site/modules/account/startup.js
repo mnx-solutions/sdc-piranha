@@ -30,7 +30,7 @@ module.exports = function execute(scope) {
         return data;
     };
 
-    var updateRoleTags = function(cloudapi) {
+    var updateRoleTags = function (cloudapi, log) {
         var validResources = [
             '', 'machines', 'users', 'roles', 'packages',
             'images', 'policies', 'keys', 'datacenters',
@@ -38,14 +38,56 @@ module.exports = function execute(scope) {
         ];
         cloudapi.listRoles(function (err, roles) {
             roles = roles || [];
-            var roleNames = [];
-            
-            // FIXME: Array.map is more obvious here (c) Alexander
-            roles.forEach(function (role) {
-                roleNames.push(role.name);
-            });
-            validResources.forEach(function (resource) {
-                cloudapi.setRoleTags('/my/' + resource, roleNames, function (err, data) {});
+            var getUserResources = {};
+            cloudapi.listPolicies(function (err, policies) {
+                var roleNames = [];
+                roles.forEach(function (role) {
+                    roleNames.push(role.name);
+
+                    if (role.default_members && role.default_members.length > 0) {
+                        role.policies.forEach(function (policyName) {
+                            var policiesWithGetUser = policies.filter(function (policy) {
+                                if (policy.name !== policyName) {
+                                    return false;
+                                }
+                                var getUserRules = policy.rules.filter(function (rule) {
+                                    return rule.toLowerCase().indexOf('getuser') !== -1;
+                                });
+                                return getUserRules.length > 0;
+                            });
+
+                            if (policiesWithGetUser.length > 0) {
+                                role.default_members.forEach(function (defaultMember) {
+                                    getUserResources[defaultMember] = getUserResources[defaultMember] || [];
+                                    if (getUserResources[defaultMember].indexOf(role.name) === -1) {
+                                        getUserResources[defaultMember].push(role.name);
+                                    }
+                                });
+                            }
+                        });
+                    }
+                });
+                var defaultMembers = Object.keys(getUserResources);
+                if (defaultMembers.length > 0) {
+                    cloudapi.listUsers(function (err, users) {
+                        var userByLogin = {};
+                        users.forEach(function (user) {
+                            userByLogin[user.login] = user;
+                        });
+                        defaultMembers.forEach(function (defaultMember) {
+                            if (userByLogin[defaultMember]) {
+                                cloudapi.setRoleTags('/my/users/' + userByLogin[defaultMember].id, getUserResources[defaultMember], function (err) {
+                                    if (err) {
+                                        log.error({error: err}, 'Failed setRoleTags');
+                                    }
+                                });
+                            }
+                        });
+                    });
+                }
+                validResources.forEach(function (resource) {
+                    cloudapi.setRoleTags('/my/' + resource, roleNames, function (err, data) {});
+                });
             });
         });
     };
@@ -100,7 +142,8 @@ module.exports = function execute(scope) {
         });
     });
     server.onCall('getUser', function (call) {
-        call.cloud.getUser({id: call.data.id, membership: true}, function (err, data) {
+        var userId = call.data.id || call.req.session.subId;
+        call.cloud.getUser({id: userId, membership: true}, function (err, data) {
             call.done(err, data);
         });
     });
@@ -117,7 +160,7 @@ module.exports = function execute(scope) {
         call.cloud.createRole(data, function (err, data) {
             call.done(err, data);
             if (!err) {
-                updateRoleTags(call.cloud);
+                updateRoleTags(call.cloud, call.log);
             }
         });
     });
@@ -128,7 +171,7 @@ module.exports = function execute(scope) {
         call.cloud.updateRole(data, function (err, data) {
             call.done(err, data);
             if (!err) {
-                updateRoleTags(call.cloud);
+                updateRoleTags(call.cloud, call.log);
             }
         });
     });

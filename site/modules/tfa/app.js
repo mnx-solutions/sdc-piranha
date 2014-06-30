@@ -53,11 +53,13 @@ module.exports = function execute(scope, app) {
 
     app.get('/saveToken/:url', function(req, res, next) {
         var token = req.query.token;
+        var userId = req.query.id;
         req.params.url = req.params.url.replace(/\-/g, '/');
         // redirect to this url after we're done with the token
         var redirectUrl = (new Buffer(req.params.url, 'base64')).toString('ascii');
         var cloud = smartCloud.cloud({token: token, log: req.log});
-        cloud.getAccount(function (err, user) {
+
+        var callback = function (err, user) {
             if (err) {
                 next(err);
                 return;
@@ -80,6 +82,10 @@ module.exports = function execute(scope, app) {
                         delete req.session[prop];
                     }
                 }
+                if (userId) {
+                    req.session.subId = userId;
+                }
+
                 req.session.userId = user.id;
                 req.session.userName = user.login;
                 req.session.redirectUrl = redirectUrl;
@@ -106,7 +112,12 @@ module.exports = function execute(scope, app) {
                     }
                 });
             });
-        });
+        };
+        if (userId) {
+            cloud.getUser(userId, callback);
+        } else {
+            cloud.getAccount(callback)
+        }
     });
 
     app.get('/remove', function (req, res, next) {
