@@ -44,7 +44,8 @@ window.fn = [];
                                     { name: datacenter }
                                 )
                             );
-                            datasets.job[datacenter].deferred.reject(err);
+                            
+                            datasets.job[datacenter].deferred.catch(err);
                             datasets.list[datacenter].final = true;
                             return;
                         }
