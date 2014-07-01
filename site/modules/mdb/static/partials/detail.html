@@ -4,41 +4,54 @@
         <h3 class="page-title">Node.js Debugger</h3>
     </div>
     <div class="beta-sticker">beta</div>
-    <div class="left-part">
-        <table style="width: 400px;">
-            <tr>
-                <td>File: {{getFilePath() || 'Not selected'}}</td>
-                <td>
-                    <button class="btn effect-orange-button orange pull-right debugger-action-btn" data-ng-class="{'light' : objects.length || inputFile.length != 0}" data-select-file data-objects="inputFile">Select File</button>
-                </td>
-            </tr>
-            <tr>
-                <td>Status: {{status}}</td>
-                <td data-ng-if="!jobId && !objects.length"><button class="btn orange pull-right debugger-action-btn"
-                                                                 data-ng-class='{"grey-new effect-orange-button": inputFile.length == 0}'
-                                                                 data-ng-click="process()">Process Now</button></td>
-                <td data-ng-if="jobId && !objects.length"><button class="btn orange effect-orange-button pull-right debugger-action-btn"
-                                                                  data-ng-class='{"grey-new": inputFile.length == 0}'
-                          data-ng-click="cancel()">Cancel</button></td>
-                <td data-ng-if="objects.length"><button class="btn orange effect-orange-button pull-right debugger-action-btn"
-                                                        data-ng-click="process()">Re-Process</button></td>
-            </tr>
-            <tr>
-                <td>Node.js support status: {{supportStatus}}</td>
-            <td><button class="btn orange effect-orange-button grey-new pull-right debugger-action-btn" data-ng-click="clickSignup()">Signup for Node.js</button></td>
-            </tr>
+    <div class="row">
+        <div class="column mdb-common-container">
+            <table class="mdb-common-table">
+                <tr>
+                    <td>File: {{getFilePath() || 'Not selected'}}</td>
+                    <td>
+                        <button class="btn effect-orange-button orange pull-right debugger-action-btn" data-ng-class="{'light' : objects.length || inputFile.length != 0}" data-select-file data-objects="inputFile">Select File</button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Status: {{status}}</td>
+                    <td data-ng-if="!jobId && !objects.length">
+                        <button class="btn orange pull-right debugger-action-btn"
+                                data-ng-class='{"disabled grey-new": inputFile.length == 0}'
+                                data-ng-click="process()">Process Now</button>
+                    </td>
+                    <td data-ng-if="jobId && !objects.length">
+                        <button class="btn orange effect-orange-button pull-right debugger-action-btn"
+                                data-ng-class='{"grey-new": inputFile.length == 0}'
+                                data-ng-click="cancel()">Cancel</button>
+                    </td>
+                    <td data-ng-if="objects.length">
+                        <button class="btn orange effect-orange-button pull-right debugger-action-btn"
+                                data-ng-class='{"disabled": inputFile.length == 0}'
+                                data-ng-click="process()">Re-Process</button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Node.js support status: {{supportStatus}}</td>
+                    <td><span class="btn orange effect-orange-button grey-new pull-right" data-ng-click="clickSignup()">Signup for Node.js</span></td>
+                </tr>
 
-        </table>
+            </table>
+        </div>
+        <div class="column mdb-counters-container">
+            <table class="mdb-counters-table">
+                <tr class="mdb-counter-row" ng-repeat="(counter, nums) in counters">
+                    <td>{{nums}}</td>
+                    <td>{{counter}}</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+    <div class="left-part">
     </div>
     <div class="right-part">
         <fieldset>
             <ul>
-                <table>
-                    <tr ng-repeat="(counter, nums) in counters">
-                        <td># {{counter}}</td>
-                        <td>: {{nums}}</td>
-                    </tr>
-                </table>
             </ul>
         </fieldset>
     </div>
