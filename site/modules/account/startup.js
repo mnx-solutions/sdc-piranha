@@ -121,7 +121,7 @@ module.exports = function execute(scope) {
                         return call.error(userErr);
                     }
                     accountFields.forEach(function (field) {
-                        response[field] = userData[field] || response[field];
+                        response[field] = userData[field] || '';
                     });
                     return getBillingAndComplete(call, response);
                 });
@@ -283,6 +283,7 @@ module.exports = function execute(scope) {
                 if (userErr) {
                     return call.done(userErr);
                 }
+                userData.isSubuser = true;
                 return getBillingAndComplete(call, userData);
             });
         } else {
