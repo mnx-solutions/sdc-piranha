@@ -49,7 +49,11 @@
                     id: 'coreFile',
                     name: 'Core File',
                     sequence: 1,
-                    active: true
+                    active: true,
+                    type: 'html',
+                    _getter: function (item) {
+                        return '<a href="#!/mdb/' + item.jobId + '">' + item.coreFile + '</a>';
+                    }
                 },
                 {
                     id: 'date',
