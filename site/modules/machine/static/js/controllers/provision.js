@@ -763,6 +763,7 @@
                 $scope.showReConfigure = false;
                 $scope.showFinishConfiguration = false;
                 if (step === CHOOSE_IMAGE_STEP) {
+                    ng.element('.accordion-group').not('div.active').find('.collapse').removeClass('in');
                     $scope.preSelectedImage = null;
                     $scope.preSelectedImageId = null;
                 }
