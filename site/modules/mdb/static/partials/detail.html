@@ -15,14 +15,13 @@
             <tr>
                 <td>Status: {{status}}</td>
                 <td data-ng-if="!jobId && !objects.length"><button class="btn orange pull-right debugger-action-btn"
-                                                                 data-ng-class='{"disabled grey-new": inputFile.length == 0}'
-                                                                 data-ng-click="process()">Process Now</button></td>
+                                                                 data-ng-class='{"grey-new": inputFile.length == 0}'
+                                                                 data-ng-click="process()" data-ng-disabled="inputFile.length == 0">Process Now</button></td>
                 <td data-ng-if="jobId && !objects.length"><button class="btn orange effect-orange-button pull-right debugger-action-btn"
                                                                   data-ng-class='{"grey-new": inputFile.length == 0}'
                           data-ng-click="cancel()">Cancel</button></td>
                 <td data-ng-if="objects.length"><button class="btn orange effect-orange-button pull-right debugger-action-btn"
-                                                      data-ng-class='{"disabled": inputFile.length == 0}'
-                                                      data-ng-click="process()">Re-Process</button></td>
+                                                        data-ng-click="process()" data-ng-disabled="inputFile.length == 0">Re-Process</button></td>
             </tr>
             <tr>
                 <td>Node.js support status: {{supportStatus}}</td>
