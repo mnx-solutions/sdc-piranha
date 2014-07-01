@@ -58,7 +58,7 @@ public class CreateAccountPage extends AbstractPageObject {
     }
 
     public void setLogin(String login) {
-        setValue($(byAttribute("name", "login")), login);
+        setValue($(byAttribute("name", "username")), login);
     }
 
     public void setEmail(String email) {
