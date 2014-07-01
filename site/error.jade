@@ -19,6 +19,9 @@ html(lang='en',data-ng-app='JoyentPortal')
             when 404
                  h1(class='error-h1') 404 Error
                  p(class='error-p') Unfortunately the page you are<br />looking for could not be found.
+            when 403
+                 h1(class='error-h1') Access Denied
+                 p(class='error-p') #{message}. See your administrator.
             default
                  h1(class='error-h1') General Error
                  p(class='error-p') Joyent cloud service is temporarily unavailable.<br/>We apologize for the inconvenience and suggest trying again in a few minutes.<br/>If the issue persists, please contact&nbsp;
