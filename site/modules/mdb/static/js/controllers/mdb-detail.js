@@ -96,6 +96,10 @@
             }
 
             $scope.process = function () {
+                if ($scope.inputFile.length === 0) {
+                    PopupDialog.error(null, 'You must add the core file.', flushAll);
+                    return;
+                }
                 flushAll();
                 $scope.processing = true;
                 var callJob = mdb.process({coreFile: $scope.getFilePath(true)}, function (error, job) {
