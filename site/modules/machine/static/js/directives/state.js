@@ -18,7 +18,9 @@
                 scope.type = scope.type || 'machine';
 
                 scope.labelForState = function (state) {
-                    if(scope.type ===  'machine') {
+                    if (scope.type === 'user') {
+                        return 'state-label';
+                    } else if (scope.type === 'machine') {
                         switch (state) {
                             case 'provisioning':
                             case 'pausing':

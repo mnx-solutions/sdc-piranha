@@ -246,6 +246,14 @@ label.control-label,
     margin-top: 1px;
 }
 
+.state-label {
+    background-color: transparent;
+    color: #333;
+    text-align: left;
+    text-indent: -7px;
+    text-shadow: none;
+}
+
 .arrow-to {
     min-height: 100px;
     min-width: 300px;
