@@ -10,7 +10,7 @@
                    data-ng-maxlength="60"
                    data-ng-model="user.firstName"
                    data-ng-class="{error: isError('firstName')}"
-                   ng-required="!!user.roFirstName"
+                   ng-required="!!initial.firstName"
                    />
         </span>
         <span class="edit-error" data-ng-show="isFormSubmited || subAccountForm.firstName.$dirty">
@@ -38,7 +38,7 @@
                     data-ng-maxlength="60"
                     data-ng-model="user.lastName"
                     data-ng-class="{error: isError('lastName')}"
-                    ng-required="!!user.roLastName"
+                    ng-required="!!initial.lastName"
                     />
         </span>
         <span class="edit-error" data-ng-show="isFormSubmited || subAccountForm.lastName.$dirty">
@@ -88,7 +88,7 @@
                    name="companyName"
                    data-ng-maxlength="50"
                    data-ng-model="user.companyName"
-                   ng-required="!!user.roCompanyName"
+                   ng-required="!!initial.companyName"
                    />
         </span>
         <span class="edit-error" data-ng-show="isFormSubmited || subAccountForm.companyName.$dirty">
@@ -114,7 +114,7 @@
                    data-ng-class="{error: isError('login')}"
                    data-ng-model="user.login"
                    data-ng-pattern="/^[A-Za-z0-9]+[A-Za-z0-9\.\-\s]*$/"
-                   data-ng-disabled="!!user.roLogin"
+                   data-ng-disabled="!!initial.login"
                    required/>
         </span>
         <span class="edit-error" data-ng-show="isFormSubmited || subAccountForm.login.$dirty">
@@ -174,7 +174,7 @@
                    id="address"
                    name="address"
                    data-ng-model="user.address"
-                   ng-required="!!user.roAddress"/>
+                   ng-required="!!initial.address"/>
         </span>
         <span class="edit-error" data-ng-show="isFormSubmited || subAccountForm.address.$dirty">
             <div class="error"
@@ -217,7 +217,7 @@
                    id="subCity"
                    name="city"
                    data-ng-model="user.city"
-                   ng-required="!!user.roCity"/>
+                   ng-required="!!initial.city"/>
         </span>
         <span class="edit-error" data-ng-show="isFormSubmited || subAccountForm.city.$dirty">
             <div class="error"
@@ -250,7 +250,7 @@
                    data-ng-class="{error: isError('zipCode')}"
                    data-ng-model="user.postalCode"
                    data-ng-maxlength="20"
-                   ng-required="!!user.roPostalCode"/>
+                   ng-required="!!initial.postalCode"/>
         </span>
         <span class="edit-error" data-ng-show="isFormSubmited || subAccountForm.zipCode.$dirty">
             <div class="error"

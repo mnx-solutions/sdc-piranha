@@ -12,6 +12,7 @@
         function ($q, $scope, localization, $location, requestContext, PopupDialog, service) {
             $scope.loading = true;
             $scope.user = {};
+            $scope.initial = {};
             $scope.userRoles = [];
             $scope.roles = [];
             $scope.changePassword = {};
@@ -34,13 +35,13 @@
                     $q.when(service.listRoles())
                 ]).then(function (result) {
                     $scope.user = angular.copy(result[0]);
-                    $scope.user.roFirstName = $scope.user.firstName;
-                    $scope.user.roLastName = $scope.user.lastName;
-                    $scope.user.roLogin = $scope.user.login;
-                    $scope.user.roCompanyName = $scope.user.companyName;
-                    $scope.user.roPostalCode = $scope.user.postalCode;
-                    $scope.user.roAddress = $scope.user.address;
-                    $scope.user.roCity = $scope.user.city;
+                    $scope.initial.firstName = $scope.user.firstName;
+                    $scope.initial.lastName = $scope.user.lastName;
+                    $scope.initial.login = $scope.user.login;
+                    $scope.initial.companyName = $scope.user.companyName;
+                    $scope.initial.postalCode = $scope.user.postalCode;
+                    $scope.initial.address = $scope.user.address;
+                    $scope.initial.city = $scope.user.city;
                     $scope.roles = result[1] || [];
                     $scope.roles.sort(function (a, b) {
                         return a.name.localeCompare(b.name);

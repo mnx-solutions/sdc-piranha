@@ -266,16 +266,14 @@
             // List all the different properties from all items
             var order = [];
             $scope.items.forEach(function (item) {
-                if (item.login) {
-                    item['username'] = item['login'];
-                    delete item['login'];
-                }
-                if (item.postalCode) {
-                    item['zipCode'] = item['postalCode'];
-                    delete item['postalCode'];
-                }
                 Object.keys(item).forEach(function (property) {
                     if (property.indexOf('$$') !== 0 && order.indexOf(property) === -1) {
+                        if (property === 'login') {
+                            property = 'username';
+                        }
+                        if (property === 'postalCode') {
+                            property = 'zipCode';
+                        }
                         order.push(property);
                     }
                 });
@@ -292,7 +290,14 @@
             ordered.forEach(function (el) {
                 var item = {};
                 order.forEach(function (id) {
-                    item[id] = el[id] !== undefined ? el[id] : '';
+                    var itemId = id;
+                    if (id === 'username') {
+                        itemId = 'login';
+                    }
+                    if (id === 'zipCode') {
+                        itemId = 'postalCode';
+                    }
+                    item[id] = el[itemId] !== undefined ? el[itemId] : '';
                 });
                 data.push(item);
             });
