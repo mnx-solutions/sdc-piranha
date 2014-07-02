@@ -1,5 +1,6 @@
 'use strict';
 
+var config = require('easy-config');
 var TFAProvider = require('./lib/TFAProvider');
 var metadata = require('../account/lib/metadata');
 
@@ -114,6 +115,12 @@ module.exports = function execute(scope, app) {
             });
         };
         if (userId) {
+            if (config.features.rbac === 'disabled') {
+                var error = new Error('Role-based access control is not yet available');
+                error.statusCode = 403;
+                next(error);
+                return;
+            }
             cloud.getUser(userId, callback);
         } else {
             cloud.getAccount(callback)
