@@ -11,11 +11,11 @@ input[disabled] {
 }
 select {
     padding: 4px 6px;
-    width: 312px !important;
+    width: 340px !important;
     line-height: 20px;
 }
 input {
-    width: 300px;
+    width: 328px;
     text-overflow: ellipsis;
 }
 form {
@@ -26,6 +26,9 @@ h4 {
     padding: 0 0 10px 0;
 }
 
+.select2-container {
+    width: 151px !important;
+}
 .edit-value {
     width: auto;
 }
