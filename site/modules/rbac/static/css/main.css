@@ -26,9 +26,6 @@ h4 {
     padding: 0 0 10px 0;
 }
 
-.select2-container {
-    width: 151px !important;
-}
 .edit-value {
     width: auto;
 }
@@ -41,6 +38,9 @@ h4 {
 .edit-value-double select {
     padding-right: 22px;
     width: 123px !important;
+}
+.edit-value-double .select2-container {
+    width: 151px !important;
 }
 .ms-container ul.ms-list {
     overflow-x: hidden;
