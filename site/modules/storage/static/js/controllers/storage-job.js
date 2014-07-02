@@ -49,6 +49,16 @@
                             }
                             $scope.inputsCount = Math.max(inputTasks, $scope.inputs.length);
                             $scope.loading = false;
+                            if ($scope.job.state === 'running') {
+                                var jobPoller = setInterval(function () {
+                                    Storage.getJob(jobId).then(function (job) {
+                                        if (job.state !== 'running') {
+                                            $scope.init();
+                                            clearInterval(jobPoller);
+                                        }
+                                    });
+                                }, 5000);
+                            }
                         },
                         function () {
                             $location.url('/manta/jobs');
