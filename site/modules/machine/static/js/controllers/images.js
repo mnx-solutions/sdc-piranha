@@ -101,7 +101,7 @@
                     btn: {
                         label: 'Create instance',
                         disabled: function (object) {
-                            return object.job;
+                            return object.job && !object.job.finished;
                         },
                         action: function (object) {
                             $scope.provisionInstance(object);
@@ -170,11 +170,18 @@
                                 localization.translate(
                                     $scope,
                                     null,
-                                    'Are you sure you want to delete these images?'
+                                    'Are you sure you want to delete {{image}}?',
+                                    {image: checkedImages.length === 1 ? 'this image' : 'these images'}
                                 ), function () {
                                     checkedImages.forEach(function (image) {
                                         $$track.event('image', 'delete');
-                                        Image.deleteImage(image);
+
+                                        Image.deleteImage(image).deferred.then(function () {
+                                            if (requestContext.getParam('currentImage') === image.id) {
+                                                $location.url('/images');
+                                                $location.replace();
+                                            }
+                                        });
                                         image.checked = false;
                                     });
                                 }

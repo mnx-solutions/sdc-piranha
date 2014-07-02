@@ -74,10 +74,18 @@
                     ), function () {
                         $$track.event('image', 'delete');
                         Image.deleteImage($scope.currentImage).deferred.then(function () {
-                            $location.url('/images');
-                            $location.replace();
+                            if (requestContext.getParam('currentImage') === $scope.currentImage.id) {
+                                $location.url('/images');
+                                $location.replace();
+                            }
                         });
                     });
+            };
+
+            $scope.createInstance = function () {
+                var createInstanceUrl = '/compute/create/' + $scope.currentImage.id;
+                $location.url(createInstanceUrl);
+                $location.replace();
             };
         }
     ]);

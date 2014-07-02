@@ -58,7 +58,7 @@
             $scope.provisionStep = true;
             $scope.campaignId = ($cookies.campaignId || 'default');
 
-            $scope.preSelectedImageId = requestContext.getParam('imageid');
+            $scope.preSelectedImageId = (requestContext.getParam('imageid') === 'custom') ? null : requestContext.getParam('imageid');
             $scope.preSelectedImage = null;
 
             $scope.preSelectedData = $rootScope.popCommonConfig('preSelectedData');

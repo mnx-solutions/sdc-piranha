@@ -268,7 +268,7 @@
                                 <span class="font-size16" data-translate>Create Image</span>
                 </p>
 
-                            <p class="" data-ng-show="imageCreateNotSupported">
+                <p class="" data-ng-show="imageCreateNotSupported">
                     {{imageCreateNotSupported}}
                 </p>
                 <div class="clearfix"></div>
@@ -285,34 +285,36 @@
                             Image version&nbsp;can contain only letters, digits and signs like '.' and '-'.
                         </div>
                         <div>
-                            <div class="dbl-inline">
-                                <input type="text"
-                                       placeholder="Image name"
-                                       name="imageName"
-                                       data-ng-model="imageName"
-                                       data-ng-disabled="imageJob && !imageJob.finished"
-                                       data-machine-name="'image'"
-                                       value=""
-                                       class="key-width"/>
-                            </div>
-                            <div>
-                                <input type="text"
-                                       placeholder="Image version"
-                                       name="imageVersion"
-                                       data-ng-model="imageVersion"
-                                       data-ng-disabled="imageJob && !imageJob.finished"
-                                       data-machine-name="'image'"
-                                       value=""
-                                       class="key-width image-version"/>
+                            <div class="form-fields" data-ng-hide="imageCreateNotSupported">
+                                <div class="dbl-inline">
+                                    <input type="text"
+                                           placeholder="Image name"
+                                           name="imageName"
+                                           data-ng-model="imageName"
+                                           data-ng-disabled="imageJob && !imageJob.finished"
+                                           data-machine-name="'image'"
+                                           value=""
+                                           class="key-width"/>
+                                </div>
+                                <div>
+                                    <input type="text"
+                                           placeholder="Image version"
+                                           name="imageVersion"
+                                           data-ng-model="imageVersion"
+                                           data-ng-disabled="imageJob && !imageJob.finished"
+                                           data-machine-name="'image'"
+                                           value=""
+                                           class="key-width image-version"/>
 
-                            </div>
-                            <div>
-                            <textarea type="text"
-                                      placeholder="Description (optional)"
-                                      name="imageDescription"
-                                      data-ng-model="imageDescription"
-                                      data-ng-disabled="imageJob && !imageJob.finished"
-                                      class="value-width"></textarea>
+                                </div>
+                                <div>
+                                <textarea type="text"
+                                          placeholder="Description (optional)"
+                                          name="imageDescription"
+                                          data-ng-model="imageDescription"
+                                          data-ng-disabled="imageJob && !imageJob.finished"
+                                          class="value-width"></textarea>
+                                </div>
                             </div>
                             <div class="pull-right">
 
@@ -321,6 +323,7 @@
                                 <a class="btn light margin-top-10 dpl-inline effect-orange-button" href="#!/images">My Images List</a>
                                 <button class="btn orange dpl-inline margin-top-10"
                                         data-ng-click="clickCreateImage()"
+                                        data-ng-hide="imageCreateNotSupported"
                                         data-translate
                                         data-ng-disabled="(imageJob && !imageJob.finished)">
                                     Create Image

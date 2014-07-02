@@ -187,6 +187,7 @@
                     $scope.datasetType = type;
                 }, function () {
                     $scope.dataset = {name: 'Image gone'};
+                    $scope.imageCreateNotSupported = 'Instances without images are not supported by the image API.';
                 });
             });
 
@@ -324,6 +325,7 @@
                         $scope.imageForm.$pristine = true;
                         $scope.imageForm.$dirty = false;
                     });
+                    $location.path('/images');
                 }
 
                 if ($scope.imageCreateNotSupported || $scope.machine.state !== 'stopped') {
