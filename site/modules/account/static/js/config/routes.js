@@ -1,6 +1,16 @@
 'use strict';
 
 window.JP.main.config(['routeProvider', function (routeProvider) {
+    var masterUserResolve = {
+        data: ['Account', '$location', function (Account, $location) {
+            Account.getAccount().then(function (account) {
+                if (account.isSubuser) {
+                    $location.path('/dashboard');
+                }
+            });
+        }]
+    };
+
     routeProvider
         .when('/account', {
             title: 'Account',
@@ -12,17 +22,20 @@ window.JP.main.config(['routeProvider', function (routeProvider) {
         })
         .when('/account/ssh', {
             title: 'SSH keys',
-            action: 'account.ssh'
+            action: 'account.ssh',
+            resolve: masterUserResolve
         })
         .when('/account/payment', {
             title: 'Edit Billing Information',
-            action: 'account.payment'
+            action: 'account.payment',
+            resolve: masterUserResolve
         });
     var features = window.JP.get('features');
     if (features && features.invoices !== 'disabled') {
         routeProvider.when('/account/invoices', {
             title: 'Invoices',
-            action: 'account.invoices'
+            action: 'account.invoices',
+            resolve: masterUserResolve
         });
     }
 }]);
