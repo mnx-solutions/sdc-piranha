@@ -306,7 +306,13 @@ module.exports = function execute(scope, callback) {
                     call._user = user;
 
                     performFraudValidation(call, user.email, function (fraudErr) {
-                        call.done(fraudErr, data);
+                        if (fraudErr === 'User blocked') {
+                            call.cloud.updateAccount({phone: call.data.workPhone}, function () {
+                                call.done(fraudErr, data);
+                            });
+                        } else {
+                            call.done(fraudErr, data);
+                        }
                     });
                 });
                 return;
