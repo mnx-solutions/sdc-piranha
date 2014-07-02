@@ -44,6 +44,12 @@ module.exports = function execute(scope) {
 
             if(smartCloud.needRefresh()) {
                 smartCloud.cloud({token: req.session.token}, function (err, cloud) {
+                    // Ignore authorization error for sub-user
+                    if (err && req.session.subId) {
+                        _cloud = cloud;
+                        next();
+                        return;
+                    }
                     if (err) {
                         next(err);
                         return;

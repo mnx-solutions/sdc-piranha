@@ -75,7 +75,6 @@
             $scope.key = {};
 
             $scope.isProvisioningLimitsEnable = $scope.features.provisioningLimits === 'enabled';
-            $scope.getLimits = [];
 
 
             $scope.keys = [];
@@ -380,14 +379,6 @@
                 }
             });
 
-            if ($scope.isProvisioningLimitsEnable) {
-                $scope.getLimits = getUserLimits();
-            }
-
-            if ($scope.features.freetier === 'enabled') {
-                $scope.freeTierOptions = FreeTier.freetier();
-            }
-
 
             function getCreatedMachines() {
                 var deferred = $q.defer();
@@ -470,32 +461,31 @@
                     }
                 }
             }
-
-            $q.all([
+            var tasks =[
                 $q.when(Account.getKeys()),
                 $q.when(Datacenter.datacenter()),
-                $q.when($scope.preSelectedImage),
                 $q.when(Machine.getSimpleImgList()),
-                $q.when($scope.freeTierOptions),
-                $q.when(recentMachines),
-                $q.when(Machine.machine()),
-                $q.when($scope.getLimits)
-            ]).then(function (result) {
-                $scope.keys = result[0];
+                $q.when(Machine.machine())
+            ];
+            tasks.push($q.when($scope.isProvisioningLimitsEnable ? getUserLimits(): []));
+            tasks.push($q.when($scope.features.freetier === 'enabled' ? FreeTier.freetier(): []));
 
+            $q.all(tasks).then(function (result) {
+                $scope.simpleImages = [];
+                $scope.datasetsInfo = [];
+
+                $scope.keys = result[0];
+                $scope.datacenters = result[1];
+                var simpleImages = result[2].images;
+                var networks = result[2].networks;
                 if ($scope.keys.length <= 0) {
                     addProvisionStep({
                         name: SSH_STEP_NAME,
                         template: 'machine/static/partials/wizard-ssh-key.html'
                     });
                 }
-                $scope.datacenters = result[1];
-                $scope.simpleImages = [];
-                $scope.freeTierOptions = result[4];
-                $scope.datasetsInfo = [];
-                $scope.limits = result[7];
                 if ($scope.isProvisioningLimitsEnable) {
-                    $scope.machines = result[6];
+                    $scope.machines = result[3];
                     $scope.machines.forEach(function (machine) {
                         Dataset.dataset(machine.image).then(function (dataset) {
                             $scope.limits.forEach(function (limit) {
@@ -508,12 +498,14 @@
                         });
                     });
                 }
-                var simpleImages = result[3].images;
-                var networks = result[3].networks;
+                if($scope.isProvisioningLimitsEnable) {
+                    $scope.limits = result[4] || [];
+
+                }
                 if ($scope.features.freetier === 'enabled') {
-                    var freeImages = result[4];
-                    if (freeImages.valid) {
-                        setupSimpleImages(freeImages, networks, true);
+                    $scope.freeTierOptions = result[5];
+                    if ($scope.freeTierOptions.valid) {
+                        setupSimpleImages($scope.freeTierOptions, networks, true);
                     }
                 }
                 setupSimpleImages(simpleImages, networks);
@@ -591,6 +583,12 @@
                     }
                 }
                 $scope.loading = provisionBundle && provisionBundle.manualCreate === false && provisionBundle.allowCreate === true;
+            }, function (err) {
+                $scope.loading = false;
+                if (err.restCode !== 'NotAuthorized') {
+                    PopupDialog.errorObj(err);
+                }
+
             });
 
             $scope.$on('creditCardUpdate', function () {

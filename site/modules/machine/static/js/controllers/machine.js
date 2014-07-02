@@ -403,7 +403,11 @@
                         $$track.event('machine', 'delete');
 
                         // Redirect if complete
-                        Machine.deleteMachine(machineid).getJob().done(function () {
+                        Machine.deleteMachine(machineid).getJob().done(function (err, data) {
+                            if (err) {
+                                return;
+                            }
+
                             PopupDialog.message(
                                     localization.translate(
                                             $scope,

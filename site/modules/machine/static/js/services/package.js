@@ -28,20 +28,24 @@
                     data: { datacenter: datacenter === 'all' ? null : datacenter },
                     done: function(err, job) {
                         if (err) {
-                            PopupDialog.error(
-                                localization.translate(
-                                    null,
-                                    null,
-                                    'Error'
-                                ),
-                                localization.translate(
-                                    null,
-                                    'machine',
-                                    'Unable to retrieve packages from datacenter {{name}}.',
-                                    { name: datacenter }
-                                ),
-                                function () {}
-                            );
+                            // Ignore authorization error for sub-user
+                            if (err.restCode !== 'NotAuthorized') {
+                                PopupDialog.error(
+                                    localization.translate(
+                                        null,
+                                        null,
+                                        'Error'
+                                    ),
+                                    localization.translate(
+                                        null,
+                                        'machine',
+                                        'Unable to retrieve packages from datacenter {{name}}.',
+                                        { name: datacenter }
+                                    ),
+                                    function () {
+                                    }
+                                );
+                            }
 
                             //packages.job[datacenter].deferred.reject(err);
                             Object.keys(packages.search[datacenter]).forEach(function (job) {
