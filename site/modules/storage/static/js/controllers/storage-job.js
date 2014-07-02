@@ -9,6 +9,9 @@
                 requestContext.setUpRenderContext('storage.job', $scope);
 
                 var jobId = requestContext.getParam('jobid');
+                var jobPoller = null;
+                // polling interval in seconds
+                var POLL_INTERVAL = 15;
 
                 $scope.job = null;
                 $scope.assets = [];
@@ -49,16 +52,6 @@
                             }
                             $scope.inputsCount = Math.max(inputTasks, $scope.inputs.length);
                             $scope.loading = false;
-                            if ($scope.job.state === 'running') {
-                                var jobPoller = setInterval(function () {
-                                    Storage.getJob(jobId).then(function (job) {
-                                        if (job.state !== 'running') {
-                                            $scope.init();
-                                            clearInterval(jobPoller);
-                                        }
-                                    });
-                                }, 5000);
-                            }
                         },
                         function () {
                             $location.url('/manta/jobs');
@@ -69,6 +62,16 @@
                 Storage.ping().then($scope.init, function () {
                     $location.url('/manta/jobs');
                     $location.replace();
+                });
+
+                $scope.$watch('job.state', function (state) {
+                    if (state === 'running') {
+                        jobPoller = setInterval($scope.init, POLL_INTERVAL * 1000);
+                    } else {
+                        if (jobPoller) {
+                            clearInterval(jobPoller);
+                        }
+                    }
                 });
 
                 $scope.cancelJob = function () {
