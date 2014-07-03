@@ -464,7 +464,6 @@ portlet.box.light-grey > .portlet-title .caption > i {
     padding-top: 55px;
 }
 .dash-container-position{
-    padding-top: 60px;
-    padding-left: 48px;
+    padding: 60px 0 25px 48px;
 }
 
