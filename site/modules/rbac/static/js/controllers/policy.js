@@ -200,6 +200,21 @@
             };
 
             $scope.removeRule = function (rule) {
+                if (!isNew && $scope.rules.length === 1) {
+                    PopupDialog.error(
+                        localization.translate(
+                            $scope,
+                            null,
+                            'Error'
+                        ),
+                        localization.translate(
+                            $scope,
+                            null,
+                            'Policy must have at least one rule.'
+                        )
+                    );
+                    return;
+                }
                 var pos = $scope.rules.indexOf(rule);
                 if (pos > -1) {
                     $scope.rules.splice(pos, 1);
