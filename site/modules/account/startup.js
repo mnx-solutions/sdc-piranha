@@ -39,7 +39,7 @@ module.exports = function execute(scope) {
         cloudapi.listRoles(function (err, roles) {
             roles = roles || [];
             var getUserResources = {};
-            cloudapi.listPolicies(function (err, policies) {
+            cloudapi.listPolicies(function (policyErr, policies) {
                 var roleNames = [];
                 roles.forEach(function (role) {
                     roleNames.push(role.name);
@@ -70,16 +70,16 @@ module.exports = function execute(scope) {
                 });
                 var defaultMembers = Object.keys(getUserResources);
                 if (defaultMembers.length > 0) {
-                    cloudapi.listUsers(function (err, users) {
+                    cloudapi.listUsers(function (userErr, users) {
                         var userByLogin = {};
                         users.forEach(function (user) {
                             userByLogin[user.login] = user;
                         });
                         defaultMembers.forEach(function (defaultMember) {
                             if (userByLogin[defaultMember]) {
-                                cloudapi.setRoleTags('/my/users/' + userByLogin[defaultMember].id, getUserResources[defaultMember], function (err) {
-                                    if (err) {
-                                        log.error({error: err}, 'Failed setRoleTags');
+                                cloudapi.setRoleTags('/my/users/' + userByLogin[defaultMember].id, getUserResources[defaultMember], function (roleTagErr) {
+                                    if (roleTagErr) {
+                                        log.error({error: roleTagErr}, 'Failed setRoleTags');
                                     }
                                 });
                             }
@@ -87,7 +87,7 @@ module.exports = function execute(scope) {
                     });
                 }
                 validResources.forEach(function (resource) {
-                    cloudapi.setRoleTags('/my/' + resource, roleNames, function (err, data) {});
+                    cloudapi.setRoleTags('/my/' + resource, roleNames, function () {});
                 });
             });
         });
@@ -175,8 +175,8 @@ module.exports = function execute(scope) {
     server.onCall('createRole', function (call) {
         var data = filterFields(call.data, roleFields, true);
 
-        call.cloud.createRole(data, function (err, data) {
-            call.done(err, data);
+        call.cloud.createRole(data, function (err, roleData) {
+            call.done(err, roleData);
             if (!err) {
                 updateRoleTags(call.cloud, call.log);
             }
@@ -186,8 +186,8 @@ module.exports = function execute(scope) {
     server.onCall('updateRole', function (call) {
         var data = filterFields(call.data, updatableRoleFields);
 
-        call.cloud.updateRole(data, function (err, data) {
-            call.done(err, data);
+        call.cloud.updateRole(data, function (err, roleData) {
+            call.done(err, roleData);
             if (!err) {
                 updateRoleTags(call.cloud, call.log);
             }
@@ -221,8 +221,8 @@ module.exports = function execute(scope) {
 
     server.onCall('createPolicy', function (call) {
         var data = filterFields(call.data, policyFields);
-        call.cloud.createPolicy(data, function (err, data) {
-            call.done(err, data);
+        call.cloud.createPolicy(data, function (err, policyData) {
+            call.done(err, policyData);
         });
     });
 
@@ -242,8 +242,8 @@ module.exports = function execute(scope) {
     server.onCall('updateUser', function (call) {
         var data = filterFields(call.data, updatableUserFields);
 
-        call.cloud.updateUser(data, function (err, data) {
-            call.done(err, data);
+        call.cloud.updateUser(data, function (err, userData) {
+            call.done(err, userData);
         });
     });
 
@@ -253,8 +253,8 @@ module.exports = function execute(scope) {
             data[f] = call.data[f] || null;
         });
         data.password = call.data.password;
-        call.cloud.createUser(data, function (err, data) {
-            call.done(err, data);
+        call.cloud.createUser(data, function (err, userData) {
+            call.done(err, userData);
         });
     });
 
@@ -487,7 +487,7 @@ module.exports = function execute(scope) {
                 } else if (err.name === 'AccountBlockedError' && err.code === 'AccountBlocked' && attempt > 0 && call.req.session.provisionEnabled) {
                     attempt -= 1;
                     setTimeout(function () {
-                        readOldOrNewFile(call, client, callback)
+                        readOldOrNewFile(call, client, callback);
                     }, 2000);
                     return;
                 } else {
@@ -511,26 +511,26 @@ module.exports = function execute(scope) {
         var client = MantaClient.createClient(call);
         var configPath = getConfigPath(call, client);
 
-        function checkResponse(call, error) {
+        function checkResponse(callObj, error) {
             if (error) {
-                call.req.log.error({error: error}, 'Cannot write user config');
+                callObj.req.log.error({error: error}, 'Cannot write user config');
             }
-            call.done(null, !!error);
+            callObj.done(null, !!error);
         }
 
-        var putConfig = function (call, client) {
-            return client.putFileContents(configPath, JSON.stringify(call.data), function (error) {
+        var putConfig = function (callObj, mantaClient) {
+            return mantaClient.putFileContents(configPath, JSON.stringify(callObj.data), function (error) {
 
                 if (error && error.statusCode === 404) {
-                    client.mkdirp(configPath.substring(0, configPath.lastIndexOf('/')), function (err) {
+                    mantaClient.mkdirp(configPath.substring(0, configPath.lastIndexOf('/')), function (err) {
                         if (err) {
-                            checkResponse(call, err);
+                            checkResponse(callObj, err);
                         } else {
-                            putConfig(call, client);
+                            putConfig(callObj, mantaClient);
                         }
                     });
                 } else {
-                    checkResponse(call, error);
+                    checkResponse(callObj, error);
                 }
             });
         };
