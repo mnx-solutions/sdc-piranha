@@ -94,7 +94,7 @@ module.exports = function execute(scope) {
     };
 
     var getBillingAndComplete = function (call, response) {
-        Billing.isActive(response.id, function (billingError, isActive) {
+        Billing.isActive(call.req.session.userId, function (billingError, isActive) {
             call.req.session.provisionEnabled = response.provisionEnabled = isActive;
             call.req.session.save();
             call.done(billingError, response);
@@ -102,30 +102,30 @@ module.exports = function execute(scope) {
     };
 
     server.onCall('getAccount', function (call) {
-        // get account using cloudapi
-        call.cloud.getAccount(function (error, data) {
-            if (error) {
-                call.done(error);
-                return;
-            }
-
-            var response = {};
-            accountFields.forEach(function (field) {
-                response[field] = data[field] || '';
-            });
-
-            response.isSubuser = !!call.req.session.subId;
-            if (response.isSubuser) {
-                call.cloud.getUser(call.req.session.subId, function (userErr, userData) {
-                    if (userErr) {
-                        return call.error(userErr);
-                    }
-                    accountFields.forEach(function (field) {
-                        response[field] = userData[field] || '';
-                    });
-                    return getBillingAndComplete(call, response);
+        var subUserId = call.req.session.subId;
+        var response = { isSubuser: !!subUserId};
+        if (subUserId) {
+            call.cloud.getUser(subUserId, function (userErr, userData) {
+                if (userErr) {
+                    return call.error(userErr);
+                }
+                accountFields.forEach(function (field) {
+                    response[field] = userData[field] || '';
                 });
-            } else {
+                return getBillingAndComplete(call, response);
+            });
+        } else {
+            // get account using cloudapi
+            call.cloud.getAccount(function (error, data) {
+                if (error) {
+                    call.done(error);
+                    return;
+                }
+
+                accountFields.forEach(function (field) {
+                    response[field] = data[field] || '';
+                });
+
                 var marketoData = {
                     Email: response.email,
                     FirstName: response.firstName,
@@ -150,8 +150,8 @@ module.exports = function execute(scope) {
                         getBillingAndComplete(call, response);
                     });
                 });
-            }
-        });
+            });
+        }
     });
     server.onCall('listUsers', function (call) {
         call.cloud.listUsers(function (err, data) {
@@ -277,8 +277,10 @@ module.exports = function execute(scope) {
             data[f] = call.data[f] || null;
         });
 
-        if (call.req.session.subId) {
-            data.id = call.req.session.subId;
+        var subUserId = call.req.session.subId;
+
+        if (subUserId) {
+            data.id = subUserId;
             call.cloud.updateUser(data, function (userErr, userData) {
                 if (userErr) {
                     return call.done(userErr);
