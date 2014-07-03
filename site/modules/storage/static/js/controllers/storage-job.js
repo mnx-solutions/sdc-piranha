@@ -9,6 +9,9 @@
                 requestContext.setUpRenderContext('storage.job', $scope);
 
                 var jobId = requestContext.getParam('jobid');
+                var jobPoller = null;
+                // polling interval in seconds
+                var POLL_INTERVAL = 15;
 
                 $scope.job = null;
                 $scope.assets = [];
@@ -59,6 +62,16 @@
                 Storage.ping().then($scope.init, function () {
                     $location.url('/manta/jobs');
                     $location.replace();
+                });
+
+                $scope.$watch('job.state', function (state) {
+                    if (state === 'running') {
+                        jobPoller = setInterval($scope.init, POLL_INTERVAL * 1000);
+                    } else {
+                        if (jobPoller) {
+                            clearInterval(jobPoller);
+                        }
+                    }
                 });
 
                 $scope.cancelJob = function () {
