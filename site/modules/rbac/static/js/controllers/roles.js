@@ -141,7 +141,7 @@
             ];
 
             $scope.exportFields = {
-                ignore: ['checked', 'value']
+                ignore: ['checked', 'value', 'default_members']
             };
 
             $scope.columnsButton = true;
