@@ -38,10 +38,13 @@
                                     "icons": false
                                 }
                             },
+                            "sort": function (a, b) {
+                                return this.get_text(a) > this.get_text(b) ? 1 : -1;
+                            },
                             "checkbox": {
                                 "keep_selected_style": false
                             },
-                            "plugins": [ "checkbox" ]
+                            "plugins": [ "checkbox", "sort" ]
                         });
                     });
                 });
