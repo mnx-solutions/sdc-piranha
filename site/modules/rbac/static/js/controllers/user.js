@@ -7,11 +7,12 @@
         'localization',
         '$location',
         'requestContext',
+        'BillingService',
         'PopupDialog',
         'rbac.Service',
         'Account',
         'http',
-        function ($q, $scope, localization, $location, requestContext, PopupDialog, service, Account, http) {
+        function ($q, $scope, localization, $location, requestContext, BillingService, PopupDialog, service, Account, http) {
             $scope.loading = true;
             $scope.user = {};
             $scope.initial = {};
@@ -59,6 +60,16 @@
                     $scope.loading = false;
                 }, errorCallback);
             } else {
+                Account.getAccount().then(function (account) {
+                    $scope.user.companyName = account.companyName;
+                    $scope.user.country = account.country;
+                });
+                BillingService.getAccountPaymentInfo().then(function (accountPaymentInfo) {
+                    $scope.user.address = accountPaymentInfo.address1;
+                    $scope.user.city = accountPaymentInfo.city;
+                    $scope.user.state = accountPaymentInfo.state;
+                    $scope.user.postalCode = accountPaymentInfo.zipCode;
+                });
                 service.listRoles().then(function (roles) {
                     $scope.roles = roles || [];
                     $scope.roles.forEach(function (item) {

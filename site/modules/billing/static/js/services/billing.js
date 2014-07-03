@@ -20,6 +20,13 @@
             return call.deferred;
         };
 
+        service.getAccountPaymentInfo = function () {
+            var call = serverTab.call({
+                name: 'getAccountPaymentInfo'
+            });
+            return call.deferred;
+        };
+
         service.getDefaultCreditCard = function () {
             if(!creditCard) {
                 var call = serverTab.call({

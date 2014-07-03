@@ -324,6 +324,25 @@ module.exports = function execute(scope, callback) {
         });
     });
 
+    server.onCall('getAccountPaymentInfo', function (call) {
+        zuora.account.get(call.req.session.userId, function (err, acc) {
+            if (err) {
+                // changing zuoras errorCode from 401's to 500
+                if (err.statusCode === 401) {
+                    err.statusCode = 500;
+                }
+                if (!zHelpers.notFound(acc)) {
+                    call.log.warn('Zuora account not found');
+                    call.error('Zuora account not found', true);
+                    return;
+                }
+                call.done(err);
+                return;
+            }
+            call.done(null, acc.billToContact || acc.soldToContact);
+        });
+    });
+
     if (config.features.invoices !== 'disabled') {
         server.onCall('listInvoices', function (call) {
             zuora.transaction.getInvoices(call.req.session.userId, function (err, resp) {
