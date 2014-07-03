@@ -19,8 +19,13 @@
                     $rootScope.downloadLink = null;
                 },
                 link: function ($scope) {
+                    $scope.subUser = false;
                     /* SSH Key generation popup */
                     $scope.generateSshKey = function () {
+                        if ($scope.user && $scope.user.id) {
+                            $scope.subUser = $scope.user.id;
+                            $rootScope.$broadcast('sshCreating', true);
+                        }
                         var sshKeyModalCtrl = function ($scope, dialog) {
                             $scope.keyName = '';
 
@@ -42,15 +47,13 @@
                             templateUrl: 'account/static/template/dialog/generate-ssh-modal.html',
                             openCtrl: sshKeyModalCtrl
                         };
-
                         $rootScope.loading = true;
                         PopupDialog.custom(
                             opts,
                             function (data) {
                                 if (data && data.generate === true) {
                                     var createUrl = 'account/ssh/create/';
-
-                                    $http.post(createUrl, {name: data.keyName})
+                                    $http.post(createUrl, {name: data.keyName, subUser: $scope.subUser})
                                         .success(function (data) {
 
                                             var keyId = data.keyId;
@@ -62,24 +65,27 @@
                                                 $rootScope.downloadLink = downloadLink;
                                                 $rootScope.sshKeyName = data.name;
 
+                                                var keyAdded = function () {
+                                                    PopupDialog.message(
+                                                        localization.translate(
+                                                            $scope,
+                                                            null,
+                                                            'Message'
+                                                        ),
+                                                        localization.translate(
+                                                            $scope,
+                                                            null,
+                                                            'SSH key successfully added to your account.'
+                                                        )
+                                                    );
+                                                };
+
                                                 if ($scope.updateKeys) {
                                                     $scope.updateKeys(true, function () {
                                                         // if we are in signup, show the download right away
                                                         $scope.iframe = $sce.trustAsHtml('<iframe src="' + downloadLink + '"></iframe>');
+                                                        keyAdded();
 
-                                                        PopupDialog.message(
-                                                            localization.translate(
-                                                                $scope,
-                                                                null,
-                                                                'Message'
-                                                            ),
-                                                            localization.translate(
-                                                                $scope,
-                                                                null,
-                                                                'SSH key successfully added to your account.'
-                                                            ),
-                                                            function () {}
-                                                        );
                                                     });
                                                 } else {
                                                     // if we are in signup, show the download right away
@@ -88,6 +94,10 @@
                                                         setTimeout(function () {
                                                             $scope.passSsh('/main/#!/account/ssh');
                                                         }, 1000);
+                                                    }
+                                                    if ($scope.subUser) {
+                                                        keyAdded();
+                                                        $rootScope.$broadcast('sshCreated', true);
                                                     }
                                                 }
                                             } else {
@@ -114,6 +124,9 @@
 
                                 } else {
                                     $rootScope.loading = false;
+                                    if ($scope.subUser) {
+                                        $rootScope.$broadcast('sshCancel', true);
+                                    }
                                 }
                             }
                         );

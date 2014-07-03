@@ -16,7 +16,7 @@
         '$cacheFactory',
         function ($q, serverTab, $cacheFactory) {
             var ACCESS = {READ: 0, WRITE: 1};
-            var ENTITY_TYPE = {USER: 'user', ROLE: 'role', POLICY: 'policy'};
+            var ENTITY_TYPE = {USER: 'user', USER_KEYS: 'user_keys', ROLE: 'role', POLICY: 'policy'};
             var CACHE_DEPENDENCIES = {policy: 'role', user: 'role'};
 
             var service = {};
@@ -117,6 +117,22 @@
                     password: password,
                     password_confirmation: passwordConfirmation
                 });
+            };
+
+            service.listUserKeys = function (userId) {
+                return action('listUserKeys', {id: userId}, ENTITY_TYPE.USER_KEYS, ACCESS.WRITE, true);
+            };
+
+            service.getUserKey = function (userId, key, noCache) {
+                return action('getUserKey', {id: userId, key: key, noCache: !!noCache}, ENTITY_TYPE.USER_KEYS, ACCESS.READ);
+            };
+
+            service.uploadUserKey = function (userId, name, key) {
+                return action('uploadUserKey', {id: userId, options: {name: name, key: key}}, ENTITY_TYPE.USER_KEYS, ACCESS.WRITE);
+            };
+
+            service.deleteUserKey = function (userId, name, key) {
+                return action('deleteUserKey', {id: userId, key: key}, ENTITY_TYPE.USER_KEYS, ACCESS.WRITE);
             };
 
             service.createRole = function (ops) {

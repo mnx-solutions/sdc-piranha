@@ -78,9 +78,16 @@ module.exports = function execute(scope, app) {
         var fingerprintHex = key.toPublicSshFingerprint('hex');
         var fingerprint = fingerprintHex.replace(/([a-f0-9]{2})/gi, '$1:').slice(0, -1);
         var name = req.body.name || fingerprintHex.slice(-10);
+        var subUser = req.body.subUser;
 
         req.log.debug('Adding SSH key to the account');
-        SignupProgress.addSshKey(req, name, publicKey, function (err) {
+        var perform;
+        if (subUser) {
+            perform = SignupProgress.addSubUserSshKey;
+        } else {
+            perform = SignupProgress.addSshKey;
+        }
+        perform(req, name, publicKey, function (err) {
             if (err) {
                 req.log.error(err);
                 res.json({success: false, err: err});
@@ -116,6 +123,14 @@ module.exports = function execute(scope, app) {
 
     app.post('/upload', [express.multipart()], function (req, res, next) {
         var files = req.files && req.files.uploadInput;
+        var subUser = req.query.userId;
+        var perform;
+
+        if (subUser) {
+            perform = SignupProgress.addSubUserSshKey;
+        } else {
+            perform = SignupProgress.addSshKey;
+        }
 
         if (files && !Array.isArray(files)) {
             files = [files];
@@ -139,7 +154,7 @@ module.exports = function execute(scope, app) {
                         name = keyParts[2];
                     }
 
-                    SignupProgress.addSshKey(req, name, data, function (err) {
+                    perform(req, name, data, function (err) {
                         if (err) {
                             req.log.error(err);
                             res.json({

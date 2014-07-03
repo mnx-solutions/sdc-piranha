@@ -172,6 +172,30 @@ module.exports = function execute(scope) {
         });
     });
 
+    server.onCall('listUserKeys', function (call) {
+        call.cloud.listUserKeys(call.data.id, function (err, data) {
+            call.done(err, data);
+        }, !!call.data.noCache);
+    });
+
+    server.onCall('getUserKey', function (call) {
+        call.cloud.getUserKey(call.data.id, call.data.key, function (err, data) {
+            call.done(err, data);
+        }, !!call.data.noCache);
+    });
+
+    server.onCall('uploadUserKey', function (call) {
+        call.cloud.uploadUserKey(call.data.id, {name: call.data.options.name, key: call.data.options.key}, function (err, data) {
+            call.done(err, data);
+        });
+    });
+
+    server.onCall('deleteUserKey', function (call) {
+        call.cloud.deleteUserKey(call.data.id, call.data.key, function (err, data) {
+            call.done(err, data);
+        });
+    });
+
     server.onCall('createRole', function (call) {
         var data = filterFields(call.data, roleFields, true);
 
