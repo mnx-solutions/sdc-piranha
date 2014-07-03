@@ -23,7 +23,7 @@
                 var iterator = function (item, callback) {
                     asyncProps.forEach(function (prop) {
                         $qe.when(prop._getter(item)).then(function (result) {
-                            item[prop.name + 'async'] = result;
+                            item[prop.name] = result;
                             callback();
                         });
                     });
@@ -232,7 +232,7 @@
                             return false;
                         }
 
-                        var subject = (el._getter && el._getter(item)) || (el.id2 && item[el.id][el.id2]) || item[el.id] || '';
+                        var subject = (item[el.id] || el._getter && el._getter(item)) || (el.id2 && item[el.id][el.id2]) || '';
 
                         if (ng.isNumber(subject) || typeof subject === "boolean") {
                             subject = subject.toString();
@@ -262,12 +262,16 @@
         function getJSONData() {
             var filtered = $filter('filter')($scope.items, $scope.matchesFilter);
             var ordered = $filter('orderBy')(filtered, $scope.order);
+            var exportKeysMap = {login: 'username', postalCode: 'zipCode'};
 
             // List all the different properties from all items
             var order = [];
             $scope.items.forEach(function (item) {
                 Object.keys(item).forEach(function (property) {
                     if (property.indexOf('$$') !== 0 && order.indexOf(property) === -1) {
+                        if (exportKeysMap[property]) {
+                            property = exportKeysMap[property];
+                        }
                         order.push(property);
                     }
                 });
@@ -281,10 +285,24 @@
                 order = order.filter(function (k) { return $scope.exportFields.ignore.indexOf(k) !== -1; });
             }
 
+            var invert = function (obj) {
+                var invertedObj = {};
+                for (var prop in obj) {
+                    if (obj.hasOwnProperty(prop)) {
+                        invertedObj[obj[prop]] = prop;
+                    }
+                }
+                return invertedObj;
+            };
+            var invertedKeysMap = invert(exportKeysMap);
             ordered.forEach(function (el) {
                 var item = {};
                 order.forEach(function (id) {
-                    item[id] = el[id] !== undefined ? el[id] : '';
+                    var itemId = id;
+                    if (invertedKeysMap[id]) {
+                        itemId = invertedKeysMap[id];
+                    }
+                    item[id] = el[itemId] !== undefined ? el[itemId] : '';
                 });
                 data.push(item);
             });

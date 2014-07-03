@@ -404,7 +404,7 @@
 
             CloudAnalytics.prototype.describeInstrumentations = function (options, callback) {
                 service.describeInstrumentations(options, function (error, response) {
-                    var instrumentations = response.res || [];
+                    var instrumentations = response && response.res || [];
                     var cache = instrumentationCache[options.zoneId] = {};
                     instrumentations.forEach(function (instrumentation) {
                         instrumentation = new Instrumentation({

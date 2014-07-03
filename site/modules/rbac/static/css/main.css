@@ -1,0 +1,213 @@
+select,
+input,
+.ms-container .ms-selectable li.ms-elem-selectable,
+.ms-container .ms-selection li.ms-elem-selection,
+.jstree {
+    font-weight: 200;
+    font-size: 16px;
+}
+input[disabled] {
+    background-color: #eee !important;
+}
+select {
+    padding: 4px 6px;
+    width: 340px !important;
+    line-height: 20px;
+}
+input {
+    width: 328px;
+    text-overflow: ellipsis;
+}
+form {
+    margin: 0 0 10px;
+}
+
+h4 {
+    padding: 0 0 10px 0;
+}
+
+.edit-value {
+    width: auto;
+}
+.edit-value-double {
+    width: 340px!important;
+}
+.edit-value-double .input-prepend input {
+    width: 100px !important;
+}
+.edit-value-double select {
+    padding-right: 22px;
+    width: 123px !important;
+}
+.edit-value-double .select2-container {
+    width: 151px !important;
+}
+.ms-container ul.ms-list {
+    overflow-x: hidden;
+    padding: 0;
+    width: 220px;
+    height: 300px;
+}
+.ms-container .ms-list {
+    -webkit-border-radius: 0;
+    -moz-border-radius: 0;
+    border-radius: 0;
+}
+.ms-container .ms-selectable li:hover,
+.ms-container .ms-selection li:hover {
+    background-color: #f60;
+    color: white;
+    text-decoration: none;
+    cursor: pointer;
+}
+.ms-container {
+    background-position: center center;
+}
+.ms-container .ms-selectable li.ms-elem-selectable,
+.ms-container .ms-selection li.ms-elem-selection,
+.ms-container .select-header {
+    overflow: hidden;
+    padding: 4px 10px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.ms-container .select-header {
+    border: solid 1px #ccc;
+    background-color: #cecece;
+    color: black;
+    font-weight: 500;
+    font-size: 14px;
+}
+.ms-container .ms-list.ms-focus {
+    border-color: #ccc;
+}
+.ms-container .ms-selectable {
+     margin-right: 0;
+}
+.ms-container .ms-selection {
+    margin-left: 45px;
+}
+.ms-list li:hover {
+    cursor: pointer;
+}
+.striped {
+    background-color: #f4f4f4;
+}
+.btn-bottom-block {
+    padding-top: 20px;
+    border-top: 1px solid #ccc;
+}
+
+/*TODO Move*/
+.accordion-group {
+    margin-bottom: 5px;
+    border: 0 none;
+}
+.accordion-heading {
+    border-bottom: 0;
+    background: #f5f5f5;
+}
+.accordion-inner {
+    border-top: 0 !important;
+    padding: 9px 0;
+}
+.accordion-heading .accordion-toggle {
+    display: block;
+    padding: 8px 15px;
+    cursor: pointer;
+}
+.accordion-heading a {
+    color: black;
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 16px;
+}
+/*end*/
+
+label.name {
+    padding-right: 10px;
+    height: 25px;
+    vertical-align: middle;
+    font-size: 16px;
+}
+.policy label.name {
+    width: 125px;
+    text-align: right;
+}
+.role label.name {
+    width: 45px;
+}
+.rules label.name,
+.new-rule label.name,
+.rule-edit label.name {
+    width: 55px;
+}
+.rules label.name {
+    height: 16px;
+}
+.rule-edit label.name {
+    height: 25px;
+}
+.rule-edit {
+    padding-top: 10px;
+}
+.role-name {
+    width: 415px;
+}
+.edit-error {
+    width: 450px;
+    display: block;
+    margin-top: -8px;
+    text-align: right;
+}
+
+input.policy-form {
+    width: 330px;
+}
+select.policy-form {
+    width: 345px !important;
+}
+.add-btn {
+    margin-left: 8px;
+    padding: 5px 0 7px 0;
+    min-width: 62px;
+    height: 30px;
+    vertical-align: top;
+}
+.controls,
+.rule-edit {
+    border-bottom: 1px solid #E9E9E9;
+}
+.controls {
+    height: 30px;
+}
+.controls div.policy-form {
+    display: inline-block;
+    overflow: hidden;
+    width: 400px;
+    vertical-align: middle;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    line-height: 30px;
+    cursor: pointer;
+}
+.new-rule {
+    margin-top: 10px;
+}
+.edit-name {
+    width: 130px;
+}
+.role .error {
+    padding-left: 60px;
+}
+.remove-icon {
+    margin-top: 10px;
+}
+.policy-form-error {
+    padding-left: 140px;
+    margin-top: -10px;
+}
+.filter-field {
+    font-size: 14px;
+    width: 190px;
+}

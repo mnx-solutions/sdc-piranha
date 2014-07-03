@@ -1,0 +1,34 @@
+<div data-ng-controller="rbac.UserListController">
+    <div class="container-fluid container-position">
+        <div class="page-header row-fluid">
+            <h3 class="page-title">Users</h3>
+            <div class="page-title-btn" data-ng-show="!loading">
+                <a href="#!/accounts/user/create">
+                    <button type="button" class="btn btn-big orange text-to-left"><i class="plus-btn-icon"></i>Create
+                        User</button></a>
+            </div>
+        </div>
+
+        <div class="loading-large span12" data-ng-show="loading"></div>
+
+        <div data-ng-hide="loading">
+            <div data-grid-view
+                 data-user-config="gridUserConfig"
+                 data-props="gridProps"
+                 data-detail-props="gridDetailProps"
+                 data-action-buttons="gridActionButtons"
+                 data-columns-button="columnsButton"
+                 data-search-form="searchForm"
+                 data-items="users"
+                 data-order="gridOrder"
+                 data-multisort="false"
+                 data-filter-all="{{query}}"
+                 data-place-Holder-Text="placeHolderText"
+                 data-export-fields="exportFields"
+                 data-items-type="user"
+                 data-enabled-checkboxes="enabledCheckboxes">
+            </div>
+        </div>
+
+    </div>
+</div>

@@ -12,7 +12,7 @@
                 restrict: 'A',
                 replace: true,
                 scope: {
-                    skip: '=',
+                    required: '=',
                     number: '=',
                     country: '@',
                     isError: '&',
@@ -20,9 +20,6 @@
                 },
                 templateUrl: 'account/static/partials/phone-number.html',
                 link: function ($scope) {
-                    if ($scope.skip) {
-                        return;
-                    }
                     $scope.plainNumber = '';
                     $scope.areaCode = '';
 

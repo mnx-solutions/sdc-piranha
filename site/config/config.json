@@ -175,6 +175,16 @@
 , "mdb": {
     "processor": "/NodeCore/public/manta-mdb-node-report.sh"
 }
+,"subUserDenied" : [
+    "slb"
+    ,"provisioningLimits"
+    ,"usageData"
+    ,"support"
+    ,"rbac"
+    ,"manta"
+    ,"mantaJobs"
+    ,"mdb"
+]
 , "features": {
     "fullVersion": "enabled"
   , "instanceRename": "enabled"
@@ -204,5 +214,6 @@
   , "imageRename": "no"
   , "provisioningLimits": "no"
   , "mdb": "no"
+  , "rbac": "no"
   }
 }

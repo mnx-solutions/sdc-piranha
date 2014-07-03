@@ -9,7 +9,7 @@
         var messageBox = function (title, question, btns, templateUrl, callbackOk, callbackCancel) {
             callbackOk = callbackOk || angular.noop;
             callbackCancel = callbackCancel || angular.noop;
-            return $dialog.messageBox(title, question, btns, templateUrl)
+            return $dialog.messageBox(title, question.error || question, btns, templateUrl)
                     .open()
                     .then(function (result) {
                         if (result === 'ok') {

@@ -31,7 +31,7 @@ module.exports = function execute(scope, register) {
         var cloud = call.cloud || call.req.cloud;
         var datacenter = config.slb.ssc_datacenter || 'us-west-1';
         cloud.separate(datacenter).listMachines({ credentials: true }, function (err, machines) {
-            machines = machines || [];
+            machines = (machines && machines.length) ? machines : [];
             machines.forEach(function (machine) {
                 machine.datacenter = datacenter;
             });

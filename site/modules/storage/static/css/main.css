@@ -191,12 +191,6 @@
     display: inline-block;
     background-position: -1px 5px;
 }
-.header-btn-ci {
-    position: relative;
-    display: inline-block;
-    float: right;
-    margin-top: -73px;
-}
 
 .create-new-job-btn-pos {
     margin-top: -85px;

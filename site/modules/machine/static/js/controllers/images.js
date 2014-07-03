@@ -64,7 +64,12 @@
                     id: 'name',
                     name: 'Name',
                     sequence: 1,
-                    active: true
+                    active: true,
+                    type: 'html',
+                    _getter: function (object) {
+                        return '<a href="#!/images/' + object.id + '">' + object.name + '</a>';
+                    }
+
                 },
                 {
                     id: 'description',

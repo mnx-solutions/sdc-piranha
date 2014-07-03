@@ -1,0 +1,6 @@
+{
+    "em": {
+        "route": "/rbac",
+        "auth": true
+    }
+}

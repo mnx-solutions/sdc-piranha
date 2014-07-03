@@ -9,8 +9,14 @@ module.exports = function execute(scope) {
         if (!res.locals.jss) {
             res.locals.jss = [];
         }
+        var currentFeatures = JSON.parse(JSON.stringify(config.features));
 
-        res.locals.jss.push('window.JP.set("features", ' + JSON.stringify(config.features || {}) + ')');
+        if (req.session.subId) {
+            config.subUserDenied.some(function (item) {
+                currentFeatures[item] = 'disabled';
+            });
+        }
+        res.locals.jss.push('window.JP.set("features", ' + JSON.stringify(currentFeatures || {}) + ')');
 
         return next();
     };

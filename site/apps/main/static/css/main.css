@@ -246,6 +246,14 @@ label.control-label,
     margin-top: 1px;
 }
 
+.state-label {
+    background-color: transparent;
+    color: #333;
+    text-align: left;
+    text-indent: -7px;
+    text-shadow: none;
+}
+
 .arrow-to {
     min-height: 100px;
     min-width: 300px;
@@ -2248,6 +2256,7 @@ label.checkbox {
 }
 .plus-btn-icon {
     background: url("../img/plus_icon.png") no-repeat;
+    margin-right: 10px;
 }
 .chart-btn-icon {
     background: url("../img/chart-icon.png") no-repeat;
@@ -2516,7 +2525,7 @@ label.checkbox {
     text-decoration: none;
 }
 .btn-big {
-    width: 172px !important;
+    padding-right: 20px;
     height: 43px;
 }
 .btn-mini {
@@ -3268,4 +3277,32 @@ label.checkbox.folder-name-form-checkbox {
 }
 .modal-backdrop {
     z-index: 999999;
+}
+.page-title-btn {
+    float: right;
+    margin-top: -70px;
+}
+.text-to-left {
+    text-align: left !important;
+}
+.change-pass .name {
+    width: 135px;
+    height: 25px;
+    vertical-align: middle;
+}
+.change-pass input {
+    width: 375px;
+}
+.change-pass .edit-error {
+    margin-top: -7px;
+    padding-left: 135px;
+    width: 375px;
+}
+.rule-error {
+    overflow: scroll;
+    max-height: 300px;
+}
+.rule-error p {
+    white-space: pre-line;
+    font-family: monospace;
 }

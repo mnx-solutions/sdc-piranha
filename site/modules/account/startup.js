@@ -13,7 +13,93 @@ module.exports = function execute(scope) {
     var MantaClient = scope.api('MantaClient');
 
     var accountFields = ['id', 'login', 'email', 'companyName', 'firstName', 'lastName', 'address', 'postalCode', 'city', 'state', 'country', 'phone', 'created'];
-    var updateable = ['email', 'companyName', 'firstName', 'lastName', 'address', 'postalCode', 'city', 'state', 'country', 'phone'];
+    var updatableAccountFields = ['email', 'companyName', 'firstName', 'lastName', 'address', 'postalCode', 'city', 'state', 'country', 'phone'];
+    var updatableUserFields = ['id', 'email', 'companyName', 'firstName', 'lastName', 'address', 'postalCode', 'city', 'state', 'country', 'phone'];
+    var roleFields = ['name', 'members', 'default_members', 'name', 'policies'];
+    var updatableRoleFields = ['id', 'name', 'members', 'default_members', 'policies'];
+    var policyFields = ['name', 'rules', 'description'];
+    var updatablePolicyFields = ['id', 'name', 'rules', 'description'];
+
+    var filterFields = function (callData, filter, skipIfEmpty) {
+        var data = {};
+        filter.forEach(function (f) {
+            if (!skipIfEmpty || (typeof (callData[f]) === 'string' || (callData[f] && callData[f].length > 0))) {
+                data[f] = callData[f] || null;
+            }
+        });
+        return data;
+    };
+
+    var updateRoleTags = function (cloudapi, log) {
+        var validResources = [
+            '', 'machines', 'users', 'roles', 'packages',
+            'images', 'policies', 'keys', 'datacenters',
+            'analytics', 'fwrules', 'networks', 'instrumentations'
+        ];
+        cloudapi.listRoles(function (err, roles) {
+            roles = roles || [];
+            var getUserResources = {};
+            cloudapi.listPolicies(function (err, policies) {
+                var roleNames = [];
+                roles.forEach(function (role) {
+                    roleNames.push(role.name);
+
+                    if (role.default_members && role.default_members.length > 0) {
+                        role.policies.forEach(function (policyName) {
+                            var policiesWithGetUser = policies.filter(function (policy) {
+                                if (policy.name !== policyName) {
+                                    return false;
+                                }
+                                var getUserRules = policy.rules.filter(function (rule) {
+                                    return rule.toLowerCase().indexOf('getuser') !== -1 ||
+                                        rule.toLowerCase().indexOf('updateuser') !== -1;
+                                });
+                                return getUserRules.length > 0;
+                            });
+
+                            if (policiesWithGetUser.length > 0) {
+                                role.default_members.forEach(function (defaultMember) {
+                                    getUserResources[defaultMember] = getUserResources[defaultMember] || [];
+                                    if (getUserResources[defaultMember].indexOf(role.name) === -1) {
+                                        getUserResources[defaultMember].push(role.name);
+                                    }
+                                });
+                            }
+                        });
+                    }
+                });
+                var defaultMembers = Object.keys(getUserResources);
+                if (defaultMembers.length > 0) {
+                    cloudapi.listUsers(function (err, users) {
+                        var userByLogin = {};
+                        users.forEach(function (user) {
+                            userByLogin[user.login] = user;
+                        });
+                        defaultMembers.forEach(function (defaultMember) {
+                            if (userByLogin[defaultMember]) {
+                                cloudapi.setRoleTags('/my/users/' + userByLogin[defaultMember].id, getUserResources[defaultMember], function (err) {
+                                    if (err) {
+                                        log.error({error: err}, 'Failed setRoleTags');
+                                    }
+                                });
+                            }
+                        });
+                    });
+                }
+                validResources.forEach(function (resource) {
+                    cloudapi.setRoleTags('/my/' + resource, roleNames, function (err, data) {});
+                });
+            });
+        });
+    };
+
+    var getBillingAndComplete = function (call, response) {
+        Billing.isActive(response.id, function (billingError, isActive) {
+            call.req.session.provisionEnabled = response.provisionEnabled = isActive;
+            call.req.session.save();
+            call.done(billingError, response);
+        });
+    };
 
     server.onCall('getAccount', function (call) {
         // get account using cloudapi
@@ -28,108 +114,243 @@ module.exports = function execute(scope) {
                 response[field] = data[field] || '';
             });
 
-            var marketoData = {
-                Email: data.email,
-                FirstName: data.firstName,
-                LastName: data.lastName,
-                Username: data.login,
-                Company: data.companyName,
-                Phone: data.phone
-            };
-
-            Marketo.update(data.id, marketoData, function (err) {
-                if (err) {
-                    call.log.error({error: err, data: marketoData}, 'Failed to update marketo account');
-                }
-                call.log.debug(marketoData, 'Associate Marketo lead with SOAP API');
-                TFA.get(data.id, function (tfaGetError, secret) {
-                    if (tfaGetError) {
-                        call.done(tfaGetError);
-                        return;
+            response.isSubuser = !!call.req.session.subId;
+            if (response.isSubuser) {
+                call.cloud.getUser(call.req.session.subId, function (userErr, userData) {
+                    if (userErr) {
+                        return call.error(userErr);
                     }
+                    accountFields.forEach(function (field) {
+                        response[field] = userData[field] || '';
+                    });
+                    return getBillingAndComplete(call, response);
+                });
+            } else {
+                var marketoData = {
+                    Email: response.email,
+                    FirstName: response.firstName,
+                    LastName: response.lastName,
+                    Username: response.login,
+                    Company: response.companyName,
+                    Phone: response.phone
+                };
 
-                    response.tfaEnabled = !!secret;
-                    Billing.isActive(data.id, function (billingError, isActive) {
-                        call.req.session.provisionEnabled = response.provisionEnabled = isActive;
-                        call.req.session.save();
-                        call.done(billingError, response);
+                Marketo.update(response.id, marketoData, function (err) {
+                    if (err) {
+                        call.log.error({error: err, data: marketoData}, 'Failed to update marketo account');
+                    }
+                    call.log.debug(marketoData, 'Associate Marketo lead with SOAP API');
+                    TFA.get(response.id, function (tfaGetError, secret) {
+                        if (tfaGetError) {
+                            call.done(tfaGetError);
+                            return;
+                        }
+
+                        response.tfaEnabled = !!secret;
+                        getBillingAndComplete(call, response);
                     });
                 });
-            });
+            }
+        });
+    });
+    server.onCall('listUsers', function (call) {
+        call.cloud.listUsers(function (err, data) {
+            call.done(err, data);
+
+        });
+    });
+    server.onCall('getUser', function (call) {
+        var userId = call.data.id || call.req.session.subId;
+        call.cloud.getUser({id: userId, membership: true}, function (err, data) {
+            call.done(err, data);
+        });
+    });
+
+    server.onCall('listRoles', function (call) {
+        call.cloud.listRoles(function (err, data) {
+            call.done(err, data);
+        });
+    });
+
+    server.onCall('createRole', function (call) {
+        var data = filterFields(call.data, roleFields, true);
+
+        call.cloud.createRole(data, function (err, data) {
+            call.done(err, data);
+            if (!err) {
+                updateRoleTags(call.cloud, call.log);
+            }
+        });
+    });
+
+    server.onCall('updateRole', function (call) {
+        var data = filterFields(call.data, updatableRoleFields);
+
+        call.cloud.updateRole(data, function (err, data) {
+            call.done(err, data);
+            if (!err) {
+                updateRoleTags(call.cloud, call.log);
+            }
+        });
+    });
+
+    server.onCall('deleteRole', function (call) {
+        call.cloud.deleteRole(call.data.id, function (err, data) {
+            call.done(err, data);
+        });
+    });
+
+    server.onCall('getRole', function (call) {
+        call.cloud.getRole(call.data.id, function (err, data) {
+            call.done(err, data);
+        });
+    });
+
+    server.onCall('listPolicies', function (call) {
+        call.cloud.listPolicies(function (err, data) {
+            call.done(err, data);
+
+        });
+    });
+
+    server.onCall('getPolicy', function (call) {
+        call.cloud.getPolicy(call.data.id, function (err, data) {
+            call.done(err, data);
+        });
+    });
+
+    server.onCall('createPolicy', function (call) {
+        var data = filterFields(call.data, policyFields);
+        call.cloud.createPolicy(data, function (err, data) {
+            call.done(err, data);
+        });
+    });
+
+    server.onCall('updatePolicy', function (call) {
+        var data = filterFields(call.data, updatablePolicyFields, true);
+        call.cloud.updatePolicy(data, function (err, policy) {
+            call.done(err, policy);
+        });
+    });
+
+    server.onCall('deletePolicy', function (call) {
+        call.cloud.deletePolicy(call.data.id, function (err, data) {
+            call.done(err, data);
+        });
+    });
+
+    server.onCall('updateUser', function (call) {
+        var data = filterFields(call.data, updatableUserFields);
+
+        call.cloud.updateUser(data, function (err, data) {
+            call.done(err, data);
+        });
+    });
+
+    server.onCall('createUser', function (call) {
+        var data = {};
+        accountFields.forEach(function (f) {
+            data[f] = call.data[f] || null;
+        });
+        data.password = call.data.password;
+        call.cloud.createUser(data, function (err, data) {
+            call.done(err, data);
+        });
+    });
+
+    server.onCall('deleteUser', function (call) {
+        call.cloud.deleteUser(call.data.id, function (err, data) {
+            call.done(err, data);
+        });
+    });
+
+    server.onCall('changeUserPassword', function (call) {
+        call.cloud.changeUserPassword(call.data, function (err, data) {
+            call.done(err, data);
         });
     });
 
     server.onCall('updateAccount', function (call) {
         // update account using cloudapi
         var data = {};
-        updateable.forEach(function (f) {
+        updatableAccountFields.forEach(function (f) {
             data[f] = call.data[f] || null;
         });
 
-        // get metadata
-        metadata.get(call.req.session.userId, metadata.ACCOUNT_HISTORY, function (err, accountHistory) {
-            if (err) {
-                call.log.error({error: err}, 'Failed to get account history from metadata');
-            }
-
-            var obj = {};
-            try {
-                obj = JSON.parse(accountHistory);
-            } catch (e) {
-                obj = {};
-                // json parsing failed
-            }
-            if (!obj || obj === null || Object.keys(obj).length === 0) {
-                obj = {};
-            }
-
-            if (!obj.email) {
-                obj.email = [];
-            }
-
-            if (!obj.phone) {
-                obj.phone = [];
-            }
-
-            obj.email.push({ 'previousValue': data.email, 'time': Date.now()});
-            obj.phone.push({ 'previousValue': data.phone, 'time': Date.now()});
-
-            metadata.set(call.req.session.userId, metadata.ACCOUNT_HISTORY, JSON.stringify(obj), function () {});
-        });
-
-        var marketoData = {
-            Email: data.email,
-            FirstName: data.firstName,
-            LastName: data.lastName,
-            Company: data.companyName,
-            Phone: data.phone
-        };
-        call.cloud.getAccount(function (error, account) {
-            if (error) {
-                call.done(error);
-                return;
-            }
-
-            Marketo.update(account.id, marketoData, function (updateError) {
-                if (updateError) {
-                    call.log.error({error: updateError, data: marketoData}, 'Failed to update marketo account');
+        if (call.req.session.subId) {
+            data.id = call.req.session.subId;
+            call.cloud.updateUser(data, function (userErr, userData) {
+                if (userErr) {
+                    return call.done(userErr);
                 }
-                call.log.debug(marketoData, 'Associate Marketo lead with SOAP API');
-                call.log.debug('Updating account with', data);
-                call.cloud.updateAccount(data, function (updateAccountError, result) {
-                    if (updateAccountError) {
-                        call.done(updateAccountError);
-                        return;
+                userData.isSubuser = true;
+                return getBillingAndComplete(call, userData);
+            });
+        } else {
+            // get metadata
+            metadata.get(call.req.session.userId, metadata.ACCOUNT_HISTORY, function (err, accountHistory) {
+                if (err) {
+                    call.log.error({error: err}, 'Failed to get account history from metadata');
+                }
+
+                var obj = {};
+                try {
+                    obj = JSON.parse(accountHistory);
+                } catch (e) {
+                    obj = {};
+                    // json parsing failed
+                }
+                if (!obj || obj === null || Object.keys(obj).length === 0) {
+                    obj = {};
+                }
+
+                if (!obj.email) {
+                    obj.email = [];
+                }
+
+                if (!obj.phone) {
+                    obj.phone = [];
+                }
+
+                obj.email.push({ 'previousValue': data.email, 'time': Date.now()});
+                obj.phone.push({ 'previousValue': data.phone, 'time': Date.now()});
+
+                metadata.set(call.req.session.userId, metadata.ACCOUNT_HISTORY, JSON.stringify(obj), function () {});
+            });
+
+            var marketoData = {
+                Email: data.email,
+                FirstName: data.firstName,
+                LastName: data.lastName,
+                Company: data.companyName,
+                Phone: data.phone
+            };
+            call.cloud.getAccount(function (error, account) {
+                if (error) {
+                    call.done(error);
+                    return;
+                }
+
+                Marketo.update(account.id, marketoData, function (updateError) {
+                    if (updateError) {
+                        call.log.error({error: updateError, data: marketoData}, 'Failed to update marketo account');
                     }
-                    Billing.updateActive(result.id, function (err, isActive) {
-                        call.req.session.provisionEnabled = result.provisionEnabled = isActive;
-                        call.req.session.save();
-                        call.done(err, result);
+                    call.log.debug(marketoData, 'Associate Marketo lead with SOAP API');
+                    call.log.debug('Updating account with', data);
+                    call.cloud.updateAccount(data, function (updateAccountError, result) {
+                        if (updateAccountError) {
+                            call.done(updateAccountError);
+                            return;
+                        }
+                        Billing.updateActive(result.id, function (err, isActive) {
+                            call.req.session.provisionEnabled = result.provisionEnabled = isActive;
+                            call.req.session.save();
+                            call.done(err, result);
+                        });
                     });
                 });
             });
-        });
-
+        }
     });
 
     server.onCall('listKeys', function (call) {
@@ -219,8 +440,8 @@ module.exports = function execute(scope) {
     });
 
     var getConfigPath = function (call, client, old) {
-        return '/' + client.user + '/stor' +  (old ? '' : '/.joyent') + '/portal/config.' +
-            call.req.session.userName + '.json';
+        return '/' + client.user + '/stor' + (old ? '' : '/.joyent') + '/portal/config.' +
+                call.req.session.userName + '.json';
     };
 
     var readFileContents = function (client, path, callback) {
@@ -263,7 +484,9 @@ module.exports = function execute(scope) {
                     call.req.log.info('Config for user not found');
                 } else if (err.name === 'AccountBlockedError' && err.code === 'AccountBlocked' && attempt > 0 && call.req.session.provisionEnabled) {
                     attempt -= 1;
-                    setTimeout(function () {readOldOrNewFile(call, client, callback); }, 2000);
+                    setTimeout(function () {
+                        readOldOrNewFile(call, client, callback)
+                    }, 2000);
                     return;
                 } else {
                     call.req.log.error({error: err}, 'Cannot read user config');

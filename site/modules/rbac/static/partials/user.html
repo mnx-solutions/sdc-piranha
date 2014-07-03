@@ -1,0 +1,110 @@
+<div data-ng-controller="rbac.UserController">
+    <div class="container-fluid container-position container-min-width">
+        <!--<div data-breadcrumbs></div>--> <!--temporarily hardcoded-->
+        <ul class="breadcrumb">
+            <li><a href="#!/accounts/users">Users</a>&nbsp;/</li>
+        </ul>
+        <div class="page-header row-fluid">
+            <h3 class="page-title" data-ng-hide="user.isNew">User Details</h3>
+            <h3 class="page-title" data-ng-show="user.isNew">Create User</h3>
+        </div>
+        <div class="loading-large span12" data-ng-show="loading"></div>
+        <div class="row-fluid" data-ng-hide="loading">
+            <div class="pull-left span6">
+                <div class="accordion" id="accordionEditUserLeft">
+                    <div class="accordion-group">
+                        <div class="accordion-heading">
+                            <a class="accordion-toggle toggle-icon" data-toggle="collapse" data-target="#collapse_basic">
+                                Basic Information
+                            </a>
+                        </div>
+                        <div id="collapse_basic" class="accordion-body collapse in">
+                            <div class="accordion-inner">
+                                <div data-ng-show="user.id.length">
+                                    <div class="control-group">
+                                        <span class="edit-name" data-translate>
+                                            User ID
+                                        </span>
+                                        <span class="edit-value">
+                                            <input type="text"
+                                                   name="id"
+                                                   data-ng-model="user.id"
+                                                   data-ng-disabled="user.id"/>
+                                        </span>
+                                   </div>
+                                </div>
+                                <div data-add-sub-account data-user="user"></div>
+                                <div data-ng-show="user.created.length">
+                                    <div class="control-group">
+                                        <span class="edit-name" data-translate>
+                                            Created
+                                        </span>
+                                        <span class="edit-value">
+                                            <input type="text"
+                                                   name="created"
+                                                   data-ng-disabled="user.created"
+                                                   value="{{ user.created | date:'yyyy-MM-dd HH:mm'}}"/>
+                                        </span>
+                                    </div>
+                                </div>
+                                <div data-ng-show="user.updated.length">
+                                    <div class="control-group">
+                                        <span class="edit-name" data-translate>
+                                            Updated
+                                        </span>
+                                        <span class="edit-value">
+                                            <input type="text"
+                                                   name="updated"
+                                                   value="{{ user.updated | date:'yyyy-MM-dd HH:mm'}}"
+                                                   data-ng-disabled="user.updated"/>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pull-left span6" data-ng-hide="loading">
+                <div class="accordion" id="accordionEditUserRight">
+                    <div class="accordion-group">
+                        <div class="accordion-heading">
+                            <a class="accordion-toggle toggle-icon" data-toggle="collapse" data-target="#collapse_roles">
+                                Roles
+                            </a>
+                        </div>
+                        <div id="collapse_roles" class="accordion-body collapse in">
+                            <div class="accordion-inner">
+                                <div data-ng-hide="roles.length">Roles is not available, click to <a class="orange" href="#!/accounts/role/create">Create Role</a></div>
+                                <div data-ng-show="roles.length">
+                                    <multi-select id="rolesSelect"
+                                                  data-items="roles"
+                                                  data-option-label="'name'"
+                                                  data-selected-items="userRoles"
+                                                  data-selection-header="AVAILABLE"
+                                                  data-selected-header="ASSIGNED">
+                                    </multi-select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row-fluid btn-bottom-block" data-ng-show="!loading">
+            <div class="pull-right" data-ng-hide="user.isNew">
+                <button class="btn light effect-orange-button" data-ng-click="cancel()">Cancel</button>
+                <button class="btn light effect-orange-button" data-ng-click="deleteUser()">Delete</button>
+                <button class="btn light effect-orange-button" data-ng-click="changeUserPassword()">Change Password</button>
+                <button class="btn orange" data-ng-click="updateUser()">Save</button>
+            </div>
+            <div class="pull-right" data-ng-show="user.isNew">
+                <button class="btn light effect-orange-button" data-ng-click="cancel()">Cancel</button>
+                <button class="btn orange effect-orange-button" data-ng-click="createUser()">Create User</button>
+            </div>
+        </div>
+
+    </div>
+</div>

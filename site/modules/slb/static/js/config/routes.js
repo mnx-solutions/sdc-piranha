@@ -3,6 +3,10 @@
 window.JP.main.config([
     'routeProvider',
     function (routeProvider) {
+        var features = window.JP.get('features');
+        if (features && features.slb === 'disabled') {
+            return;
+        }
         routeProvider.when('/slb', {
             title: 'Load Balancers',
             action: 'slb.index',

@@ -31,20 +31,23 @@ window.fn = [];
                         datasets.job.finished = true;
 
                         if (err) {
-                            PopupDialog.error(
-                                localization.translate(
-                                    null,
-                                    null,
-                                    'Error'
-                                ),
-                                localization.translate(
-                                    null,
-                                    'machine',
-                                    'Unable to retrieve datasets from datacenter {{name}}.',
-                                    { name: datacenter }
-                                )
-                            );
-                            
+                            // Ignore authorization error for sub-user
+                            if (err.restCode !== 'NotAuthorized') {
+                                PopupDialog.error(
+                                    localization.translate(
+                                        null,
+                                        null,
+                                        'Error'
+                                    ),
+                                    localization.translate(
+                                        null,
+                                        'machine',
+                                        'Unable to retrieve datasets from datacenter {{name}}.',
+                                        { name: datacenter }
+                                    )
+                                );
+                            }
+
                             datasets.job[datacenter].deferred.catch(err);
                             datasets.list[datacenter].final = true;
                             return;

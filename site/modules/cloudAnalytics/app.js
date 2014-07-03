@@ -243,7 +243,7 @@ module.exports = function execute(scope, app) {
         req.cloud.describeAnalytics(function (err, _metrics) {
             if (err) {
                 req.log.warn(err);
-                err = 'Failed to get Cloud Analytics metrics';
+                err = err.restCode === 'NotAuthorized' ? err.message : 'Failed to get Cloud Analytics metrics';
             } else {
                 metrics = _metrics;
                 metrics.help = info.ca_help.data;

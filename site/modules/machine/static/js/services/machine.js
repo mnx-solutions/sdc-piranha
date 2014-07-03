@@ -276,6 +276,7 @@
                 var machine = service.machine(uuid);
                 function start() {
                     var stateChanged = true;
+                    machine.prevState = machine.state;
                     switch (opts.name) {
                         case 'MachineRename' :
                             machine.state = 'renaming';
@@ -326,19 +327,19 @@
                                             null,
                                             null,
                                             'Error'
-                                        ),
-                                        localization.translate(
-                                            null,
-                                            'machine',
-                                            'Unable to execute command "{{command}}" for instance {{uuid}}.',
-                                            {
-                                                command: data.name,
-                                                uuid: data.machine.id
-                                            }
-                                        ),
-                                        function () {}
-                                    );
-
+                                        ), err.restCode === 'NotAuthorized' ? err.message :
+                                            localization.translate(
+                                                null,
+                                                'machine',
+                                                'Unable to execute command "{{command}}" for instance {{uuid}}. ',
+                                                {
+                                                    command: data.name,
+                                                    uuid: data.machine.id
+                                                }
+                                            ));
+                                    if (err.restCode === 'NotAuthorized') {
+                                        machine.state = machine.prevState;
+                                    }
                                     return;
                                 }
 
@@ -386,7 +387,7 @@
                             null,
                             null,
                             'Error'
-                        ),
+                        ), err.restCode === 'NotAuthorized' ? err.message :
                         localization.translate(
                             null,
                             'machine',
@@ -395,10 +396,11 @@
                                 command: job.name,
                                 uuid: job.machine.id
                             }
-                        ),
-                        function () {}
+                        )
                     );
-
+                    if (err.restCode === 'NotAuthorized') {
+                        job.machine.state = job.machine.prevState;
+                    }
                     return;
                 }
 

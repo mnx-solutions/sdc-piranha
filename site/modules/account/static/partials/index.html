@@ -41,7 +41,7 @@
                         </div>
                     </div>
                 </fieldset>
-                <fieldset>
+                <fieldset data-ng-hide="account.isSubuser">
                     <legend>
                         <span>Billing Information</span>
                         <a href="#!/account/payment/" class="edit-btn effect-orange-button">Edit</a>
@@ -65,11 +65,11 @@
                         </div>
                     </div>
                 </fieldset>
-                <fieldset>
+                <fieldset data-ng-hide="account.isSubuser">
                     <legend><span>SSH</span></legend>
                     <div data-ssh-form></div>
                 </fieldset>
-                <fieldset data-ng-controller="Account.InvoicesController" ng-show="isInvocesEnabled">
+                <fieldset data-ng-controller="Account.InvoicesController" ng-show="isInvocesEnabled && !account.isSubuser">
                     <legend><span>Invoices</span></legend>
                     <div class="row-fluid">
                         <div class="loading-large row-fluid" data-ng-show="loading"></div>
