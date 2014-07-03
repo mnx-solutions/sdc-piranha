@@ -62,7 +62,7 @@
                         while ((match = regexp.exec(err.message)) !== null) {
                             var ruleError = match[2];
                             $scope.rules.forEach(function (rule, index) {
-                                if (ruleError === rule.rule) {
+                                if (ruleError === rule.rule.substring(0, 25)) {
                                     ruleErrors.push({index: index + 1, message: match[1]});
                                 }
                             });
