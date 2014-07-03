@@ -38,7 +38,7 @@ window.fn = [];
                                         null,
                                         null,
                                         'Error'
-                                    ),
+                                    ), err.message ||
                                     localization.translate(
                                         null,
                                         'machine',
@@ -49,6 +49,10 @@ window.fn = [];
                             }
 
                             datasets.job[datacenter].deferred.catch(err);
+                            if (err) {
+                                delete datasets.job[datacenter];
+                            }
+
                             datasets.list[datacenter].final = true;
                             return;
                         }

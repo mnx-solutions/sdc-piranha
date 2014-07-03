@@ -37,7 +37,6 @@
             var REVIEW_STEP_NAME = 'Review';
             var ACCOUNT_STEP_NAME = 'Account Information';
             var SSH_STEP_NAME = 'SSH Key';
-
             $scope.setCreateInstancePage = Machine.setCreateInstancePage;
             $scope.provisionSteps = [
                 {
@@ -241,7 +240,14 @@
                             var newMachine = job.__read();
                             if ($scope.features.freetier === 'enabled') {
                                 // TODO It seems like an extra call because we already have $scope.freetierOptions. Need to get rid of extra calls
-                                $scope.freetier = FreeTier.freetier();
+                                FreeTier.freetier().then(function (data) {
+                                    $scope.freetier = data;
+                                }, function (err) {
+                                    PopupDialog.errorObj(err, function () {
+                                        $location.url('/compute');
+                                        $location.replace();
+                                    });
+                                });
                             }
                             $q.when(Machine.machine(), function (listMachines) {
                                 if (newMachine.id) {
@@ -585,10 +591,7 @@
                 $scope.loading = provisionBundle && provisionBundle.manualCreate === false && provisionBundle.allowCreate === true;
             }, function (err) {
                 $scope.loading = false;
-                if (err.restCode !== 'NotAuthorized') {
-                    PopupDialog.errorObj(err);
-                }
-
+                PopupDialog.errorObj(err);
             });
 
             $scope.$on('creditCardUpdate', function () {
@@ -1331,7 +1334,7 @@
                 });
             }
 
-            var switchToOtherDatacenter = function (datacenter) {
+            var switchToOtherDatacenter = function (datacenter, err) {
                 if ($scope.datacenters && $scope.datacenters.length > 0) {
                     var firstNonSelected = $scope.datacenters.find(function (dc) { return dc.name != datacenter; });
                     if (firstNonSelected) {
@@ -1340,7 +1343,7 @@
                                 null,
                                 null,
                                 'Error'
-                            ),
+                            ), err && err.restCode === 'NotAuthorized' ? err.message :
                             localization.translate(
                                 null,
                                 'machine',
@@ -1348,14 +1351,17 @@
                                 { name: datacenter }
                             )
                         );
-                        $scope.data.datacenter = firstNonSelected.name;
+                        if (!err) {
+                            $scope.data.datacenter = firstNonSelected.name;
+                        }
                     }
                 }
             };
 
+            $scope.ignoredDatacenters = [];
             // Watch datacenter change
-            $scope.$watch('data.datacenter', function (newVal) {
-                if (newVal) {
+            $scope.$watch('data.datacenter', function (newVal, oldVal) {
+                if (newVal && newVal !== oldVal && $scope.ignoredDatacenters.indexOf(newVal) === -1) {
                     $scope.reloading = true;
                     $scope.datasetsLoading = true;
                     setNetworks(newVal);
@@ -1374,8 +1380,10 @@
                         if ($scope.isRecentInstancesEnabled) {
                             processRecentInstances(result[2], datasets);
                         }
-                    }, function () {
-                        switchToOtherDatacenter(newVal);
+                    }, function (err) {
+                        $scope.ignoredDatacenters.push(newVal);
+                        switchToOtherDatacenter(newVal, err);
+                        $scope.datasetsLoading = false;
                     });
                 }
                 $scope.reloading = false;

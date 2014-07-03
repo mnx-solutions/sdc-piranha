@@ -139,7 +139,6 @@
                 machines.job = serverTab.call({
                     name: 'MachineList',
                     progress: function (err, job) {
-
                         var data = job.__read();
 
                         function handleResponse(chunk) {
@@ -150,7 +149,7 @@
                                         null,
                                         null,
                                         'Error'
-                                    ),
+                                    ), chunk.error && chunk.error.restCode === 'NotAuthorized' ? chunk.error.message :
                                     localization.translate(
                                         null,
                                         'machine',
@@ -175,7 +174,6 @@
                     },
 
                     done: function(err) {
-
                         Object.keys(machines.search).forEach(function (id) {
                             if (!machines.index[id] && machines.search[id]) {
                                 machines.search[id].forEach(function (r) {
@@ -575,7 +573,7 @@
                             PopupDialog.error(
                                 localization.translate(null, null, 'Error'),
                                 localization.translate(null, 'machine',
-                                    'Unable to save ' + collectionName + '.'
+                                        err.restCode === 'NotAuthorized' ? err.message : 'Unable to save ' + collectionName + '.'
                                 )
                             );
                         });

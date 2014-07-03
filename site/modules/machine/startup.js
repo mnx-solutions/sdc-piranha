@@ -138,36 +138,46 @@ module.exports = function execute(scope) {
                 call.log.debug('Unable to list datacenters');
                 call.log.error(err);
                 call.done(err);
-            } else {
-                // Serialize datacenters
-                var datacenterList = [];
-
-                Object.keys(datacenters).forEach(function (name) {
-                    var url = datacenters[name];
-                    var index = scope.config.cloudapi.urls ?
-                        scope.config.cloudapi.urls.indexOf(url) : -1;
-
-                    datacenterList.push({
-                        name: name,
-                        url: url,
-                        index: index
-                    });
-                });
-
-                // Sort by index
-                datacenterList.sort(function (dc1, dc2) {
-                    if (dc1.index > dc2.index) {
-                        return 1;
-                    } else if (dc1.index === dc2.index) {
-                        return 0;
-                    } else {
-                        return -1;
-                    }
-                });
-
-                call.log.debug('Got datacenters list %j', datacenters);
-                call.done(null, datacenterList);
+                return;
             }
+            if (!datacenters.length && call.req.session.subId) {
+                var error = new Error();
+                error.statusCode = 403;
+                error.name = 'NotAuthorizedError';
+                error.restCode = 'NotAuthorized';
+                error.message = 'You do not have permission to access /my/datacenters (listdatacenters)';
+                call.done(!err && call.req.session.subId ? error : err);
+                return;
+            }
+//            Serialize datacenters
+            var datacenterList = [];
+
+            Object.keys(datacenters).forEach(function (name) {
+                var url = datacenters[name];
+                var index = scope.config.cloudapi.urls ?
+                    scope.config.cloudapi.urls.indexOf(url) : -1;
+
+                datacenterList.push({
+                    name: name,
+                    url: url,
+                    index: index
+                });
+            });
+
+            // Sort by index
+            datacenterList.sort(function (dc1, dc2) {
+                if (dc1.index > dc2.index) {
+                    return 1;
+                } else if (dc1.index === dc2.index) {
+                    return 0;
+                } else {
+                    return -1;
+                }
+            });
+
+            call.log.debug('Got datacenters list %j', datacenters);
+            call.done(null, datacenterList);
+
         });
     });
 

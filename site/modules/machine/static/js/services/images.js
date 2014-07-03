@@ -71,7 +71,7 @@
                                             null,
                                             null,
                                             'Error'
-                                        ),
+                                        ), chunk.error && chunk.error.restCode === 'NotAuthorized' ? chunk.error.message :
                                         localization.translate(
                                             null,
                                             'machine',

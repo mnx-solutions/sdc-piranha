@@ -332,7 +332,7 @@
                     text:'Instance'
                 }]
             }];
-            $scope.datacenters = Datacenter.datacenter();
+            $scope.datacenters = [];
 
 	        $scope.selectDatacenter = function (name) {
 		        $scope.datacenter = name;
@@ -448,20 +448,21 @@
             // get lists from services
             $scope.loading = true;
             $scope.rules = [];
-            $scope.machines = Machine.machine();
+            $scope.machines = [];
             $scope.machinesLoading = true;
             $scope.notAffectedMachines = [];
             $scope.kvmList = [];
             $scope.firewallDisabledMachines = [];
-            $scope.rulesByDatacenter = rule.rule();
+            $scope.rulesByDatacenter = [];
 
             $q.all([
-                $q.when($scope.machines),
-                $q.when($scope.rulesByDatacenter),
-                $q.when($scope.datacenters)
+                $q.when(Machine.machine()),
+                $q.when(rule.rule()),
+                $q.when(Datacenter.datacenter())
             ]).then(function(lists){
+                $scope.machines = list[0];
                 $scope.setRules(lists[1]);
-
+                $scope.datacenters = lists[2];
                 $scope.$watch('machines.final', function(isFinal) {
                     if (isFinal) {
                         extractVmInfo($scope.machines);
@@ -498,6 +499,9 @@
                         $scope.loading = false;
                     }
                 });
+            }, function (err){
+                PopupDialog.errorObj(err);
+                $scope.loading = false;
             });
 
             // rule create/edit form controls

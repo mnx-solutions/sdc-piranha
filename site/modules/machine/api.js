@@ -315,6 +315,10 @@ module.exports = function execute(scope, register) {
         call.log.info('Handling machine list event');
 
         var datacenters = call.cloud.listDatacenters();
+        if (datacenters.length === 0) {
+            callback(null, []);
+            return;
+        }
         var keys = Object.keys(datacenters);
         var count = keys.length;
 
@@ -462,41 +466,49 @@ module.exports = function execute(scope, register) {
     };
 
     api.ImageList = function (call, callback) {
-        var datacenters = call.cloud.listDatacenters();
-        var keys = Object.keys(datacenters);
-        var count = keys.length;
+        call.cloud.listDatacenters(function (err, datacenters) {
+            var keys = Object.keys(datacenters);
+            var count = keys.length;
+            if (err) {
+                call.done(err);
+                return;
+            }
 
-        keys.forEach(function (datacenterName) {
-            var cloud = call.cloud.separate(datacenterName);
-            call.log.debug('List images for datacenter %s', datacenterName);
+            if (!datacenters.length && call.req.session.subId) {
+                call.done();
+            }
+            keys.forEach(function (datacenterName) {
+                var cloud = call.cloud.separate(datacenterName);
+                call.log.debug('List images for datacenter %s', datacenterName);
 
-            cloud.listImages(function (err, images) {
-                var response = {
-                    name: datacenterName,
-                    status: 'pending',
-                    images: []
-                };
+                cloud.listImages(function (err, images) {
+                    var response = {
+                        name: datacenterName,
+                        status: 'pending',
+                        images: []
+                    };
 
-                if (err) {
-                    call.log.error('List images failed for datacenter %s, url %s; err.message: %s', datacenterName, datacenters[datacenterName], err.message, err);
-                    response.status = 'error';
-                    response.error = err;
-                } else {
-                    /* add datacenter to every image */
-                    images.forEach(function (image) {
-                        image.datacenter = datacenterName;
-                    });
+                    if (err) {
+                        call.log.error('List images failed for datacenter %s, url %s; err.message: %s', datacenterName, datacenters[datacenterName], err.message, err);
+                        response.status = 'error';
+                        response.error = err;
+                    } else {
+                        /* add datacenter to every image */
+                        images.forEach(function (image) {
+                            image.datacenter = datacenterName;
+                        });
 
-                    response.status = 'complete';
-                    response.images = images;
+                        response.status = 'complete';
+                        response.images = images;
 
-                    call.log.debug('List images succeeded for datacenter %s', datacenterName);
-                }
-                call.update(null, response);
+                        call.log.debug('List images succeeded for datacenter %s', datacenterName);
+                    }
+                    call.update(null, response);
 
-                if (--count === 0) {
-                    callback();
-                }
+                    if (--count === 0) {
+                        callback();
+                    }
+                });
             });
         });
     };
