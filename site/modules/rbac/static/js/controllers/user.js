@@ -9,7 +9,9 @@
         'requestContext',
         'PopupDialog',
         'rbac.Service',
-        function ($q, $scope, localization, $location, requestContext, PopupDialog, service) {
+        'Account',
+        'http',
+        function ($q, $scope, localization, $location, requestContext, PopupDialog, service, Account, http) {
             $scope.loading = true;
             $scope.user = {};
             $scope.initial = {};
@@ -32,7 +34,8 @@
             if (!$scope.user.isNew) {
                 $q.all([
                     $q.when(service.getUser(userId)),
-                    $q.when(service.listRoles())
+                    $q.when(service.listRoles()),
+                    $q.when(service.listUserKeys(userId))
                 ]).then(function (result) {
                     $scope.user = angular.copy(result[0]);
                     $scope.initial.firstName = $scope.user.firstName;
@@ -52,6 +55,7 @@
                         }
                         role.value = role.id;
                     });
+                    $scope.listUserKeys = result[2];
                     $scope.loading = false;
                 }, errorCallback);
             } else {
@@ -212,6 +216,170 @@
                 );
 
             };
+
+            var getKeysList = function () {
+                service.listUserKeys($scope.user.id).then(function (list) {
+                    $scope.listUserKeys = list;
+                    $scope.loading = false;
+                }, errorCallback);
+            };
+
+            $scope.addNewKey = function () {
+                var userId = $scope.user.id;
+                function showPopupDialog(level, title, message, callback) {
+                    return PopupDialog[level](
+                        title ? localization.translate(
+                            $scope,
+                            null,
+                            title
+                        ) : null,
+                        message ? localization.translate(
+                            $scope,
+                            null,
+                            message
+                        ) : null,
+                        callback
+                    );
+                }
+
+                var addKeyCtrl = function ($scope, dialog) {
+                    $scope.isUploadSshEnabled = $scope.features.uploadSshKey === 'enabled';
+                    $scope.data = {};
+                    $scope.filePath = '';
+                    $scope.close = function (res) {
+                        if (res === 'cancel') {
+                            dialog.close({
+                                value: res
+                            });
+                            return;
+                        }
+                        dialog.close({
+                            value: 'add',
+                            data: {
+                                keyName: $scope.data.keyName,
+                                keyData: $scope.data.keyData
+                            }
+                        });
+                    };
+
+                    $scope.buttons = [
+                        {
+                            result: 'cancel',
+                            label: 'Cancel',
+                            cssClass: 'pull-left',
+                            setFocus: false
+                        },
+                        {
+                            result: 'add',
+                            label: 'Add',
+                            cssClass: '',
+                            setFocus: true
+                        }
+                    ];
+
+                    $scope.uploadFile = function (elem) {
+                        $scope.$apply(function () {
+                            $scope.loading = true;
+                            $scope.keyLoading = true;
+                        });
+                        var files = elem.files;
+                        var file = files[0];
+
+                        if (file.size > 512) {
+                            $scope.loading = false;
+                            $scope.keyLoading = false;
+
+                            dialog.close({});
+
+                            return showPopupDialog('error', 'Error', "The file you've uploaded is not a public key.");
+                        } else {
+                            http.uploadFiles('account/upload?userId=' +  userId, elem.value, files, function (error, response) {
+                                $scope.loading = false;
+                                $scope.keyLoading = false;
+                                getKeysList();
+                                if (error) {
+                                    var message = error.error;
+
+                                    if (error.status && error.status === 409) {
+                                        message = 'Uploaded key already exists.';
+                                    }
+
+                                    dialog.close({});
+
+                                    return showPopupDialog('error', 'Error', message);
+                                }
+
+                                return dialog.close({
+                                    keyUploaded: true
+                                });
+                            });
+                        }
+                    };
+                };
+
+                var opts = {
+                    title: 'Add new ssh key',
+                    templateUrl: 'account/static/template/dialog/message.html',
+                    openCtrl: addKeyCtrl
+                };
+
+                PopupDialog.custom(
+                    opts,
+                    function (result) {
+                        if (result && result.value === 'add' && result.data.keyData) {
+                            if (!result.data.keyName) {
+                                var keyParts = result.data.keyData.split(' ');
+                                if (keyParts[2]) {
+                                    result.data.keyName = keyParts[2];
+                                }
+                            }
+                            $scope.loading = true;
+                            service.uploadUserKey($scope.user.id, result.data.keyName, result.data.keyData).then(function () {
+                                getKeysList();
+                            }, errorCallback);
+                        } else if (result && result.value === 'add' && !result.data.keyData) {
+                            $scope.loading = false;
+                            return showPopupDialog('error', 'Error', 'Please enter a SSH key.');
+                        } else if (result && result.keyUploaded) {
+                            $scope.loading = false;
+                        }
+                    }
+                );
+            };
+
+            $scope.deleteKey = function (name, key) {
+                PopupDialog.confirm(null,
+                    localization.translate($scope, null, 'Are you sure you want to delete "{{name}}" SSH key?', {name: name}),
+                    function () {
+                        $scope.loading = true;
+                        service.deleteUserKey($scope.user.id, name, key).then(function () {
+                            getKeysList();
+                            PopupDialog.message(
+                                localization.translate(
+                                    $scope,
+                                    null,
+                                    'Message'
+                                ),
+                                localization.translate(
+                                    $scope,
+                                    null,
+                                    'Key successfully deleted.'
+                                ),
+                                function () {}
+                            );
+                        }, errorCallback);
+                    });
+            };
+
+            $scope.$on('sshCreated', function () {
+                getKeysList();
+            });
+            $scope.$on('sshCreating', function () {
+                $scope.loading = true;
+            });
+            $scope.$on('sshCancel', function () {
+                $scope.loading = false;
+            });
         }
     ]);
 }(window.JP.getModule('rbac')));
