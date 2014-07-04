@@ -133,7 +133,7 @@
             return job.deferred;
         };
 
-        service.updateMachines = function () {
+        service.updateMachines = function (authorizationErrorDisable) {
             if (!machines.job || machines.job.finished) {
                 machines.list.final = false;
                 machines.job = serverTab.call({
@@ -143,21 +143,21 @@
 
                         function handleResponse(chunk) {
                             if(chunk.status === 'error') {
-
-                                PopupDialog.error(
-                                    localization.translate(
-                                        null,
-                                        null,
-                                        'Error'
-                                    ), chunk.error && chunk.error.restCode === 'NotAuthorized' ? chunk.error.message :
-                                    localization.translate(
-                                        null,
-                                        'machine',
-                                        'Unable to retrieve instances from datacenter {{name}}.',
-                                        { name: chunk.name }
-                                    ),
-                                    function () {}
-                                );
+                                if(authorizationErrorDisable && (!chunk.error || chunk.error.restCode !== 'NotAuthorized')) {
+                                    PopupDialog.error(
+                                        localization.translate(
+                                            null,
+                                            null,
+                                            'Error'
+                                        ), chunk.error && chunk.error.restCode === 'NotAuthorized' ? chunk.error.message :
+                                            localization.translate(
+                                                null,
+                                                'machine',
+                                                'Unable to retrieve instances from datacenter {{name}}.',
+                                                { name: chunk.name }
+                                            )
+                                    );
+                                }
                                 return;
                             }
 
@@ -266,7 +266,7 @@
 
         if (!machines.job) {
             // run updateMachines
-            service.updateMachines();
+            service.updateMachines(false);
         }
 
         function changeState(opts) {

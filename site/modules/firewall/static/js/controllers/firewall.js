@@ -460,7 +460,7 @@
                 $q.when(rule.rule()),
                 $q.when(Datacenter.datacenter())
             ]).then(function(lists){
-                $scope.machines = list[0];
+                $scope.machines = lists[0];
                 $scope.setRules(lists[1]);
                 $scope.datacenters = lists[2];
                 $scope.$watch('machines.final', function(isFinal) {

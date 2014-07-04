@@ -5,7 +5,7 @@
     <div class="modal-body">
         <p data-ng-if="message.body" data-ng-bind-html="message.body"></p>
         <p data-ng-if="message.templatePath" data-ng-include="message.templatePath"></p>
-        <p data-ng-if="!message.body && !message.templatePath" data-ng-bind-html="message"></p>
+        <p data-ng-if="!message.body && !message.templatePath" data-ng-bind-html="message.concatenated"></p>
     </div>
     <div class="modal-footer">
         <p data-ng-show="message.footer" data-ng-bind-html="message.footer"></p>

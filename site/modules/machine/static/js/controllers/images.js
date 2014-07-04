@@ -25,6 +25,11 @@
                     $scope.loading = false;
                 }
             });
+            $scope.$watch('images.error', function (error) {
+                if(error) {
+                    PopupDialog.errorObj(error);
+                }
+            });
 
             $scope.$on(
                 'event:forceUpdate',

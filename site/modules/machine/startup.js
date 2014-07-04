@@ -140,7 +140,11 @@ module.exports = function execute(scope) {
                 call.done(err);
                 return;
             }
-            if (!datacenters.length && call.req.session.subId) {
+//            Serialize datacenters
+            var datacenterList = [];
+            var keys = Object.keys(datacenters);
+            var count = keys.length;
+            if (count === 0 && call.req.session.subId) {
                 var error = new Error();
                 error.statusCode = 403;
                 error.name = 'NotAuthorizedError';
@@ -149,10 +153,8 @@ module.exports = function execute(scope) {
                 call.done(!err && call.req.session.subId ? error : err);
                 return;
             }
-//            Serialize datacenters
-            var datacenterList = [];
 
-            Object.keys(datacenters).forEach(function (name) {
+            keys.forEach(function (name) {
                 var url = datacenters[name];
                 var index = scope.config.cloudapi.urls ?
                     scope.config.cloudapi.urls.indexOf(url) : -1;

@@ -95,13 +95,21 @@
                         },
                         done: function (err) {
                             if (err) {
-                                errorContext.emit(new Error(localization.translate(null,
-                                    'machine',
-                                    'Unable to retrieve images list'
-                                )));
-                                return;
+                                PopupDialog.error(
+                                    localization.translate(
+                                        null,
+                                        null,
+                                        'Error'
+                                    ), err && err.restCode === 'NotAuthorized' ? err.message :
+                                    localization.translate(
+                                        null,
+                                        'machine',
+                                        'Unable to retrieve images from datacenter {{name}}.',
+                                        { name: chunk.name }
+                                    )
+                                );
+                                images.list.error = err;
                             }
-
                             images.list.final = true;
                         }
                     });
