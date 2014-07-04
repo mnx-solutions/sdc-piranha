@@ -60,12 +60,7 @@
                         var ruleErrors = [];
                         var regexp = /(Parse\s*error\s*on\s*line\s*\d+\s*:\s*(.+)\n[\-]+[^\n]+\n.*\'),?/g; //expected message = "Parse error on line 1:\n*can createmachine*\n-----^\nExpecting 'CAN', got 'FUZZY_STRING'"
                         while ((match = regexp.exec(err.message)) !== null) {
-                            var ruleError = match[2];
-                            $scope.rules.forEach(function (rule, index) {
-                                if (ruleError === rule.rule.substring(0, 25)) {
-                                    ruleErrors.push({index: index + 1, message: match[1]});
-                                }
-                            });
+                            ruleErrors.push(match[1]);
                         }
                         var opts = {
                             templateUrl: 'rbac/static/partials/rules-error.html',
