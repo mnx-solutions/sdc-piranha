@@ -24,11 +24,8 @@
             var isNew = policyId && policyId === 'create';
             if (!isNew) {
                 $scope.model.policy.id = policyId;
-                //FIXME: $q.all not needed for one promise
-                $q.all([
-                    $q.when(service.getPolicy(policyId))
-                ]).then(function (result) {
-                    var policy = result[0];
+
+                $q.when(service.getPolicy(policyId)).then(function (policy) {
                     $scope.storPolicy = angular.copy(policy);
                     $scope.model.policy.dirtyName = $scope.model.policy.name = policy.name;
                     $scope.model.policy.dirtyDescription = $scope.model.policy.description = policy.description;
@@ -51,9 +48,7 @@
 
             var policyAction = function (action, redirect) {
                 $scope.loading = true;
-                //FIXME: data parameter is not used
-                action.then(function (data) {
-                    //FIXME: No need in setting this flag before redirect
+                action.then(function () {
                     $scope.loading = false;
                     if (redirect) {
                         $location.path('/accounts/policies');
@@ -117,6 +112,7 @@
                 policyAction(service.createPolicy($scope.model.policy), true);
             };
 
+            //FIXME: Get rid of 'redirect' properties if we store rules only with policy
             $scope.updatePolicy = function (redirect) {
                 $scope.isFormSubmited = true;
                 if (isFormInvalid()) {
@@ -181,18 +177,12 @@
                 var newRule = $scope.model.newRule;
                 if (!checkRuleDuplicate(newRule)) {
                     $scope.rules.push({rule: newRule, edit: false});
-                    if (!isNew) {
-                        $scope.updatePolicy(false);
-                    }
                     $scope.model.newRule = '';
                 }
             };
 
             $scope.saveRule = function (rule, index) {
                 if (!checkRuleDuplicate(rule.rule, index)) {
-                    if (!isNew) {
-                        $scope.updatePolicy(false);
-                    }
                     rule.edit = false;
                     $scope.rules[index].rule = rule.rule;
                 }
@@ -203,9 +193,6 @@
                 var pos = $scope.rules.indexOf(rule);
                 if (pos > -1) {
                     $scope.rules.splice(pos, 1);
-                }
-                if (!isNew) {
-                    $scope.updatePolicy(false);
                 }
                 storeRules();
             };
