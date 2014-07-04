@@ -193,6 +193,7 @@
 }
 
 .create-new-job-btn-pos {
+    float: right;
     margin-top: -85px;
 }
 
