@@ -50,7 +50,7 @@ module.exports = function execute(scope, register) {
     };
     api.addSubUserSshKey = function (req, name, keyData, cb) {
         var userId = req.body.subUser || req.query.userId;
-        req.cloud.uploadUserKey(userId, {name: name, key: keyData}, function (err, resp) {
+        req.cloud.uploadUserKey({login: 'my'}, userId, {name: name, key: keyData}, function (err, resp) {
             if(err) {
                 cb(err);
                 return;

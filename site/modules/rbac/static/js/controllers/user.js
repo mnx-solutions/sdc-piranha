@@ -19,6 +19,7 @@
             $scope.roles = [];
             $scope.changePassword = {};
             $scope.isFormSubmited = false;
+            $scope.noKeysMessage = "User doesn't have any SSH keys";
 
             var userId = requestContext.getParam('id');
 
