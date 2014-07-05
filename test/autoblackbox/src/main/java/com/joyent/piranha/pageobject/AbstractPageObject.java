@@ -68,7 +68,9 @@ public abstract class AbstractPageObject {
     }
 
     public void waitForSmallSpinnerDisappear() {
-        $(By.xpath("//span[contains(@class,'loading-small') and not(@class=\"ng-hide\")]")).waitWhile(exist, CHANGE_STATUS_TIMEOUT);
+        SelenideElement element = $(By.xpath("//span[contains(@class,'loading-small') and not(contains(@class,'ng-hide'))]"));
+        element.waitUntil(exist, baseTimeout);
+        element.waitWhile(exist, CHANGE_STATUS_TIMEOUT);
     }
 
     public void waitForMediumSpinnerDisappear() {

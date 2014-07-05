@@ -24,6 +24,7 @@ import static org.junit.Assert.assertTrue;
  * "Create Instance" and its child pages page object. Holds methods to interact
  * with given pages.
  */
+@Deprecated
 public class CreateInstanceCarousel {
 
     private static final int BASE_TIMEOUT = Integer.parseInt(PropertyHolder.getGlobalTimeout());
@@ -40,33 +41,8 @@ public class CreateInstanceCarousel {
         $(byText(zone)).click();
     }
 
-    public void selectOsFilter(String os) {
-        waitForListingUpdate();
-        SelenideElement dropList = $(byAttribute("data-original-title", "Filter by operating system"));
-        $("#button-select-os").click();
-        SelenideElement toClick = dropList.$("ul.dropdown-menu").$(byText(os));
-        toClick.click();
-    }
-
-    /**
-     * Method for getting the element from the carousel content listing
-     * @param name - text to filter the element by
-     * @return
-     */
-    public SelenideElement getListElement(String name) {
-        return Common.getRowByText($$(".active .item-scrolling .provisioning-item"), name);
-    }
-
     public void waitForListingUpdate() {
         $(".provisioning-carousel-inner-box").waitUntil(hasNotClass("loading-medium"), BASE_TIMEOUT);
-    }
-
-    public void selectInstanceType(String type) {
-        waitForListingUpdate();
-        SelenideElement dropList = $(byAttribute("data-original-title", "Filter by instance type"));
-        dropList.shouldBe(visible);
-        dropList.$(byAttribute("data-toggle", "dropdown")).click();
-        dropList.$(byText(type)).click();
     }
 
     public void selectPackage(String name) {
@@ -87,28 +63,9 @@ public class CreateInstanceCarousel {
         }
     }
 
-    public void clickReviewBtn() {
-        $("#button-review").click();
-    }
-
     public void selectOsImage(String os) {
         waitForListingUpdate();
         $(".advanced-instance-title").$(byText(os), 0).$(By.xpath("../..")).$(byText("Select")).click();
-    }
-
-    public void checkSelectedImageDescription(String description) {
-        String a = $(".dataset-desc", 1).getText();
-        assertTrue(a.contains(description));
-    }
-
-    public void checkPackageInfo(String mem, String disk, String cpu, String instancePackage) {
-        ElementsCollection elements = $$(".center .value");
-        String[] texts = elements.getTexts();
-        assertTrue(texts[0].equals(instancePackage));
-        assertTrue(texts[1].equals(mem));
-        assertTrue(texts[2].equals(disk));
-        assertTrue(texts[3].equals(cpu));
-        assertTrue(texts[4].equals(System.getProperty("datacenters")));
     }
 
     public void checkPaymentInfo(String h, String d) {
@@ -152,16 +109,8 @@ public class CreateInstanceCarousel {
     }
 
     /**
-     * Cancel instance creation modal window.
-     */
-    public void cancelInstanceCreation() {
-        $("[data-focus-on=\"button\"]").shouldBe(visible);
-        $(".modal-header").shouldHave(text("Confirm: Create Instance"));
-        $(".modal-footer").find(byText("No")).click();
-    }
-
-    /**
      * Provision a machine from a CreateInstanceObject.
+     *
      * @param i  CreateInstanceObject
      * @param dc DataCenter
      * @return Image name
@@ -183,9 +132,5 @@ public class CreateInstanceCarousel {
         $(byText("Create instance")).click();
         createInstanceCarousel.confirmInstanceCreation();
         return instanceName;
-    }
-
-    public void clickViewMoreImages() {
-        $("#link-more-images").click();
     }
 }

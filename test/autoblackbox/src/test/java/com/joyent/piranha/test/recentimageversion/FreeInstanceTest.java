@@ -108,6 +108,7 @@ public class FreeInstanceTest extends TestWrapper {
     public void openComputePage() {
         sideBarMenu.clickCompute();
         dataset = concatNameAndVersion(":");
+        System.out.print(instance.getImageName() + " " + instance.getVersion());
     }
 
     @Test
@@ -130,10 +131,14 @@ public class FreeInstanceTest extends TestWrapper {
 //    check data from sdc
         sideBarMenu.clickCompute();
         instanceDetails = instances.getInstanceList().openFirstInstanceDetails();
-        instanceDetails.getInstanceId();
-        JSONObject machineInfo = Common.getMachineInfo(instanceDetails.getInstanceId());
+        String instanceId = instanceDetails.getInstanceId();
+        JSONObject machineInfo = Common.getMachineInfo(instanceId);
         assertTrue(machineInfo.get("image").equals(instanceDetails.getImageUUID()));
-        assertTrue(machineInfo.get("dataset").toString().contains(dataset));
+
+        if(machineInfo.get("dataset").toString().contains("[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}")){
+            dataset = instanceId;
+        }
+        assertTrue(dataset.contains(this.dataset));
 
 //    verify Motd data
         sideBarMenu.clickCompute();
@@ -188,12 +193,9 @@ public class FreeInstanceTest extends TestWrapper {
 
     private void waitForCondition(final String condition) {
         Wait<WebDriver> wait = new WebDriverWait(WebDriverRunner.getWebDriver(), 30);
-        wait.until(new ExpectedCondition<Boolean>() {
-            @Override
-            public Boolean apply(WebDriver input) {
-                final SelenideElement row = $(ROW_SELECTOR);
-                return row.text().contains(condition);
-            }
+        wait.until(input -> {
+            final SelenideElement row = $(ROW_SELECTOR);
+            return row.text().contains(condition);
         });
     }
 }

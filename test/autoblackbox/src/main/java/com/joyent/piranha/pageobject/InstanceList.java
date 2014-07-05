@@ -70,7 +70,11 @@ public class InstanceList extends AbstractPageObject {
     }
 
     public void deleteInstance(String instance) {
-        getRowByText("object in pagedItems", instance).$("label.checkbox").click();
+        SelenideElement rowByText = getRowByText("object in pagedItems", instance);
+        rowByText.waitUntil(visible, baseTimeout);
+        while (!$("#grid-instances span.checked").exists()) {
+            rowByText.$("label.checkbox").click();
+        }
         performAction("Delete");
         clickButtonInModal("Yes");
         waitForSmallSpinnerDisappear();

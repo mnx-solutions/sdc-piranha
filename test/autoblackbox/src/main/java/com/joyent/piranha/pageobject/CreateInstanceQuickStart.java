@@ -2,8 +2,13 @@ package com.joyent.piranha.pageobject;
 
 import com.codeborne.selenide.Condition;
 import com.codeborne.selenide.SelenideElement;
+import com.codeborne.selenide.WebDriverRunner;
 import org.apache.commons.lang3.text.WordUtils;
 import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.interactions.HasInputDevices;
+import org.openqa.selenium.interactions.Mouse;
+import sun.plugin2.message.JavaScriptBaseMessage;
 
 import static com.codeborne.selenide.Selectors.byText;
 import static com.codeborne.selenide.Selenide.$;
@@ -28,10 +33,16 @@ public class CreateInstanceQuickStart extends AbstractPageObject implements Crea
         return page(CreateInstanceManual.class);
     }
 
+    @Override
     public void selectDataCenter(String datacenter) {
         waitForMediumSpinnerDisappear();
-        $(".dropdown-toggle.datacenter-select").click();
-        $("ul.dd-datacenter").$(byText(datacenter)).click();
+        SelenideElement select = $("#s2id_selectDatacenter");
+        select.waitUntil(Condition.visible, baseTimeout);
+        JavascriptExecutor js = (JavascriptExecutor) WebDriverRunner.getWebDriver();
+        while (!$(By.xpath("//ul/li[contains(.,'" + datacenter + "')]")).isDisplayed()) {
+            js.executeScript("$('#s2id_selectDatacenter a').mousedown()");
+        }
+        js.executeScript("$('ul div:contains(" + datacenter + ")').mouseup()");
     }
 
     public Instances clickLaunchButton(String tierName) {
