@@ -459,10 +459,10 @@
                 $q.when(Machine.machine()),
                 $q.when(rule.rule()),
                 $q.when(Datacenter.datacenter())
-            ]).then(function(lists){
-                $scope.machines = lists[0];
-                $scope.setRules(lists[1]);
-                $scope.datacenters = lists[2];
+            ]).then(function (results) {
+                $scope.machines = results[0];
+                $scope.setRules(results[1]);
+                $scope.datacenters = results[2];
                 $scope.$watch('machines.final', function(isFinal) {
                     if (isFinal) {
                         extractVmInfo($scope.machines);

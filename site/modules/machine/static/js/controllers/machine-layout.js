@@ -3,15 +3,22 @@
 (function (app) {
     app.controller(
             'machine.LayoutController',
-            ['$scope', 'Image', 'requestContext', 'localization',
-                function ($scope, Image, requestContext, localization) {
+            ['$scope', 'Image', 'requestContext', 'localization', 'PopupDialog',
+                function ($scope, Image, requestContext, localization, PopupDialog) {
                     requestContext.setUpRenderContext('machine', $scope,
                         {
                             title: localization.translate(null, 'machine', 'Instances')
                         }
                     );
+                    Image.listImages().then(function (data) {
+                        $scope.images = data;
+                        $scope.loading = false;
+                    }, function (err) {
+                        PopupDialog.errorObj(err);
+                        $scope.images = [];
+                        $scope.loading = false;
+                    });
 
-                    $scope.images = Image.image(true);
                 }
             ]);
 }(window.JP.getModule('Machine')));

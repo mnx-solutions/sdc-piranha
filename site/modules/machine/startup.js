@@ -144,13 +144,17 @@ module.exports = function execute(scope) {
             var datacenterList = [];
             var keys = Object.keys(datacenters);
             var count = keys.length;
+            if (machine.isAuthorizationError(call, count)) {
+                return;
+            }
+
             if (count === 0 && call.req.session.subId) {
                 var error = new Error();
                 error.statusCode = 403;
                 error.name = 'NotAuthorizedError';
                 error.restCode = 'NotAuthorized';
                 error.message = 'You do not have permission to access /my/datacenters (listdatacenters)';
-                call.done(!err && call.req.session.subId ? error : err);
+                call.error(err);
                 return;
             }
 

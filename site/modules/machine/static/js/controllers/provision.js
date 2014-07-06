@@ -533,7 +533,7 @@
                 }
 
                 if ($scope.preSelectedImageId) {
-                    $scope.preSelectedImage = Image.image($scope.preSelectedImageId);
+                    $scope.preSelectedImage = Image.getImage($scope.preSelectedImageId);
                     $q.when($scope.preSelectedImage).then(function (image) {
                         var datacenter = null;
                         if (externalInstanceParams) {

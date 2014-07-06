@@ -143,7 +143,7 @@
 
                         function handleResponse(chunk) {
                             if(chunk.status === 'error') {
-                                if(authorizationErrorDisable && (!chunk.error || chunk.error.restCode !== 'NotAuthorized')) {
+                                if (authorizationErrorDisable && (!chunk.error || chunk.error.restCode !== 'NotAuthorized')) {
                                     PopupDialog.error(
                                         localization.translate(
                                             null,
