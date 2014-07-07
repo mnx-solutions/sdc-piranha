@@ -28,7 +28,7 @@
                         }
                         var sshKeyModalCtrl = function ($scope, dialog) {
                             if (subUser) {
-                                $scope.message = 'User\'s private key will begin downloading when you click "Create Key". The public half of the key will be added to user\'s Joyent Cloud account. Keep private key file safe.\' and \'SSH key successfully added to user\'s account. You will be prompted for private key download shortly.';
+                                $scope.message = 'User\'s private key will begin downloading when you click "Create Key". The public half of the key will be added to user\'s Joyent Cloud account.';
                             }
                             $scope.keyName = '';
 
@@ -68,6 +68,12 @@
                                                 $rootScope.sshKeyName = data.name;
 
                                                 var keyAdded = function () {
+                                                    var message = 'SSH key successfully added to your account.';
+
+                                                    if (subUser) {
+                                                        message = 'SSH key successfully added to user\'s account. You will be prompted for private key download shortly. Please keep your private key safe.';
+                                                    }
+
                                                     PopupDialog.message(
                                                         localization.translate(
                                                             $scope,
@@ -77,7 +83,7 @@
                                                         localization.translate(
                                                             $scope,
                                                             null,
-                                                            'SSH key successfully added to your account.'
+                                                            message
                                                         )
                                                     );
                                                 };
