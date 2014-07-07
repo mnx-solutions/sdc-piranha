@@ -19,13 +19,23 @@
 
             var currentImageId = requestContext.getParam('currentImage');
 
-            $scope.$watch('images.final', function (isFinal) {
-                if (isFinal) {
+            var loadListImages = function (force) {
+                Image.listImages(force).then(function (data) {
+                    $scope.images = data;
+                    $scope.loading = false;
+
                     $scope.currentImage = $scope.images.find(function (image) {
                         return image.id === currentImageId;
                     });
-                }
-            });
+
+                }, function (err) {
+                    PopupDialog.errorObj(err);
+                    $scope.images = [];
+                    $scope.loading = false;
+                });
+            };
+
+            loadListImages();
 
             $scope.machines = Machine.machine();
             $scope.$watch('machines.final', function (isFinal) {
@@ -53,12 +63,7 @@
                 ignore: 'all'
             };
 
-            $scope.$on(
-                'event:forceUpdate',
-                function () {
-                    $scope.images = Image.image(true);
-                }
-            );
+            $scope.$on('event:forceUpdate', loadListImages.bind($scope, true));
 
             $scope.deleteImage = function () {
                 PopupDialog.confirm(

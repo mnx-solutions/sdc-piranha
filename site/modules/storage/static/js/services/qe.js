@@ -44,6 +44,63 @@
                 }, $q.when(initial));
             };
 
+            /**
+             * @ngdoc method
+             * @name $qe#every
+             * @function
+             *
+             * @description
+             * Combines multiple promises into a single promise that is resolved when all of the input
+             * promises are resolved or rejected.
+             *
+             * @param {Array.<Promise>|Object.<Promise>} promises An array or hash of promises.
+             * @returns {Promise} Returns a single promise that will be resolved with an array/hash of values,
+             *   each value corresponding to the promise at the same index/key in the `promises` array/hash.
+             *   If any of the promises is resolved with a rejection, this resulting promise collected as resolved
+             *   with the {error: rejection} value.
+             */
+            $q.every = function (promises) {
+                var deferred = $q.defer();
+
+                var counter = 0;
+                var results = angular.isArray(promises) ? [] : {};
+
+                promises.forEach(function (promise, key) {
+                    counter++;
+                    ref(promise).then(function (value) {
+                        if (results.hasOwnProperty(key)) return;
+                        results[key] = value;
+                        if (!(--counter)) deferred.resolve(results);
+                    }, function (reason) {
+                        if (results.hasOwnProperty(key)) return;
+                        results[key] = {error: reason};
+                        if (!(--counter)) deferred.resolve(results);
+                    });
+                });
+
+                if (counter === 0) {
+                    deferred.resolve(results);
+                }
+                return deferred.promise;
+            };
+
+            var ref = function (value) {
+              if (value && angular.isFunction(value.then)) return value;
+              return {
+                then: function(callback) {
+                  var result = $q.defer();
+                  nextTick(function() {
+                    result.resolve(callback(value));
+                  });
+                  return result.promise;
+                }
+              };
+            };
+
+            var nextTick = function (callback) {
+                $rootScope.$evalAsync(callback);
+            };
+
             var _eachLimit = function (limit) {
                 return function (arr, iterator, callback) {
                     callback = callback || function () {};

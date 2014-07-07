@@ -32,7 +32,14 @@
             $scope.gotoCreatePage = Machine.gotoCreatePage;
 
             if ($scope.features.freetier === 'enabled') {
-                $scope.freetier = FreeTier.freetier();
+                FreeTier.freetier().then(function (data) {
+                    $scope.freetier = data;
+                }, function (err) {
+                    PopupDialog.errorObj(err, function () {
+                        $location.url('/compute/create/simple');
+                        $location.replace();
+                    });
+                });
             }
 
             $scope.$on(
@@ -61,6 +68,9 @@
                                     $scope.datasetsInfo[machine.image] = 'Image gone';
                                 }
                                 $scope.loading = false;
+                            }, function (err) {
+                                $scope.loading = false;
+                                PopupDialog.errorObj(err);
                             });
                         });
 

@@ -133,32 +133,31 @@
             return job.deferred;
         };
 
-        service.updateMachines = function () {
+        service.updateMachines = function (authorizationErrorDisable) {
             if (!machines.job || machines.job.finished) {
                 machines.list.final = false;
                 machines.job = serverTab.call({
                     name: 'MachineList',
                     progress: function (err, job) {
-
                         var data = job.__read();
 
                         function handleResponse(chunk) {
                             if(chunk.status === 'error') {
-
-                                PopupDialog.error(
-                                    localization.translate(
-                                        null,
-                                        null,
-                                        'Error'
-                                    ),
-                                    localization.translate(
-                                        null,
-                                        'machine',
-                                        'Unable to retrieve instances from datacenter {{name}}.',
-                                        { name: chunk.name }
-                                    ),
-                                    function () {}
-                                );
+                                if (authorizationErrorDisable && (!chunk.error || chunk.error.restCode !== 'NotAuthorized')) {
+                                    PopupDialog.error(
+                                        localization.translate(
+                                            null,
+                                            null,
+                                            'Error'
+                                        ), chunk.error && chunk.error.restCode === 'NotAuthorized' ? chunk.error.message :
+                                            localization.translate(
+                                                null,
+                                                'machine',
+                                                'Unable to retrieve instances from datacenter {{name}}.',
+                                                { name: chunk.name }
+                                            )
+                                    );
+                                }
                                 return;
                             }
 
@@ -175,7 +174,6 @@
                     },
 
                     done: function(err) {
-
                         Object.keys(machines.search).forEach(function (id) {
                             if (!machines.index[id] && machines.search[id]) {
                                 machines.search[id].forEach(function (r) {
@@ -268,7 +266,7 @@
 
         if (!machines.job) {
             // run updateMachines
-            service.updateMachines();
+            service.updateMachines(false);
         }
 
         function changeState(opts) {
@@ -575,7 +573,7 @@
                             PopupDialog.error(
                                 localization.translate(null, null, 'Error'),
                                 localization.translate(null, 'machine',
-                                    'Unable to save ' + collectionName + '.'
+                                        err.restCode === 'NotAuthorized' ? err.message : 'Unable to save ' + collectionName + '.'
                                 )
                             );
                         });

@@ -19,19 +19,20 @@
             });
 
             $scope.loading = true;
-
-            $scope.$watch('images.final', function (isFinal) {
-                if (isFinal) {
+            var loadListImages = function (force) {
+                Image.listImages(force).then(function (data) {
+                    $scope.images = data;
                     $scope.loading = false;
-                }
-            });
+                }, function (err) {
+                    PopupDialog.errorObj(err);
+                    $scope.images = [];
+                    $scope.loading = false;
+                });
+            };
 
-            $scope.$on(
-                'event:forceUpdate',
-                function () {
-                    $scope.images = Image.image(true);
-                }
-            );
+            loadListImages();
+
+            $scope.$on('event:forceUpdate', loadListImages.bind($scope, true));
 
             $scope.clickDelete = function (image) {
                 PopupDialog.confirm(

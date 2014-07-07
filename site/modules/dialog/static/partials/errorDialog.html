@@ -3,7 +3,7 @@
         <h5><i class="glyphicon glyphicon-warning-sign"></i><b>{{ title }}</b></h5>
     </div>
     <div class="modal-body">
-        <p data-ng-bind-html="message"></p>
+        <p data-ng-bind-html="message.concatenated"></p>
     </div>
     <div class="modal-footer">
         <button ng-repeat="btn in buttons" data-button-focus="{{ btn.setFocus }}" ng-click="close(btn.result)" class="btn orange" ng-class="btn.cssClass">{{ btn.label }}</button>

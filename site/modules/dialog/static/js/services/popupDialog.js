@@ -5,19 +5,32 @@
     app.factory('PopupDialog', ["$dialog", "$location", "$rootScope", function ($dialog, $location, $rootScope) {
 
         var factory = {};
-
+        var dialog;
+        var messages = {parts: [], concatenated: ''};
         var messageBox = function (title, question, btns, templateUrl, callbackOk, callbackCancel) {
             callbackOk = callbackOk || angular.noop;
             callbackCancel = callbackCancel || angular.noop;
-            return $dialog.messageBox(title, question.error || question, btns, templateUrl)
+            var isNew = messages.parts.length === 0;
+            var message = question.error || question;
+            if (messages.parts.indexOf(message) === -1) {
+                messages.parts.push(message);
+                messages.concatenated = messages.parts.join('<br/>');
+            }
+
+            if (!dialog || isNew) {
+                dialog =  $dialog.messageBox(title, messages, btns, templateUrl)
                     .open()
                     .then(function (result) {
                         if (result === 'ok') {
+                            messages.parts = [];
                             callbackOk();
                         } else {
+                            messages.parts = [];
                             callbackCancel();
                         }
                     });
+                return dialog;
+            }
         };
 
         factory.confirm = function (title, question, callbackOk, callbackCancel) {

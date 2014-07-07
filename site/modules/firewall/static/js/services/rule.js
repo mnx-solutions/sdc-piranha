@@ -288,7 +288,7 @@
                                             null,
                                             null,
                                             'Error'
-                                        ),
+                                        ), chunk.error && chunk.error.restCode === 'NotAuthorized' ? chunk.error.message :
                                         localization.translate(
                                             null,
                                             'rule',
@@ -315,7 +315,7 @@
                         },
 
                         done: function(err, job) {
-                            rules.list.final = true;
+                            rules.list.final = !err;
                         }
                     });
                 }

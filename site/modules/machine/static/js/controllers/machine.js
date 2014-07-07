@@ -80,7 +80,14 @@
             };
 
             if ($scope.features.freetier === 'enabled') {
-                $scope.freetier = FreeTier.freetier();
+                $scope.freetier = FreeTier.freetier().then(function(data) {
+                    $scope.freetier = data;
+                }, function (err) {
+                    PopupDialog.errorObj(err, function () {
+                        $location.url('/compute/create/simple');
+                        $location.replace();
+                    });
+                });
             }
 
             $scope.instanceMetadataEnabled = $scope.features.instanceMetadata === 'enabled';

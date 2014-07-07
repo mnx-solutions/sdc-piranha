@@ -2,16 +2,17 @@
 
 (function (ng, app) {
     app.factory('Image', [
+        '$q',
         'serverTab',
         'localization',
         'PopupDialog',
         'errorContext',
         'Dataset',
-        function (serverTab, localization, PopupDialog, errorContext,
-            Dataset) {
+        function ($q, serverTab, localization, PopupDialog, errorContext, Dataset) {
 
             var service = {};
-            var images = {index: {}, job: {}, list: [], search: {}};
+            var promiseById;
+            var images = {index: {}, job: {pending: false}, list: [], error: undefined, search: {}};
 
             function handleChunk (image) {
                 var old = null;
@@ -36,106 +37,110 @@
                 }
             }
 
-            service.updateImages = function (force, showPublic) {
+            service.listImages = function (force, showPublic) {
                 if (!showPublic) {
                     showPublic = false;
                 }
+                var deferred = $q.defer();
+                if (!images.job || !images.job.pending) {
+                    images.job = {};
+                    images.job.deferred = deferred;
+                    images.job.pending = true;
+                } else {
+                    images.job.deferred.promise.then(deferred.resolve, deferred.reject);
+                    return deferred.promise;
+                }
+                if (!force && images.list.final && !images.error) {
+                    deferred.resolve(images.list);
+                    return deferred.promise;
+                }
+                images = {index: {}, job: {pending: false}, list: [], error: undefined, search: {}};
+                serverTab.call({
+                    name: 'ImagesList',
+                    error: function (err) {
+                        images.job.pending = false;
+                        deferred.reject(err);
+                    },
+                    progress: function imagesProgress(err, job) {
 
-                if (!images.list.final || force) {
-                    images.job = serverTab.call({
-                        name: 'ImagesList',
-                        progress: function imagesProgress(err, job) {
+                        var data = job.__read();
 
-                            var data = job.__read();
+                        function handleChunk(image) {
 
-                            function handleChunk(image) {
-
-                                if (!showPublic && image.public !== false) {
-                                    return;
-                                }
-
-                                if (!images.index[image.id]) {
-                                    if (!image.actionButtons) {
-                                        image.actionButtons = true;
-                                    }
-                                    images.index[image.id] = image;
-                                    images.list.push(image);
-                                }
+                            if (!showPublic && image.public !== false) {
+                                return;
                             }
 
-                            function handleResponse(chunk) {
-                                if (chunk.status === 'error') {
+                            if (!images.index[image.id]) {
+                                if (!image.actionButtons) {
+                                    image.actionButtons = true;
+                                }
+                                images.index[image.id] = image;
+                                images.list.push(image);
+                            }
+                        }
 
-                                    PopupDialog.error(
-                                        localization.translate(
-                                            null,
-                                            null,
-                                            'Error'
-                                        ),
+                        function handleResponse(chunk) {
+                            if (chunk.status === 'error') {
+                                images.error = chunk.error;
+                                PopupDialog.error(
+                                    localization.translate(
+                                        null,
+                                        null,
+                                        'Error'
+                                    ), chunk.error && chunk.error.restCode === 'NotAuthorized' ? chunk.error.message :
                                         localization.translate(
                                             null,
                                             'machine',
                                             'Unable to retrieve images from datacenter {{name}}.',
                                             { name: chunk.name }
                                         )
-                                    );
-                                    return;
-                                }
-
-                                if (chunk.images) {
-                                    chunk.images.forEach(handleChunk);
-                                }
-                            }
-
-                            if (ng.isArray(data)) {
-                                data.forEach(handleResponse);
-                            } else {
-                                handleResponse(data);
-                            }
-                        },
-                        done: function (err) {
-                            if (err) {
-                                errorContext.emit(new Error(localization.translate(null,
-                                    'machine',
-                                    'Unable to retrieve images list'
-                                )));
+                                );
                                 return;
                             }
 
+                            if (chunk.images) {
+                                chunk.images.forEach(handleChunk);
+                            }
+                        }
+
+                        if (ng.isArray(data)) {
+                            data.forEach(handleResponse);
+                        } else {
+                            handleResponse(data);
+                        }
+                    },
+                    done: function (err) {
+                        images.job.pending = false;
+                        if (err) {
+                            deferred.reject(err);
+                        } else {
+                            deferred.resolve(images.list);
                             images.list.final = true;
                         }
-                    });
-                }
+                    }
+                });
 
-                return images.job;
+                return deferred.promise;
             };
 
+            service.getImage = function (id) {
+                var deferred = $q.defer();
+                service.listImages().then(function (images) {
+                    var imageById = images.find(function (image) {
+                        return image.id === id;
+                    });
+                    if (!imageById) {
+                        var err = new Error();
+                        err.message = 'No image found';
+                        deferred.reject(err);
+                    } else {
+                        deferred.resolve(imageById);
+                    }
 
-            service.image = function (id) {
-                if (id === true || (!id && !images.job)) {
-                    service.updateImages();
-                    return images.list;
-                }
-
-                if (!id) {
-                    return images.list;
-                }
-
-                if (!images.index[id]) {
-                    service.updateImages();
-                }
-
-//                if (!images.index[id] || (images.job && !images.job.finished)) {
-//                    var ret = $q.defer();
-//                    if (!machines.search[id]) {
-//                        machines.search[id] = [];
-//                    }
-//                    machines.search[id].push(ret);
-//
-//                    return ret.promise;
-//                }
-
-                return images.index[id];
+                }, function (err) {
+                    deferred.reject(err);
+                });
             };
 
 

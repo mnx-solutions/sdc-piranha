@@ -10,7 +10,7 @@
         function (serverTab, $q, localization, PopupDialog, errorContext) {
 
         var service = {};
-        var packages = { job: {}, index: {}, nameIndex: {}, list: {}, search: {}};
+        var packages = { job: {}, index: {}, nameIndex: {}, list: {}, error: {}, search: {}};
 
         service.updatePackages = function (datacenter) {
             datacenter = datacenter || 'all';
@@ -21,78 +21,93 @@
                 packages.search[datacenter] = {};
             }
 
-            if (!packages.job[datacenter]) {
-                packages.list[datacenter].final = false;
-                packages.job[datacenter] = serverTab.call({
-                    name:'PackageList',
-                    data: { datacenter: datacenter === 'all' ? null : datacenter },
-                    done: function(err, job) {
-                        if (err) {
-                            // Ignore authorization error for sub-user
-                            if (err.restCode !== 'NotAuthorized') {
-                                PopupDialog.error(
-                                    localization.translate(
-                                        null,
-                                        null,
-                                        'Error'
-                                    ),
-                                    localization.translate(
-                                        null,
-                                        'machine',
-                                        'Unable to retrieve packages from datacenter {{name}}.',
-                                        { name: datacenter }
-                                    ),
-                                    function () {
-                                    }
-                                );
-                            }
-
-                            //packages.job[datacenter].deferred.reject(err);
-                            Object.keys(packages.search[datacenter]).forEach(function (job) {
-                                job.reject(err);
-                            });
-                            packages.list[datacenter].final = true;
-                            return;
-                        }
-
-                        var result = job.__read();
-                        result.forEach(function (p) {
-                            var old = null;
-
-                            if (packages.index[datacenter][p.id]) {
-                                old = packages.list.indexOf(packages.index[datacenter][p.id]);
-                            }
-
-                            packages.index[datacenter][p.id] = p;
-
-                            if (packages.search[datacenter][p.id]) {
-                                packages.search[datacenter][p.id].forEach(function (r) {
-                                    r.resolve(p);
-                                });
-                                delete packages.search[datacenter][p.id];
-                            }
-
-                            packages.nameIndex[datacenter][p.name] = p;
-                            if (packages.search[datacenter][p.name]) {
-                                packages.search[datacenter][p.name].forEach(function (r) {
-                                    r.resolve(p);
-                                });
-                                delete packages.search[datacenter][p.name];
-                            }
-
-                            if (old !== null) {
-                                packages.list[datacenter][old] = p;
-                            } else {
-                                packages.list[datacenter].push(p);
-                            }
-                        });
-
-                        packages.list[datacenter].final = packages.list.final = true;
-                    }
-                });
+            var deferred = $q.defer();
+            if (!packages.job[datacenter] || !packages.job[datacenter].pending) {
+                packages.job[datacenter] = {};
+                packages.job[datacenter].deferred = deferred;
+                packages.job[datacenter].pending = true;
+            } else {
+                packages.job[datacenter].deferred.promise.then(deferred.resolve, deferred.reject);
+                return deferred.promise;
             }
 
-            return packages.job[datacenter];
+            if (packages.job[datacenter].final && !packages.job[datacenter].error) {
+                deferred.resolve(packages.list[datacenter]);
+                return deferred.promise;
+            }
+
+
+            packages.list[datacenter].final = false;
+            serverTab.call({
+                name:'PackageList',
+                data: { datacenter: datacenter === 'all' ? null : datacenter },
+                error: function (err) {
+                    packages.job[datacenter].pending = false;
+                    deferred.reject(err);
+                },
+                done: function (err, job) {
+                    if (err) {
+                        PopupDialog.error(
+                            localization.translate(
+                                null,
+                                null,
+                                'Error'
+                            ),
+                            localization.translate(
+                                null,
+                                'machine',
+                                'Unable to retrieve packages from datacenter {{name}}.',
+                                { name: datacenter }
+                            )
+                        );
+
+                        Object.keys(packages.search[datacenter]).forEach(function (job) {
+                            job.reject(err);
+                        });
+                        packages.job[datacenter].pending = false;
+                        deferred.reject(err);
+                        packages.list[datacenter].final = true;
+                        return;
+                    }
+
+                    var result = job.__read();
+                    result.forEach(function (p) {
+                        var old = null;
+
+                        if (packages.index[datacenter][p.id]) {
+                            old = packages.list.indexOf(packages.index[datacenter][p.id]);
+                        }
+
+                        packages.index[datacenter][p.id] = p;
+
+                        if (packages.search[datacenter][p.id]) {
+                            packages.search[datacenter][p.id].forEach(function (r) {
+                                r.resolve(p);
+                            });
+                            delete packages.search[datacenter][p.id];
+                        }
+
+                        packages.nameIndex[datacenter][p.name] = p;
+                        if (packages.search[datacenter][p.name]) {
+                            packages.search[datacenter][p.name].forEach(function (r) {
+                                r.resolve(p);
+                            });
+                            delete packages.search[datacenter][p.name];
+                        }
+
+                        if (old !== null) {
+                            packages.list[datacenter][old] = p;
+                        } else {
+                            packages.list[datacenter].push(p);
+                        }
+                    });
+
+                    packages.list[datacenter].final = packages.list.final = true;
+                    deferred.resolve(packages.list[datacenter]);
+                }
+            });
+
+            return deferred.promise;
         };
 
         service.package = function (params) {
@@ -106,16 +121,19 @@
             }
 
             if (params.id === true || (!params.id && !packages.job[params.datacenter])) {
-                var job = service.updatePackages(params.datacenter);
-                return job.deferred;
+                return service.updatePackages(params.datacenter);
             }
 
             var ret = $q.defer();
             if (!params.id) {
                 if (packages.list[params.datacenter].final) {
-                    ret.resolve(packages.list[params.datacenter]);
+                    if (packages.error[params.datacenter]) {
+                        ret.reject(packages.error[params.datacenter]);
+                    } else {
+                        ret.resolve(packages.list[params.datacenter]);
+                    }
                 } else {
-                    packages.job[params.datacenter].deferred.then(function (value) {
+                    packages.job[params.datacenter].deferred.promise.then(function (value) {
                         ret.resolve(value);
                     }, function (value) {
                         ret.reject(value);
@@ -172,10 +190,7 @@
 
             return deferred.promise;
         };
-
-        // run updatePackages
         service.updatePackages();
-
         return service;
     }]);
 }(window.JP.getModule('Machine')));

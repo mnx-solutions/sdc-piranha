@@ -15,6 +15,7 @@
         '$location',
         'localization',
         '$q',
+        '$qe',
         '$$track',
         'PopupDialog',
         '$cookies',
@@ -26,7 +27,7 @@
         'Limits',
         'errorContext',
 
-        function ($scope, $filter, requestContext, $timeout, Machine, Dataset, Datacenter, Package, Account, Network, Image, $location, localization, $q, $$track, PopupDialog, $cookies, $rootScope, FreeTier, $compile, loggingService, util, Limits, errorContext) {
+        function ($scope, $filter, requestContext, $timeout, Machine, Dataset, Datacenter, Package, Account, Network, Image, $location, localization, $q, $qe, $$track, PopupDialog, $cookies, $rootScope, FreeTier, $compile, loggingService, util, Limits, errorContext) {
             localization.bind('machine', $scope);
             requestContext.setUpRenderContext('machine.provision', $scope, {
                 title: localization.translate(null, 'machine', 'Create Instances on Joyent')
@@ -37,7 +38,6 @@
             var REVIEW_STEP_NAME = 'Review';
             var ACCOUNT_STEP_NAME = 'Account Information';
             var SSH_STEP_NAME = 'SSH Key';
-
             $scope.setCreateInstancePage = Machine.setCreateInstancePage;
             $scope.provisionSteps = [
                 {
@@ -180,6 +180,8 @@
                             return dcNetwork.id === selectedNetwork;
                         });
                     }));
+                }, function (err) {
+                    PopupDialog.errorObj(err);
                 });
             };
 
@@ -241,7 +243,14 @@
                             var newMachine = job.__read();
                             if ($scope.features.freetier === 'enabled') {
                                 // TODO It seems like an extra call because we already have $scope.freetierOptions. Need to get rid of extra calls
-                                $scope.freetier = FreeTier.freetier();
+                                FreeTier.freetier().then(function (data) {
+                                    $scope.freetier = data;
+                                }, function (err) {
+                                    PopupDialog.errorObj(err, function () {
+                                        $location.url('/compute');
+                                        $location.replace();
+                                    });
+                                });
                             }
                             $q.when(Machine.machine(), function (listMachines) {
                                 if (newMachine.id) {
@@ -470,14 +479,36 @@
             tasks.push($q.when($scope.isProvisioningLimitsEnable ? getUserLimits(): []));
             tasks.push($q.when($scope.features.freetier === 'enabled' ? FreeTier.freetier(): []));
 
-            $q.all(tasks).then(function (result) {
+            $qe.every(tasks).then(function (result) {
                 $scope.simpleImages = [];
                 $scope.datasetsInfo = [];
+                $scope.keys = [];
+                $scope.datacenters = [];
+                var simpleImages = [];
+                var networks = [];
+                var keysResult = result[0];
+                var datacentersResult = result[1];
+                var simpleImagesResult = result[2];
+                var machinesResult = result[3];
+                var limitsResult = result[4];
+                var freeTierOptionsResult = result[5];
+                if (keysResult.error) {
+                    PopupDialog.errorObj(keysResult.error);
+                } else {
+                    $scope.keys = keysResult;
+                }
+                if (datacentersResult.error) {
+                    PopupDialog.errorObj(datacentersResult.error);
+                } else {
+                    $scope.datacenters = datacentersResult;
+                }
+                if (simpleImagesResult.error) {
+                    PopupDialog.errorObj(simpleImagesResult.error);
+                } else {
+                    simpleImages = simpleImagesResult.images;
+                    networks = simpleImagesResult.networks;
+                }
 
-                $scope.keys = result[0];
-                $scope.datacenters = result[1];
-                var simpleImages = result[2].images;
-                var networks = result[2].networks;
                 if ($scope.keys.length <= 0) {
                     addProvisionStep({
                         name: SSH_STEP_NAME,
@@ -485,7 +516,12 @@
                     });
                 }
                 if ($scope.isProvisioningLimitsEnable) {
-                    $scope.machines = result[3];
+                    $scope.machines = [];
+                    if (machinesResult.error) {
+                        PopupDialog.errorObj(machinesResult.error);
+                    } else {
+                        $scope.machines = machinesResult;
+                    }
                     $scope.machines.forEach(function (machine) {
                         Dataset.dataset(machine.image).then(function (dataset) {
                             $scope.limits.forEach(function (limit) {
@@ -499,11 +535,21 @@
                     });
                 }
                 if($scope.isProvisioningLimitsEnable) {
-                    $scope.limits = result[4] || [];
+                    $scope.limits = [];
+                    if (limitsResult.error) {
+                        PopupDialog.errorObj(limitsResult.error);
+                    } else {
+                        $scope.limits = limitsResult;
+                    }
 
                 }
                 if ($scope.features.freetier === 'enabled') {
-                    $scope.freeTierOptions = result[5];
+                    $scope.freeTierOptions = [];
+                    if (freeTierOptionsResult.error) {
+                        PopupDialog.errorObj(freeTierOptionsResult.error);
+                    } else {
+                        $scope.freeTierOptions = freeTierOptionsResult;
+                    }
                     if ($scope.freeTierOptions.valid) {
                         setupSimpleImages($scope.freeTierOptions, networks, true);
                     }
@@ -527,7 +573,7 @@
                 }
 
                 if ($scope.preSelectedImageId) {
-                    $scope.preSelectedImage = Image.image($scope.preSelectedImageId);
+                    $scope.preSelectedImage = Image.getImage($scope.preSelectedImageId);
                     $q.when($scope.preSelectedImage).then(function (image) {
                         var datacenter = null;
                         if (externalInstanceParams) {
@@ -585,10 +631,7 @@
                 $scope.loading = provisionBundle && provisionBundle.manualCreate === false && provisionBundle.allowCreate === true;
             }, function (err) {
                 $scope.loading = false;
-                if (err.restCode !== 'NotAuthorized') {
-                    PopupDialog.errorObj(err);
-                }
-
+                PopupDialog.errorObj(err);
             });
 
             $scope.$on('creditCardUpdate', function () {
@@ -654,7 +697,7 @@
 
                 if (!$scope.data.datacenter) {
                     Datacenter.datacenter().then(function (datacenters) {
-                        var keys = Object.keys(datacenters);
+                        var keys = Object.keys(datacenters || {});
                         if (keys.length > 0) {
                             $scope.data.datacenter = keys[0];
                             if (!$scope.account.provisionEnabled || $scope.keys.length <= 0) {
@@ -753,6 +796,8 @@
                         if ($scope.networks.length === 0) {
                             loggingService.log('warn', 'Networks are not loaded for datacenter: ' + datacenter);
                         }
+                    }, function (err) {
+                        PopupDialog.errorObj(err);
                     });
                 }
             }
@@ -1331,7 +1376,7 @@
                 });
             }
 
-            var switchToOtherDatacenter = function (datacenter) {
+            var switchToOtherDatacenter = function (datacenter, err) {
                 if ($scope.datacenters && $scope.datacenters.length > 0) {
                     var firstNonSelected = $scope.datacenters.find(function (dc) { return dc.name != datacenter; });
                     if (firstNonSelected) {
@@ -1340,7 +1385,7 @@
                                 null,
                                 null,
                                 'Error'
-                            ),
+                            ), err && err.restCode === 'NotAuthorized' ? err.message :
                             localization.translate(
                                 null,
                                 'machine',
@@ -1348,34 +1393,51 @@
                                 { name: datacenter }
                             )
                         );
-                        $scope.data.datacenter = firstNonSelected.name;
+                        if (!err) {
+                            $scope.data.datacenter = firstNonSelected.name;
+                        }
                     }
                 }
             };
 
             // Watch datacenter change
-            $scope.$watch('data.datacenter', function (newVal) {
-                if (newVal) {
+            $scope.$watch('data.datacenter', function (newVal, oldVal) {
+                if (newVal && newVal !== oldVal) {
                     $scope.reloading = true;
                     $scope.datasetsLoading = true;
                     setNetworks(newVal);
-                    $q.all([
+                    $qe.every([
                         $q.when(Dataset.dataset({ datacenter: newVal })),
                         $q.when(Package.package({ datacenter: newVal })),
                         $q.when(getCreatedMachines())
                     ]).then(function (result) {
-                        var datasets = result[0];
-                        var packages = result[1];
+                        var datasetsResult = result[0];
+                        var packagesResult = result[1];
+                        var packages;
+                        var datasets;
+                        if (datasetsResult.error) {
+                            PopupDialog.errorObj(datasetsResult.error);
+                            datasets = [];
+                        } else {
+                            datasets = datasetsResult;
+                        }
+                        if (packagesResult.error) {
+                            PopupDialog.errorObj(packagesResult.error);
+                            packages = [];
+                        } else {
+                            packages = packagesResult;
+                        }
                         processDatasets(datasets);
                         processPackages(newVal, packages);
-                        if (datasets.length === 0 && packages.length === 0) {
+                        if (!packagesResult.error && datasets.length === 0 && packages.length === 0) {
                             switchToOtherDatacenter(newVal);
                         }
                         if ($scope.isRecentInstancesEnabled) {
                             processRecentInstances(result[2], datasets);
                         }
-                    }, function () {
-                        switchToOtherDatacenter(newVal);
+                    }, function (err) {
+                        switchToOtherDatacenter(newVal, err);
+                        $scope.datasetsLoading = false;
                     });
                 }
                 $scope.reloading = false;

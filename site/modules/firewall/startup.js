@@ -202,53 +202,61 @@ var firewall = function execute (scope) {
     server.onCall('RuleList', function (call) {
         call.log.info('Handling rule list event');
 
-        var datacenters = call.cloud.listDatacenters();
-        var keys = Object.keys(datacenters);
-        var count = keys.length;
+        call.cloud.listDatacenters(function (err, datacenters) {
+            if (err) {
+                call.done(err);
+                return;
+            }
+            var keys = Object.keys(datacenters || {});
+            var count = keys.length;
+            keys.forEach(function (name) {
+                var cloud = call.cloud.separate(name);
+                call.log.debug('List rules for datacenter %s', name);
 
-        keys.forEach(function (name) {
-            var cloud = call.cloud.separate(name);
-            call.log.debug('List rules for datacenter %s', name);
+                cloud.listFwRules(function (err, rules) {
+                    if (err) {
+                        call.done(err);
+                        return;
+                    }
 
-            cloud.listFwRules(function (err, rules) {
-             
-                var response = {
-                    name: name,
-                    rules: []
-                };
+                    var response = {
+                        name: name,
+                        rules: []
+                    };
 
-                if (err) {
-                    call.log.error('List rules failed for datacenter %s, url %s; err.message: %s', name, datacenters[name], err.message, err);
-                    response.status = 'error';
-                    response.error = err;
-                } else {
-                    response.rules = [];
+                    if (err) {
+                        call.log.error('List rules failed for datacenter %s, url %s; err.message: %s', name, datacenters[name], err.message, err);
+                        response.status = 'error';
+                        response.error = err;
+                    } else {
+                        response.rules = [];
 
-                    // Serialize rules
-                    rules.forEach(function (rule) {
-                        rule.datacenter = name;
-                        rule.uuid = rule.id;
+                        // Serialize rules
+                        rules.forEach(function (rule) {
+                            rule.datacenter = name;
+                            rule.uuid = rule.id;
 
-                        try {
-                            rule.parsed = fwrule.parse(rule.rule);
-                        } catch(e) {
-                            call.log.error(rule.rule, 'Failed to parse fwrule');
-                            return;
-                        }
+                            try {
+                                rule.parsed = fwrule.parse(rule.rule);
+                            } catch (e) {
+                                call.log.error(rule.rule, 'Failed to parse fwrule');
+                                return;
+                            }
 
-                        response.rules.push(rule);
-                    });
+                            response.rules.push(rule);
+                        });
 
-                    call.log.debug('List rules succeeded for datacenter %s', name);
-                }
+                        call.log.debug('List rules succeeded for datacenter %s', name);
+                    }
 
-                call.update(null, response);
+                    call.update(null, response);
 
-                if (--count === 0) {
-                    call.done();
-                }
-            }, undefined, true);
-        });
+                    if (--count === 0) {
+                        call.done();
+                    }
+                }, undefined, true);
+            });
+        }, !!call.req.session.subId);
 
     });
 };

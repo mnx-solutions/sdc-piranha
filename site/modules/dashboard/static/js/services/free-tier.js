@@ -84,6 +84,10 @@
                     var packageRequests = datacenters.map(function (datacenter) {
                         return $q.when(Package.package({datacenter: datacenter}));
                     });
+                    if (packageRequests.length === 0) {
+                        deferred.resolve([]);
+                        return;
+                    }
                     packageRequests.forEach(function (packageRequest, datacenterIndex) {
                         $q.when(packageRequest).then(function (packages) {
                             freeTierOptionsResult.forEach(function (option) {
@@ -112,6 +116,8 @@
                             deferred.resolve([]);
                         });
                     });
+                }, function (err) {
+                    deferred.reject(err);
                 });
                 return deferred.promise;
             };

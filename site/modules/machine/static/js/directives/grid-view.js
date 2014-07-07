@@ -95,6 +95,9 @@
                     });
                     $scope.tabFilters.push('all');
                     loadCurrentTabFilter();
+                }, function () {
+                    $scope.tabFilters = [];
+                    loadCurrentTabFilter();
                 });
             } else {
                 $scope.tabFilters = ['all'];
