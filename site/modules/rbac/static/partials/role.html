@@ -79,26 +79,6 @@
                             </div>
                         </div>
                     </div>
-
-                    <div class="accordion-group" data-ng-show="roleUsers.length">
-                        <div class="accordion-heading">
-                            <a class="accordion-toggle toggle-icon" data-toggle="collapse" data-target="#collapse_dmembers">
-                                Default Members
-                            </a>
-                        </div>
-                        <div id="collapse_dmembers" class="accordion-body collapse in">
-                            <div class="accordion-inner">
-                                <multi-select id="memberSelect2"
-                                              data-items="roleUsers"
-                                              data-option-label="'login'"
-                                              data-selected-items="roleDefaultUsers"
-                                              data-notify-data-set-changed="selectedUsersChanged"
-                                              data-selection-header="Members"
-                                              data-selected-header="Default Members">
-                                </multi-select>
-                            </div>
-                        </div>
-                    </div>
                 </div>
             </div>
             <div class="pull-left span6" data-ng-hide="loading">

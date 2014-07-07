@@ -104,6 +104,7 @@
                             index = role.members.indexOf($scope.user.login);
                             if (index < 0) {
                                 role.members.push($scope.user.login);
+                                role.default_members.push($scope.user.login);
                                 updates.push($q.when(service.updateRole(role)));
                                 break;
                             }

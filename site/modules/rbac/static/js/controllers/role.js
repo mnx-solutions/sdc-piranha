@@ -19,11 +19,6 @@
             $scope.selectedUsersChanged = false;
             $scope.isFormSubmited = false;
 
-            //FIXME: Name starting with 'toggle' will better describe functionality
-            $scope.refreshDefaultUsers = function () {
-                $scope.selectedUsersChanged = !$scope.selectedUsersChanged;
-            };
-
             $scope.loading = true;
 
             var roleId = requestContext.getParam('id');
@@ -63,26 +58,15 @@
                         if (members.length) {
                             $scope.roleUsers.push(members[0]);
                         }
+                        $scope.roleDefaultUsers = $scope.roleUsers;
                     });
                     orderByLogin($scope.roleUsers);
-
-                    $scope.role.default_members.forEach(function (login) {
-                        var members = users.filter(function (user) {
-                            return user.login === login;
-                        });
-
-                        if (members.length) {
-                            $scope.roleDefaultUsers.push(members[0]);
-                        }
-                    });
-                    orderByLogin($scope.roleDefaultUsers);
 
                     users.forEach(function (user) {
                         user.value = user.login;
                     });
 
                     $scope.users = users;
-                    $scope.refreshDefaultUsers();
                     $scope.loading = false;
 
                 }, function (err) {
@@ -127,14 +111,8 @@
                 $scope.roleUsers.forEach(function (user) {
                     $scope.role.members.push(user.login);
                 });
+                $scope.role.default_members = $scope.role.members;
 
-                if (!$scope.roleUsers.length) {
-                    $scope.roleDefaultUsers = [];
-                }
-
-                $scope.roleDefaultUsers.forEach(function (user) {
-                    $scope.role.default_members.push(user.login);
-                });
                 $scope.policyGroups.forEach(function (group) {
                     group.values.forEach(function (policy) {
                         if (policy.checked) {
