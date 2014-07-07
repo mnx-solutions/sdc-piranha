@@ -8,14 +8,22 @@
 
             service.getDebugJobsList = function (callback) {
                 return serverTab.call({
-                    name: 'MdbDebugJobsList',
+                    name: 'MdbGetJobsList',
                     data: {},
                     done: callback
                 }).deferred;
             };
+
+            service.getJobFromList = function (jobId) {
+                return serverTab.call({
+                    name: 'MdbGetJobFromList',
+                    data: {jobId: jobId}
+                }).deferred;
+            };
+
             service.getDebugJob = function (jobId) {
                 return serverTab.call({
-                    name: 'getDebugJob',
+                    name: 'MdbGetJob',
                     data: {jobId: jobId}
                 }).deferred;
             };
@@ -29,11 +37,11 @@
             };
 
             service.cancel = function (jobId, callback) {
-                serverTab.call({
+                return serverTab.call({
                     name: 'MdbCancel',
                     data: {jobId: jobId},
                     done: callback
-                });
+                }).deferred;
             };
             return service;
         }
