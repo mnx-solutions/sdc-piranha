@@ -102,7 +102,7 @@
                                 localization.translate(
                                     $scope,
                                     null,
-                                    'Are you sure you want to delete the selected polic' + titleEnding
+                                    'Are you sure you want to delete the selected polic' + titleEnding + '?'
                                 ),
                                 function () {
                                     $scope.loading = true;
