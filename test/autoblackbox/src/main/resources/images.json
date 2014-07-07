@@ -1,38 +1,44 @@
 [
     {
-        "datacenter" : ["us-east-1", "us-sw-1", "us-west-1", "eu-ams-1"],
-        "imageName" : "standard",
-        "version": "14.1.1",
-        "packageName" : "Standard",
-        "packageVersion" : "Standard 0.25",
-        "description" : "A 32-bit SmartOS",
-        "RAM" : "256 MB",
-        "diskSpace" : "16 GB",
-        "CPU" : "0.125 vCPUs",
-        "pricePerHour" : "$0.008",
-        "pricePerMonth" : "$5.84",
-        "freeTierName" : "",
-        "scope" : {
-            "manual" : true,
-            "quick" : {"free" : false, "paid" : false}
+        "datacenter": ["local-x"],
+        "imageName": "base",
+        "version": "14.1.0",
+        "packageName": "Standard",
+        "packageVersion": "Standard 0.25",
+        "description": "A 32-bit SmartOS",
+        "RAM": "256 MB",
+        "diskSpace": "16 GB",
+        "CPU": "0.125 vCPUs",
+        "pricePerHour": "$0.008",
+        "pricePerMonth": "$5.84",
+        "freeTierName": "",
+        "scope": {
+            "manual": true,
+            "quick": {
+                "free": false,
+                "paid": false
+            }
         }
     },
     {
-        "datacenter" : ["us-east-1", "us-sw-1", "us-west-1", "eu-ams-1"],
-        "imageName" : "standard64",
-        "version": "14.1.1",
-        "packageName" : "Standard",
-        "packageVersion" : "Standard 0.25",
-        "description" : "A 32-bit SmartOS",
-        "RAM" : "256 MB",
-        "diskSpace" : "16 GB",
-        "CPU" : "0.125 and bursting",
-        "pricePerHour" : "$0.008",
-        "pricePerMonth" : "$5.84",
-        "freeTierName" : "",
-        "scope" : {
-            "manual" : true,
-            "quick" : {"free" : false, "paid" : false}
+        "datacenter": ["us-east-1", "us-sw-1", "us-west-1", "eu-ams-1"],
+        "imageName": "ScaleArc-MySQL-Platinum-2CPU-2GB",
+        "version": "",
+        "packageName": "Standard",
+        "packageVersion": "Standard 15",
+        "description": "A CentOS 6.5 image with ScaleArc MySQL 3.0 database",
+        "RAM": "15 GB",
+        "diskSpace": "1467 GB",
+        "CPU": "4 vCPUs",
+        "pricePerHour": "$0.480",
+        "pricePerMonth": "$350.40",
+        "freeTierName": "",
+        "scope": {
+            "manual": true,
+            "quick": {
+                "free": false,
+                "paid": false
+            }
         }
-    }  
+    }
 ]

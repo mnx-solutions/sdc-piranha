@@ -1,10 +1,12 @@
 package com.joyent.piranha.pageobject;
 
+import com.codeborne.selenide.Condition;
 import com.codeborne.selenide.ElementsCollection;
 import com.codeborne.selenide.SelenideElement;
 import com.codeborne.selenide.WebDriverRunner;
 import com.joyent.piranha.PropertyHolder;
 import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.interactions.HasInputDevices;
 import org.openqa.selenium.interactions.Mouse;
 import org.openqa.selenium.support.ui.Select;
@@ -31,23 +33,10 @@ public class CreateInstanceManual extends AbstractPageObject implements CreateIn
         $(".outer-provisioning-item", page).shouldHave(cssClass("active"));
     }
 
-    public void selectDataCenter(String zone) {
-        if (!$(byText("Quick Start: Create Instance")).isDisplayed()) {
-            waitForMediumSpinnerDisappear();
-        }
-        $(By.xpath("//option[@data-ng-repeat=\"datacenter in datacenters\" and contains(.,\"" + zone + "\")]")).waitUntil(exist, baseTimeout);
-        $("#selectDatacenter").click();
-        $(byText(zone)).click();
-    }
-
     public void selectOsFilter(String os) {
         $("#selectOS").click();
         $(By.xpath("//option[@data-ng-repeat=\"opsys in operating_systems\" and contains(.,\"" + os + "\")]")).waitUntil(exist, baseTimeout);
         $(byText(os)).click();
-    }
-
-    public void waitForListingUpdate() {
-        $(".provisioning-carousel-inner-box").waitUntil(hasNotClass("loading-medium"), baseTimeout);
     }
 
     public void selectPackage(String name) {
@@ -68,24 +57,19 @@ public class CreateInstanceManual extends AbstractPageObject implements CreateIn
 
     public void chooseImage(String imageName) {
         waitForMediumSpinnerDisappear();
-        $(By.xpath("//div[@class=\"advanced-instance-title\" and contains(.,'" + imageName + "')]")).click();
-    }
-
-    public void checkSelectedImageDescription(String description) {
-        String a = $(".dataset-desc", 1).getText();
-        assertTrue(a.contains(description));
+        $("[data-original-title='" + imageName + "']").click();
     }
 
     public void checkPackageInfo(String mem, String disk, String cpu, String instancePackage) {
         String cssSelector = ".center .value";
-        assertTrue($(cssSelector, 0).text().equals(instancePackage));
+        SelenideElement element = $(cssSelector, 0);
+        element.waitUntil(not(empty), baseTimeout);
+        String text = element.text();
+        assertTrue(text.equals(instancePackage));
         assertTrue($(cssSelector, 1).text().equals(mem));
         assertTrue($(cssSelector, 2).text().equals(disk));
         assertTrue($(cssSelector, 3).text().equals(cpu));
         assertTrue($(cssSelector, 4).text().equals(PropertyHolder.getDatacenter(0)));
-    }
-
-    public void assertPackageInfo() {
     }
 
     public void checkPaymentInfo(String h, String d) {
@@ -167,6 +151,17 @@ public class CreateInstanceManual extends AbstractPageObject implements CreateIn
         clickCreateInstanceButton();
         clickButtonInModal("Yes");
         return page(Instances.class);
+    }
+
+    @Override
+    public void selectDataCenter(String datacenter) {
+        SelenideElement select = $("#s2id_selectDatacenter");
+        select.waitUntil(Condition.visible, baseTimeout);
+        JavascriptExecutor js = (JavascriptExecutor) WebDriverRunner.getWebDriver();
+        while (!$(By.xpath("//ul/li[contains(.,'" + datacenter + "')]")).isDisplayed()) {
+            js.executeScript("$('#s2id_selectDatacenter a').mousedown()");
+        }
+        js.executeScript("$('ul div:contains(" + datacenter + ")').mouseup()");
     }
 
     private void selectPackageVersion(String version) {

@@ -64,7 +64,7 @@ public class InstanceDetails extends AbstractPageObject {
     }
 
     public void selectResizeOption(String packageDescription) {
-        $("[data-target=\"#collapse_resize\"]").click();
+        openResizeSection();
         SelenideElement dropDown = $("#collapse_resize").$("select[name=\"resize\"]");
         dropDown.shouldBe(Condition.visible);
         Select packages = new Select(dropDown);
@@ -115,9 +115,8 @@ public class InstanceDetails extends AbstractPageObject {
         return getSummaryValue("Memory");
     }
 
-    public FirewallSection openResizeSection() {
-        $("[data-target=\"#collapse_firewall\"]").click();
-        return page(FirewallSection.class);
+    public void openResizeSection() {
+        $("[data-target=\"#collapse_resize\"]").click();
     }
 
     public void openSummarySection() {
@@ -149,6 +148,11 @@ public class InstanceDetails extends AbstractPageObject {
 
     public String getInstanceStatus() {
         return $(".status.label").text();
+    }
+
+    public FirewallSection openFirewallSection() {
+        $("[data-target=\"#collapse_firewall\"]").click();
+        return page(FirewallSection.class);
     }
 }
 
