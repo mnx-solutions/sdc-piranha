@@ -315,7 +315,7 @@ module.exports = function execute(scope, register) {
         call.log.info('Handling machine list event');
 
         var datacenters = call.cloud.listDatacenters();
-        var keys = Object.keys(datacenters);
+        var keys = Object.keys(datacenters || {});
         var count = keys.length;
         if (count === 0) {
             callback(null, []);
@@ -466,29 +466,12 @@ module.exports = function execute(scope, register) {
         });
     };
 
-    api.isAuthorizationError = function (call, count) {
-        if (count === 0 && call.req.session.subId) {
-            var error = new Error();
-            error.statusCode = 403;
-            error.name = 'NotAuthorizedError';
-            error.restCode = 'NotAuthorized';
-            error.message = 'You do not have permission to access /my/datacenters (listdatacenters)';
-            call.error(error);
-            return true;
-        }
-        return false;
-    };
-
     api.ImageList = function (call, callback) {
         call.cloud.listDatacenters(function (err, datacenters) {
-            var keys = Object.keys(datacenters);
+            var keys = Object.keys(datacenters || {});
             var count = keys.length;
             if (err) {
                 call.error(err);
-                return;
-            }
-
-            if (api.isAuthorizationError(call, count)) {
                 return;
             }
             keys.forEach(function (datacenterName) {
@@ -524,7 +507,7 @@ module.exports = function execute(scope, register) {
                     }
                 });
             });
-        });
+        }, !!call.req.session.subId);
     };
 
     api.enableFirewall = function (call, callback) {

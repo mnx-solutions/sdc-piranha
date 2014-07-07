@@ -142,22 +142,8 @@ module.exports = function execute(scope) {
             }
 //            Serialize datacenters
             var datacenterList = [];
-            var keys = Object.keys(datacenters);
+            var keys = Object.keys(datacenters || {});
             var count = keys.length;
-            if (machine.isAuthorizationError(call, count)) {
-                return;
-            }
-
-            if (count === 0 && call.req.session.subId) {
-                var error = new Error();
-                error.statusCode = 403;
-                error.name = 'NotAuthorizedError';
-                error.restCode = 'NotAuthorized';
-                error.message = 'You do not have permission to access /my/datacenters (listdatacenters)';
-                call.error(err);
-                return;
-            }
-
             keys.forEach(function (name) {
                 var url = datacenters[name];
                 var index = scope.config.cloudapi.urls ?
@@ -184,7 +170,7 @@ module.exports = function execute(scope) {
             call.log.debug('Got datacenters list %j', datacenters);
             call.done(null, datacenterList);
 
-        });
+        }, !!call.req.session.subId);
     });
 
     var bindCollectionList = function (collectionName, listMethod) {

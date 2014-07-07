@@ -11,12 +11,12 @@ window.fn = [];
         function (serverTab, $q, localization, PopupDialog, util) {
 
         var service = {};
-        var datasets = { job: {}, index: {}, list: {}, os_index: {}};
+        var datasets = { job: {}, index: {}, list: {}, error: {}, os_index: {}};
 
         service.updateDatasets = function (datacenter, force) {
             datacenter = datacenter || 'all';
             if (force && datacenter === 'all') {
-                datasets = { job: {}, index: {}, list: {}, os_index: {}};
+                datasets = { job: {}, index: {}, list: {}, error: {}, os_index: {}};
             }
             if (!datasets.index[datacenter]) {
                 datasets.index[datacenter] = {};
@@ -27,7 +27,12 @@ window.fn = [];
                 datasets.job[datacenter] = serverTab.call({
                     data: { datacenter: datacenter === 'all' ? null : datacenter },
                     name:'DatasetList',
-                    done: function(err, job) {
+                    error: function (err) {
+                        datasets.error[datacenter] = err;
+                        datasets.job[datacenter].deferred.catch(err);
+                        datasets.job.finished = datasets.list[datacenter].final = true;
+                    },
+                    done: function (err, job) {
                         datasets.job.finished = true;
 
                         if (err) {
@@ -100,7 +105,11 @@ window.fn = [];
 
             if (!params.id) {
                 if (datasets.list[params.datacenter].final) {
-                    ret.resolve(datasets.list[params.datacenter]);
+                    if (datasets.error[params.datacenter]) {
+                        ret.reject(datasets.error[params.datacenter]);
+                    } else {
+                        ret.resolve(datasets.list[params.datacenter]);
+                    }
                 } else {
                     datasets.job[params.datacenter].deferred.then(ret.resolve, ret.reject);
                 }
@@ -110,7 +119,7 @@ window.fn = [];
                         if (datasets.index[params.datacenter][params.id]) {
                             ret.resolve(datasets.index[params.datacenter][params.id]);
                         } else {
-                            ret.reject();
+                            ret.reject(datasets.error[params.datacenter]);
                         }
                     }, ret.reject);
                 } else {

@@ -390,7 +390,7 @@
                                 null,
                                 null,
                                 'Error'
-                            ),
+                            ), err && err.restCode === 'NotAuthorized' ? err.message :
                             localization.translate(
                                 null,
                                 'machine',
@@ -399,7 +399,9 @@
                             )
                         );
 
-                        $scope.selected.datacenter = firstNonSelected.text;
+                        if (!err) {
+                            $scope.selected.datacenter = firstNonSelected.text;
+                        }
                     }
                 }
             };
@@ -415,8 +417,8 @@
                             $('#dcSelect').select2('val', newVal);
                             $scope.datacenter = newVal;
                         }
-                    }, function () {
-                        switchToOtherDatacenter(newVal);
+                    }, function (err) {
+                        switchToOtherDatacenter(newVal, err);
                     });
                 }
                 $scope.datasetsLoading = false;

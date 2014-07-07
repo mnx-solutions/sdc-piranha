@@ -207,7 +207,7 @@ var firewall = function execute (scope) {
                 call.done(err);
                 return;
             }
-            var keys = Object.keys(datacenters);
+            var keys = Object.keys(datacenters || {});
             var count = keys.length;
             keys.forEach(function (name) {
                 var cloud = call.cloud.separate(name);
