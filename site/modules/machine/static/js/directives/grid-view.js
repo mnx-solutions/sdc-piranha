@@ -268,10 +268,10 @@
             var order = [];
             $scope.items.forEach(function (item) {
                 Object.keys(item).forEach(function (property) {
+                    if (exportKeysMap[property]) {
+                        property = exportKeysMap[property];
+                    }
                     if (property.indexOf('$$') !== 0 && order.indexOf(property) === -1) {
-                        if (exportKeysMap[property]) {
-                            property = exportKeysMap[property];
-                        }
                         order.push(property);
                     }
                 });
