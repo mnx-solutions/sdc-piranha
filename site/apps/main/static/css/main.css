@@ -79,51 +79,6 @@ h4 {
     border: none;
 }
 
-.footer .brand {
-    background-image: url('../img/logo-gray.png');
-    background-repeat: no-repeat;
-    background-position: 50% 60%;
-    width: 120px;
-    height: 30px;
-}
-
-.footer {
-    position: fixed;
-    padding-top: 10px;
-    margin-left: 175px;
-    background-color: #ededed;
-    height: 60px;
-    box-sizing: border-box;
-    -moz-box-sizing: border-box;
-    -webkit-box-sizing: border-box;
-    -ms-box-sizing: border-box;
-    width: 100%;
-    bottom: 0;
-    z-index: 1000;
-}
-
-.footer .nav {
-    padding-top: 8px;
-    font-size: 12px;
-    margin-left: 28px;
-    margin-right: 175px;
-}
-
-.footer .nav li {
-    float: left;
-}
-
-.footer a {
-    color: #999;
-    background-color: transparent !important;
-    padding-right: 20px;
-    text-decoration: none;
-}
-
-.footer.leftpanel-small .nav {
-    margin-right: 55px;
-}
-
 .settings {
     padding: 20px;
 }
@@ -3305,4 +3260,18 @@ label.checkbox.folder-name-form-checkbox {
 .rule-error p {
     white-space: pre-line;
     font-family: monospace;
+}
+.sidebar-toggler-closed {
+    width: 60px !important;
+}
+
+#leftPanel + div {
+    padding-left: 147px;
+}
+
+#leftPanel.expanded + div {
+    padding-left: 27px;
+}
+.left-side-menu {
+    display: table;
 }

@@ -17,35 +17,6 @@
     border:none;
 }
 
-.footer {
-    position: fixed;
-    padding-top: 10px;
-    background-color: #ededed;
-    height: 60px;
-    box-sizing: border-box;
-    -moz-box-sizing: border-box;
-    -webkit-box-sizing: border-box;
-    -ms-box-sizing: border-box;
-    width: 100%;
-    bottom: 0;
-    margin-left: 175px;
-    padding-right: 175px;
-}
-.footer .nav {
-    padding-top: 8px;
-    font-size: 12px;
-    margin-left: 28px;
-}
-.footer .nav li {
-    float:left;
-}
-.footer a {
-    color:#999;
-    background-color:transparent !important;
-    padding-right:20px;
-    text-decoration: none;
-}
-
 .red-asterix {
     color: red;
 }

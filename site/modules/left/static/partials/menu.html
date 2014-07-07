@@ -1,165 +1,158 @@
-<div class="modulizer-module-left" data-ng-class="{'sidebar-toggler-closed': sideBarMin}">
+<div class="modulizer-module-left left-side-menu" data-ng-class="{'sidebar-toggler-closed': sideBarMin}">
     <div class="page-sidebar nav-collapse collapse" data-ng-class="{'sidebar-toggler-closed': sideBarMin}">
     <!-- BEGIN SIDEBAR MENU -->
-    <ul class="page-sidebar-menu" data-ng-class="{'sidebar-min': sideBarMin}">
-        <li class="single" ng-class="{active: location.path().search('dashboard') == 1}">
-            <a href="#!/dashboard" class="dashboard-icon">
-                <span class="title">Dashboard</span>
-                <span class="selected"></span>
-            </a>
-        </li>
-        <li class="nested" data-ng-class="{'active open': location.path().search('compute') == 1 || location.path().search('slb') == 1 || location.path().search('firewall') == 1 || location.path().search('images')==1}">
-                <a href="#!/compute" class="compute-icon">
-                <span class="title">Compute</span>
-                <span class="selected"></span>
-            </a>
-            <ul class="sub-menu">
-                <li class="sub" data-ng-class="{active: location.path().search('compute') == 1}">
-                    <a href="#!/compute">
-                        <span class="titles">Instances</span>
-                        <span class="selected-sub"></span>
-                    </a>
-                </li>
-                <li class="sub" data-ng-class="{active: location.path().search('slb') == 1}" data-ng-show="features.slb != 'disabled'">
-                    <a href="#!/slb">
-                        <span class="titles" data-translate>Load Balancers</span>
-                        <span class="selected-sub"></span>
-                    </a>
-                </li>
-                <li class="sub" data-ng-class="{active: location.path().search('firewall') == 1}" data-ng-show="features.firewall != 'disabled'">
-                    <a href="#!/firewall">
-                        <span class="titles" data-translate>Firewall</span>
-                        <span class="selected-sub"></span>
-                    </a>
-                </li>
-                <li class="sub" data-ng-class="{active: location.path().search('images') == 1}" data-ng-show="features.imageUse != 'disabled'">
-                    <a href="#!/images">
-                        <span class="titles">Images</span>
-                        <span class="selected-sub"></span>
-                    </a>
-                </li>
-            </ul>
-        </li>
-        <li class="nested" data-ng-class="{active: location.path().search('manta/') == 1, open: location.path().search('manta/') == 1}">
-            <a href="#!/manta/intro" class="storage-icon">
-                <span class="title">Storage</span>
-                <span class="selected"></span>
-            </a>
-            <ul class="sub-menu" data-ng-show="features.manta == 'enabled'">
-                <li class="sub" data-ng-class="{active: location.path().search('manta/intro') == 1}">
-                    <a href="#!/manta/intro">
-                        <span class="titles">Introduction</span>
-                        <span class="selected-sub"></span>
-                    </a>
-                </li>
-                <li class="sub"
-                    data-ng-class="{active: location.path().search('manta/files') == 1}"
-                    data-ng-show="features.manta == 'enabled'">
-                    <a href="#!/manta/files">
-                        <span class="titles" data-translate>File Manager</span>
-                        <span class="selected-sub"></span>
-                    </a>
-                </li>
-                <li class="sub"
-                    data-ng-class="{active: location.path().search('manta/builder') == 1}"
-                    data-ng-show="features.mantaJobs == 'enabled'">
-                    <a href="#!/manta/builder">
-                        <span class="titles" data-translate>Job Builder</span>
-                        <span class="selected-sub"></span>
-                    </a>
-                </li>
-                <li class="sub"
-                    data-ng-class="{active: location.path().search('manta/jobs') == 1}"
-                    data-ng-show="features.mantaJobs == 'enabled'">
-                    <a href="#!/manta/jobs">
-                        <span class="titles" data-translate>Job History</span>
-                        <span class="selected-sub"></span>
-                    </a>
-                </li>
-            </ul>
-        </li>
-        <li class="nested" data-ng-show="features.mdb == 'enabled'" data-ng-class="{'active open': location.path().search('mdb') == 1}">
-            <a href="#!/mdb" class="debug-icon">
-                <span class="title">Debug Node.js</span>
-                <span class="selected"></span>
-            </a>
-        </li>
-        <li class="nested" data-ng-show="features.usageData == 'enabled'" data-ng-class="{active: location.path().search('usage') == 1, open: location.path().search('/currentspend') > 1 || location.path().search('/compute') > 1 || location.path().search('/bandwidth') > 1 || location.path().search('/manta') > 1}">
-            <a data-ng-click="clickUsage()" class="usage-icon">
-                <span class="title">Usage</span>
-                <span class="selected"></span>
-            </a>
-            <ul class="sub-menu" data-ng-show="features.usageData == 'enabled'">
-                <li left-list-item class="sub" data-ng-class="{active: location.path().search('usage/currentspend') == 1}">
-                    <a data-ng-click="clickUsage('currentspend')">
-                        <span class="titles" data-translate>Spend</span>
-                        <span class="selected-sub"></span>
-                    </a>
-                </li>
-                <li left-list-item class="sub" data-ng-class="{active: location.path().search('usage/compute') == 1}">
-                    <a data-ng-click="clickUsage('compute')">
-                        <span class="titles" data-translate>Compute</span>
-                        <span class="selected-sub"></span>
-                    </a>
-                </li>
-                <li left-list-item class="sub" data-ng-class="{active: location.path().search('usage/bandwidth') == 1}">
-                    <a data-ng-click="clickUsage('bandwidth')">
-                        <span class="titles" data-translate>Bandwidth</span>
-                        <span class="selected-sub"></span>
-                    </a>
-                </li>
-                <li left-list-item class="sub" data-ng-class="{active: location.path().search('usage/manta') == 1}">
-                    <a data-ng-click="clickUsage('manta')">
-                        <span class="titles" data-translate>Manta</span>
-                        <span class="selected-sub"></span>
-                    </a>
-                </li>
-            </ul>
-        </li>
-        <li class="nested" data-ng-show="features.support == 'enabled'" data-ng-class="{'active open': location.path().search('support') == 1 || location.path().search('support.cloud') == 1}">
-            <a data-ng-click="clickSupportMenu('')" class="support-icon">
-                <span class="title glyph-icon">Support Plans</span>
-                <span class="selected"></span>
-            </a>
-            <ul class="sub-menu">
-                <li class="sub" data-ng-class="{active: isActive(supportPackage.link)}" data-ng-repeat="supportPackage in supportPackages">
-                    <a data-ng-click="clickSupportMenu(supportPackage.link)">
-                        <span class="titles" data-translate>{{supportPackage.menuButton}}</span>
-                        <span class="selected-sub"></span>
-                    </a>
-                </li>
-            </ul>
-        </li>
-        <li class="nested" data-ng-show="features.rbac == 'enabled'" data-ng-class="{'active open': location.path().search('accounts') == 1}">
-            <a href="#!/accounts/users" class="accounts-icon">
-                <span class="title">Accounts</span>
-                <span class="selected"></span>
-            </a>
-            <ul class="sub-menu">
-                <li left-list-item class="sub" data-ng-class="{active: location.path().search('accounts/users?') == 1}">
-                    <a href="#!/accounts/users">
-                        <span class="titles" data-translate>Users</span>
-                        <span class="selected-sub"></span>
-                    </a>
-                </li>
-                <li left-list-item class="sub" data-ng-class="{active: location.path().search('accounts/roles?') == 1}">
-                    <a href="#!/accounts/roles">
-                        <span class="titles" data-translate>Roles</span>
-                        <span class="selected-sub"></span>
-                    </a>
-                </li>
-                <li left-list-item class="sub" data-ng-class="{active: location.path().search('accounts/polic(y|ies)') == 1}">
-                    <a href="#!/accounts/policies">
-                        <span class="titles" data-translate>Policies</span>
-                        <span class="selected-sub"></span>
-                    </a>
-                </li>
-            </ul>
-        </li>
-        <li>
-            <div class="sidebar-toggler" data-ng-class="{'sidebar-toggler-back': sideBarMin}" data-ng-click="toggleSideBar()"></div>
-        </li>
-    </ul>
+        <ul class="page-sidebar-menu" data-ng-class="{'sidebar-min': sideBarMin}">
+            <li class="single" ng-class="{active: location.path().search('dashboard') == 1}">
+                <a href="#!/dashboard" class="dashboard-icon">
+                    <span class="title">Dashboard</span>
+                    <span class="selected"></span>
+                </a>
+            </li>
+            <li class="nested" data-ng-class="{'active open': location.path().search('compute') == 1 || location.path().search('slb') == 1 || location.path().search('firewall') == 1 || location.path().search('images')==1}">
+                    <a href="#!/compute" class="compute-icon">
+                    <span class="title">Compute</span>
+                    <span class="selected"></span>
+                </a>
+                <ul class="sub-menu">
+                    <li class="sub" data-ng-class="{active: location.path().search('compute') == 1}">
+                        <a href="#!/compute">
+                            <span class="titles">Instances</span>
+                            <span class="selected-sub"></span>
+                        </a>
+                    </li>
+                    <li class="sub" data-ng-class="{active: location.path().search('slb') == 1}" data-ng-show="features.slb != 'disabled'">
+                        <a href="#!/slb">
+                            <span class="titles" data-translate>Load Balancers</span>
+                            <span class="selected-sub"></span>
+                        </a>
+                    </li>
+                    <li class="sub" data-ng-class="{active: location.path().search('firewall') == 1}" data-ng-show="features.firewall != 'disabled'">
+                        <a href="#!/firewall">
+                            <span class="titles" data-translate>Firewall</span>
+                            <span class="selected-sub"></span>
+                        </a>
+                    </li>
+                    <li class="sub" data-ng-class="{active: location.path().search('images') == 1}" data-ng-show="features.imageUse != 'disabled'">
+                        <a href="#!/images">
+                            <span class="titles">Images</span>
+                            <span class="selected-sub"></span>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+            <li class="nested" data-ng-class="{active: location.path().search('manta/') == 1, open: location.path().search('manta/') == 1}">
+                <a href="#!/manta/intro" class="storage-icon">
+                    <span class="title">Storage</span>
+                    <span class="selected"></span>
+                </a>
+                <ul class="sub-menu" data-ng-show="features.manta == 'enabled'">
+                    <li class="sub" data-ng-class="{active: location.path().search('manta/intro') == 1}">
+                        <a href="#!/manta/intro">
+                            <span class="titles">Introduction</span>
+                            <span class="selected-sub"></span>
+                        </a>
+                    </li>
+                    <li class="sub" data-ng-class="{active: location.path().search('manta/files') == 1}">
+                        <a href="#!/manta/files">
+                            <span class="titles" data-translate>File Manager</span>
+                            <span class="selected-sub"></span>
+                        </a>
+                    </li>
+                    <li class="sub"
+                        data-ng-class="{active: location.path().search('manta/builder') == 1}"
+                        data-ng-show="features.mantaJobs == 'enabled'">
+                        <a href="#!/manta/builder">
+                            <span class="titles" data-translate>Job Builder</span>
+                            <span class="selected-sub"></span>
+                        </a>
+                    </li>
+                    <li class="sub"
+                        data-ng-class="{active: location.path().search('manta/jobs') == 1}"
+                        data-ng-show="features.mantaJobs == 'enabled'">
+                        <a href="#!/manta/jobs">
+                            <span class="titles" data-translate>Job History</span>
+                            <span class="selected-sub"></span>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+            <li class="nested" data-ng-show="features.mdb == 'enabled'" data-ng-class="{'active open': location.path().search('mdb') == 1}">
+                <a href="#!/mdb" class="debug-icon">
+                    <span class="title">Debug Node.js</span>
+                    <span class="selected"></span>
+                </a>
+            </li>
+            <li class="nested" data-ng-show="features.usageData == 'enabled'" data-ng-class="{active: location.path().search('usage') == 1, open: location.path().search('/currentspend') > 1 || location.path().search('/compute') > 1 || location.path().search('/bandwidth') > 1 || location.path().search('/manta') > 1}">
+                <a data-ng-click="clickUsage()" class="usage-icon">
+                    <span class="title">Usage</span>
+                    <span class="selected"></span>
+                </a>
+                <ul class="sub-menu" data-ng-show="features.usageData == 'enabled'">
+                    <li left-list-item class="sub" data-ng-class="{active: location.path().search('usage/currentspend') == 1}">
+                        <a data-ng-click="clickUsage('currentspend')">
+                            <span class="titles" data-translate>Spend</span>
+                            <span class="selected-sub"></span>
+                        </a>
+                    </li>
+                    <li left-list-item class="sub" data-ng-class="{active: location.path().search('usage/compute') == 1}">
+                        <a data-ng-click="clickUsage('compute')">
+                            <span class="titles" data-translate>Compute</span>
+                            <span class="selected-sub"></span>
+                        </a>
+                    </li>
+                    <li left-list-item class="sub" data-ng-class="{active: location.path().search('usage/bandwidth') == 1}">
+                        <a data-ng-click="clickUsage('bandwidth')">
+                            <span class="titles" data-translate>Bandwidth</span>
+                            <span class="selected-sub"></span>
+                        </a>
+                    </li>
+                    <li left-list-item class="sub" data-ng-class="{active: location.path().search('usage/manta') == 1}">
+                        <a data-ng-click="clickUsage('manta')">
+                            <span class="titles" data-translate>Manta</span>
+                            <span class="selected-sub"></span>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+            <li class="nested" data-ng-show="features.support == 'enabled'" data-ng-class="{'active open': location.path().search('support') == 1 || location.path().search('support.cloud') == 1}">
+                <a data-ng-click="clickSupportMenu('')" class="support-icon">
+                    <span class="title glyph-icon">Support Plans</span>
+                    <span class="selected"></span>
+                </a>
+                <ul class="sub-menu">
+                    <li class="sub" data-ng-class="{active: isActive(supportPackage.link)}" data-ng-repeat="supportPackage in supportPackages">
+                        <a data-ng-click="clickSupportMenu(supportPackage.link)">
+                            <span class="titles" data-translate>{{supportPackage.menuButton}}</span>
+                            <span class="selected-sub"></span>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+            <li>
+                <div class="sidebar-toggler" data-ng-class="{'sidebar-toggler-back': sideBarMin}" data-ng-click="toggleSideBar()"></div>
+            </li>
+        </ul>
+    </div>
+
+    <!-- Don't remove this empty tag, CSS-Tricks -->
+    <div class="left-side-menu-body"></div>
+
+    <div class="left-side-menu-footer" data-ng-class="{'sidebar-toggler-closed': sideBarMin}">
+        <ul class="page-sidebar-menu" data-ng-class="{'sidebar-min': sideBarMin}" data-ng-hide="sideBarMin">
+            <li class="small-menu">
+                <a href="http://www.joyent.com/tos" target="_blank">Terms of Service</a>
+            </li>
+            <li class="small-menu">
+                <a href="http://www.joyent.com/company/policies" target="_blank">Policies</a>
+            </li>
+            <li class="small-menu">
+                <a href="http://www.joyent.com/company/security-and-compliance" target="_blank">Compliance</a>
+            </li>
+            <li class="small-menu">
+                <a href="http://apidocs.joyent.com/cloudapi/" target="_blank">API</a>
+            </li>
+        </ul>
+        <div class="small-menu">&copy; {{currentYear}} Joyent, Inc.</div>
     <!-- END SIDEBAR MENU -->
-</div>
+    </div>
 </div>

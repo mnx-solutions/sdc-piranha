@@ -34,11 +34,6 @@
 
                 $scope.toggleSideBar = function () {
                     $scope.sideBarMin = !$scope.sideBarMin;
-                    if ($scope.sideBarMin) {
-                        ng.element('.footer').addClass('leftpanel-small');
-                    } else {
-                        ng.element('.footer').removeClass('leftpanel-small');
-                    }
                 };
 
                 $scope.clickUsage = function (usageType) {
@@ -48,8 +43,10 @@
                     usageType = usageType ? (usageType + '/') : '';
                     $location.path('/usage/' + usageType + year + '/' + month);
                 };
+
+                $scope.currentYear = (new Date()).getFullYear();
             }
         };
     }]);
 
-}(window.JP.getModule('Left'), angular));
+}(window.JP.getModule('Left')));

@@ -39,13 +39,8 @@
     height: 100%;
     background-color: #3d3d3d;
 }
-.sidebar-toggler-closed{
-    width: 55px !important;
-}
 
-.leftpanel-small{
-    margin-left: 55px !important;
-}
+
 .navbar-inner .container-fluid {
     min-width: 960px;
 }
@@ -53,14 +48,6 @@
     padding-left: 28px;
     padding-bottom: 55px;
     padding-top: 45px;
-}
-
-#leftPanel + div {
-    padding-left: 147px;
-}
-
-#leftPanel.expanded + div{
-    padding-left: 27px !important;
 }
 
 .page-title {
@@ -477,7 +464,6 @@ portlet.box.light-grey > .portlet-title .caption > i {
     padding-top: 55px;
 }
 .dash-container-position{
-    padding-top: 60px;
-    padding-left: 48px;
+    padding: 60px 0 25px 48px;
 }
 
