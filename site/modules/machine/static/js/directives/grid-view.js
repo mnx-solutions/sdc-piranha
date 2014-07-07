@@ -1,7 +1,7 @@
 'use strict';
 
 (function (ng, app) {
-    app.controller('GridViewController', ['$scope', '$filter', '$http', '$location', 'Account', '$rootScope', 'Datacenter', '$qe', '$sce', function ($scope, $filter, $http, $location, Account, $rootScope, Datacenter, $qe, $sce) {
+    app.controller('GridViewController', ['$scope', '$filter', '$http', '$location', 'Account', '$rootScope', 'Datacenter', '$qe', '$sce', 'ErrorService', function ($scope, $filter, $http, $location, Account, $rootScope, Datacenter, $qe, $sce, ErrorService) {
         $scope.location = $location;
 
         function refreshGrid() {
@@ -12,6 +12,9 @@
                 return $scope.isOnPage(index);
             });
             $scope.checkedAllCheckBox = areAllPagedItemsChecked();
+            if ($scope.tabFilterField && $scope.noEntriesMessageErrorType) {
+                $scope.noEntriesMessage = ErrorService.getLastErrors($scope.noEntriesMessageErrorType, $scope.tabFilter) || $scope.defaultNoEntriesMessage;
+            }
         }
 
         $scope.$watch('pagedItems', function (items) {
@@ -505,7 +508,8 @@
                 tabFilterDefault: '=',
                 tabFilterUpdate: '=',
                 hideLargePagerOptions: '@',
-                noEntriesMessage: '@'
+                noEntriesMessage: '@',
+                noEntriesMessageErrorType: '@'
             },
             controller: 'GridViewController',
             templateUrl: 'machine/static/partials/grid-view.html',
@@ -520,6 +524,7 @@
                 $scope.multisort = ng.isDefined(attrs.multisort) ? $scope.$eval(attrs.multisort) : gridConfig.multisort;
                 $scope.controls = ng.isDefined(attrs.controls) ? $scope.$eval(attrs.controls) : gridConfig.controls;
                 $scope.loading = true;
+                $scope.defaultNoEntriesMessage = $scope.noEntriesMessage;
 
                 var ignore = $scope.exportFields.ignore;
 

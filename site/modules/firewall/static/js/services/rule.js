@@ -11,8 +11,9 @@
         'localization',
         'util',
         'PopupDialog',
+        'ErrorService',
 
-        function (serverTab, Dataset, $rootScope, $q, $timeout, localization, util, PopupDialog) {
+        function (serverTab, Dataset, $rootScope, $q, $timeout, localization, util, PopupDialog, ErrorService) {
 
             var service = {};
             var rules = { job: null, index: {}, map: {}, list: [], search: {} };
@@ -191,6 +192,10 @@
 
                 $timeout(function () {
                     // Map
+                    if (ErrorService.getLastErrors('dcUnreachable', 'all')) {
+                        service.updateRules();
+                    }
+
                     if (!id) {
                         if (!rules.job) {
                             service.updateRules().then(function () {
@@ -288,24 +293,33 @@
                                 }
                             }
 
+                            ErrorService.flushErrors('all', 'dcUnreachable');
                             function handleResponse(chunk) {
                                 if (chunk.status === 'error') {
-                                    PopupDialog.error(
-                                        localization.translate(
-                                            null,
-                                            null,
-                                            'Error'
-                                        ), chunk.error && chunk.error.restCode === 'NotAuthorized' ? chunk.error.message :
-                                        localization.translate(
-                                            null,
-                                            'rule',
-                                            'Unable to retrieve rules from datacenter {{name}}.',
-                                            { name: chunk.name }
-                                        ),
-                                        function () {}
-                                    );
+                                    ErrorService.setLastError('dcUnreachable', 'all', true);
+                                    if (!ErrorService.getLastErrors('dcUnreachable', chunk.name)) {
+                                        ErrorService.setLastError('dcUnreachable', chunk.name,
+                                            'Datacenter {{name}} is currently not available. We are working on getting this datacenter back on.',
+                                            {name: chunk.name});
+
+                                        PopupDialog.error(
+                                            localization.translate(
+                                                null,
+                                                null,
+                                                'Error'
+                                            ), chunk.error && chunk.error.restCode === 'NotAuthorized' ? chunk.error.message :
+                                            localization.translate(
+                                                null,
+                                                'rule',
+                                                'Unable to retrieve rules from datacenter {{name}}.',
+                                                { name: chunk.name }
+                                            )
+                                        );
+                                    }
                                     return;
                                 }
+
+                                ErrorService.flushErrors('dcUnreachable', chunk.name);
 
                                 if (chunk.rules) {
                                     chunk.rules.forEach(function (rule) {
