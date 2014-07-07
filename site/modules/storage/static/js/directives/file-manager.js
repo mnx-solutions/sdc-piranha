@@ -175,7 +175,7 @@
                                     });
                                 }
                                 delete scope.filesTree[path];
-                                return scope.setCurrentPath(getAbsolutePath(file.parent), true);
+                                return scope.setCurrentPath(getAbsolutePath(file.parent), 'delete');
                             });
                         }
                     );
@@ -254,7 +254,7 @@
                         scrollContent.scrollLeft(scrollContent.scrollLeft() + fileBoxWidth);
                     });
 
-                    if (scope.loadingFolder) {
+                    if (scope.loadingFolder || scope.currentPath === fullPath) {
                         return;
                     }
                     if (lastSelectedFile) {
@@ -267,7 +267,14 @@
                     if (scope.files) {
                         scope.switchLoaderPosition = scope.files.indexOf(obj) === -1;
                     }
-                    scope.loadingFolder = !obj.type || obj.type === 'directory';
+
+                    if ((!obj.type || obj.type === 'directory') && userAction !== 'delete') {
+                        scope.loadingFolder = true;
+                        if (fullPath.indexOf(scope.currentPath) === -1 && scope.filesTree[scope.currentPath]) {
+                            scope.filesTree[fullPath] = [];
+                        }
+                    }
+
                     if (!userAction) {
                         fullPath = (obj && (obj.full || obj.name)) || fullPath || scope.currentPath || '/';
                         scope.currentPath = scope.currentPath || fullPath;
@@ -321,10 +328,12 @@
                             }
                         }
                     }
+
                     scope.filesTree = tmpFilesTree;
                     if (typeof (obj) === 'string' || obj.type === 'directory') {
                         scope.createFilesTree(userAction, null, callback);
                     } else {
+                        scope.refreshingFolder = false;
                         if (rootPath !== scope.currentPath && userAction && scope.userConfig.loaded()) {
                             var config = scope.userConfig.$child('fileman');
                             config.path = scope.currentPath;
