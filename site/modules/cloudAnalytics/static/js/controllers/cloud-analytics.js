@@ -233,7 +233,10 @@
                 callback = callback || angular.noop;
                 runWhenLoaded(function () {
                     CloudAnalytics.describeInstrumentations({datacenter: $scope.datacenter, zoneId: $scope.machineid},
-                        function () {
+                        function (data) {
+                            if (data && data.error) {
+                                PopupDialog.errorObj(data.error);
+                            }
                             CloudAnalytics.createInstrumentations({
                                 zoneId: $scope.machineid,
                                 datacenter: $scope.datacenter,

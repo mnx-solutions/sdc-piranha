@@ -11,7 +11,7 @@
         function (serverTab, $q) {
 
             var service = {};
-            var networks = { job: {}, index: {}, list: {}};
+            var networks = { job: {}, index: {}, list: {}, error: {}};
             var networksInfo = {};
 
             service.updateNetworks = function (datacenter) {
@@ -23,9 +23,10 @@
                     networks.job[datacenter] = serverTab.call({
                         name: 'NetworksList',
                         data: {datacenter: datacenter},
+                        error: function (err) {
+                            networks.error[datacenter] = err;
+                        },
                         done: function (err, job) {
-                            // FIXME: Next lines should be uncommented
-                            /*
                             if (err) {
                                 errorContext.emit(new Error(localization.translate(null,
                                     'machine',
@@ -33,7 +34,6 @@
                                 )));
                                 return;
                             }
-                            */
                             var result = job.__read();
 
                             networks.list[datacenter] = result;
@@ -53,6 +53,9 @@
                     serverTab.call({
                         name: 'getNetwork',
                         data: {uuid: id, datacenter: datacenter},
+                        error: function (err) {
+                            d.reject(err);
+                        },
                         done: function (err, job) {
                             var res = job.__read();
 

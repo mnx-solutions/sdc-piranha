@@ -200,8 +200,13 @@
 
             $scope.$watch('machine.networks', function (networks) {
                 if (networks) {
-                    $scope.networks = networks.map(function (networkId) {
-                        return Network.getNetwork($scope.machine.datacenter, networkId);
+                    $scope.networks = [];
+                    networks.forEach(function (networkId) {
+                        Network.getNetwork($scope.machine.datacenter, networkId).then(function (network) {
+                            $scope.networks.push(network);
+                        }, function (err) {
+                            PopupDialog.errorObj(err);
+                        });
                     });
                 }
             });
