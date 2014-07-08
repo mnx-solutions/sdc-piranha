@@ -320,21 +320,25 @@
                         if (!opts.done) {
                             opts.done = function (err, data) {
                                 if (err) {
+                                    var message = localization.translate(
+                                        null,
+                                        'machine',
+                                        'Unable to execute command "{{command}}" for instance {{uuid}}. ',
+                                        {
+                                            command: data.name,
+                                            uuid: data.machine.id
+                                        }
+                                    );
+                                    if (err.restCode === 'NotAuthorized') {
+                                        message = err.message.indexOf('getmachine') !== -1 ? 'Can not get machine status. ' + err.message : err.message;
+                                    }
                                     PopupDialog.error(
                                         localization.translate(
                                             null,
                                             null,
                                             'Error'
-                                        ), err.restCode === 'NotAuthorized' ? err.message :
-                                            localization.translate(
-                                                null,
-                                                'machine',
-                                                'Unable to execute command "{{command}}" for instance {{uuid}}. ',
-                                                {
-                                                    command: data.name,
-                                                    uuid: data.machine.id
-                                                }
-                                            ));
+                                        ), message
+                                    );
                                     if (err.restCode === 'NotAuthorized') {
                                         machine.state = machine.prevState;
                                     }
