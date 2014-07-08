@@ -147,13 +147,8 @@ module.exports = function execute(scope, app) {
             try {
                 var publicKey = ursa.openSshPublicKey(data);
                 if (publicKey) {
-                    var name = '';
-                    var keyParts = data.split(' ');
-
-                    if (keyParts[2]) {
-                        name = keyParts[2];
-                    }
-
+                    var fingerprintHex = publicKey.toPublicSshFingerprint('hex');
+                    var name = fingerprintHex.slice(-10);
                     perform(req, name, data, function (err) {
                         if (err) {
                             req.log.error(err);

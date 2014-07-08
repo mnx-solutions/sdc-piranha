@@ -19,14 +19,17 @@
                     $rootScope.downloadLink = null;
                 },
                 link: function ($scope) {
-                    $scope.subUser = false;
+                    var subUser = false;
                     /* SSH Key generation popup */
                     $scope.generateSshKey = function () {
                         if ($scope.user && $scope.user.id) {
-                            $scope.subUser = $scope.user.id;
+                            subUser = $scope.user.id;
                             $rootScope.$broadcast('sshCreating', true);
                         }
                         var sshKeyModalCtrl = function ($scope, dialog) {
+                            if (subUser) {
+                                $scope.message = 'User\'s private key will begin downloading when you click "Create Key". The public half of the key will be added to user\'s Joyent Cloud account.';
+                            }
                             $scope.keyName = '';
 
                             $scope.close = function (res) {
@@ -43,7 +46,6 @@
                         };
 
                         var opts = {
-                            title: 'Create SSH Key',
                             templateUrl: 'account/static/template/dialog/generate-ssh-modal.html',
                             openCtrl: sshKeyModalCtrl
                         };
@@ -53,7 +55,7 @@
                             function (data) {
                                 if (data && data.generate === true) {
                                     var createUrl = 'account/ssh/create/';
-                                    $http.post(createUrl, {name: data.keyName, subUser: $scope.subUser})
+                                    $http.post(createUrl, {name: data.keyName, subUser: subUser})
                                         .success(function (data) {
 
                                             var keyId = data.keyId;
@@ -66,6 +68,12 @@
                                                 $rootScope.sshKeyName = data.name;
 
                                                 var keyAdded = function () {
+                                                    var message = 'SSH key successfully added to your account.';
+
+                                                    if (subUser) {
+                                                        message = 'SSH key successfully added to user\'s account. You will be prompted for private key download shortly. Please keep the private key safe.';
+                                                    }
+
                                                     PopupDialog.message(
                                                         localization.translate(
                                                             $scope,
@@ -75,7 +83,7 @@
                                                         localization.translate(
                                                             $scope,
                                                             null,
-                                                            'SSH key successfully added to your account.'
+                                                            message
                                                         )
                                                     );
                                                 };
@@ -95,7 +103,7 @@
                                                             $scope.passSsh('/main/#!/account/ssh');
                                                         }, 1000);
                                                     }
-                                                    if ($scope.subUser) {
+                                                    if (subUser) {
                                                         keyAdded();
                                                         $rootScope.$broadcast('sshCreated', true);
                                                     }
@@ -124,7 +132,7 @@
 
                                 } else {
                                     $rootScope.loading = false;
-                                    if ($scope.subUser) {
+                                    if (subUser) {
                                         $rootScope.$broadcast('sshCancel', true);
                                     }
                                 }
