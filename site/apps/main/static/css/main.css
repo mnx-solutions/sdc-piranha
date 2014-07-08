@@ -3254,7 +3254,7 @@ label.checkbox.folder-name-form-checkbox {
     width: 375px;
 }
 .rule-error {
-    overflow: scroll;
+    overflow: auto;
     max-height: 300px;
 }
 .rule-error p {
