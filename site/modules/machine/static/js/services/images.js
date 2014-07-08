@@ -143,6 +143,26 @@
                 });
             };
 
+            function showError(image, message, err) {
+                var detailMessage = (err.body && err.body.message) || err.message || String(err);
+                if (err.code === 'PrepareImageDidNotRun') {
+                    detailMessage += '. You likely need to <a href="http://wiki.joyent.com/wiki/display/jpc2/Upgrading+Linux+Guest+Tools">upgrade Joyent Linux Guest Tools</a>.';
+                }
+                return PopupDialog.error(
+                    localization.translate(
+                        null,
+                        null,
+                        'Error'
+                    ), err && err.restCode === 'NotAuthorized' ? err.message :
+                    localization.translate(
+                        null,
+                        'image',
+                            message + detailMessage,
+                        { name: image.name }
+                    )
+                );
+            }
+
 
             service.createImage = function (machineId, datacenter, name, description, version) {
                 var id = window.uuid.v4();
@@ -160,25 +180,6 @@
                 images.list.push(image);
                 images.index[id] = image;
 
-                function showError(image, err) {
-                    var detailMessage = (err.body && err.body.message) || err.message || String(err);
-                    if (err.code === 'PrepareImageDidNotRun') {
-                        detailMessage += '. You likely need to <a href="http://wiki.joyent.com/wiki/display/jpc2/Upgrading+Linux+Guest+Tools">upgrade Joyent Linux Guest Tools</a>.';
-                    }
-                    return PopupDialog.error(
-                        localization.translate(
-                            null,
-                            null,
-                            'Error'
-                        ),
-                        localization.translate(
-                            null,
-                            'machine',
-                                'Unable to create image "{{name}}": ' + detailMessage,
-                            { name: image.name }
-                        )
-                    );
-                }
 
                 var jobCall = serverTab.call({
                     name: 'ImageCreate',
@@ -191,7 +192,7 @@
                     },
                     initialized: function (err, job) {
                         if (err) {
-                            showError(image, err);
+                            showError(image, 'Unable to create image "{{name}}": ', err);
                             return;
                         }
 
@@ -206,7 +207,7 @@
                     },
                     done: function (err, job) {
                         if (err) {
-                            showError(image, err);
+                            showError(image, 'Unable to create image "{{name}}": ',err);
                             images.list.splice(images.list.indexOf(image), 1);
                             delete images.index[id];
                             return;
@@ -227,7 +228,7 @@
                     },
                     error: function (err) {
                         if (err) {
-                            showError(image, err);
+                            showError(image, 'Unable to create image "{{name}}": ', err);
                         }
                         images.list.splice(images.list.indexOf(image), 1);
                         delete images.index[id];
@@ -250,19 +251,7 @@
                             Dataset.updateDatasets('all', true);
                         } else {
                             image.state = 'active';
-                            PopupDialog.error(
-                                localization.translate(
-                                    null,
-                                    null,
-                                    'Error'
-                                ),
-                                localization.translate(
-                                    null,
-                                    'machine',
-                                    'Unable to delete image "{{name}}".',
-                                    { name: image.name }
-                                )
-                            );
+                            showError(image, 'Unable to delete image "{{name}}": ', err);
                         }
                     }
                 });
@@ -283,19 +272,7 @@
                             Dataset.updateDatasets('all', true);
                             callback();
                         } else {
-                            PopupDialog.error(
-                                localization.translate(
-                                    null,
-                                    null,
-                                    'Error'
-                                ),
-                                localization.translate(
-                                    null,
-                                    'image',
-                                    'Unable to rename image "{{name}}".',
-                                    { name: image.name }
-                                )
-                            );
+                            showError(image, 'Unable to rename image "{{name}}": ', err);
                         }
                     }
                 });
