@@ -109,7 +109,7 @@
                                     var deleteTasks = [];
                                     //FIXME: Use Array.prototype.map here
                                     checkedItems.forEach(function (item) {
-                                        deleteTasks.push($q.when(service.deletePolicy(item.id)));
+                                        deleteTasks.push(service.deletePolicy(item.id));
                                     });
                                     $q.all(deleteTasks).then(function () {
                                         service.listPolicies().then(function (policies) {

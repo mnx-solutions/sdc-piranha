@@ -122,7 +122,7 @@
                                     $scope.loading = true;
                                     var deleteTasks = [];
                                     checkedItems.forEach(function (item) {
-                                        deleteTasks.push($q.when(service.deleteRole(item.id)));
+                                        deleteTasks.push(service.deleteRole(item.id));
                                     });
                                     $q.all(deleteTasks).then(function () {
                                         service.listRoles().then(function (roles) {
