@@ -58,7 +58,7 @@
                     if (err.message.indexOf('Parse error on line') > -1) {
                         var match;
                         var ruleErrors = [];
-                        var regexp = /(Parse\s*error\s*on\s*line\s*\d+\s*:\s*(.+)\n[\-]*[^\n]+\n.*\'),?/g; //expected message = "Parse error on line 1:\n*can createmachine*\n-----^\nExpecting 'CAN', got 'FUZZY_STRING'"
+                        var regexp = /(Parse\s*error\s*on\s*line\s*\d+\s*:\s*(.*)\n[\-]*[^\n]+\n.*\'),?/g; //expected message = "Parse error on line 1:\n*can createmachine*\n-----^\nExpecting 'CAN', got 'FUZZY_STRING'"
                         while ((match = regexp.exec(err.message)) !== null) {
                             ruleErrors.push(match[1]);
                         }
