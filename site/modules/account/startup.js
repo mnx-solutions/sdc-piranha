@@ -14,7 +14,7 @@ module.exports = function execute(scope) {
 
     var accountFields = ['id', 'login', 'email', 'companyName', 'firstName', 'lastName', 'address', 'postalCode', 'city', 'state', 'country', 'phone', 'created'];
     var updatableAccountFields = ['email', 'companyName', 'firstName', 'lastName', 'address', 'postalCode', 'city', 'state', 'country', 'phone'];
-    var updatableUserFields = ['id', 'email', 'companyName', 'firstName', 'lastName', 'address', 'postalCode', 'city', 'state', 'country', 'phone'];
+    var updatableUserFields = ['id', 'login', 'email', 'companyName', 'firstName', 'lastName', 'address', 'postalCode', 'city', 'state', 'country', 'phone'];
     var roleFields = ['name', 'members', 'default_members', 'name', 'policies'];
     var updatableRoleFields = ['id', 'name', 'members', 'default_members', 'policies'];
     var policyFields = ['name', 'rules', 'description'];
