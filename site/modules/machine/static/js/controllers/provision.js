@@ -55,6 +55,7 @@
             ];
             $scope.reviewModel = {};
             $scope.filterModel = {};
+            $scope.sshModel = {isSSHStep: false};
             $scope.provisionStep = true;
             $scope.campaignId = ($cookies.campaignId || 'default');
 
@@ -492,9 +493,7 @@
                 var machinesResult = result[3];
                 var limitsResult = result[4];
                 var freeTierOptionsResult = result[5];
-                if (keysResult.error) {
-                    PopupDialog.errorObj(keysResult.error);
-                } else {
+                if (!keysResult.error) {
                     $scope.keys = keysResult;
                 }
                 if (datacentersResult.error) {
@@ -640,10 +639,10 @@
                     $scope.clickProvision();
                 } else {
                     var sshStepIndex = 4;
-                    var isSSHStep = nextStep(sshStepIndex);
+                    $scope.sshModel.isSSHStep = nextStep(sshStepIndex);
                     $timeout(function () {
                         deleteProvisionStep(ACCOUNT_STEP_NAME);
-                        if (isSSHStep) {
+                        if ($scope.sshModel.isSSHStep) {
                             sshStepIndex = 3;
                             $scope.setCurrentStep(sshStepIndex);
                         }
@@ -691,20 +690,25 @@
                 return isNextStep;
             };
 
+            var prepareProvision = function () {
+                $scope.sshModel.isSSHStep = $scope.keys.length === 0;
+                if (!$scope.account.provisionEnabled || $scope.sshModel.isSSHStep) {
+                    nextStep(3);
+                    return;
+                }
+                provision();
+            };
+
             $scope.clickProvision = function () {
                 // add networks to data
                 $scope.data.networks = ($scope.selectedNetworks.length > 0) ? $scope.selectedNetworks : '';
 
                 if (!$scope.data.datacenter) {
                     Datacenter.datacenter().then(function (datacenters) {
-                        var keys = Object.keys(datacenters || {});
-                        if (keys.length > 0) {
-                            $scope.data.datacenter = keys[0];
-                            if (!$scope.account.provisionEnabled || $scope.keys.length <= 0) {
-                                nextStep(3);
-                                return;
-                            }
-                            provision();
+                        var datacenterNames = Object.keys(datacenters || {});
+                        if (datacenterNames.length > 0) {
+                            $scope.data.datacenter = datacenterNames[0];
+                            prepareProvision();
                         } else {
                             loggingService.log('error', 'Unable to retrieve datacenters list.');
                             errorContext.emit(new Error(localization.translate(null,
@@ -714,13 +718,8 @@
                         }
                     });
                 } else {
-                    if (!$scope.account.provisionEnabled || $scope.keys.length <= 0) {
-                        nextStep(3);
-                        return;
-                    }
-                    provision();
+                    prepareProvision();
                 }
-
             };
 
             $scope.createSimple = function (data) {

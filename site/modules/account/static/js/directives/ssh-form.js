@@ -18,6 +18,7 @@
                 scope: {
                     singleKey: '@',
                     noKeysMessage: '@',
+                    loadDisabled: '=?',
                     createInstanceFn: '&'
                 },
                 controller: function ($scope) {
@@ -80,6 +81,9 @@
                                 if (typeof (cb) === 'function') {
                                     cb();
                                 }
+                            }, function (err) {
+                                $scope.loadingKeys = false;
+                                PopupDialog.errorObj(err);
                             });
                         }
                     };
@@ -125,6 +129,16 @@
                                 }
                             });
                     };
+
+                    if (!$scope.loadDisabled) {
+                        $scope.updateKeys();
+                    } else {
+                        $scope.$watch('loadDisabled', function (value) {
+                            if (!value) {
+                                $scope.updateKeys();
+                            }
+                        });
+                    }
 
                     $scope.$on('sshProgress', function (event, isInProgress) {
                         $scope.loadingKeys = isInProgress;
