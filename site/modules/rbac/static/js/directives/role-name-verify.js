@@ -9,20 +9,15 @@
                     var pattern = attrs.pattern ? new RegExp(attrs.pattern) : undefined;
 
                     ctrl.$parsers.unshift(function (viewValue) {
-                        var value;
-                        if (!viewValue) {
-                            ctrl.$setValidity('required', false);
-                        } else if (pattern && !pattern.test(viewValue)) {
-                            ctrl.$setValidity('pattern', false);
-                        } else if (viewValue.toLowerCase() === 'administrator') {
-                            ctrl.$setValidity('reserved', false);
-                        } else {
-                            ctrl.$setValidity('required', true);
-                            ctrl.$setValidity('pattern', true);
-                            ctrl.$setValidity('reserved', true);
-                            value = viewValue;
-                        }
-                        return value;
+                        var validity = {
+                            required: !!viewValue,
+                            pattern: !pattern || pattern.test(viewValue),
+                            reserved: !viewValue || viewValue.toLowerCase() !== 'administrator'
+                        };
+                        ctrl.$setValidity('required', validity.required);
+                        ctrl.$setValidity('pattern', validity.pattern);
+                        ctrl.$setValidity('reserved', validity.reserved);
+                        return validity.required && validity.pattern && validity.reserved ? viewValue : undefined;
                     });
                 }
             };
