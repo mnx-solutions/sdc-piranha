@@ -254,6 +254,9 @@ module.exports = function execute(scope) {
         var data = filterFields(call.data, updatablePolicyFields, true);
         call.cloud.updatePolicy(data, function (err, policy) {
             call.done(err, policy);
+            if (!err) {
+                updateRoleTags(call.cloud, call.log);
+            }
         });
     });
 
