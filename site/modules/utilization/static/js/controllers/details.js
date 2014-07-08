@@ -107,9 +107,9 @@
                             active: true
                         },
                         {
-                            id: 'gb-hours',
+                            id: 'gb_hours',
                             name: 'GB Hours',
-                            _order: 'gb-hours',
+                            _order: 'gb_hours',
                             sequence: 8,
                             active: true
                         }

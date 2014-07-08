@@ -161,7 +161,7 @@ module.exports = function execute(scope) {
                                 var ram = (configs.ram / 1024).toFixed(3) * 1;
                                 var gbHours = configs.hours * ram;
 
-                                overallResult.compute.usage.push(getUsageDataEntry(zone, configs, {'hours': configs.hours, 'ram' : ram, 'gb-hours': gbHours, 'cost': configs.cost}));
+                                overallResult.compute.usage.push(getUsageDataEntry(zone, configs, {'hours': configs.hours, 'ram' : ram, 'gb_hours': gbHours, 'cost': configs.cost}));
 
                                 overallResult.compute.amount[result.date] += gbHours;
                                 overallResult.compute.total += configs.cost;
@@ -218,7 +218,7 @@ module.exports = function execute(scope) {
                             return accumulated;
                         }, []);
                     };
-                    overallResult.compute.usage = groupByMachineAndSumFields(overallResult.compute.usage, ['hours', 'gb-hours', 'cost']);
+                    overallResult.compute.usage = groupByMachineAndSumFields(overallResult.compute.usage, ['hours', 'gb_hours', 'cost']);
                     overallResult.bandwidth.usage = groupByMachineAndSumFields(overallResult.bandwidth.usage, ['in', 'out']);
                 });
                 call.done(null, overallResult);
