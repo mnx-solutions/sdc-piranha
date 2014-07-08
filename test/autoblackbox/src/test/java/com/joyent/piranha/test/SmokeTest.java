@@ -4,8 +4,6 @@ import com.codeborne.selenide.WebDriverRunner;
 import com.joyent.piranha.Common;
 import com.joyent.piranha.PropertyHolder;
 import com.joyent.piranha.pageobject.*;
-import com.joyent.piranha.pageobject.CreateInstanceManual;
-import com.joyent.piranha.pageobject.Instances;
 import com.joyent.piranha.pageobject.instancedetails.InstanceDetails;
 import com.joyent.piranha.util.TestWrapper;
 import com.joyent.piranha.utils.InstanceParser;
@@ -18,16 +16,9 @@ import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Configuration.baseUrl;
 import static com.codeborne.selenide.Configuration.timeout;
 import static com.codeborne.selenide.Selectors.byText;
-import static com.codeborne.selenide.Selenide.$;
-import static com.codeborne.selenide.Selenide.open;
-import static com.codeborne.selenide.Selenide.page;
-import static com.joyent.piranha.pageobject.Account.Legend.BillingInformation;
-import static com.joyent.piranha.pageobject.Account.Legend.SSH;
-import static com.joyent.piranha.pageobject.Account.Legend.YouProfile;
-import static com.joyent.piranha.pageobject.NavBarMenu.NavBarFooterElement.SystemStatus;
-import static com.joyent.piranha.pageobject.NavBarMenu.NavBarHeaderElement.DevCenter;
-import static com.joyent.piranha.pageobject.NavBarMenu.NavBarHeaderElement.MyAccount;
-import static com.joyent.piranha.pageobject.NavBarMenu.NavBarHeaderElement.Support;
+import static com.codeborne.selenide.Selenide.*;
+import static com.joyent.piranha.pageobject.Account.Legend.*;
+import static com.joyent.piranha.pageobject.NavBarMenu.NavBarHeaderElement.*;
 
 public class SmokeTest extends TestWrapper {
     public static final String USER_NAME = PropertyHolder.getTestUserLogin();
@@ -74,7 +65,6 @@ public class SmokeTest extends TestWrapper {
 
         navBarMenu.getNavBarElement(DevCenter).shouldBe(visible);
         navBarMenu.getNavBarElement(Support).shouldBe(visible);
-        navBarMenu.getNavBarElement(SystemStatus).shouldBe(visible);
         navBarMenu.getNavBarElement(MyAccount).shouldBe(visible);
     }
 
