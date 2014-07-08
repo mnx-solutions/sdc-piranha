@@ -26,6 +26,7 @@
         '$rootScope',
         '$filter',
         '$q',
+        '$qe',
         'requestContext',
         'localization',
         'rule',
@@ -38,7 +39,7 @@
         '$location',
         '$anchorScroll',
 
-        function ($scope, $rootScope, $filter, $q, requestContext, localization, rule, Dataset, Datacenter, Machine, $http, PopupDialog, Account, $location,
+        function ($scope, $rootScope, $filter, $q, $qe, requestContext, localization, rule, Dataset, Datacenter, Machine, $http, PopupDialog, Account, $location,
                   $anchorScroll) {
 
             localization.bind('firewall', $scope);
@@ -457,14 +458,37 @@
             $scope.firewallDisabledMachines = [];
             $scope.rulesByDatacenter = [];
 
-            $q.all([
+            $qe.every([
                 $q.when(Machine.machine()),
                 $q.when(rule.rule()),
                 $q.when(Datacenter.datacenter())
             ]).then(function (results) {
-                $scope.machines = results[0];
-                $scope.setRules(results[1]);
-                $scope.datacenters = results[2];
+                var machineResult = results[0];
+                var rilesResult = results[1];
+                var datacentersResult = results[2];
+
+                $scope.machines = [];
+                $scope.datacenters = [];
+
+                if (machineResult.error) {
+                    PopupDialog.errorObj(machineResult.error);
+                } else {
+                    $scope.machines = machineResult;
+                }
+
+                if (rilesResult.error) {
+                    PopupDialog.errorObj(rilesResult.error);
+                } else {
+                    $scope.setRules(rilesResult);
+                }
+
+                if (datacentersResult.error) {
+                    PopupDialog.errorObj(datacentersResult.error);
+                } else {
+                    $scope.datacenters = datacentersResult;
+                }
+
+
                 $scope.$watch('machines.final', function(isFinal) {
                     if (isFinal) {
                         extractVmInfo($scope.machines);

@@ -192,6 +192,7 @@
                                 deferred.resolve(rules.map);
                             }, function (err) {
                                 deferred.reject(err);
+                                rules.job = undefined;
                             });
                         } else {
                             if (rules.job.finished) {
@@ -201,6 +202,7 @@
                                     deferred.resolve(rules.map);
                                 }, function (err) {
                                     deferred.reject(err);
+                                    rules.job = undefined;
                                 });
                             }
                         }
