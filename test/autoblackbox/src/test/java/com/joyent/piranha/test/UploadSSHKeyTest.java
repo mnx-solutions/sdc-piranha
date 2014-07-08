@@ -1,6 +1,5 @@
 package com.joyent.piranha.test;
 
-import com.google.common.base.Predicate;
 import com.joyent.piranha.PropertyHolder;
 import com.joyent.piranha.pageobject.*;
 import com.joyent.piranha.util.TestWrapper;
@@ -63,12 +62,7 @@ public class UploadSSHKeyTest extends TestWrapper {
     public void checkKeysNumber(int keys) {
         WebDriverWait webDriverWait = new WebDriverWait(driver, timeout);
         final int currentKeys = keys;
-        webDriverWait.until(new Predicate<WebDriver>() {
-            @Override
-            public boolean apply(WebDriver input) {
-                return numberOfKeys() == currentKeys + 1;
-            }
-        });
+        webDriverWait.until((WebDriver input) -> numberOfKeys() == currentKeys + 1);
     }
 
     public int numberOfKeys() {
