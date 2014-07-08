@@ -71,7 +71,7 @@
                                                     var message = 'SSH key successfully added to your account.';
 
                                                     if (subUser) {
-                                                        message = 'SSH key successfully added to user\'s account. You will be prompted for private key download shortly. Please keep your private key safe.';
+                                                        message = 'SSH key successfully added to user\'s account. You will be prompted for private key download shortly. Please keep the private key safe.';
                                                     }
 
                                                     PopupDialog.message(

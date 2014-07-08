@@ -34,7 +34,7 @@
     "SSH keys": "SSH keys",
     "Manage SSH Keys": "Manage SSH Keys",
     "Add SSH key": "Add SSH key",
-    "SSH key successfully added to your account.": "SSH key successfully added to your account. You will be prompted for private key download shortly. Please keep your private key safe.",
+    "SSH key successfully added to your account.": "SSH key successfully added to your account. You will be prompted for private key download shortly. Please keep the private key safe.",
     "SSH Key generation error.": "SSH Key generation error.",
     "Unable to generate SSH key: {{message}}.": "Unable to generate SSH key: {{message}}.",
     "Fingerprint": "Fingerprint",
