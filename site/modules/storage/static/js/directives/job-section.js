@@ -1,7 +1,7 @@
 'use strict';
 
 (function (app) {
-    app.directive('jobSection', ['fileman', function (fileman) {
+    app.directive('jobSection', ['fileman', 'PopupDialog', function (fileman, PopupDialog) {
         return {
             restrict: 'EA',
             scope: {
@@ -16,7 +16,17 @@
                     $scope.showSection = !$scope.showSection;
                 };
                 $scope.getFile = function (path) {
-                    return fileman.get(path, true);
+                    fileman.infoAbsolute(path, function (err, res) {
+                        if (err) {
+                            return PopupDialog.error(
+                                'Error',
+                                'The file has gone.'
+                            );
+                        }
+
+                        fileman.get(path, true);
+
+                    });
                 };
             },
 
