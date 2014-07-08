@@ -1,4 +1,4 @@
-<fieldset>
+<fieldset data-ng-controller="Account.SSHController">
     <div class="alert alert-error" data-ng-show="error">{{error}}</div>
 
     <div class="span8 pull-left">
@@ -10,14 +10,14 @@
     <hr />
     <span data-ng-show="downloadLink" class="ssh-download-link"><a target="_blank" href="{{downloadLink}}">Click here to download "{{sshKeyName}}" key</a></span>
     <div class="pull-right">
-        <div data-ng-hide="loading" class="dpl-inline">
+        <div data-ng-hide="loadingKeys" class="dpl-inline">
             <div data-account-ssh-create></div>
             <div data-account-ssh-import></div>
         </div>
-        <div class="dpl-inline">
+        <div class="dpl-inline" data-ng-hide="loadingKeys">
             <button class="btn light effect-orange-button" data-ng-click="skipSsh()" data-ng-hide="loading">Skip</button>
         </div>
     </div>
-    <div data-ng-show="loading" class="loading-medium pull-right"></div>
+    <div data-ng-show="loading || loadingKeys" class="loading-medium pull-right"></div>
 
 </fieldset>

@@ -21,6 +21,8 @@
 
             $scope.key = {};
             $scope.userPlatform = $window.navigator.platform;
-
+            $scope.$on('sshProgress', function (event, isInProgress) {
+                $scope.loadingKeys = isInProgress;
+            });
         }]);
 }(window.JP.getModule('Account')));

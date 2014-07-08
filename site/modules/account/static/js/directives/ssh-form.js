@@ -97,6 +97,9 @@
 
                     $scope.updateKeys();
 
+                    $scope.$on('sshProgress', function (event, isInProgress) {
+                        $scope.loadingKeys = isInProgress;
+                    });
                 },
                 templateUrl: 'account/static/partials/ssh-form.html'
             };
