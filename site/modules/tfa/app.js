@@ -20,7 +20,7 @@ module.exports = function execute(scope, app) {
         next();
     });
 
-    function logUserInformation(req, redirectUrl) {
+    function logUserInformation(req) {
         // Proper user ip taking reverse proxy / load balancer into account
         if (headerClientIpKey) {
             req.userIp = req.header(headerClientIpKey);
@@ -60,15 +60,32 @@ module.exports = function execute(scope, app) {
         var redirectUrl = (new Buffer(req.params.url, 'base64')).toString('ascii');
         var cloud = smartCloud.cloud({token: token, log: req.log});
 
-        var callback = function (err, user) {
+        var saveSessionToken = function (userObj) {
+            req.session.userId = userObj.id;
+            req.session.userName = userObj.login;
+            req.session.redirectUrl = redirectUrl;
+            req.session.userIsNew = userObj.created === userObj.updated;
+            req.session.token = token;
+            req.session.save();
+            logUserInformation(req);
+            res.redirect(redirectUrl);
+        };
+
+        var userCallback = function (err, user) {
             if (err) {
                 next(err);
                 return;
             }
+            if (userId) {
+                req.session.subId = userId;
+                saveSessionToken(user);
+            }
+        };
 
-            TFA.get(user.id, function (err, secret) {
-                if (err) {
-                    next(err);
+        var accountCallback = function (err, user) {
+            TFA.get(user.id, function (tfaErr, secret) {
+                if (tfaErr) {
+                    next(tfaErr);
                     return;
                 }
 
@@ -83,28 +100,16 @@ module.exports = function execute(scope, app) {
                         delete req.session[prop];
                     }
                 }
-                if (userId) {
-                    req.session.subId = userId;
-                }
 
-                req.session.userId = user.id;
-                req.session.userName = user.login;
-                req.session.redirectUrl = redirectUrl;
-
-                metadata.get(req.session.userId, metadata.SIGNUP_STEP, function (metaErr, signupStep) {
+                metadata.get(user.id, metadata.SIGNUP_STEP, function (metaErr, signupStep) {
                     // can safely ignore possible metadata error here
                     req.session.userIsNew = !signupStep && user.created === user.updated;
 
                     if (!secret) {
-                        logUserInformation(req, redirectUrl);
-
-                        // as sso passes token using ?token=
-                        req.session.token = token;
-                        req.session.save();
-
-                        res.redirect(redirectUrl);
+                        saveSessionToken(user);
                     } else {
                         req.log.info({userId: user.id}, 'User redirected to TFA login');
+                        req.session.redirectUrl = redirectUrl;
                         req.session._preToken = token;
                         req.session._tfaSecret = secret;
                         req.session.save();
@@ -121,9 +126,9 @@ module.exports = function execute(scope, app) {
                 next(error);
                 return;
             }
-            cloud.getUser(userId, callback);
+            cloud.getUser(userId, userCallback);
         } else {
-            cloud.getAccount(callback)
+            cloud.getAccount(accountCallback);
         }
     });
 
