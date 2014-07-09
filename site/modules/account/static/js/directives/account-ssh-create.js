@@ -8,23 +8,28 @@
         '$rootScope',
         'PopupDialog',
         '$sce',
-        function (localization, $http, $rootScope, PopupDialog, $sce) {
+        'requestContext',
+        'Account',
+        function (localization, $http, $rootScope, PopupDialog, $sce, requestContext, Account) {
             return {
                 restrict: 'EA',
                 replace: true,
                 scope: true,
                 controller: function ($scope) {
                     localization.bind('account', $scope);
-
                     $rootScope.downloadLink = null;
                 },
                 link: function ($scope) {
-                    var subUser = false;
+                    var subUser = requestContext.getParam('id') || false;
+
+                    Account.getAccount().then(function (account) {
+                        if (account.isSubuser) {
+                            subUser = account.id;
+                        }
+                    });
+
                     /* SSH Key generation popup */
                     $scope.generateSshKey = function () {
-                        if ($scope.user && $scope.user.id) {
-                            subUser = $scope.user.id;
-                        }
                         $rootScope.$broadcast('sshProgress', true);
                         var sshKeyModalCtrl = function ($scope, dialog) {
                             if (subUser) {
