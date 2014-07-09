@@ -56,31 +56,28 @@
                                         keyData: $scope.data.keyData
                                     }
                                 });
-                                $rootScope.loading = true;
+                                $rootScope.$broadcast('sshProgress', true);
                             };
 
                             $scope.buttons = [{result: 'cancel', label: 'Cancel', cssClass: 'pull-left', setFocus: false}, {result: 'add', label: 'Add', cssClass: 'btn-joyent-blue', setFocus: true}];
 
                             $scope.uploadFile = function (elem) {
                                 $scope.$apply(function () {
-                                    $rootScope.loading = true;
-                                    $scope.keyLoading = true;
+                                    $rootScope.$broadcast('sshProgress', true);
                                 });
 
                                 var files = elem.files;
                                 var file = files[0];
 
                                 if (file.size > 512) {
-                                    $rootScope.loading = false;
-                                    $scope.keyLoading = false;
+                                    $rootScope.$broadcast('sshProgress', false);
 
                                     dialog.close({});
                                     
                                     return showPopupDialog('error', 'Error', "The file you've uploaded is not a public key.");
                                 } else {
                                     http.uploadFiles('account/upload', elem.value, files, function (error, response) {
-                                        $rootScope.loading = false;
-                                        $scope.keyLoading = false;
+                                        $rootScope.$broadcast('sshProgress', false);
 
                                         if (error) {
                                             var message = error.error;
@@ -123,7 +120,7 @@
                                         data: result.data.keyData
                                     });
                                 } else if (result && result.value === 'add' && !result.data.keyData) {
-                                    $rootScope.loading = false;
+                                    $rootScope.$broadcast('sshProgress', false);
                                     return showPopupDialog('error', 'Error', 'Please enter a SSH key.');
                                 } else if (result && result.keyUploaded) {
                                     if ($scope.nextStep) {
@@ -145,7 +142,7 @@
                         var newKey = Account.createKey(key.name, key.data);
 
                         $q.when(newKey, function (key) {
-                            $rootScope.loading = false;
+                            $rootScope.$broadcast('sshProgress', false);
                             if (key.name && key.fingerprint && key.key) {
                                 $scope.key = null;
 
@@ -162,7 +159,7 @@
                                 showPopupDialog('error', 'Error', message);
                             }
                         }, function (key) {
-                            $rootScope.loading = false;
+                            $rootScope.$broadcast('sshProgress', false);
                             var message = 'Failed to add new key: ' + (key.message || '') + ' ' + (key.code || '') + '.';
                             showPopupDialog('error', 'Error', message);
                         });

@@ -24,8 +24,8 @@
                     $scope.generateSshKey = function () {
                         if ($scope.user && $scope.user.id) {
                             subUser = $scope.user.id;
-                            $rootScope.$broadcast('sshCreating', true);
                         }
+                        $rootScope.$broadcast('sshProgress', true);
                         var sshKeyModalCtrl = function ($scope, dialog) {
                             if (subUser) {
                                 $scope.message = 'User\'s private key will begin downloading when you click "Create Key". The public half of the key will be added to user\'s Joyent Cloud account.';
@@ -34,13 +34,13 @@
 
                             $scope.close = function (res) {
                                 if (!res || !res.generate) {
-                                    $rootScope.loading = false;
+                                    $rootScope.$broadcast('sshProgress', false);
                                 }
                                 dialog.close(res);
                             };
 
                             $scope.generateKey = function () {
-                                $rootScope.loading = true;
+                                $rootScope.$broadcast('sshProgress', true);
                                 $scope.close({generate: true, keyName: $scope.keyName});
                             };
                         };
@@ -49,7 +49,7 @@
                             templateUrl: 'account/static/template/dialog/generate-ssh-modal.html',
                             openCtrl: sshKeyModalCtrl
                         };
-                        $rootScope.loading = true;
+                        $rootScope.$broadcast('sshProgress', true);
                         PopupDialog.custom(
                             opts,
                             function (data) {
@@ -63,7 +63,7 @@
 
                                                 var downloadLink = 'account/ssh/download/' + keyId;
                                                 // as this is directive, we need to use rootScope here
-                                                $rootScope.loading = false;
+                                                $rootScope.$broadcast('sshProgress', false);
                                                 $rootScope.downloadLink = downloadLink;
                                                 $rootScope.sshKeyName = data.name;
 
@@ -106,11 +106,13 @@
                                                     if (subUser) {
                                                         keyAdded();
                                                         $rootScope.$broadcast('sshCreated', true);
+                                                    } else {
+                                                        $rootScope.$broadcast('sshProgress', false);
                                                     }
                                                 }
                                             } else {
                                                 // error
-                                                $rootScope.loading = false;
+                                                $rootScope.$broadcast('sshProgress', false);
                                                 PopupDialog.error(
                                                     localization.translate(
                                                         $scope,
@@ -131,10 +133,7 @@
                                         });
 
                                 } else {
-                                    $rootScope.loading = false;
-                                    if (subUser) {
-                                        $rootScope.$broadcast('sshCancel', true);
-                                    }
+                                    $rootScope.$broadcast('sshProgress', false);
                                 }
                             }
                         );

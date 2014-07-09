@@ -233,7 +233,7 @@
             var getKeysList = function () {
                 service.listUserKeys($scope.user.id).then(function (list) {
                     $scope.listUserKeys = list;
-                    $scope.loading = false;
+                    $scope.loadingKeys = false;
                 }, errorCallback);
             };
 
@@ -292,23 +292,20 @@
 
                     $scope.uploadFile = function (elem) {
                         $scope.$apply(function () {
-                            $scope.loading = true;
-                            $scope.keyLoading = true;
+                            $scope.loadingKeys = true;
                         });
                         var files = elem.files;
                         var file = files[0];
 
                         if (file.size > 512) {
-                            $scope.loading = false;
-                            $scope.keyLoading = false;
+                            $scope.loadingKeys = false;
 
                             dialog.close({});
 
                             return showPopupDialog('error', 'Error', "The file you've uploaded is not a public key.");
                         } else {
                             http.uploadFiles('account/upload?userId=' +  userId, elem.value, files, function (error, response) {
-                                $scope.loading = false;
-                                $scope.keyLoading = false;
+                                $scope.loadingKeys = false;
                                 getKeysList();
                                 if (error) {
                                     var message = error.error;
@@ -346,15 +343,15 @@
                                     result.data.keyName = keyParts[2];
                                 }
                             }
-                            $scope.loading = true;
+                            $scope.loadingKeys = true;
                             service.uploadUserKey($scope.user.id, result.data.keyName, result.data.keyData).then(function () {
                                 getKeysList();
                             }, errorCallback);
                         } else if (result && result.value === 'add' && !result.data.keyData) {
-                            $scope.loading = false;
+                            $scope.loadingKeys = false;
                             return showPopupDialog('error', 'Error', 'Please enter a SSH key.');
                         } else if (result && result.keyUploaded) {
-                            $scope.loading = false;
+                            $scope.loadingKeys = false;
                         }
                     }
                 );
@@ -364,7 +361,7 @@
                 PopupDialog.confirm(null,
                     localization.translate($scope, null, 'Are you sure you want to delete "{{name}}" SSH key?', {name: name}),
                     function () {
-                        $scope.loading = true;
+                        $scope.loadingKeys = true;
                         service.deleteUserKey($scope.user.id, name, key).then(function () {
                             getKeysList();
                             PopupDialog.message(
@@ -387,11 +384,8 @@
             $scope.$on('sshCreated', function () {
                 getKeysList();
             });
-            $scope.$on('sshCreating', function () {
-                $scope.loading = true;
-            });
-            $scope.$on('sshCancel', function () {
-                $scope.loading = false;
+            $scope.$on('sshProgress', function (event, isInProgress) {
+                $scope.loadingKeys = isInProgress;
             });
         }
     ]);

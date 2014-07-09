@@ -8,7 +8,7 @@
                 <label class="control-label">Key Name</label>
                 <div class="controls">
                     <input type="text" class="span5" data-ng-model="data.keyName" placeholder="optional"
-                            data-ng-disabled="keyLoading"/>
+                            data-ng-disabled="loadingKeys"/>
                 </div>
             </div>
             <div class="control-group control-group-ssh">
@@ -16,7 +16,7 @@
                 <div class="controls">
                     <textarea class="ssharea span5" rows="10"
                             data-ng-model="data.keyData"
-                            data-ng-disabled="keyLoading"></textarea>
+                            data-ng-disabled="loadingKeys"></textarea>
                 </div>
             </div>
         </div>
@@ -32,7 +32,7 @@
                        onchange="angular.element(this).scope().uploadFile(uploadInput)">
             </span>
             <button data-button-focus="false" data-ng-click="close('cancel')" class="btn orange effect-orange-button grey-new pull-right">Cancel</button>
-            <div class="loading-medium-tr pull-right" data-ng-show="keyLoading"></div>
+            <div class="loading-medium-tr pull-right" data-ng-show="loadingKeys"></div>
         </div>
     </div>
 </div>
