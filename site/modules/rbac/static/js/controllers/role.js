@@ -93,7 +93,7 @@
                     $scope.users.forEach(function (user) {
                         user.value = user.login;
                     });
-
+                    orderByLogin($scope.users);
                     $scope.loading = false;
                 });
             }
