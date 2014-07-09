@@ -106,12 +106,12 @@
                                 ),
                                 function () {
                                     $scope.loading = true;
-                                    var deleteTasks = [];
+                                    var deleteIds = [];
                                     //FIXME: Use Array.prototype.map here
                                     checkedItems.forEach(function (item) {
-                                        deleteTasks.push(service.deletePolicy(item.id));
+                                        deleteIds.push(item.id);
                                     });
-                                    $q.all(deleteTasks).then(function () {
+                                    service.deletePolicy(deleteIds).then(function () {
                                         service.listPolicies().then(function (policies) {
                                             $scope.policies = policies;
                                             $scope.loading = false;

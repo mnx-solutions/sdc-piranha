@@ -32,7 +32,13 @@
                         cache.remove(CACHE_DEPENDENCIES[entityType] + '_list');
                     }
                     cache.remove(entityType + '_list');
-                    cache.remove(entityType + '_' + ops.id);
+                    if (ops.ids) {
+                        ops.ids.forEach(function (id) {
+                            cache.remove(entityType + '_' + id);
+                        });
+                    } else {
+                        cache.remove(entityType + '_' + ops.id);
+                    }
                 } else if (isList) {
                     cache.put(entityType + '_list', data);
                 } else {
@@ -148,7 +154,10 @@
             };
 
             service.deleteRole = function (roleId) {
-                return action('deleteRole', {id: roleId}, ENTITY_TYPE.ROLE, ACCESS.WRITE);
+                if (typeof (roleId) === 'string') {
+                    return action('deleteRole', {id: roleId}, ENTITY_TYPE.ROLE, ACCESS.WRITE);
+                }
+                return action('deleteRole', {ids: roleId}, ENTITY_TYPE.ROLE, ACCESS.WRITE);
             };
 
             service.listRoles = function () {
@@ -164,7 +173,10 @@
             };
 
             service.deletePolicy = function (policyId) {
-                return action('deletePolicy', {id: policyId}, ENTITY_TYPE.POLICY, ACCESS.WRITE);
+                if (typeof (policyId) === 'string') {
+                    return action('deletePolicy', {id: policyId}, ENTITY_TYPE.ROLE, ACCESS.WRITE);
+                }
+                return action('deletePolicy', {ids: policyId}, ENTITY_TYPE.POLICY, ACCESS.WRITE);
             };
 
             service.createPolicy = function (ops) {
