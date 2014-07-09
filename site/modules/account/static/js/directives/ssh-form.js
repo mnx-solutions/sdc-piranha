@@ -18,6 +18,7 @@
                 scope: {
                     singleKey: '@',
                     noKeysMessage: '@',
+                    isSubUserForm: '=?',
                     loadDisabled: '=?',
                     createInstanceFn: '&'
                 },
@@ -34,8 +35,9 @@
                     }
                     var errorCallback = function (err) {
                         $scope.loading = false;
+                        $scope.loadingKeys = false;
                         PopupDialog.errorObj(err);
-                        if (subuserId) {
+                        if (subuserId && err.message.indexOf('listuserkeys') === -1) {
                             getKeysList();
                         }
                     };
@@ -130,16 +132,6 @@
                             });
                     };
 
-                    if (!$scope.loadDisabled) {
-                        $scope.updateKeys();
-                    } else {
-                        $scope.$watch('loadDisabled', function (value) {
-                            if (!value) {
-                                $scope.updateKeys();
-                            }
-                        });
-                    }
-
                     $scope.$on('sshProgress', function (event, isInProgress) {
                         $scope.loadingKeys = isInProgress;
                     });
@@ -150,10 +142,19 @@
 
                     Account.getAccount().then(function (account) {
                         $scope.account = account;
-                        if ($scope.account.isSubuser) {
+                        if ($scope.isSubUserForm && $scope.account.isSubuser) {
                             subuserId = $scope.account.id;
                         }
-                        $scope.updateKeys();
+
+                        if (!$scope.loadDisabled) {
+                            $scope.updateKeys();
+                        } else {
+                            $scope.$watch('loadDisabled', function (value) {
+                                if (!value) {
+                                    $scope.updateKeys();
+                                }
+                            });
+                        }
                     });
                 },
                 templateUrl: 'account/static/partials/ssh-form.html'

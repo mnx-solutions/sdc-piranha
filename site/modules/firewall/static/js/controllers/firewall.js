@@ -213,7 +213,7 @@
             $scope.$watch('data', function(n, o) {
                 if (n) {
                     var data = $scope.getData();
-                    if (n.parsed && o.parsed && n.parsed.protocol.name !== o.parsed.protocol.name && n.uuid == o.uuid) {
+                    if (n.parsed && o.parsed && n.parsed.protocol && o.parsed.protocol && n.parsed.protocol.name !== o.parsed.protocol.name && n.uuid == o.uuid) {
                         $scope.clearProtocolTargets();
                     }
                     if (!data.parsed) {
@@ -419,7 +419,9 @@
                             $scope.datacenter = newVal;
                         }
                     }, function (err) {
-                        switchToOtherDatacenter(newVal, err);
+                        if (err.restCode !== 'NotAuthorized') {
+                            switchToOtherDatacenter(newVal, err);
+                        }
                     });
                 }
                 $scope.datasetsLoading = false;
@@ -464,7 +466,7 @@
                 $q.when(Datacenter.datacenter())
             ]).then(function (results) {
                 var machineResult = results[0];
-                var rilesResult = results[1];
+                var rulesResult = results[1];
                 var datacentersResult = results[2];
                 $scope.machines = [];
                 $scope.datacenters = [];
@@ -474,11 +476,10 @@
                 } else {
                     $scope.machines = machineResult;
                 }
-
-                if (rilesResult.error) {
-                    PopupDialog.errorObj(rilesResult.error);
+                if (rulesResult.error) {
+                    PopupDialog.errorObj(rulesResult.error);
                 } else {
-                    $scope.setRules(rilesResult);
+                    $scope.setRules(rulesResult);
                 }
 
                 if (datacentersResult.error) {

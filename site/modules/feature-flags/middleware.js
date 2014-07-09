@@ -11,7 +11,7 @@ module.exports = function execute(scope) {
         }
         var currentFeatures = JSON.parse(JSON.stringify(config.features));
 
-        if (req.session.subId) {
+        if (req.session && req.session.subId) {
             config.subUserDenied.some(function (item) {
                 currentFeatures[item] = 'disabled';
             });

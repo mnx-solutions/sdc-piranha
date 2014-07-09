@@ -241,8 +241,8 @@ var firewall = function execute (scope) {
                         });
 
                         call.log.debug('List rules succeeded for datacenter %s', name);
+                        response.status = 'complete';
                     }
-                    response.status = 'complete';
                     call.update(null, response);
 
                     if (--count === 0) {
