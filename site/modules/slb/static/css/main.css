@@ -227,11 +227,9 @@ input.ng-invalid-field{
     text-decoration: none;
 }
 
-.font16{
-    font-size: 16px;
-}
+.create-lb-btn,
 .uninstall-lb-btn {
-    margin-top: -13px;
+    font-size: 16px;
 }
 
 .table-bordered{
