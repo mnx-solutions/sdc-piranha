@@ -106,8 +106,12 @@
                             $scope.error = null;
                             $scope.loading = false;
                             var message = 'Account update failed.';
-                            if (err && err.message.search('email') > 0 && err.restCode === "InvalidArgument") {
-                                message = 'This email address is already in use.';
+                            if (err) {
+                                if (err.restCode === 'NotAuthorized') {
+                                    message = err.message;
+                                } else if (err.restCode === "InvalidArgument" && err.message.search('email') > 0) {
+                                    message = 'This email address is already in use.';
+                                }
                             }
                             PopupDialog.error(
                                 localization.translate(
