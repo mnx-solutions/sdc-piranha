@@ -34,12 +34,21 @@
                         $q.when(BillingService.getInvoices()),
                         $q.when(BillingService.getPayments())
                     ]).then(function (results) {
+                        var invoices = results[0];
+                        var payments = results[1];
                         var paidInvoices = [];
-                        if (results[1].length) {
-                            paidInvoices = [].concat.apply([], results[1].map(function (payment) { return payment.paidInvoices.map(function(inv) { return inv.invoiceNumber; }); }));
+                        if (payments.length) {
+                            paidInvoices = [].concat.apply([], payments.filter(function (payment) {
+                                return payment.status === 'Processed';
+                            }).map(function (payment) {
+                                return payment.paidInvoices.map(function(inv) {
+                                    return inv.invoiceNumber;
+                                });
+                            }));
                         }
-                        if (results[0].length) {
-                            $scope.invoices = results[0].map(function (invoice) {
+
+                        if (invoices.length) {
+                            $scope.invoices = invoices.map(function (invoice) {
                                 invoice.paymentStatus = (paidInvoices.length && paidInvoices.indexOf(invoice.invoiceNumber) !== -1) ? 'Paid' : 'Unpaid';
                                 return invoice;
                             });
