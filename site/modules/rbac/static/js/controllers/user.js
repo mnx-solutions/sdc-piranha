@@ -31,7 +31,12 @@
                 }
                 PopupDialog.errorObj(err);
             };
-
+            // FIXME: DRY, see orderByLogin in role controller
+            var orderByName = function (items) {
+                return items.sort(function (a, b) {
+                    return a.name.localeCompare(b.name);
+                });
+            };
             $scope.user.isNew = userId && userId === 'create';
             if (!$scope.user.isNew) {
                 $q.all([
@@ -48,9 +53,7 @@
                     $scope.initial.address = $scope.user.address;
                     $scope.initial.city = $scope.user.city;
                     $scope.roles = result[1] || [];
-                    $scope.roles.sort(function (a, b) {
-                        return a.name.localeCompare(b.name);
-                    });
+                    orderByName($scope.roles);
                     $scope.roles.forEach(function (role) {
                         if (role.members.indexOf($scope.user.login) >= 0) {
                             $scope.userRoles.push(role);
@@ -73,6 +76,7 @@
                 });
                 service.listRoles().then(function (roles) {
                     $scope.roles = roles || [];
+                    orderByName($scope.roles);
                     $scope.roles.forEach(function (item) {
                         item.value = item.id;
                     });
