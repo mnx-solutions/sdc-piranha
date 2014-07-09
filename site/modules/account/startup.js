@@ -37,7 +37,7 @@ module.exports = function execute(scope) {
             'analytics', 'fwrules', 'networks', 'instrumentations'
         ];
         cloudapi.listRoles(function (err, roles) {
-            roles = roles || [];
+            roles = Array.isArray(roles) ? roles : [];
             var getUserResources = {};
             cloudapi.listPolicies(function (policyErr, policies) {
                 var roleNames = [];
