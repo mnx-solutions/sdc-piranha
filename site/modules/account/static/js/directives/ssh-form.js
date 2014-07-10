@@ -9,7 +9,9 @@
         'util',
         '$rootScope',
         '$q',
-        function (Account, PopupDialog,localization, util, $rootScope, $q) {
+        'rbac.Service',
+        'requestContext',
+        function (Account, PopupDialog, localization, util, $rootScope, $q, RBAC, requestContext) {
             return {
                 restrict: 'A',
                 replace: true,
@@ -18,15 +20,26 @@
                     noKeysMessage: '@',
                     createInstanceFn: '&'
                 },
-                controller: function($scope) {
+                controller: function ($scope) {
                     localization.bind('account', $scope);
                 },
 
                 link: function ($scope) {
                     $scope.keys = [];
                     $scope.isCreateKeyEnabled = true;
+                    var subuserId = requestContext.getParam('id') || false;
+                    if (subuserId === 'create') {
+                        subuserId = false;
+                    }
+                    var errorCallback = function (err) {
+                        $scope.loading = false;
+                        PopupDialog.errorObj(err);
+                        if (subuserId) {
+                            getKeysList();
+                        }
+                    };
 
-                    $scope.$watch('singleKey', function(data) {
+                    $scope.$watch('singleKey', function () {
                         $scope.singleKey = util.parseBoolean($scope.singleKey);
                     });
 
@@ -37,28 +50,53 @@
                         return key.name || '';
                     };
 
+                    var getKeysList = function () {
+                        RBAC.listUserKeys(subuserId).then(function (list) {
+                            $scope.keys = list;
+                            $scope.loadingKeys = false;
+                        }, errorCallback);
+                    };
+
                     $scope.updateKeys = function (notifyDataChanged, cb) {
                         if (typeof (notifyDataChanged) === 'function') {
                             cb = notifyDataChanged;
                             notifyDataChanged = false;
                         }
                         $scope.loadingKeys = true;
+                        if (subuserId) {
+                            getKeysList();
+                        } else {
+                            $q.when(Account.getKeys(true)).then(function (result) {
+                                if (notifyDataChanged) {
+                                    $rootScope.$broadcast("ssh-form:onKeyUpdated", result);
+                                }
+                                $scope.keys = result;
 
-                        $q.when(Account.getKeys(true)).then(function (result) {
-                            if (notifyDataChanged) {
-                                $rootScope.$broadcast("ssh-form:onKeyUpdated", result);
-                            }
-                            $scope.keys = result;
+                                if ($scope.singleKey) {
+                                    $scope.isCreateKeyEnabled = result.length === 0;
+                                }
+                                $scope.loadingKeys = false;
 
-                            if ($scope.singleKey) {
-                                $scope.isCreateKeyEnabled = result.length === 0;
-                            }
-                            $scope.loadingKeys = false;
+                                if (typeof (cb) === 'function') {
+                                    cb();
+                                }
+                            });
+                        }
+                    };
 
-                            if (typeof (cb) === 'function') {
-                                cb();
-                            }
-                        });
+                    var keyDeletedMessage = function () {
+                        PopupDialog.message(
+                            localization.translate(
+                                $scope,
+                                null,
+                                'Message'
+                            ),
+                            localization.translate(
+                                $scope,
+                                null,
+                                'Key successfully deleted.'
+                            )
+                        );
                     };
 
                     $scope.deleteKey = function (name, fingerprint, $event) {
@@ -68,37 +106,40 @@
                             function () {
                                 $scope.loadingKeys = true;
                                 $scope.keys = null;
-                                var deleteKey = Account.deleteKey(fingerprint);
-
-                                $q.when(deleteKey, function () {
-                                    $rootScope.$broadcast("ssh-form:onKeyDeleted");
-                                    $scope.updateKeys(true, function () {
-                                        if ($rootScope.downloadLink && $rootScope.downloadLink.indexOf(fingerprint) !== -1) {
-                                            $rootScope.downloadLink = null;
-                                        }
-
-                                        PopupDialog.message(
-                                            localization.translate(
-                                                $scope,
-                                                null,
-                                                'Message'
-                                            ),
-                                            localization.translate(
-                                                $scope,
-                                                null,
-                                                'Key successfully deleted.'
-                                            ),
-                                            function () {}
-                                        );
+                                if (subuserId) {
+                                    RBAC.deleteUserKey(subuserId, name, fingerprint).then(function () {
+                                        getKeysList();
+                                        keyDeletedMessage();
+                                    }, errorCallback);
+                                } else {
+                                    var deleteKey = Account.deleteKey(fingerprint);
+                                    $q.when(deleteKey, function () {
+                                        $rootScope.$broadcast("ssh-form:onKeyDeleted");
+                                        $scope.updateKeys(true, function () {
+                                            if ($rootScope.downloadLink && $rootScope.downloadLink.indexOf(fingerprint) !== -1) {
+                                                $rootScope.downloadLink = null;
+                                            }
+                                            keyDeletedMessage();
+                                        });
                                     });
-                                });
+                                }
                             });
                     };
 
-                    $scope.updateKeys();
-
                     $scope.$on('sshProgress', function (event, isInProgress) {
                         $scope.loadingKeys = isInProgress;
+                    });
+
+                    $scope.$on('sshCreated', function () {
+                        getKeysList();
+                    });
+
+                    Account.getAccount().then(function (account) {
+                        $scope.account = account;
+                        if ($scope.account.isSubuser) {
+                            subuserId = $scope.account.id;
+                        }
+                        $scope.updateKeys();
                     });
                 },
                 templateUrl: 'account/static/partials/ssh-form.html'

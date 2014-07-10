@@ -67,7 +67,7 @@
                     promiseActions[promiseKey].deferred = deferred;
                     promiseActions[promiseKey].pending = true;
                 } else {
-                    promiseActions[actionName].deferred.promise.then(deferred.resolve, deferred.reject);
+                    promiseActions[promiseKey].deferred.promise.then(deferred.resolve, deferred.reject);
                     return deferred.promise;
                 }
 

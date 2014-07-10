@@ -212,3 +212,6 @@ select.policy-form {
     font-size: 14px;
     width: 190px;
 }
+.container-position {
+    padding-bottom: 25px;
+}
