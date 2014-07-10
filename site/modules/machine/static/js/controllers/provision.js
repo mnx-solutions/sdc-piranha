@@ -1392,8 +1392,9 @@
                                 { name: datacenter }
                             )
                         );
-                        if (!err) {
+                        if (!err || (err && err.restCode !== 'NotAuthorized')) {
                             $scope.data.datacenter = firstNonSelected.name;
+                            $('#selectDatacenter').select2('val', firstNonSelected.name);
                         }
                     }
                 }
@@ -1404,7 +1405,6 @@
                 if (newVal && newVal !== oldVal) {
                     $scope.reloading = true;
                     $scope.datasetsLoading = true;
-                    setNetworks(newVal);
                     $qe.every([
                         $q.when(Dataset.dataset({ datacenter: newVal })),
                         $q.when(Package.package({ datacenter: newVal })),
@@ -1414,7 +1414,9 @@
                         var packagesResult = result[1];
                         var packages;
                         var datasets;
+                        var isAvailableSwitchDatacenter = true;
                         if (datasetsResult.error) {
+                            isAvailableSwitchDatacenter = datasetsResult.error.restCode !== 'NotAuthorized';
                             PopupDialog.errorObj(datasetsResult.error);
                             datasets = [];
                         } else {
@@ -1428,8 +1430,10 @@
                         }
                         processDatasets(datasets);
                         processPackages(newVal, packages);
-                        if (!packagesResult.error && datasets.length === 0 && packages.length === 0) {
+                        if (isAvailableSwitchDatacenter && datasets.length === 0 && packages.length === 0) {
                             switchToOtherDatacenter(newVal);
+                        } else {
+                            setNetworks(newVal);
                         }
                         if ($scope.isRecentInstancesEnabled) {
                             processRecentInstances(result[2], datasets);

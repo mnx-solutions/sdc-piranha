@@ -1,6 +1,6 @@
 'use strict';
 
-(function (app) {
+(function (ng, app) {
 
     app.factory('PopupDialog', ["$dialog", "$location", "$rootScope", function ($dialog, $location, $rootScope) {
 
@@ -19,7 +19,6 @@
                 messages.parts.push(message);
                 messages.concatenated = messages.parts.join('<br/>');
             }
-
             if (!dialog || isNew) {
                 dialog =  $dialog.messageBox(title, messages, btns, templateUrl)
                     .open()
@@ -59,6 +58,9 @@
         };
 
         factory.error = function (title, question, callback) {
+            if ((ng.isObject(question) && !question.error) || question.code === 'EHOSTUNREACH') {
+                return;
+            }
             // TODO: Translate
             title = title || 'Error';
             var btns = [
@@ -147,7 +149,7 @@
 
         return factory;
     }]);
-}(window.JP.getModule('Dialog')));
+}(window.angular, window.JP.getModule('Dialog')));
 
 window.JP.main.directive('buttonFocus', [
     function () {

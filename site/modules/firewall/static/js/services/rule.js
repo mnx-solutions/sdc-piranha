@@ -65,11 +65,16 @@
                 function showError(err) {
                     isDatacenterOn(function (err2, result) {
                         // add messages from errors to make it move convenient
-                        var errMsg = (err.message) ? '<br />' + err.message : '';
-                        if (err.body.errors && err.body.errors.length > 0) {
-                            err.body.errors.forEach(function (error) {
-                                errMsg += (error.message) ? '<br />' + error.message : '';
-                            });
+                        var errMsg = '';
+                        if (ng.isString(err)) {
+                            errMsg = err;
+                        } else {
+                            errMsg = (err.message) ? '<br />' + err.message : '';
+                            if (err.body.errors && err.body.errors.length > 0) {
+                                err.body.errors.forEach(function (error) {
+                                    errMsg += (error.message) ? '<br />' + error.message : '';
+                                });
+                            }
                         }
                         if (!!result.code) {
                             errMsg = errMsg + 'Datacenter ' + rule.datacenter + ' is currently not available. We are working on getting this datacenter back on';
@@ -202,7 +207,7 @@
                                     deferred.resolve(rules.map);
                                 }, function (err) {
                                     deferred.reject(err);
-                                    rules.job = undefined;
+                                    rules.job = null;
                                 });
                             }
                         }

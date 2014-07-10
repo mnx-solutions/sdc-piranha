@@ -67,9 +67,13 @@
                     $q.when(Account.getAccount())
                 ]).then(function (results) {
                     var machines = results[1];
-                    var datacenters = results[2].map(function (datacenter) {
-                        return datacenter.name;
-                    });
+                    var datacenters = [];
+                    if (results[2] && Array.isArray(results[2])) {
+                        datacenters = results[2].map(function (datacenter) {
+                            return datacenter.name;
+                        });
+                    }
+
                     var freeTierOptionsResult = results[0].map(function (option) {
                         option.datacenters = angular.copy(datacenters);
                         return option;
