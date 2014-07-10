@@ -64,18 +64,20 @@
                     $scope.loading = false;
                 }, errorCallback);
             } else {
-                Account.getAccount().then(function (account) {
+                $q.all([
+                    Account.getAccount(),
+                    BillingService.getAccountPaymentInfo(),
+                    service.listRoles()
+                ]).then(function (result) {
+                    var account = result[0] || {};
                     $scope.user.companyName = account.companyName;
                     $scope.user.country = account.country;
-                });
-                BillingService.getAccountPaymentInfo().then(function (accountPaymentInfo) {
+                    var accountPaymentInfo = result[1] || {};
                     $scope.user.address = accountPaymentInfo.address1;
                     $scope.user.city = accountPaymentInfo.city;
                     $scope.user.state = accountPaymentInfo.state;
                     $scope.user.postalCode = accountPaymentInfo.zipCode;
-                });
-                service.listRoles().then(function (roles) {
-                    $scope.roles = roles || [];
+                    $scope.roles = result[2] || [];
                     orderByName($scope.roles);
                     $scope.roles.forEach(function (item) {
                         item.value = item.id;
