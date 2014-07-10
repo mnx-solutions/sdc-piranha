@@ -24,7 +24,7 @@
             var call = serverTab.call({
                 name: 'getAccountPaymentInfo'
             });
-            return call.deferred;
+            return call.promise;
         };
 
         service.getDefaultCreditCard = function () {
