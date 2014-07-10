@@ -38,7 +38,23 @@
                     PopupDialog.errorObj(err);
                 });
             } else {
-                $scope.loading = false;
+                Account.getAccount(true).then(function (account) {
+                    if (!account.provisionEnabled) {
+                        var submitBillingInfo = {
+                            btnTitle: 'Submit and Access Create Policy'
+                        };
+                        Account.checkProvisioning(submitBillingInfo, null, null, function (isSuccess) {
+                            $scope.loading = false;
+                            if (isSuccess) {
+                                $location.path('/accounts/policy/create');
+                            } else {
+                                $location.path('/accounts/policies');
+                            }
+                        }, true);
+                    } else {
+                        $scope.loading = false;
+                    }
+                });
             }
 
             $scope.cancel = function () {
