@@ -120,11 +120,11 @@
                                 ),
                                 function () {
                                     $scope.loading = true;
-                                    var deleteTasks = [];
+                                    var deleteIds = [];
                                     checkedItems.forEach(function (item) {
-                                        deleteTasks.push(service.deleteRole(item.id));
+                                        deleteIds.push(item.id);
                                     });
-                                    $q.all(deleteTasks).then(function () {
+                                    service.deleteRole(deleteIds).then(function () {
                                         service.listRoles().then(function (roles) {
                                             $scope.roles = roles;
                                             $scope.loading = false;

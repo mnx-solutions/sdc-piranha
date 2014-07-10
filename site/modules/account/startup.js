@@ -3,6 +3,7 @@
 var config = require('easy-config');
 var metadata = require('./lib/metadata');
 var ursa = require('ursa');
+var vasync = require('vasync');
 
 module.exports = function execute(scope) {
     var server = scope.api('Server');
@@ -99,6 +100,16 @@ module.exports = function execute(scope) {
             call.req.session.save();
             call.done(billingError, response);
         });
+    };
+
+    var pipeline = function (items, action, call, callback) {
+        var pool = [];
+        items.forEach(function (item) {
+            pool.push(function (_, callback) {
+                call.cloud[action](item, callback);
+            });
+        });
+        vasync.pipeline({'funcs': pool}, callback);
     };
 
     server.onCall('getAccount', function (call) {
@@ -218,10 +229,17 @@ module.exports = function execute(scope) {
         });
     });
 
+
     server.onCall('deleteRole', function (call) {
-        call.cloud.deleteRole(call.data.id, function (err, data) {
-            call.done(err, data);
-        });
+        if (call.data.ids) {
+            pipeline(call.data.ids, 'deleteRole', call, function (err, data) {
+                call.done(err, data);
+            });
+        } else {
+            call.cloud.deleteRole(call.data.id, function (err, data) {
+                call.done(err, data);
+            });
+        }
     });
 
     server.onCall('getRole', function (call) {
@@ -261,9 +279,15 @@ module.exports = function execute(scope) {
     });
 
     server.onCall('deletePolicy', function (call) {
-        call.cloud.deletePolicy(call.data.id, function (err, data) {
-            call.done(err, data);
-        });
+        if (call.data.ids) {
+            pipeline(call.data.ids, 'deletePolicy', call, function (err, data) {
+                call.done(err, data);
+            });
+        } else {
+            call.cloud.deletePolicy(call.data.id, function (err, data) {
+                call.done(err, data);
+            });
+        }
     });
 
     server.onCall('updateUser', function (call) {
