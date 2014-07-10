@@ -22,6 +22,7 @@
                 link: function ($scope) {
                     $scope.error = null;
                     $scope.loading = false;
+                    $scope.formSubmitted = false;
 
                     $scope.setAccount = function () {
                         $q.when(Account.getAccount(true), function (account) {
@@ -42,6 +43,12 @@
                     $scope.isError = function (field, errorType) {
                         var isPresent = false;
 
+                        if ($scope.formSubmitted &&
+                            $scope.accountForm[field].$invalid &&
+                            $scope.accountForm[field].$error.required &&
+                            errorType === 'required') {
+                            return true;
+                        }
                         if ($scope.accountForm[field].$dirty) {
                             Object.keys($scope.accountForm[field].$error).some(function (key) {
                                 if ($scope.accountForm[field].$error[key] && (!errorType || key === errorType)) {
@@ -56,6 +63,7 @@
 
                     $scope.submitForm = function () {
                         if ($scope.accountForm.$invalid) {
+                            $scope.formSubmitted = true;
                             PopupDialog.message(
                                 localization.translate(
                                     $scope,
@@ -76,6 +84,7 @@
 
                         $scope.loading = true;
                         Account.updateAccount(account).then(function (acc) {
+                            $scope.formSubmitted = false;
                             $scope.loading = false;
                             $scope.error = null;
 
@@ -103,6 +112,7 @@
                                 );
                             }
                         }, function (err) {
+                            $scope.formSubmitted = false;
                             $scope.error = null;
                             $scope.loading = false;
                             var message = 'Account update failed.';
