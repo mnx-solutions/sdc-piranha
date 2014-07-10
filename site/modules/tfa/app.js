@@ -60,15 +60,25 @@ module.exports = function execute(scope, app) {
         var redirectUrl = (new Buffer(req.params.url, 'base64')).toString('ascii');
         var cloud = smartCloud.cloud({token: token, log: req.log});
 
-        var saveSessionToken = function (userObj) {
+        var saveSessionToken = function (userObj, signupStep, tfaSecret) {
             req.session.userId = userObj.id;
             req.session.userName = userObj.login;
             req.session.redirectUrl = redirectUrl;
-            req.session.userIsNew = userObj.created === userObj.updated;
-            req.session.token = token;
+            req.session.userIsNew = !signupStep && userObj.created === userObj.updated;
+            if (tfaSecret) {
+                req.session._preToken = token;
+                req.session._tfaSecret = tfaSecret;
+            } else {
+                req.session.token = token;
+            }
             req.session.save();
-            logUserInformation(req);
-            res.redirect(redirectUrl);
+            if (tfaSecret) {
+                req.log.info({userId: userObj.id}, 'User redirected to TFA login');
+                res.redirect('/#!/tfa');
+            } else {
+                logUserInformation(req);
+                res.redirect(redirectUrl);
+            }
         };
 
         var userCallback = function (err, user) {
@@ -103,19 +113,7 @@ module.exports = function execute(scope, app) {
 
                 metadata.get(user.id, metadata.SIGNUP_STEP, function (metaErr, signupStep) {
                     // can safely ignore possible metadata error here
-                    req.session.userIsNew = !signupStep && user.created === user.updated;
-
-                    if (!secret) {
-                        saveSessionToken(user);
-                    } else {
-                        req.log.info({userId: user.id}, 'User redirected to TFA login');
-                        req.session.redirectUrl = redirectUrl;
-                        req.session._preToken = token;
-                        req.session._tfaSecret = secret;
-                        req.session.save();
-
-                        res.redirect('/#!/tfa');
-                    }
+                    saveSessionToken(user, signupStep, secret);
                 });
             });
         };
