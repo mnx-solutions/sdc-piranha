@@ -326,11 +326,10 @@
                 if (machine.id) {
                     var job = start();
                     job.deferred.then(
-                        function (data) {
-                            var result = data.__read();
+                        function (result) {
                             if (result && typeof result === 'object') {
                                 Object.keys(result).forEach(function (k){
-                                    data.machine[k] = result[k];
+                                    machine[k] = result[k];
                                 });
                             }
                         },
