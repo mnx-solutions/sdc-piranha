@@ -513,11 +513,17 @@
                 },
 
                 error: function(err) {
-                    if (err.message && err.message.indexOf('QuotaExceeded:') !== 0 || typeof (err) === 'string') {
+                    var isGetMachineError = err && err.restCode === 'NotAuthorized' && err.message.indexOf('getmachine') !== -1;
+                    if (isGetMachineError) {
+                        err.message = 'Can not get machine status. ' + err.message;
+                        return PopupDialog.errorObj(err);
+                    } else if (err.message && err.message.indexOf('QuotaExceeded:') !== 0 || typeof (err) === 'string') {
                         showError(machine, err);
                     }
-                    machines.list.splice(machines.list.indexOf(machine), 1);
-                    delete machines.index[id];
+                    if (!isGetMachineError) {
+                        machines.list.splice(machines.list.indexOf(machine), 1);
+                        delete machines.index[id];
+                    }
                 }
             });
 
