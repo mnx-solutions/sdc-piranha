@@ -36,7 +36,8 @@
     "http-signature": "~0.10.0",
     "ursa": "git+ssh://git@github.com:13W/ursa.git",
     "manta": "1.2.6",
-    "memorystream": "0.2.0"
+    "memorystream": "0.2.0",
+    "formidable": "1.0.15"
   },
   "devDependencies": {
     "grunt": "~0.4.1",

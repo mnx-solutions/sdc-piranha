@@ -6,42 +6,78 @@ var config = require('easy-config');
 var manta = require('manta');
 var express = require('express');
 var vasync = require('vasync');
+var formidable = require('formidable');
 
 module.exports = function (scope, app) {
     var Manta = scope.api('MantaClient');
 
-    app.post('/upload', [express.multipart()], function (req, res, next) {
-        var files = req.files && req.files.uploadInput;
+    app.post('/upload', function (req, res, next) {
+        var form = new formidable.IncomingForm();
+        var client = Manta.createClient({req: req});
+        var filePath = false;
+        var filesInProgress = {};
 
-        if (files && !Array.isArray(files)) {
-            files = [files];
+        function waitFile(client, path, callback) {
+            client.info(path, function (error) {
+                if (error && error.statusCode === 404) {
+                    setTimeout(waitFile.bind(null, client, path, callback), 1000);
+                    return;
+                }
+                callback();
+            });
         }
 
-        var client = Manta.createClient({req: req});
-        vasync.forEachParallel({
-            inputs: files,
-            func: function (file, callback) {
-                var rs = fs.createReadStream(file.path);
-                var filePath = '/' + client.user + req.body.path + '/' + file.originalFilename;
-                filePath = filePath.replace(/\/+/g, '/');
+        function uploadFile(path, part, callback) {
+            var options = {type: part.mime};
+            var ws = client.createWriteStream('/' + client.user + '/' + path + '/' + part.filename, options);
+            ws.on('end', callback);
+            ws.on('error', function (error) {
+                error.message = 'Error occurred while uploading file "' + part.filename + '": ' + error.message;
+                callback(error);
+            });
+            part.pipe(ws);
+        }
 
-                req.log.info({filePath: filePath}, 'Uploading file');
-                client.put(filePath, rs, {size: file.size}, function (error) {
+        function parsePath(part, callback) {
+            var data = '';
+            part.on('data', function (chunk) {
+                data += chunk;
+            });
+            part.on('end', function () {
+                callback(null, data);
+            });
+            part.on('error', callback);
+        }
+
+        form.onPart = function (part) {
+            if (part.name === 'path') {
+                parsePath(part, function (error, path) {
                     if (error) {
-                        error.message = 'Error occurred while uploading file "' + file.originalFilename + '": ' + error.message;
+                        return next(error);
                     }
-                    callback(error, null);
+                    filePath = path;
+                });
+            } else if (!part.filename) {
+                form.handlePart(part);
+            } else if (!filePath) {
+                next(new Error('variable "path" should be placed in a start of multipart data'));
+            } else if (!filesInProgress[filePath]) { // sometimes onPort calls twice, with same data... mb bug in formidable module
+                filesInProgress[filePath] = true;
+                uploadFile(filePath, part, function (error) {
+                    if (error) {
+                        req.log.error({error: error}, 'Error while uploading files');
+                        res.send(error.statusCode || 500, error.message);
+                        return;
+                    }
+
+                    // manta storage didn't updated so quickly, not depending on the file size
+                    waitFile(client, '/' + client.user + '/' + filePath + '/' + part.filename, function () {
+                        res.json({success: true, status: 200});
+                    });
                 });
             }
-        }, function (error) {
-            if (error) {
-                req.log.error({error: error}, 'Error while uploading files');
-                var firstError = Array.isArray(error.ase_errors) && error.ase_errors[0];
-                res.send(firstError.statusCode || 500, firstError.message);
-                return;
-            }
-            res.json({success: true, status: 200});
-        });
+        };
+        form.parse(req);
     });
 
     var getFile = function (req, res, action) {

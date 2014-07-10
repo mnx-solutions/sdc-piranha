@@ -11,7 +11,7 @@
 	width:300px;
 	height:120px;
 	background-color:#949ca2;
-	background-image: url('/static/img/logo-white.png');
+	background-image: url(../../static/img/logo-white.png);
     background-repeat:no-repeat;
     background-position:50% 50%;
 	left:50%;
