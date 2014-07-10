@@ -156,10 +156,11 @@ label.name {
     width: 415px;
 }
 .edit-error {
-    width: 450px;
     display: block;
     margin-top: -8px;
+    width: 481px;
     text-align: right;
+    letter-spacing: -0.1px;
 }
 
 input.policy-form {
