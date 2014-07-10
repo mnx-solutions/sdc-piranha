@@ -423,7 +423,7 @@
             });
 
             //machine.job = job.getTracker();
-            return job.deferred;
+            return job.promise;
         };
 
         service.resizeMachine = function (uuid, sdcpackage) {
@@ -562,7 +562,7 @@
                             data: callData
                         });
 
-                        job.deferred.then(function (response) {
+                        job.promise.then(function (response) {
                             if (collectionName === 'metadata' && machine[collectionName].credentials) {
                                 response.credentials = machine[collectionName].credentials;
                             }

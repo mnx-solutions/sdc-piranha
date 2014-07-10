@@ -11,7 +11,7 @@
                     name: 'MdbGetJobsList',
                     data: {},
                     done: callback
-                }).deferred;
+                }).promise;
             };
 
             service.getJobFromList = function (jobId) {
@@ -25,7 +25,7 @@
                 return serverTab.call({
                     name: 'MdbGetJob',
                     data: {jobId: jobId}
-                }).deferred;
+                }).promise;
             };
 
             service.process = function (data, progressCallback) {
@@ -33,7 +33,7 @@
                     name: 'MdbProcess',
                     data: data,
                     progress: progressCallback
-                }).deferred;
+                }).promise;
             };
 
             service.cancel = function (jobId, callback) {

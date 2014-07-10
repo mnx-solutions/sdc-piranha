@@ -29,7 +29,7 @@ window.fn = [];
                     name:'DatasetList',
                     error: function (err) {
                         datasets.error[datacenter] = err;
-                        datasets.job[datacenter].deferred.catch(err);
+                        datasets.job[datacenter].promise.catch(err);
                         datasets.job.finished = datasets.list[datacenter].final = true;
                     },
                     done: function (err, job) {
@@ -53,7 +53,7 @@ window.fn = [];
                                 );
                             }
 
-                            datasets.job[datacenter].deferred.catch(err);
+                            datasets.job[datacenter].promise.catch(err);
                             if (err) {
                                 delete datasets.job[datacenter];
                             }
@@ -99,7 +99,7 @@ window.fn = [];
 
             if (params.id === true || (!params.id && !datasets.job[params.datacenter])) {
                 var job = service.updateDatasets(params.datacenter);
-                job.deferred.then(ret.resolve, ret.reject);
+                job.promise.then(ret.resolve, ret.reject);
                 return ret.promise;
             }
 
@@ -111,11 +111,11 @@ window.fn = [];
                         ret.resolve(datasets.list[params.datacenter]);
                     }
                 } else {
-                    datasets.job[params.datacenter].deferred.then(ret.resolve, ret.reject);
+                    datasets.job[params.datacenter].promise.then(ret.resolve, ret.reject);
                 }
             } else {
                 if (!datasets.index[params.datacenter][params.id]) {
-                    service.updateDatasets(params.datacenter).deferred.then(function () {
+                    service.updateDatasets(params.datacenter).promise.then(function () {
                         if (datasets.index[params.datacenter][params.id]) {
                             ret.resolve(datasets.index[params.datacenter][params.id]);
                         } else {
@@ -135,7 +135,7 @@ window.fn = [];
             var deferred = $q.defer();
 
             service.updateDatasets(params.datacenter);
-            datasets.job[params.datacenter].deferred.then(function (data) {
+            datasets.job[params.datacenter].promise.then(function (data) {
                 var listDatasets = {};
                 var listVersions = [];
 

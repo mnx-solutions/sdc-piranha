@@ -78,7 +78,7 @@
                         'Are you sure you want to delete this image?'
                     ), function () {
                         $$track.event('image', 'delete');
-                        Image.deleteImage($scope.currentImage).deferred.then(function () {
+                        Image.deleteImage($scope.currentImage).promise.then(function () {
                             if (requestContext.getParam('currentImage') === $scope.currentImage.id) {
                                 $location.url('/images');
                                 $location.replace();

@@ -73,7 +73,7 @@
             service.network = function (datacenter) {
                 if (datacenter === true || (datacenter && !networks.job[datacenter]) || (datacenter && networks.job[datacenter].finished)) {
                     var job = service.updateNetworks(datacenter);
-                    return job.deferred;
+                    return job.promise;
                 }
 
                 var ret = $q.defer();
@@ -82,7 +82,7 @@
                     if (networks.list[datacenter].final) {
                         ret.resolve(networks.list[datacenter]);
                     } else {
-                        networks.job[datacenter].deferred.then(function () {
+                        networks.job[datacenter].promise.then(function () {
                             ret.resolve(networks.list[datacenter]);
                         });
                     }

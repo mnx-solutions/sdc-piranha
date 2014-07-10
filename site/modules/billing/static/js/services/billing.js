@@ -17,7 +17,7 @@
                 data: {},
                 done: function () {}
             });
-            return call.deferred;
+            return call.promise;
         };
 
         service.getAccountPaymentInfo = function () {
@@ -50,7 +50,7 @@
                         }
                     }
                 });
-                return call.deferred;
+                return call.promise;
             }
             return creditCard;
         };
@@ -90,7 +90,7 @@
                     billingResponseHandler(err, 'Unable to retrieve invoices.');
                 }
             });
-            return call.deferred;
+            return call.promise;
         };
 
         service.getPayments = function (callback) {
@@ -112,7 +112,7 @@
                     billingResponseHandler(err, 'Unable to retrieve subscriptions.');
                 }
             });
-            return call.deferred;
+            return call.promise;
         };
 
         service.getProductRatePlans = function (sku, callback) {
@@ -123,7 +123,7 @@
                 },
                 done: callback || function () {}
             });
-            return call.deferred;
+            return call.promise;
         };
 
         service.createSupportSubscription = function (ratePlanId, callback) {
@@ -181,7 +181,7 @@
                     }
                 }
             });
-            return call.deferred;
+            return call.promise;
         };
 
         return service;
