@@ -23,7 +23,7 @@ var slb = function execute(scope) {
     server.onCall('LoadBalancersList', function (call) {
         getSscClient(call, function (err, client) {
             if (err) {
-                call.done(err);
+                call.done(err, true);
                 return;
             }
             client.get('/loadbalancers', function getLoadBalancers(err, creq, cres, obj) {
@@ -419,7 +419,8 @@ var slb = function execute(scope) {
     server.onCall('SscMachineLoad', function (call) {
         getSscMachine(call, function (err, sscMachine) {
             if (err) {
-                call.done(err);
+                call.req.log.info(err);
+                call.done(err, true);
                 return;
             }
             call.done(null, sscMachine);

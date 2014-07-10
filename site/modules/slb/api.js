@@ -10,7 +10,7 @@ var metadata = null;
 var sscInitialPingTimeout = 90 * 1000;
 var sscRegularPingTimeout = 20 * 1000;
 var sscOperationTimeout = 5 * 60 * 1000;
-
+var SSCMachineNotFound = 'SSC machine not found';
 module.exports = function execute(scope, register) {
     var api = {};
 
@@ -60,8 +60,8 @@ module.exports = function execute(scope, register) {
             var sscMachines = machines.filter(function (machine) {
                 return machine.name === sscName;
             });
-            if (sscMachines.length !== 1) {
-                cb('SSC machine not found', null);
+            if (sscMachines.length === 0) {
+                cb(SSCMachineNotFound, null);
                 return;
             }
             var sscMachine = sscMachines[0];
@@ -110,6 +110,9 @@ module.exports = function execute(scope, register) {
                     }
                 ]
             }, function (error) {
+                if (error === SSCMachineNotFound) {
+                    call.req.log.info('Load balancer not installed');
+                }
                 callback(error, result);
             });
         }
