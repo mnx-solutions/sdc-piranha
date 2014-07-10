@@ -74,7 +74,7 @@
             }
 
             $scope.getFilePath = function (full) {
-                // get last object from (Array)inputFile and return filePath 
+                // get last object from (Array)inputFile and return filePath
                 var filename = $scope.inputFile.length ? $scope.inputFile.slice(-1)[0].filePath : '';
                 return full ? filename : filename.replace(/.*\/([^$]+)$/g, '$1');
             };
@@ -227,6 +227,13 @@
                         }
                     });
                 });
+            };
+
+            $scope.selectFile = function () {
+                var filesQuantity = $scope.inputFile.length;
+                if (filesQuantity > 1) {
+                    $scope.inputFile.splice(0, filesQuantity - 1);
+                }
             };
             getSupportStatus();
         }

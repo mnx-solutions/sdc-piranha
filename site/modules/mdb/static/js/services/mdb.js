@@ -18,7 +18,7 @@
                 return serverTab.call({
                     name: 'MdbGetJobFromList',
                     data: {jobId: jobId}
-                }).deferred;
+                }).promise;
             };
 
             service.getDebugJob = function (jobId) {
@@ -41,7 +41,7 @@
                     name: 'MdbCancel',
                     data: {jobId: jobId},
                     done: callback
-                }).deferred;
+                }).promise;
             };
             return service;
         }
