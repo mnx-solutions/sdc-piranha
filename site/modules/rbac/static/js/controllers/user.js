@@ -84,12 +84,30 @@
                 }, errorCallback);
             }
 
-            var deleteByElement = function (array, item) {
+            var deleteArrayElement = function (array, item) {
                 var pos = array.indexOf(item);
                 if (pos > -1) {
                     array.splice(pos, 1);
                 }
                 return pos;
+            };
+            var replaceArrayElement = function (array, oldItem, newItem) {
+                var pos = array.indexOf(oldItem);
+                if (pos > -1) {
+                    array[pos] = newItem;
+                }
+                return pos;
+            };
+
+            var replaceRoleMember = function () {
+                $scope.userRoles.forEach(function (role) {
+                    replaceArrayElement(role.members, $scope.initial.login, $scope.user.login);
+                    replaceArrayElement(role.default_members, $scope.initial.login, $scope.user.login);
+                });
+                $scope.roles.forEach(function (role) {
+                    replaceArrayElement(role.members, $scope.initial.login, $scope.user.login);
+                    replaceArrayElement(role.default_members, $scope.initial.login, $scope.user.login);
+                });
             };
 
             var updateRolesTasks = function () {
@@ -98,7 +116,10 @@
                 var roleSize = $scope.roles.length;
                 var selectedSize = $scope.userRoles.length;
                 var i, j, role, index, defaultIndex, selectedRole;
-
+                if ($scope.initial.login && $scope.user.login && $scope.user.login != $scope.initial.login) {
+                    replaceRoleMember();
+                }
+                var member = $scope.user.login;
                 for (j = 0; j < roleSize; j++) {
                     role = $scope.roles[j];
                     index = -2;
@@ -106,18 +127,18 @@
                     for (i = 0; i < selectedSize; i++) {
                         selectedRole = $scope.userRoles[i];
                         if (role.id === selectedRole.id) {
-                            index = role.members.indexOf($scope.user.login);
+                            index = role.members.indexOf(member);
                             if (index < 0) {
-                                role.members.push($scope.user.login);
-                                role.default_members.push($scope.user.login);
+                                role.members.push(member);
+                                role.default_members.push(member);
                                 updates.push($q.when(service.updateRole(role)));
                                 break;
                             }
                         }
                     }
                     if (index === -2) {
-                        index = deleteByElement(role.members, $scope.user.login);
-                        defaultIndex = deleteByElement(role.default_members, $scope.user.login);
+                        index = deleteArrayElement(role.members, member);
+                        defaultIndex = deleteArrayElement(role.default_members, member);
                         if (index > -1 || defaultIndex > -1) {
                             updates.push($q.when(service.updateRole(role)));
                         }
@@ -152,11 +173,12 @@
                     return;
                 }
                 $scope.loading = true;
-                var updates = updateRolesTasks();
-                updates.push($q.when(service.updateUser($scope.user)));
-                $q.all(updates).then(function () {
-                    $scope.loading = false;
-                    $location.path('/accounts/users');
+                service.updateUser($scope.user).then(function () {
+                    var updates = updateRolesTasks();
+                    $q.all(updates).then(function () {
+                        $scope.loading = false;
+                        $location.path('/accounts/users');
+                    }, errorCallback);
                 }, errorCallback);
             };
 

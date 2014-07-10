@@ -114,7 +114,8 @@
                    data-ng-class="{error: isError('login')}"
                    data-ng-model="user.login"
                    data-ng-pattern="/^[A-Za-z0-9]+[A-Za-z0-9\.\-\s]*$/"
-                   data-ng-disabled="!!initial.login"
+                   data-ng-minlength="3"
+                   data-ng-maxlength="32"
                    required/>
         </span>
         <span class="edit-error" data-ng-show="isFormSubmited || subAccountForm.login.$dirty">
@@ -127,6 +128,8 @@
                  data-ng-show="!subAccountForm.login.$error.minLength && !subAccountForm.login.$error.maxLength && subAccountForm.login.$error.pattern">
                  Must start with a letter, and contain letters &amp; numbers only.
             </div>
+            <div class="error" data-ng-show="!subAccountForm.login.$error.required && subAccountForm.login.$error.minlength">Username too short.</div>
+            <div class="error" data-ng-show="subAccountForm.login.$error.maxlength">Username too long.</div>
         </span>
     </div>
 
