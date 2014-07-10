@@ -76,7 +76,8 @@
                     id: 'description',
                     name: 'Description',
                     sequence: 2,
-                    active: true
+                    active: true,
+                    columnClass: 'description-column'
                 },
                 {
                     id: 'os',

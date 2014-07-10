@@ -3275,3 +3275,10 @@ label.checkbox.folder-name-form-checkbox {
 .left-side-menu {
     display: table;
 }
+.description-column span {
+    display: block;
+    overflow: hidden;
+    width: 200px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
