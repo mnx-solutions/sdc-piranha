@@ -23,10 +23,6 @@
                 $scope.loading = false;
             });
 
-            $scope.addNewRole = function () {
-                $location.path('rbac/role/create');
-            };
-
             var errorCallback = function (err) {
                 $scope.loading = false;
                 PopupDialog.errorObj(err);

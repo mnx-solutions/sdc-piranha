@@ -11,8 +11,7 @@
         'PopupDialog',
         'rbac.Service',
         'Account',
-        'http',
-        function ($q, $scope, localization, $location, requestContext, BillingService, PopupDialog, service, Account, http) {
+        function ($q, $scope, localization, $location, requestContext, BillingService, PopupDialog, service, Account) {
             $scope.loading = true;
             $scope.user = {};
             $scope.initial = {};
@@ -80,7 +79,21 @@
                     $scope.roles.forEach(function (item) {
                         item.value = item.id;
                     });
-                    $scope.loading = false;
+                    if (!account.provisionEnabled) {
+                        var submitBillingInfo = {
+                            btnTitle: 'Submit and Access Create User'
+                        };
+                        Account.checkProvisioning(submitBillingInfo, null, null, function (isSuccess) {
+                            $scope.loading = false;
+                            if (isSuccess) {
+                                $location.path('/accounts/user/create');
+                            } else {
+                                $location.path('/accounts/users');
+                            }
+                        }, true);
+                    } else {
+                        $scope.loading = false;
+                    }
                 }, errorCallback);
             }
 

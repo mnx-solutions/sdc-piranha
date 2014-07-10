@@ -94,7 +94,21 @@
                         user.value = user.login;
                     });
                     orderByLogin($scope.users);
-                    $scope.loading = false;
+                    if (!account.provisionEnabled) {
+                        var submitBillingInfo = {
+                            btnTitle: 'Submit and Access Create Role'
+                        };
+                        Account.checkProvisioning(submitBillingInfo, null, null, function (isSuccess) {
+                            $scope.loading = false;
+                            if (isSuccess) {
+                                $location.path('/accounts/role/create');
+                            } else {
+                                $location.path('/accounts/roles');
+                            }
+                        }, true);
+                    } else {
+                        $scope.loading = false;
+                    }
                 });
             }
 
@@ -121,7 +135,7 @@
                     });
                 });
 
-                action($scope.role).then(function (role) {
+                action($scope.role).then(function () {
                     $scope.loading = false;
                     $location.path('/accounts/roles');
                 }, function (err) {
