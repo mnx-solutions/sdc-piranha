@@ -125,11 +125,11 @@
 
                 var data = new FormData();
 
+                data.append('path', path);
+
                 for (var fileIndex = 0; fileIndex < files.length; fileIndex += 1) {
                     data.append('uploadInput', files[fileIndex]);
                 }
-
-                data.append('path', path);
 
                 var service = createService({
                     uploadFile: {

@@ -369,6 +369,11 @@
         }
       }
     },
+    "formidable": {
+      "version": "1.0.15",
+      "from": "formidable@",
+      "resolved": "https://registry.npmjs.org/formidable/-/formidable-1.0.15.tgz"
+    },
     "fwrule": {
       "version": "1.0.0",
       "from": "fwrule@git+ssh://git@git.joyent.com:fwrule.git",
