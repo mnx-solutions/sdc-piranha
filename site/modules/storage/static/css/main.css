@@ -270,7 +270,6 @@
 }
 .job-table td {
     vertical-align: top;
-    text-transform: capitalize;
 }
 .job-table tr:first-child td {
     padding-top: 0;
