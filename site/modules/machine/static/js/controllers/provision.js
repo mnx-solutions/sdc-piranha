@@ -1118,21 +1118,23 @@
 
             function selectMinimalPackage(packageType, isPackageCollapsed) {
                 $scope.selectPackageType(packageType);
-                var minimalPackage;
-                $scope.packages
-                    .filter($scope.filterPackagesByProp)
-                    .filter($scope.filterPackages(packageType, isPackageCollapsed))
-                    .forEach(function (pkg) {
-                        if (!minimalPackage || minimalPackage.memory > pkg.memory || (minimalPackage.memory === pkg.memory && pkg.group === "Standard")) {
-                            minimalPackage = pkg;
-                        }
-                    });
-                if ($scope.preSelectedData && $scope.preSelectedData.selectedPackageInfo) {
+                if ($scope.preSelectedData && $scope.preSelectedData.selectedPackageInfo && $scope.selectedPackage && $scope.selectedPackage !== $scope.preSelectedData.selectedPackageInfo.id) {
                     $scope.selectedPackageInfo = $scope.preSelectedData.selectedPackageInfo;
-                    $scope.selectPackage($scope.selectedPackageInfo.id);
+                    $scope.selectPackage($scope.preSelectedData.selectedPackageInfo.id);
                     $scope.reviewPage();
-                } else if (minimalPackage) {
-                    $scope.selectPackage(minimalPackage.id);
+                } else if (!$scope.preSelectedData) {
+                    var minimalPackage;
+                    $scope.packages
+                        .filter($scope.filterPackagesByProp)
+                        .filter($scope.filterPackages(packageType, isPackageCollapsed))
+                        .forEach(function (pkg) {
+                            if (!minimalPackage || minimalPackage.memory > pkg.memory || (minimalPackage.memory === pkg.memory && pkg.group === "Standard")) {
+                                minimalPackage = pkg;
+                            }
+                        });
+                    if (minimalPackage) {
+                        $scope.selectPackage(minimalPackage.id);
+                    }
                 }
             }
 
@@ -1491,7 +1493,7 @@
             };
 
             $scope.reviewPage = function () {
-                if ($scope.selectedPackageInfo.createdBySupport) {
+                if ($scope.selectedPackageInfo && $scope.selectedPackageInfo.createdBySupport) {
                     var returnUrl = $location.path();
                     Account.checkProvisioning({btnTitle: 'Submit and Create Instance'}, function () {
                         var el = $scope.selectedPackageInfo;
