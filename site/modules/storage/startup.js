@@ -5,6 +5,7 @@ var path = require('path');
 var config = require('easy-config');
 var manta = require('manta');
 var mantaNotAvailable = 'Manta service is not available.';
+var MANTA_PING_RETRIES = 15;
 
 module.exports = function execute(scope) {
     var Manta = scope.api('MantaClient');
@@ -295,7 +296,7 @@ module.exports = function execute(scope) {
 
     server.onCall('StoragePing', function (call) {
         var client = Manta.createClient(call);
-        var retries = 15;
+        var retries = MANTA_PING_RETRIES;
         function pingManta() {
             Billing.isActive(call.req.session.userId, function (error, isActive) {
                 if (error || !isActive) {
@@ -304,16 +305,16 @@ module.exports = function execute(scope) {
                 }
                 client.get('/' + client.user, function (error) {
                     if (error) {
-                        call.req.log.error(error, 'Ping manta storage');
                         if (error.name === 'AccountBlockedError' || error.name === 'AccountBlocked') {
                             if (retries > 0) {
                                 retries -= 1;
+                                call.req.log.debug(error, 'Ping manta storage');
                                 setTimeout(pingManta, 1000);
                                 return;
                             }
                             error = {message: 'Something went wrong.  Please try again in a minute.'};
                         }
-                        sendError(call, error);
+                        sendError(call, error); // This will also log the error
                         return;
                     }
                     call.done(null, 'pong');
