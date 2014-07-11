@@ -8,7 +8,10 @@
         <div class="column mdb-common-container">
             <table class="mdb-common-table">
                 <tr>
-                    <td>File: {{getFilePath() || 'Not selected'}}</td>
+                    <td>File:
+                    <span data-ng-hide="inputFile.length">Not selected</span>
+                    <span data-ng-repeat="file in inputFile" data-ng-show="$last">{{(file.filePath | name) || 'Not selected'}}</span>
+                    </td>
                     <td>
                         <button class="btn effect-orange-button orange pull-right debugger-action-btn" data-ng-class="{'light' : objects.length || inputFile.length != 0}" data-select-file data-objects="inputFile" data-ng-click="selectFile()">Select File</button>
                     </td>
