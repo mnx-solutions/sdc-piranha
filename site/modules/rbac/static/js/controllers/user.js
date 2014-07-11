@@ -67,19 +67,6 @@
                 Account.getAccount().then(function (account) {
                     $scope.user.companyName = account.companyName;
                     $scope.user.country = account.country;
-                });
-                BillingService.getAccountPaymentInfo().then(function (accountPaymentInfo) {
-                    $scope.user.address = accountPaymentInfo.address1;
-                    $scope.user.city = accountPaymentInfo.city;
-                    $scope.user.state = accountPaymentInfo.state;
-                    $scope.user.postalCode = accountPaymentInfo.zipCode;
-                });
-                service.listRoles().then(function (roles) {
-                    $scope.roles = roles || [];
-                    orderByName($scope.roles);
-                    $scope.roles.forEach(function (item) {
-                        item.value = item.id;
-                    });
                     if (!account.provisionEnabled) {
                         var submitBillingInfo = {
                             btnTitle: 'Submit and Access Create User'
@@ -95,6 +82,19 @@
                     } else {
                         $scope.loading = false;
                     }
+                });
+                BillingService.getAccountPaymentInfo().then(function (accountPaymentInfo) {
+                    $scope.user.address = accountPaymentInfo.address1;
+                    $scope.user.city = accountPaymentInfo.city;
+                    $scope.user.state = accountPaymentInfo.state;
+                    $scope.user.postalCode = accountPaymentInfo.zipCode;
+                });
+                service.listRoles().then(function (roles) {
+                    $scope.roles = roles || [];
+                    orderByName($scope.roles);
+                    $scope.roles.forEach(function (item) {
+                        item.value = item.id;
+                    });
                 }, errorCallback);
             }
 
