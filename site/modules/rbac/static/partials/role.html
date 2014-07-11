@@ -44,12 +44,12 @@
                                                  data-ng-show="roleForm.roleName.$error.required">Missing name
                                             </div>
                                             <div class="role-name-error error"
-                                                 data-ng-show="roleForm.roleName.$error.pattern && !roleForm.roleName.$error.required"
+                                                 data-ng-show="roleForm.roleName.$error.pattern"
                                                  data-translate>
                                                 Name can contain only letters, digits, spaces and signs like "." and "-"
                                             </div>
                                             <div class="role-name-error error"
-                                                 data-ng-show="roleForm.roleName.$error.reserved && !roleForm.roleName.$error.pattern && !roleForm.roleName.$error.required"
+                                                 data-ng-show="roleForm.roleName.$error.reserved"
                                                  data-translate>
                                                 '{{roleForm.roleName.$viewValue}}' is a reserved word
                                             </div>
