@@ -182,7 +182,10 @@
                                 if (action === 'delete') {
                                     if (el.state === 'running') {
                                         $$track.event('machine', 'stop');
-                                        Machine.stopMachine(el.id).getJob().done(function () {
+                                        Machine.stopMachine(el.id).getJob().done(function (err, data) {
+                                            if (err) {
+                                                return;
+                                            }
                                             $scope.deleteInstance(el);
                                         });
                                     } else {
@@ -529,7 +532,10 @@
 
             $scope.deleteInstance = function(el) {
                 $$track.event('machine', 'delete');
-                Machine.deleteMachine(el.id).getJob().done(function () {
+                Machine.deleteMachine(el.id).getJob().done(function (err, data) {
+                    if (err) {
+                        return;
+                    }
                     if (!$scope.machines.length && currentLocation === $location.path()) {
                         Machine.gotoCreatePage();
                     }

@@ -271,7 +271,6 @@
 
         function changeState(opts) {
             return function (uuid) {
-                var machine = service.machine(uuid);
                 function start() {
                     var stateChanged = true;
                     machine.prevState = machine.state;
@@ -316,39 +315,6 @@
                                 }
                             };
                         }
-
-                        if (!opts.done) {
-                            opts.done = function (err, data) {
-                                if (err) {
-                                    PopupDialog.error(
-                                        localization.translate(
-                                            null,
-                                            null,
-                                            'Error'
-                                        ), err.restCode === 'NotAuthorized' ? err.message :
-                                            localization.translate(
-                                                null,
-                                                'machine',
-                                                'Unable to execute command "{{command}}" for instance {{uuid}}. ',
-                                                {
-                                                    command: data.name,
-                                                    uuid: data.machine.id
-                                                }
-                                            ));
-                                    if (err.restCode === 'NotAuthorized') {
-                                        machine.state = machine.prevState;
-                                    }
-                                    return;
-                                }
-
-                                var result = data.__read();
-                                if (result && typeof result === 'object') {
-                                    Object.keys(result).forEach(function (k){
-                                        data.machine[k] = result[k];
-                                    });
-                                }
-                            };
-                        }
                         var job = serverTab.call(ng.copy(opts));
                         job.machine = machine;
                         machine.job = job.getTracker();
@@ -356,8 +322,43 @@
                     return machine.job;
                 }
 
+                var machine = service.machine(uuid);
                 if (machine.id) {
-                    return start();
+                    var job = start();
+                    job.deferred.then(
+                        function (result) {
+                            if (result && typeof result === 'object') {
+                                Object.keys(result).forEach(function (k){
+                                    machine[k] = result[k];
+                                });
+                            }
+                        },
+                        function (err) {
+                            var message = localization.translate(
+                                null,
+                                'machine',
+                                'Unable to execute command "{{command}}" for instance {{uuid}}. ',
+                                {
+                                    command: opts.name,
+                                    uuid: machine.id
+                                }
+                            );
+                            if (err.restCode === 'NotAuthorized') {
+                                message = err.message.indexOf('getmachine') !== -1 ? 'Can not get machine status. ' + err.message : err.message;
+                            }
+                            PopupDialog.error(
+                                localization.translate(
+                                    null,
+                                    null,
+                                    'Error'
+                                ), message
+                            );
+                            if (err.restCode === 'NotAuthorized') {
+                                machine.state = machine.prevState;
+                            }
+
+                        });
+                    return  job;
                 }
 
                 var d = $q.defer();
