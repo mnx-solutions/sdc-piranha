@@ -67,10 +67,10 @@
             $scope.estimateTime = 0;
 
             function flushAll(status) {
-                $scope.loading = false;
                 $scope.status = status || 'Not Processed';
                 $scope.jobId = null;
                 $scope.objects = [];
+                $scope.loading = false;
             }
 
             $scope.getFilePath = function (full) {
@@ -178,18 +178,22 @@
                 $scope.loading = true;
                 var getStatus = function () {
                     mdb.getJobFromList($scope.jobId).then(function (job) {
-                        if (job.status === 'Processed') {
-                            mdb.getDebugJob($scope.jobId).then(processResult, function (error) {
-                                PopupDialog.error(null, error, flushAll('Failed'));
-                            });
+                        if (!job.status) {
+                            setTimeout(getStatus, 5000);
                         } else {
-                            $scope.inputFile = [{filePath: job.coreFile}];
-                            $scope.status = job.status;
-                            var checkStatus = {Cancelled: false, Failed: false, Processing: true, Parsing: true};
-                            if (checkStatus[job.status]) {
-                                setTimeout(getStatus, 10000);
+                            if (job.status === 'Processed') {
+                                mdb.getDebugJob($scope.jobId).then(processResult, function (error) {
+                                    PopupDialog.error(null, error, flushAll('Failed'));
+                                });
                             } else {
-                                flushAll(job.status);
+                                $scope.inputFile = [{filePath: job.coreFile}];
+                                $scope.status = job.status;
+                                var checkStatus = {Cancelled: false, Failed: false, Processing: true, Parsing: true};
+                                if (checkStatus[job.status]) {
+                                    setTimeout(getStatus, 10000);
+                                } else {
+                                    flushAll(job.status);
+                                }
                             }
                         }
                     });
