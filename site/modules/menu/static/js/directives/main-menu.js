@@ -1,7 +1,7 @@
 'use strict';
 
 (function (app) {
-    app.directive('mainMenu', ['Menu', '$rootScope', '$$track', 'PopupDialog', '$location', function (Menu, $rootScope, $$track, PopupDialog, $location) {
+    app.directive('mainMenu', ['Menu', '$rootScope', '$$track', 'PopupDialog', '$location', 'rbac.User', function (Menu, $rootScope, $$track, PopupDialog, $location, RbacUser) {
         return {
             link: function (scope) {
                 scope.mainMenu = Menu.getMenu();
@@ -28,6 +28,7 @@
 
                 $scope.changePassword = function () {
                     if ($scope.account.isSubuser) {
+                        RbacUser.changeUserPassword($scope.account.id, $scope, 'Your password was changed. Next time you sign in use your new password.');
                         return;
                     }
                     $$track.event('Window Open', 'Change Password');

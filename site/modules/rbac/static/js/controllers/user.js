@@ -10,8 +10,9 @@
         'BillingService',
         'PopupDialog',
         'rbac.Service',
+        'rbac.User',
         'Account',
-        function ($q, $scope, localization, $location, requestContext, BillingService, PopupDialog, service, Account) {
+        function ($q, $scope, localization, $location, requestContext, BillingService, PopupDialog, service, RbacUser, Account) {
             $scope.loading = true;
             $scope.user = {};
             $scope.initial = {};
@@ -222,51 +223,7 @@
             };
 
             $scope.changeUserPassword = function () {
-                $scope.isPassFormSubmited = true;
-                var opts = {
-                    templateUrl: 'rbac/static/partials/change-password.html',
-                    openCtrl: function ($scope, dialog) {
-                        $scope.buttons = [
-                            {
-                                result: 'cancel',
-                                label: 'Cancel',
-                                cssClass: 'grey-new effect-orange-button',
-                                setFocus: false
-                            },
-                            {
-                                result: 'ok',
-                                label: 'Change Password',
-                                cssClass: 'orange',
-                                setFocus: false
-                            }
-                        ];
-                        $scope.buttonClick = function (passwords, res) {
-                            if (!res || (res && res !== 'ok')) {
-                                dialog.close();
-                            } else {
-                                if ($scope.passForm.$invalid) {
-                                    return;
-                                }
-                                dialog.close(passwords);
-                            }
-                        };
-                        $scope.removeErrors = function () {
-                            $scope.lengthError = $scope.charactersError = $scope.repeatError = false;
-                        };
-                    }
-                };
-                PopupDialog.custom(
-                    opts,
-                    function (passwords) {
-                        $scope.loading = !!passwords;
-                        if (passwords) {
-                            service.changeUserPassword($scope.user.id, passwords[0], passwords[1]).then(function () {
-                                $scope.loading = false;
-                            }, errorCallback);
-                        }
-                    }
-                );
-
+                RbacUser.changeUserPassword($scope.user.id, $scope);
             };
         }
     ]);
