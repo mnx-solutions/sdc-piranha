@@ -305,7 +305,11 @@
                     if (invertedKeysMap[id]) {
                         itemId = invertedKeysMap[id];
                     }
-                    item[id] = el[itemId] !== undefined ? el[itemId] : '';
+                    var itemValue = el[itemId];
+                    if (angular.isArray(itemValue)) {
+                        itemValue = itemValue.join(', ');
+                    }
+                    item[id] = itemValue || '';
                 });
                 data.push(item);
             });
