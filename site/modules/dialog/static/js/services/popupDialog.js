@@ -96,6 +96,7 @@
                         var provisionBundle = $rootScope.commonConfig('provisionBundle');
                         if (provisionBundle) {
                             freeTierExists = provisionBundle.machine.freetier;
+                            $rootScope.clearCommonConfig('provisionBundle');
                         }
                         cb(null, freeTierExists);
                     }, 100);
