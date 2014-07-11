@@ -379,6 +379,14 @@
             });
         };
 
+        $scope.$watch('items', function () {
+            if ($scope.enabledCheckboxes) {
+                $scope.items.forEach(function (item) {
+                    item.checked = false;
+                });
+            }
+        });
+
         $scope.propertyFilter = function (item) {
             if ($scope.tabFilter === 'all' || !$scope.tabFilter) {
                 return true;
