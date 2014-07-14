@@ -4,6 +4,7 @@ var config = require('easy-config');
 var metadata = require('./lib/metadata');
 var ursa = require('ursa');
 var vasync = require('vasync');
+var util = require('util');
 
 module.exports = function execute(scope) {
     var server = scope.api('Server');
@@ -31,67 +32,189 @@ module.exports = function execute(scope) {
         return data;
     };
 
-    var updateRoleTags = function (cloudapi, log) {
-        var validResources = [
-            '', 'machines', 'users', 'roles', 'packages',
-            'images', 'policies', 'keys', 'datacenters',
-            'analytics', 'fwrules', 'networks', 'instrumentations'
-        ];
-        cloudapi.listRoles(function (err, roles) {
-            roles = Array.isArray(roles) ? roles : [];
-            var getUserResources = {};
-            cloudapi.listPolicies(function (policyErr, policies) {
-                var roleNames = [];
-                roles.forEach(function (role) {
-                    roleNames.push(role.name);
+    // Account actions->resource
+    var ACCOUNT_RESOURCES = {
+        getaccount:            '/my/',
+        listmachines:          '/my/machines',
+        listkeys:              '/my/keys',
+        listusers:             '/my/users',
+        listimages:            '/my/images',
+        listroles:             '/my/roles',
+        listpolicies:          '/my/policies',
+        listdatacenters:       '/my/datacenters',
+        listnetworks:          '/my/networks',
+        listpackages:          '/my/packages',
+        listfirewallrules:     '/my/fwrules',
+        createinstrumentation: '/my/analytics/instrumentations',
+        describeanalytics:     '/my/analytics'
+    };
 
-                    if (role.default_members && role.default_members.length > 0) {
-                        role.policies.forEach(function (policyName) {
-                            var policiesWithGetUser = policies.filter(function (policy) {
-                                if (policy.name !== policyName) {
-                                    return false;
-                                }
-                                var getUserRules = policy.rules.filter(function (rule) {
-                                    return rule.toLowerCase().indexOf('getuser') !== -1 ||
-                                        rule.toLowerCase().indexOf('updateuser') !== -1;
-                                });
-                                return getUserRules.length > 0;
-                            });
+    // SubUser actions->resource
+    var USER_RESOURCES = {
+        getnetwork:    '/my/networks/%s',
+        listuserkeys:  '/my/users/%s/keys',
+        createuserkey: '/my/users/%s/keys',
+        uploaduserkey: '/my/users/%s/keys',
+        getuserkey:    '/my/users/%s/keys/%s',
+        deleteuserkey: '/my/users/%s/keys/%s',
+        getuser:       '/my/users/%s',
+        updateuser:    '/my/users/%s'
+    };
 
-                            if (policiesWithGetUser.length > 0) {
-                                role.default_members.forEach(function (defaultMember) {
-                                    getUserResources[defaultMember] = getUserResources[defaultMember] || [];
-                                    if (getUserResources[defaultMember].indexOf(role.name) === -1) {
-                                        getUserResources[defaultMember].push(role.name);
-                                    }
-                                });
-                            }
-                        });
-                    }
+    var ACCOUNT_ACTIONS = Object.keys(ACCOUNT_RESOURCES);
+    var USER_ACTIONS = Object.keys(USER_RESOURCES);
+
+    var getArray = function (data, force) {
+        return Array.isArray(data) ? data : (force ? [data] : []);
+    };
+
+    var loadRoleTagData = function (cloudapi, roles, log, loadDataCallback) {
+        if (!roles || !roles.length === 0) {
+            return;
+        }
+
+        vasync.parallel({
+            'funcs': [
+                function (callback) {
+                    cloudapi.listUsers(callback);
+                },
+                function (callback) {
+                    cloudapi.listNetworks(callback);
+                },
+                function (callback) {
+                    cloudapi.listPolicies(callback);
+                },
+            ]
+        }, function (err, results) {
+            if (err) {
+                log.error(err);
+            } else if (results && results.nerrors === 0) {
+                var users = getArray(results.operations[0].result);
+                var networks = getArray(results.operations[1].result);
+                var policies = getArray(results.operations[2].result);
+                loadDataCallback(cloudapi, getArray(roles, true), log, users, networks, policies);
+            }
+        })
+    };
+
+
+    var updateRoleTags = function (cloudapi, roles, log, users, networks, policies) {
+        roles = roles.filter(function (role) {
+            return role.default_members && role.default_members.length > 0;
+        });
+
+        var pushResourceRole = function (resourceRole, resource, role) {
+            resourceRole[resource] = resourceRole[resource] || [];
+            if (resourceRole[resource].indexOf(role.name) === -1) {
+                resourceRole[resource].push(role.name);
+            }
+        };
+
+        var setRoleTags = function (resource, roles) {
+            cloudapi.getRoleTags(resource, function (err, roleNames) {
+                roleNames = roleNames || [];
+                var newRoles = roles.filter(function (roleName) {
+                    return roleNames.indexOf(roleName) === -1;
                 });
-                var defaultMembers = Object.keys(getUserResources);
-                if (defaultMembers.length > 0) {
-                    cloudapi.listUsers(function (userErr, users) {
-                        var userByLogin = {};
-                        users.forEach(function (user) {
-                            userByLogin[user.login] = user;
-                        });
-                        defaultMembers.forEach(function (defaultMember) {
-                            if (userByLogin[defaultMember]) {
-                                cloudapi.setRoleTags('/my/users/' + userByLogin[defaultMember].id, getUserResources[defaultMember], function (roleTagErr) {
-                                    if (roleTagErr) {
-                                        log.error({error: roleTagErr}, 'Failed setRoleTags');
-                                    }
-                                });
-                            }
-                        });
+                if (newRoles.length > 0) {
+                    roleNames = roleNames.concat(newRoles);
+                    cloudapi.setRoleTags(resource, roleNames, function (err) {
+                        if (err) {
+                            log.error({error: err, roleNames: roleNames, resource: resource}, 'Failed to setRoleTags');
+                        }
                     });
                 }
-                validResources.forEach(function (resource) {
-                    cloudapi.setRoleTags('/my/' + resource, roleNames, function () {});
+            });
+        };
+        var resourceRole = {};
+        var fetchUserKeysResourceRole = {};
+        roles.forEach(function (role) {
+            var defaultMembers = {};
+            role.default_members.forEach(function (member) {
+                defaultMembers[member] = {};
+            });
+
+
+            var policiesByRole = policies.filter(function (policy) {
+                return role.policies.indexOf(policy.name) !== -1;
+            });
+
+            users.forEach(function (user) {
+                if (defaultMembers[user.login]) {
+                    defaultMembers[user.login] = user;
+                }
+            });
+
+
+            policiesByRole.forEach(function (policy) {
+                policy.rules.forEach(function (rule) {
+                    ACCOUNT_ACTIONS.forEach(function (command) {
+                        if (rule.indexOf(command) !== -1) {
+                            pushResourceRole(resourceRole, ACCOUNT_RESOURCES[command], role);
+                        }
+                    });
+
+                    USER_ACTIONS.forEach(function (command) {
+                        if (rule.indexOf(command) !== -1) {
+                            role.default_members.forEach(function (member) {
+                                var resources = [];
+
+                                switch (command) {
+                                    case 'uploaduserkey':
+                                    case 'deleteuserkey':
+                                    case 'getuserkey':
+                                        fetchUserKeysResourceRole[defaultMembers[member].id] = fetchUserKeysResourceRole[defaultMembers[member].id] || [];
+                                        if (fetchUserKeysResourceRole[defaultMembers[member].id].indexOf(role.name) === -1) {
+                                            fetchUserKeysResourceRole[defaultMembers[member].id].push(role.name);
+                                        }
+                                        break;
+                                    case 'getnetwork':
+                                        networks.forEach(function (network) {
+                                            resources.push(util.format(USER_RESOURCES[command], network.id));
+                                        });
+                                        break;
+                                    default :
+                                        resources.push(util.format(USER_RESOURCES[command], defaultMembers[member].id));
+                                        break;
+                                }
+                                resources.forEach(function (resource) {
+                                    pushResourceRole(resourceRole, resource, role);
+                                });
+                            });
+                        }
+                    });
                 });
             });
         });
+
+        var roleResources = Object.keys(resourceRole);
+        roleResources.forEach(function (resource) {
+            setRoleTags(resource, resourceRole[resource]);
+        });
+        var userKeysResourceRole = Object.keys(fetchUserKeysResourceRole);
+        var poolTasks = [];
+        userKeysResourceRole.forEach(function (userId) {
+            poolTasks.push(function (callback) {
+                cloudapi.listUserKeys(userId, function (err, data) {
+                    data = {userId: userId, roles: fetchUserKeysResourceRole[userId], data: data};
+                    callback(err, data);
+                });
+            });
+        });
+        vasync.parallel({
+            'funcs': poolTasks
+        }, function (err, results) {
+            if (err) {
+                log.error(err);
+            }
+            results.successes.forEach(function (result) {
+                (result.data || []).forEach(function (userKey) {
+                    var resource = util.format(USER_RESOURCES['getuserkey'], result.userId, userKey.fingerprint);
+                    setRoleTags(resource, result.roles);
+                });
+            });
+        })
+
     };
 
     var getBillingAndComplete = function (call, response) {
@@ -213,7 +336,7 @@ module.exports = function execute(scope) {
         call.cloud.createRole(data, function (err, roleData) {
             call.done(err, roleData);
             if (!err) {
-                updateRoleTags(call.cloud, call.log);
+                loadRoleTagData(call.cloud, roleData, call.log, updateRoleTags);
             }
         });
     });
@@ -224,7 +347,7 @@ module.exports = function execute(scope) {
         call.cloud.updateRole(data, function (err, roleData) {
             call.done(err, roleData);
             if (!err) {
-                updateRoleTags(call.cloud, call.log);
+                loadRoleTagData(call.cloud, roleData, call.log, updateRoleTags);
             }
         });
     });
@@ -273,7 +396,13 @@ module.exports = function execute(scope) {
         call.cloud.updatePolicy(data, function (err, policy) {
             call.done(err, policy);
             if (!err) {
-                updateRoleTags(call.cloud, call.log);
+                call.cloud.listRoles(function (err, roles) {
+                    roles = Array.isArray(roles) ? roles : [roles];
+                    roles = roles.filter(function (role) {
+                        return role.policies.indexOf(policy.name) !== -1;
+                    });
+                    loadRoleTagData(call.cloud, roles, call.log, updateRoleTags);
+                });
             }
         });
     });

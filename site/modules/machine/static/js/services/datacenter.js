@@ -64,7 +64,7 @@
         service.datacenter = function (id) {
             if (id === true || (!id && !datacenters.job)) {
                 var job = service.updateDatacenters();
-                return job.deferred;
+                return job.promise;
             }
 
             var ret = $q.defer();
