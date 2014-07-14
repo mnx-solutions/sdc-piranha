@@ -382,7 +382,7 @@
             };
 
             // FIXME: Get rid of copy-paste from provision.js!!!
-            var switchToOtherDatacenter = function (datacenter) {
+            var switchToOtherDatacenter = function (datacenter, err) {
                 if ($scope.selectData.datacenters && $scope.selectData.datacenters.length > 0) {
                     var firstNonSelected = $scope.selectData.datacenters.find(function (dc) { return dc.text !== datacenter; });
                     if (firstNonSelected) {
@@ -400,7 +400,7 @@
                             )
                         );
 
-                        if (!err) {
+                        if (!err || (err && err.restCode !== 'NotAuthorized')) {
                             $scope.selected.datacenter = firstNonSelected.text;
                         }
                     }
@@ -466,7 +466,6 @@
                 var machineResult = results[0];
                 var rilesResult = results[1];
                 var datacentersResult = results[2];
-
                 $scope.machines = [];
                 $scope.datacenters = [];
 

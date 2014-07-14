@@ -214,13 +214,9 @@ var firewall = function execute (scope) {
                 call.log.debug('List rules for datacenter %s', name);
 
                 cloud.listFwRules(function (err, rules) {
-                    if (err) {
-                        call.done(err);
-                        return;
-                    }
-
                     var response = {
                         name: name,
+                        status: 'pending',
                         rules: []
                     };
 
@@ -229,8 +225,6 @@ var firewall = function execute (scope) {
                         response.status = 'error';
                         response.error = err;
                     } else {
-                        response.rules = [];
-
                         // Serialize rules
                         rules.forEach(function (rule) {
                             rule.datacenter = name;
@@ -248,7 +242,7 @@ var firewall = function execute (scope) {
 
                         call.log.debug('List rules succeeded for datacenter %s', name);
                     }
-
+                    response.status = 'complete';
                     call.update(null, response);
 
                     if (--count === 0) {

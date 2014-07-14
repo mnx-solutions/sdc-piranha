@@ -10,16 +10,16 @@
         function (serverTab, $q, localization, errorContext) {
 
         var service = {};
-        var datacenters = { job: null, index: {}, list: [], search: {} };
+        var datacenters = { job: null, index: {}, list: [], search: {}, error: null};
 
         service.updateDatacenters = function () {
             if (!datacenters.job || datacenters.job.finished) {
                 datacenters.job = serverTab.call({
-                    name:'DatacenterList',
-                    error: function() {
-                        datacenters.list.final = true;
+                    name: 'DatacenterList',
+                    error: function (err) {
+                        datacenters.error = err;
                     },
-                    done: function(err, job) {
+                    done: function (err, job) {
                         if (err) {
                             errorContext.emit(new Error(localization.translate(null,
                                 'machine',
@@ -52,7 +52,7 @@
                                 datacenters.list.push(datacenter);
                             }
                         });
-
+                        datacenters.error = null;
                         datacenters.list.final = true;
                     }
                 });
@@ -70,9 +70,8 @@
             var ret = $q.defer();
             if (!id) {
                 if (datacenters.list.final) {
-                    if (datacenters.list.length === 0) {
-                        // emulate error because datacenters cached in server and was not respond error
-                        ret.reject({restCode:'NotAuthorized', message:'You do not have permission to access /my/datacenters (listdatacenters)'});
+                    if (datacenters.error) {
+                        ret.reject(datacenters.error);
                     } else {
                         ret.resolve(datacenters.list);
                     }
@@ -81,7 +80,7 @@
                         ret.resolve(datacenters.list);
                     }, function (err) {
                         ret.reject(err);
-                        datacenters.job = undefined;
+                        datacenters.job = null;
                     });
                 }
             } else {
