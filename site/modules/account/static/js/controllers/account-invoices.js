@@ -46,9 +46,10 @@
                                 });
                             }));
                         }
-
                         if (invoices.length) {
-                            $scope.invoices = invoices.map(function (invoice) {
+                            $scope.invoices = invoices.filter(function (invoice) {
+                                return invoice.status === 'Posted';
+                            }).map(function (invoice) {
                                 invoice.paymentStatus = (paidInvoices.length && paidInvoices.indexOf(invoice.invoiceNumber) !== -1) ? 'Paid' : 'Unpaid';
                                 return invoice;
                             });
