@@ -29,7 +29,7 @@
                 <div>
                     <span class="span3 lb-label" data-translate>Protocol</span>
 
-                    <div class="tooltip-hover span3 dd-margin protocol-pos"
+                    <div class="tooltip-hover span8 dd-margin protocol-pos"
                          data-toggle="tooltip"
                          data-placement="bottom">
                         <select data-select-two id="protocolSelect" data-width="100px" class="slb-select" data-select="protocolSelected.name" data-fn="protocolSelect">
@@ -37,6 +37,9 @@
                                 {{protocol.name}}
                             </option>
                         </select>
+                        <span class="upload-btn" data-ng-show="protocolSelected.name == 'HTTPS'">
+                            <span data-cert-upload model="server.certificate"></span>
+                        </span>
                     </div>
 
 
