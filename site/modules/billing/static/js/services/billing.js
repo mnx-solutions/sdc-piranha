@@ -101,7 +101,7 @@
                     billingResponseHandler(err, 'Unable to retrieve payments.');
                 }
             });
-            return call.deferred;
+            return call.promise;
         };
 
         service.getSubscriptions = function (callback) {
