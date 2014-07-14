@@ -142,7 +142,7 @@
 .upload-btn{
     display: inline-block;
     vertical-align: middle;
-    margin-left: 20px;
+    margin-left: 5px;
 }
 input.ng-invalid-field{
     border-color: red;
