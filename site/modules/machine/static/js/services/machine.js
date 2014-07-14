@@ -130,7 +130,7 @@
                     return data;
                 }
             });
-            return job.deferred;
+            return job.promise;
         };
 
         service.updateMachines = function (authorizationErrorDisable) {
