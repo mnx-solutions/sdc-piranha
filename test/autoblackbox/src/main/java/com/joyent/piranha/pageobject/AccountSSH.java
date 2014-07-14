@@ -8,6 +8,7 @@ import static com.codeborne.selenide.Condition.exist;
 import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Selectors.byText;
 import static com.codeborne.selenide.Selenide.$;
+import static com.codeborne.selenide.Selenide.$$;
 import static com.codeborne.selenide.Selenide.page;
 
 public class AccountSSH extends AbstractPageObject {
@@ -20,10 +21,16 @@ public class AccountSSH extends AbstractPageObject {
         return page(ELBApiForm.class);
     }
 
-    public void deleteTopKey() {
-        final SelenideElement keyRepeater = $("[data-ng-repeat=\"key in keys | reverse\"] div span", 0);
-        keyRepeater.click();
-        $(byText("Delete")).click();
+    public int getNumberOfKeys() {
+        $("[data-ng-show=\"loadingKeys\"]").waitWhile(visible, baseTimeout);
+        return $$("[data-ng-repeat=\"key in keys | reverse\"]").size();
+    }
+
+    public void deleteLastKey() {
+        final SelenideElement keyRepeater = $("[data-ng-repeat=\"key in keys | reverse\"]", getNumberOfKeys() - 1);
+        keyRepeater.$("div span", 0).click();
+        SelenideElement deleteButton = keyRepeater.$(byText("Delete"));
+        deleteButton.click();
         clickButtonInModal("Yes");
     }
 
@@ -38,8 +45,9 @@ public class AccountSSH extends AbstractPageObject {
     }
 
     public void uploadFile(String absoluteFilePath) {
-        $("#uploadInput").waitUntil(exist, baseTimeout);
         JavascriptExecutor javascriptExecutor = (JavascriptExecutor) WebDriverRunner.getWebDriver();
+        javascriptExecutor.executeScript("$('.modal textarea')[0].setAttribute('rows', '1')");
+        $("#uploadInput").waitUntil(exist, baseTimeout);
         javascriptExecutor.executeScript("$('#uploadInput')[0].setAttribute('style', '')");
         $("#uploadInput").waitUntil(visible, baseTimeout);
         $("#uploadInput").sendKeys(absoluteFilePath);

@@ -80,16 +80,18 @@ public class UsagePageTest extends TestWrapper {
 
     @Test
     public void testMantaChart() {
-        String chartName = "Manta";
-        Chart chart = usage.getChart(chartName);
-        String title = "Manta Utilized";
-        String leftBlockText = "month to date";
-        checkChart(chart, title, "", leftBlockText);
-        ChartPage spend = usage.clickOnChart(chartName);
-        spend.getPageTitle().shouldHave(text("Manta Usage Overview"));
-        chart = spend.getChart(chartName);
-        checkChart(chart, title, "", leftBlockText);
-        spend.clickBackToUsage().checkTitle();
+        if (PropertyHolder.getDatacenter(0).equals("local-x")) {
+            String chartName = "Manta";
+            Chart chart = usage.getChart(chartName);
+            String title = "Manta Utilized";
+            String leftBlockText = "month to date";
+            checkChart(chart, title, "", leftBlockText);
+            ChartPage spend = usage.clickOnChart(chartName);
+            spend.getPageTitle().shouldHave(text("Manta Usage Overview"));
+            chart = spend.getChart(chartName);
+            checkChart(chart, title, "", leftBlockText);
+            spend.clickBackToUsage().checkTitle();
+        }
     }
 
     @Test
@@ -113,7 +115,9 @@ public class UsagePageTest extends TestWrapper {
         checkChart(chart, title, "", "");
         chart = usage.getChart("Manta");
         title = month + " Manta Utilized";
-        checkChart(chart, title, "", "");
+        if (PropertyHolder.getDatacenter(0).equals("local-x")) {
+            checkChart(chart, title, "", "");
+        }
     }
 
     private void checkChart(Chart currentSpend, String title, String totalUsage, String leftBlockText) {

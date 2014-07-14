@@ -105,3 +105,7 @@ task newImages(type: Test) {
 task UploadSSHKeyTest(type: Test) {
     include '**/UploadSSHKeyTest.class'
 }
+
+task UsagePageTest(type: Test) {
+    include '**/UsagePageTest.class'
+}
