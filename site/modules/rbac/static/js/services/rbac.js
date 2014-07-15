@@ -174,7 +174,7 @@
 
             service.deletePolicy = function (policyId) {
                 if (typeof (policyId) === 'string') {
-                    return action('deletePolicy', {id: policyId}, ENTITY_TYPE.ROLE, ACCESS.WRITE);
+                    return action('deletePolicy', {id: policyId}, ENTITY_TYPE.POLICY, ACCESS.WRITE);
                 }
                 return action('deletePolicy', {ids: policyId}, ENTITY_TYPE.POLICY, ACCESS.WRITE);
             };
