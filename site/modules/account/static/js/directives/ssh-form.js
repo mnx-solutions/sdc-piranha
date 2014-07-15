@@ -29,7 +29,7 @@
                 link: function ($scope) {
                     $scope.keys = [];
                     $scope.isCreateKeyEnabled = true;
-                    var subuserId = requestContext.getParam('id') || false;
+                    var subuserId = !$scope.isSubUserForm ? requestContext.getParam('id') : false;
                     if (subuserId === 'create') {
                         subuserId = false;
                     }
@@ -53,10 +53,13 @@
                         return key.name || '';
                     };
 
-                    var getKeysList = function () {
+                    var getKeysList = function (cb) {
                         RBAC.listUserKeys(subuserId).then(function (list) {
                             $scope.keys = list;
                             $scope.loadingKeys = false;
+                            if (typeof (cb) === 'function') {
+                                cb();
+                            }
                         }, errorCallback);
                     };
 
@@ -67,7 +70,7 @@
                         }
                         $scope.loadingKeys = true;
                         if (subuserId) {
-                            getKeysList();
+                            getKeysList(cb);
                         } else {
                             $q.when(Account.getKeys(true)).then(function (result) {
                                 if (notifyDataChanged) {

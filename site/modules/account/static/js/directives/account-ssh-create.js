@@ -20,11 +20,10 @@
                     $rootScope.downloadLink = null;
                 },
                 link: function ($scope) {
-                    var subUser = requestContext.getParam('id') || false;
-
+                    var subUserId = !$scope.isSubUserForm ? requestContext.getParam('id') : false;
                     Account.getAccount().then(function (account) {
-                        if (account.isSubuser) {
-                            subUser = account.id;
+                        if ($scope.isSubUserForm && account.isSubuser) {
+                            subUserId = account.id;
                         }
                     });
 
@@ -32,7 +31,7 @@
                     $scope.generateSshKey = function () {
                         $rootScope.$broadcast('sshProgress', true);
                         var sshKeyModalCtrl = function ($scope, dialog) {
-                            if (subUser) {
+                            if (subUserId) {
                                 $scope.message = 'User\'s private key will begin downloading when you click "Create Key". The public half of the key will be added to user\'s Joyent Cloud account.';
                             }
                             $scope.keyName = '';
@@ -60,9 +59,8 @@
                             function (data) {
                                 if (data && data.generate === true) {
                                     var createUrl = 'account/ssh/create/';
-                                    $http.post(createUrl, {name: data.keyName, subUser: subUser})
+                                    $http.post(createUrl, {name: data.keyName, subUser: subUserId})
                                         .success(function (data) {
-
                                             var keyId = data.keyId;
                                             if (data.success === true) {
 
@@ -75,7 +73,7 @@
                                                 var keyAdded = function () {
                                                     var message = 'SSH key successfully added to your account.';
 
-                                                    if (subUser) {
+                                                    if (subUserId) {
                                                         message = 'SSH key successfully added to user\'s account. You will be prompted for private key download shortly. Please keep the private key safe.';
                                                     }
 
@@ -108,7 +106,7 @@
                                                             $scope.passSsh('/main/#!/account/ssh');
                                                         }, 1000);
                                                     }
-                                                    if (subUser) {
+                                                    if (subUserId) {
                                                         keyAdded();
                                                         $rootScope.$broadcast('sshCreated', true);
                                                     } else {
@@ -132,7 +130,8 @@
                                                             message: data.err.message
                                                         }
                                                     ),
-                                                    function () {}
+                                                    function () {
+                                                    }
                                                 );
                                             }
                                         });
