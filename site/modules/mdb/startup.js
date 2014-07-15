@@ -4,6 +4,7 @@ var restify = require('restify');
 var path = require('path');
 var generalErrorMessage = 'Something went wrong, please try again.';
 var mdbJobsListPath = '/stor/.joyent/portal/MdbJobs.json';
+var delimiter = '------------';
 
 function objectsParser(data) {
     var result = {counters: {}, data: []};
@@ -29,6 +30,87 @@ function objectsParser(data) {
         }
     });
     return result;
+}
+
+function modulesParser(rawModulesContent) {
+    var modules = {};
+    function normalize(text) {
+        if (!text || text === 'undefined' || !isNaN(parseFloat(text))) {
+            return undefined;
+        }
+
+        return text ? text.replace(/^"|"$/g, '') : text;
+    }
+
+    function parseModuleFile(filePath) {
+        filePath = normalize(filePath);
+        if (typeof filePath !== 'string') {
+            return;
+        }
+
+        var raw = filePath.split(/\/node_modules\/([^\/]+)/g).filter(function (e) {
+            return !!e;
+        });
+        var lib = raw.pop();
+        var name = raw.slice(-1)[0];
+
+        if (modules[name] && modules[name].node_modules) {
+            if (modules[name].libs.indexOf(lib) === -1) {
+                modules[name].libs.push(lib);
+            }
+            return modules[name];
+        }
+        raw.shift(); // remove first part of path
+
+        if (raw.length) {
+            modules[name] = {
+                name: name,
+                file: filePath,
+                level: raw.length,
+                node_modules: raw,
+                parent: raw.slice(-2, -1)[0],
+                libs: [lib],
+                values: (modules[name] && modules[name].values) || []
+            };
+        }
+
+        return modules[name] || filePath;
+    }
+
+    function getModule(name) {
+        modules[name] = modules[name] || {name: name, values: []};
+        return modules[name];
+    }
+
+    modules.root = getModule('root');
+    rawModulesContent.split(delimiter).forEach(function (rec) {
+        var parsed = rec.split('\n').filter(function (e) {return e.trim(); });
+
+        if (!parsed[1]) {
+            return;
+        }
+        var module = parseModuleFile(parsed[1]);
+        var parentModule = parseModuleFile(parsed[3]);
+        if (!module) {
+            return;
+        }
+        if (module.level === 0) {
+            module.name = 'root';
+            module.lib = parsed[1];
+        }
+        if (typeof module.name !== 'string') {
+            return;
+        }
+
+        if ((parentModule === '.' && module.parent) || !parentModule.values) {
+            parentModule = getModule(module.parent || 'root');
+        }
+
+        if (module !== parentModule && parentModule.values.indexOf(module) === -1) {
+            parentModule.values.push(module);
+        }
+    });
+    return modules.root.values;
 }
 
 var mdbApi = function execute(scope) {
@@ -57,9 +139,9 @@ var mdbApi = function execute(scope) {
         getJob();
     }
 
-    function getDebugJSObjects(call, jobId, callback) {
+    function getDebugObjectsFile(call, jobId, filename, parser, callback) {
         var client = Manta.createClient(call);
-        client.getFileContents('/' + client.user + '/jobs/' + jobId + '/findjsobjects.txt', function (error, data) {
+        client.getFileContents('/' + client.user + '/jobs/' + jobId + '/' + filename + '.txt', function (error, data) {
             if (error) {
                 if (error.statusCode === 404) {
                     error.message = generalErrorMessage;
@@ -67,8 +149,11 @@ var mdbApi = function execute(scope) {
                 callback(error);
                 return;
             }
-
-            callback(null, objectsParser(data));
+            try {
+                callback(null, parser(data));
+            } catch (e) {
+                callback(e);
+            }
         });
     }
 
@@ -100,6 +185,7 @@ var mdbApi = function execute(scope) {
             callback(null, list);
         });
     }
+
     function appendJobToList(call, jobId, callback) {
         var client = Manta.createClient(call);
         callback = callback || function () {};
@@ -151,7 +237,6 @@ var mdbApi = function execute(scope) {
                 });
                 if (matchingJobs.length > 0) {
                     callback(null, list);
-                    return;
                 } else {
                     setTimeout(jobList, config.polling.mantaJob);
                 }
@@ -181,6 +266,63 @@ var mdbApi = function execute(scope) {
         });
     }
 
+    function parseObjects(call, status, jobInfo) {
+        var alreadyFailed = false;
+
+        getDebugObjectsFile(call, jobInfo.jobId, 'findjsobjects', objectsParser, function (getObjectsError, jsObjects) {
+            if (getObjectsError) {
+                if (getObjectsError.statusCode === 404) {
+                    status = 'Failed';
+                    alreadyFailed = true;
+                } else {
+                    status = (status === 'Cancelled' ? 'Cancelled' : 'Failed');
+                }
+                updateJobInList(call, jobInfo.jobId, {status: status}, function (updateJobError) {
+                    if (updateJobError) {
+                        sendError(call, updateJobError);
+                        return;
+                    }
+                    if (alreadyFailed) {
+                        call.done(null, jobInfo);
+                    } else {
+                        call.done(getObjectsError);
+                    }
+                });
+                return;
+            }
+            var data = {status: status};
+            if (status === 'Processed') {
+                data.dateEnd = jobInfo.timeDone;
+            }
+
+            jsObjects.coreFile = jobInfo.coreFile;
+            jsObjects.status = status;
+
+            getDebugObjectsFile(call, jobInfo.jobId, 'modules', modulesParser, function (getModulesError, modules) {
+                if (getModulesError) {
+                    sendError(call, getModulesError);
+                    return;
+                }
+
+                jsObjects.modules = modules;
+                data.status = jsObjects.status = 'Processed';
+
+                if (!jobInfo.status || jobInfo.status !== jsObjects.status) {
+                    updateJobInList(call, jobInfo.jobId, data, function (updateJobError) {
+                        if (updateJobError) {
+                            sendError(call, updateJobError);
+                            return;
+                        }
+                        call.done(null, jsObjects);
+                    });
+                } else {
+                    call.done(null, jsObjects);
+                }
+            });
+        });
+
+    }
+
     server.onCall('MdbGetJobFromList', {
         verify: function (data) {
             return data.jobId;
@@ -191,14 +333,14 @@ var mdbApi = function execute(scope) {
                     call.done(error);
                     return;
                 }
-                var result = list.find(function (job) {
+                var job = list.find(function (job) {
                     return job.jobId === call.data.jobId;
                 });
-                if (result) {
+                if (job) {
                     var client = Manta.createClient(call);
-                    client.job(result.jobId, function (getJobError, jobInfo) {
+                    client.job(job.jobId, function (getJobError, jobInfo) {
                         var status;
-                        if (getJobError) {
+                        if (getJobError || jobInfo.state === 'failed') {
                             status = 'Failed';
                         } else if (jobInfo.cancelled) {
                             status = 'Cancelled';
@@ -208,32 +350,13 @@ var mdbApi = function execute(scope) {
                             status = 'Processing';
                         }
                         if (status !== 'Processing') {
-                            getDebugJSObjects(call, result.jobId, function (getObjectsError) {
-                                if (getObjectsError) {
-                                    status = (status === 'Cancelled' ? 'Cancelled' : 'Failed');
-                                }
-                                var data = {status: status};
-                                if (status === 'Processed') {
-                                    data.dateEnd = jobInfo.timeDone;
-                                }
-                                if (!status || result.status !== status) {
-                                    updateJobInList(call, result.jobId, data, function (updateJobError) {
-                                        if (updateJobError) {
-                                            sendError(call, updateJobError);
-                                            return;
-                                        }
-                                        call.done(null, result);
-                                    });
-                                } else {
-                                    call.done(null, result);
-                                }
-                            });
+                            parseObjects(call, status, job);
                         } else {
-                            call.done(null, result);
+                            call.done(null, job);
                         }
                     });
                 } else {
-                    call.done(null, result);
+                    call.done(null, job);
                 }
             });
         }
@@ -257,15 +380,8 @@ var mdbApi = function execute(scope) {
                 var thisJob = list.find(function (job) {
                     return job.jobId === call.data.jobId;
                 });
-                getDebugJSObjects(call, call.data.jobId, function (getObjectsError, stats) {
-                    if (getObjectsError) {
-                        sendError(call, getObjectsError);
-                        return;
-                    }
-                    stats.status = 'Processed';
-                    stats.coreFile = thisJob && thisJob.coreFile;
-                    call.done(getObjectsError, stats);
-                });
+
+                parseObjects(call, 'Processed', thisJob || {jobId: call.data.jobId});
             });
         }
     });
@@ -325,20 +441,7 @@ var mdbApi = function execute(scope) {
                                 sendError(call, firstUpdateJobError);
                                 return;
                             }
-                            getDebugJSObjects(call, jobId, function (getObjectsError, stats) {
-                                if (getObjectsError) {
-                                    sendError(call, getObjectsError);
-                                    return;
-                                }
-                                stats.status = 'Processed';
-                                updateJobInList(call, jobId, {status: 'Processed', dateEnd: new Date()}, function (secondUpdateJobError) {
-                                    if (secondUpdateJobError) {
-                                        sendError(call, secondUpdateJobError);
-                                        return;
-                                    }
-                                    call.done(getObjectsError, stats);
-                                });
-                            });
+                            parseObjects(call, 'Parsing', {jobId: jobId});
                         });
                     });
                 });
