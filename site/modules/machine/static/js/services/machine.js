@@ -325,7 +325,7 @@
                 var machine = service.machine(uuid);
                 if (machine.id) {
                     var job = start();
-                    job.deferred.then(
+                    job.deferred.promise.then(
                         function (result) {
                             if (result && typeof result === 'object') {
                                 Object.keys(result).forEach(function (k){
