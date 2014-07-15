@@ -8,7 +8,9 @@
         'PopupDialog',
         'errorContext',
         'Dataset',
-        function ($q, serverTab, localization, PopupDialog, errorContext, Dataset) {
+        'ErrorService',
+        function ($q, serverTab, localization, PopupDialog, errorContext,
+            Dataset, ErrorService) {
 
             var service = {};
             var promiseById;
@@ -80,24 +82,33 @@
                             }
                         }
 
+                        ErrorService.flushErrors('dcUnreachable', 'all');
                         function handleResponse(chunk) {
                             if (chunk.status === 'error') {
-                                images.error = chunk.error;
-                                PopupDialog.error(
-                                    localization.translate(
-                                        null,
-                                        null,
-                                        'Error'
-                                    ), chunk.error && chunk.error.restCode === 'NotAuthorized' ? chunk.error.message :
+                                ErrorService.setLastError('dcUnreachable', 'all', true);
+                                if (!ErrorService.getLastErrors('dcUnreachable', chunk.name)) {
+                                    ErrorService.setLastError('dcUnreachable', chunk.name,
+                                        'Datacenter {{name}} is currently not available. We are working on getting this datacenter back on.',
+                                        {name: chunk.name});
+
+                                    PopupDialog.error(
+                                        localization.translate(
+                                            null,
+                                            null,
+                                            'Error'
+                                        ), chunk.error && chunk.error.restCode === 'NotAuthorized' ? chunk.error.message :
                                         localization.translate(
                                             null,
                                             'machine',
                                             'Unable to retrieve images from datacenter {{name}}.',
                                             { name: chunk.name }
                                         )
-                                );
+                                    );
+                                }
                                 return;
                             }
+
+                            ErrorService.flushErrors('dcUnreachable', chunk.name);
 
                             if (chunk.images) {
                                 chunk.images.forEach(handleChunk);

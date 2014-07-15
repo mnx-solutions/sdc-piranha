@@ -14,8 +14,8 @@
         'PopupDialog',
         'Account',
         '$location',
-
-        function (serverTab, $rootScope, $q, $timeout, localization, Package, Dataset, util, PopupDialog, Account, $location) {
+        'ErrorService',
+        function (serverTab, $rootScope, $q, $timeout, localization, Package, Dataset, util, PopupDialog, Account, $location, ErrorService) {
 
         var service = {};
         var machines = {job: null, index: {}, list: [], search: {}};
@@ -140,26 +140,37 @@
                     name: 'MachineList',
                     progress: function (err, job) {
                         var data = job.__read();
-
+                        ErrorService.flushErrors('dcUnreachable', 'all');
                         function handleResponse(chunk) {
-                            if(chunk.status === 'error') {
-                                if (authorizationErrorDisable && (!chunk.error || chunk.error.restCode !== 'NotAuthorized')) {
+                            if (chunk.status === 'error') {
+                                if (authorizationErrorDisable && chunk.error || chunk.error.restCode === 'NotAuthorized') {
+                                    return;
+                                }
+
+                                ErrorService.setLastError('dcUnreachable', 'all', true);
+                                if (!ErrorService.getLastErrors('dcUnreachable', chunk.name)) {
+                                    ErrorService.setLastError('dcUnreachable', chunk.name,
+                                        'Datacenter {{name}} is currently not available. We are working on getting this datacenter back on.',
+                                        {name: chunk.name});
+
                                     PopupDialog.error(
                                         localization.translate(
                                             null,
                                             null,
                                             'Error'
                                         ), chunk.error && chunk.error.restCode === 'NotAuthorized' ? chunk.error.message :
-                                            localization.translate(
-                                                null,
-                                                'machine',
-                                                'Unable to retrieve instances from datacenter {{name}}.',
-                                                { name: chunk.name }
-                                            )
+                                        localization.translate(
+                                            null,
+                                            'machine',
+                                            'Unable to retrieve instances from datacenter {{name}}.',
+                                            { name: chunk.name }
+                                        )
                                     );
                                 }
                                 return;
                             }
+
+                            ErrorService.flushErrors('dcUnreachable', chunk.name);
 
                             if(chunk.machines) {
                                 chunk.machines.forEach(handleChunk);
@@ -238,6 +249,10 @@
         };
 
         service.machine = function (id) {
+            if (ErrorService.getLastErrors('dcUnreachable', 'all')) {
+                service.updateMachines();
+            }
+
             if (id === true || (!id && !machines.job)) {
                 service.updateMachines();
                 return machines.list;
