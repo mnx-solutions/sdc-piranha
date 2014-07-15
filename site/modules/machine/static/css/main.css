@@ -324,6 +324,10 @@
     line-height: 1;
     cursor: pointer;
 }
+.advanced-instance-title .label {
+    top: -3px;
+    left: -3px;
+}
 .btn-success{
     min-width: 94px;
     color: black;
@@ -775,7 +779,7 @@ span.btn-success {
     color: white;
 }
 .advanced-instance-title {
-    padding: 15px 20px 0 22px;
+    padding: 10px 10px 0 11px;
 }
 
 .advanced-instance-title p,
@@ -808,9 +812,9 @@ span.btn-success {
 }
 
 .advanced-instance-description {
-    padding: 0 24px;
-    height: 50px;
     margin-top: -6px;
+    padding: 0 12px;
+    height: 70px;
 }
 
 .advanced-instance-description p,
@@ -828,7 +832,7 @@ span.btn-success {
 }
 
 .advanced-instance-description p {
-    height: 70px;
+    height: 84px;
 }
 
 .description p {
@@ -836,7 +840,7 @@ span.btn-success {
 }
 
 .advaced-instance-btn {
-    margin: 25px 20px 0 16px;
+    margin: 25px 15px 0 16px;
     padding: 0;
     width: 56px !important;
     height: 24px;
@@ -1336,7 +1340,7 @@ span.btn-success {
 .small-icon.postgresql,
 .small-icon.scalearc,
 .small-icon.nginx {
-    background-position: 162px 17px;
+    background-position: 168px 12px;
     background-size: 20px;
     background-repeat: no-repeat;
 }
