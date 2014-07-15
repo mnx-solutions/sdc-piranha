@@ -379,9 +379,9 @@
             });
         };
 
-        $scope.$watch('items', function () {
-            if ($scope.enabledCheckboxes) {
-                $scope.items.forEach(function (item) {
+        $scope.$watch('items', function (items) {
+            if ($scope.enabledCheckboxes && items && items.length > 0) {
+                items.forEach(function (item) {
                     item.checked = false;
                 });
             }
