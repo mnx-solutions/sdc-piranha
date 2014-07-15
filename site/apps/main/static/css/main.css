@@ -3276,3 +3276,9 @@ label.checkbox.folder-name-form-checkbox {
     text-overflow: ellipsis;
     white-space: nowrap;
 }
+#zenbox_overlay {
+    position: fixed;
+    z-index: 999999;
+    overflow: hidden !important;
+    height: 100% !important;
+}
