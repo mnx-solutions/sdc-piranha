@@ -19,10 +19,10 @@
                     localization.bind('account', $scope);
                 },
                 link: function ($scope) {
-                    var subUser = requestContext.getParam('id') || false;
+                    var subUserId = !$scope.isSubUserForm ? requestContext.getParam('id') : false;
                     Account.getAccount().then(function (account) {
-                        if (account.isSubuser) {
-                            subUser = account.id;
+                        if ($scope.isSubUserForm && account.isSubuser) {
+                            subUserId = account.id;
                         }
                     });
                     function showPopupDialog(level, title, message, callback) {
@@ -85,8 +85,8 @@
                                     return showPopupDialog('error', 'Error', "The file you've uploaded is not a public key.");
                                 } else {
                                     var path = 'account/upload';
-                                    if (subUser) {
-                                        path = 'account/upload?userId=' +  subUser;
+                                    if (subUserId) {
+                                        path = 'account/upload?userId=' +  subUserId;
                                     }
                                     return http.uploadFiles(path, elem.value, files, function (error) {
                                         $rootScope.$broadcast('sshProgress', false);
@@ -127,8 +127,8 @@
                                             result.data.keyName = keyParts[2];
                                         }
                                     }
-                                    if (subUser) {
-                                        RBAC.uploadUserKey(subUser, result.data.keyName, result.data.keyData).then(function () {
+                                    if (subUserId) {
+                                        RBAC.uploadUserKey(subUserId, result.data.keyName, result.data.keyData).then(function () {
                                             $rootScope.$broadcast('sshCreated', true);
                                         }, errorCallback);
                                     } else {
@@ -140,13 +140,13 @@
                                 } else if (result && result.value === 'add' && !result.data.keyData) {
                                     $rootScope.$broadcast('sshProgress', false);
                                     showPopupDialog('error', 'Error', 'Please enter a SSH key.');
-                                } else if (result && result.keyUploaded && !subUser) {
+                                } else if (result && result.keyUploaded && !subUserId) {
                                     if ($scope.nextStep) {
                                         $scope.skipSsh();
                                     } else {
                                         $scope.updateKeys();
                                     }
-                                } else if (result && result.keyUploaded && subUser) {
+                                } else if (result && result.keyUploaded && subUserId) {
                                     $rootScope.$broadcast('sshCreated', true);
                                 }
                             }
