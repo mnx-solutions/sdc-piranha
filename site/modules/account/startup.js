@@ -25,8 +25,8 @@ module.exports = function execute(scope) {
     var filterFields = function (callData, filter, skipIfEmpty) {
         var data = {};
         filter.forEach(function (f) {
-            if (!skipIfEmpty || (typeof (callData[f]) === 'string' || (callData[f] && callData[f].length > 0))) {
-                data[f] = callData[f] || null;
+            if (!skipIfEmpty || (typeof (callData[f]) === 'string' || (callData[f] && callData[f].length >= 0))) {
+                    data[f] = callData[f];
             }
         });
         return data;
