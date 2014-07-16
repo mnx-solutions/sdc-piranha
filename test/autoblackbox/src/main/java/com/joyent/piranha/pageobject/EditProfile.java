@@ -1,6 +1,6 @@
 package com.joyent.piranha.pageobject;
 
-public class EditProfile extends AbstractPageObject {
+public class EditProfile extends UserInfo {
     public static final String TITLE = "Edit Profile";
 
     @Override

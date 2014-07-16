@@ -37,15 +37,33 @@ public class SideBarMenu extends AbstractPageObject {
         return page(ImageList.class);
     }
 
-    public <T extends AbstractPageObject> T clickLoadBalancers(Class<T> aClass){
+    public <T extends AbstractPageObject> T clickLoadBalancers(Class<T> aClass) {
         clickMenu(COMPUTE_MENU_TITLE);
         clickMenu(SLB_MENU_TITLE);
         waitForLargeSpinnerDisappear();
         return page(aClass);
     }
 
-    public Usage clickUsage(){
+    public Usage clickUsage() {
         clickMenu(USAGE_MENU_TITLE);
         return page(Usage.class);
+
+    }
+
+    public Users clickAccount() {
+        clickMenu(ACCOUNT_MENU_TITLE);
+        return page(Users.class);
+    }
+
+    public Roles clickRoles() {
+        clickAccount();
+        clickMenu(ROLES_MENU_TITLE);
+        return page(Roles.class);
+    }
+
+    public Policies clickPolicies() {
+        clickAccount();
+        clickMenu(POLICIES_MENU_TITLE);
+        return page(Policies.class);
     }
 }
