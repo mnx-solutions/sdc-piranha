@@ -50,7 +50,7 @@ module.exports = function execute(scope, register) {
     };
     api.addSubUserSshKey = function (req, name, keyData, cb) {
         var userId = req.body.subUser || req.query.userId;
-        req.cloud.uploadUserKey({login: 'my'}, userId, {name: name, key: keyData}, function (err, resp) {
+        req.cloud.uploadUserKey(userId, {name: name, key: keyData}, function (err, resp) {
             if(err) {
                 cb(err);
                 return;
@@ -58,7 +58,7 @@ module.exports = function execute(scope, register) {
 
             //hold this call until cloudApi really has this key in the list
             (function checkList() {
-                req.cloud.listUserKeys(userId, function (listError, data) {
+                req.cloud.listUserKeys('my', userId, function (listError, data) {
                     if (searchFromList(data, resp)) {
                         cb(null);
                     } else {
@@ -67,7 +67,7 @@ module.exports = function execute(scope, register) {
                 }, true);
             })();
         });
-    }
+    };
 
     api.getAccountVal = function (req, cb) {
         var start = Date.now();
