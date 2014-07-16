@@ -1,7 +1,7 @@
 'use strict';
 
 (function (app, ng) {
-    app.directive('fileManager', ['Account', 'localization', 'PopupDialog', 'fileman', '$timeout', '$qe', 'util', function (Account, localization, PopupDialog, fileman, $timeout, $qe, util) {
+    app.directive('fileManager', ['Account', 'localization', 'PopupDialog', 'fileman', '$timeout', '$qe', 'util', 'Storage', '$location', function (Account, localization, PopupDialog, fileman, $timeout, $qe, util, Storage, $location) {
         return {
             restrict: 'EA',
             scope: {
@@ -400,7 +400,10 @@
                 Account.getAccount().then(function (account) {
                     scope.provisionEnabled = account.provisionEnabled;
                     if (scope.provisionEnabled) {
-                        scope.drawFileMan();
+                        Storage.ping().then(scope.drawFileMan, function () {
+                            $location.url('/manta/intro');
+                            $location.replace();
+                        });
                     } else {
                         scope.loading = false;
                     }
