@@ -13,9 +13,8 @@
             var isNew = messages.parts.length === 0;
             var message = question.error || question;
             if (angular.isObject(message)) {
-                return;
-            }
-            if (messages.parts.indexOf(message) === -1) {
+                messages = message;
+            } else if (messages.parts.indexOf(message) === -1) {
                 messages.parts.push(message);
                 messages.concatenated = messages.parts.join('<br/>');
             }
