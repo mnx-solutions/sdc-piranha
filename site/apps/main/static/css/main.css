@@ -3282,3 +3282,6 @@ label.checkbox.folder-name-form-checkbox {
     overflow: hidden !important;
     height: 100% !important;
 }
+#zenbox_container {
+    top: 50px !important;
+}
