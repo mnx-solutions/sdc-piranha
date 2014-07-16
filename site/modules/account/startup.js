@@ -33,7 +33,7 @@ module.exports = function execute(scope) {
     };
 
     // Account actions->resource
-    var ACCOUNT_RESOURCES = {
+    var SIMPLE_RESOURCES = {
         getaccount:            '/my/',
         listmachines:          '/my/machines',
         listkeys:              '/my/keys',
@@ -50,19 +50,31 @@ module.exports = function execute(scope) {
     };
 
     // SubUser actions->resource
-    var USER_RESOURCES = {
-        getnetwork:    '/my/networks/%s',
-        listuserkeys:  '/my/users/%s/keys',
-        createuserkey: '/my/users/%s/keys',
-        uploaduserkey: '/my/users/%s/keys',
-        getuserkey:    '/my/users/%s/keys/%s',
-        deleteuserkey: '/my/users/%s/keys/%s',
-        getuser:       '/my/users/%s',
-        updateuser:    '/my/users/%s'
+    var CUSTOM_RESOURCES = {
+        startmachine:          '/my/machines/%s',
+        stopmachine:           '/my/machines/%s',
+        deletemachine:         '/my/machines/%s',
+        rebootmachine:         '/my/machines/%s',
+
+        deletemachinetags:     '/my/machines/%s/tags',
+        replacemachinetags:    '/my/machines/%s/tags',
+        addmachinemetadata:    '/my/machines/%s/metadata',
+        listmachinemetadata:   '/my/machines/%s/metadata',
+
+        getnetwork:            '/my/networks/%s',
+
+        listuserkeys:          '/my/users/%s/keys',
+        createuserkey:         '/my/users/%s/keys',
+        uploaduserkey:         '/my/users/%s/keys',
+        getuserkey:            '/my/users/%s/keys/%s',
+        deleteuserkey:         '/my/users/%s/keys/%s',
+
+        getuser:               '/my/users/%s',
+        updateuser:            '/my/users/%s'
     };
 
-    var ACCOUNT_ACTIONS = Object.keys(ACCOUNT_RESOURCES);
-    var USER_ACTIONS = Object.keys(USER_RESOURCES);
+    var SIMPLE_ACTIONS = Object.keys(SIMPLE_RESOURCES);
+    var CUSTOM_ACTIONS = Object.keys(CUSTOM_RESOURCES);
 
     var getArray = function (data, force) {
         return Array.isArray(data) ? data : (force ? [data] : []);
@@ -84,6 +96,9 @@ module.exports = function execute(scope) {
                 function (callback) {
                     cloudapi.listPolicies(callback);
                 },
+                function (callback) {
+                    cloudapi.listMachines(callback);
+                },
             ]
         }, function (err, results) {
             if (err) {
@@ -92,13 +107,14 @@ module.exports = function execute(scope) {
                 var users = getArray(results.operations[0].result);
                 var networks = getArray(results.operations[1].result);
                 var policies = getArray(results.operations[2].result);
-                loadDataCallback(cloudapi, getArray(roles, true), log, users, networks, policies);
+                var machines = getArray(results.operations[3].result);
+                loadDataCallback(cloudapi, getArray(roles, true), log, users, networks, policies, machines);
             }
         })
     };
 
 
-    var updateRoleTags = function (cloudapi, roles, log, users, networks, policies) {
+    var updateRoleTags = function (cloudapi, roles, log, users, networks, policies, machines) {
         roles = roles.filter(function (role) {
             return role.default_members && role.default_members.length > 0;
         });
@@ -148,13 +164,13 @@ module.exports = function execute(scope) {
 
             policiesByRole.forEach(function (policy) {
                 policy.rules.forEach(function (rule) {
-                    ACCOUNT_ACTIONS.forEach(function (command) {
+                    SIMPLE_ACTIONS.forEach(function (command) {
                         if (rule.indexOf(command) !== -1) {
-                            pushResourceRole(resourceRole, ACCOUNT_RESOURCES[command], role);
+                            pushResourceRole(resourceRole, SIMPLE_RESOURCES[command], role);
                         }
                     });
 
-                    USER_ACTIONS.forEach(function (command) {
+                    CUSTOM_ACTIONS.forEach(function (command) {
                         if (rule.indexOf(command) !== -1) {
                             role.default_members.forEach(function (member) {
                                 var resources = [];
@@ -170,11 +186,25 @@ module.exports = function execute(scope) {
                                         break;
                                     case 'getnetwork':
                                         networks.forEach(function (network) {
-                                            resources.push(util.format(USER_RESOURCES[command], network.id));
+                                            resources.push(util.format(CUSTOM_RESOURCES[command], network.id));
                                         });
                                         break;
+                                    case 'startmachine':
+                                    case 'stopmachine':
+                                    case 'deletemachine':
+                                    case 'rebootmachine':
+                                    case 'deletemachinetags':
+                                    case 'enablemachinefirewall':
+                                    case 'replacemachinetags':
+                                    case 'addmachinemetadata':
+                                    case 'listmachinemetadata':
+                                        machines.forEach(function (machine) {
+                                            resources.push(util.format(CUSTOM_RESOURCES[command], machine.id));
+                                        });
+                                        break;
+
                                     default :
-                                        resources.push(util.format(USER_RESOURCES[command], defaultMembers[member].id));
+                                        resources.push(util.format(CUSTOM_RESOURCES[command], defaultMembers[member].id));
                                         break;
                                 }
                                 resources.forEach(function (resource) {
@@ -209,7 +239,7 @@ module.exports = function execute(scope) {
             }
             results.successes.forEach(function (result) {
                 (result.data || []).forEach(function (userKey) {
-                    var resource = util.format(USER_RESOURCES['getuserkey'], result.userId, userKey.fingerprint);
+                    var resource = util.format(CUSTOM_RESOURCES['getuserkey'], result.userId, userKey.fingerprint);
                     setRoleTags(resource, result.roles);
                 });
             });
