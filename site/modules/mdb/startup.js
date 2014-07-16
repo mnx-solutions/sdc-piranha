@@ -119,6 +119,26 @@ var mdbApi = function execute(scope) {
         });
     }
 
+    function removeJobFromList(call, jobIds, callback) {
+        var client = Manta.createClient(call);
+        callback = callback || function () {};
+        getJobsList(call, function (error, list) {
+            if (error && error.statusCode !== 404) {
+                callback(error);
+                return;
+            }
+
+            jobIds.forEach(function (jobId) {
+                list.forEach(function (item, index) {
+                    if (item.jobId === jobId) {
+                        list.splice(index, 1);
+                    }
+                });
+            });
+            client.putFileContents('/' + client.user + '/' + mdbJobsListPath, list, callback);
+        });
+    }
+
     function waitForJobInList(call, jobId, callback) {
         var jobList = function () {
             getJobsList(call, function (error, list) {
@@ -246,6 +266,20 @@ var mdbApi = function execute(scope) {
                     stats.coreFile = thisJob && thisJob.coreFile;
                     call.done(getObjectsError, stats);
                 });
+            });
+        }
+    });
+    server.onCall('MdbDeleteJob', {
+        verify: function (data) {
+            return data && data.jobIds;
+        },
+        handler: function (call) {
+            removeJobFromList(call, call.data.jobIds, function (error) {
+                if (error) {
+                    sendError(call, error);
+                    return;
+                }
+                call.done(null, 'Deleted');
             });
         }
     });

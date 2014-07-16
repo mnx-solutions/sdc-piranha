@@ -21,6 +21,13 @@
                 }).promise;
             };
 
+            service.deleteJob = function (jobIds) {
+                return serverTab.call({
+                    name: 'MdbDeleteJob',
+                    data: {jobIds: jobIds}
+                }).promise;
+            };
+
             service.getDebugJob = function (jobId) {
                 return serverTab.call({
                     name: 'MdbGetJob',

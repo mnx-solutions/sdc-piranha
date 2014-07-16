@@ -2,6 +2,7 @@
 
 (function (app) {
     app.controller('mdbController', [
+        '$q',
         '$scope',
         'requestContext',
         'localization',
@@ -9,7 +10,7 @@
         'Account',
         'PopupDialog',
         '$location',
-        function ($scope, requestContext, localization, mdb, Account, PopupDialog, $location) {
+        function ($q, $scope, requestContext, localization, mdb, Account, PopupDialog, $location) {
             localization.bind('mdb', $scope);
             requestContext.setUpRenderContext('mdb.index', $scope);
 
@@ -54,6 +55,13 @@
                 };
                 getStatus();
                 return item.status;
+            };
+
+            var actionMessages = {
+                delete: {
+                    single: 'Are you sure you want to delete the selected job?',
+                    plural: 'Are you sure you want to delete the selected jobs?'
+                }
             };
 
             $scope.gridProps = [
@@ -129,7 +137,15 @@
                     }
                 }
             ];
-            $scope.gridActionButtons = [];
+            $scope.gridActionButtons = [
+                {
+                    label: 'Delete',
+                    action: function () {
+                        makeJobAction('Confirm: Delete job', actionMessages.delete);
+                    },
+                    sequence: 1
+                }
+            ];
             $scope.exportFields = {
                 ignore: 'all'
             };
@@ -138,13 +154,67 @@
             $scope.enabledCheckboxes = true;
             $scope.placeHolderText = 'filter';
 
-            mdb.getDebugJobsList().then(function (list) {
+            var errorCallback = function (err) {
                 $scope.loading = false;
-                $scope.objects = list;
-            }, function (error) {
-                $scope.loading = false;
-                PopupDialog.error(null, error);
-            });
+                PopupDialog.errorObj(err);
+            };
+            $scope.getCheckedItems = function () {
+                return $scope.objects.filter(function (el) {
+                    return el.checked;
+                });
+            };
+            $scope.noCheckBoxChecked = function () {
+                PopupDialog.error(
+                    localization.translate(
+                        $scope,
+                        null,
+                        'Error'
+                    ),
+                    localization.translate(
+                        $scope,
+                        null,
+                        'No job selected for the action.'
+                    )
+                );
+            };
+
+            function makeJobAction(messageTitle, messageBody) {
+                var checkedItems = $scope.getCheckedItems();
+                if (checkedItems.length) {
+                    PopupDialog.confirm(
+                        localization.translate(
+                            $scope,
+                            null,
+                            messageTitle
+                        ),
+                        localization.translate(
+                            $scope,
+                            null,
+                            checkedItems.length > 1 ? messageBody.plural : messageBody.single
+                        ),
+                        function () {
+                            $scope.loading = true;
+                            var deleteIds = checkedItems.map(function (item) {
+                                return item.jobId;
+                            });
+                            mdb.deleteJob(deleteIds).then(function () {
+                                getJobsList();
+                            }, errorCallback);
+                        }
+                    );
+                } else {
+                    $scope.noCheckBoxChecked();
+                }
+            }
+            var getJobsList = function () {
+                mdb.getDebugJobsList().then(function (list) {
+                    $scope.loading = false;
+                    $scope.objects = list;
+                }, function (error) {
+                    $scope.loading = false;
+                    PopupDialog.error(null, error);
+                });
+            };
 
             $scope.addNewJob = function () {
                 if ($scope.provisionEnabled) {
@@ -164,6 +234,8 @@
                     }, true);
                 }
             };
+
+            getJobsList();
         }
     ]);
 }(window.JP.getModule('mdb')));
