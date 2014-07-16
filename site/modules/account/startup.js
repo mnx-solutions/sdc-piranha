@@ -56,7 +56,6 @@ module.exports = function execute(scope) {
         deletemachine:         '/my/machines/%s',
         rebootmachine:         '/my/machines/%s',
 
-        enablemachinefirewall: '/my/machines/%s/tags',
         deletemachinetags:     '/my/machines/%s/tags',
         replacemachinetags:    '/my/machines/%s/tags',
         addmachinemetadata:    '/my/machines/%s/metadata',
