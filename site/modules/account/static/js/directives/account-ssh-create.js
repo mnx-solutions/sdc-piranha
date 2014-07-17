@@ -70,7 +70,7 @@
                                                 $rootScope.downloadLink = downloadLink;
                                                 $rootScope.sshKeyName = data.name;
 
-                                                var keyAdded = function () {
+                                                var keyAdded = function (err) {
                                                     var message = 'SSH key successfully added to your account.';
 
                                                     if (subUserId) {
@@ -87,15 +87,19 @@
                                                             $scope,
                                                             null,
                                                             message
-                                                        )
+                                                        ), function () {
+                                                            if (err) {
+                                                                PopupDialog.errorObj(err);
+                                                            }
+                                                        }
                                                     );
                                                 };
 
                                                 if ($scope.updateKeys) {
-                                                    $scope.updateKeys(true, function () {
+                                                    $scope.updateKeys(true, function (err) {
                                                         // if we are in signup, show the download right away
                                                         $scope.iframe = $sce.trustAsHtml('<iframe src="' + downloadLink + '"></iframe>');
-                                                        keyAdded();
+                                                        keyAdded(err);
 
                                                     });
                                                 } else {

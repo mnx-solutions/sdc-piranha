@@ -33,10 +33,14 @@
                     if (subuserId === 'create') {
                         subuserId = false;
                     }
-                    var errorCallback = function (err) {
+                    var errorCallback = function (err, cb) {
                         $scope.loading = false;
                         $scope.loadingKeys = false;
-                        PopupDialog.errorObj(err);
+                        if (angular.isFunction(cb)) {
+                            cb(err);
+                        } else {
+                            PopupDialog.errorObj(err);
+                        }
                         if (subuserId && err.message.indexOf('listuserkeys') === -1) {
                             getKeysList();
                         }
@@ -57,10 +61,12 @@
                         RBAC.listUserKeys(subuserId).then(function (list) {
                             $scope.keys = list;
                             $scope.loadingKeys = false;
-                            if (typeof (cb) === 'function') {
+                            if (angular.isFunction(cb)) {
                                 cb();
                             }
-                        }, errorCallback);
+                        }, function (err) {
+                            errorCallback(err, cb);
+                        });
                     };
 
                     $scope.updateKeys = function (notifyDataChanged, cb) {
