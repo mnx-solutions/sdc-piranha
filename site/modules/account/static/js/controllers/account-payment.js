@@ -5,7 +5,14 @@
         'Account.PaymentController', [
             '$scope',
             'requestContext',
-            function ($scope, requestContext) {
+            'Account',
+            function ($scope, requestContext, Account) {
                 requestContext.setUpRenderContext('account.payment', $scope);
+
+                $scope.loading = true;
+                Account.getAccount().then(function (account) {
+                    $scope.provisionEnabled = account.provisionEnabled;
+                    $scope.loading = false;
+                });
             }]);
 }(window.JP.getModule('Account')));
