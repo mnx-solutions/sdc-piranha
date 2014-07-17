@@ -175,6 +175,11 @@
 , "mdb": {
     "processor": "/NodeCore/public/manta-mdb-node-report.sh"
 }
+, "downloadSdc": {
+    "fullSdc": "",
+    "coalSdc": "",
+    "eula": ""
+}
 ,"subUserDenied" : [
     "slb"
     ,"provisioningLimits"
@@ -217,5 +222,6 @@
   , "mdb": "no"
   , "rbac": "no"
   , "cloudAnalytics": "yes"
+  , "downloadSdc": "no"
   }
 }

@@ -154,6 +154,12 @@
                     </li>
                 </ul>
             </li>
+            <li class="nested" data-ng-show="features.downloadSdc == 'enabled'" data-ng-class="{'active open': location.path().search('downloadSdc') == 1}">
+                <a href="#!/downloadSdc" class="sdc-download-icon">
+                    <span class="title sdc-download-title">Private Cloud Free Trial</span>
+                    <span class="selected"></span>
+                </a>
+            </li>
             <li>
                 <div class="sidebar-toggler" data-ng-class="{'sidebar-toggler-back': sideBarMin}" data-ng-click="toggleSideBar()"></div>
             </li>
