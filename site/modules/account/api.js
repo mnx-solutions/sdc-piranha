@@ -39,7 +39,10 @@ module.exports = function execute(scope, register) {
             // hold this call until cloudApi really has this key in the list
             (function checkList() {
                 req.cloud.listKeys({login: 'my'}, function(listError, data) {
-                    if(searchFromList(data, resp)) {
+                    if (listError) {
+                        req.log.error('Failed to get listKeys from cloudApi', listError);
+                        cb(null);
+                    } else if (searchFromList(data, resp)) {
                         cb(null);
                     } else {
                         setTimeout(checkList, 2000);

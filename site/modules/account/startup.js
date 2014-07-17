@@ -37,6 +37,7 @@ module.exports = function execute(scope) {
         getaccount:            '/my/',
         listmachines:          '/my/machines',
         listkeys:              '/my/keys',
+        createkey:             '/my/keys',
         listusers:             '/my/users',
         listimages:            '/my/images',
         listroles:             '/my/roles',

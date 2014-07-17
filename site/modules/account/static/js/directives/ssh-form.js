@@ -94,7 +94,11 @@
                                 }
                             }, function (err) {
                                 $scope.loadingKeys = false;
-                                PopupDialog.errorObj(err);
+                                if (angular.isFunction(cb)) {
+                                    cb(err);
+                                } else {
+                                    PopupDialog.errorObj(err);
+                                }
                             });
                         }
                     };
