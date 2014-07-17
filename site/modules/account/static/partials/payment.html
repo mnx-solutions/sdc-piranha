@@ -1,7 +1,11 @@
-<div class="container-fluid container-position" data-ng-controller="Account.PaymentController" >
+<div class="container-fluid container-position" data-ng-controller="Account.PaymentController">
     <div data-breadcrumbs></div>
-    <h3 class="page-title">{{ pageTitle }}</h3>
-    <div class="row-fluid">
+    <div data-ng-hide="loading">
+        <h3 class="page-title" data-ng-show="account.provisionEnabled">Edit Billing Information</h3>
+        <h3 class="page-title" data-ng-hide="account.provisionEnabled">Complete Account Information</h3>
+    </div>
+    <div class="loading-large span12" data-ng-show="loading"></div>
+    <div class="row-fluid" data-ng-hide="loading">
         <span class="first-block pull-left"
               data-add-credit-card
               data-show-phone="{{features.showPhone != 'disabled'}}"
