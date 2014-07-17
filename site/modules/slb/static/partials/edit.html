@@ -1,6 +1,11 @@
 <div class="container-fluid container-position" data-ng-controller="slb.EditController">
-    <div data-breadcrumbs></div>
-    <div data-notification></div>
+    <!--<div data-breadcrumbs></div>--> <!--temporarily hardcoded-->
+    <ul class="breadcrumb">
+        <li><a href="#!/compute">Compute</a>&nbsp;/</li>
+        <li data-ng-show="balancerId"><a href="#!/slb/list">Load Balancers</a>&nbsp;/</li>
+        <li data-ng-show="!balancerId">Load Balancers&nbsp;/</li>
+        <li data-ng-show="balancerId"><a href="#!/slb/detail/{{balancerId}}">Details</a>&nbsp;/</li>
+    </ul>
     <div class="page-header row-fluid">
         <h3 class="page-title" data-ng-show="balancerId" data-translate>Edit Load Balancer</h3>
         <h3 class="page-title" data-ng-hide="balancerId" data-translate>Create Load Balancer</h3>

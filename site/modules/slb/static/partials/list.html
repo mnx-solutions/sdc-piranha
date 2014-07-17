@@ -1,5 +1,8 @@
     <div class="container-fluid container-position" data-ng-controller="slb.ListController">
-        <div data-breadcrumbs></div>
+    <!--<div data-breadcrumbs></div>--> <!--temporarily hardcoded-->
+    <ul class="breadcrumb">
+        <li><a href="#!/compute">Compute</a>&nbsp;/</li>
+    </ul>
     <div class="loading-large" data-ng-hide="listLoaded"></div>
     <div data-operation-log></div>
     <div data-ng-show="listLoaded" class="table-overflow group-checkable">
