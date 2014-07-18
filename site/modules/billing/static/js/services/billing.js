@@ -126,11 +126,12 @@
             return call.promise;
         };
 
-        service.createSupportSubscription = function (ratePlanId, callback) {
+        service.createSupportSubscription = function (ratePlanId, invoiceCollect, callback) {
             serverTab.call({
                 name: 'BillingSubscriptionCreate',
                 data: {
-                    ratePlanId: ratePlanId
+                    ratePlanId: ratePlanId,
+                    invoiceCollect: invoiceCollect
                 },
                 done: function (err, job) {
                     if (err) {
