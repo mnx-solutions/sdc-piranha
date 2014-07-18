@@ -6,7 +6,6 @@
     </div>
     <div class="loading-large" data-ng-show="loading"></div>
 
-    <div class="clearfix"></div>
     <div data-ng-hide="(rules.length || loading)" class="pull-left">
         <h4>Hello there!</h4>
         <div>You don't have any Cloud Firewall rules.
@@ -16,7 +15,7 @@
             </ol>
         </div>
     </div>
-    <div data-ng-show="rules.length">
+    <div data-ng-show="rules.length && !loading">
         <div data-grid-view
              data-user-config="gridUserConfig"
              data-props="gridProps"
