@@ -334,7 +334,7 @@
                         job.machine = machine;
                         machine.job = job.getTracker();
                     }
-                    return machine.job;
+                    return machine.job.deferred.promise;
                 }
 
                 var machine = service.machine(uuid);
@@ -373,13 +373,13 @@
                             }
 
                         });
-                    return  job;
+                    return  job.deferred.promise;
                 }
 
                 var d = $q.defer();
                 machine.then(function(m) {
                     machine = m;
-                    d.resolve(start());
+                    start().then(d.resolve, d.reject);
                 });
 
                 return d.promise;
