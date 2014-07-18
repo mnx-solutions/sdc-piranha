@@ -440,13 +440,14 @@ module.exports = function execute(scope, callback) {
 
         server.onCall('BillingSubscriptionCreate', {
             verify: function (data) {
-                return data && data.hasOwnProperty('ratePlanId');
+                return data && data.hasOwnProperty('ratePlanId') && data.hasOwnProperty('invoiceCollect');
             },
 
             handler: function (call) {
                 zuora.subscription.create( {
                     termType: 'EVERGREEN',
                     accountKey: call.req.session.userId,
+                    invoiceCollect: call.data.invoiceCollect,
                     contractEffectiveDate: moment().utc().subtract('hours', 8).format('YYYY-MM-DD'), // PST date
                     subscribeToRatePlans: [
                         {
@@ -501,7 +502,7 @@ module.exports = function execute(scope, callback) {
                 var unsubscribe = function (subscriptionId, unsubscribeCallback) {
                     zuora.subscription.cancel(subscriptionId, {
                         cancellationPolicy: 'SpecificDate',
-                        invoiceCollect: true,
+                        invoiceCollect: false,
                         cancellationEffectiveDate: moment().utc().subtract('hours', 8).format('YYYY-MM-DD')
                     }, unsubscribeCallback);
                 };

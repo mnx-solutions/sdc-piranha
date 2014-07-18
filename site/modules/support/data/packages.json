@@ -163,7 +163,8 @@
                 "levelSupport": "0",
                 "active": false,
                 "popUpTitle": "Joyent Node.js Production Support",
-                "popUpQuestion": "Are you sure you want to sign up for Production Support"
+                "popUpQuestion": "Are you sure you want to sign up for Production Support",
+                "invoiceCollect": true
             },
             {
                 "title" : "Business Critical",

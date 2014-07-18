@@ -47,7 +47,7 @@
                     }
                 });
                 BillingService.cancelSupportSubscriptions(ratePlansToUnsubscribe, function () {
-                    BillingService.createSupportSubscription(supportPackage.ratePlanId, function (err) {
+                    BillingService.createSupportSubscription(supportPackage.ratePlanId, !!supportPackage.invoiceCollect, function (err) {
                         if (err) {
                             PopupDialog.error(
                                 localization.translate(
