@@ -571,7 +571,7 @@
                 ];
 
                 $scope.firewallChangeable = function() {
-                    return $scope.machine.type !== 'virtualmachine' && $scope.machine.hasOwnProperty('firewall_enabled');
+                    return $scope.machine.firewall_supported && $scope.machine.hasOwnProperty('firewall_enabled');
                 };
 
                 $scope.toggleFirewallEnabled = function () {

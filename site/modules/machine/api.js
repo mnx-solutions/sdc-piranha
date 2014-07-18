@@ -22,6 +22,9 @@ module.exports = function execute(scope, register) {
             });
         }
 
+        machine.firewall_supported = machine.type === 'smartmachine' ||
+            machine.type === 'virtualmachine' && machine.compute_node && config.ns['fw-blist'].indexOf(machine.compute_node) === -1;
+
         if (new Date(machine.created) < new Date(config.images.earliest_date)) {
             machine.imageCreateNotSupported = 'Instances created before ' + config.images.earliest_date +
                 ' are not supported for image creation.';

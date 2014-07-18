@@ -363,7 +363,7 @@
 
                         if (object.firewall_enabled) {
                             state = '<span class="grid-enabled-text">On</span>';
-                        } else if ("virtualmachine" === object.type || !object.hasOwnProperty("firewall_enabled")) {
+                        } else if (!object.firewall_supported || !object.hasOwnProperty("firewall_enabled")) {
                             state = 'N/A';
                         } else {
                             state = 'Off';
@@ -447,7 +447,7 @@
                         ),
                         function () {
                             checkedInstances.forEach(function (machine) {
-                                if ("virtualmachine" === machine.type) {
+                                if (!machine.firewall_supported) {
                                     isFirewallNonSupported = true;
                                 } else if (action === 'Enable' !== machine.firewall_enabled) {
                                     $scope.toggleFirewallEnabled(machine);
