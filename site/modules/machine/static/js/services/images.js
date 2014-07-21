@@ -6,15 +6,13 @@
         'serverTab',
         'localization',
         'PopupDialog',
-        'errorContext',
-        'util',
         'ErrorService',
-        function ($q, serverTab, localization, PopupDialog, errorContext,
-            util, ErrorService) {
+        'util',
+        function ($q, serverTab, localization, PopupDialog, ErrorService, util) {
 
             var service = {};
             var list = [];
-            var images = {index: {}, job: null, list: {}, error: null, search: {}};
+            var images = {index: {}, job: null, list: {private: [], all: []}, error: null, search: {}};
 
             function handleChunk(image, action) {
                 var old = null;
@@ -66,9 +64,9 @@
                 if (params) {
                     var datacenter = params.datacenter || 'all';
                     if (params.id) {
-                        return images.list[datacenter].find(function (image) {
+                        return ng.copy(images.list[datacenter].find(function (image) {
                             return image.id === params.id;
-                        });
+                        }));
                     }
                     return images.list[datacenter].filter(function (image) {
                         return compareProperties(image, params);
@@ -78,8 +76,8 @@
                 }
             }
 
-            service.updateImages = function (force) {
-                if (!images.job && !force) {
+            service.updateImages = function () {
+                if (!images.job) {
                     images.job = serverTab.call({
                         name: 'ImagesList',
                         error: function (err) {
@@ -126,17 +124,15 @@
                                         if (!images.index[image.id]) {
                                             images.index[image.id] = image;
                                             images.list['all'].push(image);
-                                        }
-                                        if (image.public === false) {
-                                            images.list['private'].push(image);
+                                            if (image.public === false) {
+                                                images.list['private'].push(image);
+                                            }
                                         }
                                         images.list[chunk.name].push(image);
                                     });
                                 }
                             }
 
-                            images.list['private'] = [];
-                            images.list['all'] = [];
                             if (ng.isArray(data)) {
                                 data.forEach(handleResponse);
                             } else {
@@ -157,7 +153,7 @@
                     params = {id: params};
                 }
 
-                if (images.list.final && !images.error && !force) {
+                if (images.list.final && !images.error) {
                     list = filterImages(params);
                     if (list) {
                         deferred.resolve(list);
@@ -167,7 +163,7 @@
                     return deferred.promise;
                 }
 
-                service.updateImages(force).deferred.promise.then(function () {
+                service.updateImages().deferred.promise.then(function () {
                     list = filterImages(params);
                     if (list) {
                         deferred.resolve(list);
@@ -363,27 +359,28 @@
                 return job;
             };
 
-            service.renameImage = function (image, callback) {
+            service.updateImage = function (image, callback) {
                 var oldState = image.state;
-                image.state = 'renaming'; // Override state manually
+                image.state = 'updating'; // Override state manually
                 var job = serverTab.call({
-                    name: 'ImageRename',
-                    data: { id: image.id, name: image.name, datacenter: image.datacenter },
-                    error: function (err) {
-                        image.state = oldState;
-                        callback(err);
-                    },
+                    name: 'ImageUpdate',
+                    data: { uuid: image.id,
+                            name: image.name,
+                            datacenter: image.datacenter,
+                            version: image.version,
+                            description: image.description},
                     done: function (err) {
                         image.state = oldState;
                         if (!err) {
+                            handleChunk(image);
                             callback();
                         } else {
-                            showError(image, 'Unable to rename image "{{name}}": ', err);
+                            showError(image, 'Unable to update image "{{name}}": ', err);
                         }
                     }
                 });
-
                 image.job = job.getTracker();
+                handleChunk(image);
                 return job;
             };
 

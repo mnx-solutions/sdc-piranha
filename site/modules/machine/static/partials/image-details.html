@@ -3,13 +3,9 @@
     <ul class="breadcrumb">
         <li><a href="#!/compute">Compute</a></li>
         <li><a href="#!/images">Images</a></li>
-        <li>Image Details</li>
     </ul>
-    <div data-ng-show="features.imageRename == 'enabled'">
-        <div data-rename data-object="currentImage" data-type="'image'"></div>
-    </div>
-    <h3 class="page-title" data-ng-hide="features.imageRename == 'enabled'">
-        {{ currentImage.name }}
+    <h3 class="page-title">
+        Image Details
     </h3>
 
     <div class="inl-table">
@@ -24,46 +20,101 @@
                     </div>
                     <div id="summary" class="panel-collapse collapse in">
                         <div class="panel-body">
-                            <table>
-                                <tr class="id-section">
-                                    <td>UUID</td>
-                                    <td>{{currentImage.id}}</td>
-                                </tr>
-                                <tr>
-                                    <td>Image name</td>
-                                    <td>{{currentImage.name}}</td>
-                                </tr>
-                                <tr>
-                                    <td>Type</td>
-                                    <td>{{currentImage.type}}</td>
-                                </tr>
-                                <tr>
-                                    <td>Version</td>
-                                    <td>{{currentImage.version}}</td>
-                                </tr>
-                                <tr>
-                                    <td>Description</td>
-                                    <td>{{currentImage.description}}</td>
-                                </tr>
-                                <tr>
-                                    <td>Published</td>
-                                    <td>{{currentImage.published_at | date:'yyyy-MM-dd HH:mm'}}</td>
-                                </tr>
-                                <tr>
-                                    <td>Datacenter</td>
-                                    <td>{{currentImage.datacenter}}</td>
-                                </tr>
-                                <tr>
-                                    <td>State</td>
-                                    <td>{{currentImage.state}}</td>
-                                </tr>
-                            </table>
-                            <div>
-                                <button class="pull-right btn orange" data-ng-click="deleteImage()" data-ng-disabled="currentImage.state !== 'active'">
-                                    <i class="delete-icon"></i> Delete
-                                </button>
-                                <div class="loading-medium loading-medium-inline" data-ng-show="currentImage.state == 'deleting'"></div>
-                            </div>
+                            <form name="imageForm">
+                                <div class="form-group">
+                                    <span class="edit-name" data-translate>UUID</span>
+                                    <span class="edit-value">
+                                        <input type="text"
+                                               name="id"
+                                               data-ng-model="currentImage.id"
+                                               disabled/>
+                                    </span>
+                                </div>
+                                <div class="form-group">
+                                    <span class="edit-name" data-translate>Image name</span>
+                                    <span class="edit-value">
+                                        <input type="text"
+                                               value=""
+                                               name="imageName"
+                                               data-machine-name="'image'"
+                                               data-ng-model="currentImage.name"/>
+                                    </span>
+                                    <span class="edit-error">
+                                        <div class="error"
+                                             data-ng-show="imageForm.imageName.$error.imageName"
+                                             data-translate>
+                                            Image name&nbsp;can contain only letters, digits and signs like '.' and '-'.
+                                        </div>
+                                    </span>
+                                </div>
+                                <div class="form-group">
+                                    <span class="edit-name" data-translate>Version</span>
+                                    <span class="edit-value">
+                                        <input type="text"
+                                               value=""
+                                               name="imageVersion"
+                                               data-machine-name="'image'"
+                                               data-ng-model="currentImage.version"/>
+                                    </span>
+                                    <span class="edit-error">
+                                        <div class="error"
+                                             data-ng-show="imageForm.imageVersion.$error.imageName"
+                                             data-translate>
+                                            Image version&nbsp;can contain only letters, digits and signs like '.' and '-'.
+                                        </div>
+                                    </span>
+                                </div>
+                                <div class="form-group">
+                                    <span class="edit-name description-label" data-translate>Description</span>
+                                    <span class="edit-value edit-description">
+                                        <textarea type="text"
+                                                  name="description"
+                                                  data-ng-model="currentImage.description"></textarea>
+                                    </span>
+                                </div>
+                                <div class="form-group">
+                                    <span class="edit-name" data-translate>Type</span>
+                                    <span class="edit-value">
+                                        <input type="text"
+                                               name="type"
+                                               data-ng-model="currentImage.type"
+                                               disabled/>
+                                    </span>
+                                </div>
+                                <div class="form-group">
+                                    <span class="edit-name" data-translate>Published</span>
+                                    <span class="edit-value">
+                                        <input type="text"
+                                               name="published_at"
+                                               value="{{currentImage.published_at| date:'yyyy-MM-dd HH:mm'}}"
+                                               disabled/>
+                                    </span>
+                                </div>
+                                <div class="form-group">
+                                    <span class="edit-name" data-translate>Datacenter</span>
+                                    <span class="edit-value">
+                                        <input type="text"
+                                               name="datacenter"
+                                               data-ng-model="currentImage.datacenter"
+                                               disabled/>
+                                    </span>
+                                </div>
+                                <div class="form-group">
+                                    <span class="edit-name" data-translate>State</span>
+                                    <span class="edit-value">
+                                        <input type="text"
+                                               name="state"
+                                               data-ng-model="currentImage.state"
+                                               disabled/>
+                                    </span>
+                                </div>
+                                <div class="pull-right">
+                                    <div class="loading-medium loading-medium-inline" data-ng-show="currentImage.state == 'deleting' || loading"></div>
+                                    <button class="btn light effect-orange-button" data-ng-click="cancel()" data-ng-disabled="loading">Cancel</button>
+                                    <button class="btn light effect-orange-button" data-ng-click="deleteImage()" data-ng-disabled="currentImage.state !== 'active' || loading">Delete</button>
+                                    <button class="btn orange" data-ng-click="updateImage()" data-ng-disabled="loading || imageForm.imageName.$error.imageName || imageForm.imageVersion.$error.imageName">Save</button>
+                                </div>
+                            </form>
                         </div>
                     </div>
                 </div>

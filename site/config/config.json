@@ -217,7 +217,6 @@
   , "allowSkipBilling": "yes"
   , "mantaJobs": "no"
   , "recentInstances": "no"
-  , "imageRename": "no"
   , "provisioningLimits": "no"
   , "mdb": "no"
   , "rbac": "no"
