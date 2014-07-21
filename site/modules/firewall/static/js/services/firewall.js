@@ -75,7 +75,7 @@
                                         localization.translate(
                                             $rootScope,
                                             null,
-                                            'Failed to disable firewall for instance ' + id
+                                            err.restCode === 'NotAuthorized' ? err.message : 'Failed to disable firewall for instance ' + id
                                         ), function () {
                                     });
                                 }
