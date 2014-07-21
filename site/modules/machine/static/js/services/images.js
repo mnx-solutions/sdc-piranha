@@ -278,6 +278,7 @@
                     name: 'ImageRename',
                     data: { id: image.id, name: image.name, datacenter: image.datacenter },
                     error: function (err) {
+                        image.state = oldState;
                         callback(err);
                     },
                     done: function (err) {

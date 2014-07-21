@@ -339,8 +339,8 @@
 
                 var machine = service.machine(uuid);
                 if (machine.id) {
-                    var job = start();
-                    job.deferred.promise.then(
+                    var promise = start();
+                    promise.then(
                         function (result) {
                             if (result && typeof result === 'object') {
                                 Object.keys(result).forEach(function (k){
@@ -373,7 +373,7 @@
                             }
 
                         });
-                    return  job.deferred.promise;
+                    return  promise;
                 }
 
                 var d = $q.defer();

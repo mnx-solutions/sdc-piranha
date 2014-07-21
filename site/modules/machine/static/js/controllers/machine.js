@@ -415,11 +415,7 @@
                         $$track.event('machine', 'delete');
 
                         // Redirect if complete
-                        Machine.deleteMachine(machineid).getJob().done(function (err, data) {
-                            if (err) {
-                                return;
-                            }
-
+                        Machine.deleteMachine(machineid).then(function (data) {
                             PopupDialog.message(
                                     localization.translate(
                                             $scope,
