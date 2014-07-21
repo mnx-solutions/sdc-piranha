@@ -1525,6 +1525,17 @@
                 $location.path(path);
                 $location.replace();
             };
+
+            $scope.selectDataValue = function (name) {
+                var dataValue = 'No matches found';
+                if (name === 'datacenter' && $scope.data.datacenter) {
+                    dataValue = $scope.data.datacenter;
+                } else if (name === 'os' && $scope.operating_systems) {
+                    dataValue = $scope.data.opsys;
+                }
+                return dataValue;
+            };
+
         }
 
     ]);
