@@ -349,12 +349,12 @@
                             <div>
                                 <span data-ng-switch="features.firewall">
                                     <fieldset data-ng-switch-when="enabled">
-                                        <div data-ng-show="machine.type == 'virtualmachine'">
+                                        <div data-ng-hide="machine.firewall_supported">
                                             <div class="item-list-container">
-                                                {{machine.type}} instances are not yet supported by the FWAPI.
+                                                This {{machine.type}} instance is not yet supported by the FWAPI.
                                             </div>
                                         </div>
-                                        <div data-ng-show="machine.type != 'virtualmachine'">
+                                        <div data-ng-show="machine.firewall_supported">
                                             <div class="item-list-container">
                                                 ICMP 8:0 is always open. With Firewall Rules enabled:
                                                 <ul>
