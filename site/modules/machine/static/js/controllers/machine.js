@@ -198,10 +198,10 @@
                 });
             });
 
-            $scope.$watch('machine.networks', function (networks) {
-                if (networks) {
+            $scope.$watch('machine.networks', function (newNetworks,oldNetworks) {
+                if (newNetworks && !angular.equals(newNetworks, oldNetworks)) {
                     $scope.networks = [];
-                    networks.forEach(function (networkId) {
+                    newNetworks.forEach(function (networkId) {
                         Network.getNetwork($scope.machine.datacenter, networkId).then(function (network) {
                             $scope.networks.push(network);
                         }, function (err) {
@@ -415,11 +415,7 @@
                         $$track.event('machine', 'delete');
 
                         // Redirect if complete
-                        Machine.deleteMachine(machineid).getJob().done(function (err, data) {
-                            if (err) {
-                                return;
-                            }
-
+                        Machine.deleteMachine(machineid).then(function (data) {
                             PopupDialog.message(
                                     localization.translate(
                                             $scope,

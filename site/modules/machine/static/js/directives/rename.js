@@ -12,7 +12,7 @@
             link: function (scope) {
                 scope.clearNameTimeout = null;
                 scope.type = String(scope.type);
-
+                var currentName;
                 scope.isRenameAvailable = function () {
                     return !(scope.object && scope.object.job && !scope.object.job.finished);
                 };
@@ -27,7 +27,11 @@
                     }
                 };
 
-                var renameFinished = function () {
+                var renameFinished = function (err) {
+                    if(err) {
+                        scope.object.name = currentName;
+                        PopupDialog.errorObj(err);
+                    }
                     scope.renaming = false;
                     scope.loadingNewName = false;
                     scope.newName = '';
@@ -44,7 +48,7 @@
                     if (scope.object.name === scope.newName) {
                         return;
                     }
-                    var currentName = scope.object.name;
+                    currentName = scope.object.name;
                     PopupDialog.confirm(
                         localization.translate(
                             scope,
@@ -65,8 +69,7 @@
                                 Image.renameImage(scope.object, renameFinished);
                             } else {
                                 $$track.event('machine', 'rename');
-                                var job = Machine.renameMachine(scope.object.id, scope.newName);
-                                job.getJob().done(renameFinished);
+                                Machine.renameMachine(scope.object.id, scope.newName).then(renameFinished, renameFinished);
                             }
                         }, function () {
                             scope.object.name = currentName;

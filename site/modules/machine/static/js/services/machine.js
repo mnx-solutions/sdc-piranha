@@ -334,13 +334,13 @@
                         job.machine = machine;
                         machine.job = job.getTracker();
                     }
-                    return machine.job;
+                    return machine.job.deferred.promise;
                 }
 
                 var machine = service.machine(uuid);
                 if (machine.id) {
-                    var job = start();
-                    job.deferred.promise.then(
+                    var promise = start();
+                    promise.then(
                         function (result) {
                             if (result && typeof result === 'object') {
                                 Object.keys(result).forEach(function (k){
@@ -373,13 +373,13 @@
                             }
 
                         });
-                    return  job;
+                    return  promise;
                 }
 
                 var d = $q.defer();
                 machine.then(function(m) {
                     machine = m;
-                    d.resolve(start());
+                    start().then(d.resolve, d.reject);
                 });
 
                 return d.promise;

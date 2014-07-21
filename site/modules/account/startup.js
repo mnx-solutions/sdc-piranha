@@ -35,6 +35,7 @@ module.exports = function execute(scope) {
     // Account actions->resource
     var SIMPLE_RESOURCES = {
         getaccount:            '/my/',
+        createmachine:         '/my/machines',
         listmachines:          '/my/machines',
         listkeys:              '/my/keys',
         createkey:             '/my/keys',
@@ -642,7 +643,10 @@ module.exports = function execute(scope) {
             // hold this call until cloudApi really has this key in the list
             (function checkList() {
                 call.cloud.listKeys({login: 'my'}, function (err, data) {
-                    if (!searchFromList(data, call.data)) {
+                    if (err) {
+                        req.log.error('Failed to get listKeys from cloudApi', err);
+                        call.done(null);
+                    } else if (!searchFromList(data, call.data)) {
                         call.done(null);
                     } else {
                         setTimeout(checkList, 2000);
