@@ -129,7 +129,7 @@
                     var machine = machines[m];
                     // FIXME:
                     //if(ng.isObject(machine) && machine.compute_node) {
-                    if(ng.isObject(machine) && machine.type !== 'virtualmachine') {
+                    if (ng.isObject(machine) && machine.firewall_supported) {
                         if(ng.isObject(machine.tags) && Object.keys(machine.tags).length) {
                             for(var tag in machine.tags) {
                                 if($scope.tags.indexOf(tag) === -1) {
@@ -496,7 +496,7 @@
                         Object.keys($scope.machines).forEach(function(index) {
                             var m = $scope.machines[index];
 
-                            if(m.id && m.type == 'virtualmachine') {
+                            if (m.id && !m.firewall_supported) {
                                 $scope.kvmList.push(m);
                                 return;
                             }
