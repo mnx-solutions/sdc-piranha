@@ -108,16 +108,24 @@
                 });
             };
 
-            function isFormInvalid() {
-                return $scope.policyForm.$invalid;
-            }
+            var noRulesProvided = function () {
+                var isEmpty = $scope.model.policy.rules.length === 0;
+                if (isEmpty) {
+                    PopupDialog.error("Error", "Policy must have at least one rule.");
+                }
+                return isEmpty;
+            };
+
+            var isFormInvalid = function () {
+                return $scope.policyForm.$invalid || noRulesProvided();
+            };
 
             $scope.createPolicy = function () {
                 $scope.isFormSubmited = true;
+                convertRules();
                 if (isFormInvalid()) {
                     return;
                 }
-                convertRules();
                 $scope.model.policy.name = $scope.model.policy.dirtyName;
                 $scope.model.policy.description = $scope.model.policy.dirtyDescription;
                 policyAction(service.createPolicy($scope.model.policy), true);
@@ -126,10 +134,10 @@
             //FIXME: Get rid of 'redirect' properties if we store rules only with policy
             $scope.updatePolicy = function (redirect) {
                 $scope.isFormSubmited = true;
+                convertRules();
                 if (isFormInvalid()) {
                     return;
                 }
-                convertRules();
                 if (!redirect) {
                     $scope.storPolicy.rules = $scope.model.policy.rules;
                     policyAction(service.updatePolicy($scope.storPolicy), redirect);
