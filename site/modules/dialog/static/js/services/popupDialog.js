@@ -6,8 +6,20 @@
 
         var factory = {};
         var dialog;
-        var messages = {parts: [], concatenated: ''};
+        var messages;
+        var initMessages = function () {
+            if (!messages || !messages.parts) {
+                messages = {
+                    parts: [],
+                    concatenated: ''
+                };
+            }
+        };
+        initMessages();
         var messageBox = function (title, question, btns, templateUrl, callbackOk, callbackCancel) {
+            if (angular.isString(question)) {
+                initMessages();
+            }
             callbackOk = callbackOk || angular.noop;
             callbackCancel = callbackCancel || angular.noop;
             var isNew = messages.parts.length === 0;
@@ -22,11 +34,10 @@
                 dialog =  $dialog.messageBox(title, messages, btns, templateUrl)
                     .open()
                     .then(function (result) {
+                        initMessages();
                         if (result === 'ok') {
-                            messages.parts = [];
                             callbackOk();
                         } else {
-                            messages.parts = [];
                             callbackCancel();
                         }
                     });
