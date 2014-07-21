@@ -455,10 +455,10 @@ module.exports = function execute(scope, register) {
 
         var cloud = call.cloud.separate(options.datacenter);
         cloud.createImageFromMachine(options, function(err, image) {
+            if (call.immediate) {
+                call.immediate(err, {image: image});
+            }
             if (!err) {
-                if (call.immediate) {
-                    call.immediate(null, {image: image});
-                }
                 pollForObjectStateChange(cloud, call, 'state', 'active', (60 * 60 * 1000), 'Image', image.id, callback);
             } else {
                 callback(err);

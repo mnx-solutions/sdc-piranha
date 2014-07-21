@@ -64,6 +64,14 @@ module.exports = function execute(scope) {
 
         getnetwork:            '/my/networks/%s',
 
+        deletefirewallrule:    '/my/fwrules/%s',
+        updatefirewallrule:    '/my/fwrules/%s',
+        getfirewallrule:       '/my/fwrules/%s',
+
+        getimage:              '/my/images/%s',
+        deleteimage:           '/my/images/%s',
+        updateimage:           '/my/images/%s',
+
         listuserkeys:          '/my/users/%s/keys',
         createuserkey:         '/my/users/%s/keys',
         uploaduserkey:         '/my/users/%s/keys',
@@ -85,37 +93,68 @@ module.exports = function execute(scope) {
         if (!roles || !roles.length === 0) {
             return;
         }
-
-        vasync.parallel({
-            'funcs': [
-                function (callback) {
-                    cloudapi.listUsers(callback);
-                },
-                function (callback) {
-                    cloudapi.listNetworks(callback);
-                },
-                function (callback) {
-                    cloudapi.listPolicies(callback);
-                },
-                function (callback) {
-                    cloudapi.listMachines(callback);
-                },
-            ]
-        }, function (err, results) {
+        var funcs = [
+            function users(callback) {
+                cloudapi.listUsers(callback);
+            },
+            function policies(callback) {
+                cloudapi.listPolicies(callback);
+            }
+        ];
+        cloudapi.listDatacenters(function (err, datacenters) {
             if (err) {
                 log.error(err);
-            } else if (results && results.nerrors === 0) {
-                var users = getArray(results.operations[0].result);
-                var networks = getArray(results.operations[1].result);
-                var policies = getArray(results.operations[2].result);
-                var machines = getArray(results.operations[3].result);
-                loadDataCallback(cloudapi, getArray(roles, true), log, users, networks, policies, machines);
+                return;
             }
-        })
+            Object.keys(datacenters).forEach(function (datacenter) {
+                funcs.push(function networks(callback) {
+                    cloudapi.separate(datacenter).listNetworks(callback);
+                });
+                funcs.push(function machines(callback) {
+                    cloudapi.separate(datacenter).listMachines(callback);
+                });
+                funcs.push(function images(callback) {
+                    cloudapi.separate(datacenter).listImages(callback);
+                });
+                funcs.push(function firewallRules(callback) {
+                    cloudapi.separate(datacenter).listFwRules(callback);
+                });
+            });
+
+            vasync.parallel({
+                'funcs': funcs
+            }, function (err, results) {
+                if (err) {
+                    log.error(err);
+                } else if (results && results.nerrors === 0) {
+                    var users = [];
+                    var policies = [];
+                    var networks = [];
+                    var images = [];
+                    var machines = [];
+                    var firewallRules = [];
+                    var resultsHash = {
+                        'users': users,
+                        'policies': policies,
+                        'machines': machines,
+                        'networks': networks,
+                        'images': images,
+                        'firewallRules': firewallRules
+                    };
+                    results.operations.forEach(function (operation) {
+                        var funcname = operation.funcname;
+                        getArray(operation.result).forEach(function (item) {
+                            resultsHash[funcname].push(item);
+                        });
+                    });
+                    loadDataCallback(cloudapi, getArray(roles, true), log, users, networks, policies, machines, images, firewallRules);
+                }
+            })
+        });
     };
 
 
-    var updateRoleTags = function (cloudapi, roles, log, users, networks, policies, machines) {
+    var updateRoleTags = function (cloudapi, roles, log, users, networks, policies, machines, images, firewallRules) {
         roles = roles.filter(function (role) {
             return role.default_members && role.default_members.length > 0;
         });
@@ -177,6 +216,19 @@ module.exports = function execute(scope) {
                                 var resources = [];
 
                                 switch (command) {
+                                    case 'getimage':
+                                    case 'deleteimage':
+                                    case 'updateimage':
+                                        images.forEach(function (image) {
+                                            resources.push(util.format(CUSTOM_RESOURCES[command], image.id));
+                                        });
+                                        break;
+                                    case 'updatefirewallrule':
+                                    case 'deletefirewallrule':
+                                        firewallRules.forEach(function (rule) {
+                                            resources.push(util.format(CUSTOM_RESOURCES[command], rule.id));
+                                        });
+                                        break;
                                     case 'uploaduserkey':
                                     case 'deleteuserkey':
                                     case 'getuserkey':
