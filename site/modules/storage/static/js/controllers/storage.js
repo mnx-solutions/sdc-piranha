@@ -24,7 +24,7 @@
                     keyboard: true,
                     dialogClass: 'video',
                     backdropClick: true,
-                    template: '<iframe src="http://player.vimeo.com/video/68515490" width="640" height="320" frameborder="0" webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe>',
+                    template: '<iframe src="https://player.vimeo.com/video/68515490" width="640" height="320" frameborder="0" webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe>',
                     controller: 'StorageDialogController'
                 });
                 d.open();
