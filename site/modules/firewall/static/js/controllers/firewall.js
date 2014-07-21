@@ -947,6 +947,7 @@
 
                             $scope.refreshSelects();
                             $('#dcSelect').select2('disable');
+                            angular.element('#s2id_dcSelect a span').text($scope.data.datacenter);
 
                             $scope.tabFilterUpdate = $scope.changeTab = $scope.data.datacenter;
 
