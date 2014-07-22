@@ -29,6 +29,13 @@
                 if (err && err.message === 'passwordInHistory') {
                     err.message = 'Password was already used';
                 }
+                if (err && err.message.toLowerCase().indexOf('login') !== -1) {
+                    err.message = 'This username is already in use.';
+                }
+                if (err && err.message.toLowerCase().indexOf('email') !== -1) {
+                    err.message = 'This email address is already in use.';
+                }
+
                 PopupDialog.errorObj(err);
             };
             // FIXME: DRY, see orderByLogin in role controller
