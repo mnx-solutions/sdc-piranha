@@ -22,6 +22,7 @@ input[type="color"],
     border: 1px solid #ccc;
     border-radius: 4px;
     box-shadow: inset 0 1px 1px rgba(0,0,0,0.075);
+    color: #555;
     transition: border linear 0.2s,box-shadow linear 0.2s;
 }
 img {
@@ -1721,7 +1722,6 @@ i.glyphicon-question-sign {
 
 .select2-results .select2-highlighted {
     background: #eee;
-    color: #333;
 }
 
 .select2-container-active .select2-choice,
@@ -1739,15 +1739,20 @@ i.glyphicon-question-sign {
 }
 
 .select2-choice span {
-    color: rgb(51, 51, 51);
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
     padding: 0 0 0 5px;
+}
+
+.select2-container,
+.select2-result-label,
+.select2-choice span,
+.select2-results .select2-highlighted {
+    color: #555;
 }
 
 .account .select2-choice span {
     font-size: 16px;
     font-weight: 300;
-    color: #555;
 }
 
 .select2-search input {
