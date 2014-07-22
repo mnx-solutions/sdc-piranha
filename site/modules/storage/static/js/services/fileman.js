@@ -34,7 +34,7 @@
                         });
                     } else {
                         getAccount(function (account) {
-                            data.path = '/' + account.login + '/' + path;
+                            data.path = '/' + account.login + path;
                             serverTab.call({
                                 name: name,
                                 data: data,
@@ -58,7 +58,7 @@
                     if (show) {
                         window.open('storage/show?path=' + path, '_blank');
                     } else {
-                        window.location.href = 'storage/download?path=' + '/' + account.login + '/' + path;
+                        window.location.href = 'storage/download?path=' + '/' + account.login + path;
                     }
                 });
             };
