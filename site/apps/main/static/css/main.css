@@ -3014,6 +3014,7 @@ label.checkbox {
 }
 .finder-elements > span {
     margin-left: 5px;
+    white-space: nowrap;
     cursor: pointer;
 }
 .finder-elements.active {
