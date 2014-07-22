@@ -394,7 +394,7 @@
                         btnTitle: 'Submit and Access Manta',
                         appendPopupMessage: 'Manta access will now be granted.'
                     };
-                    Account.checkProvisioning(submitBillingInfo, scope.drawFileMan.bind(scope), null, null, false);
+                    Account.checkProvisioning(submitBillingInfo, null, null, null, false);
                 };
 
                 Account.getAccount().then(function (account) {
