@@ -108,6 +108,10 @@
     font-size: 12px;
 }
 
+.license-eula h5 {
+    font-weight: bold;
+}
+
 .accept-checkbox {
     padding-top: 20px;
     padding-bottom: 40px;
