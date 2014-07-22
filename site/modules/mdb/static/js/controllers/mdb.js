@@ -13,12 +13,14 @@
         function ($q, $scope, requestContext, localization, mdb, Account, PopupDialog, $location) {
             localization.bind('mdb', $scope);
             requestContext.setUpRenderContext('mdb.index', $scope);
+            $scope.mantaUnavailable = true;
 
             $scope.gridUserConfig = Account.getUserConfig().$child('MdbJobs');
             Account.getAccount(true).then(function (account) {
                 $scope.provisionEnabled = account.provisionEnabled;
                 if ($scope.provisionEnabled) {
                     mdb.getDebugJobsList().then(function (list) {
+                        $scope.mantaUnavailable = false;
                         $scope.loading = false;
                         $scope.objects = list;
                     }, function (err) {
@@ -26,6 +28,7 @@
                         if (!err.message) {
                             err.message = err.code || err.errno || 'Internal error';
                         }
+                        $scope.mantaUnavailable = true;
                         PopupDialog.error(null, err.message);
                     });
                 } else {
@@ -208,9 +211,11 @@
             }
             var getJobsList = function () {
                 mdb.getDebugJobsList().then(function (list) {
+                    $scope.mantaUnavailable = false;
                     $scope.loading = false;
                     $scope.objects = list;
                 }, function (error) {
+                    $scope.mantaUnavailable = true;
                     $scope.loading = false;
                     PopupDialog.error(null, error);
                 });
@@ -218,7 +223,11 @@
 
             $scope.addNewJob = function () {
                 if ($scope.provisionEnabled) {
-                    $location.path('/mdb/create');
+                    if ($scope.mantaUnavailable) {
+                        PopupDialog.error(null, 'Manta is unavailable.');
+                    } else {
+                        $location.path('/mdb/create');
+                    }
                 } else {
                     var submitBillingInfo = {
                         btnTitle: 'Submit and Access Node.js Debugger'
