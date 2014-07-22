@@ -10,7 +10,7 @@
 
     <div class="loading-large" data-ng-show="loading"></div>
     <div class="row-fluid">
-        <div data-ng-show="!loading">
+        <div data-ng-show="!loading && !mantaUnavailable">
             <div data-grid-view
                  data-user-config="gridUserConfig"
                  data-props="gridProps"
@@ -30,4 +30,5 @@
             </div>
         </div>
     </div>
+    <div data-ng-show="mantaUnavailable && !loading">Manta is unavailable.</div>
 </div>
