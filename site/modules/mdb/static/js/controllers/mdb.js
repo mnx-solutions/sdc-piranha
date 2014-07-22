@@ -57,6 +57,16 @@
                 return item.status;
             };
 
+            var jobTime = function (item) {
+                var result = 'N/A';
+                if (item.dateEnd && item.date) {
+                    var time = (new Date(item.dateEnd).getTime() - new Date(item.date).getTime()) / 1000;
+                    time /= 60;
+                    result = Math.round(time % 60).toString() + 'm';
+                }
+                return result;
+            }
+
             var actionMessages = {
                 delete: {
                     single: 'Are you sure you want to delete the selected job?',
@@ -126,14 +136,11 @@
                     sequence: 4,
                     active: true,
                     type: 'html',
+                    _order: function (item) {
+                        return jobTime(item);
+                    },
                     _getter: function (item) {
-                        var result = 'N/A';
-                        if (item.dateEnd && item.date) {
-                            var time = (new Date(item.dateEnd).getTime() - new Date(item.date).getTime()) / 1000;
-                            time /= 60;
-                            result = Math.round(time % 60).toString() + 'm';
-                        }
-                        return result;
+                        return jobTime(item);
                     }
                 }
             ];
