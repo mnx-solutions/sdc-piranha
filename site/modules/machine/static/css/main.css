@@ -1674,3 +1674,6 @@ span.btn-success {
 .images-wrapper {
     padding-bottom: 25px;
 }
+.filter-select {
+    text-transform: uppercase;
+}

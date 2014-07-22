@@ -21,13 +21,12 @@
         '$cookies',
         '$rootScope',
         'FreeTier',
-        '$compile',
         'loggingService',
         'util',
         'Limits',
         'errorContext',
 
-        function ($scope, $filter, requestContext, $timeout, Machine, Dataset, Datacenter, Package, Account, Network, Image, $location, localization, $q, $qe, $$track, PopupDialog, $cookies, $rootScope, FreeTier, $compile, loggingService, util, Limits, errorContext) {
+        function ($scope, $filter, requestContext, $timeout, Machine, Dataset, Datacenter, Package, Account, Network, Image, $location, localization, $q, $qe, $$track, PopupDialog, $cookies, $rootScope, FreeTier, loggingService, util, Limits, errorContext) {
             localization.bind('machine', $scope);
             requestContext.setUpRenderContext('machine.provision', $scope, {
                 title: localization.translate(null, 'machine', 'Create Instances on Joyent')
@@ -409,8 +408,6 @@
                 }
                 return deferred.promise;
             }
-
-            var recentMachines = getCreatedMachines();
 
             function setupSimpleImages (simpleImages, networks, isFree) {
                 if (simpleImages && simpleImages.length > 0) {
@@ -805,7 +802,7 @@
                 $scope.showReConfigure = false;
                 $scope.showFinishConfiguration = false;
                 if (step === CHOOSE_IMAGE_STEP) {
-                    ng.element('.accordion-group').not('div.active').find('.collapse').removeClass('in');
+                    angular.element('#filterProperty').val('No filter');
                     $scope.preSelectedImage = null;
                     $scope.preSelectedImageId = null;
                 }
@@ -1145,18 +1142,34 @@
                 }
                 if ($scope.packages) {
                     selectMinimalPackage();
-                    setTimeout(function () {
-                        var accordionGroup = ng.element('.accordion-group');
+                    $timeout(function () {
+                        var accordion = ng.element('#packagesAccordion');
+                        var accordionBody = ng.element('.accordion-body');
                         if ($scope.filterModel.key === 'No filter') {
-                            accordionGroup.not('div.active').find('.collapse').css('height', 0).end()
-                                .find('.accordion-toggle').addClass('collapsed').end()
-                                .has('div.active').find('a.collapsed').click();
+                            accordion.find('.accordion-body').addClass('collapse').end()
+                                .find('a').addClass('collapsed').end()
+                                .find('.collapse.in').removeClass('in');
+                            accordionBody.has('div.active').parent().has('a.collapsed').find('a').click();
                         } else {
                             $scope.collapsedPackageTypes = [];
-                            accordionGroup.find('a.collapsed').removeClass('collapsed').end()
-                                .find('.collapse').addClass('in');
+                            accordion.find('.collapse').addClass('in').end()
+                                .find('a.collapsed').removeClass('collapsed');
                         }
-                    }, 200);
+                    });
+                }
+            };
+
+
+            $scope.selectFilterType = function (name) {
+                if (name && (name !== $scope.filterModel.key)) {
+                    $scope.filterModel.key = name;
+                    $scope.onFilterChange(name);
+                }
+            };
+            $scope.selectFilterValue = function (name) {
+                if (name && (name !== $scope.filterModel.value)) {
+                    $scope.filterModel.value = name;
+                    $scope.onFilterChange();
                 }
             };
             $scope.changeSelectedPackage = function (event, packageType) {
@@ -1512,7 +1525,6 @@
                 $location.path(path);
                 $location.replace();
             };
-
         }
 
     ]);

@@ -28,14 +28,14 @@
     <div class="filter-container">
         Filter:
         <div class="btn-group btn-group-filter">
-            <select ui-select2="{minimumResultsForSearch: -1}" class="filter-select" id="filterProperty" data-ng-model="filterModel.key" data-ng-change="$parent.onFilterChange(prop)">
+            <select type="hidden" data-select-two id="filterProperty" class="filter-select" data-item="prop" data-select="filterModel.key" data-fn="selectFilterType">
                 <option data-ng-repeat="prop in filterProps" value="{{prop}}">
                     {{prop | uppercase}}
                 </option>
             </select>
         </div>
         <div class="btn-group btn-group-filter" data-ng-show="filterModel.key != 'No filter'">
-            <select ui-select2="{minimumResultsForSearch: -1}" class="filter-select" id="filterPropertyValue" data-ng-model="filterModel.value" data-ng-change="$parent.onFilterChange()">
+            <select type="hidden" data-select-two id="filterPropertyValue" class="filter-select" data-item="prop" data-select="filterModel.value" data-fn="selectFilterValue">
                 <option data-ng-repeat="prop in filterValues[filterModel.key]" value="{{prop}}">
                     {{formatFilterValue(prop)}}
                 </option>
