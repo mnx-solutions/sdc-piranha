@@ -165,7 +165,7 @@ label.name {
 }
 
 input.policy-form {
-    width: 345px;
+    width: 352px;
 }
 .rule-edit input.policy-form {
     margin-bottom: 10px;
@@ -230,4 +230,20 @@ input {
 }
 .sub-account-form .edit-value-double .input-group input {
     width: 113px !important;
+}
+.rbac-column:first-child {
+    margin-right: 10px;
+}
+.rbac-column {
+    padding-left: 0;
+    padding-right: 0;
+}
+.col-md-6.rbac-column {
+    width: 495px;
+}
+.page-title-btn {
+    margin-top: -81px;
+}
+.rbac-column .form-group {
+    margin-bottom: 20px;
 }
