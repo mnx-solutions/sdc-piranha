@@ -7,11 +7,12 @@
             scope: {
                 name: '=',
                 objects: '=',
-                length: '@'
+                length: '@',
+                collapsed: '=?'
             },
 
             link: function ($scope) {
-                $scope.showSection = true;
+                $scope.showSection = !$scope.collapsed;
                 $scope.toggleSection = function () {
                     $scope.showSection = !$scope.showSection;
                 };
