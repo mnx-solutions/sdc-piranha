@@ -1,5 +1,6 @@
 package com.joyent.piranha.pageobject;
 
+import com.codeborne.selenide.Condition;
 import com.codeborne.selenide.SelenideElement;
 import org.openqa.selenium.By;
 import org.openqa.selenium.support.ui.Select;
@@ -66,8 +67,8 @@ public class FirewallRuleDetails extends AbstractPageObject {
     }
 
     public void selectProtocol(String protocolText) {
-        $("#s2id_protocolSelect a").click();
-        $(byText(protocolText)).click();
+        Select protocol = new Select($("#protocolSelect"));
+        protocol.selectByVisibleText(protocolText);
     }
 
     public void clickUseAllButton() {
@@ -78,6 +79,7 @@ public class FirewallRuleDetails extends AbstractPageObject {
         selectTarget(direction, targetName);
         Direction.valueOf(direction).setTarget(Target.getTarget(targetName), targetValue);
         getAddButton(direction).click();
+        $("[data-ng-repeat=\"" + direction.toLowerCase() + " in data.parsed." + direction.toLowerCase() + "\"] .remove-icon").waitUntil(Condition.visible, baseTimeout);
     }
 
     public static SelenideElement getAddButton(String section) {
@@ -95,9 +97,13 @@ public class FirewallRuleDetails extends AbstractPageObject {
 
     public void removeFirstOption(String optionName) {
         if (optionName.equalsIgnoreCase("protocol")) {
-            $("[data-ng-repeat=\"target in data.parsed.protocol.targets\"] .remove-icon").click();
+            SelenideElement element = $("[data-ng-repeat=\"target in data.parsed.protocol.targets\"] .remove-icon");
+            element.waitUntil(Condition.visible, baseTimeout);
+            element.click();
         } else {
-            $("[data-ng-repeat=\"" + optionName.toLowerCase() + " in data.parsed." + optionName.toLowerCase() + "\"] .remove-icon").click();
+            SelenideElement element = $("[data-ng-repeat=\"" + optionName.toLowerCase() + " in data.parsed." + optionName.toLowerCase() + "\"] .remove-icon");
+            element.waitUntil(Condition.visible, baseTimeout);
+            element.click();
         }
     }
 
