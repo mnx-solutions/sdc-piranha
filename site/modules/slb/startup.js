@@ -21,19 +21,24 @@ var slb = function execute(scope) {
     ssc.init(Metadata);
 
     server.onCall('LoadBalancersList', function (call) {
-        getSscClient(call, function (err, client) {
-            if (err) {
-                call.done(err, true);
-                return;
-            }
-            client.get('/loadbalancers', function getLoadBalancers(err, creq, cres, obj) {
+        try {
+            getSscClient(call, function (err, client) {
                 if (err) {
-                    call.done(err);
+                    call.done(err, true);
                     return;
                 }
-                call.done(null, obj);
+                client.get('/loadbalancers', function getLoadBalancers(err, creq, cres, obj) {
+                    if (err) {
+                        call.done(err);
+                        return;
+                    }
+                    call.done(null, obj);
+                });
             });
-        });
+        } catch (e) {
+            call.req.log.error(e);
+            call.done(e);
+        }
     });
 
     server.onCall('LoadBalancerLoad', function (call) {
@@ -263,101 +268,103 @@ var slb = function execute(scope) {
         handler: function (call) {
             call.update(null, 'Provisioning load balancer controller');
             var datacenter = config.slb.ssc_datacenter || 'us-west-1';
-            machine.PackageList(call, {datacenter: datacenter}, function (packagesErr, packagesData) {
-                if (packagesErr) {
-                    call.done(packagesErr);
-                    return;
-                }
-
-                var chosenPackages = packagesData.filter(function (pack) {
-                    return pack.name === config.slb.ssc_package;
-                });
-
-                if (chosenPackages.length !== 1) {
-                    call.done('Found no or more than one package with the name: ' + config.slb.ssc_package);
-                    return;
-                }
-
-                var sscPackageId = chosenPackages[0].id;
-
-                var sscKeyPair = createKeyPairs();
-                var portalKeyPair = createKeyPairs();
-
-                if (config.slb.ssc_private_key && config.slb.ssc_public_key) {
-                    sscKeyPair.privateKey = config.slb.ssc_private_key;
-                    sscKeyPair.publicSsh = config.slb.ssc_public_key;
-                    sscKeyPair.fingerprint = ursa.openSshPublicKey(config.slb.ssc_public_key)
-                        .toPublicSshFingerprint('hex').replace(/([a-f0-9]{2})/gi, '$1:').slice(0, -1);
-                }
-
-                var data = {
-                    datacenter: datacenter,
-                    dataset: config.slb.ssc_image,
-                    name: hardControllerName,
-                    'package': sscPackageId,
-                    'metadata.ssc_private_key': sscKeyPair.privateKey,
-                    'metadata.ssc_public_key': sscKeyPair.publicSsh,
-                    'metadata.portal_public_key': (new Buffer(portalKeyPair.publicSsh).toString('base64')),
-                    'metadata.account_name': call.req.session.userName,
-                    'metadata.manta_account': call.req.session.userName,
-                    'metadata.datacenter_name': datacenter,
-                    'metadata.slb_code_url': config.slb.slb_code_url,
-                    // TODO: remove this line after renaming code in image
-                    'metadata.elb_code_url': config.slb.slb_code_url,
-                    'metadata.sdc_url': config.slb.sdc_url || 'https://us-west-1.api.joyentcloud.com',
-                    'tag.slb': 'ssc'
-                };
-
-                if (config.slb.ssc_networks) {
-                    data.networks = config.slb.ssc_networks;
-                }
-
-                var portalFingerprint = '/' + call.req.session.userName + '/keys/' + portalKeyPair.fingerprint;
-
-                call.req.log.info({fingerprint: portalFingerprint}, 'Storing key/fingerprint to metadata');
-
-                Metadata.set(call.req.session.userId, Metadata.PORTAL_PRIVATE_KEY, portalKeyPair.privateKey, function (pKeyError) {
-                    var setMetadataError = 'Something wrong, reinstalling load balancing required';
-                    if (pKeyError) {
-                        call.req.log.error(pKeyError);
-                        call.done(setMetadataError);
+            try {
+                machine.PackageList(call, {datacenter: datacenter}, function (packagesErr, packagesData) {
+                    if (packagesErr) {
+                        call.done(packagesErr);
                         return;
                     }
-                    Metadata.set(call.req.session.userId, Metadata.PORTAL_FINGERPRINT, portalFingerprint, function (fPrintError) {
-                        if (fPrintError) {
-                            call.req.log.error(fPrintError);
+
+                    var chosenPackages = packagesData.filter(function (pack) {
+                        return pack.name === config.slb.ssc_package;
+                    });
+
+                    if (chosenPackages.length !== 1) {
+                        call.done('Found no or more than one package with the name: ' + config.slb.ssc_package);
+                        return;
+                    }
+
+                    var sscPackageId = chosenPackages[0].id;
+
+                    var sscKeyPair = createKeyPairs();
+                    var portalKeyPair = createKeyPairs();
+
+                    if (config.slb.ssc_private_key && config.slb.ssc_public_key) {
+                        sscKeyPair.privateKey = config.slb.ssc_private_key;
+                        sscKeyPair.publicSsh = config.slb.ssc_public_key;
+                        sscKeyPair.fingerprint = ursa.openSshPublicKey(config.slb.ssc_public_key)
+                            .toPublicSshFingerprint('hex').replace(/([a-f0-9]{2})/gi, '$1:').slice(0, -1);
+                    }
+
+                    var data = {
+                        datacenter: datacenter,
+                        dataset: config.slb.ssc_image,
+                        name: hardControllerName,
+                        'package': sscPackageId,
+                        'metadata.ssc_private_key': sscKeyPair.privateKey,
+                        'metadata.ssc_public_key': sscKeyPair.publicSsh,
+                        'metadata.portal_public_key': (new Buffer(portalKeyPair.publicSsh).toString('base64')),
+                        'metadata.account_name': call.req.session.userName,
+                        'metadata.manta_account': call.req.session.userName,
+                        'metadata.datacenter_name': datacenter,
+                        'metadata.slb_code_url': config.slb.slb_code_url,
+                        // TODO: remove this line after renaming code in image
+                        'metadata.elb_code_url': config.slb.slb_code_url,
+                        'metadata.sdc_url': config.slb.sdc_url || 'https://us-west-1.api.joyentcloud.com',
+                        'tag.slb': 'ssc'
+                    };
+
+                    if (config.slb.ssc_networks) {
+                        data.networks = config.slb.ssc_networks;
+                    }
+
+                    var portalFingerprint = '/' + call.req.session.userName + '/keys/' + portalKeyPair.fingerprint;
+
+                    call.req.log.info({fingerprint: portalFingerprint}, 'Storing key/fingerprint to metadata');
+
+                    Metadata.set(call.req.session.userId, Metadata.PORTAL_PRIVATE_KEY, portalKeyPair.privateKey, function (pKeyError) {
+                        var setMetadataError = 'Something wrong, reinstalling load balancing required';
+                        if (pKeyError) {
+                            call.req.log.error(pKeyError);
                             call.done(setMetadataError);
                             return;
                         }
-                        addSscKey(call, sscKeyPair.publicSsh, function (keyError) {
-                            if (keyError) {
-                                call.done(keyError);
+                        Metadata.set(call.req.session.userId, Metadata.PORTAL_FINGERPRINT, portalFingerprint, function (fPrintError) {
+                            if (fPrintError) {
+                                call.req.log.error(fPrintError);
+                                call.done(setMetadataError);
                                 return;
                             }
-                            removeSscConfig(data, function (configError) {
-                                if (configError) {
-                                    call.req.log.warn('Cannot remove user slb config from manta.');
+                            addSscKey(call, sscKeyPair.publicSsh, function (keyError) {
+                                if (keyError) {
+                                    call.done(keyError);
+                                    return;
                                 }
-                                call.cloud.separate(datacenter).listNetworks(function (networksError, networks) {
-                                    if (networksError) {
-                                        call.done(networksError);
-                                        return;
+                                removeSscConfig(data, function (configError) {
+                                    if (configError) {
+                                        call.req.log.warn('Cannot remove user slb config from manta.');
                                     }
-                                    data.networks = networks.map(function (network) {
-                                        return network.id;
-                                    });
-                                    call.req.log.info("Creating SSC machine", data);
-                                    machine.Create(call, data, function (createError, result) {
-                                        if (createError) {
-                                            call.done(createError);
+                                    call.cloud.separate(datacenter).listNetworks(function (networksError, networks) {
+                                        if (networksError) {
+                                            call.done(networksError);
                                             return;
                                         }
-                                        getSscClient(call, function (clientErr) {
-                                            if (clientErr) {
-                                                call.done(clientErr);
+                                        data.networks = networks.map(function (network) {
+                                            return network.id;
+                                        });
+                                        call.req.log.info("Creating SSC machine", data);
+                                        machine.Create(call, data, function (createError, result) {
+                                            if (createError) {
+                                                call.done(createError);
                                                 return;
                                             }
-                                            call.done(null, 'Load balancer controller is up');
+                                            getSscClient(call, function (clientErr) {
+                                                if (clientErr) {
+                                                    call.done(clientErr);
+                                                    return;
+                                                }
+                                                call.done(null, 'Load balancer controller is up');
+                                            });
                                         });
                                     });
                                 });
@@ -365,7 +372,12 @@ var slb = function execute(scope) {
                         });
                     });
                 });
-            });
+            } catch (err) {
+                call.req.log.error(err);
+                var error = new Error();
+                error.message = err.message;
+                call.done(error, true);
+            }
         }
     });
 
@@ -417,14 +429,19 @@ var slb = function execute(scope) {
     });
 
     server.onCall('SscMachineLoad', function (call) {
-        getSscMachine(call, function (err, sscMachine) {
-            if (err) {
-                call.req.log.info(err);
-                call.done(err, true);
-                return;
-            }
-            call.done(null, sscMachine);
-        });
+        try {
+            getSscMachine(call, function (err, sscMachine) {
+                if (err) {
+                    call.req.log.info(err);
+                    call.done(err, true);
+                    return;
+                }
+                call.done(null, sscMachine);
+            });
+        } catch (e) {
+            call.done(e);
+            call.req.log.error(e);
+        }
     });
 };
 
