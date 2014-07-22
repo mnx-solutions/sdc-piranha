@@ -7,8 +7,8 @@
         var factory = {};
         var dialog;
         var messages;
-        var initMessages = function () {
-            if (!messages || !messages.parts) {
+        var initMessages = function (force) {
+            if (!messages || !messages.parts || force) {
                 messages = {
                     parts: [],
                     concatenated: ''
@@ -34,7 +34,7 @@
                 dialog =  $dialog.messageBox(title, messages, btns, templateUrl)
                     .open()
                     .then(function (result) {
-                        initMessages();
+                        initMessages(true);
                         if (result === 'ok') {
                             callbackOk();
                         } else {
