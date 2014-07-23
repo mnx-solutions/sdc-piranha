@@ -3511,11 +3511,12 @@ label.checkbox.folder-name-form-checkbox {
     margin-bottom: 20px;
 }
 .breadcrumb > li + li:before {
-    padding: 0;
-    color: #a9a9a9;
+    display: none;
 }
-.breadcrumb > .active {
-    padding-left: 5px;
+.breadcrumb > li:after {
+    padding: 0 0 0 5px;
+    color: #a9a9a9;
+    content: "/\00a0";
 }
 .description-column span {
     display: block;
