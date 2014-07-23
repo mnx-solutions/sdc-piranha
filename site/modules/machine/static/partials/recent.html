@@ -8,7 +8,7 @@
             <div class="control-panel">
                 <span>Data Center:</span>
                 <div class="provisioning-header-left-button btn-group">
-                    <select type="hidden" data-select-two id="selectDatacenter" class="dd-fixed-width" data-item="datacenter" data-select="data.datacenter" data-fn="selectDatacenter">
+                    <select type="hidden" data-select-two id="selectDatacenter" class="dd-fixed-width" data-item="datacenter" data-select="selectDataValue('datacenter')" data-fn="selectDatacenter">
                         <option data-ng-repeat="datacenter in datacenters" value="{{datacenter.name}}">
                             {{datacenter.name}}
                         </option>

@@ -6,7 +6,7 @@
             Data Center:
         </span>
     <div class="btn-group">
-        <select type="hidden" data-select-two id="selectDatacenter" class="dd-fixed-width" data-item="datacenter" data-select="data.datacenter" data-fn="selectDatacenter">
+        <select type="hidden" data-select-two id="selectDatacenter" class="dd-fixed-width" data-item="datacenter" data-select="selectDataValue('datacenter')" data-fn="selectDatacenter">
             <option data-ng-repeat="datacenter in datacenters" value="{{datacenter.name}}">
                 {{datacenter.name}}
             </option>
@@ -18,7 +18,7 @@
     <div class="btn-group hidden-phone"
          data-html="true"
          data-original-title="Filter by operating system">
-        <select type="hidden" data-select-two id="selectOS" class="dd-fixed-width" data-item="opsys" data-select="data.opsys" data-fn="selectOpsys">
+        <select type="hidden" data-select-two id="selectOS" class="dd-fixed-width" data-item="opsys" data-select="selectDataValue('os')" data-fn="selectOpsys">
             <option data-ng-repeat="opsys in operating_systems" value="{{opsys}}">
                 {{opsys | orderBy:'toString()'}}
             </option>
