@@ -2855,12 +2855,13 @@ label.checkbox {
 .right-part {
     display: table-cell;
     vertical-align: top;
-    min-width: 485px;
-
 }
 .left-part {
-    width: 695px;
     padding-right: 20px;
+    min-width: 485px;
+}
+.right-part {
+    width: 485px;
 }
 .inl-table {
     display: inline-table;
