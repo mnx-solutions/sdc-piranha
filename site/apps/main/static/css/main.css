@@ -563,6 +563,7 @@ select.date-year {
     width:181px !important;
     height: 30px;
     border: 1px solid #cccccc;
+    font-size: 16px;
 }
 .edit-value-double .select2-container {
     vertical-align: top;
@@ -1756,11 +1757,9 @@ i.glyphicon-question-sign {
 }
 
 .select2-search input {
-    -webkit-border-radius: 4px;
-    -moz-border-radius: 4px;
     border-radius: 4px;
-    box-shadow: none
     border: 1px solid #999;
+    box-shadow: none
 }
 
 .no-breadcrumb {
@@ -3390,9 +3389,9 @@ label.checkbox {
 }
 .input-group-inline .input-group-addon {
     margin-left: 10px;
-    height: 30px;
     width: 62px;
-    text-align: left;
+    line-height: 20px;
+    padding-left: 7px;
 }
 .control-label {
     font-weight: normal;
