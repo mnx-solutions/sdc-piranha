@@ -301,7 +301,7 @@
                                         ErrorService.setLastError('dcUnreachable', chunk.name,
                                             'Datacenter {{name}} is currently not available. We are working on getting this datacenter back on.',
                                             {name: chunk.name});
-
+                                        rules.job = undefined;
                                         PopupDialog.error(
                                             localization.translate(
                                                 null,
@@ -335,6 +335,9 @@
                             }
                         },
                         done: function(err, job) {
+                            if (err) {
+                                rules.job = undefined;
+                            }
                             rules.list.final = !err;
                         }
                     });

@@ -224,6 +224,10 @@ var firewall = function execute (scope) {
                         call.log.error('List rules failed for datacenter %s, url %s; err.message: %s', name, datacenters[name], err.message, err);
                         response.status = 'error';
                         response.error = err;
+                        if (err.restCode === 'NotAuthorized') {
+                            call.done(err);
+                            return;
+                        }
                     } else {
                         // Serialize rules
                         rules.forEach(function (rule) {
