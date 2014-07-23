@@ -335,6 +335,9 @@
                             }
                         },
                         done: function(err, job) {
+                            if (err) {
+                                rules.job = undefined;
+                            }
                             rules.list.final = !err;
                         }
                     });
