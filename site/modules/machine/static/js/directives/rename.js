@@ -69,7 +69,9 @@
                                 Image.renameImage(scope.object, renameFinished);
                             } else {
                                 $$track.event('machine', 'rename');
-                                Machine.renameMachine(scope.object.id, scope.newName).then(renameFinished, renameFinished);
+                                Machine.renameMachine(scope.object.id, scope.newName).then(renameFinished, function () {
+                                    renameFinished();
+                                });
                             }
                         }, function () {
                             scope.object.name = currentName;
