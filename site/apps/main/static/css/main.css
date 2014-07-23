@@ -1473,6 +1473,10 @@ div .disabled {
     margin-bottom: 0px;
 }
 
+.control-group-ssh .control-label {
+    padding-top: 5px;
+}
+
 textarea.ssharea {
     margin-bottom: 0px;
 }
