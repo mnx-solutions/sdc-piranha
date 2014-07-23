@@ -20,6 +20,6 @@
     </div>
     <div class="modal-footer">
         <button data-ng-click="close()" data-button-focus="false" data-label="Cancel" class="btn grey-new effect-orange-button">Cancel</button>
-        <button data-ng-click="createFolder()" data-button-focus="false" data-ng-disabled="folderNameForm.$invalid || folderNameForm.$pristine" data-label="Cancel" class="btn orange">Ok</button>
+        <button data-ng-click="createFolder()" data-button-focus="false" data-ng-disabled="folderNameForm.$invalid || folderNameForm.$pristine || folderName.length == 0" data-label="Cancel" class="btn orange">Ok</button>
     </div>
 </div>
