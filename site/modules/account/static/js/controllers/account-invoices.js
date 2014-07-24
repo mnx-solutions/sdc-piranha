@@ -26,32 +26,17 @@
             $scope.loading = true;
             $scope.isInvocesEnabled = true;
             $scope.invoices = [];
-            $scope.payments = [];
 
             Account.getAccount().then(function(account) {
                 if (account.provisionEnabled) {
                     $q.all([
-                        $q.when(BillingService.getInvoices()),
-                        $q.when(BillingService.getPayments())
+                        $q.when(BillingService.getInvoices())
                     ]).then(function (results) {
                         var invoices = results[0];
-                        var payments = results[1];
-                        var paidInvoices = [];
-                        if (payments.length) {
-                            paidInvoices = [].concat.apply([], payments.filter(function (payment) {
-                                return payment.status === 'Processed';
-                            }).map(function (payment) {
-                                return payment.paidInvoices.map(function(inv) {
-                                    return inv.invoiceNumber;
-                                });
-                            }));
-                        }
+
                         if (invoices.length) {
                             $scope.invoices = invoices.filter(function (invoice) {
                                 return invoice.status === 'Posted';
-                            }).map(function (invoice) {
-                                invoice.paymentStatus = (paidInvoices.length && paidInvoices.indexOf(invoice.invoiceNumber) !== -1) ? 'Paid' : 'Unpaid';
-                                return invoice;
                             });
                         }
 
@@ -99,8 +84,8 @@
                     sequence: 4
                 },
                 {
-                    id: 'paymentStatus',
-                    name: 'Status',
+                    id: 'balance',
+                    name: 'Due (USD)',
                     active: true,
                     sequence: 5
                 },
@@ -127,28 +112,22 @@
                     sequence: 7
                 },
                 {
-                    id: 'balance',
-                    name: 'Balance',
-                    active: false,
-                    sequence: 8
-                },
-                {
                     id: 'dueDate',
                     name: 'Due Date',
                     active: false,
-                    sequence: 9
+                    sequence: 8
                 },
                 {
                     id: 'invoiceTargetDate',
                     name: 'Invoice Target Date',
                     active: false,
-                    sequence: 10
+                    sequence: 9
                 },
                 {
                     id: 'status',
                     name: 'Status',
                     active: false,
-                    sequence: 11
+                    sequence: 10
                 }
             ];
             $scope.gridActionButtons = [];
