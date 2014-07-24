@@ -10,7 +10,6 @@ var MANTA_PING_RETRIES = 15;
 module.exports = function execute(scope) {
     var Manta = scope.api('MantaClient');
     var server = scope.api('Server');
-    var Billing = scope.api('Billing');
     var smartCloud = scope.get('smartCloud');
 
     function sendError(call, error, suppressErrorLog) {
@@ -297,6 +296,7 @@ module.exports = function execute(scope) {
 
     server.onCall('StoragePing', function (call) {
         var client = Manta.createClient(call);
+        var Billing = scope.api('Billing');
         var retries = MANTA_PING_RETRIES;
         function pingManta() {
             var subUserId = call.req.session.subId;

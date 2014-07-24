@@ -12,6 +12,7 @@
             "menu",
             "billing",
             "account",
+            "storage",
             "tfa",
             "maxmind",
             "feature-flags",
