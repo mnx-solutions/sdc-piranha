@@ -24,8 +24,13 @@ public abstract class AbstractPageObject {
     static final String IMAGES_MENU_TITLE = "Images";
     static final String SLB_MENU_TITLE = "Load Balancers";
     static final String USAGE_MENU_TITLE = "Usage";
+    static final String ACCOUNT_MENU_TITLE = "Accounts";
+    static final String ROLES_MENU_TITLE = "Roles";
+    static final String POLICIES_MENU_TITLE = "Policies";
+
 
     public static int baseTimeout;
+    public static String grid;
 
     public AbstractPageObject() {
         this(Integer.parseInt(System.getProperty(GLOBAL_TIMEOUT_KEY, GLOBAL_TIMEOUT_DEF)));
@@ -33,6 +38,7 @@ public abstract class AbstractPageObject {
 
     public AbstractPageObject(int baseTimeout) {
         AbstractPageObject.baseTimeout = baseTimeout;
+        AbstractPageObject.grid = "#grid-instances";
     }
 
     public void errorNotPresent() {
@@ -55,7 +61,7 @@ public abstract class AbstractPageObject {
     }
 
     public SelenideElement getPageTitle() {
-        return $(".page-title");
+        return $(By.xpath("//*[contains(@class,'page-title') and not(contains(@class,'ng-hide'))]"));//$(".page-title");
     }
 
     String getTitle() {

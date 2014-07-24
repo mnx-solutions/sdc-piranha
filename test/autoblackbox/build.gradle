@@ -109,3 +109,7 @@ task UploadSSHKeyTest(type: Test) {
 task UsagePageTest(type: Test) {
     include '**/UsagePageTest.class'
 }
+
+task AdminSuite(type: Test) {
+    include '**/AdminSuite.class'
+}

@@ -3,6 +3,7 @@ package com.joyent.piranha;
 import com.codeborne.selenide.ElementsCollection;
 import com.codeborne.selenide.SelenideElement;
 import com.codeborne.selenide.WebDriverRunner;
+import com.joyent.piranha.pageobject.AbstractPageObject;
 import org.apache.commons.io.IOUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -209,5 +210,15 @@ public class Common {
         setSdcProcessEnv(processBuilder, userName, PropertyHolder.getDatacenter(0));
         Process p = processBuilder.start();
         return new JSONObject(IOUtils.toString(p.getInputStream()));
+    }
+
+    public static void cleanUpGrid(Class<? extends AbstractPageObject> aClass) throws IllegalAccessException, InstantiationException {
+        AbstractPageObject page = aClass.newInstance();
+        if ($(page.grid).$("tr").exists()) {
+            $("thead label.checkbox").click();
+            page.performAction("Delete");
+            page.clickButtonInModal("Yes");
+            page.waitForLargeSpinnerDisappear();
+        }
     }
 }

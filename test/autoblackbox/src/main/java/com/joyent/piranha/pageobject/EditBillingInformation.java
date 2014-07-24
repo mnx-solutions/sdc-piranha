@@ -6,7 +6,6 @@ import org.apache.commons.codec.binary.Base64;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.openqa.selenium.By;
-import org.openqa.selenium.support.ui.Select;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -22,7 +21,7 @@ import static com.codeborne.selenide.Selenide.$;
 import static com.codeborne.selenide.Selenide.page;
 import static junit.framework.Assert.assertTrue;
 
-public class EditBillingInformation extends AbstractPageObject {
+public class EditBillingInformation extends UserInfo {
     public static final String TITLE = "Edit Billing Information";
 
     @Override
@@ -32,47 +31,6 @@ public class EditBillingInformation extends AbstractPageObject {
 
     public void setPromotionalCode(String promoCode) {
         setValue($(By.id("promoCode")), promoCode);
-    }
-
-    public void setCreditCardNumber(String cardNumber) {
-        setValue($("#creditCardNumber"), cardNumber);
-    }
-
-    public void setExpireDate(String monthValue, String yearValue) {
-        Select expirationMonth = new Select($(By.id("expirationMonth")));
-        expirationMonth.selectByValue(monthValue);
-        Select expirationYear = new Select($(By.id("expirationYear")));
-        expirationYear.selectByValue(yearValue);
-    }
-
-    public void setCCVCode(String ccvcode) {
-        setValue($(By.id("securityCode")), ccvcode);
-    }
-
-    public void setAddressLine1(String address) {
-        setValue($(By.id("addressLine1")), address);
-    }
-
-    public void setCountry(String countryValue) {
-        Select country = new Select($(By.id("country")));
-        country.selectByVisibleText(countryValue);
-    }
-
-    public void setCity(String city) {
-        setValue($(By.id("city")), city);
-    }
-
-    public void setState(String state) {
-        Select stateSel = new Select($(By.id("stateSel")));
-        stateSel.selectByVisibleText(state);
-    }
-
-    public void setZipCode(String zipCode) {
-        setValue($(By.id("zipCode")), zipCode);
-    }
-
-    public void setPhone(String phone) {
-        setValue($("[name=\"phone\"]"), phone);
     }
 
     public void fillBillingInfoCorrectly() {
@@ -121,5 +79,21 @@ public class EditBillingInformation extends AbstractPageObject {
         //slowest elements on the page
         $("#firstName").waitUntil(not(empty), timeout);
         $("#lastName").waitUntil(not(empty), timeout);
+    }
+
+    public String getCountry() {
+        return $(".edit-country a span").text();
+    }
+
+    public String getState() {
+        return $(".edit-state a span").text();
+    }
+
+    public String getCity() {
+        return $("#city").val();
+    }
+
+    public String getZip() {
+        return $("#zipCode").val();
     }
 }
