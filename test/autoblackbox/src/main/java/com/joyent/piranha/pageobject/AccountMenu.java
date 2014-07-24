@@ -9,6 +9,8 @@ public class AccountMenu extends AbstractPageObject {
 
     public Account clickAccount() {
         $("#link-account").click();
+        waitForLargeSpinnerDisappear();
+        waitForMediumSpinnerDisappear();
         return page(Account.class);
     }
 
