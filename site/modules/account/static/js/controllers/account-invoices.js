@@ -85,7 +85,7 @@
                 },
                 {
                     id: 'balance',
-                    name: 'Due (USD)',
+                    name: 'Balance Due (USD)',
                     active: true,
                     sequence: 5
                 },
