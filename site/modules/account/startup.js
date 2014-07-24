@@ -106,28 +106,33 @@ module.exports = function execute(scope) {
                 log.error(err);
                 return;
             }
+            var separateResult = function (datacenter, data) {
+                var result = {};
+                result[datacenter] = data;
+                return result;
+            }
             Object.keys(datacenters).forEach(function (datacenter) {
                 funcs.push(function networks(callback) {
                     cloudapi.separate(datacenter).listNetworks(function (err, data) {
-                            callback(err, {datacenter: data});
+                            callback(err, separateResult(datacenter, data));
                         }
                     );
                 });
                 funcs.push(function machines(callback) {
                     cloudapi.separate(datacenter).listMachines(function (err, data) {
-                        callback(err, {datacenter: data});
+                        callback(err, separateResult(datacenter, data));
                     });
                 });
                 funcs.push(function images(callback) {
                     cloudapi.separate(datacenter).listImages(
                         function (err, data) {
-                            callback(err, {datacenter: data});
+                            callback(err, separateResult(datacenter, data));
                         }
                     );
                 });
                 funcs.push(function firewallRules(callback) {
                     cloudapi.separate(datacenter).listFwRules(function (err, data) {
-                            callback(err, {datacenter: data});
+                            callback(err, separateResult(datacenter, data));
                         }
                     );
                 });
@@ -141,10 +146,10 @@ module.exports = function execute(scope) {
                 } else if (results && results.nerrors === 0) {
                     var users = [];
                     var policies = [];
-                    var networks = [];
-                    var images = [];
-                    var machines = [];
-                    var firewallRules = [];
+                    var networks = {};
+                    var images = {};
+                    var machines = {};
+                    var firewallRules = {};
                     var resultsHash = {
                         'users': users,
                         'policies': policies,
@@ -155,9 +160,16 @@ module.exports = function execute(scope) {
                     };
                     results.operations.forEach(function (operation) {
                         var funcname = operation.funcname;
-                        getArray(operation.result).forEach(function (item) {
-                            resultsHash[funcname].push(item);
-                        });
+                        if (Array.isArray(operation.result)) {
+                            getArray(operation.result).forEach(function (item) {
+                                resultsHash[funcname].push(item);
+                            });
+                        } else {
+                            Object.keys(operation.result).forEach(function (datacenter) {
+                                resultsHash[funcname][datacenter] = resultsHash[funcname][datacenter] || [];
+                                resultsHash[funcname][datacenter] = operation.result[datacenter];
+                            })
+                        }
                     });
                     loadDataCallback(cloudapi, getArray(roles, true), log, users, networks, policies, machines, images, firewallRules);
                 }
