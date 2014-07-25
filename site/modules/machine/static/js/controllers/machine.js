@@ -498,8 +498,6 @@
                     }
                     contactSupportParams.dropboxID = contactSupportParams.dropboxOrderPackageId || contactSupportParams.dropboxID;
                     contactSupportParams.request_subject = 'I want to resize instance ' + $scope.machine.id;
-                    contactSupportParams.requester_name = account.firstName;
-                    contactSupportParams.requester_email = account.email;
                     loggingService.log('info', 'User is ordering instance package from support', obj);
                     Zenbox.show(null, contactSupportParams);
                 });

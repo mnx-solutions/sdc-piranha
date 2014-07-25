@@ -273,6 +273,16 @@ module.exports = function execute(scope) {
         });
     });
 
+    server.onCall('getParentAccount', function (call) {
+        call.cloud.getAccount(function (error, data) {
+            if (error) {
+                call.done(error);
+                return;
+            }
+            call.done(null, {login: data.login});
+        });
+    });
+
     server.onCall('getAccount', function (call) {
         var subUserId = call.req.session.subId;
         var response = { isSubuser: !!subUserId};
