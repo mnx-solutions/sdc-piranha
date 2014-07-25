@@ -29,7 +29,8 @@
             "zendesk",
             "limits",
             "mdb",
-            "rbac"
+            "rbac",
+            "downloadSdc"
         ],
         "auth": true,
         "error": true,

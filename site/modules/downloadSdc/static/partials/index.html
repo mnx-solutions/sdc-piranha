@@ -1,0 +1,76 @@
+<div class="container-fluid container-position" data-ng-controller="downloadSdc.IndexController">
+    <div class="page-header">
+        <h3 class="page-title">Private Cloud Free Trial</h3>
+        <div class="header-text">
+            <p class="header-text-section">
+                Build, run and scale high-performing private clouds. Joyent SmartDataCenter&#0153; is a complete cloud management solution for server and network virtualization, operations management and customer self-service. It provides leading scaling, file system, analytics and resource management capabilities, that enable organizations to run highly resilient, secure and cost efficient private, or hybrid clouds.
+            </p>
+            <div class="sdc-ad"></div>
+        </div>
+    </div>
+
+    <div class="dpl-inline">
+        <div class="pull-left first-column">
+            <div class="portlet-body">
+                <h5>Features</h5>
+                <p>
+                    Cloud operations center<br />
+                    Customer self-service center<br />
+                    Infrastructure analytics and performance metrics<br />
+                    CPU calibration<br />
+                    Enterprise-grade file system<br />
+                    APIs for billing and reporting system integration<br />
+                    Leverages the innovative SmartOS operating system<br />
+                    Options to run Linux or Window operating systems<br />
+                    Security model based on Zones (ZFS)<br />
+                    Native virtual network capabilities
+                </p>
+            </div>
+        </div>
+        <div class="pull-left second-column">
+            <div class="span">
+                <h5>Benefits</h5>
+                <p>
+                    Better cloud operations and resource management<br />
+                    Intuitive self-service for developers or end-customers<br />
+                    Better long-term investment<br />
+                    More secure architecture<br />
+                    Better transparency for root analysis of cloud performance<br />
+                    Open and standards based method of integration
+                </p>
+            </div>
+        </div>
+    </div>
+    <div class="select-position-block">
+        <h5>Select Version</h5>
+        <form name="versionSDCForm">
+            <label class="checkbox select-version">
+                <div class="radio dpl-inline">
+                        <span data-ng-class="{checked: versionSDC == 'coalSdc'}">
+                            <input type="radio" name="versionSDC" data-ng-model="versionSDC" value="coalSdc" />
+                        </span>
+                </div>
+                <div class="label-text">SDC VMware Image</div>
+            </label>
+            <label class="checkbox select-version">
+                <div class="radio dpl-inline">
+                        <span data-ng-class="{checked: versionSDC == 'fullSdc'}">
+                            <input type="radio" name="versionSDC" data-ng-model="versionSDC" value="fullSdc" />
+                        </span>
+                </div>
+                <div class="label-text">Full SDC software package</div>
+            </label>
+            <label class="checkbox select-version select-version-license">
+                <div class="checker dpl-inline">
+                        <span data-ng-class="{checked: acceptLicenseAgreement, disabled: !acceptLicenseAgreement}" data-ng-click="acceptLicense()">
+                            <input type="checkbox" name="acceptLicenseAgreement" data-ng-model="acceptLicenseAgreement" data-ng-checked="acceptLicenseAgreement" />
+                        </span>
+                </div>
+                <div class="label-text">You must accept the <span class="licenseAgreement">Joyent License Agreement</span> to download this software</div>
+            </label>
+        </form>
+        <button data-ng-click="startDownload()" class="btn orange pull-right">
+            Start Download
+        </button>
+    </div>
+</div>

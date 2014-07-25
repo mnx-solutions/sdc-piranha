@@ -150,6 +150,12 @@ li.active a.accounts-icon {
 li.active a.debug-icon {
     background-image: url("../img/debug-orange.png") !important;
 }
+.sdc-download-icon {
+    background-image: url("../img/download-white.png");
+}
+li.active a.sdc-download-icon {
+    background-image: url("../img/download-orange.png") !important;
+}
 
 .dashboard-icon,
 .compute-icon,
@@ -157,13 +163,19 @@ li.active a.debug-icon {
 .usage-icon,
 .support-icon,
 .accounts-icon,
-.debug-icon {
+.debug-icon,
+.sdc-download-icon {
     background-repeat: no-repeat;
     background-position: 20px 5px;
     background-size: 22px;
     height: 22px;
 }
 
+.sdc-download-title {
+    display: block;
+    margin-top: -4px;
+    line-height: 14px;
+}
 .title {
     padding-left: 35px;
     color: #ffffff;
