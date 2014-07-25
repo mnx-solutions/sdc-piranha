@@ -144,7 +144,7 @@
                                     if ($scope.nextStep) {
                                         $scope.skipSsh();
                                     } else {
-                                        $scope.updateKeys();
+                                        $scope.updateKeys(true);
                                     }
                                 } else if (result && result.keyUploaded && subUserId) {
                                     $rootScope.$broadcast('sshCreated', true);
