@@ -267,6 +267,12 @@ module.exports = function execute(scope) {
         vasync.pipeline({'funcs': pool}, callback);
     };
 
+    server.onCall('getAccountCreated', function (call) {
+        call.cloud.getAccount(function (error, data) {
+            call.done(null, data ? data.created : null);
+        });
+    });
+
     server.onCall('getAccount', function (call) {
         var subUserId = call.req.session.subId;
         var response = { isSubuser: !!subUserId};

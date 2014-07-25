@@ -22,7 +22,9 @@
             var service = {};
 
             var account = null;
+            var accountCreated = null;
             var accountPromise = null;
+            var accountCreatedPromise = null;
             var keys = null;
 
             /**
@@ -105,6 +107,45 @@
                     });
                 } else {
                     deferred.resolve(account);
+                }
+
+                return deferred.promise;
+            };
+
+            service.getAccountCreated = function (noCache) {
+                if (!noCache) {
+                    noCache = false;
+                }
+
+                var deferred = $q.defer();
+
+                if (!accountCreated) {
+                    if (!accountCreatedPromise || !accountCreatedPromise.pending) {
+                        accountCreatedPromise = {};
+                        accountCreatedPromise.deferred = deferred;
+                        accountCreatedPromise.pending = true;
+                    } else {
+                        accountCreatedPromise.deferred.promise.then(deferred.resolve, deferred.reject);
+                        return deferred.promise;
+                    }
+
+                    serverTab.call({
+                        name: 'getAccountCreated',
+                        data: {
+                            noCache: noCache
+                        },
+                        done: function (err, job) {
+                            accountCreatedPromise.pending = false;
+                            if (err) {
+                                deferred.reject(err);
+                                return;
+                            }
+                            accountCreated = job.__read();
+                            deferred.resolve(accountCreated);
+                        }
+                    });
+                } else {
+                    deferred.resolve(accountCreated);
                 }
 
                 return deferred.promise;
