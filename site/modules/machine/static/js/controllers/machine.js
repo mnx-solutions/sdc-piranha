@@ -331,13 +331,16 @@
                 }
                 function createImage() {
                     $scope.imageName = $scope.imageName || (Math.random() + 1).toString(36).substr(2, 7);
-                    $scope.imageJob = Image.createImage($scope.machineid, $scope.machine.datacenter, $scope.imageName, $scope.imageDescription, $scope.imageVersion);
+                    $scope.imageJob = Image.createImage($scope.machineid, $scope.machine.datacenter, $scope.imageName, $scope.imageDescription, $scope.imageVersion, function () {
+                        $location.path('/images');
+                    });
+
                     $scope.imageJob.done(function () {
                         $scope.imageName = $scope.imageDescription = $scope.imageVersion = '';
                         $scope.imageForm.$pristine = true;
                         $scope.imageForm.$dirty = false;
                     });
-                    $location.path('/images');
+
                 }
 
                 if ($scope.imageCreateNotSupported || $scope.machine.state !== 'stopped') {

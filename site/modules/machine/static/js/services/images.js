@@ -175,7 +175,7 @@
             }
 
 
-            service.createImage = function (machineId, datacenter, name, description, version) {
+            service.createImage = function (machineId, datacenter, name, description, version, locationCallback) {
                 var id = window.uuid.v4();
                 var image = {
                     state: 'creating',
@@ -230,6 +230,10 @@
                         Dataset.updateDatasets('all', true);
                     },
                     progress: function (err, job) {
+                        if (!err && angular.isFunction(locationCallback)) {
+                            locationCallback();
+                            locationCallback = undefined;
+                        }
                         var step = job.step;
                         if (step) {
                             Object.keys(step).forEach(function (k) {

@@ -58,12 +58,15 @@ module.exports = function execute(scope) {
         deletemachine:         '/my/machines/%s',
         rebootmachine:         '/my/machines/%s',
 
-        deletemachinetags:     '/my/machines/%s/tags',
-        replacemachinetags:    '/my/machines/%s/tags',
-        addmachinemetadata:    '/my/machines/%s/metadata',
-        listmachinemetadata:   '/my/machines/%s/metadata',
-
         getnetwork:            '/my/networks/%s',
+
+        deletefirewallrule:    '/my/fwrules/%s',
+        updatefirewallrule:    '/my/fwrules/%s',
+        getfirewallrule:       '/my/fwrules/%s',
+
+        getimage:              '/my/images/%s',
+        deleteimage:           '/my/images/%s',
+        updateimage:           '/my/images/%s',
 
         listuserkeys:          '/my/users/%s/keys',
         createuserkey:         '/my/users/%s/keys',
@@ -86,57 +89,118 @@ module.exports = function execute(scope) {
         if (!roles || !roles.length === 0) {
             return;
         }
-
-        vasync.parallel({
-            'funcs': [
-                function (callback) {
-                    cloudapi.listUsers(callback);
-                },
-                function (callback) {
-                    cloudapi.listNetworks(callback);
-                },
-                function (callback) {
-                    cloudapi.listPolicies(callback);
-                },
-                function (callback) {
-                    cloudapi.listMachines(callback);
-                },
-            ]
-        }, function (err, results) {
+        var funcs = [
+            function users(callback) {
+                cloudapi.listUsers(callback);
+            },
+            function policies(callback) {
+                cloudapi.listPolicies(callback);
+            }
+        ];
+        cloudapi.listDatacenters(function (err, datacenters) {
             if (err) {
                 log.error(err);
-            } else if (results && results.nerrors === 0) {
-                var users = getArray(results.operations[0].result);
-                var networks = getArray(results.operations[1].result);
-                var policies = getArray(results.operations[2].result);
-                var machines = getArray(results.operations[3].result);
-                loadDataCallback(cloudapi, getArray(roles, true), log, users, networks, policies, machines);
+                return;
             }
-        })
+            var separateResult = function (datacenter, data) {
+                var result = {};
+                result[datacenter] = data;
+                return result;
+            };
+            Object.keys(datacenters).forEach(function (datacenter) {
+                funcs.push(function networks(callback) {
+                    cloudapi.separate(datacenter).listNetworks(function (err, data) {
+                            callback(err, separateResult(datacenter, data));
+                        }
+                    );
+                });
+                funcs.push(function machines(callback) {
+                    cloudapi.separate(datacenter).listMachines(function (err, data) {
+                        callback(err, separateResult(datacenter, data));
+                    });
+                });
+                funcs.push(function images(callback) {
+                    cloudapi.separate(datacenter).listImages(
+                        function (err, data) {
+                            callback(err, separateResult(datacenter, data));
+                        }
+                    );
+                });
+                funcs.push(function firewallRules(callback) {
+                    cloudapi.separate(datacenter).listFwRules(function (err, data) {
+                            callback(err, separateResult(datacenter, data));
+                        }
+                    );
+                });
+            });
+
+            vasync.parallel({
+                'funcs': funcs
+            }, function (err, results) {
+                if (err) {
+                    log.error(err);
+                } else if (results && results.nerrors === 0) {
+                    var users = [];
+                    var policies = [];
+                    var networks = {};
+                    var images = {};
+                    var machines = {};
+                    var firewallRules = {};
+                    var resultsHash = {
+                        'users': users,
+                        'policies': policies,
+                        'machines': machines,
+                        'networks': networks,
+                        'images': images,
+                        'firewallRules': firewallRules
+                    };
+                    results.operations.forEach(function (operation) {
+                        var funcname = operation.funcname;
+                        if (Array.isArray(operation.result)) {
+                            getArray(operation.result).forEach(function (item) {
+                                resultsHash[funcname].push(item);
+                            });
+                        } else {
+                            Object.keys(operation.result).forEach(function (datacenter) {
+                                resultsHash[funcname][datacenter] = resultsHash[funcname][datacenter] || [];
+                                resultsHash[funcname][datacenter] = operation.result[datacenter];
+                            })
+                        }
+                    });
+                    loadDataCallback(cloudapi, getArray(roles, true), log, users, networks, policies, machines, images, firewallRules);
+                }
+            })
+        });
     };
 
 
-    var updateRoleTags = function (cloudapi, roles, log, users, networks, policies, machines) {
+    var updateRoleTags = function (cloudapi, roles, log, users, networks, policies, machines, images, firewallRules) {
         roles = roles.filter(function (role) {
             return role.default_members && role.default_members.length > 0;
         });
 
-        var pushResourceRole = function (resourceRole, resource, role) {
-            resourceRole[resource] = resourceRole[resource] || [];
-            if (resourceRole[resource].indexOf(role.name) === -1) {
-                resourceRole[resource].push(role.name);
+        var pushResourceRole = function (resourceRole, resource, role, datacenter) {
+            datacenter = datacenter || 'all';
+            if (!resourceRole[datacenter]) {
+                resourceRole[datacenter] = {};
+            }
+
+            resourceRole[datacenter][resource] = resourceRole[datacenter][resource] || [];
+            if (resourceRole[datacenter][resource].indexOf(role.name) === -1) {
+                resourceRole[datacenter][resource].push(role.name);
             }
         };
 
-        var setRoleTags = function (resource, roles) {
-            cloudapi.getRoleTags(resource, function (err, roleNames) {
+        var setRoleTags = function (datacenter, resource, roles) {
+            var cloudByDatacenter = !datacenter || datacenter === 'all' ? cloudapi : cloudapi.separate(datacenter);
+            cloudByDatacenter.getRoleTags(resource, function (err, roleNames) {
                 roleNames = roleNames || [];
                 var newRoles = roles.filter(function (roleName) {
                     return roleNames.indexOf(roleName) === -1;
                 });
                 if (newRoles.length > 0) {
                     roleNames = roleNames.concat(newRoles);
-                    cloudapi.setRoleTags(resource, roleNames, function (err) {
+                    cloudByDatacenter.setRoleTags(resource, roleNames, function (err) {
                         if (err) {
                             log.error({error: err, roleNames: roleNames, resource: resource}, 'Failed to setRoleTags');
                         }
@@ -176,8 +240,27 @@ module.exports = function execute(scope) {
                         if (rule.indexOf(command) !== -1) {
                             role.default_members.forEach(function (member) {
                                 var resources = [];
+                                var resourcesByDatacenter = {};
+                                var collectResourcesByDatacenters = function (data, command) {
+                                    Object.keys(data).forEach(function (datacenter) {
+                                        resourcesByDatacenter[datacenter] = resourcesByDatacenter[datacenter] || [];
+                                        data[datacenter].forEach(function (item) {
+                                            resourcesByDatacenter[datacenter].push(util.format(CUSTOM_RESOURCES[command], item.id));
+                                        });
+                                    });
+                                };
 
                                 switch (command) {
+                                    case 'getimage':
+                                    case 'deleteimage':
+                                    case 'updateimage':
+                                        collectResourcesByDatacenters(images, command);
+                                        break;
+                                    case 'getfirewallrule':
+                                    case 'updatefirewallrule':
+                                    case 'deletefirewallrule':
+                                        collectResourcesByDatacenters(firewallRules, command);
+                                        break;
                                     case 'uploaduserkey':
                                     case 'deleteuserkey':
                                     case 'getuserkey':
@@ -187,22 +270,13 @@ module.exports = function execute(scope) {
                                         }
                                         break;
                                     case 'getnetwork':
-                                        networks.forEach(function (network) {
-                                            resources.push(util.format(CUSTOM_RESOURCES[command], network.id));
-                                        });
+                                        collectResourcesByDatacenters(networks, command);
                                         break;
                                     case 'startmachine':
                                     case 'stopmachine':
                                     case 'deletemachine':
                                     case 'rebootmachine':
-                                    case 'deletemachinetags':
-                                    case 'enablemachinefirewall':
-                                    case 'replacemachinetags':
-                                    case 'addmachinemetadata':
-                                    case 'listmachinemetadata':
-                                        machines.forEach(function (machine) {
-                                            resources.push(util.format(CUSTOM_RESOURCES[command], machine.id));
-                                        });
+                                        collectResourcesByDatacenters(machines, command);
                                         break;
 
                                     default :
@@ -212,6 +286,11 @@ module.exports = function execute(scope) {
                                 resources.forEach(function (resource) {
                                     pushResourceRole(resourceRole, resource, role);
                                 });
+                                Object.keys(resourcesByDatacenter).forEach(function (dataceter) {
+                                    resourcesByDatacenter[dataceter].forEach(function (resource) {
+                                        pushResourceRole(resourceRole, resource, role, dataceter);
+                                    });
+                                })
                             });
                         }
                     });
@@ -219,9 +298,12 @@ module.exports = function execute(scope) {
             });
         });
 
-        var roleResources = Object.keys(resourceRole);
-        roleResources.forEach(function (resource) {
-            setRoleTags(resource, resourceRole[resource]);
+        var datacenters = Object.keys(resourceRole);
+        datacenters.forEach(function (datacenter) {
+            var roleResources = Object.keys(resourceRole[datacenter]);
+            roleResources.forEach(function (resource) {
+                setRoleTags(datacenter, resource, resourceRole[datacenter][resource]);
+            });
         });
         var userKeysResourceRole = Object.keys(fetchUserKeysResourceRole);
         var poolTasks = [];
@@ -242,11 +324,10 @@ module.exports = function execute(scope) {
             results.successes.forEach(function (result) {
                 (result.data || []).forEach(function (userKey) {
                     var resource = util.format(CUSTOM_RESOURCES['getuserkey'], result.userId, userKey.fingerprint);
-                    setRoleTags(resource, result.roles);
+                    setRoleTags('all', resource, result.roles);
                 });
             });
-        })
-
+        });
     };
 
     var getBillingAndComplete = function (call, response) {
