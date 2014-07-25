@@ -3,18 +3,37 @@
 (function (app) {
     app.controller(
         'StorageController',
-        ['$scope', 'Account', 'requestContext', 'localization', '$dialog', function ($scope, Account, requestContext, localization, $dialog) {
+        ['$scope', 'Account', 'requestContext', 'localization', '$dialog', 'rbac.Service', 'PopupDialog', function ($scope, Account, requestContext, localization, $dialog, RBAC, PopupDialog) {
             localization.bind('storage', $scope);
             requestContext.setUpRenderContext('storage.index', $scope);
-
-            $scope.account = Account.getAccount();
-            $scope.sshKeys = Account.getKeys(true);
-
             $scope.loading = true;
-            $scope.sshKeys.then(function (keys) {
+
+            var errorCallback = function (err) {
+                $scope.loading = false;
+                PopupDialog.errorObj(err);
+            };
+            var createSshList = function (keys) {
+                $scope.sshKeys = keys;
                 if (keys.length > 0) {
                     $scope.keyId = keys[0].fingerprint;
                     $scope.keyName = keys[0].name;
+                }
+                $scope.loading = false;
+            };
+
+            Account.getAccount().then(function (account) {
+                $scope.account = account;
+                if (account.isSubuser) {
+                    RBAC.listUserKeys(account.id).then(function (keys) {
+                        createSshList(keys);
+                        Account.getParentAccount().then(function (parentAccount) {
+                            $scope.parentAccount = parentAccount.login;
+                        });
+                    }, errorCallback);
+                } else {
+                    Account.getKeys(true).then(function (keys) {
+                        createSshList(keys);
+                    });
                 }
             });
 
