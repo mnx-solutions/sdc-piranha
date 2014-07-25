@@ -1651,6 +1651,13 @@ i.glyphicon-question-sign {
 }
 
 /*Select2*/
+.select2-drop {
+    z-index: 9999991;
+}
+
+.select2-drop-mask {
+    z-index: 999999;
+}
 
 .select2-results .select2-highlighted {
     background: #eee;
