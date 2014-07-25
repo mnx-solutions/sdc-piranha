@@ -57,11 +57,6 @@ module.exports = function execute(scope) {
         deletemachine:         '/my/machines/%s',
         rebootmachine:         '/my/machines/%s',
 
-        deletemachinetags:     '/my/machines/%s/tags',
-        replacemachinetags:    '/my/machines/%s/tags',
-        addmachinemetadata:    '/my/machines/%s/metadata',
-        listmachinemetadata:   '/my/machines/%s/metadata',
-
         getnetwork:            '/my/networks/%s',
 
         deletefirewallrule:    '/my/fwrules/%s',
@@ -110,7 +105,7 @@ module.exports = function execute(scope) {
                 var result = {};
                 result[datacenter] = data;
                 return result;
-            }
+            };
             Object.keys(datacenters).forEach(function (datacenter) {
                 funcs.push(function networks(callback) {
                     cloudapi.separate(datacenter).listNetworks(function (err, data) {
@@ -260,6 +255,7 @@ module.exports = function execute(scope) {
                                     case 'updateimage':
                                         collectResourcesByDatacenters(images, command);
                                         break;
+                                    case 'getfirewallrule':
                                     case 'updatefirewallrule':
                                     case 'deletefirewallrule':
                                         collectResourcesByDatacenters(firewallRules, command);
@@ -279,11 +275,6 @@ module.exports = function execute(scope) {
                                     case 'stopmachine':
                                     case 'deletemachine':
                                     case 'rebootmachine':
-                                    case 'deletemachinetags':
-                                    case 'enablemachinefirewall':
-                                    case 'replacemachinetags':
-                                    case 'addmachinemetadata':
-                                    case 'listmachinemetadata':
                                         collectResourcesByDatacenters(machines, command);
                                         break;
 
