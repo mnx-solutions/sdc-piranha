@@ -49,6 +49,7 @@
                                 name="expirationMonth"
                                 class="edit-expiration-month"
                                 data-expiration-date
+                                data-search-box="true"
                                 data-ng-class="{error: isError('creditCard.expirationMonth', 'invalidExpirationDate') || isError('creditCard.expirationMonth')}"
                                 data-ng-required="true"
                                 data-ng-model="form.expirationMonth">
@@ -63,6 +64,7 @@
                                 class="edit-expiration-year"
                                 data-ng-style="selectStyle"
                                 data-expiration-date
+                                data-search-box="true"
                                 data-ng-class="{error: isError('creditCard.expirationYear', 'invalidExpirationDate') || isError('creditCard.expirationYear')}"
                                 data-ng-required="true"
                                 data-ng-model="form.expirationYear">
@@ -234,7 +236,8 @@
                                 data-ng-change="form.cardHolderInfo.country"
                                 data-select="this.prev.cardHolderInfo.country"
                                 data-ng-options="country.iso3 as country.name group by country.group for country in countries.data | orderBy: ['-group','name']"
-                                data-ng-required="true">
+                                data-ng-required="true"
+                                data-search-box="true">
                         </select>
                     </span>
                     <span class="edit-error">
@@ -306,7 +309,7 @@
                 </span>
                 <span data-ng-switch-when="true">
                             <span class="edit-value-one">
-                                <select ui-select2="{setPristine: true, minimumResultsForSearch: -1}"
+                                <select ui-select2="{setPristine: true, minimumResultsForSearch: 1}"
                                         data-ng-model="form.cardHolderInfo.state"
                                         id="stateSel"
                                         class="edit-state"
