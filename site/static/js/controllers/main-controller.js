@@ -26,14 +26,6 @@
             $rootScope.isOnline = true;
 
             $rootScope.zenboxParams = window.JP.get('zendesk') || {};
-            if (typeof(window.Zenbox) !== "undefined" && $rootScope.zenboxParams.dropboxID) {
-                window.Zenbox.init($rootScope.zenboxParams);
-                window.angular.element("#zenbox_tab").click(function () {
-                    if (typeof(window._gaq) !== "undefined") {
-                        window._gaq.push(["_trackEvent", "Window Open", "Zenbox Support"]);
-                    }
-                });
-            }
 
             // Get the render context local to this controller (and relevant params).
             var renderContext = requestContext.getRenderContext();

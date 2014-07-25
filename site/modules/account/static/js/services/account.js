@@ -18,7 +18,8 @@
         'serverTab',
         '$$track',
         'PopupDialog',
-        function ($q, serverTab, $$track, PopupDialog) {
+        '$rootScope',
+        function ($q, serverTab, $$track, PopupDialog, $rootScope) {
             var service = {};
 
             var account = null;
@@ -150,6 +151,46 @@
 
                 return deferred.promise;
             };
+
+            service.getParentAccount = function () {
+                var deferred = $q.defer();
+
+                serverTab.call({
+                    name: 'getParentAccount',
+                    done: function (err, job) {
+                        if (err) {
+                            deferred.reject(err);
+                            return;
+                        }
+                        var parentAccount = job.__read();
+                        deferred.resolve(parentAccount);
+                    }
+                });
+                return deferred.promise;
+            };
+
+            var zenboxInit = function (name) {
+                if (typeof(window.Zenbox) !== "undefined" && $rootScope.zenboxParams.dropboxID) {
+                    $rootScope.zenboxParams.requester_name = name;
+                    window.Zenbox.init($rootScope.zenboxParams);
+                    window.angular.element("#zenbox_tab").click(function () {
+                        if (typeof(window._gaq) !== "undefined") {
+                            window._gaq.push(["_trackEvent", "Window Open", "Zenbox Support"]);
+                        }
+                    });
+                }
+            };
+
+            service.getAccount().then(function (account) {
+                $rootScope.zenboxParams.requester_email = account.email;
+                if (account.isSubuser) {
+                    service.getParentAccount().then(function (parentAccount) {
+                        zenboxInit(parentAccount.login + '/' + account.login);
+                    });
+                } else {
+                    zenboxInit(account.login);
+                }
+            });
 
             service.checkProvisioning = function (submitBillingInfo, cbEnabled, cbDisabled, locationCb, showPopUp) {
                 var defaultCb = angular.noop;

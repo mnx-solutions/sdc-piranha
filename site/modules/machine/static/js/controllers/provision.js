@@ -1485,10 +1485,7 @@
             };
             
             $scope.zenboxDialog = function (params) {
-                var props = angular.extend({}, $rootScope.zenboxParams, params, {
-                    requester_name: $scope.account.firstName,
-                    requester_email: $scope.account.email
-                });
+                var props = angular.extend({}, $rootScope.zenboxParams, params);
                 window.Zenbox.show(null, props);
             };
 
