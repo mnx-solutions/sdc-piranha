@@ -65,7 +65,10 @@
                                         )
                                     );
                                 }
-                            }, errorCallback);
+                            }, function (err) {
+                                scope.loading = false;
+                                errorCallback(err);
+                            });
                         }
                     }
                 );
