@@ -11,6 +11,7 @@ module.exports = function execute(scope) {
     var Manta = scope.api('MantaClient');
     var server = scope.api('Server');
     var Billing = scope.api('Billing');
+    var smartCloud = scope.get('smartCloud');
 
     function sendError(call, error, suppressErrorLog) {
         function done(error) {
@@ -298,12 +299,14 @@ module.exports = function execute(scope) {
         var client = Manta.createClient(call);
         var retries = MANTA_PING_RETRIES;
         function pingManta() {
-            Billing.isActive(call.req.session.userId, function (error, isActive) {
+            var subUserId = call.req.session.subId;
+            var accountLogin = call.req.session.userName;
+            var callback = function (error, isActive) {
                 if (error || !isActive) {
                     sendError(call, {message: 'Something went wrong.  Please try again in a minute.'});
                     return;
                 }
-                client.get('/' + client.user, function (error) {
+                client.get('/' + accountLogin, function (error) {
                     if (error) {
                         if (error.name === 'AccountBlockedError' || error.name === 'AccountBlocked') {
                             if (retries > 0) {
@@ -319,7 +322,20 @@ module.exports = function execute(scope) {
                     }
                     call.done(null, 'pong');
                 });
-            });
+            };
+
+            if (subUserId) {
+                smartCloud.cloud({ token: call.req.session.token }).getAccount(function (err, account) {
+                    if (err) {
+                        sendError(call, err);
+                    } else {
+                        accountLogin = account.login;
+                        Billing.isActive(account.id, callback);
+                    }
+                });
+            } else {
+                Billing.isActive(call.req.session.userId, callback);
+            }
         }
         pingManta();
     });
