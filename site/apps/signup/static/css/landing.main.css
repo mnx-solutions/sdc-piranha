@@ -448,7 +448,9 @@ legend + .form-group {
     background-repeat: no-repeat;
 }
 .modal-ssh {
-    margin-left: -200px;
+    width: 408px;
+}
+.modal-dialog-ssh {
     width: 410px;
 }
 .control-group-ssh {

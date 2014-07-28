@@ -493,24 +493,6 @@ portlet.box.light-grey > .portlet-title .caption > i {
 .modal-backdrop.fade.in {
     opacity: 0.8;
 }
-.modal {
-    position: fixed;
-    display: block;
-    top: 10%;
-    left: 50%;
-    bottom:auto;
-    z-index: 1050;
-    margin-left: -280px;
-    width: 560px;
-    outline: none;
-    border: 1px solid #999;
-    border: 1px solid rgba(0, 0, 0, 0.3);
-    background-color: #fff;
-    background-clip: padding-box;
-    box-shadow: 0 3px 7px rgba(0, 0, 0, 0.3);
-    -webkit-background-clip: padding-box;
-    -moz-background-clip: padding-box;
-}
 .modal-footer {
     margin-top: 0;
 }

@@ -1492,8 +1492,24 @@ div .disabled {
     background-repeat: no-repeat;
 }
 
-.modal.modal-ssh {
-    margin-left: -200px;
+.qr-image {
+    margin: 15px;
+    padding-left: 20px;
+}
+
+.loading-tfa {
+    margin-right:5px;
+    min-width:30px;
+    min-height:30px;
+    width:30px;
+    height:30px;
+}
+
+.modal-dialog .modal-ssh {
+    width: 408px;
+}
+
+.modal-dialog-ssh {
     width: 410px;
 }
 
@@ -3316,9 +3332,11 @@ label.checkbox {
     text-decoration: underline;
 }
 
-.modal.file-manager {
-    top: 6%;
-    margin-left: -290px;
+.modal-dialog .file-manager {
+    width: 578px;
+}
+
+.modal-dialog-file {
     width: 580px;
 }
 
@@ -3332,7 +3350,7 @@ label.checkbox {
 
 .file-manager .modal-body {
     overflow-y: hidden;
-    max-height: 479px;
+    max-height: 509px;
 }
 
 .modal .folder-container {
@@ -3343,19 +3361,12 @@ label.checkbox {
 .modal-backdrop.fade.in {
     opacity: 0.8;
 }
+.modal-open .modal {
+    overflow-x: hidden;
+    overflow-y: auto;
+}
 .modal {
-    position: fixed;
     display: block;
-    top: 10%;
-    left: 50%;
-    bottom:auto;
-    z-index: 1050;
-    margin-left: -280px;
-    width: 560px;
-    outline: none;
-    background-color: #fff;
-    background-clip: padding-box;
-    box-shadow: 0 3px 7px rgba(0, 0, 0, 0.3);
 }
 .modal-footer {
     margin-top: 0;
@@ -3467,6 +3478,12 @@ label.checkbox.folder-name-form-checkbox {
 }
 .text-to-left {
     text-align: left !important;
+}
+.modal-dialog .change-pass {
+    width: 416px;
+}
+.modal-dialog-pass {
+    width: 418px;
 }
 .change-pass .name {
     width: 135px;

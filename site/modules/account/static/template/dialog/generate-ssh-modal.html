@@ -1,27 +1,29 @@
-<div>
-    <div class="modal" tabindex="-1" data-backdrop="static" data-focus-on="button">
-        <div class="modal-header message">
-            <h5><i class="glyphicon glyphicon-info-sign"></i><b>Create SSH Key</b></h5>
-        </div>
-        <div class="modal-body">
-            <p>{{message || 'Your private key will begin downloading when you click "Create Key". The public half of the
-                key will be added to your Joyent Cloud account.'}}</p>
-            <p>Keep the private key file safe.</p>
-            <div class="form-group">
-                <label class="control-label">Key Name</label>
-                <div class="controls">
-                    <form name="keyNameForm" class="key-name-form">
-                        <div class="clearfix">
-                            <input name="keyName" type="text" class="col-md-9 ssh-key-name" data-ng-model="keyName" data-ng-pattern="/^[a-zA-Z0-9\_\-\s]*$/" placeholder="optional" />
-                        </div>
-                        <p data-ng-show="keyNameForm.keyName.$invalid" class="error">SSH key name can contain only letters, digits and signs like '_' and '-'.</p>
-                    </form>
+<div class="modal-dialog">
+    <div class="modal-content">
+        <div tabindex="-1" data-backdrop="static" data-focus-on="button">
+            <div class="modal-header message">
+                <h5><i class="glyphicon glyphicon-info-sign"></i><b>Create SSH Key</b></h5>
+            </div>
+            <div class="modal-body">
+                <p>{{message || 'Your private key will begin downloading when you click "Create Key". The public half of the
+                    key will be added to your Joyent Cloud account.'}}</p>
+                <p>Keep the private key file safe.</p>
+                <div class="form-group">
+                    <label class="control-label">Key Name</label>
+                    <div class="controls">
+                        <form name="keyNameForm" class="key-name-form">
+                            <div class="clearfix">
+                                <input name="keyName" type="text" class="col-md-9 ssh-key-name" data-ng-model="keyName" data-ng-pattern="/^[a-zA-Z0-9\_\-\s]*$/" placeholder="optional" />
+                            </div>
+                            <p data-ng-show="keyNameForm.keyName.$invalid" class="error">SSH key name can contain only letters, digits and signs like '_' and '-'.</p>
+                        </form>
+                    </div>
                 </div>
             </div>
-        </div>
-        <div class="modal-footer">
-            <button data-ng-click="close()" data-button-focus="false" data-label="Cancel" class="btn grey-new effect-orange-button">Cancel</button>
-            <button data-ng-click="generateKey()" data-button-focus="true" data-label="Create" class="btn orange" data-ng-disabled="keyNameForm.keyName.$invalid">Create Key</button>
+            <div class="modal-footer">
+                <button data-ng-click="close()" data-button-focus="false" data-label="Cancel" class="btn grey-new effect-orange-button">Cancel</button>
+                <button data-ng-click="generateKey()" data-button-focus="true" data-label="Create" class="btn orange" data-ng-disabled="keyNameForm.keyName.$invalid">Create Key</button>
+            </div>
         </div>
     </div>
 </div>
