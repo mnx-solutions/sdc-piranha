@@ -28,6 +28,8 @@ tasks.withType(Test) {
         env = '.wb'
     } else if (project.hasProperty('bp')) {
         env = '.bplt'
+    } else if (project.hasProperty('ly')) {
+        env = '.ly'
     }
     systemProperties = System.getProperties()
     systemProperties loadConf("build${env}.properties")

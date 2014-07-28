@@ -1,7 +1,6 @@
 package com.joyent.piranha.pageobject;
 
 import com.codeborne.selenide.SelenideElement;
-import com.joyent.piranha.PropertyHolder;
 import org.openqa.selenium.By;
 
 import java.io.IOException;
@@ -13,16 +12,12 @@ import static com.codeborne.selenide.Selenide.page;
 
 public class ImageList extends AbstractPageObject {
     public static final String TITLE = "Images";
-    public static final String IMAGE_ROW = "[data-ng-repeat=\"object in objects | orderBy:order | filter:matchesFilter\"]";
-    public static final String IMAGE_GRID_CELL = "[data-ng-repeat=\"prop in props | orderBy:'sequence' | filter:{active:true}\"]";
+    public static final String IMAGE_ROW = "object in pagedItems";
+    public static final String IMAGE_GRID_CELL = "[prop in props | orderBy:'sequence' | filter:{active:true}]";
 
     @Override
     String getTitle() {
         return TITLE;
-    }
-
-    public boolean isImageDisplayed(String imageName) {
-        return  $("#grid-instances").$(byText(imageName)).isDisplayed();
     }
 
     public void checkImageParams(String imageName, String osType, String datacenter, String imageVersion) {
@@ -47,10 +42,11 @@ public class ImageList extends AbstractPageObject {
         return cell.getText();
     }
 
-    public void deleteImageByName(String imageName) throws IOException {
-        String imageId = getImageUUID(imageName);
-        ProcessBuilder cloudApiAuth = new ProcessBuilder("ssh", "-i", PropertyHolder.getPrivateKeyPath(), "root@192.168.115.248", "curl", "-kis", "http://10.0.0.15/images/" + imageId, "-XDELETE");
-        cloudApiAuth.start();
+    public void deleteImage(String imageName) throws IOException {
+        SelenideElement row = getRowByText(IMAGE_ROW, imageName);
+        row.$(".checkbox").click();
+        performAction("Delete");
+        clickButtonInModal("Yes");
+        waitForLargeSpinnerDisappear();
     }
-
 }

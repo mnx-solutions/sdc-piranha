@@ -1,6 +1,6 @@
 package com.joyent.piranha.test;
 
-import com.joyent.piranha.Common;
+import static com.codeborne.selenide.Condition.visible;
 import com.joyent.piranha.PropertyHolder;
 import com.joyent.piranha.pageobject.*;
 import com.joyent.piranha.pageobject.CreateInstanceManual;
@@ -15,10 +15,10 @@ import java.io.IOException;
 
 import static com.codeborne.selenide.Configuration.baseUrl;
 import static com.codeborne.selenide.Configuration.timeout;
+import static com.codeborne.selenide.Selectors.byText;
+import static com.codeborne.selenide.Selenide.$;
 import static com.codeborne.selenide.Selenide.open;
 import static com.codeborne.selenide.Selenide.page;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 
 public class ImageTest extends TestWrapper {
     public static final String USER_NAME = PropertyHolder.getTestUserLogin();
@@ -44,17 +44,14 @@ public class ImageTest extends TestWrapper {
 
     @Test
     public void imageCRUD() throws IOException {
-        InstanceDetails instanceDetails = sideBarMenu.clickCompute().getInstanceList().openInstanceDetails(Common.getTestInstanceName());
+        InstanceDetails instanceDetails = sideBarMenu.clickCompute().getInstanceList().openInstanceDetails(InstanceRenameTests.TEST_INSTANCE_NAME);
         ImagesSection imagesSection = instanceDetails.openImagesSection();
         final String imageName = "testImage" + System.currentTimeMillis();
         imagesSection.setImageName(imageName);
-        imagesSection.clickCreateImage();
+        ImageList imageList = imagesSection.clickCreateImage();
         imagesSection.clickButtonInModal("Yes");
-        imagesSection.waitForMediumSpinnerDisappear();
-        imagesSection.clickButtonInModal("Ok");
-        ImageList imageList = imagesSection.clickMyImagesList();
-        imageList.checkTitle();
-        assertTrue(imageList.isImageDisplayed(imageName));
+        imagesSection.waitForSmallSpinnerDisappear();
+        $(byText(imageName)).shouldBe(visible);
         imageList.addGridColumn("Data Center");
         imageList.addGridColumn("Version");
         final String smartos = "smartos";
@@ -62,10 +59,7 @@ public class ImageTest extends TestWrapper {
         CreateInstanceManual createInstanceManual = imageList.clickCreateInstance(imageName);
         createInstanceManual.checkTitle();
         sideBarMenu.clickImages();
-        imageList.deleteImageByName(imageName);
-        navBarMenu.clickAccountMenu().clickLogout();
-        page(Login.class).login(USER_NAME, PASSWORD);
-        imageList = sideBarMenu.clickImages();
-        assertFalse(imageList.isImageDisplayed(imageName));
+        imageList.deleteImage(imageName);
+        $(byText(imageName)).shouldNotBe(visible);
     }
 }

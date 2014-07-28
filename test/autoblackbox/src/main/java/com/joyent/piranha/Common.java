@@ -75,48 +75,6 @@ public class Common {
         }
     }
 
-    public static String[] instanceProperties() {
-        if (PropertyHolder.containsDatacenter(0, "us-west-b", "local-x")) {
-            return new String[]{
-                    "base",
-                    "13.3.0",
-                    "Standard",
-                    "Standard 0.25",
-                    "A 32-bit SmartOS",
-                    "256 MB",
-                    "16 GB",
-                    "0.125 vCPUs",
-                    "$0.008",
-                    "$5.84"};
-        } else if (PropertyHolder.containsDatacenter(0, "us-west-1")) {
-            return new String[]{
-                    "base",
-                    "13.2.0",
-                    "Standard",
-                    "Standard 0.25",
-                    "A 32-bit SmartOS",
-                    "256 MB",
-                    "16 GB",
-                    "0.125 and bursting",
-                    "0.008",
-                    "5.84"};
-        }
-        return new String[]{};
-    }
-
-    public static String getTestInstanceName() {
-        final String instanceName;
-        switch (PropertyHolder.getDatacenter(0)) {
-            case "us-west-b":
-            case "local-x":
-                instanceName = "dnd-forImageAutoTests";
-                break;
-            default:
-                instanceName = " ";
-        }
-        return instanceName;
-    }
-
     public static String getSLBTestInstance() {
         return "dnd-forSLBTests";
     }

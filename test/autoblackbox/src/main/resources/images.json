@@ -1,6 +1,6 @@
 [
     {
-        "datacenter": ["local-x"],
+        "datacenter": ["local-x", "local-y"],
         "imageName": "base",
         "version": "14.1.0",
         "packageName": "Standard",
@@ -22,16 +22,60 @@
     },
     {
         "datacenter": ["us-east-1", "us-sw-1", "us-west-1", "eu-ams-1"],
-        "imageName": "ScaleArc-MySQL-Platinum-2CPU-2GB",
-        "version": "",
+        "imageName": "apache",
+        "version": "14.1.0",
         "packageName": "Standard",
-        "packageVersion": "Standard 15",
-        "description": "A CentOS 6.5 image with ScaleArc MySQL 3.0 database",
-        "RAM": "15 GB",
-        "diskSpace": "1467 GB",
-        "CPU": "4 vCPUs",
-        "pricePerHour": "$0.480",
-        "pricePerMonth": "$350.40",
+        "packageVersion": "Standard 0.25",
+        "description": "A SmartOS 64-bit image pre-configured and optimized as an Apache 2.4.9 Server with Event MPM and PHP-FPM. Comes packaged with a default virtual host listening on all interfaces.",
+        "RAM": "256 MB",
+        "diskSpace": "16 GB",
+        "CPU": "0.125 vCPUs",
+        "pricePerHour": "$0.008",
+        "pricePerMonth": "$5.84",
+        "freeTierName": "",
+        "scope": {
+            "manual": true,
+            "quick": {
+                "free": false,
+                "paid": false
+            }
+        }
+    },
+
+    {
+        "datacenter": ["us-east-1", "us-sw-1", "us-west-1", "eu-ams-1"],
+        "imageName": "centos-6",
+        "version": "20140710",
+        "packageName": "Standard",
+        "packageVersion": "Standard 0.25",
+        "description": "CentOS 6.5 64-bit image with just essential packages installed. Ideal for users who are comfortable with setting up their own environment and tools.",
+        "RAM": "256 MB",
+        "diskSpace": "16 GB",
+        "CPU": "0.125 vCPUs",
+        "pricePerHour": "$0.008",
+        "pricePerMonth": "$5.84",
+        "freeTierName": "CentOS 6.5",
+        "scope": {
+            "manual": true,
+            "quick": {
+                "free": false,
+                "paid": false
+            }
+        }
+    },
+
+    {
+        "datacenter": ["us-east-1", "us-sw-1", "us-west-1", "eu-ams-1"],
+        "imageName": "debian-7",
+        "version": "20140709",
+        "packageName": "Standard",
+        "packageVersion": "Standard 0.25",
+        "description": "Debian 7.4 (wheezy) 64-bit image with just essential packages installed. Ideal for users who are comfortable with setting up their own environment and tools.",
+        "RAM": "256 MB",
+        "diskSpace": "16 GB",
+        "CPU": "0.125 vCPUs",
+        "pricePerHour": "$0.008",
+        "pricePerMonth": "$5.84",
         "freeTierName": "",
         "scope": {
             "manual": true,
