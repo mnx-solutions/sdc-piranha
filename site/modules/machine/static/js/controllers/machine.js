@@ -198,18 +198,22 @@
                 });
             });
 
-            $scope.$watch('machine.networks', function (newNetworks,oldNetworks) {
-                if (newNetworks && !angular.equals(newNetworks, oldNetworks)) {
-                    $scope.networks = [];
-                    newNetworks.forEach(function (networkId) {
-                        Network.getNetwork($scope.machine.datacenter, networkId).then(function (network) {
+            function loadMachineNetworks() {
+                $scope.machine.networks.forEach(function (machineNetwork) {
+                    if (!$scope.networks.some(function (network) { return network.id === machineNetwork; })) {
+                        Network.getNetwork($scope.machine.datacenter, machineNetwork).then(function (network) {
                             $scope.networks.push(network);
                         }, function (err) {
                             PopupDialog.errorObj(err);
                         });
-                    });
-                }
-            });
+                    }
+                });
+            }
+            if ($scope.machine && $scope.machine.networks) {
+                loadMachineNetworks();
+            } else {
+                $scope.$watch('machine.networks', loadMachineNetworks);
+            }
 
             var machineMessages = {
                 resizeMessage: 'Resize this instance?',
