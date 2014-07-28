@@ -559,7 +559,9 @@ module.exports = function execute(scope) {
     server.onCall('createUser', function (call) {
         var data = {};
         accountFields.forEach(function (f) {
-            data[f] = call.data[f] || null;
+            if (call.data[f]) {
+                data[f] = call.data[f];
+            }
         });
         data.password = call.data.password;
         call.cloud.createUser(data, function (err, userData) {
