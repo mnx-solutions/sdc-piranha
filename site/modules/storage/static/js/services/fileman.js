@@ -7,6 +7,16 @@
         function (serverTab, Account) {
             var fileman = {};
 
+            function getAccount(accountCallback) {
+                Account.getAccount().then(function (account) {
+                    if (account.isSubuser) {
+                        Account.getParentAccount().then(accountCallback);
+                    } else {
+                        accountCallback(account);
+                    }
+                });
+            }
+
             function createMethod(name, isAbsolutePath) {
                 return function (path, data, callback) {
                     if (typeof (data) === 'function') {
@@ -23,7 +33,7 @@
                             done: callback
                         });
                     } else {
-                        Account.getAccount().then(function (account) {
+                        getAccount(function (account) {
                             data.path = '/' + account.login + '/' + path;
                             serverTab.call({
                                 name: name,
@@ -44,7 +54,7 @@
             fileman.lsAbsolute = createMethod('FileManList', true);
 
             fileman.get = function (path, show) {
-                Account.getAccount().then(function (account) {
+                getAccount(function (account) {
                     if (show) {
                         window.open('storage/show?path=' + path, '_blank');
                     } else {
