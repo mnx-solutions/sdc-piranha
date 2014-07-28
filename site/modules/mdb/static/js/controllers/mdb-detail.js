@@ -19,6 +19,7 @@
             };
             $scope.inputFile = [];
             $scope.objects = [];
+            $scope.modules = [];
             if ($scope.features.manta === 'enabled') {
                 $scope.gridUserConfig = Account.getUserConfig().$child('mdb');
             }
@@ -70,8 +71,42 @@
                 $scope.status = status || 'Not Processed';
                 $scope.jobId = null;
                 $scope.objects = [];
+                $scope.modules = [];
                 $scope.loading = false;
             }
+
+            var getStatus = function (id) {
+                mdb.getJobFromList(id).then(function (job) {
+                    if (!job.status) {
+                        setTimeout(function () {
+                            getStatus(id);
+                        }, 5000);
+                    } else {
+                        if (job.status === 'Processed') {
+                            mdb.getDebugJob(id).then(processResult, function (error) {
+                                PopupDialog.error(null, error, flushAll('Failed'));
+                            });
+                        } else {
+                            $scope.inputFile = [{filePath: job.coreFile}];
+                            $scope.status = job.status;
+                            var checkStatus = {Cancelled: false, Failed: false, Processing: true, Parsing: true};
+                            if (checkStatus[job.status]) {
+                                setTimeout(function () {
+                                    getStatus(id);
+                                }, 10000);
+                            } else {
+                                flushAll(job.status);
+                            }
+                        }
+                    }
+                }, function (error) {
+                    var message = error.message || 'Something went wrong, please try again.';
+
+                    PopupDialog.error(null, message, function () {
+                       $location.path('/mdb/');
+                    });
+                });
+            };
 
             $scope.getFilePath = function (full) {
                 // get last object from (Array)inputFile and return filePath
@@ -84,17 +119,27 @@
                 if (result.coreFile) {
                     $scope.inputFile = [{filePath: result.coreFile}];
                 }
+
                 if (result.status) {
                     $scope.status = result.status;
+                    $scope.jobId = null;
+                } else {
+                     setTimeout(function () {
+                        getStatus(result.jobId);
+                    }, 5000);
                 }
-                $scope.counters = {
-                    'Heap Objects': result.counters['heap objects'],
-                    'JavaScript Objects': result.counters['JavaScript objects'],
-                    'Processed Objects': result.counters['processed objects'],
-                    'Processed Arrays': result.counters['processed arrays']
-                };
-                $scope.objects = result.data;
-                $scope.jobId = null;
+
+                if (result.counters) {
+                    $scope.counters = {
+                        'Heap Objects': result.counters['heap objects'],
+                        'JavaScript Objects': result.counters['JavaScript objects'],
+                        'Processed Objects': result.counters['processed objects'],
+                        'Processed Arrays': result.counters['processed arrays']
+                    };
+                }
+
+                $scope.objects = result.data || [];
+                $scope.modules = result.modules || [];
                 getEstimateTime();
             }
 
@@ -138,12 +183,10 @@
             $scope.cancel = function () {
                 $scope.processing = false;
                 $scope.status = 'Canceling';
-                mdb.cancel($scope.jobId).then(function (status, error) {
-                    if (error) {
-                        PopupDialog.error(null, error, flushAll);
-                        return;
-                    }
+                mdb.cancel($scope.jobId).then(function (status) {
                     flushAll(status);
+                }, function (error) {
+                    PopupDialog.error(null, error.message, flushAll);
                 });
             };
 
@@ -176,29 +219,7 @@
             if ($scope.jobId) {
                 $scope.processing = false;
                 $scope.loading = true;
-                var getStatus = function () {
-                    mdb.getJobFromList($scope.jobId).then(function (job) {
-                        if (!job.status) {
-                            setTimeout(getStatus, 5000);
-                        } else {
-                            if (job.status === 'Processed') {
-                                mdb.getDebugJob($scope.jobId).then(processResult, function (error) {
-                                    PopupDialog.error(null, error, flushAll('Failed'));
-                                });
-                            } else {
-                                $scope.inputFile = [{filePath: job.coreFile}];
-                                $scope.status = job.status;
-                                var checkStatus = {Cancelled: false, Failed: false, Processing: true, Parsing: true};
-                                if (checkStatus[job.status]) {
-                                    setTimeout(getStatus, 10000);
-                                } else {
-                                    flushAll(job.status);
-                                }
-                            }
-                        }
-                    });
-                };
-                getStatus();
+                getStatus($scope.jobId);
             }
 
             getEstimateTime();

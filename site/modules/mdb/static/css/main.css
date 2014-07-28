@@ -49,3 +49,8 @@
 .estimate-time {
     height: 34px;
 }
+
+#collapse_objects, #collapse_modules {
+    padding-top: 0;
+    padding-bottom: 0;
+}

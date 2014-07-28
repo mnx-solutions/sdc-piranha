@@ -8,9 +8,13 @@
                 objects: '=',
                 arrayName: '='
             },
-            link: function (scope, $element) {
+            link: function (scope, $element, attrs) {
+                scope.noCheckbox = false;
+                if (attrs.hasOwnProperty('noCheckbox')) {
+                    scope.noCheckbox = true;
+                }
                 scope.$watch('objects', function () {
-                    if (!scope.objects.length) {
+                    if (!(scope.objects && scope.objects.length)) {
                         return;
                     }
                     setTimeout(function () {
@@ -33,20 +37,20 @@
                                 }
                             }
                         }).jstree({
-                            "core": {
-                                "themes": {
-                                    "icons": false
+                            core: {
+                                themes: {
+                                    icons: false
                                 }
                             },
-                            "sort": function (a, b) {
+                            sort: function (a, b) {
                                 return this.get_text(a) > this.get_text(b) ? 1 : -1;
                             },
-                            "checkbox": {
-                                "keep_selected_style": false
+                            checkbox: !scope.noCheckbox && {
+                                keep_selected_style: false
                             },
-                            "plugins": [ "checkbox", "sort" ]
+                            plugins: [ "checkbox", "sort" ]
                         });
-                    });
+                    }, 0);
                 });
 
             },
