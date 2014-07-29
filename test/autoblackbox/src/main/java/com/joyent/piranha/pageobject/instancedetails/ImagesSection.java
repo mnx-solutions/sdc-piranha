@@ -11,12 +11,8 @@ public class ImagesSection extends AbstractPageObject {
         $("[name=\"imageName\"]").sendKeys(imageName);
     }
 
-    public void clickCreateImage(){
+    public ImageList clickCreateImage(){
         $("[data-ng-click=\"clickCreateImage()\"]").click();
-    }
-
-    public ImageList clickMyImagesList(){
-        $("[href=\"#!/images\"]").click();
         return page(ImageList.class);
     }
 }

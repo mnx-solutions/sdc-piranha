@@ -9,7 +9,6 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.interactions.HasInputDevices;
 import org.openqa.selenium.interactions.Mouse;
-import org.openqa.selenium.support.ui.Select;
 
 import static com.codeborne.selenide.Condition.*;
 import static com.codeborne.selenide.Selectors.byAttribute;
@@ -121,14 +120,15 @@ public class CreateInstanceManual extends AbstractPageObject implements CreateIn
     }
 
     public void filterPackages(String parameter, String value) {
-        Select select = new Select($("#filterProperty"));
-        select.selectByVisibleText(parameter);
-        select = new Select($("#filterPropertyValue"));
-        select.selectByVisibleText(value);
+        JavascriptExecutor javascriptExecutor = (JavascriptExecutor) WebDriverRunner.getWebDriver();
+        javascriptExecutor.executeScript("$('#s2id_filterProperty a').mousedown()");
+        getJavascriptExecutor(javascriptExecutor, parameter);
+        javascriptExecutor.executeScript("$('#s2id_filterPropertyValue a').mousedown()");
+        getJavascriptExecutor(javascriptExecutor, value);
     }
 
-    public void openSection(String sectionName) {
-        $("#packagesAccordion").$(byText(sectionName)).click();
+    private void getJavascriptExecutor(JavascriptExecutor javascriptExecutor, String option) {
+        javascriptExecutor.executeScript("$('ul div:contains(\"" + option + "\")').mouseup()");
     }
 
     public CreateInstanceManual clickAllPublicImagesLink() {

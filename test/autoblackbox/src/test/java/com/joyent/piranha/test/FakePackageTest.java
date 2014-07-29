@@ -45,7 +45,6 @@ public class FakePackageTest extends TestWrapper {
         createInstanceManual.selectOsFilter("smartos");
         createInstanceManual.chooseImage("base");
         createInstanceManual.filterPackages("VCPUS", "32 vCPUs");
-        createInstanceManual.openSection("High CPU");
         createInstanceManual.selectPackage("High CPU 32");
         Zenbox zenbox = createInstanceManual.clickReviewBtn("fakePackage");
         $("#dropbox").shouldBe(visible);
