@@ -346,9 +346,7 @@ module.exports = function execute(scope, register) {
                 } else {
                     machines = machines.filter(function (el) {
                         // Don't show SLB SSC machine unless in dev mode
-                        var slbTagged = el.tags && ((el.tags.slb && (el.tags.slb === 'ssc' || el.tags.slb === 'stm'))
-                            // TODO: remove this after lbass be fully renamed
-                            || (el.tags.lbaas && (el.tags.lbaas === 'ssc' || el.tags.lbaas === 'stm')));
+                        var slbTagged = el.tags && el.tags.lbaas && el.tags.lbaas === 'true';
                         return el.state !== 'failed' && (config.showSLBObjects || !slbTagged);
                     });
 

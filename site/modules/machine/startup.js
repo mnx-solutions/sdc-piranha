@@ -87,9 +87,7 @@ module.exports = function execute(scope) {
 
             data = data.filter(function (el) {
                 // Don't show SLB images unless in dev mode
-                var slbTagged = el.tags && ((el.tags.slb && (el.tags.slb === 'ssc' || el.tags.slb === 'stm'))
-                    // TODO: remove this after lbass be fully renamed
-                    || (el.tags.lbaas && (el.tags.lbaas === 'ssc' || el.tags.lbaas === 'stm')));
+                var slbTagged = el.tags && el.tags.lbaas && el.tags.lbaas === 'true';
                 return config.showSLBObjects || !slbTagged;
             });
 
@@ -140,10 +138,9 @@ module.exports = function execute(scope) {
                 call.done(err);
                 return;
             }
-//            Serialize datacenters
+            // Serialize datacenters
             var datacenterList = [];
             var keys = Object.keys(datacenters || {});
-            var count = keys.length;
             keys.forEach(function (name) {
                 var url = datacenters[name];
                 var index = scope.config.cloudapi.urls ?
@@ -491,7 +488,7 @@ module.exports = function execute(scope) {
             return typeof data
                 && data.id
                 && data.name
-                && data.datacenter
+                && data.datacenter;
         },
         handler: function (call) {
             var options = {
