@@ -1139,12 +1139,12 @@
                 }
             }
 
-            $scope.onFilterChange = function (newVal) {
+            $scope.onFilterChange = function (newVal, packageType) {
                 if (newVal) {
                     $scope.filterModel.value = $scope.filterValues[newVal][0];
                 }
                 if ($scope.packages) {
-                    selectMinimalPackage();
+                    selectMinimalPackage(packageType || '');
                     $timeout(function () {
                         var accordion = ng.element('#packagesAccordion');
                         var accordionBody = ng.element('.panel-collapse');
@@ -1495,6 +1495,10 @@
                     var returnUrl = $location.path();
                     Account.checkProvisioning({btnTitle: 'Submit and Create Instance'}, function () {
                         var el = $scope.selectedPackageInfo;
+                        $timeout(function () {
+                            $scope.onFilterChange('', el.group);
+                            $scope.selectPackage(el.id);
+                        }, 600);
                         $scope.zenboxDialog({
                             dropboxID: $rootScope.zenboxParams.dropboxOrderPackageId || $rootScope.zenboxParams.dropboxID,
                             request_subject: 'I want to order ' + el.description + ' compute instance',
