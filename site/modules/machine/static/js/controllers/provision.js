@@ -305,6 +305,9 @@
                     submitBillingInfo.btnTitle = 'Submit and Create Instance';
                     submitBillingInfo.appendPopupMessage = 'Provisioning will now commence.';
                 }
+                if (machine && machine.freetier) {
+                    submitBillingInfo.beforeBillingMessage = ' Note: Free Dev Tier customers will not be billed until the promotional term expires as this is merely a validation step.';
+                }
                 Account.checkProvisioning(submitBillingInfo, function () {
                     $scope.account.provisionEnabled = true;
                     if (machine) {

@@ -101,27 +101,8 @@
 
             if (typeof (showPopUp) === 'boolean' && !showPopUp) {
                 return callback();
-            } else {
-                var isFreeTier = function (cb) {
-                    var freeTierExists = false;
-                    setTimeout(function () {
-                        var provisionBundle = $rootScope.commonConfig('provisionBundle');
-                        if (provisionBundle) {
-                            freeTierExists = provisionBundle.machine.freetier;
-                            $rootScope.clearCommonConfig('provisionBundle');
-                        }
-                        cb(null, freeTierExists);
-                    }, 100);
-                };
-                isFreeTier(function (err, freeTierExists) {
-                    var freeTierNote = '';
-                    if (freeTierExists) {
-                        freeTierNote = ' Note: Free Dev Tier customers will not be billed until the promotional term expires as this is merely a validation step.';
-                    }
-                    return factory.message('Attention', 'Please complete the profile information before proceeding.' + freeTierNote, callback);
-                });
-                return null;
             }
+            return factory.message('Attention', 'Please complete the profile information before proceeding.' + (submitBillingInfo.beforeBillingMessage || ''), callback);
         };
 
         factory.errorObj = function (error, callback, customMessage) {
