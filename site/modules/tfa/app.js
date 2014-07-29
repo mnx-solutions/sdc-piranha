@@ -36,7 +36,9 @@ module.exports = function execute(scope, app) {
             campaignId: (req.cookies.campaignId || '')
         };
 
-        if (req.session.userIsNew) {
+        if (req.session.subId) {
+            req.log.info(info, 'Sub user logged in');
+        } else if (req.session.userIsNew) {
             req.log.info(info, 'New user logged in');
         } else {
             req.log.info(info, 'Existing user logged in');
