@@ -75,60 +75,13 @@ module.exports = function execute(scope) {
         machine.PackageList(call, options, call.done);
     });
 
-    /* listDatasets */
-    server.onCall('DatasetList', function (call) {
-        call.log.info('Handling list datasets event');
-
-        call.cloud.separate(call.data.datacenter).listImages(function (err, data) {
-            if (err) {
-                call.error(err);
-                return;
-            }
-
-            data = data.filter(function (el) {
-                // Don't show SLB images unless in dev mode
-                var slbTagged = el.tags && el.tags.lbaas && el.tags.lbaas === 'true';
-                return config.showSLBObjects || !slbTagged;
-            });
-
-            var imageCreateConfig = config.images || {types: {}};
-
-            data.forEach(function (img, i) {
-                if (info.images.data[img.id]) {
-                    data[i] = utils.extend(img, info.images.data[img.id]);
-                }
-
-                var leastSupportedVersion = imageCreateConfig.types[img.name];
-                if (!img['public']) {
-                    img.imageCreateNotSupported = 'Instances from custom images are not supported yet by the image API.';
-                } else if (!leastSupportedVersion) {
-                    img.imageCreateNotSupported = img.name + ' is not yet supported by the image API.';
-                } else if (utils.cmpVersion(img.version, leastSupportedVersion) < 0) {
-                    img.imageCreateNotSupported = 'The ' + img.name + ' image needs to be at least image version ' +
-                        leastSupportedVersion + ' to create an image.';
-                }
-
-                if (data[i].name) {
-                    Object.keys(info.licenses.data['License Portfolio']).forEach(function (k) {
-                        var lic = info.licenses.data['License Portfolio'][k];
-                        if (lic['API Name'] === data[i].name) {
-                            data[i].license_price = lic['Pan-Instance Price Uplift'];
-                        }
-                    });
-                }
-            });
-
-            call.done(null, data);
-        });
-    });
-
     /* listNetworks */
     server.onCall('NetworksList', function(call) {
         call.log.info({'datacenter': call.data.datacenter}, 'Retrieving networks list');
         call.cloud.separate(call.data.datacenter).listNetworks(call.done.bind(call));
     });
 
-    /* listDatasets */
+    /* listDatacenters */
     server.onCall('DatacenterList', function (call) {
         call.log.info('Handling list datacenters event');
         call.cloud.listDatacenters(function (err, datacenters) {

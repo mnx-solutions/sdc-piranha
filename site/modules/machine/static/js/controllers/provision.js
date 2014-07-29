@@ -6,7 +6,6 @@
         'requestContext',
         '$timeout',
         'Machine',
-        'Dataset',
         'Datacenter',
         'Package',
         'Account',
@@ -25,8 +24,7 @@
         'util',
         'Limits',
         'errorContext',
-
-        function ($scope, $filter, requestContext, $timeout, Machine, Dataset, Datacenter, Package, Account, Network, Image, $location, localization, $q, $qe, $$track, PopupDialog, $cookies, $rootScope, FreeTier, loggingService, util, Limits, errorContext) {
+        function ($scope, $filter, requestContext, $timeout, Machine, Datacenter, Package, Account, Network, Image, $location, localization, $q, $qe, $$track, PopupDialog, $cookies, $rootScope, FreeTier, loggingService, util, Limits, errorContext) {
             localization.bind('machine', $scope);
             requestContext.setUpRenderContext('machine.provision', $scope, {
                 title: localization.translate(null, 'machine', 'Create Instances on Joyent')
@@ -430,7 +428,7 @@
                                     if (isFree && image.datacenters.indexOf(datacenter.name) === -1) {
                                         return;
                                     }
-                                    Dataset.datasetBySimpleImage(params).then(function (dataset) {
+                                    Image.simpleImage(params).then(function (dataset) {
                                         if (dataset) {
                                             var simpleImage = {};
                                             if (isFree) {
@@ -522,7 +520,7 @@
                         $scope.machines = machinesResult;
                     }
                     $scope.machines.forEach(function (machine) {
-                        Dataset.dataset(machine.image).then(function (dataset) {
+                        Image.image(machine.image).then(function (dataset) {
                             $scope.limits.forEach(function (limit) {
                                 if (limit.datacenter === machine.datacenter && limit.name === dataset.name) {
                                     limit.limit--;
@@ -572,7 +570,7 @@
                 }
 
                 if ($scope.preSelectedImageId) {
-                    $scope.preSelectedImage = Image.getImage($scope.preSelectedImageId);
+                    $scope.preSelectedImage = Image.image({id: $scope.preSelectedImageId});
                     $q.when($scope.preSelectedImage).then(function (image) {
                         var datacenter = null;
                         if (externalInstanceParams) {
@@ -910,7 +908,7 @@
             };
 
             $scope.selectDataset = function (id, changeDataset) {
-                Dataset.dataset({ id: id, datacenter: $scope.data.datacenter }).then(function (dataset) {
+                Image.image({ id: id, datacenter: $scope.data.datacenter }).then(function (dataset) {
                     if (dataset.type == 'virtualmachine') {
                         $scope.datasetType = 'kvm';
                     } else if (dataset.type == 'smartmachine') {
@@ -1424,7 +1422,7 @@
                     $scope.reloading = true;
                     $scope.datasetsLoading = true;
                     $qe.every([
-                        $q.when(Dataset.dataset({ datacenter: newVal })),
+                        $q.when(Image.image({ datacenter: newVal })),
                         $q.when(Package.package({ datacenter: newVal })),
                         $q.when(getCreatedMachines())
                     ]).then(function (result) {

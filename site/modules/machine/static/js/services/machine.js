@@ -9,7 +9,7 @@
         '$timeout',
         'localization',
         'Package',
-        'Dataset',
+        'Image',
         'util',
         'PopupDialog',
         'Account',
@@ -72,7 +72,7 @@
                             if(!i) {
                                 i = {};
                                 if(machine.image) {
-                                    Dataset.dataset(machine.image).then(function (dataset) {
+                                    Image.image(machine.image).then(function (dataset) {
                                         Object.keys(dataset).forEach(function (k) {
                                             i[k] = dataset[k];
                                         });

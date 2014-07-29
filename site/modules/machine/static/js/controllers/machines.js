@@ -7,7 +7,7 @@
         '$q',
         'requestContext',
         'Machine',
-        'Dataset',
+        'Image',
         'Package',
         'localization',
         'PopupDialog',
@@ -17,7 +17,7 @@
         'Account',
         'FreeTier',
 
-        function ($scope, $$track, $q, requestContext, Machine, Dataset, Package, localization, PopupDialog, $location, firewall, $rootScope, Account, FreeTier) {
+        function ($scope, $$track, $q, requestContext, Machine, Image, Package, localization, PopupDialog, $location, firewall, $rootScope, Account, FreeTier) {
             localization.bind('machine', $scope);
             requestContext.setUpRenderContext('machine.index', $scope, {
                 title: localization.translate(null, 'machine', 'See my Joyent Instances')
@@ -59,7 +59,7 @@
                 if (result) {
                     $q.when($scope.machines, function (machines) {
                         machines.forEach(function (machine) {
-                            Dataset.dataset({datacenter: machine.datacenter}).then(function (datasets) {
+                            Image.image({datacenter: machine.datacenter}).then(function (datasets) {
                                 datasets.forEach(function (dataset) {
                                     $scope.datasetsInfo[dataset.id] = dataset.name + '/' + dataset.version;
                                 });

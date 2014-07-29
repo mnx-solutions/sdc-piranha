@@ -19,8 +19,8 @@
             });
 
             $scope.loading = true;
-            var loadListImages = function (force) {
-                Image.listImages(force).then(function (data) {
+            var loadListImages = function () {
+                Image.image().then(function (data) {
                     $scope.images = data;
                     $scope.loading = false;
                 }, function (err) {

@@ -20,7 +20,7 @@
             var currentImageId = requestContext.getParam('currentImage');
 
             var loadListImages = function (force) {
-                Image.listImages(force).then(function (data) {
+                Image.image().then(function (data) {
                     $scope.images = data;
                     $scope.loading = false;
 
