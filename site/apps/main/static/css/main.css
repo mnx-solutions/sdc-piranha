@@ -3325,6 +3325,7 @@ label.checkbox {
 .modal-body {
     overflow-x: hidden;
     overflow-y: auto;
+    box-sizing: content-box;
     max-height: 400px;
     word-wrap: break-word;
 }

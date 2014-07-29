@@ -82,3 +82,7 @@ input:focus {
     padding: 6px 0;
     font-size: 16px;
 }
+.tfa-steps {
+    padding-left: 0;
+    list-style-position: inside;
+}
