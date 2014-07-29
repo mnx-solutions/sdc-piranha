@@ -62,15 +62,6 @@
 .lb-edit input.group-checkable {
     margin: 0;
 }
-.logo-riverbed {
-    background-image: url("../img/logo_riverbed.png");
-    width: 133px;
-    height: 58px;
-    background-repeat: no-repeat;
-    background-size: 60%;
-    background-position: 14px;
-    margin-top: -30px;
-}
 .img1{
 /*
     background-image: url("../img/img1.png");

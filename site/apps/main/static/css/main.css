@@ -3562,3 +3562,10 @@ label.checkbox.folder-name-form-checkbox {
 .license-eula h5 {
     font-weight: bold;
 }
+.logo-riverbed {
+    margin-top: -30px;
+    width: 133px;
+    height: 58px;
+    background: url("../img/logo_riverbed.png") 14px no-repeat;
+    background-size: 60%;
+}
