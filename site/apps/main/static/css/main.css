@@ -2105,6 +2105,11 @@ select::-ms-expand {
     font-size: 14px;
 }
 
+input.filter-field::-ms-clear {
+    width : 0;
+    height: 0;
+}
+
 .actions .btn-group .btn {
     padding: 2px 6px;
     color: #6d6d6d;
