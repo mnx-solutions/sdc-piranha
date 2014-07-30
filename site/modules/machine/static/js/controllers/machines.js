@@ -180,14 +180,16 @@
                         ), function () {
                             checkedMachines.forEach(function (el) {
                                 if (action === 'delete') {
-                                    if (el.state === 'running') {
-                                        $$track.event('machine', 'stop');
-                                        Machine.stopMachine(el.id).then(function (data) {
-                                            $scope.deleteInstance(el);
-                                        });
-                                    } else {
-                                        $scope.deleteInstance(el);
-                                    }
+                                    $$track.event('machine', 'delete');
+                                    Machine.deleteMachine(el.id).then(function (err, data) {
+                                        if (!$scope.machines.length && currentLocation === $location.path()) {
+                                            Machine.gotoCreatePage();
+                                        }
+                                        el.checked = false;
+                                    }, function (err) {
+                                        PopupDialog.errorObj(err);
+                                    });
+
                                 } else {
                                     $$track.event('machine', action);
                                     Machine[action + 'Machine'](el.id);
@@ -526,18 +528,6 @@
             $scope.searchForm = true;
             $scope.enabledCheckboxes = true;
             $scope.placeHolderText = 'filter instances';
-
-            $scope.deleteInstance = function(el) {
-                $$track.event('machine', 'delete');
-                Machine.deleteMachine(el.id).then(function (err, data) {
-                    if (!$scope.machines.length && currentLocation === $location.path()) {
-                        Machine.gotoCreatePage();
-                    }
-                    el.checked = false;
-                }, function (err) {
-                    PopupDialog.errorObj(err);
-                });
-            };
 
             $scope.toggleFirewallEnabled = function (m) {
                 m.fireWallActionRunning = true;
