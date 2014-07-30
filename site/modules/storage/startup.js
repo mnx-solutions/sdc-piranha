@@ -284,7 +284,7 @@ module.exports = function execute(scope) {
 
     server.onCall('FileManStorageReport', function (call) {
         var client = Manta.createClient(call);
-        var reportPath = '/' + client.user + '/reports/usage/storage/' + call.data.originPath;
+        var reportPath = '~~/reports/usage/storage/' + call.data.originPath;
         client.getFileContents(reportPath, 'utf8', function (error, data) {
             if (error) {
                 sendError(call);
@@ -299,14 +299,12 @@ module.exports = function execute(scope) {
         var Billing = scope.api('Billing');
         var retries = MANTA_PING_RETRIES;
         function pingManta() {
-            var subUserId = call.req.session.subId;
-            var accountLogin = call.req.session.userName;
-            var callback = function (error, isActive) {
+            Billing.isActive(call.req.session.userId, function (error, isActive) {
                 if (error || !isActive) {
                     sendError(call, {message: 'Something went wrong.  Please try again in a minute.'});
                     return;
                 }
-                client.get('/' + accountLogin, function (error) {
+                client.get('~~/', function (error) {
                     if (error) {
                         if (error.name === 'AccountBlockedError' || error.name === 'AccountBlocked') {
                             if (retries > 0) {
@@ -322,20 +320,7 @@ module.exports = function execute(scope) {
                     }
                     call.done(null, 'pong');
                 });
-            };
-
-            if (subUserId) {
-                smartCloud.cloud({ token: call.req.session.token }).getAccount(function (err, account) {
-                    if (err) {
-                        sendError(call, err);
-                    } else {
-                        accountLogin = account.login;
-                        Billing.isActive(account.id, callback);
-                    }
-                });
-            } else {
-                Billing.isActive(call.req.session.userId, callback);
-            }
+            });
         }
         pingManta();
     });

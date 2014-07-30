@@ -35,17 +35,24 @@ module.exports = function execute(scope, register) {
     }
     function createClient(call) {
 
-        var client = manta.createClient({
+        var options = {
             sign: manta.privateKeySigner({
                 key: fs.readFileSync(config.cloudapi.keyPath, 'utf8'),
                 keyId: config.cloudapi.keyId,
                 user: config.cloudapi.username
             }),
-            user: call.req.session.userName,
             url: config.manta.url,
             insecure: true,
             rejectUnauthorized: false
-        });
+        };
+
+        if(call.req.session.parentAccount) {
+            options.user = call.req.session.userName + '/' + call.req.session.parentAccount;
+            options.account = call.req.session.parentAccount;
+        } else {
+            options.account = call.req.session.userName;
+        }
+        var client = manta.createClient(options);
 
         if (config.manta.privateKey) {
             client.sign = manta.privateKeySigner({

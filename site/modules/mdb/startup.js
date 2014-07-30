@@ -164,7 +164,7 @@ var mdbApi = function execute(scope) {
 
     function getDebugObjectsFile(call, jobId, filename, parser, callback) {
         var client = Manta.createClient(call);
-        client.getFileContents('/' + client.user + '/jobs/' + jobId + '/' + filename + '.txt', function (error, data) {
+        client.getFileContents('~~/jobs/' + jobId + '/' + filename + '.txt', function (error, data) {
             if (error) {
                 if (error.statusCode === 404) {
                     error.message = generalErrorMessage;
@@ -187,7 +187,7 @@ var mdbApi = function execute(scope) {
 
     function getJobsList(call, callback) {
         var client = Manta.createClient(call);
-        client.getFileContents('/' + client.user + '/' + mdbJobsListPath, function (error, list) {
+        client.getFileContents('~~/' + mdbJobsListPath, function (error, list) {
             if (error && error.statusCode !== 404) {
                 callback(error);
                 return;
@@ -218,7 +218,7 @@ var mdbApi = function execute(scope) {
                 jobId: jobId,
                 status: 'Processing'
             });
-            client.putFileContents('/' + client.user + '/' + mdbJobsListPath, list, callback);
+            client.putFileContents('~~/' + mdbJobsListPath, list, callback);
         });
     }
 
@@ -238,7 +238,7 @@ var mdbApi = function execute(scope) {
                     }
                 });
             });
-            client.putFileContents('/' + client.user + '/' + mdbJobsListPath, list, callback);
+            client.putFileContents('~~/' + mdbJobsListPath, list, callback);
         });
     }
 
@@ -277,7 +277,7 @@ var mdbApi = function execute(scope) {
                 }
                 return false;
             });
-            client.putFileContents('/' + client.user + '/' + mdbJobsListPath, list, callback);
+            client.putFileContents('~~/' + mdbJobsListPath, list, callback);
         });
     }
 

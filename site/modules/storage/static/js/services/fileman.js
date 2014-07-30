@@ -3,19 +3,9 @@
 (function (app) {
 
     app.factory('fileman', [
-        'serverTab', 'Account',
-        function (serverTab, Account) {
+        'serverTab',
+        function (serverTab) {
             var fileman = {};
-
-            function getAccount(accountCallback) {
-                Account.getAccount().then(function (account) {
-                    if (account.isSubuser) {
-                        Account.getParentAccount().then(accountCallback);
-                    } else {
-                        accountCallback(account);
-                    }
-                });
-            }
 
             function createMethod(name, isAbsolutePath) {
                 return function (path, data, callback) {
@@ -33,14 +23,12 @@
                             done: callback
                         });
                     } else {
-                        getAccount(function (account) {
-                            data.path = '/' + account.login + path;
+                            data.path = '~~/' + path;
                             serverTab.call({
                                 name: name,
                                 data: data,
                                 done: callback
                             });
-                        });
                     }
                 };
             }
@@ -54,13 +42,11 @@
             fileman.lsAbsolute = createMethod('FileManList', true);
 
             fileman.get = function (path, show) {
-                getAccount(function (account) {
                     if (show) {
                         window.open('storage/show?path=' + path, '_blank');
                     } else {
-                        window.location.href = 'storage/download?path=' + '/' + account.login + path;
+                        window.location.href = 'storage/download?path=' + '~~/' + path;
                     }
-                });
             };
 
             fileman.rmr = createMethod('FileManDeleteTree');

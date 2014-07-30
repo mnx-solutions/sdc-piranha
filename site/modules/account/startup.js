@@ -756,7 +756,7 @@ module.exports = function execute(scope) {
     });
 
     var getConfigPath = function (call, client, old) {
-        return '/' + client.user + '/stor' + (old ? '' : '/.joyent') + '/portal/config.' +
+        return '~~/stor' + (old ? '' : '/.joyent') + '/portal/config.' +
                 call.req.session.userName + '.json';
     };
 
@@ -782,7 +782,7 @@ module.exports = function execute(scope) {
                 });
                 return;
             }
-            client.rmr('/' + client.user + '/stor/portal', function (rmErr) {
+            client.rmr('~~/stor/portal', function (rmErr) {
                 if (rmErr) {
                     call.req.log.info('Cannot remove old user config');
                 }
