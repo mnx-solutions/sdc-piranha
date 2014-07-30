@@ -40,11 +40,11 @@
                                                required />
                                     </div>
                                     <div data-ng-show="isFormSubmited || policyForm.policyName.$dirty">
-                                        <div class="error policy-form-error"
+                                        <div class="policy-form-error error edit-error"
                                              data-translate
                                              data-ng-show="policyForm.policyName.$error.required">Missing name
                                         </div>
-                                        <div class="error policy-form-error"
+                                        <div class="policy-form-error error edit-error"
                                              data-ng-show="policyForm.policyName.$error.pattern"
                                              data-translate>
                                             Name can contain only letters, digits, spaces and signs like "." and "-"

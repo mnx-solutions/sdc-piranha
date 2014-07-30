@@ -199,15 +199,11 @@ select.policy-form {
 .edit-name {
     width: 130px;
 }
-.role .error {
-    padding-left: 60px;
-}
 .remove-icon {
     margin-top: 10px;
 }
 .policy-form-error {
-    padding-left: 140px;
-    margin-top: -10px;
+    width: 476px;
 }
 .filter-field {
     font-size: 14px;
