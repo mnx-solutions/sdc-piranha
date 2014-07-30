@@ -195,6 +195,9 @@
             });
 
             function loadMachineNetworks() {
+                if (!Array.isArray($scope.machine.networks)) {
+                    return;
+                }
                 $scope.machine.networks.forEach(function (machineNetwork) {
                     if (!$scope.networks.some(function (network) { return network.id === machineNetwork; })) {
                         Network.getNetwork($scope.machine.datacenter, machineNetwork).then(function (network) {
