@@ -8,10 +8,8 @@
             <div class="control-panel">
                 <span>Data Center:</span>
                 <div class="provisioning-header-left-button btn-group">
-                    <select type="hidden" data-select-two id="selectDatacenter" class="dd-fixed-width" data-item="datacenter" data-select="selectDataValue('datacenter')" data-fn="selectDatacenter">
-                        <option data-ng-repeat="datacenter in datacenters" value="{{datacenter.name}}">
-                            {{datacenter.name}}
-                        </option>
+                    <select type="hidden" data-select-two id="selectDatacenter" data-ng-model="data.datacenter" data-fn="selectDatacenter" data-select="data.datacenter" data-ng-options="datacenter.name as datacenter.name for datacenter in datacenters" data-placeholder="No matches found">
+                        <option></option>
                     </select>
                     <div class="loading-medium loading-medium-inline" data-ng-show="datasetsLoading"></div>
                 </div>
