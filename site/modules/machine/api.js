@@ -494,7 +494,7 @@ module.exports = function execute(scope, register) {
 
                         // Don't show SLB images unless in dev mode
                         if (!config.showSLBObjects) {
-                            images = images.filter(function (img) {
+                            images = images.filter(function (el) {
                                 var slbTagged = el.tags && el.tags.lbaas && el.tags.lbaas === 'true';
                                 return !slbTagged;
                             });
