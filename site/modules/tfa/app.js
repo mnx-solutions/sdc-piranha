@@ -90,7 +90,8 @@ module.exports = function execute(scope, app) {
             }
             if (userId) {
                 req.session.subId = userId;
-                cloud.getAccount(function(err, account) {
+                cloud.getAccount(function (err, account) {
+                    req.session.parentAccountError = err;
                     if (!err) {
                         req.session.parentAccount = account.login;
                     }

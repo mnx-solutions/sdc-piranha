@@ -45,8 +45,11 @@ module.exports = function execute(scope, register) {
             insecure: true,
             rejectUnauthorized: false
         };
-
-        if(call.req.session.parentAccount) {
+        if (call.req.session.parentAccountError) {
+            options.sign = function (str, callback) {
+                callback(call.req.session.parentAccountError);
+            };
+        } else if (call.req.session.parentAccount) {
             options.user = call.req.session.userName + '/' + call.req.session.parentAccount;
             options.account = call.req.session.parentAccount;
         } else {
