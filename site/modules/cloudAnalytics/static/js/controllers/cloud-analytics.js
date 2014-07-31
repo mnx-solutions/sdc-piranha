@@ -48,7 +48,7 @@
                 }
             };
 
-            $q.when(CloudAnalytics.describeAnalytics).then(function () {
+            CloudAnalytics.describeAnalytics().then(function () {
                 var ca = CloudAnalytics.ca;
                 $scope.conf = ca;
                 $scope.help = ca.help;
