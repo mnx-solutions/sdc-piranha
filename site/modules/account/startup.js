@@ -369,19 +369,13 @@ module.exports = function execute(scope) {
         vasync.pipeline({'funcs': pool}, callback);
     };
 
-    server.onCall('getAccountCreated', function (call) {
-        call.cloud.getAccount(function (error, data) {
-            call.done(null, data ? data.created : null);
-        });
-    });
-
     server.onCall('getParentAccount', function (call) {
         call.cloud.getAccount(function (error, data) {
             if (error) {
                 call.done(error);
                 return;
             }
-            call.done(null, {login: data.login});
+            call.done(null, {login: data.login, created: data.created});
         });
     });
 

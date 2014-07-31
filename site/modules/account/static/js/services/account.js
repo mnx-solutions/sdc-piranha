@@ -23,9 +23,9 @@
             var service = {};
 
             var account = null;
-            var accountCreated = null;
+            var parentAccount = null;
             var accountPromise = null;
-            var accountCreatedPromise = null;
+            var parentAccountPromise = null;
             var keys = null;
 
             /**
@@ -113,59 +113,42 @@
                 return deferred.promise;
             };
 
-            service.getAccountCreated = function (noCache) {
+            service.getParentAccount = function (noCache) {
                 if (!noCache) {
                     noCache = false;
                 }
 
                 var deferred = $q.defer();
 
-                if (!accountCreated) {
-                    if (!accountCreatedPromise || !accountCreatedPromise.pending) {
-                        accountCreatedPromise = {};
-                        accountCreatedPromise.deferred = deferred;
-                        accountCreatedPromise.pending = true;
+                if (!parentAccount) {
+                    if (!parentAccountPromise || !parentAccountPromise.pending) {
+                        parentAccountPromise = {};
+                        parentAccountPromise.deferred = deferred;
+                        parentAccountPromise.pending = true;
                     } else {
-                        accountCreatedPromise.deferred.promise.then(deferred.resolve, deferred.reject);
+                        parentAccountPromise.deferred.promise.then(deferred.resolve, deferred.reject);
                         return deferred.promise;
                     }
 
                     serverTab.call({
-                        name: 'getAccountCreated',
+                        name: 'getParentAccount',
                         data: {
                             noCache: noCache
                         },
                         done: function (err, job) {
-                            accountCreatedPromise.pending = false;
+                            parentAccountPromise.pending = false;
                             if (err) {
                                 deferred.reject(err);
                                 return;
                             }
-                            accountCreated = job.__read();
-                            deferred.resolve(accountCreated);
+                            parentAccount = job.__read();
+                            deferred.resolve(parentAccount);
                         }
                     });
                 } else {
-                    deferred.resolve(accountCreated);
+                    deferred.resolve(parentAccount);
                 }
 
-                return deferred.promise;
-            };
-
-            service.getParentAccount = function () {
-                var deferred = $q.defer();
-
-                serverTab.call({
-                    name: 'getParentAccount',
-                    done: function (err, job) {
-                        if (err) {
-                            deferred.reject(err);
-                            return;
-                        }
-                        var parentAccount = job.__read();
-                        deferred.resolve(parentAccount);
-                    }
-                });
                 return deferred.promise;
             };
 
