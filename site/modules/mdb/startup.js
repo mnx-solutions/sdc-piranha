@@ -1,10 +1,11 @@
 'use strict';
 var config = require('easy-config');
 var restify = require('restify');
+var vasync = require('vasync');
 var path = require('path');
 var generalErrorMessage = 'Something went wrong, please try again.';
 var mdbJobsListPath = '/stor/.joyent/portal/MdbJobs.json';
-var delimiter = '------------';
+var delimiter = '-delimiter-';
 
 function objectsParser(data) {
     var result = {counters: {}, data: []};
@@ -54,7 +55,7 @@ function modulesParser(rawModulesContent) {
         var lib = raw.pop();
         var name = raw.slice(-1)[0];
 
-        if (modules[name] && modules[name].node_modules) {
+        if (modules[name] && modules[name].libs) {
             if (modules[name].libs.indexOf(lib) === -1) {
                 modules[name].libs.push(lib);
             }
@@ -110,12 +111,34 @@ function modulesParser(rawModulesContent) {
             parentModule.values.push(module);
         }
     });
-    return modules.root.values;
+
+    function destroyCycles(modules, includedModules) {
+        modules.forEach(function (module, index) {
+            if (includedModules) {
+                if (includedModules.indexOf(module) > -1) {
+                    modules[index] = {name: module.name, values: []};
+                }
+                includedModules.push(module);
+            }
+
+            destroyCycles(module.values, includedModules || []);
+        });
+    }
+
+    destroyCycles(modules.root.values);
+    return {modules: modules.root.values};
 }
 
 var mdbApi = function execute(scope) {
     var Manta = scope.api('MantaClient');
     var server = scope.api('Server');
+
+    function copyObjects(distination, source) {
+        distination = distination || {};
+        Object.getOwnPropertyNames(source || {}).forEach(function (key) {
+            distination[key] = source[key];
+        });
+    }
 
     function waitForJob(call, jobId, callback) {
         var client = Manta.createClient(call);
@@ -152,20 +175,14 @@ var mdbApi = function execute(scope) {
             try {
                 callback(null, parser(data));
             } catch (e) {
+                call.req.log.error(e, 'Error parsing file: "' + filename + '"');
                 callback(e);
             }
         });
     }
 
     function sendError(call, error) {
-        call.update(null, {status: 'Failed'});
-        updateJobInList(call, call.jobId, {status: 'Failed'}, function (err) {
-            if (err) {
-                call.done(err);
-                return;
-            }
-            call.done(error.message || error);
-        });
+        call.done(error.message || error);
     }
 
     function getJobsList(call, callback) {
@@ -255,11 +272,7 @@ var mdbApi = function execute(scope) {
             }
             list.some(function (job) {
                 if (job.jobId === jobId) {
-                    Object.keys(updateData).forEach(function (key) {
-                        if (updateData[key] !== undefined) {
-                            job[key] = updateData[key];
-                        }
-                    });
+                    copyObjects(job, updateData);
                     return true;
                 }
                 return false;
@@ -269,61 +282,45 @@ var mdbApi = function execute(scope) {
     }
 
     function parseObjects(call, status, jobInfo) {
-        var alreadyFailed = false;
-        var data = {
-            status: status,
-            coreFile: jobInfo.coreFile
-        };
+        var jsObjects = {};
 
-        if (status === 'Processed' && jobInfo.timeDone) {
-            data.dateEnd = jobInfo.timeDone;
+        copyObjects(jsObjects, jobInfo);
+
+        var jobData = {status: status || jobInfo.status};
+        if (jobData.status === 'Cancelled') {
+            copyObjects(jobData, {
+                jobId: jobInfo.jobId,
+                coreFile: jobInfo.coreFile
+            });
+            call.done(null, jobData);
+            return;
         }
 
-        getDebugObjectsFile(call, jobInfo.jobId, 'findjsobjects', objectsParser, function (getObjectsError, jsObjects) {
-            if (getObjectsError) {
-                if (getObjectsError.statusCode === 404) {
-                    data.status = 'Failed';
-                    alreadyFailed = true;
-                } else {
-                    data.status = (data.status === 'Cancelled' ? 'Cancelled' : 'Failed');
-                }
-                updateJobInList(call, jobInfo.jobId, data, function (updateJobError) {
-                    if (updateJobError) {
-                        sendError(call, updateJobError);
-                        return;
+        vasync.forEachParallel({
+            inputs: [
+                {file: 'findjsobjects', parser: objectsParser},
+                {file: 'modules', parser: modulesParser}
+            ],
+            func: function (work, callback) {
+                getDebugObjectsFile(call, jobInfo.jobId, work.file, work.parser, function (error, result) {
+                    if (error) {
+                        return callback(error);
                     }
-                    if (alreadyFailed) {
-                        call.done(null, jobInfo);
-                    } else {
-                        call.done(getObjectsError);
-                    }
+                    copyObjects(jsObjects, result);
+                    callback(null);
                 });
-                return;
             }
-            getDebugObjectsFile(call, jobInfo.jobId, 'modules', modulesParser, function (getModulesError, modules) {
-                if (getModulesError) {
-                    sendError(call, getModulesError);
-                    return;
-                }
+        }, function (error) {
+            jobData.status = jsObjects.status = 'Failed';
+            if (!error) {
+                jobData.status = jsObjects.status = 'Processed';
+                jobData.dateEnd = jsObjects.dateEnd = jobInfo.dateEnd || new Date();
+            }
 
-                jsObjects.modules = modules;
-                data.status = jsObjects.status = 'Processed';
-                data.dateEnd = data.dateEnd || new Date();
-
-                if (!jobInfo.status || jobInfo.status !== jsObjects.status) {
-                    updateJobInList(call, jobInfo.jobId, data, function (updateJobError) {
-                        if (updateJobError) {
-                            sendError(call, updateJobError);
-                            return;
-                        }
-                        call.done(null, jsObjects);
-                    });
-                } else {
-                    call.done(null, jsObjects);
-                }
+            updateJobInList(call, jobInfo.jobId, jobData, function () {
+                call.done(null, jsObjects);
             });
         });
-
     }
 
     server.onCall('MdbGetJobFromList', {
