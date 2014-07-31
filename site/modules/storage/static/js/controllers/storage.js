@@ -27,7 +27,9 @@
                     RBAC.listUserKeys(account.id).then(function (keys) {
                         createSshList(keys);
                         Account.getParentAccount().then(function (parentAccount) {
-                            $scope.parentAccount = parentAccount.login;
+                            $scope.mantaAccountText = parentAccount.login;
+                        }, function (err) {
+                            $scope.mantaAccountText = err && err.message ? err.message : 'You do not have permission to access /my (getaccount)';
                         });
                     }, errorCallback);
                 } else {
