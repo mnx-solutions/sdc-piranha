@@ -19,7 +19,7 @@
                 <div class="clearfix">
                     <span class="col-md-2 lb-label" data-translate>Name</span>
                     <span class="col-md-9 name-input">
-                        <input name="name" type="text" required data-ng-model="server.name"/>
+                        <input name="name" type="text" required data-ng-model="server.name" data-ng-pattern="/^[\u0000-\u007F]+$/"/>
                     </span>
                 </div>
                 <div data-ng-show="balancerId">
