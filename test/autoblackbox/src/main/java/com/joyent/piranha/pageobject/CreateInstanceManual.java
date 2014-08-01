@@ -150,6 +150,7 @@ public class CreateInstanceManual extends AbstractPageObject implements CreateIn
         setInstanceNameValue(instanceVO.getImageName());
         clickCreateInstanceButton();
         clickButtonInModal("Yes");
+        waitForSmallSpinnerDisappear();
         return page(Instances.class);
     }
 

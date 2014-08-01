@@ -2,7 +2,9 @@ package com.joyent.piranha.pageobject;
 
 import com.codeborne.selenide.Condition;
 import com.codeborne.selenide.SelenideElement;
+import com.codeborne.selenide.WebDriverRunner;
 import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.support.ui.Select;
 
 import static com.codeborne.selenide.Selenide.$;
@@ -40,10 +42,8 @@ public class UserInfo extends AbstractPageObject {
     }
 
     public void setExpireDate(String monthValue, String yearValue) {
-        Select expirationMonth = new Select($(By.id("expirationMonth")));
-        expirationMonth.selectByValue(monthValue);
-        Select expirationYear = new Select($(By.id("expirationYear")));
-        expirationYear.selectByValue(yearValue);
+        selectFromSelect2("s2id_expirationMonth", monthValue);
+        selectFromSelect2("s2id_expirationYear", yearValue);
     }
 
     public void setCCVCode(String ccvcode) {

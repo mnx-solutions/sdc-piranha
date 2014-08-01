@@ -25,7 +25,7 @@ public class CreatePolicy extends AbstractPageObject {
         $(".new-rule button").click();
     }
 
-    public void deletePolicy(String role) {
-        $(By.xpath("//div[@class='controls rules' and contains(.,'" + role + "')]/div[@data-ng-click=\"removeRule(rule)\"]")).click();
+    public void deleteRule(String rule) {
+        $(By.xpath("//div[@class='controls rules' and contains(.,'" + rule + "')]/div[@data-ng-click=\"removeRule(rule)\"]")).click();
     }
 }

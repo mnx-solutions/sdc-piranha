@@ -51,5 +51,6 @@ public class AccountSSH extends AbstractPageObject {
         javascriptExecutor.executeScript("$('#uploadInput')[0].setAttribute('style', '')");
         $("#uploadInput").waitUntil(visible, baseTimeout);
         $("#uploadInput").sendKeys(absoluteFilePath);
+        waitForMediumSpinnerDisappear();
     }
 }

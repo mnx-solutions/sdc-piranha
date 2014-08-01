@@ -21,25 +21,49 @@ import static com.joyent.piranha.pageobject.Account.Legend.*;
 import static com.joyent.piranha.pageobject.NavBarMenu.NavBarHeaderElement.*;
 
 public class SmokeTest extends TestWrapper {
-    public static final String USER_NAME = PropertyHolder.getTestUserLogin();
-    public static final String PASSWORD = PropertyHolder.getTestUserPassword();
+    public static  String USER_NAME;
+    public static  String PASSWORD;
     public static final String DATACENTER = PropertyHolder.getDatacenter(0);
+    public static final String ALREADY_USED_PASSWORD = "qwerty1";
     private static NavBarMenu navBarMenu;
     private static SideBarMenu sideBarMenu;
     private static Dashboard dashboard;
+    private static InstanceVO instanceVO;
 
     @BeforeClass
-    public static void openDashboard() {
+    public static void prepareData() throws FileNotFoundException {
         timeout = BASE_TIMEOUT;
         baseUrl = BASE_URL;
-
+        instanceVO = InstanceParser.popInstance(DATACENTER);
         Login loginPage = open("/", Login.class);
-        loginPage.login(USER_NAME, PASSWORD);
-        dashboard = page(Dashboard.class);
-        dashboard.getFreeTierWidget().shouldBe(visible);
-        dashboard.getCountInstancesRunning().shouldNotHave(text("0"));
+        USER_NAME = loginPage.createTestAccount(loginPage.clickSignUp());
+        page(CreateAccountPage.class).clickCreateAcccount(Dashboard.class);
         navBarMenu = page(NavBarMenu.class);
         sideBarMenu = page(SideBarMenu.class);
+        dashboard = page(Dashboard.class);
+        EditBillingInformation editBillingInformation = navBarMenu.clickAccountMenu().clickAccount().clickEditBilling();
+        editBillingInformation.fillBillingInfoCorrectly();
+        Account account = editBillingInformation.clickSaveChangesButton();
+        account.clickButtonInModal("Ok");
+        AccountSSH accountSSH = account.getSSHContainer();
+        accountSSH.clickImportPublicKey();
+        accountSSH.uploadFile(PropertyHolder.getPublicKeyPath());
+        sideBarMenu.clickCompute();
+        page(CreateInstanceManual.class).createInstance(instanceVO);
+        changePassword(USER_NAME, ALREADY_USED_PASSWORD);
+        PASSWORD = USER_NAME + "1";
+        changePassword(ALREADY_USED_PASSWORD, PASSWORD);
+    }
+
+    private static void changePassword(String oldPassword, String newPassword) {
+        ChangePassword changePassword = navBarMenu.clickAccountMenu().clickChangePassword();
+        Common.switchWindow($(byText("Repeat password")));
+        changePassword.setOldPassword(oldPassword);
+        changePassword.setNewPassword(newPassword);
+        changePassword.setConfirmNewPassword(newPassword);
+        changePassword.clickSubmitButton();
+        changePassword.clickCloseButton();
+        Common.switchWindow(dashboard.getCountInstancesRunning());
     }
 
     @Before
@@ -48,18 +72,15 @@ public class SmokeTest extends TestWrapper {
     }
 
     @AfterClass
-    public static void endClass() {
+    public static void endClass() throws InstantiationException, IllegalAccessException {
+        sideBarMenu.clickCompute();
+        Common.cleanUpGrid(InstanceList.class);
         navBarMenu.clickAccountMenu().clickLogout();
-    }
-
-    @After
-    public void logout() {
-        sideBarMenu.errorNotPresent();
     }
 
     @Test
     public void dashboardIsVisible() {
-        dashboard = sideBarMenu.clickDashboard();
+        sideBarMenu.clickDashboard();
         dashboard.checkHeadingDashboard();
         dashboard.getCountInstancesRunning().shouldNotHave(text("0"));
 
@@ -129,19 +150,18 @@ public class SmokeTest extends TestWrapper {
     @Test
     public void createInstanceCarouselIsVisible() throws FileNotFoundException {
         String instanceName = "selenide-created-instance";
-        InstanceVO inst = InstanceParser.popInstance(PropertyHolder.getDatacenter(0));
-        dashboard = sideBarMenu.clickDashboard();
+        sideBarMenu.clickDashboard();
         final CreateInstanceManual createInstanceManual = dashboard.clickCreateComputeInstance();
         createInstanceManual.clickAllPublicImagesLink();
         createInstanceManual.waitUntilPageIsActive(0);
         createInstanceManual.selectOsFilter("smartos");
         createInstanceManual.selectDataCenter(DATACENTER);
-        createInstanceManual.chooseImage(inst.getImageName());
+        createInstanceManual.chooseImage(instanceVO.getImageName());
         createInstanceManual.waitUntilPageIsActive(1);
-        createInstanceManual.selectPackage(inst.getPackageName());
+        createInstanceManual.selectPackage(instanceVO.getPackageName());
         createInstanceManual.clickReviewBtn();
-        createInstanceManual.checkPackageInfo(inst.getRam(), inst.getDiskSpace(), inst.getCpu(), inst.getPackageVersion());
-        createInstanceManual.checkPaymentInfo(inst.getPricePerHour(), inst.getPricePerMonth());
+        createInstanceManual.checkPackageInfo(instanceVO.getRam(), instanceVO.getDiskSpace(), instanceVO.getCpu(), instanceVO.getPackageVersion());
+        createInstanceManual.checkPaymentInfo(instanceVO.getPricePerHour(), instanceVO.getPricePerMonth());
         createInstanceManual.setInstanceNameValue(instanceName);
         createInstanceManual.selectNetwork(0);
         createInstanceManual.clickCreateInstanceButton();
@@ -159,7 +179,7 @@ public class SmokeTest extends TestWrapper {
         $(byText("The username or password is incorrect")).shouldBe(visible);
         $(byText("Reminder: username and password are case sensitive")).shouldBe(visible);
         loginPage.login(USER_NAME, PASSWORD);
-        sideBarMenu.clickDashboard().getCountInstancesRunning().shouldNotHave(text("0"));
+        dashboard.getCountInstancesRunning().shouldNotHave(text("0"));
     }
 
     @Test
@@ -172,14 +192,13 @@ public class SmokeTest extends TestWrapper {
         changePassword.clickSubmitButton();
         changePassword.getErrorLabel().get(0).shouldHave(text("Please enter new password."));
 
-        String testPass = "newTestPass";
+        String testPass = "incorrectPass";
         changePassword.fillForm(PASSWORD, testPass);
         changePassword.clickSubmitButton();
         changePassword.getErrorLabel().get(0).shouldHave(text("To change your password, enter the new password twice, please use a combination of letters, numbers and symbols."));
         changePassword.getErrorLabel().get(1).shouldHave(text("Sorry, please use a different password."));
 
-        String previousPass = "qwerty1";
-        changePassword.fillForm(PASSWORD, previousPass);
+        changePassword.fillForm(PASSWORD, ALREADY_USED_PASSWORD);
         changePassword.clickSubmitButton();
         changePassword.getErrorLabel().get(1).shouldHave(text("You used this password recently. Please choose a new password."));
 

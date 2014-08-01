@@ -2,8 +2,10 @@ package com.joyent.piranha.pageobject;
 
 import com.codeborne.selenide.ElementsCollection;
 import com.codeborne.selenide.SelenideElement;
+import com.codeborne.selenide.WebDriverRunner;
 import com.joyent.piranha.PropertyHolder;
 import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
 
 import static com.codeborne.selenide.Condition.*;
 import static com.codeborne.selenide.Selectors.byText;
@@ -80,9 +82,8 @@ public abstract class AbstractPageObject {
     }
 
     public void waitForMediumSpinnerDisappear() {
-        $(".loading-medium[style=\"\"]").waitWhile(exist, CHANGE_STATUS_TIMEOUT);
-        $(".loading-medium[style=\"visibility: visible;\"]").waitWhile(exist, CHANGE_STATUS_TIMEOUT);
         $(By.xpath("//*[contains(@class,'loading-medium-transparent') and not(contains(@class,'ng-hide'))]")).waitWhile(exist, CHANGE_STATUS_TIMEOUT);
+        $(By.xpath("//*[contains(@class,'loading-medium') and not(contains(@class,'ng-hide'))]")).waitWhile(visible, CHANGE_STATUS_TIMEOUT);
     }
 
     public void waitForLargeSpinnerDisappear() {
@@ -141,5 +142,11 @@ public abstract class AbstractPageObject {
             column.click();
             clickColumnsButton();
         }
+    }
+
+    public void selectFromSelect2(String selectId, String option) {
+        JavascriptExecutor javascriptExecutor = (JavascriptExecutor) WebDriverRunner.getWebDriver();
+        javascriptExecutor.executeScript("$('#" + selectId + " a').mousedown()");
+        javascriptExecutor.executeScript("$('ul div:contains(\"" + option + "\")').mouseup()");
     }
 }

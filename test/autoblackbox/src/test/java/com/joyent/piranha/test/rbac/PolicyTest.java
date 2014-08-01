@@ -51,8 +51,10 @@ public class PolicyTest extends TestWrapper {
     public void createPolicyValidation() {
         CreatePolicy createPolicy = policies.clickCreatePolicy();
         createPolicy.clickCreatePolicy();
+        $(".policy-form-error not:(.ng-hide)").waitUntil(exist, timeout);
         $(byText("Missing name")).shouldBe(visible);
         createPolicy.setName("!");
+        $(".policy-form-error not:(.ng-hide)").waitUntil(exist, timeout);
         $(byText("Name can contain only letters, digits, spaces and signs like \".\" and \"-\"")).shouldBe(visible);
         createPolicy.setName("testPolicy");
         String role = "incorrectRole";
@@ -60,7 +62,7 @@ public class PolicyTest extends TestWrapper {
         createPolicy.clickCreatePolicy();
         assertTrue($(".modal").text().contains("Parse error on line 1:\n" + role));
         createPolicy.clickButtonInModal("Ok");
-        createPolicy.deletePolicy(role);
+        createPolicy.deleteRule(role);
     }
 
     @Test
