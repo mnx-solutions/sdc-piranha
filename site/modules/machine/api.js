@@ -462,7 +462,11 @@ module.exports = function execute(scope, register) {
                 call.immediate(err, {image: image});
             }
             if (!err) {
-                pollForObjectStateChange(cloud, call, 'state', 'active', (60 * 60 * 1000), 'Image', image.id, callback);
+                pollForObjectStateChange(cloud, call, 'state', 'active', (60 * 60 * 1000), 'Image', image.id, function () {});
+                call.step = {
+                    state: image.state
+                };
+                call.update(null, {});
             } else {
                 callback(err);
             }
