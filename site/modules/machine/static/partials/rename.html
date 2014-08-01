@@ -6,10 +6,10 @@
     <div class="loading-medium wait_rename" data-ng-show="loadingNewName"></div>
     <form name="renameForm" class="machine-edit-form">
         <div class="pull-left machine-edit" data-ng-show="changingName && !renaming">
-            <input class="span2 machine-name-edit" id="renameObject" name="renameObject" data-ng-model="newName" type="text" data-machine-name="type" data-unique="type" data-blur/>
+            <input class="col-md-2 machine-name-edit" id="renameObject" name="renameObject" data-ng-model="newName" type="text" data-machine-name="type" data-unique="type" data-blur/>
             <div class="btn-group machine-edit-buttons">
-                <button class="btn btn-height" data-ng-click="clickRename()" data-ng-disabled="renameForm.renameObject.$invalid || newName.length <= 0 || newName==object.name" type="button"><i class="icon-ok"/></button>
-                <button class="btn" data-ng-click="cancelRename()" type="button"><i class="icon-remove"/></button>
+                <button class="btn btn-height" data-ng-click="clickRename()" data-ng-disabled="renameForm.renameObject.$invalid || newName.length <= 0 || newName==object.name" type="button"><i class="glyphicon glyphicon-ok"/></button>
+                <button class="btn" data-ng-click="cancelRename()" type="button"><i class="glyphicon glyphicon-remove"/></button>
             </div>
         </div>
 

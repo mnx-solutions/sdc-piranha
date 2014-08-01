@@ -7,153 +7,245 @@
         'localization',
         'PopupDialog',
         'errorContext',
-        'Dataset',
+        'util',
         'ErrorService',
         function ($q, serverTab, localization, PopupDialog, errorContext,
-            Dataset, ErrorService) {
+            util, ErrorService) {
 
             var service = {};
-            var promiseById;
-            var images = {index: {}, job: {pending: false}, list: [], error: undefined, search: {}};
+            var list = [];
+            var images = {index: {}, job: null, list: {}, error: null, search: {}};
 
-            function handleChunk (image) {
+            function handleChunk(image, action) {
                 var old = null;
-
-                if (images.index[image.id]) {
-                    old = images.list.indexOf(images.index[image.id]);
+                var oldAll = null;
+                var oldPrivate = null;
+                var indexImage = images.index[image.id];
+                var imagesList = images.list;
+                var datacenterList = imagesList[image.datacenter];
+                var allList = imagesList['all'];
+                var privateList = imagesList['private'];
+                if (indexImage) {
+                    old = (datacenterList.indexOf(image) === -1) ? (datacenterList.length - 1) : datacenterList.indexOf(image);
+                    oldAll = (allList.indexOf(image) === -1) ? (allList.length - 1) : allList.indexOf(image);
+                    oldPrivate = (privateList.indexOf(image) === -1) ? (privateList.length - 1) : privateList.indexOf(image);
+                    if (action && action === 'remove') {
+                        datacenterList.splice(old, 1);
+                        allList.splice(oldAll, 1);
+                        privateList.splice(oldPrivate, 1);
+                        delete images.index[image.id];
+                    } else {
+                        datacenterList[old] = image;
+                        allList[oldAll] = image;
+                        privateList[oldPrivate] = image;
+                        images.index[image.id] = image;
+                    }
+                } else if (!action) {
+                    datacenterList.push(image);
+                    allList.push(image);
+                    privateList.push(image);
+                    images.index[image.id] = image;
                 }
 
-                images.index[image.id] = image;
+            }
 
-                if (images.search[image.id]) {
-                    images.search[image.id].forEach(function (r) {
-                        r.resolve(image);
+            function compareProperties(image, params) {
+                var paramsProps = Object.getOwnPropertyNames(params);
+
+                for (var i = 0; i < paramsProps.length; i++) {
+                    var propName = paramsProps[i];
+
+                    if (image.hasOwnProperty(propName) && image[propName] !== params[propName]) {
+                        return false;
+                    }
+                }
+                return true;
+            }
+
+            function filterImages(params) {
+                if (params) {
+                    var datacenter = params.datacenter || 'all';
+                    if (params.id) {
+                        return images.list[datacenter].find(function (image) {
+                            return image.id === params.id;
+                        });
+                    }
+                    return images.list[datacenter].filter(function (image) {
+                        return compareProperties(image, params);
                     });
-                    delete images.search[image.id];
-                }
-
-                if (old === null) {
-                    images.list.push(image);
                 } else {
-                    images.list[old] = image;
+                    return images.list['private'];
                 }
             }
 
-            service.listImages = function (force, showPublic) {
-                if (!showPublic) {
-                    showPublic = false;
-                }
-                var deferred = $q.defer();
-                if (!images.job || !images.job.pending) {
-                    images.job = {};
-                    images.job.deferred = deferred;
-                    images.job.pending = true;
-                } else {
-                    images.job.deferred.promise.then(deferred.resolve, deferred.reject);
-                    return deferred.promise;
-                }
-                if (!force && images.list.final && !images.error) {
-                    deferred.resolve(images.list);
-                    return deferred.promise;
-                }
-                images = {index: {}, job: {pending: false}, list: [], error: undefined, search: {}};
-                serverTab.call({
-                    name: 'ImagesList',
-                    error: function (err) {
-                        images.job.pending = false;
-                        deferred.reject(err);
-                    },
-                    progress: function imagesProgress(err, job) {
+            service.updateImages = function (force) {
+                if (!images.job && !force) {
+                    images.job = serverTab.call({
+                        name: 'ImagesList',
+                        error: function (err) {
+                            images.error = err;
+                            images.job.promise.catch(err);
+                        },
+                        progress: function (err, job) {
+                            var data = job.__read();
+                            ErrorService.flushErrors('dcUnreachable', 'all');
+                            function handleResponse(chunk) {
+                                images.list[chunk.name] = [];
+                                if (chunk.status === 'error') {
+                                    images.error = err;
+                                    ErrorService.setLastError('dcUnreachable', 'all', true);
+                                    if (!ErrorService.getLastErrors('dcUnreachable', chunk.name)) {
+                                        ErrorService.setLastError('dcUnreachable', chunk.name,
+                                            'Datacenter {{name}} is currently not available. We are working on getting this datacenter back on.',
+                                            {name: chunk.name});
 
-                        var data = job.__read();
-
-                        function handleChunk(image) {
-
-                            if (!showPublic && image.public !== false) {
-                                return;
-                            }
-
-                            if (!images.index[image.id]) {
-                                if (!image.actionButtons) {
-                                    image.actionButtons = true;
+                                        PopupDialog.error(
+                                            localization.translate(
+                                                null,
+                                                null,
+                                                'Error'
+                                            ), chunk.error && chunk.error.restCode === 'NotAuthorized' ? chunk.error.message :
+                                                localization.translate(
+                                                    null,
+                                                    'machine',
+                                                    'Unable to retrieve images from datacenter {{name}}.',
+                                                    { name: chunk.name }
+                                                )
+                                        );
+                                    }
+                                    return;
                                 }
-                                images.index[image.id] = image;
-                                images.list.push(image);
-                            }
-                        }
 
-                        ErrorService.flushErrors('dcUnreachable', 'all');
-                        function handleResponse(chunk) {
-                            if (chunk.status === 'error') {
-                                ErrorService.setLastError('dcUnreachable', 'all', true);
-                                if (!ErrorService.getLastErrors('dcUnreachable', chunk.name)) {
-                                    ErrorService.setLastError('dcUnreachable', chunk.name,
-                                        'Datacenter {{name}} is currently not available. We are working on getting this datacenter back on.',
-                                        {name: chunk.name});
+                                ErrorService.flushErrors('dcUnreachable', chunk.name);
 
-                                    PopupDialog.error(
-                                        localization.translate(
-                                            null,
-                                            null,
-                                            'Error'
-                                        ), chunk.error && chunk.error.restCode === 'NotAuthorized' ? chunk.error.message :
-                                        localization.translate(
-                                            null,
-                                            'machine',
-                                            'Unable to retrieve images from datacenter {{name}}.',
-                                            { name: chunk.name }
-                                        )
-                                    );
+                                if (chunk.images) {
+                                    chunk.images.forEach(function (image) {
+                                        if (!image.actionButtons) {
+                                            image.actionButtons = true;
+                                        }
+                                        if (!images.index[image.id]) {
+                                            images.index[image.id] = image;
+                                            images.list['all'].push(image);
+                                        }
+                                        if (image.public === false) {
+                                            images.list['private'].push(image);
+                                        }
+                                        images.list[chunk.name].push(image);
+                                    });
                                 }
-                                return;
                             }
 
-                            ErrorService.flushErrors('dcUnreachable', chunk.name);
-
-                            if (chunk.images) {
-                                chunk.images.forEach(handleChunk);
+                            images.list['private'] = [];
+                            images.list['all'] = [];
+                            if (ng.isArray(data)) {
+                                data.forEach(handleResponse);
+                            } else {
+                                handleResponse(data);
                             }
-                        }
-
-                        if (ng.isArray(data)) {
-                            data.forEach(handleResponse);
-                        } else {
-                            handleResponse(data);
-                        }
-                    },
-                    done: function (err) {
-                        images.job.pending = false;
-                        if (err) {
-                            deferred.reject(err);
-                        } else {
-                            deferred.resolve(images.list);
+                        },
+                        done: function () {
                             images.list.final = true;
                         }
+                    });
+                }
+                return images.job;
+            };
+
+            service.image = function (params, force) {
+                var deferred = $q.defer();
+                if (typeof params === 'string') {
+                    params = {id: params};
+                }
+
+                if (images.list.final && !images.error && !force) {
+                    list = filterImages(params);
+                    if (list) {
+                        deferred.resolve(list);
+                    } else {
+                        deferred.reject(list);
                     }
-                });
+                    return deferred.promise;
+                }
+
+                service.updateImages(force).deferred.promise.then(function () {
+                    list = filterImages(params);
+                    if (list) {
+                        deferred.resolve(list);
+                    } else {
+                        deferred.reject(list);
+                    }
+                }, deferred.reject);
 
                 return deferred.promise;
             };
 
-            service.getImage = function (id) {
+            service.simpleImage = function (params) {
                 var deferred = $q.defer();
-                service.listImages().then(function (images) {
-                    var imageById = images.find(function (image) {
-                        return image.id === id;
+
+                service.updateImages();
+                images.job.deferred.promise.then(function () {
+                    var data = images.list[params.datacenter];
+
+                    var listImages = {};
+                    var listVersions = [];
+
+                    data.forEach(function (image) {
+                        if (!image.public) {
+                            return;
+                        }
+                        if (!listImages[image.name]) {
+                            listImages[image.name] = {};
+                        }
+
+                        listImages[image.name][image.version] = image.id;
+                        listVersions[image.name] = Object.keys(listImages[image.name]);
+
+                        if (listVersions[image.name].length > 1) {
+                            listVersions[image.name].sort(function (a, b) {
+                                return util.cmpVersion(a, b);
+                            });
+                        }
                     });
-                    if (!imageById) {
-                        var err = new Error();
-                        err.message = 'No image found';
-                        deferred.reject(err);
-                    } else {
-                        deferred.resolve(imageById);
+
+                    var resolve;
+                    var imagesByName = listImages[params.name];
+                    if (imagesByName) {
+                        var versions = {};
+                        var lastMajor = null;
+                        var selectedMajor = null;
+                        listVersions[params.name].forEach(function (version) {
+                            var re = /\w+/g;
+                            var versionType = version.match(re);
+                            var newMajor = versionType[0];
+                            if (!versions[newMajor]) {
+                                versions[newMajor] = [];
+                            }
+                            versions[newMajor].push(version);
+                            if (versionType.length > 1) {
+                                if (selectedMajor < lastMajor) {
+                                    selectedMajor = lastMajor;
+                                }
+                                lastMajor = newMajor;
+                            }
+                        });
+
+                        if (params.forceMajorVersion && versions[params.forceMajorVersion]) {
+                            resolve = imagesByName[versions[params.forceMajorVersion].slice(-1)];
+                        }
+
+                        if (selectedMajor && !params.forceMajorVersion) {
+                            resolve = imagesByName[versions[selectedMajor].slice(-1)];
+                        } else if (!params.forceMajorVersion) {
+                            resolve = imagesByName[listVersions[params.name].slice(-1)];
+                        }
                     }
 
-                }, function (err) {
-                    deferred.reject(err);
+                    deferred.resolve(resolve);
                 });
-            };
 
+                return deferred.promise;
+            };
+            
             function showError(image, message, err) {
                 var detailMessage = (err.body && err.body.message) || err.message || String(err);
                 if (err.code === 'PrepareImageDidNotRun') {
@@ -188,9 +280,7 @@
                     id: id
                 };
 
-                images.list.push(image);
-                images.index[id] = image;
-
+                handleChunk(image);
 
                 var jobCall = serverTab.call({
                     name: 'ImageCreate',
@@ -207,27 +297,29 @@
                             return;
                         }
 
-                         var index = images.list.indexOf(image);
-                         delete images.index[id];
-                         image = job.initial.image;
-                         image.datacenter = datacenter;
-                         image.published_at = Date.now();
-                         image.job = job.getTracker();
-                         images.index[image.id] = image;
-                         images.list[index] = image;
+                        var index = images.list[datacenter].indexOf(image);
+                        var indexAll = images.list['all'].indexOf(image);
+                        var indexPrivate = images.list['private'].indexOf(image);
+                        delete images.index[id];
+                        image = job.initial.image;
+                        image.datacenter = datacenter;
+                        image.published_at = Date.now();
+                        image.job = job.getTracker();
+                        images.index[image.id] = image;
+                        images.list[datacenter][index] = image;
+                        images.list['all'][indexAll] = image;
+                        images.list['private'][indexPrivate] = image;
                     },
                     done: function (err, job) {
                         if (err) {
-                            showError(image, 'Unable to create image "{{name}}": ',err);
-                            images.list.splice(images.list.indexOf(image), 1);
-                            delete images.index[id];
+                            handleChunk(image, 'remove');
+                            showError(image, 'Unable to create image "{{name}}": ', err);
                             return;
                         }
 
                         var result = job.__read();
                         result.datacenter = datacenter;
                         handleChunk(result);
-                        Dataset.updateDatasets('all', true);
                     },
                     progress: function (err, job) {
                         if (!err && angular.isFunction(locationCallback)) {
@@ -245,11 +337,9 @@
                         if (err) {
                             showError(image, 'Unable to create image "{{name}}": ', err);
                         }
-                        images.list.splice(images.list.indexOf(image), 1);
-                        delete images.index[id];
+                        handleChunk(image, 'remove');
                     }
                 });
-
                 image.job = jobCall.getTracker();
                 return jobCall;
             };
@@ -261,9 +351,7 @@
                     data: { imageId: image.id, datacenter: image.datacenter },
                     done: function (err) {
                         if (!err) {
-                            images.list.splice(images.list.indexOf(image), 1);
-                            delete images.index[image.id];
-                            Dataset.updateDatasets('all', true);
+                            handleChunk(image, 'remove');
                         } else {
                             image.state = 'active';
                             showError(image, 'Unable to delete image "{{name}}": ', err);
@@ -288,7 +376,6 @@
                     done: function (err) {
                         image.state = oldState;
                         if (!err) {
-                            Dataset.updateDatasets('all', true);
                             callback();
                         } else {
                             showError(image, 'Unable to rename image "{{name}}": ', err);

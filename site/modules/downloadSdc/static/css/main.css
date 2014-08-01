@@ -1,11 +1,21 @@
 .container-fluid {
-    width: 1085px;
+    width: 1165px;
+}
+
+.container-fluid:last-child:after {
+    position: relative;
+    left: 100%;
+    display: inline-block;
+    width: 60px;
+    height: 1px;
+    background-color: transparent;
+    content: '';
 }
 
 .sdc-ad {
     position: relative;
     float: right;
-    margin-top: -15px;
+    margin: -15px 20px 0 0;
     width: 290px;
     height: 220px;
     background: url("../img/sdc-free-trial.jpg") no-repeat;
@@ -18,13 +28,21 @@
     width: 750px;
 }
 
+h5 {
+    font-weight: bold;
+}
+
+.first-column {
+    padding-right: 30px;
+}
+
 label.checkbox.select-version {
     padding-left: 7px;
 }
 
 label.checkbox .checker {
     float: left;
-    padding-right: 4px;
+    margin-right: 4px;
 }
 
 div.checker span.disabled {
@@ -45,6 +63,11 @@ input[type="radio"] {
     height: 15px !important;
 }
 
+.radio,
+.checkbox {
+    margin: 0;
+}
+
 .label-text {
     float: left;
     padding-left: 5px;
@@ -56,7 +79,7 @@ input[type="radio"] {
 }
 
 .select-position-block button {
-    margin: 0 0 30px;
+    margin: 10px 0 30px;
 }
 
 .select-version {
@@ -66,6 +89,7 @@ input[type="radio"] {
 .select-version-license {
     margin-bottom: 5px;
     padding: 7px 0;
+    height: 38px;
     border: 1px solid #000;
 }
 

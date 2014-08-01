@@ -1,20 +1,24 @@
-<div class="modal" tabindex="-1" data-focus-on="button">
-    <div class="modal-header error">
-        <h5><i class="glyphicon glyphicon-warning-sign"></i><b>Error</b></h5>
-    </div>
-    <div class="modal-body rule-error">
-        <div data-ng-repeat="ruleError in ruleErrors">
-            <p>{{ ruleError }}</p>
+<div class="modal-dialog">
+    <div class="modal-content">
+        <div tabindex="-1" data-focus-on="button">
+            <div class="modal-header error">
+                <h5><i class="glyphicon glyphicon-warning-sign"></i><b>Error</b></h5>
+            </div>
+            <div class="modal-body rule-error">
+                <div data-ng-repeat="ruleError in ruleErrors">
+                    <p>{{ ruleError }}</p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button data-tabindex="{{btn.datatabindex}}"
+                        data-button-focus="{{ btn.setFocus }}"
+                        data-ng-repeat="btn in buttons"
+                        data-ng-click="buttonClick(btn.result)"
+                        class="btn"
+                        data-ng-class="btn.cssClass">
+                    {{ btn.label }}
+                </button>
+            </div>
         </div>
-    </div>
-    <div class="modal-footer">
-        <button data-tabindex="{{btn.datatabindex}}"
-                data-button-focus="{{ btn.setFocus }}"
-                data-ng-repeat="btn in buttons"
-                data-ng-click="buttonClick(btn.result)"
-                class="btn"
-                data-ng-class="btn.cssClass">
-            {{ btn.label }}
-        </button>
     </div>
 </div>

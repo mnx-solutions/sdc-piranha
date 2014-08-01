@@ -6,7 +6,6 @@
         'requestContext',
         '$timeout',
         'Machine',
-        'Dataset',
         'Datacenter',
         'Package',
         'Account',
@@ -25,8 +24,7 @@
         'util',
         'Limits',
         'errorContext',
-
-        function ($scope, $filter, requestContext, $timeout, Machine, Dataset, Datacenter, Package, Account, Network, Image, $location, localization, $q, $qe, $$track, PopupDialog, $cookies, $rootScope, FreeTier, loggingService, util, Limits, errorContext) {
+        function ($scope, $filter, requestContext, $timeout, Machine, Datacenter, Package, Account, Network, Image, $location, localization, $q, $qe, $$track, PopupDialog, $cookies, $rootScope, FreeTier, loggingService, util, Limits, errorContext) {
             localization.bind('machine', $scope);
             requestContext.setUpRenderContext('machine.provision', $scope, {
                 title: localization.translate(null, 'machine', 'Create Instances on Joyent')
@@ -430,7 +428,7 @@
                                     if (isFree && image.datacenters.indexOf(datacenter.name) === -1) {
                                         return;
                                     }
-                                    Dataset.datasetBySimpleImage(params).then(function (dataset) {
+                                    Image.simpleImage(params).then(function (dataset) {
                                         if (dataset) {
                                             var simpleImage = {};
                                             if (isFree) {
@@ -522,7 +520,7 @@
                         $scope.machines = machinesResult;
                     }
                     $scope.machines.forEach(function (machine) {
-                        Dataset.dataset(machine.image).then(function (dataset) {
+                        Image.image(machine.image).then(function (dataset) {
                             $scope.limits.forEach(function (limit) {
                                 if (limit.datacenter === machine.datacenter && limit.name === dataset.name) {
                                     limit.limit--;
@@ -572,7 +570,7 @@
                 }
 
                 if ($scope.preSelectedImageId) {
-                    $scope.preSelectedImage = Image.getImage($scope.preSelectedImageId);
+                    $scope.preSelectedImage = Image.image({id: $scope.preSelectedImageId});
                     $q.when($scope.preSelectedImage).then(function (image) {
                         var datacenter = null;
                         if (externalInstanceParams) {
@@ -910,7 +908,7 @@
             };
 
             $scope.selectDataset = function (id, changeDataset) {
-                Dataset.dataset({ id: id, datacenter: $scope.data.datacenter }).then(function (dataset) {
+                Image.image({ id: id, datacenter: $scope.data.datacenter }).then(function (dataset) {
                     if (dataset.type == 'virtualmachine') {
                         $scope.datasetType = 'kvm';
                     } else if (dataset.type == 'smartmachine') {
@@ -1141,17 +1139,17 @@
                 }
             }
 
-            $scope.onFilterChange = function (newVal) {
+            $scope.onFilterChange = function (newVal, packageType) {
                 if (newVal) {
                     $scope.filterModel.value = $scope.filterValues[newVal][0];
                 }
                 if ($scope.packages) {
-                    selectMinimalPackage();
+                    selectMinimalPackage(packageType || '');
                     $timeout(function () {
                         var accordion = ng.element('#packagesAccordion');
-                        var accordionBody = ng.element('.accordion-body');
+                        var accordionBody = ng.element('.panel-collapse');
                         if ($scope.filterModel.key === 'No filter') {
-                            accordion.find('.accordion-body').addClass('collapse').end()
+                            accordion.find('.panel-collapse').addClass('collapse').end()
                                 .find('a').addClass('collapsed').end()
                                 .find('.collapse.in').removeClass('in');
                             accordionBody.has('div.active').parent().has('a.collapsed').find('a').click();
@@ -1424,7 +1422,7 @@
                     $scope.reloading = true;
                     $scope.datasetsLoading = true;
                     $qe.every([
-                        $q.when(Dataset.dataset({ datacenter: newVal })),
+                        $q.when(Image.image({ datacenter: newVal })),
                         $q.when(Package.package({ datacenter: newVal })),
                         $q.when(getCreatedMachines())
                     ]).then(function (result) {
@@ -1497,6 +1495,10 @@
                     var returnUrl = $location.path();
                     Account.checkProvisioning({btnTitle: 'Submit and Create Instance'}, function () {
                         var el = $scope.selectedPackageInfo;
+                        $timeout(function () {
+                            $scope.onFilterChange('', el.group);
+                            $scope.selectPackage(el.id);
+                        }, 600);
                         $scope.zenboxDialog({
                             dropboxID: $rootScope.zenboxParams.dropboxOrderPackageId || $rootScope.zenboxParams.dropboxID,
                             request_subject: 'I want to order ' + el.description + ' compute instance',

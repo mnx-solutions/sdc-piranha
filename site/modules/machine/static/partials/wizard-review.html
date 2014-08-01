@@ -78,10 +78,12 @@
                              data-translate>
                             Machine name is already in use
                         </div>
-                        <div><h2>Networks</h2></div>
+                        <div>
+                            <h2>Networks</h2>
+                        </div>
                         <div class="networks-box-3">
-                            <label data-ng-repeat="network in networks track by $index">
-                                <div class="checker" data-ng-class="{hover:show}" data-ng-mouseenter="show = true" data-ng-mouseleave="show = false">
+                            <label class="clearfix" data-ng-repeat="network in networks track by $index">
+                                <div class="checker pull-left" data-ng-class="{hover:show}" data-ng-mouseenter="show = true" data-ng-mouseleave="show = false">
                                     <span data-ng-class="{checked: network.active}">
                                          <input data-ng-click="selectNetworkCheckbox(network.id)" type="checkbox"
                                                 value="{{network.id}}"
@@ -90,10 +92,12 @@
                                                 data-ng-disabled="selectedNetworks.length == 2 && selectedNetworks.indexOf(network.id) == -1"/>
                                     </span>
                                 </div>
-                                <span data-ng-class="{disabledNetworkSelection: (selectedNetworks.length == 2 && selectedNetworks.indexOf(network.id) == -1)}">{{network.name}}</span><br />
+                                <span class="network-name" data-ng-class="{disabledNetworkSelection: (selectedNetworks.length == 2 && selectedNetworks.indexOf(network.id) == -1)}">{{network.name}}</span>
                             </label>
                          </div>
-                        <div><h2>Tags</h2></div>
+                        <div>
+                            <h2>Tags</h2>
+                        </div>
                         <p class="tags-text-p">Tags are metadata stored as key-value pairs to make it easier for you to find, sort, and identify your instances.</p>
                         <div class="create-tags ci-tags"
                              data-machine-collection

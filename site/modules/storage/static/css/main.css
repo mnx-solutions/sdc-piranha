@@ -17,7 +17,6 @@
     color: #ffffff;
     font-weight: bold;
     -webkit-user-select: none;
-    -khtml-user-select: none;
     -moz-user-select: none;
     -o-user-select: none;
     user-select: none;
@@ -29,7 +28,6 @@
     font-weight: 200;
     color: #d3d3d3;
     -webkit-user-select: none;
-    -khtml-user-select: none;
     -moz-user-select: none;
     -o-user-select: none;
     user-select: none;
@@ -37,10 +35,11 @@
 }
 
 #setup-vid {
-    width: 260px;
     position: relative;
     float: right;
+    box-sizing: content-box;
     padding-left: 13px;
+    width: 260px;
 }
 
 #setup-vid .playbutton {
@@ -81,12 +80,6 @@
 .btn.disabled {
     color: #333333;
     background-color: #d8d8d8 !important;
-}
-.btn.orange {
-    color: white;
-    text-shadow: none;
-    background-color: #ff6600;
-    min-width: 100px;
 }
 .icon-reorder{
     background-image: url(../../../../static/img/glyphicons-halflings-white.png) !important;
@@ -182,43 +175,36 @@
     float: right;
     margin-top: -85px;
 }
-
-.accordion-group {
-    margin-bottom: 5px;
-    border: 0 none;
-}
-.accordion-heading {
-    border-bottom: 0;
-    background: #f5f5f5;
-}
-.accordion-inner {
-    border-top: 0 !important;
-}
-.accordion-heading .accordion-toggle {
+.panel-heading .accordion-toggle {
     display: block;
     padding: 8px 15px;
     cursor: pointer;
 }
-.accordion-heading a {
+.panel-heading a {
     color: black;
     text-decoration: none;
     font-weight: 500;
     font-size: 16px;
 }
+#accordionBuilderGrids .panel-body {
+    padding-bottom: 0;
+}
+#accordionBuilderPhases .panel-body {
+    padding-top: 9px;
+}
 .job-name {
     display: inline-table;
-    min-height: 46px;
+    height: 46px;
 }
 .job-name .field {
     display: table-cell;
-    padding-left: 13px;
     width: 100%;
 }
 .job-name .field input,
 .popup-input {
     float: right;
     width: 100%;
-    height: 21px;
+    height: 31px;
     vertical-align: middle;
 }
 .job-name .name {
@@ -232,6 +218,9 @@
     float: right;
     width: 100%;
     resize: vertical;
+}
+.job-name.row {
+    width: 100%;
 }
 .job-info-container {
     padding: 0 0 50px 20px;
@@ -261,8 +250,9 @@
     padding-top: 0;
 }
 .job-stats-container {
-    width: 113px;
+    box-sizing: content-box;
     padding: 0 25px;
+    width: 113px;
     border: #ccc 1px solid;
     border-top: none;
     border-bottom: none;
@@ -318,6 +308,16 @@
 }
 .state-label-cancelled {
     background-color: #8E8E8E;
+}
+.container-fluid {
+    margin-left: 0;
+    margin-right: 0;
+}
+.container-min-width {
+    width: 1078px !important;
+}
+.portlet-body.as-table.videos {
+    height: 170px;
 }
 .job-section-body {
     word-wrap: break-word;

@@ -1,7 +1,7 @@
 <div class="container-fluid container-position" data-ng-controller="Machine.ProvisionController">
     <div data-breadcrumbs></div>
-    <div class="loading-large span12" data-ng-show="loading"></div>
-    <div class="" data-ng-hide="loading">
+    <div class="loading-large col-md-12" data-ng-show="loading"></div>
+    <div data-ng-hide="loading">
         <div class="container-min-width">
             <h3 class="page-title no-breadcrumb-line container-min-width" data-translate>Create Instance</h3>
             <div class="wizard-steps">
@@ -15,8 +15,8 @@
                     <p data-ng-hide="currentSlidePageIndex >= $index + 1">{{provisionStep.name}}</p>
                 </div><div><p class="laststep"></p></div>
             </div>
-            <div class="row-fluid carousel-container">
-                <div class="span8 provisioning-carousel-span">
+            <div class="row carousel-container">
+                <div class="col-md-8 provisioning-carousel-span">
                     <div id="provisionCarousel" class="carousel slide dpl-inline">
                         <div class="carousel-inner provisioning-carousel-inner-box advanced-table"
                              data-ng-class="{'loading-medium':reloading}">

@@ -21,8 +21,8 @@
                 if ($scope.provisionEnabled) {
                     mdb.getDebugJobsList().then(function (list) {
                         $scope.mantaUnavailable = false;
-                        $scope.loading = false;
                         $scope.objects = list;
+                        $scope.loading = false;
                     }, function (err) {
                         $scope.loading = false;
                         if (!err.message) {
@@ -114,9 +114,8 @@
                     _getter: function (item) {
                         if (item.status === 'Processed' || item.status === 'Failed' || item.status === 'Cancelled') {
                             return item.status;
-                        } else {
-                            return $scope.getStatus(item);
                         }
+                        return $scope.getStatus(item);
                     }
                 },
                 {
@@ -136,7 +135,7 @@
                 {
                     id: 'time',
                     name: 'Time',
-                    sequence: 4,
+                    sequence: 5,
                     active: true,
                     type: 'html',
                     _order: function (item) {
@@ -250,8 +249,6 @@
                     }, true);
                 }
             };
-
-            getJobsList();
         }
     ]);
 }(window.JP.getModule('mdb')));

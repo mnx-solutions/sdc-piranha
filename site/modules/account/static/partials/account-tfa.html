@@ -1,37 +1,39 @@
-<div>
-    <div class="modal-header message">
-        <h5><i class="glyphicon glyphicon-info-sign"></i><b>Two Factor Authentication</b></h5>
-    </div>
-    <div class="modal-body">
-        <p data-ng-show="!tfaEnabled">Two-factor authentication is currently disabled.</p>
-        <p data-ng-show="tfaEnabled">Two-factor authentication is currently enabled.</p>
-        <p data-ng-show="qrImage">If you enable two-factor authentication following instructions below, you will be asked to provide an extra verification code next time you login.</p>
-        <div data-ng-show="qrImage">
-            <ol>
-                <li>Please download 'Google Authenticator' from your phone's App Store.</li>
-                <li>
-                    Scan the QR code below using the application:
-                    <div style="margin: 15px; padding-left: 20px" data-ng-bind-html="qrImage">
-                    </div>
-                </li>
-                <li>
-                    Type the 6-digit code from Google Authenticator to verify your configuration:<br><br>
-                    <div class="control-group">
-                        <span class="edit-value-tfa"><input id="otpass" type="text" class="span4" value="" data-ng-model="otpass" /></span>
-                        <span class="edit-error-tfa" data-ng-show="tfaError" data-translate>Failed to enable TFA</span>
-                    </div>
-                </li>
-            </ol>
+<div class="modal-dialog">
+    <div class="modal-content">
+        <div class="modal-header message">
+            <h5><i class="glyphicon glyphicon-info-sign"></i><b>Two Factor Authentication</b></h5>
         </div>
-    </div>
+        <div class="modal-body">
+            <p data-ng-show="!tfaEnabled">Two-factor authentication is currently disabled.</p>
+            <p data-ng-show="tfaEnabled">Two-factor authentication is currently enabled.</p>
+            <p data-ng-show="qrImage">If you enable two-factor authentication following instructions below, you will be asked to provide an extra verification code next time you login.</p>
+            <div data-ng-show="qrImage">
+                <ol class="tfa-steps">
+                    <li>Please download 'Google Authenticator' from your phone's App Store.</li>
+                    <li>
+                        Scan the QR code below using the application:
+                        <div class="qr-image" data-ng-bind-html="qrImage">
+                        </div>
+                    </li>
+                    <li>
+                        Type the 6-digit code from Google Authenticator to verify your configuration:<br><br>
+                        <div class="form-group">
+                            <span class="edit-value-tfa"><input id="otpass" type="text" class="col-md-4" value="" data-ng-model="otpass" /></span>
+                            <span class="edit-error-tfa" data-ng-show="tfaError" data-translate>Failed to enable TFA</span>
+                        </div>
+                    </li>
+                </ol>
+            </div>
+        </div>
 
-    <div class="modal-footer">
-        <div class="pull-right">
-            <button data-ng-click="close()" data-button-focus="false" data-label="Cancel" class="btn grey-new effect-orange-button">Cancel</button>
-            <button data-ng-show="qrImage" class="btn orange" data-ng-click="testTwoFactorAuth()" data-translate>Verify</button>
-            <button data-ng-show="!tfaEnabled && !qrImage" data-ng-click="enableTwoFactorAuth()" class="btn orange" data-translate>Enable</button>
-            <button data-ng-show="tfaEnabled" data-ng-click="disableTwoFactorAuth()" class="btn orange" data-translate>Disable</button>
+        <div class="modal-footer">
+            <div class="pull-right">
+                <button data-ng-click="close()" data-button-focus="false" data-label="Cancel" class="btn grey-new effect-orange-button">Cancel</button>
+                <button data-ng-show="qrImage" class="btn orange" data-ng-click="testTwoFactorAuth()" data-translate>Verify</button>
+                <button data-ng-show="!tfaEnabled && !qrImage" data-ng-click="enableTwoFactorAuth()" class="btn orange" data-translate>Enable</button>
+                <button data-ng-show="tfaEnabled" data-ng-click="disableTwoFactorAuth()" class="btn orange" data-translate>Disable</button>
+            </div>
+            <div class="pull-right loading-medium-tr loading-tfa" data-ng-show="tfaLoading"></div>
         </div>
-        <div class="pull-right loading-medium-tr" style="margin-right:5px;width:30px;height:30px;min-width:30px;min-height:30px;" data-ng-show="tfaLoading"></div>
     </div>
 </div>

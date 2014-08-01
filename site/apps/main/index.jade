@@ -14,7 +14,7 @@ html(lang='en',data-ng-app='JoyentPortal', id="ng-app", data-ng-controller='Main
         link(rel='stylesheet',href='#{link._url}',type='text/css')
   body()
 
-    div(data-main-menu, class='modulizer-module-menu header navbar navbar-inverse navbar-fixed-top')
+    div(data-main-menu, class='modulizer-module-menu header navbar navbar-fixed-top')
     div(data-main-left, id='leftPanel', ng-class="{'expanded': sideBarMin}")
     //div(data-notification, class='JoyentPortal-module-notification')
     div(data-ng-switch='subview', class='container-fluid ng-cloak', ng-cloak,ng-class="{'leftpanel-small': sideBarMin}")

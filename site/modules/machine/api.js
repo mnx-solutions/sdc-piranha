@@ -346,9 +346,7 @@ module.exports = function execute(scope, register) {
                 } else {
                     machines = machines.filter(function (el) {
                         // Don't show SLB SSC machine unless in dev mode
-                        var slbTagged = el.tags && ((el.tags.slb && (el.tags.slb === 'ssc' || el.tags.slb === 'stm'))
-                            // TODO: remove this after lbass be fully renamed
-                            || (el.tags.lbaas && (el.tags.lbaas === 'ssc' || el.tags.lbaas === 'stm')));
+                        var slbTagged = el.tags && el.tags.lbaas && el.tags.lbaas === 'true';
                         return el.state !== 'failed' && (config.showSLBObjects || !slbTagged);
                     });
 
@@ -493,9 +491,43 @@ module.exports = function execute(scope, register) {
                         response.status = 'error';
                         response.error = err;
                     } else {
-                        /* add datacenter to every image */
-                        images.forEach(function (image) {
-                            image.datacenter = datacenterName;
+
+                        // Don't show SLB images unless in dev mode
+                        if (!config.showSLBObjects) {
+                            images = images.filter(function (el) {
+                                var slbTagged = el.tags && el.tags.lbaas && el.tags.lbaas === 'true';
+                                return !slbTagged;
+                            });
+                        }
+
+                        var imageCreateConfig = config.images || {types: {}};
+
+                        images.forEach(function (img) {
+                            if (info.images.data[img.id]) {
+                                img = utils.extend(img, info.images.data[img.id]);
+                            }
+
+                            var leastSupportedVersion = imageCreateConfig.types[img.name];
+                            if (!img.public) {
+                                img.imageCreateNotSupported = 'Instances from custom images are not supported yet by the image API.';
+                            } else if (!leastSupportedVersion) {
+                                img.imageCreateNotSupported = img.name + ' is not yet supported by the image API.';
+                            } else if (utils.cmpVersion(img.version, leastSupportedVersion) < 0) {
+                                img.imageCreateNotSupported = 'The ' + img.name + ' image needs to be at least image version ' +
+                                    leastSupportedVersion + ' to create an image.';
+                            }
+
+                            if (img.name) {
+                                Object.keys(info.licenses.data['License Portfolio']).forEach(function (k) {
+                                    var license = info.licenses.data['License Portfolio'][k];
+                                    if (license['API Name'] === img.name) {
+                                        img.license_price = license['Pan-Instance Price Uplift'];
+                                    }
+                                });
+                            }
+
+                            // add datacenter to every image
+                            img.datacenter = datacenterName;
                         });
 
                         response.status = 'complete';

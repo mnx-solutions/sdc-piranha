@@ -1,10 +1,10 @@
 <div data-ng-controller="AccountController">
 					<div class="span1 loading-medium-after-h1" data-ng-show="loading" ></div>
     <div class="container-fluid container-position" data-ng-show="!loading">
-        <div class="page-header row-fluid">
+        <div class="page-header row">
             <h3 class="page-title">Account Summary</h3>
         </div>
-        <div class="row-fluid">
+        <div class="row">
             <span class="account first-block pull-left">
                 <fieldset>
                     <legend>
@@ -12,8 +12,8 @@
                         <a href="#!/account/edit/" class="edit-btn effect-orange-button" data-translate>Edit</a>
                     </legend>
 
-                    <div class="row-fluid">
-                        <div class="line row-fluid">
+                    <div class="row">
+                        <div class="line row">
                             <p class="field">
                                 <span class="name" data-translate>Name</span>
                                 <span class="value b">{{account.firstName}} {{account.lastName}}</span>
@@ -47,13 +47,13 @@
                         <a href="#!/account/payment/" class="edit-btn effect-orange-button">Edit</a>
                     </legend>
 
-                    <div class="row-fluid">
-                        <div class="line span6">
+                    <div class="row">
+                        <div class="line">
                             <!--<h6>Credit Card info</h6>-->
                             <div data-current-credit-card></div>
                         </div>
 
-                        <div class="line span6" data-ng-show="0">
+                        <div class="line col-md-6" data-ng-show="0">
                             <!--<h6>Latest invoice</h6>-->
                             <div data-ng-show="lastInvoice">
                                 Your costs from last month
@@ -71,8 +71,8 @@
                 </fieldset>
                 <fieldset data-ng-controller="Account.InvoicesController" ng-show="isInvocesEnabled && !account.isSubuser">
                     <legend><span>Invoices</span></legend>
-                    <div class="row-fluid">
-                        <div class="loading-large row-fluid" data-ng-show="loading"></div>
+                    <div class="row">
+                        <div class="loading-medium row" data-ng-show="loading"></div>
                         <div data-ng-show="!loading && !invoices.length">
                             <div>You don't have any invoices yet</div>
                         </div>

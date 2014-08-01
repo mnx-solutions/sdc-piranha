@@ -1,7 +1,7 @@
 'use strict';
 
 (function (app, ng, $) {
-    app.directive('graph', function (PopupDialog, localization) {
+    app.directive('graph', function (PopupDialog, localization, $timeout) {
         return {
             restrict: 'E',
             replace: true,
@@ -238,7 +238,9 @@
                 };
 
                 $scope.changeRenderer = function (renderer) {
-                    $scope.activeRenderer = renderer;
+                    $timeout(function () {
+                        $scope.activeRenderer = renderer;
+                    }, 0);
                 };
 
                 $scope.ready = false;
@@ -289,7 +291,7 @@
                                         class="toggle-graf-btn toggle-btn-bg">\
                                     <p class="toggle-icon" data-ng-class="{collapsed: !showGraph}">{{ready && instrumentation.title || loadingText}}</p>\
                                 </button>\
-                                <button data-ng-click="deleteGraph()" class="btn del-btn-graf toggle-btn-bg" title="delete graph">\
+                                <button data-ng-click="deleteGraph()" class="btn del-btn-graf toggle-btn-bg pull-right" title="delete graph">\
                                     <div class="pull-right remove-icon"></div>\
                                 </button>\
                             </div>\

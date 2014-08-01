@@ -1,9 +1,9 @@
-<div class="navbar-inner">
+<div class="navbar-container">
     <div class="container-fluid">
-        <a href="#!/dashboard" class="brand"></a>
-        <a class="btn-navbar collapsed" data-toggle="collapse" data-target=".nav-collapse">
+        <a href="#!/dashboard" class="navbar-brand"></a>
+        <a class="navbar-btn collapsed" data-toggle="collapse" data-target=".navbar-collapse">
         </a>
-        <ul class="nav pull-right">
+        <ul class="nav navbar-nav pull-right">
             <li class="dropdown" data-ng-show="!account.provisionEnabled && account">
                 <button data-ng-click="completeAccount()" class="btn-old-style btn-joyent-orange">Complete Account Information</button>
             </li>
@@ -29,9 +29,9 @@
                     <i class="icon-arrow-down-user"></i>
                 </a>
                 <ul class="dropdown-menu dd-account">
-                    <li><a id="link-account" href="#!/account"><span class="icon-user"></span> Account</a></li>
-                    <li data-ng-show="features.provisioningLimits == 'enabled'"><a href="#!/limits"><span class="icon-tasks"></span> Provisioning Limits</a></li>
-                    <li><a data-ng-click="changePassword()"><span class="icon-lock"></span> Change Password</a></li>
+                    <li><a id="link-account" href="#!/account"><span class="glyphicon glyphicon-user"></span> Account</a></li>
+                    <li data-ng-show="features.provisioningLimits == 'enabled'"><a href="#!/limits"><span class="glyphicon glyphicon-tasks"></span> Provisioning Limits</a></li>
+                    <li><a data-ng-click="changePassword()"><span class="glyphicon glyphicon-lock"></span> Change Password</a></li>
                     <li data-ng-hide="account.isSubuser"><a data-ng-click="changeTfa()"><span class="two-keys"></span> Two Factor Authentication</a></li>
                     <li data-ng-show="trackingSuccess"><a href="/landing/forgetToken"><span class="icon-signout"></span> Log Out</a></li>
                 </ul>

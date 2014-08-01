@@ -23,7 +23,7 @@ public class SignupPhoneConfirmationPageold {
     }
 
     public static void checkSelectedCountryCode(String countryCode) {
-        $(".input-prepend span").shouldHave(text(countryCode));
+        $(".input-group.input-group-inline span").shouldHave(text(countryCode));
     }
 
     public static void setPhoneNumber(String phoneNumber) {

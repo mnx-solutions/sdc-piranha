@@ -1,4 +1,4 @@
-<div class="item provisioning-item header row-fluid">
+<div class="item provisioning-item header row">
         <div data-ng-show="selectedPackageInfo" class="preselected pull-right">
             <div class="info small-icon"
                  data-ng-class="selectedDataset.name | logo">
@@ -48,17 +48,17 @@
             <span class="span-specification">SPECIFICATION</span>
             <span class="span-price">PRICE</span>
         </div>
-        <div class="accordion accordion-package-select" id="packagesAccordion">
-            <div class="accordion-group" data-ng-repeat="packageType in packageTypes | filter:filterPackageTypes(datasetType)">
-                <div class="accordion-heading">
+        <div class="panel-group accordion-package-select" id="packagesAccordion">
+            <div class="panel panel-default" data-ng-repeat="packageType in packageTypes | filter:filterPackageTypes(datasetType)">
+                <div class="panel-heading">
                     <a class="accordion-toggle collapsed toggle-icon" data-toggle="collapse" data-parent="#packagesAccordion"
                        data-target="#collapse_{{$index}}" data-ng-click="changeSelectedPackage($event, packageType)" data-ng-class="{'filter-on': filterModel.key != 'No filter'}">
                         {{packageType}}
                         <span class="accordion-package-count">{{(packages | filter:filterPackagesByProp | filter:filterPackages(packageType)).length}}</span>
                     </a>
                 </div>
-                <div id="collapse_{{$index}}" class="accordion-body collapse">
-                    <div class="accordion-inner">
+                <div id="collapse_{{$index}}" class="panel-collapse collapse">
+                    <div class="panel-body">
                         <div class="package-info" data-ng-repeat="package in (packages | filter:filterPackagesByProp | orderBy:sortPackages) | filter:filterPackages(packageType)"
                              data-ng-click="selectPackage(package.id)"
                              data-ng-checked="selectedPackage == package.id"

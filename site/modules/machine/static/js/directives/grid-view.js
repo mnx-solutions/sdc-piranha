@@ -645,6 +645,7 @@
 
                     $scope.userConfig.$load(function (error, config) {
                         if (error) {
+                            $scope.loading = false;
                             return;
                         }
                         var propKeys = {};
@@ -699,10 +700,12 @@
                             setColumnActive(el);
                         });
                         config.$save();
+                        $scope.loading = false;
                     });
                 };
 
                 $scope.$watch('userConfig', function () {
+                    $scope.loading = true;
                     loadUserConfig();
                 });
 

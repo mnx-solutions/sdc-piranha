@@ -1,9 +1,9 @@
-<div class="container-fluid container-position container-min-width">
+<div class="container-position container-min-width cloud-container">
     <div data-ng-switch="subview">
         <div data-ng-switch-when="index" data-ng-controller="cloudController">
             <div data-breadcrumbs></div>
             <h3 class="page-title">{{ pageTitle }}</h3>
-            <div ng-show="machineExists" class="row-fluid">
+            <div ng-show="machineExists" class="row">
                 <div class="chart-info" data-ng-show="selectedInstance">
                     <span class="name-chart">UUID</span>
                     <span class="value-chart">{{selectedInstance}}</span>

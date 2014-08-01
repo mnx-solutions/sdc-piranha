@@ -1,17 +1,19 @@
-<div>
-    <div class="modal-header">
-        <h1 data-translate>Enter certificate passphrase</h1>
-    </div>
-    <div class="modal-body">
-        <div class="control-group">
-            <label class="control-label" data-translate>Passphrase</label>
-            <div class="controls">
-                <input type="password" class="span5" data-ng-model="passphrase" />
+<div class="modal-dialog">
+    <div class="modal-content">
+        <div class="modal-header message">
+            <h5><i class="glyphicon glyphicon-info-sign"></i><b>Enter certificate passphrase</b></h5>
+        </div>
+        <div class="modal-body">
+            <div class="form-group">
+                <label class="control-label" data-translate>Passphrase</label>
+                <div class="controls">
+                    <input type="password" class="col-md-5" data-ng-model="passphrase" />
+                </div>
             </div>
         </div>
-    </div>
-    <div class="modal-footer">
-        <button ng-click="close()" class="btn pull-left" data-translate>Cancel</button>
-        <button ng-click="close(passphrase)" class="btn orange" data-translate>OK</button>
+        <div class="modal-footer">
+            <button ng-click="close()" class="btn pull-left" data-translate>Cancel</button>
+            <button ng-click="close(passphrase)" class="btn orange" data-translate>OK</button>
+        </div>
     </div>
 </div>

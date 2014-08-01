@@ -6,7 +6,7 @@
 
     <p class="alert alert-success" data-ng-show="success && !brandingEnabled" data-translate>Logging in successful. Redirecting...</p>
 
-    <p class="error" data-ng-class="{'orange-text': brandingEnabled, 'alert-danger': !brandingEnabled}"  data-ng-show="error"><i>{{error}}</i></p>
+    <p class="error" data-ng-class="{'orange-text': brandingEnabled, 'alert-danger': !brandingEnabled}"  data-ng-show="error">{{error}}</p>
     <div class="footer">
         <button class="btn btn-large" data-ng-class="{'orange': brandingEnabled, 'btn-primary': !brandingEnabled}" type="submit" data-ng-click="login()" data-translate>Sign in</button>
     </div>

@@ -10,7 +10,7 @@
                             title: localization.translate(null, 'machine', 'Instances')
                         }
                     );
-                    Image.listImages().then(function (data) {
+                    Image.image().then(function (data) {
                         $scope.images = data;
                         $scope.loading = false;
                     }, function (err) {

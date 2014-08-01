@@ -1,6 +1,6 @@
 <div data-ng-controller="Machine.IndexController" class="container-fluid container-position">
-    <div class="machines row-fluid" data-ng-show="machines.length || query">
-        <div class="row-fluid">
+    <div class="machines row" data-ng-show="machines.length || query">
+        <div class="row">
             <h3 class="page-title white-line">Instances</h3>
             <div class="page-title-btn">
                 <a data-ng-click="gotoCreatePage()">
@@ -9,7 +9,7 @@
             </div>
         </div>
 
-        <div class="loading-large span12" data-ng-show="!machines.length && loading"></div>
+        <div class="loading-large col-md-12" data-ng-show="!machines.length && loading"></div>
 
         <div data-grid-view
              data-user-config="gridUserConfig"

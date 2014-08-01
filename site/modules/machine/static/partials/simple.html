@@ -1,17 +1,17 @@
 <div class="container-fluid container-position" data-ng-controller="Machine.ProvisionController">
     <div data-breadcrumbs></div>
-    <div class="loading-large span12" data-ng-show="loading"></div>
+    <div class="loading-large col-md-12" data-ng-show="loading"></div>
     <div class="" data-ng-hide="loading">
         <div class="container-min-width">
             <h3 class="page-title no-breadcrumb-line container-min-width" data-translate>Quick Start: Create Instance</h3>
             <div class="ci-desc">Get started with Joyent by selecting an instance below and start computing.</div>
-            <div class="wizard-first-step row-fluid">
+            <div class="wizard-first-step row">
                 <span class="select-name">Data Center:</span>
                 <div class="btn-group">
+                    <div class="loading-medium loading-medium-inline" data-ng-show="datasetsLoading"></div>
                     <select type="hidden" data-select-two id="selectDatacenter" data-ng-model="data.datacenter" data-fn="selectDatacenter" data-select="data.datacenter" data-ng-options="datacenter.name as datacenter.name for datacenter in datacenters" data-placeholder="No matches found">
                         <option></option>
                     </select>
-                    <div class="loading-medium loading-medium-inline" data-ng-show="datasetsLoading"></div>
                 </div>
                 <div class="hotlinks pull-right">
                     <span data-ng-show="isMantaEnabled && isRecentInstancesEnabled && recentInstances.length > 0">
@@ -31,7 +31,7 @@
                 </div>
             </div>
 
-            <div class="row-fluid images-wrapper">
+            <div class="row images-wrapper">
                 <div class="simple-image" data-ng-repeat="image in simpleImages | filter: filterSimpleImagesByDatacenter" data-ng-class="image.className" ng-click="image.limit && goTo('/limits') || !image.limit && createSimple(image.imageData)">
                     <div class="name">
                         <p data-tooltip-full-text data-original-title="{{image.name}}">{{image.name}}</p>

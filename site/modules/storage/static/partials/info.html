@@ -1,28 +1,32 @@
-<div class="modal" tabindex="-1" data-backdrop="static" data-focus-on="button">
-    <div class="modal-header message">
-        <h5><i class="glyphicon glyphicon-info-sign"></i><b>{{ title }}</b></h5>
-    </div>
-    <div class="modal-body">
-        <table class="info-table">
-            <tr>
-                <td>Name</td>
-                <td>{{info.name}}</td>
-            </tr>
-            <tr>
-                <td>Type</td>
-                <td>{{info.type}}</td>
-            </tr>
-            <tr data-ng-show="info.size">
-                <td>Size</td>
-                <td>{{fileSize.value}} {{fileSize.measure}}</td>
-            </tr>
-            <tr data-ng-show="info.headers['last-modified']">
-                <td>Last Modified At</td>
-                <td>{{info.headers['last-modified']}}</td>
-            </tr>
-        </table>
-    </div>
-    <div class="modal-footer">
-        <button data-ng-click="close()" data-button-focus="false" data-label="Cancel" class="btn orange">Ok</button>
+<div class="modal-dialog">
+    <div class="modal-content">
+        <div tabindex="-1" data-backdrop="static" data-focus-on="button">
+            <div class="modal-header message">
+                <h5><i class="glyphicon glyphicon-info-sign"></i><b>{{ title }}</b></h5>
+            </div>
+            <div class="modal-body">
+                <table class="info-table">
+                    <tr>
+                        <td>Name</td>
+                        <td>{{info.name}}</td>
+                    </tr>
+                    <tr>
+                        <td>Type</td>
+                        <td>{{info.type}}</td>
+                    </tr>
+                    <tr data-ng-show="info.size">
+                        <td>Size</td>
+                        <td>{{fileSize.value}} {{fileSize.measure}}</td>
+                    </tr>
+                    <tr data-ng-show="info.headers['last-modified']">
+                        <td>Last Modified At</td>
+                        <td>{{info.headers['last-modified']}}</td>
+                    </tr>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button data-ng-click="close()" data-button-focus="false" data-label="Cancel" class="btn orange">Ok</button>
+            </div>
+        </div>
     </div>
 </div>

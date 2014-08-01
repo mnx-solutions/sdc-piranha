@@ -4,7 +4,6 @@
     app.controller('Machine.DetailsController',[
         '$scope',
         'requestContext',
-        'Dataset',
         'Machine',
         'Package',
         'Network',
@@ -20,7 +19,7 @@
         'Account',
         'loggingService',
 
-        function ($scope, requestContext, Dataset, Machine, Package, Network, firewall, $filter, $$track,
+        function ($scope, requestContext, Machine, Package, Network, firewall, $filter, $$track,
                   localization, $q, $location, PopupDialog, Image, FreeTier, Account, loggingService) {
             localization.bind('machine', $scope);
             requestContext.setUpRenderContext('machine.details', $scope, {
@@ -158,10 +157,7 @@
                     });
                 }
 
-                $scope.dataset = Dataset.dataset({datacenter: m.datacenter}).then(function () {
-                    return Dataset.dataset({datacenter: m.datacenter, id: m.image});
-                });
-
+                $scope.dataset = Image.image({datacenter: m.datacenter, id: m.image});
                 reloadPackages(m.package, m.datacenter);
 
                 $scope.dataset.then(function (ds) {
@@ -169,7 +165,7 @@
                     if (ds.tags && ds.tags.default_user) {
                         $scope.defaultSshUser = ds.tags.default_user;
                     } else if (!ds.public && ds.origin) {
-                        Dataset.dataset({datacenter: m.datacenter, id: ds.origin}).then(function (dataset) {
+                        Image.image({datacenter: m.datacenter, id: ds.origin}).then(function (dataset) {
                             if (dataset.tags && dataset.tags.default_user) {
                                 $scope.defaultSshUser = dataset.tags.default_user;
                             }
@@ -198,18 +194,25 @@
                 });
             });
 
-            $scope.$watch('machine.networks', function (newNetworks,oldNetworks) {
-                if (newNetworks && !angular.equals(newNetworks, oldNetworks)) {
-                    $scope.networks = [];
-                    newNetworks.forEach(function (networkId) {
-                        Network.getNetwork($scope.machine.datacenter, networkId).then(function (network) {
+            function loadMachineNetworks() {
+                if (!Array.isArray($scope.machine.networks)) {
+                    return;
+                }
+                $scope.machine.networks.forEach(function (machineNetwork) {
+                    if (!$scope.networks.some(function (network) { return network.id === machineNetwork; })) {
+                        Network.getNetwork($scope.machine.datacenter, machineNetwork).then(function (network) {
                             $scope.networks.push(network);
                         }, function (err) {
                             PopupDialog.errorObj(err);
                         });
-                    });
-                }
-            });
+                    }
+                });
+            }
+            if ($scope.machine && $scope.machine.networks) {
+                loadMachineNetworks();
+            } else {
+                $scope.$watch('machine.networks', loadMachineNetworks);
+            }
 
             var machineMessages = {
                 resizeMessage: 'Resize this instance?',

@@ -32,7 +32,10 @@
 }
 .create-images input,
 .create-images textarea {
-    width: 380px;
+    margin-bottom: 10px;
+    width: 394px;
+    height: 30px;
+    text-indent: 4px;
 }
 .create-images textarea {
     height: 180px;
@@ -62,10 +65,6 @@
 .status {
     padding: 5px 10px 5px 10px;
     min-width: 85px;
-}
-
-.status.label {
-    margin-top: 0;
 }
 
 .machine fieldset {
@@ -133,6 +132,7 @@
     overflow-x: hidden;
 }
 .provisioning-carousel-span {
+    padding: 0;
     margin-left: 0px;
 }
 
@@ -145,15 +145,18 @@
 }
 
 .machine-name-edit {
+    box-sizing: content-box;
     margin: -5px 2px 2px;
-    font-family: inherit;
-    font-weight: 200;
     padding: 4px 6px;
-    color: inherit;
-    text-rendering: optimizelegibility;
-    font-size: 30px;
-    height: 30px;
     width: auto;
+    height: 30px;
+    border-radius: 0;
+    color: inherit;
+    font-weight: 200;
+    font-size: 30px;
+    font-family: inherit;
+    line-height: 40px;
+    text-rendering: optimizelegibility;
 }
 
 .machine-edit-form {
@@ -167,18 +170,28 @@
 
 .machine-edit {
     position: relative;
-    padding-bottom: 23px;
-    margin-top: 5px;
-    margin-left: -9px;
+    padding-bottom: 17px;
+    margin: 15px 0 2px -9px;
 }
 
 .machine-edit-buttons {
-    background: white;
-    border: #d3d3d3 solid 1px;
-    padding: 2px;
-    border-radius: 0;
     right: 0;
-    margin-top: -7px;
+    margin-top: -5px;
+    margin-left: 3px;
+    padding: 2px;
+    height: 40px;
+    border: #d3d3d3 solid 1px;
+    border-radius: 0;
+    background: white;
+}
+
+.machine-edit .btn-group .btn {
+    color: #000000;
+    background-color: #f5f5f5;
+}
+
+.machine-edit .btn-group .btn:hover {
+    background-color: #E6E6E6;
 }
 
 .resize-button {
@@ -230,7 +243,8 @@
 }
 
 .tag.editable input {
-    height: 21px;
+    height: 31px;
+    text-indent: 4px;
 }
 
 .tag.editable .key, .tag.editable .value {
@@ -254,6 +268,12 @@
     color : #ff6600;
 }
 
+.header-btn-ci {
+    position: relative;
+    display: inline-block;
+    float: right;
+    margin-top: -73px;
+}
 .btn.orange {
     color: white;
     text-shadow: none;
@@ -351,74 +371,83 @@ span.btn-success {
     cursor: default;
 }
 .status.label {
+    margin-top: 0;
+    width: 110px;
+    height: 22px;
     text-transform: none;
 }
 
-.accordion-group {
+.panel .panel-default {
     border: 0 none;
     margin-bottom: 5px;
 }
-.accordion-heading {
+.panel-heading {
     background: #f5f5f5;
     border-bottom: 0;
 }
-.accordion-heading .accordion-toggle {
+.panel-heading .accordion-toggle {
     position: relative;
     display: block;
     padding: 8px 15px;
     cursor: pointer;
 }
 
-.accordion-heading a {
+.panel-heading a {
     color: black;
     font-size: 16px;
     text-decoration: none;
     font-weight: 500;
 }
 
-.details-accordion{
+.details-accordion {
     margin-top: 3px;
     padding-right: 5px;
     margin-left: -5px;
 }
-.accordion-inner {
+.panel-body {
+    position: relative;
     border-top: 0 !important;
 }
 .collapse.in {
     height: auto !important;
 }
-.accordion-inner table td {
+.panel-body table td {
     font-size: 14px;
     color: #7d7d7d;
     line-height: 28px;
 }
-.accordion-inner table .credentials {
+.panel-body table .credentials {
     font-family: 'Inconsolata';
     font-size: 16px;
 }
-.accordion-inner table td:first-child {
+.panel-body table td:first-child {
     color: #5D80A7;
 }
-#collapse_1 .accordion-inner table td + td {
+#collapse_1 .panel-body table td + td {
     font-weight: 300;
     font-size: 16px;
     overflow: hidden;
     max-width: 325px;
 }
-.delete-icon, .reboot-icon, .icon-play, .stop-icon {
-    width: 14px;
-    height: 14px;
-    float: left;
-    margin-top: 3px;
+.delete-icon,
+.reboot-icon,
+.icon-play,
+.stop-icon {
+    box-sizing: content-box;
     position: relative;
     left: -4px;
-    background-repeat: no-repeat;
-    line-height: 14px;
-    vertical-align: top;
+    float: left;
+    margin-top: 3px;
     padding-right: 5px;
+    width: 14px;
+    height: 14px;
+    background-repeat: no-repeat;
+    vertical-align: top;
+    line-height: 14px;
 }
 .delete-icon {
     margin-top: 1px;
+    width: 19px;
     height: 18px;
     background-image: url("../img/btn_i_delete.png");
 }
@@ -426,16 +455,30 @@ span.btn-success {
     background-image: url("../img/btn_i_reboot.png");
 }
 .stop-icon {
+    padding-right: 10px;
     background-image: url("../img/btn_i_stop.png");
 }
-.details_btn_block{
+.details-btn-block {
     padding: 18px;
-    background-color: #fef1d2;
-    max-width: 449px;
-    min-width: 449px;
     overflow: hidden;
+    box-sizing: content-box;
+    min-width: 449px;
+    max-width: 449px;
+    background-color: #fef1d2;
 }
-
+.details-btn-block .status.label {
+    width: 122px;
+    height: 34px;
+}
+.details-btn-block .status.label .glyphicon-ok {
+    width: 14px;
+    height: 14px;
+}
+.details-btn-block .status.label .glyphicon-ok:before {
+    left: -9px;
+    font-size: 13px;
+    position: absolute;
+}
 .font_size {
     font-size: 16px;
     text-align: left;
@@ -459,9 +502,11 @@ span.btn-success {
 }
 .resize-block{
     padding-top: 20px;
-    display: block;
 }
-.details_btn_block p{
+.resize-block .select2-container .select2-choice {
+    height: 30px;
+}
+.details-btn-block p {
     display: inline-block;
     height: 8px !important;
     vertical-align: top;
@@ -489,12 +534,15 @@ span.btn-success {
 }
 .create-mdata .key-container input {
     width: 310px !important;
+    margin-bottom: 10px;
 }
 .create-mdata .value-container .value-width {
     width: 310px !important;
     height: 80px;
+    text-indent: 4px;
 }
-.key-width, .value-width {
+.key-width,
+.value-width {
     display: inline-block;
     overflow: hidden;
 }
@@ -502,10 +550,10 @@ span.btn-success {
     width: 165px;
 }
 .detail-tags .value-width {
-    width: 211px;
+    width: 225px;
 }
 .detail-tags .key-container input {
-    width: 145px;
+    width: 160px;
     margin-right: 5px;
 }
 .detail-mdata .value.value-width,
@@ -521,10 +569,10 @@ span.btn-success {
     display: none;
 }
 .create-tags .value-width {
-    width: 152px;
+    width: 166px;
 }
 .create-tags .key-container input {
-    width: 135px;
+    width: 149px;
 }
 .create-mdata .value.value-width,
 .create-tags .value.value-width {
@@ -548,10 +596,15 @@ span.btn-success {
 
 .metadata .editable .value-width,
 .metadata .editable .key-width {
-    min-width: 380px;
-    max-width: 380px;
+    min-width: 395px;
+    max-width: 395px;
 }
-
+.metadata .editable .key-width {
+    margin-bottom: 10px;
+}
+.metadata .editable .value-width {
+    text-indent: 4px;
+}
 .tags-title{
     color: #5D80A7;
     font-size: 14px;
@@ -593,10 +646,10 @@ span.btn-success {
 }
 .simple-image .freetier-info {
     margin-left: 20px;
-    padding-top: 5px;
+    padding-top: 8px;
     color: #666;
-    font-size: 12px;
     font-weight: 400;
+    font-size: 12px;
 }
 .simple-image .info p {
     margin-top: 7px;
@@ -614,9 +667,10 @@ span.btn-success {
     line-height: 0px;
 }
 .simple-image .name {
+    overflow: hidden;
+    box-sizing: content-box;
     padding: 15px 60px 0 20px;
     height: 44px;
-    overflow: hidden;
 }
 .simple-image .browse .title {
     font-size: 16px;
@@ -630,10 +684,10 @@ span.btn-success {
     line-height: 16px;
 }
 .simple-image .description {
-    padding: 5px 24px 0 20px;
-    height: 50px;
-    text-overflow: ellipsis;
     overflow: hidden;
+    padding: 5px 20px 0 20px;
+    height: 55px;
+    text-overflow: ellipsis;
 }
 .simple-image .btn-block .select-btn.small {
     margin-top: 0;
@@ -685,9 +739,9 @@ span.btn-success {
     vertical-align: middle;
 }
 .simple-image .btn-block .hour {
-    font-size: 12px;
-    line-height: 14px;
     vertical-align: bottom;
+    font-size: 12px;
+    line-height: 19px;
 }
 .ci-desc {
     font-size: 16px;
@@ -702,7 +756,8 @@ span.btn-success {
     background-color: white;
 }
 .filter-images {
-    height: 18px !important;
+    width: 241px;
+    height: 26px;
     background-position: 7px 6px;
     background-size: 16px;
     font-size: 14px;
@@ -875,8 +930,10 @@ span.btn-success {
     padding-top: 5px;
     padding-bottom: 30px;
 }
-
-.row-fluid.carousel-container {
+.wizard-first-step {
+    width: 100%;
+}
+.row.carousel-container {
     margin-top: 75px;
 }
 .wizard-second-step {
@@ -1011,65 +1068,68 @@ span.btn-success {
     font-weight: 300;
 }
 
-.accordion-package-select .accordion-group {
+.accordion-package-select .panel.panel-default {
     margin-bottom: 0;
 }
 
 .accordion-package-select .accordion-toggle {
-    padding: 12px 15px;
+    padding: 9px 15px;
     border: 1px solid #dadcdd;
 }
 
-.accordion-package-select .accordion-inner {
+.accordion-package-select .panel-body {
     padding: 0;
 }
 
-.accordion-package-select .accordion-inner .short-name,
-.accordion-package-select .accordion-inner .memory,
-.accordion-package-select .accordion-inner .memory p,
-.accordion-package-select .accordion-inner .disk,
-.accordion-package-select .accordion-inner .cpu,
-.accordion-package-select .accordion-inner .price,
-.accordion-package-select .accordion-inner .price p,
-.accordion-package-select .accordion-inner span{
+.accordion-package-select .panel-body .short-name,
+.accordion-package-select .panel-body .memory,
+.accordion-package-select .panel-body .memory p,
+.accordion-package-select .panel-body .disk,
+.accordion-package-select .panel-body .cpu,
+.accordion-package-select .panel-body .price,
+.accordion-package-select .panel-body .price p,
+.accordion-package-select .panel-body span {
     display: inline-block;
 }
 
-.accordion-package-select .accordion-inner span.ng-scope{
+.accordion-package-select .panel-body span.ng-scope{
     font-size: 12px;
     font-weight: 300;
 }
 
-.accordion-package-select .accordion-inner .short-name,
-.accordion-package-select .accordion-inner .price {
+.accordion-package-select .panel-body .short-name,
+.accordion-package-select .panel-body .price {
     font-weight: 500;
 }
 
-.accordion-package-select .accordion-inner .short-name {
+.accordion-package-select .panel-body .short-name {
     padding-left: 40px;
 }
 
-.accordion-package-select .accordion-inner .memory,
-.accordion-package-select .accordion-inner .short-name {
+.accordion-package-select .panel-body .memory,
+.accordion-package-select .panel-body .short-name {
+    box-sizing: content-box;
     width: 145px;
 }
 
-.accordion-package-select .accordion-inner .cpu {
+.accordion-package-select .panel-body .cpu {
     width: 110px;
 }
 
-.accordion-package-select .accordion-inner .disk {
+.accordion-package-select .panel-body .disk {
     width: 120px;
 }
-
+.accordion-package-select .package-info,
+.accordion-package-title {
+    width: 720px;
+    height: 40px;
+    border: 1px solid #dadcdd;
+}
 
 .accordion-package-select .package-info {
-    border: 1px solid #dadcdd;
-    width: 718px;
-    height: 40px;
+    margin-top: -1px;
     vertical-align: middle;
     line-height: 40px;
-    margin-top: -1px;
     cursor: pointer;
 }
 
@@ -1081,43 +1141,44 @@ span.btn-success {
     background-color: #fef1d2;
 }
 
-.accordion-package-select .accordion-heading{
+.accordion-package-select .panel-heading {
     margin-top: -1px;
 }
 
-.accordion-package-title{
-    height: 40px;
-    width: 718px;
-    color: #7d7d7d;
-    border: 1px solid #dadcdd;
-    border-bottom: none;
+.accordion-package-title {
     margin-top: 0;
-    font-weight: 300;
-    font-size: 12px;
+    color: #7d7d7d;
     text-transform: uppercase;
     letter-spacing: 2px;
+    font-weight: 300;
+    font-size: 12px;
 }
 
-.accordion-package-title .span-name, .accordion-package-title .span-specification, .accordion-package-title .span-price{
-    height: 40px;
+.accordion-package-title .span-name,
+.accordion-package-title .span-specification,
+.accordion-package-title .span-price {
     display: inline-block;
     padding-right: 10px;
-    text-align: left;
+    height: 40px;
     vertical-align: middle;
+    text-align: left;
     line-height: 40px;
 
 }
-.accordion-package-title .span-name{
+.accordion-package-title .span-name {
     width: 100px;
     padding-left: 35px;
 }
-.accordion-package-title .span-specification{
+.accordion-package-title .span-specification {
     width: 400px;
     padding-left: 70px;
 }
-.accordion-package-title .span-price{
+.accordion-package-title .span-price {
     width: 80px;
     padding-left: 45px;
+}
+.panel-group .panel + .panel {
+    margin-top: 0;
 }
 .accordion-package-count {
     position: absolute;
@@ -1152,6 +1213,13 @@ span.btn-success {
     display: block !important;
 }
 
+.review .right .metadata-section {
+    margin-top: 10px;
+}
+.review .right .create-mdata .key-container input,
+.review .right .create-mdata .value-container .value-width {
+    width: 324px !important;
+}
 .info h2, .review .left h2, .review .right h2 {
     font-size: 18px;
     font-weight: 500;
@@ -1187,11 +1255,12 @@ span.btn-success {
     padding-top: 4px;
 }
 .dataset-cost h3 {
+    display: inline-block;
+    margin-top: 10px;
+    padding-bottom: 10px;
     font-weight: 500;
     font-size: 24px;
     line-height: 0px;
-    padding-bottom: 10px;
-    display: inline-block;
 }
 .review-btn {
     height: 35px;
@@ -1201,6 +1270,7 @@ span.btn-success {
     margin-top: 10px;
 }
 .review {
+    margin-bottom: 25px;
     padding-top: 25px;
     padding-bottom: 25px;
     width: 1000px;
@@ -1212,6 +1282,7 @@ span.btn-success {
 .review .left,
 .review .center,
 .review .right {
+    box-sizing: content-box;
     padding: 0 25px 0 25px;
 }
 .review .left {
@@ -1223,7 +1294,7 @@ span.btn-success {
     max-width: 245px;
 }
 .review .center .package {
-    padding-top: 10px;
+    padding-top: 4px;
 }
 .review div.checker,
 .review div.checker span,
@@ -1231,7 +1302,11 @@ span.btn-success {
     display: inline-block;
     margin-top: 3px;
 }
-
+.network-name {
+    display: inline-block;
+    margin-left: 5px;
+    padding-top: 5px;
+}
 .package .value {
     font-size: 14px;
     font-weight: 500;
@@ -1254,7 +1329,10 @@ span.btn-success {
     padding-top: 50px;
 }
 .instance-name-input {
-    width: 310px;
+    width: 324px;
+    height: 30px;
+    text-indent: 6px;
+    font-size: 14px;
 }
 .networks-box-3 span {
     font-size: 14px;
@@ -1262,6 +1340,10 @@ span.btn-success {
 }
 .networks-box-3 input[type=checkbox] {
     margin-right: 5px;
+}
+.networks-box-3 label {
+    display: block;
+    margin-bottom: 5px;
 }
 .item-position {
     line-height: 25px;
@@ -1295,21 +1377,17 @@ span.btn-success {
     margin-left: 5px;
 }
 .chart-icon {
-    width: 16px;
-    height: 16px;
     float: left;
     margin-top: 0;
+    padding-right: 26px;
+    width: 16px;
+    height: 16px;
     background-image: url("../img/icon-chart.png");
     background-repeat: no-repeat;
     vertical-align: middle;
-    padding-right: 10px;
 }
 .effect-orange-button:hover .chart-icon {
     background-image: url("../img/icon-chart-white.png");
-}
-
-.pagination {
-    margin-bottom: 5px;
 }
 
 .btn.grey{
@@ -1373,7 +1451,7 @@ span.btn-success {
 }
 
 .review .left.small-icon {
-    background-position: 212px 26px;
+    background-position: 212px 30px;
 }
 .recent-image.small-icon {
     background-position: 90% 14px;
@@ -1625,14 +1703,15 @@ span.btn-success {
     display: inline-block;
     margin-top: 15px;
     margin-right: 5px;
-}.loading-30{
+}
+.loading-30 {
     display: inline-block;
     vertical-align: middle;
 }
-.btn-height{
+.btn-height {
     min-height: 34px;
 }
-.accordion-max-width{
+.accordion-max-width {
     min-width: 507px;
     max-width: 465px;
 }
@@ -1668,6 +1747,24 @@ span.btn-success {
     color: #333333 !important;
     font-weight: bold;
 }
+.checkbox {
+    margin-top: 0;
+}
+.table-bordered > thead > tr > th,
+.table-bordered > tbody > tr > td {
+    border: 0;
+}
+.table > tbody > tr > td {
+    padding-top: 0;
+    padding-bottom: 0;
+    vertical-align: middle;
+}
+.table > thead > tr > th.active {
+    background-color: transparent;
+}
+.actions .open > .dropdown-menu {
+    margin-top: 1px;
+}
 .select2-choice span {
     font-size: 14px;
 }
@@ -1676,4 +1773,7 @@ span.btn-success {
 }
 .filter-select {
     text-transform: uppercase;
+}
+.panel-body table tr:first-child td {
+    border-top: 0;
 }

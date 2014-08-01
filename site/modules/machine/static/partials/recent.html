@@ -8,10 +8,10 @@
             <div class="control-panel">
                 <span>Data Center:</span>
                 <div class="provisioning-header-left-button btn-group">
+                    <div class="loading-medium loading-medium-inline" data-ng-show="datasetsLoading"></div>
                     <select type="hidden" data-select-two id="selectDatacenter" data-ng-model="data.datacenter" data-fn="selectDatacenter" data-select="data.datacenter" data-ng-options="datacenter.name as datacenter.name for datacenter in datacenters" data-placeholder="No matches found">
                         <option></option>
                     </select>
-                    <div class="loading-medium loading-medium-inline" data-ng-show="datasetsLoading"></div>
                 </div>
                 <div class="hotlinks pull-right">
                     <span>
@@ -28,7 +28,7 @@
                     </span>
                 </div>
             </div>
-            <div class="row-fluid">
+            <div class="row">
                 <div class="simple-image recent-image small-icon"
                      data-ng-repeat="instance in recentInstances | limitTo:8"
                      data-ng-class="instance.datasetName | logo"

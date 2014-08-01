@@ -4,13 +4,13 @@
 
 /*tiles*/
 .tile {
+    box-sizing: content-box;
     padding: 10px;
     width: 220px;
     height: 185px;
 }
 
 .tile .title {
-    margin-top: 10px;
     color: white;
     letter-spacing: 0.5px;
     font-weight: 200;
@@ -57,13 +57,13 @@
 
 .tile .single-column {
     float: left;
-    margin-top: 21px;
+    margin-top: 5px;
 }
 
 .tile .left-column,
 .tile .right-column {
     float: left;
-    margin-top: 20px;
+    margin-top: 5px;
 }
 .tile .left-column {
     max-width: 70px;
@@ -105,8 +105,14 @@
 .tile .number.small {
     font-size: 19px;
 }
+.widget.links2 .more i {
+    float: right;
+    position: absolute;
+    right: 7px;
+}
 
 .tile .info {
+    margin-top: -10px;
     padding: 3px 0 3px 1px;
     color: white;
     white-space: nowrap;
@@ -299,7 +305,7 @@ a.orange {
 .separation-container span > a,
 .separation-container span,
 .separation-container a,
-.separation-container.row-fluid a,
+.separation-container.row a,
 .separation-container {
     min-height: 0 !important;
     border-top: none;

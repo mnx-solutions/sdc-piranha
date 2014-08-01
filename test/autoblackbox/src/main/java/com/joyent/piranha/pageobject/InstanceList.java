@@ -64,7 +64,7 @@ public class InstanceList extends AbstractPageObject {
     public void changeInstanceStatus(String operation, String instance) {
         $(".item-list-container").waitUntil(visible, baseTimeout);
         SelenideElement e = Common.getRowByText(
-                $$(".item-list-container .row-fluid"), instance);
+                $$(".item-list-container .row"), instance);
         e.find(byText(operation)).click();
         Common.clickButtonInModal("Yes");
     }

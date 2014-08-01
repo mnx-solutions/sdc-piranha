@@ -1,17 +1,18 @@
 <span>
     <span class="edit-value-double">
-        <select data-select-two
-                id="countrySelect"
-                name="countrySelect"
-                data-ng-style="selectStyle"
-                data-select="country.name"
-                data-width="200px"
-                data-ng-model="country"
-                data-ng-change="$parent.phone.country"
-                data-ng-options="country as (country.name + ' (+' + country.areaCode + ')') group by country.group for country in countryCodes | filter:filterUndefinedAreas | orderBy: ['-group','name']">
-        </select>
-      <div class="input-prepend">
-          <span class="add-on phone-code">({{areaCode}})</span>
+      <select data-select-two
+              id="countrySelect"
+              name="countrySelect"
+              data-ng-style="selectStyle"
+              data-select="country.name"
+              data-width="200px"
+              data-ng-model="country"
+              data-search-box="true"
+              data-ng-change="$parent.phone.country"
+              data-ng-options="country as (country.name + ' (+' + country.areaCode + ')') group by country.group for country in countryCodes | filter:filterUndefinedAreas | orderBy: ['-group','name']">
+      </select>
+      <div class="input-group input-group-inline">
+          <span class="input-group-addon">({{areaCode}})</span>
           <input type="text"
                name="phone"
                data-ng-style="inputStyle"

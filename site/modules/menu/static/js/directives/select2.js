@@ -6,6 +6,9 @@
             return {
                 link: function ($scope, $element, $attrs) {
                     var conf = {minimumResultsForSearch: -1};
+                    if ($attrs.searchBox) {
+                        conf.minimumResultsForSearch = 1;
+                    }
                     if ($attrs.width) {
                         conf.width = $attrs.width;
                     }

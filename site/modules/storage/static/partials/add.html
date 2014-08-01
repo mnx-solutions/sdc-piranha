@@ -1,50 +1,54 @@
-<div class="modal file-manager" tabindex="-1" data-backdrop="static" data-focus-on="button">
-    <div class="modal-header message">
-        <h5><i class="glyphicon glyphicon-info-sign"></i><b>{{title}}</b></h5>
-    </div>
-    <div class="modal-body">
-        <form name="folderNameForm">
-            <p>File path</p>
-            <div class="row-fluid">
-                <div class="error"
-                     data-ng-show="folderNameForm.fullFilePath.$invalid && fullFilePath.length"
-                     data-translate>
-                     File path is invalid.
-                </div>
-                <input type="text"
-                       name="fullFilePath"
-                       data-ng-model="fullFilePath"
-                       data-file-path
-                       class="popup-file-path"/>
+<div class="modal-dialog modal-dialog-file">
+    <div class="modal-content">
+        <div class="file-manager" tabindex="-1" data-backdrop="static" data-focus-on="button">
+            <div class="modal-header message">
+                <h5><i class="glyphicon glyphicon-info-sign"></i><b>{{title}}</b></h5>
             </div>
-            <div class="row-fluid">
-                <label class="checkbox folder-name-form-checkbox">
-                    <div class="checker dpl-inline" data-ng-class="{hover: shows}" data-ng-mouseenter="shows = true" data-ng-mouseleave="shows = false">
+            <div class="modal-body">
+                <form name="folderNameForm">
+                    <p>File path</p>
+                    <div class="row">
+                        <div class="error"
+                             data-ng-show="folderNameForm.fullFilePath.$invalid && fullFilePath.length"
+                             data-translate>
+                            File path is invalid.
+                        </div>
+                        <input type="text"
+                               name="fullFilePath"
+                               data-ng-model="fullFilePath"
+                               data-file-path
+                               class="file-path"/>
+                    </div>
+                    <div class="row-fluid">
+                        <label class="checkbox folder-name-form-checkbox">
+                            <div class="checker dpl-inline" data-ng-class="{hover: shows}" data-ng-mouseenter="shows = true" data-ng-mouseleave="shows = false">
                         <span data-ng-class="{checked: useMfind}">
                             <input type="checkbox" class="group-checkable" name="useMfind" data-ng-model="useMfind" />
                         </span>
-                    </div>
-                    Use <code>mfind</code> command to pick files. More details in
-                    <a href="https://apidocs.joyent.com/manta/mfind.html" target="_blank">documentation</a>.
-                </label>
-                <input type="text"
-                       name="mfind"
-                       data-ng-model="mfind"
-                       data-ng-show="useMfind"
-                       data-ng-required="useMfind"
-                       class="popup-file-path" />
+                            </div>
+                            Use <code>mfind</code> command to pick files. More details in
+                            <a href="https://apidocs.joyent.com/manta/mfind.html" target="_blank">documentation</a>.
+                        </label>
+                        <input type="text"
+                               name="mfind"
+                               data-ng-model="mfind"
+                               data-ng-show="useMfind"
+                               data-ng-required="useMfind"
+                               class="file-path" />
 
-                <div class="error"
-                     data-ng-show="formSubmitted && folderNameForm.mfind.$invalid"
-                     data-translate>
-                    Missing command.
-                </div>
+                        <div class="error"
+                             data-ng-show="formSubmitted && folderNameForm.mfind.$invalid"
+                             data-translate>
+                            Missing command.
+                        </div>
+                    </div>
+                </form>
+                <div data-file-manager data-show-controls="false" data-current-path="filePath" data-popup="true" data-ng-hide="useMfind"></div>
             </div>
-        </form>
-        <div data-file-manager data-show-controls="false" data-current-path="filePath" data-popup="true" data-ng-hide="useMfind"></div>
-    </div>
-    <div class="modal-footer">
-        <p data-ng-show="message.footer" data-ng-bind-html="message.footer"></p>
-        <button data-tabindex="{{btn.datatabindex}}" data-button-focus="{{ btn.setFocus }}" data-ng-repeat="btn in buttons" data-ng-click="close(folderNameForm, btn.result)" class="btn" data-ng-class="btn.cssClass">{{ btn.label }}</button>
+            <div class="modal-footer">
+                <p data-ng-show="message.footer" data-ng-bind-html="message.footer"></p>
+                <button data-tabindex="{{btn.datatabindex}}" data-button-focus="{{ btn.setFocus }}" data-ng-repeat="btn in buttons" data-ng-click="close(folderNameForm, btn.result)" class="btn" data-ng-class="btn.cssClass">{{ btn.label }}</button>
+            </div>
+        </div>
     </div>
 </div>

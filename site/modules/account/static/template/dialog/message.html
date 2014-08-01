@@ -1,27 +1,28 @@
-<div>
-    <div class="modal modal-ssh" tabindex="-1" data-backdrop="static" data-focus-on="button">
-        <div class="modal-header message">
-            <h5><i class="glyphicon glyphicon-info-sign"></i><b>Import SSH Public Key</b></h5>
-        </div>
-        <div class="modal-body">
-            <div class="control-group">
-                <label class="control-label">Key Name</label>
-                <div class="controls">
-                    <input type="text" class="span5" data-ng-model="data.keyName" placeholder="optional"
-                            data-ng-disabled="loadingKeys"/>
+<div class="modal-dialog modal-dialog-ssh">
+    <div class="modal-content">
+        <div class="modal-ssh" tabindex="-1" data-backdrop="static" data-focus-on="button">
+            <div class="modal-header message">
+                <h5><i class="glyphicon glyphicon-info-sign"></i><b>Import SSH Public Key</b></h5>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="control-label">Key Name</label>
+                    <div class="controls">
+                        <input type="text" class="col-md-12 ssh-key-name" data-ng-model="data.keyName" placeholder="optional"
+                               data-ng-disabled="loadingKeys"/>
+                    </div>
+                </div>
+                <div class="form-group control-group-ssh">
+                    <label class="control-label">Public Key</label>
+                    <div class="row">
+                        <textarea class="ssharea col-md-12" rows="10"
+                                  data-ng-model="data.keyData"
+                                  data-ng-disabled="loadingKeys"></textarea>
+                    </div>
                 </div>
             </div>
-            <div class="control-group control-group-ssh">
-                <label class="control-label">Public Key</label>
-                <div class="controls">
-                    <textarea class="ssharea span5" rows="10"
-                            data-ng-model="data.keyData"
-                            data-ng-disabled="loadingKeys"></textarea>
-                </div>
-            </div>
-        </div>
-        <div class="modal-footer modal-footer-ssh">
-            <button data-button-focus="true" data-ng-click="close('add')" class="btn orange effect-orange-button pull-right">Add</button>
+            <div class="modal-footer modal-footer-ssh">
+                <button data-button-focus="true" data-ng-click="close('add')" class="btn orange effect-orange-button pull-right">Add</button>
             <span data-ng-show="isUploadSshEnabled">
                 <label type="button" class="btn orange effect-orange-button grey-new upload-key-label pull-right" for="uploadInput">upload</label>
                 <input type="file"
@@ -31,8 +32,9 @@
                        data-ng-model="filePath"
                        onchange="angular.element(this).scope().uploadFile(uploadInput)">
             </span>
-            <button data-button-focus="false" data-ng-click="close('cancel')" class="btn orange effect-orange-button grey-new pull-right">Cancel</button>
-            <div class="loading-medium-tr pull-right" data-ng-show="loadingKeys"></div>
+                <button data-button-focus="false" data-ng-click="close('cancel')" class="btn orange effect-orange-button grey-new pull-right">Cancel</button>
+                <div class="loading-medium-tr pull-right" data-ng-show="loadingKeys"></div>
+            </div>
         </div>
     </div>
 </div>

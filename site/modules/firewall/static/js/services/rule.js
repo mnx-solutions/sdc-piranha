@@ -4,7 +4,7 @@
 (function (ng, app) {
     app.factory('rule', [
         'serverTab',
-        'Dataset',
+        'Image',
         '$rootScope',
         '$q',
         '$timeout',
@@ -13,7 +13,7 @@
         'PopupDialog',
         'ErrorService',
 
-        function (serverTab, Dataset, $rootScope, $q, $timeout, localization, util, PopupDialog, ErrorService) {
+        function (serverTab, Image, $rootScope, $q, $timeout, localization, util, PopupDialog, ErrorService) {
 
             var service = {};
             var rules = { job: null, index: {}, map: {}, list: [], search: {} };
@@ -58,7 +58,7 @@
                 rules.map[rule.datacenter].push(rule);
 
                 function isDatacenterOn(callback) {
-                    return Dataset.dataset({datacenter: rule.datacenter}).catch(function (err) {
+                    return Image.image({datacenter: rule.datacenter}).catch(function (err) {
                         return callback(null, err);
                     });
                 }

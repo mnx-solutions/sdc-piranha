@@ -30,7 +30,7 @@
         'requestContext',
         'localization',
         'rule',
-        'Dataset',
+        'Image',
         'Datacenter',
         'Machine',
         '$http',
@@ -39,7 +39,7 @@
         '$location',
         '$anchorScroll',
 
-        function ($scope, $rootScope, $filter, $q, $qe, requestContext, localization, rule, Dataset, Datacenter, Machine, $http, PopupDialog, Account, $location,
+        function ($scope, $rootScope, $filter, $q, $qe, requestContext, localization, rule, Image, Datacenter, Machine, $http, PopupDialog, Account, $location,
                   $anchorScroll) {
 
             localization.bind('firewall', $scope);
@@ -411,7 +411,7 @@
             $scope.$watch('selected.datacenter', function (newVal) {
                 if (newVal) {
                     $scope.datasetsLoading = true;
-                    $q.when(Dataset.dataset({ datacenter: newVal })).then(function (result) {
+                    $q.when(Image.image({ datacenter: newVal })).then(function (result) {
                         if (result.length === 0) {
                             switchToOtherDatacenter(newVal);
                         } else {
@@ -969,7 +969,7 @@
                         return (object.job && !object.job.finished) || object.deleteJob;
                     },
                     _getter: function (object) {
-                        return object.enabled ? '<span class="grid-enabled-text">Enabled</span>' : '<span class="grid-disabled-text">Disabled</span>';
+                        return object.enabled ? '<span class="grid-status-text grid-enabled-text">Enabled</span>' : '<span class="grid-status-text grid-disabled-text">Disabled</span>';
                     },
                     sequence: 1,
                     active: true

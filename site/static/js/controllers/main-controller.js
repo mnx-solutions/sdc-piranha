@@ -24,6 +24,7 @@
             };
 
             $rootScope.isOnline = true;
+            $rootScope.isAppDown = false;
 
             $rootScope.zenboxParams = window.JP.get('zendesk') || {};
 
@@ -67,6 +68,12 @@
                     }
 
                     if (window.navigator.onLine && $rootScope.isOnline) {
+                        if ($rootScope.isAppDown) {
+                            $http.get('timeout/check?rnd=' + Math.floor(Math.random() * 123456))
+                            .success(function () {
+                                $rootScope.isAppDown = false;
+                            });
+                        }
                         var currentStep = $('#signupStep').val();
                         if (currentStep
                             && !(currentStep === 'complete' || currentStep === 'completed')
@@ -142,6 +149,7 @@
                     if ($rootScope.navigatedAwayAt && new Date().getTime() < $rootScope.navigatedAwayAt + 5 * 1000 || !$rootScope.isOnline) {
                         return;
                     }
+                    $rootScope.isAppDown = true;
                     errorContext.emit(new Error(localization.translate(null,
                         "main",
                             message || 'Unable to retrieve data from server.'

@@ -1,20 +1,24 @@
-<div class="modal" tabindex="-1" data-backdrop="static" data-focus-on="button">
-    <form name="contactForm" novalidate="" id="contactForm" ng-submit="submitForm(contactForm.$valid)">
-        <div class="modal-header confirm">
-            <h5><i class="glyphicon glyphicon-question-sign"></i><b>Contact us: {{ popUpTitle }}</b></h5>
-        </div>
-        <div class="modal-body">
-            <div class="control-group">
-                <label class="control-label">Comments</label>
-                <div class="controls">
-                    <textarea class="span7" type="text" name="comments" rows="5" data-ng-model="comments"></textarea>
+<div class="modal-dialog">
+    <div class="modal-content">
+        <div tabindex="-1" data-backdrop="static" data-focus-on="button">
+            <form name="contactForm" novalidate="" id="contactForm" ng-submit="submitForm(contactForm.$valid)">
+                <div class="modal-header confirm">
+                    <h5><i class="glyphicon glyphicon-question-sign"></i><b>Contact us: {{ popUpTitle }}</b></h5>
                 </div>
-            </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label class="control-label">Comments</label>
+                        <div class="controls">
+                            <textarea class="support-comments" type="text" name="comments" rows="5" data-ng-model="comments"></textarea>
+                        </div>
+                    </div>
 
+                </div>
+                <div class="modal-footer">
+                    <button data-ng-click="close()" data-button-focus="false" data-label="Cancel" class="btn grey-new effect-orange-button">Cancel</button>
+                    <button type="submit" data-button-focus="true" data-label="Contact us" class="btn orange">Contact us</button>
+                </div>
+            </form>
         </div>
-        <div class="modal-footer">
-            <button data-ng-click="close()" data-button-focus="false" data-label="Cancel" class="btn grey-new effect-orange-button">Cancel</button>
-            <button type="submit" data-button-focus="true" data-label="Contact us" class="btn orange">Contact us</button>
-        </div>
-    </form>
+    </div>
 </div>

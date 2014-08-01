@@ -1,19 +1,17 @@
 
-.lb-label{
+.lb-label {
     padding: 5px 0 0 0;
     line-height: 20px;
 }
-
+.lb-label-ip {
+    padding-top: 0;
+}
 .protocol-input input{
     width: 60px;
 }
 .url-input{
     width: 80px;
     margin-left: -17px;
-}
-.port-input > input{
-    width: 35px !important;
-    margin: 10px;
 }
 .protocol-block {
     margin-top: 10px;
@@ -24,50 +22,45 @@
 }
 
 .name-input input {
-    width: 242px;
+    width: 256px;
+    height: 30px;
     margin-left: 35px;
 }
 
 .short-input {
-    width: 24px;
+    width: 38px;
     margin-left: 35px;
 }
 
 .short-input-port {
-    width: 40px;
-}
-
-.group-checkable {
-    margin: 0;
+    width: 55px;
 }
 
 .slb-select {
     background-color: white !important;
     height: 32px;
 }
-.lb-edit{
+.lb-edit {
     border: 2px solid #ececec;
     padding: 15px;
     margin-bottom: 40px;
     width: auto;
 }
-.lb-line{
+.lb-edit input {
+    margin-bottom: 10px;
+    padding: 4px 6px;
+}
+.lb-line {
     border-top: 2px solid #ececec;
     width: 355px;
     padding-bottom: 15px;
 }
-.lb-line-allwidth{
+.lb-line-allwidth {
     border-bottom: 2px solid #ececec;
     width: 100%;
 }
-.logo-riverbed{
-    background-image: url("../img/logo_riverbed.png");
-    width: 133px;
-    height: 58px;
-    background-repeat: no-repeat;
-    background-size: 60%;
-    background-position: 14px;
-    margin-top: -30px;
+.lb-edit input.group-checkable {
+    margin: 0;
 }
 .img1{
 /*
@@ -86,26 +79,11 @@
     background-position: 0 20px;
     margin-left: 120px;
 }
-.license-eula-logo{
-    background-image: url("../img/logo_riverbed.png");
-    width: 133px;
-    height: 58px;
-    background-repeat: no-repeat;
-    /*background-size: 60%;*/
-    /*background-position: 14px;*/
-    /*margin-top: -30px;*/
-}
-.license-eula{
+.license-eula {
+    padding: 10px;
     width: 900px;
     height: 400px;
-    overflow: auto;
-    border: 1px solid #D4D7D8;
-    padding: 10px;
 }
-.license-eula p{
-    font-size: 12px;
-}
-
 .accept-checkbox {
     padding-top: 20px;
     padding-bottom: 40px;
@@ -154,11 +132,12 @@ input.ng-invalid-field{
 .edit-btn-pos{
     margin: -20px 20px 30px 10px;
 }
-.balancer-id{
-    padding-left: 37px;
+.balancer-id {
+    padding-left: 50px;
+    padding-bottom: 10px;
 }
-.protocol-pos{
-    margin-left: 13px;
+.protocol-pos {
+    margin-left: -3px;
 }
 .int-port{
     margin-top: -10px;
@@ -188,9 +167,9 @@ input.ng-invalid-field{
     margin-left: 0;
 }
 .table-right-border{
-    border-right: 2px solid #ececec;
-    padding-right: 20px;
     margin-right: 0;
+    padding: 0 20px 0 0;
+    border-right: 2px solid #ececec;
 }
 .delete-btn-pos{
     margin: -20px 0 30px 10px;
@@ -257,7 +236,7 @@ table.table {
 .load-balancer-highlight .slb-name {
     color: #f60;
 }
-.edit-name{
+.edit-name {
     display: inline-block;
     width: 125px;
     text-align: right;
@@ -280,15 +259,16 @@ table.table {
     width: 250px;
     height: 28px;
     border: 1px solid #ccc;
+    border-radius: 4px;
     background-color: #fafcfd;
-    font-size: 16px;
     font-weight: 300;
+    font-size: 16px;
 }
 .edit-value-two input {
     display: inline-block;
     height: 30px;
 }
-.control-group{
+.form-group {
     height: 40px;
     margin-top: 0;
 }
@@ -316,7 +296,7 @@ legend {
     vertical-align: top;
 }
 .datacenter-name {
-    padding-left: 5px;
+    padding-left: 13px;
     padding-top: 5px;
 }
 .operation-box {
@@ -330,6 +310,7 @@ legend {
     font-weight: 600;
 }
 .documentation-icon {
+    box-sizing: content-box;
     position: relative;
     top: -2px;
     display: inline-block;
@@ -341,6 +322,7 @@ legend {
     border-radius: 50%;
     background-color: #5d8096;
     color: #e9eff3;
+    vertical-align: bottom;
     text-align: center;
     text-decoration: none;
     font-weight: 400;
@@ -353,4 +335,11 @@ legend {
     position: absolute;
     top: 5px;
     left: 300px;
+}
+.port-input > input {
+    width: 50px !important;
+    margin: 10px 10px 10px 9px;
+}
+.breadcrumb > li + li:before {
+    padding-left: 5px;
 }

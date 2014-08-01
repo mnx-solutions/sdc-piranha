@@ -105,7 +105,7 @@ public class AccountPage {
      * @param keyName
      */
     public void deleteSshPublicKey(String keyName) {
-        SelenideElement holder = $(".ssh div.span9 div.row-fluid");
+        SelenideElement holder = $(".ssh div.col-md-9 div.row");
         SelenideElement el = getSshKeyRow(keyName, holder);
         el.$("span.title").click();
         el.$(byText("Delete")).click();
@@ -123,7 +123,7 @@ public class AccountPage {
         SelenideElement el = getSshKeyRow(keyName, holder);
         System.out.println(el);
         el.click();
-        el.$(".row-fluid", 1).$(".value").should(hasText(sshKey));
+        el.$(".row", 1).$(".value").should(hasText(sshKey));
         el.click();
     }
 
@@ -134,10 +134,10 @@ public class AccountPage {
      * @param sshKey
      */
     public void validateSshKeyOnSshKeysPage(String keyName, String sshKey) {
-        SelenideElement holder = $(".ssh div.span9 div.row-fluid");
+        SelenideElement holder = $(".ssh div.col-md-9 div.row");
         SelenideElement el = getSshKeyRow(keyName, holder);
         el.$("span.title").click();
-        el.$(".row-fluid", 1).$(".value").should(hasText(sshKey));
+        el.$(".row", 1).$(".value").should(hasText(sshKey));
         el.$("span.title").click();
     }
 
@@ -150,7 +150,7 @@ public class AccountPage {
     public SelenideElement getSshKeyRow(String keyName, SelenideElement holder) {
         holder.waitUntil(matchText("(.*)" + keyName + "(.*)"), 120000);
         ElementsCollection c = holder.$(".item-list-container").$$(
-                "div.item.row-fluid");
+                "div.item.row");
         for (SelenideElement el : c) {
             if (el.text().matches("(.*)" + keyName + "(.*)")) {
                 return el;

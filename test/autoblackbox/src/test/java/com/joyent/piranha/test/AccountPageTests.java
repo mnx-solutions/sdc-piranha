@@ -159,7 +159,7 @@ public class AccountPageTests extends TestWrapper {
     private static void deleteAddedPublicKey() {
         accountPage.openSshKeysTab();
         Common.checkHeadingText("SSH Public Keys");
-        SelenideElement holder = $(".ssh div.span9 div.row-fluid");
+        SelenideElement holder = $(".ssh div.col-md-9 div.row");
         holder.waitUntil(matchText("(.*)" + keyName + "(.*)"), 120000);
         accountPage.deleteSshPublicKey(keyName);
         Common.errorNotPresent();

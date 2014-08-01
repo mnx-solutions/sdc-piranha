@@ -1,5 +1,5 @@
-<form name="subAccountForm">
-    <div class="control-group">
+<form name="subAccountForm" class="sub-account-form">
+    <div class="form-group">
         <span class="edit-name" data-translate>
             First Name
         </span>
@@ -27,7 +27,7 @@
         </span>
     </div>
 
-    <div class="control-group">
+    <div class="form-group">
         <span class="edit-name" data-translate>
             Last Name
         </span>
@@ -55,7 +55,7 @@
         </span>
     </div>
 
-    <div class="control-group">
+    <div class="form-group">
         <span class="edit-name">Email Address</span>
         <span class="edit-value">
             <input type="email"
@@ -80,7 +80,7 @@
         </span>
     </div>
 
-    <div class="control-group">
+    <div class="form-group">
         <span class="edit-name">Company Name</span>
         <span class="edit-value">
             <input type="text"
@@ -105,7 +105,7 @@
         </span>
     </div>
 
-    <div class="control-group">
+    <div class="form-group">
         <span class="edit-name">Username</span>
         <span class="edit-value">
             <input type="text"
@@ -135,7 +135,7 @@
 
 
     <div ng-if="user.isNew">
-        <div class="control-group">
+        <div class="form-group">
             <span class="edit-name">Password</span>
             <span class="edit-value">
                 <input type="password" data-ng-model="user.password"
@@ -143,18 +143,18 @@
                        name="password"
                        data-ng-minlength="7"
                        data-ng-maxlength="60"
-                       data-ng-pattern="/(?=.*[A-z])(?=.*[A-z])(?=.*[^A-z])/"
+                       data-ng-pattern="/^(?=.*[a-zA-Z])(?=.*[0-9])/"
                        required/>
             </span>
             <span class="edit-error" data-ng-show="isFormSubmited || subAccountForm.password.$dirty">
                 <div class="error" data-ng-show="subAccountForm.password.$error.required">Please enter password.</div>
-                <div class="error" data-ng-show="!subAccountForm.password.$error.required && subAccountForm.password.$error.minlength">Password too short.</div>
+                <div class="error" data-ng-show="!subAccountForm.password.$error.required && subAccountForm.password.$error.minlength">Password must be at least 7 characters long.</div>
                 <div class="error" data-ng-show="!subAccountForm.password.$error.required && subAccountForm.password.$error.maxlength">Password too long.</div>
-                <div class="error" data-ng-show="!subAccountForm.password.$error.required && !subAccountForm.password.$error.minlength && !subAccountForm.password.$error.maxlength && subAccountForm.password.$error.pattern ">Must contain letters and numbers.</div>
+                <div class="error" data-ng-show="!subAccountForm.password.$error.required && !subAccountForm.password.$error.minlength && !subAccountForm.password.$error.maxlength && subAccountForm.password.$error.pattern ">Passwords must have both alpha & numeric characters.</div>
             </span>
         </div>
 
-        <div class="control-group">
+        <div class="form-group">
             <span class="edit-name">Repeat Password</span>
             <span class="edit-value">
                 <input type="password" data-ng-model="user.password_confirmation"
@@ -170,7 +170,7 @@
         </div>
     </div>
 
-    <div class="control-group">
+    <div class="form-group">
         <span class="edit-name">Address</span>
         <span class="edit-value">
             <input type="text"
@@ -188,15 +188,20 @@
         </span>
     </div>
 
-    <div class="control-group">
+    <div class="form-group">
         <span class="edit-name">Country</span>
         <span class="edit-value">
-            <select id="subCountry"
+            <select data-select-two
+                    id="subCountry"
                     name="country"
                     data-ng-class="{error: isError('country')}"
                     data-ng-model="user.country"
+                    data-ng-change="user.country"
+                    data-select="user.country"
                     data-ng-options="country.iso3 as country.name group by country.group for country in countries.data | orderBy: ['-group','name']"
-                    >
+                    data-ng-required="true"
+                    data-search-box="true"
+                    data-width="340px">
             </select>
         </span>
         <span class="edit-error">
@@ -213,7 +218,7 @@
         </span>
     </div>
 
-    <div class="control-group">
+    <div class="form-group">
         <span class="edit-name">City</span>
         <span class="edit-value">
             <input type="text"
@@ -231,7 +236,7 @@
         </span>
     </div>
 
-    <div class="control-group">
+    <div class="form-group">
         <span class="edit-name">State</span>
         <span class="edit-value">
             <input type="text"
@@ -244,7 +249,7 @@
         </span>
     </div>
 
-    <div class="control-group">
+    <div class="form-group">
         <span class="edit-name">Zip</span>
         <span class="edit-value">
             <input type="text"
@@ -269,7 +274,7 @@
         </span>
     </div>
 
-    <div class="control-group">
+    <div class="form-group">
         <span class="edit-name">Phone Number</span>
         <div data-phone-number data-number="user.phone" data-country="{{angular.copy(user.country)}}" data-is-error="isError(field, type)"></div>
     </div>

@@ -76,11 +76,11 @@ th.protocol{
 }
 
 .fw-controls input {
-    width  :100%;
-    height :100%;
     box-sizing: border-box;
-    -webkit-box-sizing: border-box;
-    -moz-box-sizing: border-box;
+    width: 100%;
+    height: 30px;
+    font-size: 14px;
+    text-indent: 6px;
 }
 
 .fw-port-controls {
@@ -92,9 +92,12 @@ th.protocol{
     padding: 5px 0 0 5px;
     text-align: right;
     font-weight: bold;
+    font-size: 14px;
 }
-.fw-controls select{
+.fw-controls select {
     width: 100%;
+    height: 30px;
+    border-radius: 5px;
 }
 
 .padding-5 {
@@ -129,14 +132,15 @@ th.protocol{
     border: 0;
 }
 
-.name-field{
-    font-size: 16px;
+.name-field {
+    color: #333333;
     font-weight: 400;
-    color: rgb(51, 51, 51);
+    font-size: 16px;
 }
 .value-field {
-    padding-left: 20px;
     display: inline-block;
+    padding-left: 20px;
+    width: 50%;
     vertical-align: top;
 }
 .title-rule{
@@ -159,7 +163,9 @@ th.protocol{
 
 .firewall-table td.column {
     display: inline-block;
-    padding: 0 1%;
+    padding: 0 1% 10px 1%;
+    box-sizing: content-box;
+    width: 22%;
     vertical-align: top;
 }
 .firewall-table td.column legend,
@@ -175,7 +181,8 @@ td.column.column-small {
 .bg-grey td.column {
     padding: 10px;
 }
-.form-horizontal {
+
+.form-horizontal{
     padding-bottom: 30px;
 }
 .form-horizontal .control-label {
@@ -214,7 +221,7 @@ input.ng-invalid, input.ng-pristine {
     -moz-box-shadow: none;
     box-shadow: none;
 }
-.control-group{
+.form-group {
     margin: 0;
     padding: 0;
 }

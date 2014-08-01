@@ -24,7 +24,7 @@
 .mdb-common-container {
     width: 50%;
     max-width: 600px;
-    padding: 0 20px;
+    padding: 0 20px 0 0;
 }
 
 .mdb-counters-container {
@@ -34,6 +34,10 @@
 
 .mdb-common-table {
     width: 100%;
+}
+
+.mdb-common-table td {
+    padding: 1px 0;
 }
 
 .mdb-counter-row td {
@@ -53,4 +57,8 @@
 #collapse_objects, #collapse_modules {
     padding-top: 0;
     padding-bottom: 0;
+}
+
+.page-header {
+    padding-top: 7px;
 }
