@@ -73,7 +73,7 @@
             } else {
                 Account.getAccount().then(function (account) {
                     $scope.user.companyName = account.companyName;
-                    $scope.user.country = account.country;
+                    $scope.user.country = account.country.iso3 || account.country;
                     if (!account.provisionEnabled) {
                         var submitBillingInfo = {
                             btnTitle: 'Submit and Access Create User'

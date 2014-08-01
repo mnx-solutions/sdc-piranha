@@ -360,10 +360,14 @@
                         formData.promoCode = formData.promoCode || $scope.promoCodeValue;
                         BillingService.addPaymentMethod(formData, function (errs, job) {
                             if (!errs) {
+                                var accountCountry = $scope.account.country.iso3;
+                                if ($scope.form.cardHolderInfo.country !== accountCountry) {
+                                    accountCountry = $scope.form.cardHolderInfo.country;
+                                }
                                 Account.updateAccount({
-                                    country: $scope.phone.country.iso3,
+                                    country: accountCountry,
                                     phone: $scope.phone.number
-                                }).then(function (account) {
+                                }).then(function () {
                                     if ($scope.billingUpdatePopup) {
                                         PopupDialog.message(
                                                 localization.translate(
