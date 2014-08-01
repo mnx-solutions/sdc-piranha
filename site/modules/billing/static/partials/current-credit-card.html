@@ -17,8 +17,10 @@
             <span class="value">{{creditCard.cardHolderInfo.cardHolderName}}</span>
         </p>
     </div>
-    <div data-ng-show="!provisionEnabled" class="name" data-translate>
-        Payment method is not yet provided
+    <div data-ng-show="!provisionEnabled" class="field">
+        <span class="no-billing-text" data-translate>
+            Payment method is not yet provided
+        </span>
     </div>
     <div data-ng-show="provisionEnabled && !creditCard.cardNumber" class="name" data-translate>
         Alternative Payment Method on File

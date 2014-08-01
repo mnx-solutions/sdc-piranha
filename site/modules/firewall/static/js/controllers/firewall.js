@@ -969,7 +969,7 @@
                         return (object.job && !object.job.finished) || object.deleteJob;
                     },
                     _getter: function (object) {
-                        return object.enabled ? '<span class="grid-status-text grid-enabled-text">Enabled</span>' : '<span class="grid-status-text grid-disabled-text">Disabled</span>';
+                        return object.enabled ? '<span class="grid-enabled-text">Enabled</span>' : '<span class="grid-disabled-text">Disabled</span>';
                     },
                     sequence: 1,
                     active: true

@@ -29,10 +29,19 @@ input[type="color"],
 .navbar .nav.pull-right {
     margin-right: 20px;
     padding: 3px 8px 8px;
+    height: 61px;
 }
 @media screen and (max-width: 775px) {
+    .navbar-nav {
+        margin: 0 -15px;
+    }
     .navbar .nav.pull-right {
         margin-right: 0;
+    }
+}
+@media screen and (max-width: 768px) {
+    .navbar-nav {
+        margin: 4.5px -15px;
     }
 }
 .container-fluid {
