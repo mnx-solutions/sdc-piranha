@@ -2907,13 +2907,10 @@ label.checkbox {
 .right-part {
     display: table-cell;
     vertical-align: top;
+    min-width: 485px;
 }
 .left-part {
     padding-right: 20px;
-    min-width: 485px;
-}
-.right-part {
-    width: 485px;
 }
 .inl-table {
     display: inline-table;
@@ -3526,6 +3523,7 @@ label.checkbox.folder-name-form-checkbox {
     display: table;
 }
 .container-fluid {
+    box-sizing: content-box;
     margin-left: 0;
     margin-right: 0;
 }
@@ -3562,6 +3560,9 @@ label.checkbox.folder-name-form-checkbox {
 /* fix for scrollbar overlay in IE 10 */
 @-ms-viewport {
     width: auto !important;
+}
+.navbar-nav > li {
+    float: left;
 }
 .navbar-nav > li > .dropdown-menu {
     margin-top: -2px;
