@@ -288,39 +288,44 @@
             CloudAnalytics.prototype.describeAnalytics = function () {
                 var self = this;
                 var d = $q.defer();
-                service.describeAnalytics(function (error, response) {
-                    if (error) {
-                        PopupDialog.error(
-                            localization.translate(null, null, 'Error'),
-                            localization.translate(null, null, error)
-                        );
-                        d.reject(error);
-                    } else {
-                        var result = response.res;
-                        var k;
-                        for (k in result) {
-                            if (result.hasOwnProperty(k)) {
-                                self.ca[k] = result[k];
-                            }
-                        }
-                        var createLabels = function (metric) {
-                            var fields = {};
-                            var l;
-                            for (l = 0; l < metric.fields.length; l += 1) {
-                                var field = metric.fields[l];
-                                if (self.ca.fields[field]) {
-                                    fields[field] = self.ca.fields[field].label;
+                var metrics = self.ca.metrics;
+                if (metrics && Array.isArray(metrics) && metrics.length > 0) {
+                    d.resolve(self.ca);
+                } else {
+                    service.describeAnalytics(function (error, response) {
+                        if (error) {
+                            PopupDialog.error(
+                                localization.translate(null, null, 'Error'),
+                                localization.translate(null, null, error)
+                            );
+                            d.reject(error);
+                        } else {
+                            var result = response.res;
+                            var k;
+                            for (k in result) {
+                                if (result.hasOwnProperty(k)) {
+                                    self.ca[k] = result[k];
                                 }
                             }
+                            var createLabels = function (metric) {
+                                var fields = {};
+                                var l;
+                                for (l = 0; l < metric.fields.length; l += 1) {
+                                    var field = metric.fields[l];
+                                    if (self.ca.fields[field]) {
+                                        fields[field] = self.ca.fields[field].label;
+                                    }
+                                }
 
-                            var moduleName = self.ca.modules[metric.module].label;
-                            metric.fields = fields;
-                            metric.labelHtml = moduleName + ': ' + metric.label;
-                        };
-                        self.ca.metrics.forEach(createLabels);
-                        d.resolve(self.ca);
-                    }
-                });
+                                var moduleName = self.ca.modules[metric.module].label;
+                                metric.fields = fields;
+                                metric.labelHtml = moduleName + ': ' + metric.label;
+                            };
+                            self.ca.metrics.forEach(createLabels);
+                            d.resolve(self.ca);
+                        }
+                    });
+                }
                 return d.promise;
             };
             
