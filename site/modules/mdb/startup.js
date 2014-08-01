@@ -256,7 +256,9 @@ var mdbApi = function execute(scope) {
             list.some(function (job) {
                 if (job.jobId === jobId) {
                     Object.keys(updateData).forEach(function (key) {
-                        job[key] = updateData[key];
+                        if (updateData[key] !== undefined) {
+                            job[key] = updateData[key];
+                        }
                     });
                     return true;
                 }
@@ -268,16 +270,24 @@ var mdbApi = function execute(scope) {
 
     function parseObjects(call, status, jobInfo) {
         var alreadyFailed = false;
+        var data = {
+            status: status,
+            coreFile: jobInfo.coreFile
+        };
+
+        if (status === 'Processed' && jobInfo.timeDone) {
+            data.dateEnd = jobInfo.timeDone;
+        }
 
         getDebugObjectsFile(call, jobInfo.jobId, 'findjsobjects', objectsParser, function (getObjectsError, jsObjects) {
             if (getObjectsError) {
                 if (getObjectsError.statusCode === 404) {
-                    status = 'Failed';
+                    data.status = 'Failed';
                     alreadyFailed = true;
                 } else {
-                    status = (status === 'Cancelled' ? 'Cancelled' : 'Failed');
+                    data.status = (data.status === 'Cancelled' ? 'Cancelled' : 'Failed');
                 }
-                updateJobInList(call, jobInfo.jobId, {status: status}, function (updateJobError) {
+                updateJobInList(call, jobInfo.jobId, data, function (updateJobError) {
                     if (updateJobError) {
                         sendError(call, updateJobError);
                         return;
@@ -290,14 +300,6 @@ var mdbApi = function execute(scope) {
                 });
                 return;
             }
-            var data = {status: status};
-            if (status === 'Processed') {
-                data.dateEnd = jobInfo.timeDone;
-            }
-
-            jsObjects.coreFile = jobInfo.coreFile;
-            jsObjects.status = status;
-
             getDebugObjectsFile(call, jobInfo.jobId, 'modules', modulesParser, function (getModulesError, modules) {
                 if (getModulesError) {
                     sendError(call, getModulesError);
@@ -306,6 +308,7 @@ var mdbApi = function execute(scope) {
 
                 jsObjects.modules = modules;
                 data.status = jsObjects.status = 'Processed';
+                data.dateEnd = data.dateEnd || new Date();
 
                 if (!jobInfo.status || jobInfo.status !== jsObjects.status) {
                     updateJobInList(call, jobInfo.jobId, data, function (updateJobError) {
