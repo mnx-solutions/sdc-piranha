@@ -110,25 +110,46 @@ module.exports = function execute(scope) {
             Object.keys(datacenters).forEach(function (datacenter) {
                 funcs.push(function networks(callback) {
                     cloudapi.separate(datacenter).listNetworks(function (err, data) {
-                            callback(err, separateResult(datacenter, data));
+                            if (err) {
+                                log.error(err);
+                                callback(null, separateResult(datacenter, []));
+                            } else {
+                                callback(err, separateResult(datacenter, data));
+                            }
                         }
                     );
                 });
                 funcs.push(function machines(callback) {
                     cloudapi.separate(datacenter).listMachines(function (err, data) {
-                        callback(err, separateResult(datacenter, data));
+                        if(err) {
+                            log.error(err);
+                            callback(null, separateResult(datacenter, []));
+                        } else {
+                            callback(err, separateResult(datacenter, data));
+                        }
+
                     });
                 });
                 funcs.push(function images(callback) {
                     cloudapi.separate(datacenter).listImages(
                         function (err, data) {
-                            callback(err, separateResult(datacenter, data));
+                            if (err) {
+                                log.error(err);
+                                callback(null, separateResult(datacenter, []));
+                            } else {
+                                callback(err, separateResult(datacenter, data));
+                            }
                         }
                     );
                 });
                 funcs.push(function firewallRules(callback) {
                     cloudapi.separate(datacenter).listFwRules(function (err, data) {
-                            callback(err, separateResult(datacenter, data));
+                            if (err) {
+                                log.error(err);
+                                callback(null, separateResult(datacenter, []));
+                            } else {
+                                callback(err, separateResult(datacenter, data));
+                            }
                         }
                     );
                 });
