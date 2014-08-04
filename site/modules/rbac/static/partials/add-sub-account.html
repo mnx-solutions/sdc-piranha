@@ -197,7 +197,7 @@
                     data-ng-class="{error: isError('country')}"
                     data-ng-model="user.country"
                     data-ng-change="user.country"
-                    data-select="user.country"
+                    data-select="user.countryName"
                     data-ng-options="country.iso3 as country.name group by country.group for country in countries.data | orderBy: ['-group','name']"
                     data-ng-required="true"
                     data-search-box="true"

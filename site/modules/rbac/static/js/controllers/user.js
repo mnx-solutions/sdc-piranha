@@ -4,6 +4,7 @@
     app.controller('rbac.UserController', [
         '$q',
         '$scope',
+        '$http',
         'localization',
         '$location',
         'requestContext',
@@ -12,7 +13,7 @@
         'rbac.Service',
         'rbac.User',
         'Account',
-        function ($q, $scope, localization, $location, requestContext, BillingService, PopupDialog, service, RbacUser, Account) {
+        function ($q, $scope, $http, localization, $location, requestContext, BillingService, PopupDialog, service, RbacUser, Account) {
             $scope.loading = true;
             $scope.user = {};
             $scope.initial = {};
@@ -74,6 +75,17 @@
                 Account.getAccount().then(function (account) {
                     $scope.user.companyName = account.companyName;
                     $scope.user.country = account.country.iso3 || account.country;
+                    if (!account.country.iso3) {
+                        $scope.countries = $http.get('billing/countries');
+                        $scope.countries.then(function (countries) {
+                            var country = countries.data.find(function (country) {
+                                return country.iso3 === $scope.user.country;
+                            });
+                            $scope.user.countryName = country.name;
+                        });
+                    } else {
+                        $scope.user.countryName = account.country.name;
+                    }
                     if (!account.provisionEnabled) {
                         var submitBillingInfo = {
                             btnTitle: 'Submit and Access Create User'

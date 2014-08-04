@@ -294,7 +294,7 @@
                         $q.when($http.get('account/countryCodes'), function (data) {
                             $scope.countryCodes = data.data;
 
-                            account.country = $scope.isoToObj(account.country);
+                            account.country = $scope.isoToObj(account.country.iso3 || account.country);
                             $scope.selectedCountryCode = account.country.areaCode;
 
                             $scope.phone = {
