@@ -223,5 +223,6 @@
   , "rbac": "no"
   , "cloudAnalytics": "yes"
   , "downloadSdc": "no"
+  , "limitedSlb": "no"
   }
 }
