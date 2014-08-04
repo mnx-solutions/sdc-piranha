@@ -21,6 +21,10 @@
     vertical-align: top;
 }
 
+.mdb-column-label {
+    min-width: 383px;
+}
+
 .mdb-common-container {
     width: 50%;
     max-width: 600px;
