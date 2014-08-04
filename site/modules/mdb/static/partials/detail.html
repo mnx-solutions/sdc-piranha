@@ -8,7 +8,7 @@
         <div class="column mdb-common-container">
             <table class="mdb-common-table">
                 <tr>
-                    <td>File:
+                    <td class="mdb-column-label">File:
                     <span data-ng-hide="inputFile.length">Not selected</span>
                     <span data-ng-repeat="file in inputFile" data-ng-show="$last">{{(file.filePath | name) || 'Not selected'}}</span>
                     </td>
@@ -17,7 +17,7 @@
                     </td>
                 </tr>
                 <tr>
-                    <td>Status: {{status}}</td>
+                    <td class="mdb-column-label">Status: {{status}}</td>
                     <td data-ng-if="!jobId && !objects.length">
                         <button class="btn orange pull-right debugger-action-btn"
                                 data-ng-class='{"disabled grey-new": inputFile.length == 0}'
@@ -36,7 +36,7 @@
                 </tr>
                 <tr><td colspan="2"><div class="estimate-time">Estimating processed time: {{estimateTime}} minutes</div></td></tr>
                 <tr>
-                    <td>Node.js support status: {{supportStatus}}</td>
+                    <td class="mdb-column-label">Node.js support status: {{supportStatus}}</td>
                     <td><button class="btn orange effect-orange-button grey-new pull-right debugger-action-btn" data-ng-click="clickSignup()">Signup for Node.js</button></td>
                 </tr>
 
