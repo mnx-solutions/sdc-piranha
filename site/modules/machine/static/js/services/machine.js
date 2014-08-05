@@ -562,7 +562,7 @@
                             d.resolve(machine[collectionName]);
                             return;
                         }
-                        
+
                         if (!machine[collectionName + 'Job']) {
                             machine[collectionName + 'Job'] = serverTab.call({
                                 name: 'Machine' + upperCollectionName + 'List',
@@ -570,7 +570,7 @@
                             }).deferred;
                         }
 
-                        machine[collectionName + 'Job'].then(function (result) {
+                        machine[collectionName + 'Job'].promise.then(function (result) {
                             machine[collectionName] = result;
                             d.resolve(result);
                         });
