@@ -40,6 +40,23 @@
                             callback
                         );
                     }
+
+                    function getKeyErrorMessage(sshKey) {
+                        var sshKeyExists = false;
+                        var message = "The key you've imported is not a public key.";
+                        if ($scope.keys.length) {
+                            sshKeyExists = $scope.keys.some(function (keyData) {
+                                return sshKey === keyData.key.replace(/[\r\n]/g, '');
+                            });
+                        }
+                        if (sshKeyExists) {
+                            message = 'This key already exists.';
+                        }
+                        return message;
+                    }
+
+                    var additionalMessage = ' Please try another SSH key.';
+
                     var errorCallback = function (err) {
                         $rootScope.$broadcast('sshProgress', false);
                         PopupDialog.errorObj(err);
@@ -82,7 +99,7 @@
 
                                     dialog.close({});
                                     
-                                    return showPopupDialog('error', 'Error', "The file you've uploaded is not a public key.");
+                                    return showPopupDialog('error', 'Error', "The file you've uploaded is not a public key." + additionalMessage);
                                 } else {
                                     var path = 'account/upload';
                                     if (subUserId) {
@@ -95,12 +112,12 @@
                                             var message = error.error;
 
                                             if (error.status && error.status === 409) {
-                                                message = 'Uploaded key already exists.';
+                                                message = 'This key already exists.';
                                             }
 
                                             dialog.close({});
 
-                                            return showPopupDialog('error', 'Error', message);
+                                            return showPopupDialog('error', 'Error', message + additionalMessage);
                                         }
 
                                         return dialog.close({
@@ -130,7 +147,10 @@
                                     if (subUserId) {
                                         RBAC.uploadUserKey(subUserId, result.data.keyName, result.data.keyData).then(function () {
                                             $rootScope.$broadcast('sshCreated', true);
-                                        }, errorCallback);
+                                        }, function () {
+                                            var message = getKeyErrorMessage(result.data.keyData);
+                                            errorCallback(message + additionalMessage);
+                                        });
                                     } else {
                                         $scope.createNewKey({
                                             name: result.data.keyName,
@@ -179,11 +199,10 @@
                                 }
 
                             },
-                            function (err) {
+                            function () {
                                 $rootScope.$broadcast('sshProgress', false);
-                                var message = 'Failed to add new key: ' + (err.message || '') + ' ' + (err.code || '') + '.';
-                                showPopupDialog('error', 'Error', message);
-
+                                var message = getKeyErrorMessage(key.data);
+                                showPopupDialog('error', 'Error', message + additionalMessage);
                             }
                         );
 
