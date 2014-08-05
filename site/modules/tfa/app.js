@@ -95,6 +95,10 @@ module.exports = function execute(scope, app) {
         };
 
         var accountCallback = function (err, user) {
+            if (err) {
+                next(err);
+                return;
+            }
             TFA.get(user.id, function (tfaErr, secret) {
                 if (tfaErr) {
                     next(tfaErr);
