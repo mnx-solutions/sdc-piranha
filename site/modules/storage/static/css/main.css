@@ -1,3 +1,6 @@
+input {
+    text-indent: 6px;
+}
 .code {
     margin: 10px 0;
     padding: 20px;
@@ -285,6 +288,7 @@
     padding: 10px;
 }
 .loading-small-job {
+    margin-right: 5px;
     padding: 5px 10px 0 0;
 }
 .empty-job-history {

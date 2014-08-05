@@ -30,12 +30,14 @@
     margin-right: -10px;
     vertical-align: -13px;
 }
+.create-images input {
+    text-indent: 6px;
+}
 .create-images input,
 .create-images textarea {
     margin-bottom: 10px;
     width: 394px;
     height: 30px;
-    text-indent: 4px;
 }
 .create-images textarea {
     height: 180px;
@@ -370,7 +372,7 @@
 span.btn-success {
     cursor: default;
 }
-.status.label {
+.status.label:not(.label-machine-details) {
     margin-top: 0;
     width: 110px;
     height: 22px;
@@ -467,8 +469,9 @@ span.btn-success {
     background-color: #fef1d2;
 }
 .details-btn-block .status.label {
-    width: 122px;
-    height: 34px;
+    box-sizing: content-box;
+    margin-top: 0;
+    line-height: 12px;
 }
 .details-btn-block .status.label .glyphicon-ok {
     width: 14px;
@@ -539,7 +542,6 @@ span.btn-success {
 .create-mdata .value-container .value-width {
     width: 310px !important;
     height: 80px;
-    text-indent: 4px;
 }
 .key-width,
 .value-width {
@@ -601,9 +603,6 @@ span.btn-success {
 }
 .metadata .editable .key-width {
     margin-bottom: 10px;
-}
-.metadata .editable .value-width {
-    text-indent: 4px;
 }
 .tags-title{
     color: #5D80A7;
@@ -1717,10 +1716,12 @@ span.btn-success {
 }
 .loading-small-firewall {
     display: inline-block;
-    height: 20px;
+    margin-right: 5px;
     width: 16px;
+    height: 20px;
 }
 .loading-small {
+    box-sizing: content-box;
     padding-right: 8px;
 }
 .loading-medium-inline {
