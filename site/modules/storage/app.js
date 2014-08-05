@@ -16,6 +16,7 @@ module.exports = function (scope, app) {
         var client = Manta.createClient({req: req});
         var filePath = false;
         var filesInProgress = {};
+        var metadata;
 
         function waitFile(client, path, callback) {
             client.info(path, function (error) {
@@ -28,7 +29,7 @@ module.exports = function (scope, app) {
         }
 
         function uploadFile(path, part, callback) {
-            var options = {type: part.mime};
+            var options = {type: part.mime, headers: {'max-content-length': metadata.files[part.filename]}};
             var ws = client.createWriteStream('/' + client.user + '/' + path + '/' + part.filename, options);
             ws.on('end', callback);
             ws.on('error', function (error) {
@@ -38,24 +39,25 @@ module.exports = function (scope, app) {
             part.pipe(ws);
         }
 
-        function parsePath(part, callback) {
+        function parseMetadata(part, callback) {
             var data = '';
             part.on('data', function (chunk) {
                 data += chunk;
             });
             part.on('end', function () {
-                callback(null, data);
+                callback(null, JSON.parse(data));
             });
             part.on('error', callback);
         }
 
         form.onPart = function (part) {
-            if (part.name === 'path') {
-                parsePath(part, function (error, path) {
+            if (part.name === 'metadata') {
+                parseMetadata(part, function (error, obj) {
                     if (error) {
                         return next(error);
                     }
-                    filePath = path;
+                    metadata = obj;
+                    filePath = obj.path;
                 });
             } else if (!part.filename) {
                 form.handlePart(part);
