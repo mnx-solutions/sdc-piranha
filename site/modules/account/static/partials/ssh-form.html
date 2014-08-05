@@ -41,9 +41,7 @@
             <div data-ng-show="keys.length < 1 && !loadingKeys">
                 <div class="no-ssh-key-message">{{noKeysMessage || 'You don\'t have any SSH keys'}}</div>
             </div>
-            <div data-ng-show="loadingKeys">
-                <div class="loading-medium"></div>
-            </div>
+            <div class="loading-medium" data-ng-show="loadingKeys"></div>
         </div>
         <span data-ng-show="downloadLink" class="ssh-download-link"><a target="_blank" href="{{downloadLink}}">Click here to download "{{sshKeyName}}" key</a></span>
         <div class="new-key-button pull-right" data-ng-hide="!isCreateKeyEnabled || loadingKeys">
