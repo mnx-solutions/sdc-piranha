@@ -344,7 +344,7 @@
                         $scope.loading = true;
                         $scope.formSubmitted = true;
                         if ($scope.paymentForm.$invalid || !isCCNumberValid()) {
-                            validateCCNumber();
+                            $scope.validateCCNumber();
                             $scope.loading = false;
                             return;
                         }
@@ -489,11 +489,16 @@
                         return (/^[0-9\*]{15,16}$/gi).test($scope.form.creditCardNumber);
                     }
 
-                    function validateCCNumber() {
+                    $scope.validateCCNumber = function () {
+                        var isLongCCNumber = false;
                         $scope.missingCCNumber = $scope.isError('creditCard.creditCardNumber', 'required') ||
                                 $scope.isError('creditCardNumber', 'submitRequired');
 
-                        $scope.invalidCCNumber = !isCCNumberValid() && !$scope.missingCCNumber;
+                        if ($scope.paymentForm.creditCardNumber.$viewValue) {
+                            isLongCCNumber = $scope.paymentForm.creditCardNumber.$viewValue.length > 19;
+                        }
+
+                        $scope.invalidCCNumber = !isCCNumberValid() && !$scope.missingCCNumber && !isLongCCNumber;
 
                         if (!$scope.invalidCCNumber || !$scope.missingCCNumber) {
                             window.scrollTo(0, 0);

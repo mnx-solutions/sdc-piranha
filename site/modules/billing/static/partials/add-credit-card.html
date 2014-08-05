@@ -19,6 +19,7 @@
                                size="40"
                                data-ng-model="form.creditCardNumber"
                                data-ng-maxlength="19"
+                               data-ng-change="validateCCNumber()"
                                data-ng-class="{error: isError('creditCard.creditCardNumber')}"
                                data-ng-required="true">
                     </span>
