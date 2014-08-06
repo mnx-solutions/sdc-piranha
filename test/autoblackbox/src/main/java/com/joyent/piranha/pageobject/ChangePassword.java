@@ -25,7 +25,7 @@ public class ChangePassword extends AbstractPageObject {
     }
 
     public void clickCloseButton(){
-        $("button.btn").click();
+        $("[onclick=\"javascript:window.close()\"]").click();
     }
 
     public void fillForm(String oldPass, String newPass) {

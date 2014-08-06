@@ -176,7 +176,7 @@ public class Common {
             $("thead label.checkbox").click();
             page.performAction("Delete");
             page.clickButtonInModal("Yes");
-            page.waitForLargeSpinnerDisappear();
+            page.waitForSmallSpinnerDisappear();
         }
     }
 }

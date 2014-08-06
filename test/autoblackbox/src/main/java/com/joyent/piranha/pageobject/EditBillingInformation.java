@@ -46,6 +46,7 @@ public class EditBillingInformation extends UserInfo {
 
     public Account clickSaveChangesButton() {
         $(byText("Save Changes")).click();
+        waitForMediumSpinnerDisappear();
         return page(Account.class);
     }
 

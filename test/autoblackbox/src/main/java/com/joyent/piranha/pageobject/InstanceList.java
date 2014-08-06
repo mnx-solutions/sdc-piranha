@@ -91,10 +91,10 @@ public class InstanceList extends AbstractPageObject {
 
     private SelenideElement getFirstInstanceElement() {
         waitForInstanceList();
-        String name;
-        $("tbody tr", 1).shouldBe(visible);
-        $("tbody tr", 1).$(".status").shouldBe(visible);
-        return $("tbody tr", 0).$("td", 1).$("div a");
+        SelenideElement row = $("tbody tr", 0);
+        row.shouldBe(visible);
+        row.$(".status").shouldBe(visible);
+        return row.$("td", 1).$("div a");
     }
 
     public InstanceDetails clickFirstInstance() {

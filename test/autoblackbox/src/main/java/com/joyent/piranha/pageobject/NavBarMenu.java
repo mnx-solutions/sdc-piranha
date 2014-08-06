@@ -8,10 +8,10 @@ import static com.codeborne.selenide.Selenide.page;
 
 public class NavBarMenu extends AbstractPageObject {
     private static final String NAV_BAR_XPATH_TEMPLATE = "//ul[@class='nav']/li[contains(.,'%s')]";
-    private static final String NAV_BAR_RIGHT_XPATH_TEMPLATE = "//ul[@class='nav pull-right']/li[contains(.,'%s')]";
+    private static final String NAV_BAR_RIGHT_XPATH_TEMPLATE = "//ul[@class='nav navbar-nav pull-right']/li[contains(.,'%s')]";
 
     public enum NavBarHeaderElement {
-        DevCenter(getSelector("DevCenter")), Support(getSelector("Support")), MyAccount(By.xpath("//ul[@class='nav pull-right']/li[@class='dropdown user']/a"));
+        DevCenter(getSelector("DevCenter")), Support(getSelector("Support")), MyAccount(By.xpath("//ul[@class='nav navbar-nav pull-right']/li[@class='dropdown user']/a"));
 
 
         private static By getSelector(final String title) {
