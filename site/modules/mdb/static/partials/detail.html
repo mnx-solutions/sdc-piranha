@@ -55,26 +55,30 @@
     <div class="row" data-ng-show="!loading">
         <div class="pull-left col-md-8">
             <div class="panel-group">
-                <div class="panel-heading">
-                    <span class="accordion-toggle toggle-icon" data-toggle="collapse" data-target="#collapse_objects">
-                        Debug Objects
-                    </span>
-                </div>
-                <div class="panel-body" id="collapse_objects" class="panel-collapse collapse in">
-                    <div class="row">
-                        <div data-grid-view
-                             data-user-config="gridUserConfig"
-                             data-props="gridProps"
-                             data-columns-button="columnsButton"
-                             data-image-button-show="false"
-                             data-items="objects"
-                             data-multisort="false"
-                             data-order="gridOrder"
-                             data-paginated="true"
-                             data-perPage="25"
-                             data-export-fields="exportFields"
-                             data-tab-filter-field="tabFilterField"
-                             data-tab-filter-default="tabFilterDefault">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <span class="accordion-toggle toggle-icon" data-toggle="collapse" data-target="#collapse_objects">
+                            Debug Objects
+                        </span>
+                    </div>
+                    <div id="collapse_objects" class="panel-collapse collapse in">
+                        <div class="panel-body">
+                            <div class="row">
+                                <div data-grid-view
+                                     data-user-config="gridUserConfig"
+                                     data-props="gridProps"
+                                     data-columns-button="columnsButton"
+                                     data-image-button-show="false"
+                                     data-items="objects"
+                                     data-multisort="false"
+                                     data-order="gridOrder"
+                                     data-paginated="true"
+                                     data-perPage="25"
+                                     data-export-fields="exportFields"
+                                     data-tab-filter-field="tabFilterField"
+                                     data-tab-filter-default="tabFilterDefault">
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -82,13 +86,17 @@
         </div>
         <div class="pull-right col-md-4">
             <div class="panel-group">
-                <div class="panel-heading">
-                    <span class="accordion-toggle toggle-icon" data-toggle="collapse" data-target="#collapse_modules">
-                        Modules Tree
-                    </span>
-                </div>
-                <div class="panel-body" id="collapse_modules" class="panel-collapse collapse in">
-                    <div data-tree data-objects="modules" data-array-name="'name'" data-no-checkbox></div>
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <span class="accordion-toggle toggle-icon" data-toggle="collapse" data-target="#collapse_modules">
+                            Modules Tree
+                        </span>
+                    </div>
+                    <div id="collapse_modules" class="panel-collapse collapse in">
+                        <div class="panel-body">
+                            <div data-tree data-objects="modules" data-array-name="'name'" data-no-checkbox></div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

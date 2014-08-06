@@ -29,6 +29,7 @@
     width: 50%;
     max-width: 600px;
     padding: 0 20px 0 0;
+    margin-bottom: 20px;
 }
 
 .mdb-counters-container {
@@ -65,4 +66,15 @@
 
 .page-header {
     padding-top: 7px;
+}
+/* TODO: move it to main.css and remove hardcode from all modules which has accordion */
+.panel-heading .accordion-toggle {
+    padding: 8px 15px;
+    display: block;
+    cursor: pointer;
+}
+
+.col-md-8, 
+.col-md-4 {
+    padding-left: 0;
 }
