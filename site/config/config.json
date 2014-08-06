@@ -173,7 +173,7 @@
     "signupTag": ""
 }
 , "mdb": {
-    "processor": "/NodeCore/public/manta-mdb-node-report.sh"
+    "processor": "/dbqp/public/manta-mdb-node-report.sh"
 }
 , "downloadSdc": {
     "fullSdc": "",
