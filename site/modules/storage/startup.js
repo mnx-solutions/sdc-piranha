@@ -10,19 +10,17 @@ var MANTA_PING_RETRIES = 15;
 module.exports = function execute(scope) {
     var Manta = scope.api('MantaClient');
     var server = scope.api('Server');
-    var smartCloud = scope.get('smartCloud');
 
     function sendError(call, error, suppressErrorLog) {
-        function done(error) {
-            if (error) {
-                call.done(error.message || mantaNotAvailable, suppressErrorLog);
+        function done(err) {
+            if (err) {
+                call.done(err.message || mantaNotAvailable, suppressErrorLog);
             } else {
                 call.done();
             }
         }
         if (error) {
-            done(error);
-            return;
+            return done(error);
         }
         return done;
     }
@@ -88,12 +86,12 @@ module.exports = function execute(scope) {
             res.once('end', function () {
                 call.done(null, result);
             });
-            res.once('error', function (error) {
-                if (fallbackPath && jobId && error.statusCode === 404) {
+            res.once('error', function (err) {
+                if (fallbackPath && jobId && err.statusCode === 404) {
                     getArchivedJobFile(call, jobId, fallbackPath, checkResponse(call));
                     return;
                 }
-                sendError(call, error);
+                sendError(call, err);
             });
         };
     }
@@ -204,9 +202,9 @@ module.exports = function execute(scope) {
 
             var client = Manta.createClient(call);
             console.log(job, inputs, 'CreateJob');
-            client.createJob(job, function (err, jobId) {
-                if (err) {
-                    sendError(call, err);
+            client.createJob(job, function (error, jobId) {
+                if (error) {
+                    sendError(call, error);
                     return;
                 }
                 if (jobId) {
@@ -229,7 +227,37 @@ module.exports = function execute(scope) {
     });
 
     server.onCall('FileManList', function (call) {
-        var client = Manta.createClient(call);
+        if (call.req.session.parentAccount) {
+            //TODO: show root directories for user
+            if (call.data.originPath === '/') {
+                var directories = ['jobs', 'public', 'reports', 'stor'];
+                var files = [];
+                directories.forEach(function (directory) {
+                    files.push({
+                        path: directory,
+                        type: 'directory',
+                        parent: call.req.session.parentAccount,
+                        name: directory
+                    });
+                });
+                call.done(null, files);
+                return;
+            }
+            var client = Manta.createClient(call);
+            client.get(call.data.path, function (err) {
+                if (err) {
+                    call.done(err.message || mantaNotAvailable);
+                    return;
+                }
+                ls(call, client);
+            });
+            return;
+        }
+        ls(call);
+    });
+
+    var ls = function (call, client) {
+        client = client || Manta.createClient(call);
         client.ls(call.data.path, function (err, res) {
             if (err) {
                 sendError(call, err);
@@ -250,7 +278,7 @@ module.exports = function execute(scope) {
                 call.done(null, files);
             });
         });
-    });
+    };
 
     server.onCall('FileManDeleteTree', function (call) {
         var client = Manta.createClient(call);
@@ -299,12 +327,12 @@ module.exports = function execute(scope) {
         var Billing = scope.api('Billing');
         var retries = MANTA_PING_RETRIES;
         function pingManta() {
-            Billing.isActive(call.req.session.userId, function (error, isActive) {
-                if (error || !isActive) {
+            Billing.isActive(call.req.session.userId, function (err, isActive) {
+                if (err || !isActive) {
                     sendError(call, {message: 'Something went wrong.  Please try again in a minute.'});
                     return;
                 }
-                client.get('~~/', function (error) {
+                client.get('~~/public', function (error) {
                     if (error) {
                         if (error.name === 'AccountBlockedError' || error.name === 'AccountBlocked') {
                             if (retries > 0) {
@@ -368,15 +396,15 @@ module.exports = function execute(scope) {
                 return call.done(null, []);
             }
 
-            client.info(path, function (err, res) {
-                if (err) {
-                    return call.done(err);
+            return client.info(path, function (error, response) {
+                if (error) {
+                    return call.done(error);
                 }
-                if (res.extension !== 'directory') {
+                if (response.extension !== 'directory') {
                     path = path.slice(0, path.lastIndexOf('/') + 1);
                 }
 
-                client.ftw(path, opts, function (err, res) {
+                return client.ftw(path, opts, function (err, res) {
                     if (err) {
                         return call.done(err);
                     }
@@ -393,9 +421,8 @@ module.exports = function execute(scope) {
                     res.once('error', sendError(call));
 
                     res.once('end', function () {
-                        call.done(null, files);
+                        return call.done(null, files);
                     });
-
                 });
             });
         }

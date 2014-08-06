@@ -23,7 +23,7 @@
                             done: callback
                         });
                     } else {
-                            data.path = '~~/' + path;
+                            data.path = '~~' + path;
                             serverTab.call({
                                 name: name,
                                 data: data,
