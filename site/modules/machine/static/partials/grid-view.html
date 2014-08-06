@@ -59,7 +59,7 @@
     <div class="item header machine-list-item item-list-container">
         <div class="grid-tabs-container" data-ng-show="tabFilterField">
             <span class="grid-tabs-title">{{tabFilterField}}:</span>
-            <span data-ng-repeat="filter in tabFilters">
+            <span data-ng-repeat="filter in tabFilters | orderBy:$index track by $index">
                 <input type="radio"
                        name="filter"
                        id="filter{{$index}}"

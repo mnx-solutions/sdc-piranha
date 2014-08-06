@@ -137,7 +137,7 @@
                     <div class="title">Free Dev Tier</div>
                     <div class="single-column small">
                         <div class="server tooltip-hover"
-                             data-ng-repeat="datacenter in datacenters track by $index"
+                             data-ng-repeat="datacenter in datacenters | orderBy:$index track by $index"
                              data-toggle="tooltip"
                              data-placement="top"
                              data-html="true"
