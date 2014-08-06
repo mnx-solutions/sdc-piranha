@@ -9,7 +9,7 @@
                 <span class="select-name">Data Center:</span>
                 <div class="btn-group">
                     <div class="loading-medium loading-medium-inline" data-ng-show="datasetsLoading"></div>
-                    <select type="hidden" data-select-two id="selectDatacenter" data-ng-model="data.datacenter" data-fn="selectDatacenter" data-select="data.datacenter" data-ng-options="datacenter.name as datacenter.name for datacenter in datacenters" data-placeholder="No matches found">
+                    <select type="hidden" data-select-two id="selectDatacenter" data-ng-model="data.datacenter" data-fn="selectDatacenter" data-select="data.datacenter" data-ng-options="datacenter.name as datacenter.name for datacenter in datacenters | orderBy:$index" data-placeholder="No matches found">
                         <option></option>
                     </select>
                 </div>
