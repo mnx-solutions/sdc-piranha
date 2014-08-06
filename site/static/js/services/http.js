@@ -126,9 +126,10 @@
                 var data = new FormData();
                 var metadata = {path: path, files: {}};
 
-                files.forEach(function (file) {
+                for (var fileIndex = 0; fileIndex < files.length; fileIndex += 1) {
+                    var file = files[fileIndex];
                     metadata.files[file.name] = file.size;
-                });
+                }
 
                 data.append('metadata', JSON.stringify(metadata));
 
