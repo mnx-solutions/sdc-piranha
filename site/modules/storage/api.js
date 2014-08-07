@@ -41,6 +41,7 @@ module.exports = function execute(scope, register) {
                 keyId: config.cloudapi.keyId,
                 user: config.cloudapi.username
             }),
+            headers: {},
             url: config.manta.url,
             insecure: true,
             rejectUnauthorized: false
@@ -55,18 +56,17 @@ module.exports = function execute(scope, register) {
         } else {
             options.account = call.req.session.userName;
         }
-        var client = manta.createClient(options);
 
         if (config.manta.privateKey) {
-            client.sign = manta.privateKeySigner({
+            options.sign = manta.privateKeySigner({
                 key: fs.readFileSync(config.manta.privateKey, 'utf8'),
                 keyId: config.manta.keyId,
                 user: config.manta.user
             });
         } else {
-            client.client.headers['X-Auth-Token'] = call.req.session.token || call.req.cloud._token;
+            options.headers['X-Auth-Token'] = call.req.session.token || call.req.cloud._token;
         }
-
+        var client = manta.createClient(options);
         client.getFileContents = getFileContents;
         client.putFileContents = putFileContents;
         return client;
