@@ -38,16 +38,16 @@
                                                data-ng-model="model.policy.dirtyName"
                                                data-ng-pattern="/^[A-Za-z0-9]+[A-Za-z0-9\.\-\s]*$/"
                                                required />
-                                    </div>
-                                    <div data-ng-show="isFormSubmited || policyForm.policyName.$dirty">
-                                        <div class="policy-form-error error edit-error"
-                                             data-translate
-                                             data-ng-show="policyForm.policyName.$error.required">Missing name
-                                        </div>
-                                        <div class="policy-form-error error edit-error"
-                                             data-ng-show="policyForm.policyName.$error.pattern"
-                                             data-translate>
-                                            Name can contain only letters, digits, spaces and signs like "." and "-"
+                                        <div data-ng-show="isFormSubmited || policyForm.policyName.$dirty">
+                                            <div class="policy-form-error error edit-error"
+                                                 data-translate
+                                                 data-ng-show="policyForm.policyName.$error.required">Missing name
+                                            </div>
+                                            <div class="policy-form-error error edit-error"
+                                                 data-ng-show="policyForm.policyName.$error.pattern"
+                                                 data-translate>
+                                                Name can contain only letters, digits, spaces and signs like "." and "-"
+                                            </div>
                                         </div>
                                     </div>
                                 </form>
