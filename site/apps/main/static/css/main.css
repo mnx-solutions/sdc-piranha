@@ -2801,7 +2801,7 @@ label.checkbox {
 }
 .grid-tab {
     padding: 3px 10px;
-    margin: 0 2px -1px 0;
+    margin: 0 2px 1px 0;
     background: #EBEBEB;
     font-size: 14px;
     font-weight: normal;
@@ -2834,7 +2834,7 @@ label.checkbox {
 .grid-tabs-container .select-datacenter {
     display: none;
 }
-@media screen and (max-width: 1000px) {
+@media screen and (max-width: 1140px) {
     .grid-tab-radio + .grid-tab {
         display: none;
     }
