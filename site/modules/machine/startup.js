@@ -81,7 +81,35 @@ module.exports = function execute(scope) {
         call.cloud.separate(call.data.datacenter).listNetworks(call.done.bind(call));
     });
 
-    /* listDatacenters */
+    function sortDatacenters(datacenters) {
+        var dcPrefixes = ['us-', 'eu-'];
+        var sortedDatacenters = [];
+        function customSort(arr) {
+            arr.sort(function (a, b) {
+                return a.name > b.name;
+            });
+        }
+
+        if (datacenters.length > 1) {
+            dcPrefixes.forEach(function (dcPrefix) {
+                var datacentersByPrefix = datacenters.filter(function (datacenter) {
+                    return datacenter.name.indexOf(dcPrefix) > -1;
+                });
+                customSort(datacentersByPrefix);
+                sortedDatacenters = sortedDatacenters.concat(datacentersByPrefix);
+            });
+            customSort(datacenters);
+            datacenters.forEach(function (otherDatacenter) {
+                if (sortedDatacenters.indexOf(otherDatacenter) === -1) {
+                    sortedDatacenters.push(otherDatacenter);
+                }
+            });
+        }
+
+        return sortedDatacenters;
+    }
+
+    /* listDatasets */
     server.onCall('DatacenterList', function (call) {
         call.log.info('Handling list datacenters event');
         call.cloud.listDatacenters(function (err, datacenters) {
@@ -106,16 +134,8 @@ module.exports = function execute(scope) {
                 });
             });
 
-            // Sort by index
-            datacenterList.sort(function (dc1, dc2) {
-                if (dc1.index > dc2.index) {
-                    return 1;
-                } else if (dc1.index === dc2.index) {
-                    return 0;
-                } else {
-                    return -1;
-                }
-            });
+            // Sort by prefixes
+            datacenterList = sortDatacenters(datacenterList);
 
             call.log.debug('Got datacenters list %j', datacenters);
             call.done(null, datacenterList);

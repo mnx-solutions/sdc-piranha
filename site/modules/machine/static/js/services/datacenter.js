@@ -9,36 +9,8 @@
 
         function (serverTab, $q, localization, errorContext) {
 
-        var service = {};
-        var datacenters = { job: null, index: {}, list: [], search: {}, error: null};
-
-        function sortDatacenters(datacenters) {
-            var dcPrefixes = ['us-', 'eu-'];
-            var sortedDatacenters = [];
-            function customSort(arr) {
-                arr.sort(function (a, b) {
-                    return a.name > b.name;
-                });
-            }
-
-            if (datacenters.length > 1) {
-                dcPrefixes.forEach(function (dcPrefix) {
-                    var datacentersByPrefix = datacenters.filter(function (datacenter) {
-                        return datacenter.name.indexOf(dcPrefix) > -1;
-                    });
-                    customSort(datacentersByPrefix);
-                    sortedDatacenters = sortedDatacenters.concat(datacentersByPrefix);
-                });
-                customSort(datacenters);
-                datacenters.forEach(function (otherDatacenter) {
-                    if (sortedDatacenters.indexOf(otherDatacenter) === -1) {
-                        sortedDatacenters.push(otherDatacenter);
-                    }
-                });
-            }
-
-            return sortedDatacenters;
-        }
+            var service = {};
+            var datacenters = { job: null, index: {}, list: [], search: {} };
 
             service.updateDatacenters = function () {
             if (!datacenters.job || datacenters.job.finished) {
@@ -97,7 +69,6 @@
 
             var ret = $q.defer();
             if (!id) {
-                datacenters.list = sortDatacenters(datacenters.list);
                 if (datacenters.list.final) {
                     if (datacenters.error) {
                         ret.reject(datacenters.error);
