@@ -329,6 +329,17 @@ label.control-label,
 .text-regular {
     font-weight: normal;
 }
+
+.row-fluid.text-small {
+
+}
+
+.page-row-info {
+    position: relative;
+    float: left;
+    height: 34px;
+}
+
 .row-border {
     border-bottom: 2px solid #ddd;
 }
@@ -707,7 +718,6 @@ legend + .form-group {
 }
 
 .item-list-container {
-    padding-right: 2px;
     overflow: auto;
 }
 
@@ -2081,16 +2091,9 @@ select::-ms-expand {
     opacity: 1;
 }
 
-.page-row-info {
-    float: left;
-    padding-bottom: 5px;
-}
-
 .page-row-info form {
-    margin: 0;
     display: inline-block;
-    margin-left: 10px;
-    position: relative;
+    margin: 0 0 0 10px;
 }
 
 .filter-field {
@@ -2773,20 +2776,32 @@ label.checkbox {
     padding-top: 25px;
 }
 .grid-tabs-container {
+    position: initial;
+    margin-top: -7px;
+    margin-bottom: -2px;
     padding-top: 10px;
+}
+.select2-offscreen {
+    height: 0;
+}
+.grid-tabs-container .select-datacenter {
+    position: relative;
+    top: -6px;
+    margin-bottom: 0;
 }
 .grid-tabs-title,
 .grid-tab {
     display: inline-block;
-    vertical-align: top;
 }
 .grid-tabs-title {
+    position: relative;
+    top: 3px;
     padding: 3px 10px 0 0;
     text-transform: capitalize;
 }
 .grid-tab {
     padding: 3px 10px;
-    margin: 0 2px -1px 0;
+    margin: 0 2px 1px 0;
     background: #EBEBEB;
     font-size: 14px;
     font-weight: normal;
@@ -2799,13 +2814,40 @@ label.checkbox {
     visibility: hidden;
 }
 .grid-tab-radio:checked + .grid-tab {
-    background: #ffffff;
     border-color: #dddddd;
     border-bottom: 1px solid #ffffff;
+    background: #ffffff;
+}
+.grid-tab-radio,
+.grid-tab {
+    display: inline-block;
 }
 .actions-down {
     position: relative;
     top: 38px;
+    padding-bottom: 5px;
+}
+.select-datacenter {
+    width: 100px !important;
+    font-size: 14px;
+}
+.grid-tabs-container .select-datacenter {
+    display: none;
+}
+@media screen and (max-width: 1140px) {
+    .grid-tab-radio + .grid-tab {
+        display: none;
+    }
+    .grid-tabs-container .select-datacenter {
+        display: inline-block;
+    }
+    .grid-tabs-container {
+        margin-bottom: -3px;
+        padding-top: 13px;
+    }
+    .grid-tabs-title {
+        top: -4px;
+    }
 }
 .grid-no-entries {
     margin-top: 10px;
