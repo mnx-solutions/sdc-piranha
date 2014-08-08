@@ -304,14 +304,14 @@
                     ), function () {
                         $scope.isResizing = true;
                         $$track.event('machine', 'resize');
-                        $scope.retinfo = Machine.resizeMachine(machineid, selected);
-                        var job = $scope.retinfo.getJob();
-                        job.done(function (error) {
+                        Machine.resizeMachine(machineid, selected).then(function () {
                             $scope.isResizing = false;
-                            if (!error) {
-                                $scope.machine.freetier = false;
-                                reloadPackages(selected.name, $scope.machine.datacenter);
-                            }
+                            $scope.machine.freetier = false;
+                            reloadPackages(selected.name, $scope.machine.datacenter);
+                        }, function (err) {
+                            $scope.isResizing = false;
+                            $scope.machine.state = $scope.machine.prevState;
+                            PopupDialog.errorObj(err);
                         });
                     });
             };
