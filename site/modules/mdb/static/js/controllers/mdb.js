@@ -64,11 +64,14 @@
                 var result = 'N/A';
                 if (item.dateEnd && item.date) {
                     var time = (new Date(item.dateEnd).getTime() - new Date(item.date).getTime()) / 1000;
+                    var seconds = Math.round(time % 60);
                     time /= 60;
-                    result = Math.round(time % 60).toString() + 'm';
+                    var minutes = Math.round(time % 60);
+                    result = minutes + ' min ' + seconds + ' sec';
                 }
+
                 return result;
-            }
+            };
 
             var actionMessages = {
                 delete: {
