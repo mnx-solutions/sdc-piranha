@@ -47,7 +47,7 @@
                         item.checked = $scope.role.policies.indexOf(item.name) > -1;
                     });
                     $scope.policyGroups = [
-                        {name: account.login + "'s policies", values: policies}
+                        {name: account.login + "'s policies", children: policies}
                     ];
 
                     $scope.role.members.forEach(function (login) {
@@ -87,7 +87,7 @@
                     });
 
                     $scope.policyGroups = [
-                        {name: account.login + "'s policies", values: policies}
+                        {name: account.login + "'s policies", children: policies}
                     ];
 
                     $scope.users.forEach(function (user) {
@@ -128,7 +128,10 @@
                 $scope.role.default_members = $scope.role.members;
 
                 $scope.policyGroups.forEach(function (group) {
-                    group.values.forEach(function (policy) {
+                    if (!group.checked) {
+                        return;
+                    }
+                    group.children.forEach(function (policy) {
                         if (policy.checked) {
                             $scope.role.policies.push(policy.name);
                         }
