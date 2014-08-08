@@ -801,7 +801,11 @@ span.btn-success {
     margin-top: 10px;
     padding-bottom: 20px;
 }
+.container-min-width {
+    width: 1050px !important;
+}
 .hotlinks {
+    margin-right: 50px;
     color: #d3d3d3;
     font-size: 14px;
     line-height: 24px;
