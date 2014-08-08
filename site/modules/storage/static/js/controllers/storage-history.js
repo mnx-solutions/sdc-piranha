@@ -280,24 +280,42 @@
                                 };
                                 var deleteJobFolder = function (job) {
                                     var path = '/jobs/' + job.id;
+                                    var deferred = $q.defer();
                                     job.checked = false;
-                                    fileman['rmr'](path, function (error) {
+                                    fileman.rmr(path, function (error) {
                                         if (error) {
-                                            return showPopupDialog('error', 'Error', error.message);
+                                            job.deleteJob = false;
+                                            showPopupDialog('error', 'Error', error.message);
+                                            deferred.reject(error);
                                         }
-                                        return $scope.jobs = $scope.jobs.filter(function (el) {
-                                            $location.path('/manta/jobs');
-                                            return !el.deleteJob;
-                                        });
+                                        deferred.resolve(job.id);
                                     });
+                                    promises.push(deferred.promise);
                                 };
+
                                 if (action === 'deleteAll') {
                                     setCheckboxChecked();
                                     checkedArray = $scope.jobs;
                                 }
+                                var promises = [];
                                 checkedArray.forEach(function (job) {
                                     job.deleteJob = true;
                                     deleteJobFolder(job);
+                                });
+
+                                $q.all(promises).then(function (deletedJobIds) {
+                                    $scope.jobs = $scope.jobs.filter(function (el) {
+                                        return !el.deleteJob;
+                                    });
+                                    var locationPath =  $location.path();
+                                    if (locationPath.search('/manta/jobs/') !== -1) {
+                                        var currentId = locationPath.slice(12);
+                                        deletedJobIds.forEach(function (jobId) {
+                                            if (currentId === jobId) {
+                                                $location.path('/manta/jobs');
+                                            }
+                                        });
+                                    }
                                 });
                             }
                         );
