@@ -64,7 +64,7 @@
                     $q.when(freeTierOptions()),
                     $q.when(listAllMachines()),
                     $q.when(Datacenter.datacenter()),
-                    $q.when(Account.getAccountCreated())
+                    $q.when(Account.getParentAccount())
                 ]).then(function (results) {
                     var machines = results[1];
                     var datacenters = [];
@@ -78,13 +78,13 @@
                         option.datacenters = angular.copy(datacenters);
                         return option;
                     });
-                    var accountCreated = results[3];
+                    var parentAccount = results[3];
 
                     // from Mar 1, 2014
                     var freeTierAvailableDate = new Date(2014, 2, 1);
-                    freeTierOptionsResult.valid = !!accountCreated;
+                    freeTierOptionsResult.valid = !!(parentAccount && parentAccount.created);
                     if (freeTierOptionsResult.valid) {
-                        var createdDate = new Date(accountCreated);
+                        var createdDate = new Date(parentAccount.created);
                         freeTierOptionsResult.validUntil = new Date(createdDate.getFullYear() + 1, createdDate.getMonth(), createdDate.getDate());
                         freeTierOptionsResult.valid = createdDate > freeTierAvailableDate && new Date() < freeTierOptionsResult.validUntil;
                     }

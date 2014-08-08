@@ -30,7 +30,7 @@ module.exports = function (scope, app) {
 
         function uploadFile(path, part, callback) {
             var options = {type: part.mime, headers: {'max-content-length': metadata.files[part.filename]}};
-            var ws = client.createWriteStream('/' + client.user + '/' + path + '/' + part.filename, options);
+            var ws = client.createWriteStream('~~/' + path + '/' + part.filename, options);
             ws.on('end', callback);
             ws.on('error', function (error) {
                 error.message = 'Error occurred while uploading file "' + part.filename + '": ' + error.message;
@@ -73,7 +73,7 @@ module.exports = function (scope, app) {
                     }
 
                     // manta storage didn't updated so quickly, not depending on the file size
-                    waitFile(client, '/' + client.user + '/' + filePath + '/' + part.filename, function () {
+                    waitFile(client, '~~/' + filePath + '/' + part.filename, function () {
                         res.json({success: true, status: 200});
                     });
                 });

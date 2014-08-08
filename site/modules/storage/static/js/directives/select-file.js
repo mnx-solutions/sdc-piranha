@@ -17,8 +17,8 @@
 
                 var addFilePathCtrl = function ($scope, dialog) {
                     $scope.$watch('filePath', function (filePath) {
-                        Account.getAccount().then(function (account) {
-                            $scope.fullFilePath = '/' + account.login + filePath;
+                        Account.getParentAccount().then(function (parentAccount) {
+                            $scope.fullFilePath = '/' + parentAccount.login + '/' + filePath.replace(/^\//, '');
                         });
                     });
                     $scope.close = function (form, res) {

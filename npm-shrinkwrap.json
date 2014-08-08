@@ -752,14 +752,13 @@
       }
     },
     "manta": {
-      "version": "1.2.6",
-      "from": "manta@1.2.6",
-      "resolved": "https://registry.npmjs.org/manta/-/manta-1.2.6.tgz",
+      "version": "1.2.7",
+      "from": "manta@git+ssh://git@github.com:joyent/node-manta.git#92345b782d1770727b402dbc9d5a6a0339b0da89",
+      "resolved": "git+ssh://git@github.com:joyent/node-manta.git#92345b782d1770727b402dbc9d5a6a0339b0da89",
       "dependencies": {
         "assert-plus": {
           "version": "0.1.5",
-          "from": "assert-plus@0.1.5",
-          "resolved": "https://registry.npmjs.org/assert-plus/-/assert-plus-0.1.5.tgz"
+          "from": "assert-plus@0.1.5"
         },
         "backoff": {
           "version": "2.3.0",
@@ -824,7 +823,7 @@
         },
         "mime": {
           "version": "1.2.11",
-          "from": "mime@1.x",
+          "from": "mime@1.2.11",
           "resolved": "https://registry.npmjs.org/mime/-/mime-1.2.11.tgz"
         },
         "node-uuid": {
@@ -848,19 +847,14 @@
           "resolved": "https://registry.npmjs.org/path-platform/-/path-platform-0.0.1.tgz"
         },
         "progbar": {
-          "version": "0.0.2",
-          "from": "progbar@0.0.2",
-          "resolved": "https://registry.npmjs.org/progbar/-/progbar-0.0.2.tgz",
+          "version": "0.1.0",
+          "from": "progbar@0.1.0",
+          "resolved": "https://registry.npmjs.org/progbar/-/progbar-0.1.0.tgz",
           "dependencies": {
-            "assert-plus": {
-              "version": "0.1.2",
-              "from": "assert-plus@0.1.2",
-              "resolved": "https://registry.npmjs.org/assert-plus/-/assert-plus-0.1.2.tgz"
-            },
             "sprintf": {
-              "version": "0.1.1",
-              "from": "sprintf@0.1.1",
-              "resolved": "https://registry.npmjs.org/sprintf/-/sprintf-0.1.1.tgz"
+              "version": "0.1.3",
+              "from": "sprintf@~0.1.3",
+              "resolved": "https://registry.npmjs.org/sprintf/-/sprintf-0.1.3.tgz"
             }
           }
         },
@@ -878,6 +872,78 @@
               "version": "0.0.2",
               "from": "debuglog@0.0.2",
               "resolved": "https://registry.npmjs.org/debuglog/-/debuglog-0.0.2.tgz"
+            }
+          }
+        },
+        "restify": {
+          "version": "2.8.1",
+          "from": "restify@2.8.1",
+          "resolved": "https://registry.npmjs.org/restify/-/restify-2.8.1.tgz",
+          "dependencies": {
+            "csv": {
+              "version": "0.3.7",
+              "from": "csv@0.3.7",
+              "resolved": "https://registry.npmjs.org/csv/-/csv-0.3.7.tgz"
+            },
+            "deep-equal": {
+              "version": "0.0.0",
+              "from": "deep-equal@0.0.0",
+              "resolved": "https://registry.npmjs.org/deep-equal/-/deep-equal-0.0.0.tgz"
+            },
+            "escape-regexp-component": {
+              "version": "1.0.2",
+              "from": "escape-regexp-component@1.0.2",
+              "resolved": "https://registry.npmjs.org/escape-regexp-component/-/escape-regexp-component-1.0.2.tgz"
+            },
+            "formidable": {
+              "version": "1.0.14",
+              "from": "formidable@1.0.14",
+              "resolved": "https://registry.npmjs.org/formidable/-/formidable-1.0.14.tgz"
+            },
+            "keep-alive-agent": {
+              "version": "0.0.1",
+              "from": "keep-alive-agent@0.0.1",
+              "resolved": "https://registry.npmjs.org/keep-alive-agent/-/keep-alive-agent-0.0.1.tgz"
+            },
+            "lru-cache": {
+              "version": "2.3.1",
+              "from": "lru-cache@2.3.1",
+              "resolved": "https://registry.npmjs.org/lru-cache/-/lru-cache-2.3.1.tgz"
+            },
+            "negotiator": {
+              "version": "0.3.0",
+              "from": "negotiator@0.3.0",
+              "resolved": "https://registry.npmjs.org/negotiator/-/negotiator-0.3.0.tgz"
+            },
+            "qs": {
+              "version": "0.6.6",
+              "from": "qs@0.6.6",
+              "resolved": "https://registry.npmjs.org/qs/-/qs-0.6.6.tgz"
+            },
+            "semver": {
+              "version": "2.2.1",
+              "from": "semver@2.2.1",
+              "resolved": "https://registry.npmjs.org/semver/-/semver-2.2.1.tgz"
+            },
+            "spdy": {
+              "version": "1.19.3",
+              "from": "spdy@1.19.3",
+              "resolved": "https://registry.npmjs.org/spdy/-/spdy-1.19.3.tgz"
+            },
+            "tunnel-agent": {
+              "version": "0.4.0",
+              "from": "tunnel-agent@0.4.0",
+              "resolved": "https://registry.npmjs.org/tunnel-agent/-/tunnel-agent-0.4.0.tgz"
+            },
+            "verror": {
+              "version": "1.3.7",
+              "from": "verror@1.3.7",
+              "resolved": "https://registry.npmjs.org/verror/-/verror-1.3.7.tgz"
+            },
+            "dtrace-provider": {
+              "version": "0.2.8",
+              "from": "dtrace-provider@0.2.8",
+              "resolved": "https://registry.npmjs.org/dtrace-provider/-/dtrace-provider-0.2.8.tgz"
             }
           }
         },
@@ -919,9 +985,9 @@
               "resolved": "https://registry.npmjs.org/block-stream/-/block-stream-0.0.7.tgz"
             },
             "fstream": {
-              "version": "0.1.28",
+              "version": "0.1.29",
               "from": "fstream@~0.1.8",
-              "resolved": "https://registry.npmjs.org/fstream/-/fstream-0.1.28.tgz",
+              "resolved": "https://registry.npmjs.org/fstream/-/fstream-0.1.29.tgz",
               "dependencies": {
                 "graceful-fs": {
                   "version": "3.0.2",

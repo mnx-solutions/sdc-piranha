@@ -90,7 +90,13 @@ module.exports = function execute(scope, app) {
             }
             if (userId) {
                 req.session.subId = userId;
-                saveSessionToken(user);
+                cloud.getAccount(function (err, account) {
+                    req.session.parentAccountError = err;
+                    if (!err) {
+                        req.session.parentAccount = account.login;
+                    }
+                    saveSessionToken(user);
+                });
             }
         };
 

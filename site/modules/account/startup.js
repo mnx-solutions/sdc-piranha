@@ -110,25 +110,46 @@ module.exports = function execute(scope) {
             Object.keys(datacenters).forEach(function (datacenter) {
                 funcs.push(function networks(callback) {
                     cloudapi.separate(datacenter).listNetworks(function (err, data) {
-                            callback(err, separateResult(datacenter, data));
+                            if (err) {
+                                log.error(err);
+                                callback(null, separateResult(datacenter, []));
+                            } else {
+                                callback(err, separateResult(datacenter, data));
+                            }
                         }
                     );
                 });
                 funcs.push(function machines(callback) {
                     cloudapi.separate(datacenter).listMachines(function (err, data) {
-                        callback(err, separateResult(datacenter, data));
+                        if(err) {
+                            log.error(err);
+                            callback(null, separateResult(datacenter, []));
+                        } else {
+                            callback(err, separateResult(datacenter, data));
+                        }
+
                     });
                 });
                 funcs.push(function images(callback) {
                     cloudapi.separate(datacenter).listImages(
                         function (err, data) {
-                            callback(err, separateResult(datacenter, data));
+                            if (err) {
+                                log.error(err);
+                                callback(null, separateResult(datacenter, []));
+                            } else {
+                                callback(err, separateResult(datacenter, data));
+                            }
                         }
                     );
                 });
                 funcs.push(function firewallRules(callback) {
                     cloudapi.separate(datacenter).listFwRules(function (err, data) {
-                            callback(err, separateResult(datacenter, data));
+                            if (err) {
+                                log.error(err);
+                                callback(null, separateResult(datacenter, []));
+                            } else {
+                                callback(err, separateResult(datacenter, data));
+                            }
                         }
                     );
                 });
@@ -348,19 +369,13 @@ module.exports = function execute(scope) {
         vasync.pipeline({'funcs': pool}, callback);
     };
 
-    server.onCall('getAccountCreated', function (call) {
-        call.cloud.getAccount(function (error, data) {
-            call.done(null, data ? data.created : null);
-        });
-    });
-
     server.onCall('getParentAccount', function (call) {
         call.cloud.getAccount(function (error, data) {
             if (error) {
                 call.done(error);
                 return;
             }
-            call.done(null, {login: data.login});
+            call.done(null, {login: data.login, created: data.created});
         });
     });
 
@@ -756,7 +771,7 @@ module.exports = function execute(scope) {
     });
 
     var getConfigPath = function (call, client, old) {
-        return '/' + client.user + '/stor' + (old ? '' : '/.joyent') + '/portal/config.' +
+        return '~~/stor' + (old ? '' : '/.joyent') + '/portal/config.' +
                 call.req.session.userName + '.json';
     };
 
@@ -782,7 +797,7 @@ module.exports = function execute(scope) {
                 });
                 return;
             }
-            client.rmr('/' + client.user + '/stor/portal', function (rmErr) {
+            client.rmr('~~/stor/portal', function (rmErr) {
                 if (rmErr) {
                     call.req.log.info('Cannot remove old user config');
                 }

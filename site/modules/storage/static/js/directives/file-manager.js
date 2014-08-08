@@ -218,6 +218,9 @@
                 scope.createFilesTree = function (userAction, path, callback) {
                     path = path || scope.currentPath;
                     fileman.ls(path, function (error, result) {
+                        scope.loadingFolder = false;
+                        scope.loading = false;
+                        scope.refreshingFolder = false;
                         if (error) {
                             return showPopupDialog('error', 'Error', error);
                         }
@@ -226,9 +229,7 @@
                         if (!error && (scope.filesTree[path] !== scope.files)) {
                             scope.filesTree[path] = scope.files;
                         }
-                        scope.loadingFolder = false;
-                        scope.loading = false;
-                        scope.refreshingFolder = false;
+
                         if (callback) {
                             callback(error, result);
                         }
