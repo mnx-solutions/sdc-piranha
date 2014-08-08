@@ -1273,7 +1273,9 @@
                 $scope.selectedVersions = selectedVersions;
 
                 if ($scope.preSelectedImage) {
-                    $scope.selectVersion($scope.preSelectedImage);
+                    $scope.preSelectedImage.then(function (image) {
+                        $scope.selectVersion(image);
+                    })
                 }
             }
 
