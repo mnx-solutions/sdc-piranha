@@ -82,6 +82,7 @@
                             getStatus(id);
                         }, 5000);
                     } else {
+                        $scope.loading = false;
                         if (job.status === 'Processed') {
                             mdb.getDebugJob(id).then(processResult, function (error) {
                                 PopupDialog.error(null, error, flushAll('Failed'));
