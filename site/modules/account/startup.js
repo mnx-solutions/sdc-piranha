@@ -579,8 +579,29 @@ module.exports = function execute(scope) {
             }
         });
         data.password = call.data.password;
-        call.cloud.createUser(data, function (err, userData) {
-            call.done(err, userData);
+        call.cloud.createUser(data, function (createErr, userData) {
+            if (createErr) {
+                call.done(createErr);
+                return;
+            }
+
+            var searchUserInList = function (list, user) {
+                return list.some(function (userInList) {
+                    return userInList.login === user.login;
+                });
+            };
+
+            (function checkUsersList() {
+                call.cloud.listUsers(function(listError, listData) {
+                    if (listError) {
+                        call.done(listError);
+                    } else if (searchUserInList(listData, userData)) {
+                        call.done(null, userData);
+                    } else {
+                        setTimeout(checkUsersList, 1000);
+                    }
+                }, true);
+            })();
         });
     });
 
