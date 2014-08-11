@@ -246,7 +246,11 @@ module.exports = function execute(scope) {
             var client = Manta.createClient(call);
             client.get(call.data.path, function (err) {
                 if (err) {
-                    call.done(err.message || mantaNotAvailable);
+                    var message = err.message || '';
+                    if (err.code === 'NoMatchingRoleTag' && message) {
+                        message = message.substring(0, message.length - 1) + " '" + call.data.path + "'.";
+                    }
+                    call.done(message || mantaNotAvailable);
                     return;
                 }
                 ls(call, client);
