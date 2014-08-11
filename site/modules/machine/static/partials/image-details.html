@@ -112,7 +112,7 @@
                                     <div class="loading-medium loading-medium-inline" data-ng-show="currentImage.state == 'deleting' || loading"></div>
                                     <button class="btn light effect-orange-button" data-ng-click="cancel()" data-ng-disabled="loading">Cancel</button>
                                     <button class="btn light effect-orange-button" data-ng-click="deleteImage()" data-ng-disabled="currentImage.state !== 'active' || loading">Delete</button>
-                                    <button class="btn orange" data-ng-click="updateImage()" data-ng-disabled="loading || imageForm.imageName.$error.imageName || imageForm.imageVersion.$error.imageName">Save</button>
+                                    <button class="btn orange" data-ng-click="updateImage()" data-ng-disabled="loading || imageForm.imageName.$error.imageName || imageForm.imageVersion.$error.imageName || currentImage.state !== 'active'">Save</button>
                                 </div>
                             </form>
                         </div>

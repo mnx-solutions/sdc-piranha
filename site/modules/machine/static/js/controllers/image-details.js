@@ -18,10 +18,12 @@
             });
 
             var currentImageId = requestContext.getParam('currentImage');
-
+            $scope.currentImage = {};
+            $scope.oldImageData = {};
             var loadImage = function () {
-                Image.image({id: currentImageId, datacenter: 'private'}).then(function (data) {
+                Image.image({id: currentImageId}).then(function (data) {
                     $scope.loading = false;
+                    $scope.oldImageData = ng.copy(data);
                     $scope.currentImage = data;
                 }, function (err) {
                     PopupDialog.errorObj(err);
@@ -31,7 +33,6 @@
             };
 
             loadImage();
-
             $scope.updateImage = function () {
                 $scope.loading = true;
                 Image.updateImage($scope.currentImage, function () {}).promise.then(function () {
@@ -43,8 +44,10 @@
             };
 
             $scope.cancel = function () {
-                $location.path('/images');
-                $location.replace();
+                Image.resetImage($scope.oldImageData, function () {
+                    $location.path('/images');
+                    $location.replace();
+                });
             };
 
             $scope.machines = Machine.machine();
