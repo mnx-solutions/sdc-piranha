@@ -78,3 +78,16 @@
 .col-md-4 {
     padding-left: 0;
 }
+
+.file-label {
+    display: inline-flex;
+    margin-top: 8px;
+}
+
+.file-name {
+    display: inline-block;
+    overflow: hidden;
+    max-width: 170px;
+    padding-left: 5px;
+    text-overflow: ellipsis;
+}
