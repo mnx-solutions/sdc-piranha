@@ -45,10 +45,17 @@ var get = function (customerUuid, key, val, callback) {
     }
     capi.getMetadata(customerUuid, appKey, key, function (err, res) {
         // TODO: handle 404 properly!
-//        if (err) {
-//            callback(err);
-//            return;
-//        }
+        var error = false;
+        if (err && err.httpCode === 401) {
+            error = 'Authorization error.';
+        } else if (err && err.httpCode === 500 && err.restCode === 'RetriesExceeded') {
+            error = 'Can`t connect.';
+        }
+        if (error) {
+            err.message = error;
+            callback(err);
+            return;
+        }
         if (res === 'false') {
             callback(null, false);
             return;
