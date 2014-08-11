@@ -455,21 +455,16 @@ module.exports = function execute(scope) {
         machine.ImageList(call, call.done);
     });
 
-    /* RenameImage */
-    server.onCall('ImageRename', {
+    /* UpdateImage */
+    server.onCall('ImageUpdate', {
         verify: function (data) {
             return typeof data
-                && data.id
-                && data.name
-                && data.datacenter;
+                && data.uuid
+                && data.datacenter
         },
         handler: function (call) {
-            var options = {
-                uuid: call.data.id,
-                name: call.data.name,
-                datacenter: call.data.datacenter
-            };
-            machine.ImageRename(call, options, call.done.bind(call));
+            var options = call.data;
+            machine.ImageUpdate(call, options, call.done.bind(call));
         }
     });
 };

@@ -561,19 +561,25 @@ select.date-year {
     width: 459px;
     display: inline-block;
 }
+
 .edit-value input {
     box-sizing: content-box;
+}
+.edit-value input,
+.edit-value textarea {
     padding: 0 0 0 10px;
     width: 445px;
     height: 28px;
     border: 1px solid #ccc;
-    border-radius: 0;
     background-color: #fafcfd;
     font-weight: 300;
     font-size: 16px;
     border-radius: 4px;
 }
-
+.edit-value textarea {
+    padding: 5px 0 0 10px;
+    height: 90px;
+}
 .edit-value-two .select2-container,
 .edit-value .select2-container,
 .edit-value-double {

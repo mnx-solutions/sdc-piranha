@@ -6,15 +6,13 @@
         'serverTab',
         'localization',
         'PopupDialog',
-        'errorContext',
-        'util',
         'ErrorService',
-        function ($q, serverTab, localization, PopupDialog, errorContext,
-            util, ErrorService) {
+        'util',
+        function ($q, serverTab, localization, PopupDialog, ErrorService, util) {
 
             var service = {};
             var list = [];
-            var images = {index: {}, job: null, list: {}, error: null, search: {}};
+            var images = {index: {}, job: null, list: {private: [], all: []}, error: null, search: {}};
 
             function handleChunk(image, action) {
                 var old = null;
@@ -78,8 +76,8 @@
                 }
             }
 
-            service.updateImages = function (force) {
-                if (!images.job && !force) {
+            service.updateImages = function () {
+                if (!images.job) {
                     images.job = serverTab.call({
                         name: 'ImagesList',
                         error: function (err) {
@@ -126,17 +124,15 @@
                                         if (!images.index[image.id]) {
                                             images.index[image.id] = image;
                                             images.list['all'].push(image);
-                                        }
-                                        if (image.public === false) {
-                                            images.list['private'].push(image);
+                                            if (image.public === false) {
+                                                images.list['private'].push(image);
+                                            }
                                         }
                                         images.list[chunk.name].push(image);
                                     });
                                 }
                             }
 
-                            images.list['private'] = [];
-                            images.list['all'] = [];
                             if (ng.isArray(data)) {
                                 data.forEach(handleResponse);
                             } else {
@@ -157,7 +153,7 @@
                     params = {id: params};
                 }
 
-                if (images.list.final && !images.error && !force) {
+                if (images.list.final && !images.error) {
                     list = filterImages(params);
                     if (list) {
                         deferred.resolve(list);
@@ -165,18 +161,18 @@
                         deferred.reject(list);
                     }
                     return deferred.promise;
+                } else {
+                    service.updateImages().deferred.promise.then(function () {
+                        list = filterImages(params);
+                        if (list) {
+                            deferred.resolve(list);
+                        } else {
+                            deferred.reject(list);
+                        }
+                    }, deferred.reject);
+
+                    return deferred.promise;
                 }
-
-                service.updateImages(force).deferred.promise.then(function () {
-                    list = filterImages(params);
-                    if (list) {
-                        deferred.resolve(list);
-                    } else {
-                        deferred.reject(list);
-                    }
-                }, deferred.reject);
-
-                return deferred.promise;
             };
 
             service.simpleImage = function (params) {
@@ -346,6 +342,7 @@
 
             service.deleteImage = function (image) {
                 image.state = 'deleting'; // Override state manually
+                handleChunk(image);
                 var job = serverTab.call({
                     name: 'ImageDelete',
                     data: { imageId: image.id, datacenter: image.datacenter },
@@ -362,28 +359,33 @@
                 image.job = job.getTracker();
                 return job;
             };
-
-            service.renameImage = function (image, callback) {
+            service.resetImage = function (oldImage, callback) {
+                handleChunk(oldImage);
+                callback();
+            };
+            service.updateImage = function (image, callback) {
                 var oldState = image.state;
-                image.state = 'renaming'; // Override state manually
+                image.state = 'updating'; // Override state manually
+                handleChunk(image);
                 var job = serverTab.call({
-                    name: 'ImageRename',
-                    data: { id: image.id, name: image.name, datacenter: image.datacenter },
-                    error: function (err) {
-                        image.state = oldState;
-                        callback(err);
-                    },
+                    name: 'ImageUpdate',
+                    data: { uuid: image.id,
+                            name: image.name,
+                            datacenter: image.datacenter,
+                            version: image.version,
+                            description: image.description},
                     done: function (err) {
                         image.state = oldState;
                         if (!err) {
+                            handleChunk(image, 'active');
                             callback();
                         } else {
-                            showError(image, 'Unable to rename image "{{name}}": ', err);
+                            showError(image, 'Unable to update image "{{name}}": ', err);
                         }
                     }
                 });
-
                 image.job = job.getTracker();
+                handleChunk(image);
                 return job;
             };
 

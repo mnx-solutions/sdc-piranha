@@ -424,9 +424,9 @@ module.exports = function execute(scope, register) {
         });
     };
 
-    api.ImageRename = function (call, options, callback) {
+    api.ImageUpdate = function (call, options, callback) {
         var cloud = call.cloud.separate(options.datacenter);
-        cloud.updateImage(options.uuid, { name: options.name }, function (err) {
+        cloud.updateImage(options.uuid, options, function (err) {
             if (!err) {
                 // poll for image name change (rename)
                 pollForObjectStateChange(cloud, call, 'name', options.name, (60 * 60 * 1000), 'Image', options.uuid, callback);

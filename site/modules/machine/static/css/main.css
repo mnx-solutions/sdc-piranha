@@ -1782,3 +1782,39 @@ span.btn-success {
 .panel-body table tr:first-child td {
     border-top: 0;
 }
+#imageDetails {
+    width: 685px;
+}
+#imageDetails input[disabled] {
+    background-color: #eee !important;
+}
+#imageDetails .form-group {
+    min-width: 600px;
+    margin-bottom: 20px;
+}
+#imageDetails .edit-value input {
+    width: 437px;
+}
+#imageDetails .edit-value textarea {
+    width: 449px;
+    max-width: 449px;
+}
+#imageDetails .edit-value {
+    width: auto;
+}
+#imageDetails .loading-medium-inline {
+    min-height: 35px;
+    float: left;
+}
+#imageDetails .description-label {
+    vertical-align: top;
+}
+#imageDetails .edit-error {
+    position: static;
+    float: right;
+    width: auto;
+    margin-top: 2px;
+    margin-right: 63px;
+    text-align: right;
+    letter-spacing: -.1px;
+}

@@ -18,24 +18,37 @@
             });
 
             var currentImageId = requestContext.getParam('currentImage');
-
-            var loadListImages = function (force) {
-                Image.image().then(function (data) {
-                    $scope.images = data;
+            $scope.currentImage = {};
+            $scope.oldImageData = {};
+            var loadImage = function () {
+                Image.image({id: currentImageId}).then(function (data) {
                     $scope.loading = false;
-
-                    $scope.currentImage = $scope.images.find(function (image) {
-                        return image.id === currentImageId;
-                    });
-
+                    $scope.oldImageData = ng.copy(data);
+                    $scope.currentImage = data;
                 }, function (err) {
                     PopupDialog.errorObj(err);
-                    $scope.images = [];
+                    $scope.currentImage = {};
                     $scope.loading = false;
                 });
             };
 
-            loadListImages();
+            loadImage();
+            $scope.updateImage = function () {
+                $scope.loading = true;
+                Image.updateImage($scope.currentImage, function () {}).promise.then(function () {
+                    $scope.loading = false;
+                }, function (err) {
+                    PopupDialog.errorObj(err);
+                    $scope.loading = false;
+                });
+            };
+
+            $scope.cancel = function () {
+                Image.resetImage($scope.oldImageData, function () {
+                    $location.path('/images');
+                    $location.replace();
+                });
+            };
 
             $scope.machines = Machine.machine();
             $scope.$watch('machines.final', function (isFinal) {
@@ -62,8 +75,6 @@
             $scope.machinesGridExportFields = {
                 ignore: 'all'
             };
-
-            $scope.$on('event:forceUpdate', loadListImages.bind($scope, true));
 
             $scope.deleteImage = function () {
                 PopupDialog.confirm(
