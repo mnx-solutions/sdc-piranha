@@ -131,6 +131,6 @@ public class InstanceList extends AbstractPageObject {
     }
 
     public void openGridTab(String tabName) {
-        $(By.xpath("//span[@data-ng-repeat=\"filter in tabFilters\" and contains(.,'" + tabName + "')]/label")).click();
+        $(By.xpath("//span[@data-ng-repeat=\"filter in tabFilters | orderBy:$index track by $index\" and contains(.,'" + tabName + "')]/label")).click();
     }
 }

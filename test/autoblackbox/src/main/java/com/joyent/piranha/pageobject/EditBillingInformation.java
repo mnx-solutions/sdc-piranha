@@ -38,6 +38,7 @@ public class EditBillingInformation extends UserInfo {
         setExpireDate(PropertyHolder.getExpirationMonth(), PropertyHolder.getExpirationYear());
         setCCVCode(PropertyHolder.getCCVCode());
         setAddressLine1(PropertyHolder.getAddressLine1());
+        setCountry(PropertyHolder.getCountry());
         setCity(PropertyHolder.getCity());
         setState(PropertyHolder.getState());
         setZipCode(PropertyHolder.getZipCode());

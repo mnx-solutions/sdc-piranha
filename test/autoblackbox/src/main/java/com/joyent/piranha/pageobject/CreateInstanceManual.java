@@ -33,9 +33,7 @@ public class CreateInstanceManual extends AbstractPageObject implements CreateIn
     }
 
     public void selectOsFilter(String os) {
-        $("#selectOS").click();
-        $(By.xpath("//option[@data-ng-repeat=\"opsys in operating_systems\" and contains(.,\"" + os + "\")]")).waitUntil(exist, baseTimeout);
-        $(byText(os)).click();
+        selectFromSelect2("s2id_selectOS", os);
     }
 
     public void selectPackage(String name) {
@@ -150,6 +148,7 @@ public class CreateInstanceManual extends AbstractPageObject implements CreateIn
         setInstanceNameValue(instanceVO.getImageName());
         clickCreateInstanceButton();
         clickButtonInModal("Yes");
+        page(Instances.class).getInstanceList().openGridTab(instanceVO.getDatacenter());
         waitForSmallSpinnerDisappear();
         return page(Instances.class);
     }

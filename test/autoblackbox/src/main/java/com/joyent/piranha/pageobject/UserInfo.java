@@ -55,8 +55,7 @@ public class UserInfo extends AbstractPageObject {
     }
 
     public void setCountry(String countryValue) {
-        Select country = new Select($(By.id("country")));
-        country.selectByVisibleText(countryValue);
+        selectFromSelect2("s2id_country", countryValue);
     }
 
     public void setCity(String city) {

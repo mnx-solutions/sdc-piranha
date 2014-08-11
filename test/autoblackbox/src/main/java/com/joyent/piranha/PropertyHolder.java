@@ -113,4 +113,8 @@ public final class PropertyHolder {
     public static String getPublicKeyPath() {
         return getPathToSShFolder() +  System.getProperty("env.publicKeyPath");
     }
+
+    public static String getCountry() {
+        return System.getProperty("profile.billing.Country");
+    }
 }
