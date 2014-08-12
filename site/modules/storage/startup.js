@@ -14,6 +14,10 @@ module.exports = function execute(scope) {
     function sendError(call, error, suppressErrorLog) {
         function done(err) {
             if (err) {
+                var message = err.message || '';
+                if (err.code === 'NoMatchingRoleTag' && message) {
+                    err.message = message.substring(0, message.length - 1) + " '" + call.data.path + "'.";
+                }
                 call.done(err.message || mantaNotAvailable, suppressErrorLog);
             } else {
                 call.done();
@@ -246,7 +250,7 @@ module.exports = function execute(scope) {
             var client = Manta.createClient(call);
             client.get(call.data.path, function (err) {
                 if (err) {
-                    call.done(err.message || mantaNotAvailable);
+                    sendError(call, err);
                     return;
                 }
                 ls(call, client);
