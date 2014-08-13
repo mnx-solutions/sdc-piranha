@@ -1032,7 +1032,8 @@
             $scope.filterDatasetsByVisibility = function (item) {
                 if ($scope.features.imageUse !== 'disabled') {
                     if ((item.public && $scope.instanceType === 'Saved') ||
-                            (!item.public && $scope.instanceType === 'Public')) {
+                            (!item.public && $scope.instanceType === 'Public') ||
+                                (!item.public && $scope.instanceType === 'Saved' && item.state !== 'active')) {
                         return false;
                     }
                 }
