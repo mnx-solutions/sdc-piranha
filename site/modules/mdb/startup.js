@@ -71,7 +71,7 @@ function modulesParser(rawModulesContent) {
                 node_modules: raw,
                 parent: raw.slice(-2, -1)[0],
                 libs: [lib],
-                values: (modules[name] && modules[name].values) || []
+                children: (modules[name] && modules[name].children) || []
             };
         }
 
@@ -79,7 +79,7 @@ function modulesParser(rawModulesContent) {
     }
 
     function getModule(name) {
-        modules[name] = modules[name] || {name: name, values: []};
+        modules[name] = modules[name] || {name: name, children: []};
         return modules[name];
     }
 
@@ -103,12 +103,12 @@ function modulesParser(rawModulesContent) {
             return;
         }
 
-        if ((parentModule === '.' && module.parent) || !parentModule.values) {
+        if ((parentModule === '.' && module.parent) || !parentModule.children) {
             parentModule = getModule(module.parent || 'root');
         }
 
-        if (module !== parentModule && parentModule.values.indexOf(module) === -1) {
-            parentModule.values.push(module);
+        if (module !== parentModule && parentModule.children.indexOf(module) === -1) {
+            parentModule.children.push(module);
         }
     });
 
@@ -116,17 +116,17 @@ function modulesParser(rawModulesContent) {
         modules.forEach(function (module, index) {
             if (includedModules) {
                 if (includedModules.indexOf(module) > -1) {
-                    modules[index] = {name: module.name, values: []};
+                    modules[index] = {name: module.name, children: []};
                 }
                 includedModules.push(module);
             }
 
-            destroyCycles(module.values, includedModules || []);
+            destroyCycles(module.children, includedModules || []);
         });
     }
 
-    destroyCycles(modules.root.values);
-    return {modules: modules.root.values};
+    destroyCycles(modules.root.children);
+    return {modules: modules.root.children};
 }
 
 var mdbApi = function execute(scope) {
@@ -287,7 +287,7 @@ var mdbApi = function execute(scope) {
         copyObjects(jsObjects, jobInfo);
 
         var jobData = {status: status || jobInfo.status};
-        if (jobData.status === 'Cancelled') {
+        if (jobData.status === 'Cancelled' || jobData.status === 'Failed') {
             copyObjects(jobData, {
                 jobId: jobInfo.jobId,
                 coreFile: jobInfo.coreFile
