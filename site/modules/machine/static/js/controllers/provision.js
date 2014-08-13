@@ -1030,15 +1030,15 @@
             };
 
             $scope.filterDatasetsByVisibility = function (item) {
+                var result = item.public;
                 if ($scope.features.imageUse !== 'disabled') {
-                    if ((item.public && $scope.instanceType === 'Saved') ||
-                            (!item.public && $scope.instanceType === 'Public')) {
-                        return false;
-                    }
+                    result = item.state === 'active' &&
+                        ($scope.instanceType === 'Public' || !item.public) &&
+                        ($scope.instanceType === 'Saved' || item.public);
                 }
-                return true;
+                return result;
             };
-
+            
             $scope.selectInstanceType = function (type) {
                 $scope.instanceType = type;
                 if (type === 'Public') {
