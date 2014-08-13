@@ -18,6 +18,7 @@ module.exports = function execute(scope) {
                 if (err.code === 'NoMatchingRoleTag' && message) {
                     err.message = message.substring(0, message.length - 1) + " '" + call.data.path + "'.";
                 }
+                call.req.log.debug('sendError', err);
                 call.done(err.message || mantaNotAvailable, suppressErrorLog);
             } else {
                 call.done();
