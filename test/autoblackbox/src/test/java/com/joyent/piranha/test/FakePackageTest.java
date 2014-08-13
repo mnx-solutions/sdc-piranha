@@ -59,7 +59,7 @@ public class FakePackageTest extends TestWrapper {
         instanceList.openGridTab(PropertyHolder.getDatacenter(0));
         InstanceDetails instanceDetails = instanceList.openInstanceDetails(instanceList.getFirstInstanceName());
         String instanceId = instanceDetails.getInstanceId();
-        instanceDetails.selectResizeOption("Mem: 128 GB Disk: 4200 GB VCPU: 32 and bursting");
+        instanceDetails.selectResizeOption("Mem: 128 GB");
         Zenbox zenbox = instanceDetails.clickResizeButton("fakePackage");
         assertTrue(zenbox.getQuestionInput().val().equals("I want to resize instance " + instanceId));
         assertTrue(zenbox.getNameInput().val().equals(USER_NAME));

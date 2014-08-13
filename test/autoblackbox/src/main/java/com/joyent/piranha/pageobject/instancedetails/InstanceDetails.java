@@ -65,11 +65,7 @@ public class InstanceDetails extends AbstractPageObject {
 
     public void selectResizeOption(String packageDescription) {
         openResizeSection();
-        SelenideElement dropDown = $("#collapse_resize").$("select[name=\"resize\"]");
-        dropDown.shouldBe(Condition.visible);
-        Select packages = new Select(dropDown);
-        packages.selectByVisibleText(packageDescription);
-        $("#select2-drop").waitWhile(Condition.visible, baseTimeout);
+        selectFromSelect2(".resize-block div", packageDescription);
     }
 
     public void clickResizeButton() {

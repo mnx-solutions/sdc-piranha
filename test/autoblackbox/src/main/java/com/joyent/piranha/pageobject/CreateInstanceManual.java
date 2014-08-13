@@ -33,7 +33,7 @@ public class CreateInstanceManual extends AbstractPageObject implements CreateIn
     }
 
     public void selectOsFilter(String os) {
-        selectFromSelect2("s2id_selectOS", os);
+        selectFromSelect2("#s2id_selectOS", os);
     }
 
     public void selectPackage(String name) {

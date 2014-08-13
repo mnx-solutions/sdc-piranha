@@ -144,9 +144,9 @@ public abstract class AbstractPageObject {
         }
     }
 
-    public void selectFromSelect2(String selectId, String option) {
+    public void selectFromSelect2(String jqSelector, String option) {
         JavascriptExecutor javascriptExecutor = (JavascriptExecutor) WebDriverRunner.getWebDriver();
-        javascriptExecutor.executeScript("$('#" + selectId + " a').mousedown()");
+        javascriptExecutor.executeScript("$('" + jqSelector + " a').mousedown()");
         javascriptExecutor.executeScript("$('ul div:contains(\"" + option + "\")').mouseup()");
     }
 }

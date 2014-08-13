@@ -67,8 +67,7 @@ public class FirewallRuleDetails extends AbstractPageObject {
     }
 
     public void selectProtocol(String protocolText) {
-        Select protocol = new Select($("#protocolSelect"));
-        protocol.selectByVisibleText(protocolText);
+        selectFromSelect2("#s2id_protocolSelect", protocolText);
     }
 
     public void clickUseAllButton() {
@@ -116,7 +115,6 @@ public class FirewallRuleDetails extends AbstractPageObject {
     }
 
     public void selectDatacenter(String datacenter) {
-        Select select = new Select($("#dcSelect"));
-        select.selectByVisibleText(datacenter);
+        selectFromSelect2("#s2id_dcSelect", datacenter);
     }
 }

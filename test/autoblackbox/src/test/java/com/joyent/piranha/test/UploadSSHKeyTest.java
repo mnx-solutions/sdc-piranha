@@ -48,12 +48,12 @@ public class UploadSSHKeyTest extends TestWrapper {
         checkKeysNumber(numberOfKeys);
         accountSSH.clickImportPublicKey();
         accountSSH.uploadFile(PropertyHolder.getPublicKeyPath());
-        $(byText("Uploaded key already exists.")).shouldBe(visible);
+        $(byText("This key already exists. Please try another SSH key.")).shouldBe(visible);
         accountSSH.clickButtonInModal("Ok");
         accountSSH.clickImportPublicKey();
         String appLog = new File("../../").getCanonicalPath() + "/app.log" ;
         accountSSH.uploadFile(appLog);
-        $(byText("The file you've uploaded is not a public key.")).shouldBe(visible);
+        $(byText("The file you've uploaded is not a public key. Please try another SSH key.")).shouldBe(visible);
         accountSSH.clickButtonInModal("Ok");
         numberOfKeys = accountSSH.getNumberOfKeys();
         accountSSH.deleteLastKey();
