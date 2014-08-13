@@ -97,7 +97,7 @@
                     result: {
                         value: function (data, status) {
                             if (data) {
-                                _result = _chunked ? _result.concat(data) : data;
+                                _result = _chunked && _result.length > 0 ? _result.concat(data) : data;
                                 // Handle last chunk
                                 if (_chunked && status === 'finished') {
                                     emit('updated', self);
@@ -238,7 +238,7 @@
                             }
 
                             var i = index === undefined ? _index : index;
-                            var r = _result.slice(i);
+                            var r = Array.isArray(_result) ? _result.slice(i) : _result;
 
                             if (index !== undefined) {
                                 _index += r.length;

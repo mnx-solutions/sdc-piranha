@@ -166,7 +166,7 @@ function Call(opts) {
                 }
 
                 var i = index === undefined ? _index : index;
-                var r = _result.slice(i);
+                var r = Array.isArray(_result) ? _result.slice(i) : _result;
 
                 if (index === undefined) {
                     _index += r.length;
