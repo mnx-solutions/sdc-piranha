@@ -42,8 +42,8 @@ public class UserInfo extends AbstractPageObject {
     }
 
     public void setExpireDate(String monthValue, String yearValue) {
-        selectFromSelect2("s2id_expirationMonth", monthValue);
-        selectFromSelect2("s2id_expirationYear", yearValue);
+        selectFromSelect2("#s2id_expirationMonth", monthValue);
+        selectFromSelect2("#s2id_expirationYear", yearValue);
     }
 
     public void setCCVCode(String ccvcode) {
@@ -55,7 +55,7 @@ public class UserInfo extends AbstractPageObject {
     }
 
     public void setCountry(String countryValue) {
-        selectFromSelect2("s2id_country", countryValue);
+        selectFromSelect2("#s2id_country", countryValue);
     }
 
     public void setCity(String city) {
