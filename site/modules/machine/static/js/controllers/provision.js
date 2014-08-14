@@ -1166,6 +1166,7 @@
             $scope.selectFilterType = function (name) {
                 if (name && (name !== $scope.filterModel.key)) {
                     $scope.filterModel.key = name;
+                    $scope.preSelectedData = null;
                     $scope.onFilterChange(name);
                 }
             };
