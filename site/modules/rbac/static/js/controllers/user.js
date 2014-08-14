@@ -81,7 +81,7 @@
                             var country = countries.data.find(function (country) {
                                 return country.iso3 === $scope.user.country;
                             });
-                            $scope.user.countryName = country.name;
+                            $scope.user.countryName = country && country.name;
                         });
                     } else {
                         $scope.user.countryName = account.country.name;
