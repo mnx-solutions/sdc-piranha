@@ -16,6 +16,10 @@
     width: 153px;
 }
 
+.column-container {
+    white-space: nowrap;
+}
+
 .column {
     display: inline-block;
     vertical-align: top;
@@ -26,8 +30,6 @@
 }
 
 .mdb-common-container {
-    width: 50%;
-    max-width: 600px;
     padding: 0 20px 0 0;
     margin-bottom: 20px;
 }
