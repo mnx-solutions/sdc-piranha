@@ -1441,6 +1441,7 @@
                             datasets = datasetsResult;
                         }
                         if (packagesResult.error) {
+                            isAvailableSwitchDatacenter = packagesResult.error.restCode !== 'NotAuthorized';
                             PopupDialog.errorObj(packagesResult.error);
                             packages = [];
                         } else {
