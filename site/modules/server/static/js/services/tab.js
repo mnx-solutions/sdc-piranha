@@ -115,9 +115,9 @@
             self.$on('polled', function() {
                 errorPollingLength = 500;
 
-                if (notification.isVisible(self)) {
+              /*  if (notification.isVisible(self)) {
                     notification.dismiss();
-                }
+                }*/
             });
 
             self.$on('error', function () {
@@ -128,21 +128,21 @@
                     time--;
 
                     if (time > 0) {
-                        notification.replace(self, { type: 'error' },
+                       /* notification.replace(self, { type: 'error' },
                             localization.translate(null,
                                 'server',
                                 'Lost contact with server retrying in {{seconds}}',
                                 { seconds: time }
                             )
-                        );
+                        );*/
                     } else {
-                        notification.replace(self, { type: 'error' },
+                      /*  notification.replace(self, { type: 'error' },
                             localization.translate(null,
                                 'server',
                                 'Retrying...'
                             )
                         );
-
+*/
                         clearInterval(timer);
                         self.poll();
                     }

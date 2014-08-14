@@ -16,7 +16,6 @@ html(lang='en',data-ng-app='JoyentPortal', id="ng-app", data-ng-controller='Main
 
     div(data-main-menu, class='modulizer-module-menu header navbar navbar-fixed-top')
     div(data-main-left, id='leftPanel', ng-class="{'expanded': sideBarMin}")
-    //div(data-notification, class='JoyentPortal-module-notification')
     div(data-ng-switch='subview', class='container-fluid ng-cloak', ng-cloak,ng-class="{'leftpanel-small': sideBarMin}")
 
       each layout in layouts
@@ -31,3 +30,4 @@ html(lang='en',data-ng-app='JoyentPortal', id="ng-app", data-ng-controller='Main
         script(type='text/javascript')!= source
     each partial in partials
         script(type='text/ng-template',id='#{partial._id}')!= partial._content
+    div(data-notification)

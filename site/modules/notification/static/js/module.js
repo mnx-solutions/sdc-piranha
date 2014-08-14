@@ -1,3 +1,3 @@
 'use strict';
 
-window.JP.createModule('notification', [ 'ui.bootstrap' ]);
+window.JP.createModule('notification');
