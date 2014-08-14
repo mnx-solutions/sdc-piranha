@@ -230,7 +230,7 @@ var mdbApi = function execute(scope) {
                 callback(error);
                 return;
             }
-
+            jobIds = Array.isArray(jobIds) ? jobIds : [jobIds];
             jobIds.forEach(function (jobId) {
                 list.forEach(function (item, index) {
                     if (item.jobId === jobId) {
@@ -363,7 +363,41 @@ var mdbApi = function execute(scope) {
     });
 
     server.onCall('MdbGetJobsList', function (call) {
-        getJobsList(call, call.done.bind(call));
+        getJobsList(call, function (error, list) {
+            if (error) {
+                sendError(call, error);
+                return;
+            }
+            var client = Manta.createClient(call);
+            client.ls('~~/jobs', function (err, res) {
+                if (err) {
+                    call.done(err, list);
+                    return;
+                }
+                var deletedMdbJob = false;
+                var mdbList = [];
+                var jobs = [];
+
+                res.on('directory', function (e) {
+                    jobs.push(e.name);
+                });
+
+                res.once('end', function () {
+                    list.forEach(function (item) {
+                       if (jobs.some(function (job) { return job === item.jobId; })) {
+                           mdbList.push(item);
+                       } else {
+                           deletedMdbJob = true;
+                       }
+                    });
+
+                    if (deletedMdbJob) {
+                        client.putFileContents('~~/' + mdbJobsListPath, mdbList, function () {});
+                    }
+                    call.done(null, mdbList);
+                });
+            });
+        });
     });
 
     server.onCall('MdbGetJob', {
