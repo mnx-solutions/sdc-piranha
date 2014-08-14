@@ -72,6 +72,11 @@
                                 objectsById[id].checked = object.node.state.selected;
                             }
                         });
+                        object.node.children.forEach(function (id) {
+                            if (objectsById[id]) {
+                                objectsById[id].checked = object.node.state.selected;
+                            }
+                        });
                     }
                     if (useCheckboxes) {
                         tree.on('select_node.jstree', changeState);

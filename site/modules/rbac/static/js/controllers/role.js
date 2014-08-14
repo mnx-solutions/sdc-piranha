@@ -128,9 +128,6 @@
                 $scope.role.default_members = $scope.role.members;
 
                 $scope.policyGroups.forEach(function (group) {
-                    if (!group.checked) {
-                        return;
-                    }
                     group.children.forEach(function (policy) {
                         if (policy.checked) {
                             $scope.role.policies.push(policy.name);
