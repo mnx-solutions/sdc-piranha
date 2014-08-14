@@ -1382,7 +1382,7 @@
                         instance.description = datasetDescription;
                     }
 
-                    if (instanceDataset && (!unique[instance.dataset] || unique[instance.dataset].package !== instance.package)) {
+                    if (instanceDataset && instanceDataset.state === 'active' && (!unique[instance.dataset] || unique[instance.dataset].package !== instance.package)) {
                         uniqueRecentInstances.push(instance);
                         unique[instance.dataset] = instance;
                     }
