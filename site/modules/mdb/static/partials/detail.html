@@ -4,7 +4,7 @@
         <h3 class="page-title">Node.js Debugger</h3>
     </div>
     <div class="beta-sticker">beta</div>
-    <div class="row" data-ng-show="!loading">
+    <div class="column-container" data-ng-show="!loading">
         <div class="column mdb-common-container">
             <table class="mdb-common-table">
                 <tr>
@@ -18,23 +18,23 @@
                               class="file-name">{{(file.filePath | name) || 'Not selected'}}</span>
                     </td>
                     <td>
-                        <button class="btn effect-orange-button orange pull-right debugger-action-btn" data-ng-class="{'light' : objects.length || inputFile.length != 0}" data-select-file data-objects="inputFile" data-ng-click="selectFile()">Select File</button>
+                        <button class="btn effect-orange-button orange debugger-action-btn" data-ng-class="{'light' : objects.length || inputFile.length != 0}" data-select-file data-objects="inputFile" data-ng-click="selectFile()">Select File</button>
                     </td>
                 </tr>
                 <tr>
                     <td class="mdb-column-label">Status: {{status}}</td>
                     <td data-ng-if="!jobId && !objects.length">
-                        <button class="btn orange pull-right debugger-action-btn"
+                        <button class="btn orange debugger-action-btn"
                                 data-ng-class='{"disabled grey-new": inputFile.length == 0}'
                                 data-ng-click="process()">Process Now</button>
                     </td>
                     <td data-ng-if="jobId && !objects.length">
-                        <button class="btn orange effect-orange-button pull-right debugger-action-btn"
+                        <button class="btn orange effect-orange-button debugger-action-btn"
                                 data-ng-class='{"grey-new": inputFile.length == 0}'
                                 data-ng-click="cancel()">Cancel</button>
                     </td>
                     <td data-ng-if="objects.length">
-                        <button class="btn orange effect-orange-button pull-right debugger-action-btn"
+                        <button class="btn orange effect-orange-button debugger-action-btn"
                                 data-ng-class='{"disabled": inputFile.length == 0}'
                                 data-ng-click="process()">Re-Process</button>
                     </td>
@@ -42,7 +42,7 @@
                 <tr><td colspan="2"><div class="estimate-time">Estimating processed time: {{estimateTime}} minutes</div></td></tr>
                 <tr>
                     <td class="mdb-column-label">Node.js support status: {{supportStatus}}</td>
-                    <td><button class="btn orange effect-orange-button grey-new pull-right debugger-action-btn" data-ng-click="clickSignup()">Signup for Node.js</button></td>
+                    <td><button class="btn orange effect-orange-button grey-new debugger-action-btn" data-ng-click="clickSignup()">Signup for Node.js</button></td>
                 </tr>
 
             </table>
@@ -58,7 +58,7 @@
     </div>
     <div class="loading-large col-md-12" data-ng-show="loading"></div>
     <div class="row" data-ng-show="!loading">
-        <div class="pull-left col-md-8">
+        <div class="col-md-8">
             <div class="panel-group">
                 <div class="panel panel-default">
                     <div class="panel-heading">
@@ -89,7 +89,7 @@
                 </div>
             </div>
         </div>
-        <div class="pull-right col-md-4">
+        <div class="col-md-4">
             <div class="panel-group">
                 <div class="panel panel-default">
                     <div class="panel-heading">
