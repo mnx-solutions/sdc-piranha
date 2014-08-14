@@ -195,11 +195,11 @@ public class SmokeTest extends TestWrapper {
         String testPass = "incorrectPass";
         changePassword.fillForm(PASSWORD, testPass);
         changePassword.clickSubmitButton();
-        changePassword.getErrorLabel().get(0).shouldHave(text("To change your password, enter the new password twice, please use a combination of letters, numbers and symbols."));
-        changePassword.getErrorLabel().get(1).shouldHave(text("Sorry, please use a different password."));
+        changePassword.getErrorLabel().get(0).shouldHave(text("Passwords must have both alpha & numeric characters."));
 
         changePassword.fillForm(PASSWORD, ALREADY_USED_PASSWORD);
         changePassword.clickSubmitButton();
+        changePassword.getErrorLabel().get(0).shouldHave(text(" To change your password, enter the new password twice, please use a combination of letters, numbers and symbols."));
         changePassword.getErrorLabel().get(1).shouldHave(text("You used this password recently. Please choose a new password."));
 
         WebDriverRunner.getWebDriver().close();
