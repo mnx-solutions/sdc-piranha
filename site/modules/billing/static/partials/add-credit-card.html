@@ -11,7 +11,7 @@
             Credit Card Details
         </legend>
         <div class="form-group">
-            <span class="edit-name">Card Number<span class="orange-asterix"> *</span></span>
+            <span class="edit-name orange-asterix">Card Number</span>
                     <span class="edit-value">
                         <input type="text"
                                id="creditCardNumber"
@@ -42,7 +42,7 @@
                     </span>
                         </div>
         <div class="form-group">
-            <span class="edit-name">Expiration<span class="orange-asterix"> *</span></span>
+            <span class="edit-name orange-asterix">Expiration</span>
                     <span class="edit-value-two">
                         <select data-select-two
                                 data-select="form.expirationMonth"
@@ -91,7 +91,7 @@
                     </span>
                         </div>
         <div class="form-group">
-            <span class="edit-name">CCV Сode<span class="orange-asterix"> *</span></span>
+            <span class="edit-name orange-asterix">CCV Сode</span>
                     <span class="edit-value">
                             <input type="text"
                                    id="securityCode"
@@ -116,7 +116,7 @@
                     </span>
                         </div>
         <div class="form-group">
-            <span class="edit-name">First Name<span class="orange-asterix"> *</span></span>
+            <span class="edit-name orange-asterix">First Name</span>
                     <span class="edit-value">
                         <input type="text"
                                id="firstName"
@@ -146,7 +146,7 @@
                     </span>
         </div>
         <div class="form-group">
-            <span class="edit-name">Last Name<span class="orange-asterix"> *</span></span>
+            <span class="edit-name orange-asterix">Last Name</span>
                     <span class="edit-value">
                             <input type="text"
                                    id="lastName"
@@ -179,7 +179,7 @@
     <fieldset class="line">
         <legend>Billing Address</legend>
         <div class="form-group">
-            <span class="edit-name">Address Line 1<span class="orange-asterix"> *</span></span>
+            <span class="edit-name orange-asterix">Address Line 1</span>
                     <span class="edit-value">
                             <input type="text"
                                    id="addressLine1"
@@ -226,7 +226,7 @@
                     </span>
                         </div>
         <div class="form-group">
-            <span class="edit-name">Country<span class="orange-asterix"> *</span></span>
+            <span class="edit-name orange-asterix">Country</span>
                     <span class="edit-value-one">
                         <select data-select-two
                                 id="country"
@@ -255,7 +255,7 @@
                     </span>
                         </div>
         <div class="form-group">
-            <span class="edit-name">City<span class="orange-asterix"> *</span></span>
+            <span class="edit-name orange-asterix">City</span>
                     <span class="edit-value">
                             <input type="text"
                                    id="city"
@@ -285,7 +285,7 @@
                     </span>
                         </div>
         <div class="form-group">
-            <span class="edit-name">State<span data-ng-show="!!stateSel" class="orange-asterix"> *</span></span>
+            <span class="edit-name orange-asterix" data-ng-class="{'orange-asterix': !!stateSel}">State</span>
             <span data-ng-switch="!!stateSel">
                 <span data-ng-switch-default>
                             <span class="edit-value">
@@ -338,7 +338,7 @@
             </span>
                             </div>
         <div class="form-group">
-            <span class="edit-name">Zip Code<span class="orange-asterix"> *</span></span>
+            <span class="edit-name orange-asterix">Zip Code</span>
                     <span class="edit-value">
                             <input type="text"
                                    id="zipCode"
@@ -367,7 +367,7 @@
                     </span>
                         </div>
         <div class="form-group" data-ng-show="phoneVisible">
-            <span class="edit-name">Phone<span class="orange-asterix"> *</span></span>
+            <span class="edit-name orange-asterix">Phone</span>
             <span data-phone-number
                                  data-number="phone.number"
 
@@ -417,14 +417,14 @@
         </div>
         <div class="loading-medium pull-right" style="width:30px; height:30px;min-width:30px;min-height:30px;" data-ng-show="loading"></div>
         <div style="margin-top: 5px;" data-ng-hide="loading">
-            <span class="orange-asterix pull-left">*</span><span class="pull-left">required fields</span>
+            <span class="orange-asterix-left">required fields</span>
         </div>
         <div class="fieldset-spacer"></div>
         <br>
     </div>
     <div data-ng-hide="isSignUpForm" class="signup-btn-group">
         <div data-ng-hide="loading" class="required-txt">
-            <span class="orange-asterix">*</span>&nbsp;required fields
+            <span class="orange-asterix-left">&nbsp;required fields</span>
         </div>
         <div class="pull-right">
             <button class="btn light effect-orange-button" data-ng-hide="!cancelVisible" data-ng-disabled="loading || accountForm.$invalid" data-ng-click="cancelForm()" data-ng-disabled="loading">Cancel</button>

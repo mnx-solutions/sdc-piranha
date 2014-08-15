@@ -485,8 +485,17 @@ select.date-year {
     margin-bottom: 5px;
 }
 
-.orange-asterix {
+.orange-asterix::after,
+.orange-asterix-left::before {
     color:#ff6600;
+}
+
+.orange-asterix::after {
+    content: ' *';
+}
+
+.orange-asterix-left::before {
+    content: '* ';
 }
 
 .required-text {
@@ -685,11 +694,6 @@ legend + .form-group {
 
 .edit-form form {
     margin: 0;
-}
-
-.orange-asterix {
-    font-size: 20px;
-    vertical-align: bottom;
 }
 
 .selects-spacer {

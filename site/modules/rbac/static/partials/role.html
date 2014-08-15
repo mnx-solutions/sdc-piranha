@@ -26,18 +26,22 @@
                                 <div class="dpl-inline">
                                     <form name="roleForm">
                                         <div class="form-group" data-ng-show="role.id.length">
-                                            <label class="name dpl-inline">ID</label>
-                                            <input type="text" class="role-name" name="roleid" data-ng-model="role.id" data-ng-disabled="role.id"/>
+                                            <span class="edit-name">ID</span>
+                                            <span class="edit-value">
+                                                <input type="text" class="role-name" name="roleid" data-ng-model="role.id" data-ng-disabled="role.id"/>
+                                            </span>
                                         </div>
                                         <div class="form-group">
-                                            <label class="name dpl-inline">Name</label>
-                                            <input type="text"
-                                                   class="role-name"
-                                                   name="roleName"
-                                                   data-ng-model="role.name"
-                                                   data-pattern="^[A-Za-z0-9]+[A-Za-z0-9\.\-\s]*$"
-                                                   data-role-name-verify
-                                                   required />
+                                            <span class="edit-name orange-asterix">Name</span>
+                                            <span class="edit-value">
+                                                <input type="text"
+                                                       class="role-name"
+                                                       name="roleName"
+                                                       data-ng-model="role.name"
+                                                       data-pattern="^[A-Za-z0-9]+[A-Za-z0-9\.\-\s]*$"
+                                                       data-role-name-verify
+                                                       required />
+                                            </span>
                                             <div data-ng-show="isFormSubmited || roleForm.roleName.$dirty">
                                                 <div class="role-name-error error edit-error"
                                                      data-translate
@@ -104,6 +108,7 @@
         </div>
 
         <div class="row btn-bottom-block" data-ng-hide="loading">
+            <span class="orange-asterix-left">required fields</span>
             <div class="pull-right">
                 <button class="btn light effect-orange-button" data-ng-click="cancel()">Cancel</button>
                 <button class="btn light effect-orange-button" data-ng-show="role.id" data-ng-click="deleteRole()">Delete</button>

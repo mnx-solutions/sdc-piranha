@@ -139,9 +139,9 @@ label.name {
     box-sizing: content-box;
     width: 45px;
 }
-.rules label.name,
-.new-rule label.name,
-.rule-edit label.name {
+.rules .edit-name,
+.new-rule .edit-name,
+.rule-edit .edit-name {
     width: 65px;
 }
 .rules label.name {
@@ -153,8 +153,12 @@ label.name {
 .rule-edit {
     padding-top: 10px;
 }
+.role .form-group .edit-name,
+.policy .form-group .edit-name {
+    width: 100px;
+}
 .role-name {
-    width: 415px;
+    width: 360px;
 }
 .edit-error {
     display: block;
@@ -163,9 +167,12 @@ label.name {
     text-align: right;
     letter-spacing: -0.1px;
 }
-
 input.policy-form {
     width: 352px;
+}
+.rule-edit input.policy-form,
+.new-rule input.policy-form {
+    width: 322px;
 }
 .rule-edit input.policy-form {
     margin-bottom: 10px;
@@ -190,7 +197,7 @@ select.policy-form {
 .controls div.policy-form {
     display: inline-block;
     overflow: hidden;
-    width: 400px;
+    width: 390px;
     vertical-align: middle;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -201,7 +208,8 @@ select.policy-form {
     margin-top: 10px;
 }
 .edit-name {
-    width: 130px;
+    width: 139px;
+    padding-right: 10px;
 }
 .remove-icon {
     margin-top: 10px;
