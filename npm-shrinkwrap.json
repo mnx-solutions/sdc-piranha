@@ -752,9 +752,9 @@
       }
     },
     "manta": {
-      "version": "1.2.7",
-      "from": "manta@git+ssh://git@github.com:joyent/node-manta.git#92345b782d1770727b402dbc9d5a6a0339b0da89",
-      "resolved": "git+ssh://git@github.com:joyent/node-manta.git#92345b782d1770727b402dbc9d5a6a0339b0da89",
+      "version": "1.4.2",
+      "from": "manta@git+ssh://git@github.com:joyent/node-manta.git#02c0b32a39294ab4e4ae5a25063765c4e6dbeca5",
+      "resolved": "git+ssh://git@github.com:joyent/node-manta.git#02c0b32a39294ab4e4ae5a25063765c4e6dbeca5",
       "dependencies": {
         "assert-plus": {
           "version": "0.1.5",
