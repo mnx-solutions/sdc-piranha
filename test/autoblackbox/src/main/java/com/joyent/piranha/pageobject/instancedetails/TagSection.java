@@ -1,6 +1,8 @@
 package com.joyent.piranha.pageobject.instancedetails;
 
+import com.codeborne.selenide.Condition;
 import com.codeborne.selenide.SelenideElement;
+import com.joyent.piranha.PropertyHolder;
 import com.joyent.piranha.pageobject.AbstractPageObject;
 import org.openqa.selenium.By;
 
@@ -22,6 +24,16 @@ public class TagSection extends AbstractPageObject {
         row.$(el + "[placeholder=\"Value\"]").setValue(value);
         row.$("[data-ng-click=\"addItem(item)\"]").click();
         waitForMediumSpinnerDisappear();
+    }
+
+    public void waitForMediumSpinnerDisappear(){
+        int longTimeout = Integer.parseInt(PropertyHolder.getChangeStatusTimeout());
+        SelenideElement spinner = $(By.xpath("//div[@class='pull-right loading-medium item']"));
+        if(spinner.exists()){
+            spinner.waitWhile(Condition.exist, longTimeout);
+        }else {
+            $(By.xpath("//div[@class='loading-medium item-button' and @style=\"visibility: visible;\"]")).waitWhile(Condition.exist, longTimeout);
+        }
     }
 
     public SelenideElement getTagRepeaterByKey(String key) {
