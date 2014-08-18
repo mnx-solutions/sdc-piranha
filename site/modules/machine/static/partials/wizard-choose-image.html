@@ -6,7 +6,8 @@
             Data Center:
         </span>
     <div class="btn-group">
-        <select type="hidden" data-select-two id="selectDatacenter" class="dd-fixed-width" data-ng-model="data.datacenter" data-fn="selectDatacenter" data-select="data.datacenter" data-placeholder="No matches found">
+        <select type="hidden" data-select-two id="selectDatacenter" class="dd-fixed-width" data-ng-model="data.datacenter" data-fn="selectDatacenter" data-select="data.datacenter" placeholder="No matches found">
+            <option value=""></option>
             <option data-ng-repeat="datacenter in datacenters | orderBy:$index" value="{{datacenter.name}}">
                 {{datacenter.name}}
             </option>
