@@ -39,6 +39,17 @@
 
                 PopupDialog.errorObj(err);
             };
+
+            var fillCountryNameFromCode = function () {
+                $scope.countries = $http.get('billing/countries');
+                $scope.countries.then(function (countries) {
+                    var country = countries.data.find(function (country) {
+                        return country.iso3 === $scope.user.country;
+                    });
+                    $scope.user.countryName = country && country.name;
+                });
+            };
+
             // FIXME: DRY, see orderByLogin in role controller
             var orderByName = function (items) {
                 return items.sort(function (a, b) {
@@ -53,6 +64,7 @@
                     $q.when(service.listUserKeys(userId))
                 ]).then(function (result) {
                     $scope.user = angular.copy(result[0]);
+                    fillCountryNameFromCode();
                     $scope.initial.firstName = $scope.user.firstName;
                     $scope.initial.lastName = $scope.user.lastName;
                     $scope.initial.login = $scope.user.login;
@@ -76,13 +88,7 @@
                     $scope.user.companyName = account.companyName;
                     $scope.user.country = account.country.iso3 || account.country;
                     if (!account.country.iso3) {
-                        $scope.countries = $http.get('billing/countries');
-                        $scope.countries.then(function (countries) {
-                            var country = countries.data.find(function (country) {
-                                return country.iso3 === $scope.user.country;
-                            });
-                            $scope.user.countryName = country && country.name;
-                        });
+                        fillCountryNameFromCode();
                     } else {
                         $scope.user.countryName = account.country.name;
                     }
