@@ -1818,3 +1818,6 @@ span.btn-success {
     text-align: right;
     letter-spacing: -.1px;
 }
+.left-part {
+    width: 100%;
+}
