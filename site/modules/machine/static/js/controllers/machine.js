@@ -109,7 +109,7 @@
                     Machine.machine(machineid).then(function (m) {
                         $scope.machine = m;
                         if ($scope.features.firewall === 'enabled') {
-                            Machine.listFirewallRules(m.id).then(function (rules) {
+                            Machine.listFirewallRules(m).then(function (rules) {
                                 $scope.firewallRules = rules;
                             });
                         }
@@ -142,7 +142,7 @@
                         $scope.machine = machine;
 
                         if ($scope.features.firewall === 'enabled') {
-                            Machine.listFirewallRules(machine.id).then(function (rules) {
+                            Machine.listFirewallRules(machine).then(function (rules) {
                                 $scope.firewallRules = rules;
                             });
                         }
@@ -152,7 +152,7 @@
 
             $q.when($scope.machine, function (m) {
                 if ($scope.features.firewall === 'enabled') {
-                    Machine.listFirewallRules(m.id).then(function (rules) {
+                    Machine.listFirewallRules(m).then(function (rules) {
                         $scope.firewallRules = rules;
                     });
                 }
