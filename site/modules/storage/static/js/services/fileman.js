@@ -55,6 +55,8 @@
 
             fileman.info = createMethod('FileManInfo');
 
+            fileman.getFile = createMethod('FileManGet');
+
             fileman.infoAbsolute = createMethod('FileManInfo', true);
 
             fileman.put = createMethod('FileManPut');
