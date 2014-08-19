@@ -194,13 +194,17 @@
                                 ),
                                 function () {
                                     $scope.loading = true;
-                                    var deleteTasks = [];
+                                    var deleteIds = [];
                                     checkedItems.forEach(function (item) {
-                                        deleteTasks.push($q.when(service.deleteUser(item.id)));
+                                        deleteIds.push(item.id);
                                     });
-                                    $q.all(deleteTasks).then(function () {
+                                    service.deleteUser(deleteIds).then(function () {
                                         getUsersList();
-                                    }, errorCallback);
+                                    }, function (err) {
+                                        service.updateCache({ids: deleteIds}, {}, 'user', service.ACCESS.WRITE);
+                                        PopupDialog.errorObj(err);
+                                        getUsersList();
+                                    });
                                 }
                             );
                         } else {
