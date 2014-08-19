@@ -99,9 +99,17 @@ var firewall = function execute (scope) {
         handler: function (call) {
             call.log.info('Create firewall rule');
             var cloud = call.cloud.separate(call.data.datacenter);
+            var newRule;
+            try {
+                newRule = fwrule.create(call.data);
+            } catch (e) {
+                call.done(e.message);
+                return;
+            }
+            newRule = newRule.text();
             cloud.createFwRule({
                 enabled: call.data.enabled,
-                rule: fwrule.create(call.data).text()
+                rule: newRule
             }, function (err, rule) {
                 if (err) {
                     call.done(err);

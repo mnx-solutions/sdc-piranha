@@ -52,19 +52,21 @@
                 // Store rule
                 rules.list.push(rule);
                 rules.index[rule.uuid] = rule;
-                if(!rules.map[rule.datacenter]) {
+                if (!rules.map[rule.datacenter]) {
                     rules.map[rule.datacenter] = [];
                 }
                 rules.map[rule.datacenter].push(rule);
 
                 function isDatacenterOn(callback) {
-                    return Image.image({datacenter: rule.datacenter}).catch(function (err) {
-                        return callback(null, err);
+                    return Image.image({datacenter: rule.datacenter}).then(function () {
+                        return callback(null);
+                    }, function (err) {
+                        return callback(err);
                     });
                 }
 
                 function showError(err) {
-                    isDatacenterOn(function (err2, result) {
+                    isDatacenterOn(function (result) {
                         // add messages from errors to make it move convenient
                         var errMsg = '';
                         if (ng.isString(err)) {
@@ -77,7 +79,7 @@
                                 });
                             }
                         }
-                        if (!!result.code) {
+                        if (result && !!result.code) {
                             errMsg = errMsg + 'Datacenter ' + rule.datacenter + ' is currently not available. We are working on getting this datacenter back on';
                         }
 
@@ -98,9 +100,7 @@
                             function () {
                             }
                         );
-
                         removeRule(rule);
-
                     });
                 }
 
