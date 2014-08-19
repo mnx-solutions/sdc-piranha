@@ -8,7 +8,9 @@
         'PopupDialog',
         'ErrorService',
         'util',
-        function ($q, serverTab, localization, PopupDialog, ErrorService, util) {
+        '$location',
+        'notification',
+        function ($q, serverTab, localization, PopupDialog, ErrorService, util, $location, notification) {
 
             var service = {};
             var list = [];
@@ -278,6 +280,17 @@
 
                 handleChunk(image);
 
+                var handleImageCreationError = function (imageError, image) {
+                    var isOnImagesPage = $location.path() === '/images';
+                    var notificationMessage = 'New image "' + image.name + '" of version "' + image.version + '" ';
+                    handleChunk(image, 'remove');
+                    if (isOnImagesPage) {
+                        showError(image, 'Unable to create image "{{name}}": ', imageError);
+                    } else {
+                        notification.error(notificationMessage + 'creation has failed.');
+                    }
+                };
+
                 var jobCall = serverTab.call({
                     name: 'ImageCreate',
                     data: {
@@ -307,14 +320,18 @@
                         images.list['private'][indexPrivate] = image;
                     },
                     done: function (err, job) {
+                        var isOnImagesPage = $location.path() === '/images';
+                        var notificationMessage = 'New image "' + image.name + '" of version "' + image.version + '" ';
                         if (err) {
-                            handleChunk(image, 'remove');
-                            showError(image, 'Unable to create image "{{name}}": ', err);
+                            handleImageCreationError(err, image);
                             return;
                         }
 
                         var result = job.__read();
                         result.datacenter = datacenter;
+                        if (!isOnImagesPage) {
+                            notification.success(notificationMessage + 'has been successfully created.');
+                        }
                         handleChunk(result);
                     },
                     progress: function (err, job) {
@@ -330,10 +347,7 @@
                         }
                     },
                     error: function (err) {
-                        if (err) {
-                            showError(image, 'Unable to create image "{{name}}": ', err);
-                        }
-                        handleChunk(image, 'remove');
+                        handleImageCreationError(err, image);
                     }
                 });
                 image.job = jobCall.getTracker();

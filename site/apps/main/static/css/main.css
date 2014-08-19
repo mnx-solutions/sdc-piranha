@@ -2409,7 +2409,7 @@ label.checkbox {
     height: 108px;
     margin-top: 160px;
     background: #ccc url('../img/feedback-tab.png') 0 0 no-repeat;
-    z-index: 10000
+    z-index: 10000;
 }
 .feedback-tab-link {
     display: block;
@@ -3645,4 +3645,32 @@ label.checkbox.folder-name-form-checkbox {
     height: 58px;
     background: url("../img/logo_riverbed.png") 14px no-repeat;
     background-size: 60%;
+}
+
+.jquery-notific8-notification.success {
+    border-color: #ff6600;
+    background-color: #fff2d2;
+    color: #020001;
+}
+
+.jquery-notific8-notification.success .jquery-notific8-close,
+.jquery-notific8-notification.success .jquery-notific8-close-sticky {
+    background-color: #ff6600;
+    color: white;
+}
+
+.jquery-notific8-notification.error {
+    border-color: #ff6600;
+    background-color: #e9322d;
+    color: white;
+}
+
+.jquery-notific8-notification.error .jquery-notific8-close,
+.jquery-notific8-notification.error .jquery-notific8-close-sticky {
+    background-color: #ff6600;
+    color: white;
+}
+
+.right .jquery-notific8-close-sticky {
+    top: 1.1em;
 }
