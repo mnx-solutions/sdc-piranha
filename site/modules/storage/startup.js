@@ -6,6 +6,7 @@ var config = require('easy-config');
 var manta = require('manta');
 var mantaNotAvailable = 'Manta service is not available.';
 var MANTA_PING_RETRIES = 15;
+var PING_ERROR_MESSAGE = 'Something went wrong.  Please try again in a minute.';
 
 module.exports = function execute(scope) {
     var Manta = scope.api('MantaClient');
@@ -327,35 +328,49 @@ module.exports = function execute(scope) {
         });
     });
 
-    server.onCall('StoragePing', function (call) {
-        var client = Manta.createClient(call);
+    var pingStorage = function (call, pingFunc) {
         var Billing = scope.api('Billing');
         var retries = MANTA_PING_RETRIES;
-        function pingManta() {
-            Billing.isActive(call.req.session.userId, function (err, isActive) {
-                if (err || !isActive) {
-                    sendError(call, {message: 'Something went wrong.  Please try again in a minute.'});
+
+        var pingManta = function () {
+            pingFunc(function (error) {
+                if (error) {
+                    if (error.name === 'AccountBlockedError' || error.name === 'AccountBlocked') {
+                        if (retries > 0) {
+                            retries -= 1;
+                            call.req.log.debug(error, 'Ping manta storage');
+                            setTimeout(pingManta, 1000);
+                            return;
+                        }
+                        error = {message: PING_ERROR_MESSAGE};
+                    }
+                    sendError(call, error); // This will also log the error
                     return;
                 }
-                client.get('~~/public', function (error) {
-                    if (error) {
-                        if (error.name === 'AccountBlockedError' || error.name === 'AccountBlocked') {
-                            if (retries > 0) {
-                                retries -= 1;
-                                call.req.log.debug(error, 'Ping manta storage');
-                                setTimeout(pingManta, 1000);
-                                return;
-                            }
-                            error = {message: 'Something went wrong.  Please try again in a minute.'};
-                        }
-                        sendError(call, error); // This will also log the error
-                        return;
-                    }
-                    call.done(null, 'pong');
-                });
+                call.done(null, 'pong');
             });
         }
-        pingManta();
+        Billing.isActive(call.req.session.userId, function (err, isActive) {
+            if (err || !isActive) {
+                sendError(call, {message: PING_ERROR_MESSAGE});
+                return;
+            }
+            pingManta();
+        });
+    };
+
+    server.onCall('StoragePing', function (call) {
+        var client = Manta.createClient(call);
+        pingStorage(call, function (callback) {
+            client.get('~~/public', callback);
+        });
+    });
+
+    server.onCall('StorageListPing', function (call) {
+        var client = Manta.createClient(call);
+        pingStorage(call, function (callback) {
+            client.ls('~~/', callback);
+        });
     });
 
     server.onCall('FileManMfind', {

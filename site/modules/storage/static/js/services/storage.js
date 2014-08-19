@@ -65,6 +65,11 @@ window.fn = [];
             service.ping = function (suppressError) {
                 return jobRequest('StoragePing', null, suppressError);
             };
+
+            service.listPing = function (suppressError) {
+                return jobRequest('StorageListPing', null, suppressError);
+            };
+
             return service;
         }
     ]);

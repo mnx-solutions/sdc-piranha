@@ -401,7 +401,7 @@
                 Account.getAccount().then(function (account) {
                     scope.provisionEnabled = account.provisionEnabled;
                     if (scope.provisionEnabled) {
-                        Storage.ping().then(scope.drawFileMan, function () {
+                        Storage.listPing().then(scope.drawFileMan, function () {
                             $location.url('/manta/intro');
                             $location.replace();
                         });
