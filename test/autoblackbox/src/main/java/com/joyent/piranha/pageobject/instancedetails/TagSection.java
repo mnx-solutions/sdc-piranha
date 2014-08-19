@@ -26,12 +26,12 @@ public class TagSection extends AbstractPageObject {
         waitForMediumSpinnerDisappear();
     }
 
-    public void waitForMediumSpinnerDisappear(){
+    public void waitForMediumSpinnerDisappear() {
         int longTimeout = Integer.parseInt(PropertyHolder.getChangeStatusTimeout());
         SelenideElement spinner = $(By.xpath("//div[@class='pull-right loading-medium item']"));
-        if(spinner.exists()){
+        if (spinner.exists()) {
             spinner.waitWhile(Condition.exist, longTimeout);
-        }else {
+        } else {
             $(By.xpath("//div[@class='loading-medium item-button' and @style=\"visibility: visible;\"]")).waitWhile(Condition.exist, longTimeout);
         }
     }
