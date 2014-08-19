@@ -337,10 +337,9 @@ module.exports = function execute(scope) {
                     sendError(call, {message: 'Something went wrong.  Please try again in a minute.'});
                     return;
                 }
-                client.get('~~/stor', function (error) {
+                client.get('~~/public', function (error) {
                     if (error) {
-                        if (error.name === 'AccountBlockedError' || error.name === 'AccountBlocked' ||
-                            error.name === 'ForbiddenError') {
+                        if (error.name === 'AccountBlockedError' || error.name === 'AccountBlocked') {
                             if (retries > 0) {
                                 retries -= 1;
                                 call.req.log.debug(error, 'Ping manta storage');
