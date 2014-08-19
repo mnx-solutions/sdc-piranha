@@ -15,7 +15,7 @@ module.exports = function execute(scope) {
         function done(err) {
             if (err) {
                 var message = err.message || '';
-                if (err.code === 'NoMatchingRoleTag' && message) {
+                if (err.code === 'NoMatchingRoleTag' && message && call.data && call.data.path) {
                     err.message = message.substring(0, message.length - 1) + " '" + call.data.path + "'.";
                 }
                 call.req.log.debug('sendError', err);
@@ -337,10 +337,9 @@ module.exports = function execute(scope) {
                     sendError(call, {message: 'Something went wrong.  Please try again in a minute.'});
                     return;
                 }
-                client.get('~~/stor', function (error) {
+                client.get('~~/public', function (error) {
                     if (error) {
-                        if (error.name === 'AccountBlockedError' || error.name === 'AccountBlocked' ||
-                            error.name === 'ForbiddenError') {
+                        if (error.name === 'AccountBlockedError' || error.name === 'AccountBlocked') {
                             if (retries > 0) {
                                 retries -= 1;
                                 call.req.log.debug(error, 'Ping manta storage');
