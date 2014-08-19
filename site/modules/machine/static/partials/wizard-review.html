@@ -88,11 +88,10 @@
                                          <input data-ng-click="selectNetworkCheckbox(network.id)" type="checkbox"
                                                 value="{{network.id}}"
                                                 name="{{network.name}}"
-                                                data-ng-model="selectedNetworkId"
-                                                data-ng-disabled="selectedNetworks.length == 2 && selectedNetworks.indexOf(network.id) == -1"/>
+                                                data-ng-model="selectedNetworkId"/>
                                     </span>
                                 </div>
-                                <span class="network-name" data-ng-class="{disabledNetworkSelection: (selectedNetworks.length == 2 && selectedNetworks.indexOf(network.id) == -1)}">{{network.name}}</span>
+                                <span class="network-name">{{network.name}}</span>
                             </label>
                          </div>
                         <div>
