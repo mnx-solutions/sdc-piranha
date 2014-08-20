@@ -369,6 +369,16 @@ module.exports = function execute(scope) {
         vasync.pipeline({'funcs': pool}, callback);
     };
 
+    var parallel = function (items, action, call, callback) {
+        var pool = [];
+        items.forEach(function (item) {
+            pool.push(function (callback) {
+                call.cloud[action](item, callback);
+            });
+        });
+        vasync.parallel({'funcs': pool}, callback);
+    };
+
     server.onCall('getParentAccount', function (call) {
         call.cloud.getAccount(function (error, data) {
             if (error) {
@@ -606,9 +616,20 @@ module.exports = function execute(scope) {
     });
 
     server.onCall('deleteUser', function (call) {
-        call.cloud.deleteUser(call.data.id, function (err, data) {
-            call.done(err, data);
-        });
+        if (call.data.ids) {
+            parallel(call.data.ids, 'deleteUser', call, function (err, data) {
+                if (err) {
+                    var error = err.toString().replace(/first of \d error: /, '');
+                    call.done(error, data);
+                    return;
+                }
+                call.done(null, data);
+            });
+        } else {
+            call.cloud.deleteUser(call.data.id, function (err, data) {
+                call.done(err, data);
+            });
+        }
     });
 
     server.onCall('changeUserPassword', function (call) {

@@ -97,6 +97,12 @@
                 return deferred.promise;
             };
 
+            service.ACCESS = ACCESS;
+
+            service.updateCache = function (ops, data, entityType, access, isList) {
+                return updateCache(ops, data, entityType, access, isList);
+            };
+
             service.listUsers = function () {
                 return action('listUsers', null, ENTITY_TYPE.USER, ACCESS.READ, true);
             };
@@ -114,7 +120,8 @@
             };
 
             service.deleteUser = function (userId) {
-                return action('deleteUser', {id: userId}, ENTITY_TYPE.USER, ACCESS.WRITE);
+                var userData = typeof (userId) === 'string' ? {id: userId} : {ids: userId};
+                return action('deleteUser', userData, ENTITY_TYPE.USER, ACCESS.WRITE);
             };
 
             service.changeUserPassword = function (userId, password, passwordConfirmation) {
