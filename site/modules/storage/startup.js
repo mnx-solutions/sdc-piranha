@@ -342,7 +342,8 @@ module.exports = function execute(scope) {
         var pingManta = function () {
             pingFunc(function (error) {
                 if (error) {
-                    if (error.name === 'AccountBlockedError' || error.name === 'AccountBlocked') {
+                    if (error.name === 'AccountBlockedError' || error.name === 'AccountBlocked' ||
+                        error.name === 'ForbiddenError') {
                         if (retries > 0) {
                             retries -= 1;
                             call.req.log.debug(error, 'Ping manta storage');
