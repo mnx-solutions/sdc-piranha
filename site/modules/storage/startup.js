@@ -195,19 +195,39 @@ module.exports = function execute(scope) {
             var reduceStep = call.data.reduceStep;
             var assets = call.data.assets;
             var inputs = call.data.inputs;
+            var count = call.data.count;
+            var memory = call.data.memory;
+            var disk = call.data.disk;
             var phases = [];
             if (mapStep) {
-                phases.push({
+                var phasesPropsMap = {
                     exec: mapStep,
                     assets: assets
-                });
+                };
+                if (memory) {
+                    phasesPropsMap.memory = memory;
+                }
+                if (disk) {
+                    phasesPropsMap.disk = disk;
+                }
+                phases.push(phasesPropsMap);
             }
             if (reduceStep) {
-                phases.push({
+                var phasesPropsReduce = {
                     type: "reduce",
                     exec: reduceStep,
                     assets: assets
-                });
+                };
+                if (count) {
+                    phasesPropsReduce.count = count;
+                }
+                if (memory) {
+                    phasesPropsReduce.memory = memory;
+                }
+                if (disk) {
+                    phasesPropsReduce.disk = disk;
+                }
+                phases.push(phasesPropsReduce);
             }
             var job = {
                 name: call.data.name,

@@ -503,3 +503,71 @@ input
 {
     max-width: 560px;
 }
+
+.advanced-option
+{
+    display: inline-table;
+    margin-bottom: 10px;
+    font-size: 16px;
+}
+
+.advanced-option .select-name,
+.reducers-label
+{
+    display: table-cell;
+    padding-right: 10px;
+    min-width: 300px;
+    text-align: right;
+    line-height: 40px;
+}
+
+.advanced-option .btn-group .dd-fixed-width,
+.advanced-option .reducers-field input
+{
+    line-height: 26px;
+}
+
+.advanced-option .reducers-field input
+{
+    width: 100%;
+    text-indent: 12px;
+}
+
+.advanced-option .btn-group .dd-fixed-width,
+.advanced-option .reducers-field
+{
+    display: table-cell;
+    width: 100%;
+}
+
+.advanced-option .edit-error
+{
+    margin: 37px 0 0 -348px;
+    min-width: 340px;
+    text-align: right;
+    letter-spacing: -0.1px;
+    font-size: 14px;
+}
+
+@-moz-document url-prefix()
+{
+    .advanced-option .edit-error
+    {
+        margin-top: 10px !important;
+        min-width: 348px !important;
+    }
+}
+
+@media screen and (-ms-high-contrast: active), (-ms-high-contrast: none)
+{
+    .advanced-option .edit-error
+    {
+        margin-top: 10px !important;
+        min-width: 348px !important;
+    }
+    .advanced-option .reducers-field input
+    {
+        height: 26px !important;
+        line-height: 26px !important;
+    }
+}

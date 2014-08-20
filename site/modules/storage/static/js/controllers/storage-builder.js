@@ -15,6 +15,11 @@
                 $scope.mapStep = '';
                 $scope.reduceStep = '';
                 $scope.loading = true;
+                $scope.numberOfReducers = '';
+                $scope.amountOfDramOptions = ['', 256, 512, 1024, 2048, 4096, 8192];
+                $scope.amountOfDram = $scope.amountOfDramOptions[0];
+                $scope.amountOfDiskSpaceOptions = ['', 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024];
+                $scope.amountOfDiskSpace = $scope.amountOfDiskSpaceOptions[0];
                 var cloneJob = $rootScope.popCommonConfig('cloneJob');
                 Account.getAccount().then(function (account) {
                     $scope.loading = false;
@@ -35,6 +40,9 @@
                         }
                         if (data.type === 'reduce') {
                             $scope.reduceStep = data.exec;
+                            if (data.count) {
+                                $scope.numberOfReducers = data.count;
+                            }
                         }
                     });
 
@@ -49,6 +57,14 @@
                         $scope.dataInputs = inputs.map(function (input) {
                             return {filePath: input};
                         });
+                    }
+                    var memory = cloneJob.phases[0].memory;
+                    if (memory) {
+                        $scope.amountOfDram = memory;
+                    }
+                    var disk = cloneJob.phases[0].disk;
+                    if (disk) {
+                        $scope.amountOfDiskSpace = disk;
                     }
                 }
 
@@ -73,6 +89,8 @@
                         errorMessage = 'You must add at least one input file.';
                     } else if ($scope.mapStep.length === 0 && $scope.reduceStep.length === 0) {
                         errorMessage = 'You must fill in Map Step and/or Reduce Step fields.';
+                    } else if (!$scope.advancedForm.numberOfReducers.$valid) {
+                        errorMessage = 'Please provide numeric of reducers (1 ... 1024).';
                     }
 
                     if (errorMessage) {
@@ -94,7 +112,10 @@
                         mapStep: $scope.mapStep,
                         assets: dataAssets,
                         reduceStep: $scope.reduceStep,
-                        inputs: dataInputs
+                        inputs: dataInputs,
+                        count: $scope.numberOfReducers,
+                        memory: Number($scope.amountOfDram),
+                        disk: Number($scope.amountOfDiskSpace)
                     };
                     $q.when(Storage.createJob(job, true)).then(
                         function (res) {
