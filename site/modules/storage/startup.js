@@ -239,36 +239,6 @@ module.exports = function execute(scope) {
         call.done(null, {user: client.user});
     });
 
-    server.onCall('FileManList', function (call) {
-        if (call.req.session.parentAccount) {
-            //TODO: show root directories for user
-            if (call.data.originPath === '/') {
-                var directories = ['jobs', 'public', 'reports', 'stor'];
-                var files = [];
-                directories.forEach(function (directory) {
-                    files.push({
-                        path: directory,
-                        type: 'directory',
-                        parent: call.req.session.parentAccount,
-                        name: directory
-                    });
-                });
-                call.done(null, files);
-                return;
-            }
-            var client = Manta.createClient(call);
-            client.get(call.data.path, function (err) {
-                if (err) {
-                    sendError(call, err);
-                    return;
-                }
-                ls(call, client);
-            });
-            return;
-        }
-        ls(call);
-    });
-
     var ls = function (call, client) {
         client = client || Manta.createClient(call);
         client.ls(call.data.path, function (err, res) {
@@ -292,6 +262,34 @@ module.exports = function execute(scope) {
             });
         });
     };
+
+    server.onCall('FileManList', function (call) {
+        if (call.data.originPath === '/') {
+            var directories = ['jobs', 'public', 'reports', 'stor'];
+            var files = directories.map(function (directory) {
+                return {
+                    path: directory,
+                    type: 'directory',
+                    parent: call.req.session.parentAccount || call.req.session.userName,
+                    name: directory
+                };
+            });
+            call.done(null, files);
+            return;
+        }
+        if (call.req.session.parentAccount) {
+            var client = Manta.createClient(call);
+            client.get(call.data.path, function (err) {
+                if (err) {
+                    sendError(call, err);
+                    return;
+                }
+                ls(call, client);
+            });
+            return;
+        }
+        ls(call);
+    });
 
     server.onCall('FileManDeleteTree', function (call) {
         var client = Manta.createClient(call);
@@ -377,7 +375,7 @@ module.exports = function execute(scope) {
     server.onCall('StorageListPing', function (call) {
         var client = Manta.createClient(call);
         pingStorage(call, function (callback) {
-            client.ls('~~/', callback);
+            client.ls('~~/public', callback);
         });
     });
 

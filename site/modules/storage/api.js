@@ -51,10 +51,10 @@ module.exports = function execute(scope, register) {
                 callback(call.req.session.parentAccountError);
             };
         } else if (call.req.session.parentAccount) {
-            options.user = call.req.session.userName + '/' + call.req.session.parentAccount;
-            options.account = call.req.session.parentAccount;
+            options.subuser = call.req.session.userName + '/' + call.req.session.parentAccount;
+            options.user = call.req.session.parentAccount;
         } else {
-            options.account = call.req.session.userName;
+            options.user = call.req.session.userName;
         }
 
         if (config.manta.privateKey) {
