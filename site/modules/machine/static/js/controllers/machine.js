@@ -199,13 +199,13 @@
                     return;
                 }
                 $scope.machine.networks.forEach(function (machineNetwork) {
-                    if (!$scope.networks.some(function (network) { return network.id === machineNetwork; })) {
-                        Network.getNetwork($scope.machine.datacenter, machineNetwork).then(function (network) {
+                    Network.getNetwork($scope.machine.datacenter, machineNetwork).then(function (network) {
+                        if (!$scope.networks.some(function (network) { return network.id === machineNetwork; })) {
                             $scope.networks.push(network);
-                        }, function (err) {
-                            PopupDialog.errorObj(err);
-                        });
-                    }
+                        }
+                    }, function (err) {
+                        PopupDialog.errorObj(err);
+                    });
                 });
             }
             if ($scope.machine && $scope.machine.networks) {
