@@ -38,8 +38,15 @@ module.exports = function execute(scope) {
                     call.done();
                     return;
                 }
-                if (ignoreNotFound && (error.statusCode === 404 || error.statusCode === 403)) {
-                    var message = 'The file path not found.';
+                var message;
+                if (error.code === 'ForbiddenError') {
+                    message = 'None of your active roles are present on the resource ' + call.data.path;
+                } else if (error.code === 'AuthorizationFailed' && error.message) {
+                    message = error.message;
+                } else if (ignoreNotFound && (error.statusCode === 404 || error.statusCode === 403)) {
+                    message = 'The file path not found.';
+                }
+                if (message) {
                     call.req.log.info(message);
                     error.message = message;
                 }
@@ -303,7 +310,7 @@ module.exports = function execute(scope) {
 
     server.onCall('FileManGet', function (call) {
         var client = Manta.createClient(call);
-        client.get(call.data.path, checkResponse(call, true));
+        client.get(call.data.path, checkResponse(call, null));
     });
 
     server.onCall('FileManInfo', function (call) {

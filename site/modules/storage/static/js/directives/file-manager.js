@@ -77,7 +77,13 @@
 
                 scope.downloadFile = function () {
                     if (lastSelectedFile && lastSelectedActive && lastSelectedFile.type === 'object') {
-                        fileman.get(scope.currentPath);
+                        fileman.getFile(scope.currentPath, function (error) {
+                            if (error) {
+                                showPopupDialog('error', 'Message', error);
+                                return;
+                            }
+                            fileman.get(scope.currentPath);
+                        });
                     } else {
                         showPopupDialog('message', 'Message', 'No file selected.');
                     }
@@ -185,7 +191,7 @@
                         return false;
                     }
 
-                var path = getObjectPath(lastSelectedFile);
+                    var path = getObjectPath(lastSelectedFile);
 
                     return fileman.info(path, function (error, info) {
                         if (error) {
