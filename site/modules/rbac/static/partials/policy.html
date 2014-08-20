@@ -89,14 +89,14 @@
                                         <span class="edit-name">Rule {{$index + 1}}</span>
                                         <span class="edit-value">
                                             <input type="text" class="policy-form" data-ng-model="rule.rule"/>
-                                            <button class="btn orange add-btn pull-right" data-ng-click="saveRule(rule, $index)" data-ng-disabled="rule.rule.length == 0">Save</button>
+                                            <button class="btn orange add-btn" data-ng-click="saveRule(rule, $index)" data-ng-disabled="rule.rule.length == 0">Save</button>
                                         </span>
                                     </div>
                                 </div>
 
                                 <div class="new-rule">
                                     <span class="edit-name">Rule {{rules.length + 1}}</span>
-                                    <div class="dpl-inline pull-right" data-ng-click="focusOut()">
+                                    <div class="dpl-inline" data-ng-click="focusOut()">
                                         <span class="edit-value">
                                             <input type="text" class="policy-form" data-ng-model="model.newRule"/>
                                         <button class="btn orange add-btn" data-ng-click="addRule()" data-ng-disabled="model.newRule.length == 0">Add</button>
