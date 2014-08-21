@@ -35,7 +35,7 @@
     "soap": "~0.4.5",
     "http-signature": "~0.10.0",
     "ursa": "git+ssh://git@github.com:13W/ursa.git",
-    "manta": "git+ssh://git@github.com:joyent/node-manta.git#92345b782d1770727b402dbc9d5a6a0339b0da89",
+    "manta": "1.4.3",
     "memorystream": "0.2.0",
     "formidable": "1.0.15"
   },
