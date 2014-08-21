@@ -26,7 +26,7 @@ module.exports = function execute(scope) {
         var data = {};
         filter.forEach(function (f) {
             if (!skipIfEmpty || (typeof (callData[f]) === 'string' || (callData[f] && callData[f].length >= 0))) {
-                    data[f] = callData[f];
+                data[f] = callData[f];
             }
         });
         return data;
@@ -85,10 +85,11 @@ module.exports = function execute(scope) {
         return Array.isArray(data) ? data : (force ? [data] : []);
     };
 
-    var loadRoleTagData = function (cloudapi, roles, log, loadDataCallback) {
-        if (!roles || !roles.length === 0) {
+    var loadRoleTagData = function (call, roles, log, loadDataCallback) {
+        if (!roles || roles.length === 0) {
             return;
         }
+        var cloudapi = call.cloud;
         var funcs = [
             function users(callback) {
                 cloudapi.listUsers(callback);
@@ -110,48 +111,43 @@ module.exports = function execute(scope) {
             Object.keys(datacenters).forEach(function (datacenter) {
                 funcs.push(function networks(callback) {
                     cloudapi.separate(datacenter).listNetworks(function (err, data) {
-                            if (err) {
-                                log.error(err);
-                                callback(null, separateResult(datacenter, []));
-                            } else {
-                                callback(err, separateResult(datacenter, data));
-                            }
-                        }
-                    );
-                });
-                funcs.push(function machines(callback) {
-                    cloudapi.separate(datacenter).listMachines(function (err, data) {
-                        if(err) {
+                        if (err) {
                             log.error(err);
                             callback(null, separateResult(datacenter, []));
                         } else {
                             callback(err, separateResult(datacenter, data));
                         }
-
+                    });
+                });
+                funcs.push(function machines(callback) {
+                    cloudapi.separate(datacenter).listMachines(function (err, data) {
+                        if (err) {
+                            log.error(err);
+                            callback(null, separateResult(datacenter, []));
+                        } else {
+                            callback(err, separateResult(datacenter, data));
+                        }
                     });
                 });
                 funcs.push(function images(callback) {
-                    cloudapi.separate(datacenter).listImages(
-                        function (err, data) {
-                            if (err) {
-                                log.error(err);
-                                callback(null, separateResult(datacenter, []));
-                            } else {
-                                callback(err, separateResult(datacenter, data));
-                            }
+                    cloudapi.separate(datacenter).listImages(function (err, data) {
+                        if (err) {
+                            log.error(err);
+                            callback(null, separateResult(datacenter, []));
+                        } else {
+                            callback(err, separateResult(datacenter, data));
                         }
-                    );
+                    });
                 });
                 funcs.push(function firewallRules(callback) {
                     cloudapi.separate(datacenter).listFwRules(function (err, data) {
-                            if (err) {
-                                log.error(err);
-                                callback(null, separateResult(datacenter, []));
-                            } else {
-                                callback(err, separateResult(datacenter, data));
-                            }
+                        if (err) {
+                            log.error(err);
+                            callback(null, separateResult(datacenter, []));
+                        } else {
+                            callback(err, separateResult(datacenter, data));
                         }
-                    );
+                    });
                 });
             });
 
@@ -185,7 +181,7 @@ module.exports = function execute(scope) {
                             Object.keys(operation.result).forEach(function (datacenter) {
                                 resultsHash[funcname][datacenter] = resultsHash[funcname][datacenter] || [];
                                 resultsHash[funcname][datacenter] = operation.result[datacenter];
-                            })
+                            });
                         }
                     });
 
@@ -202,18 +198,18 @@ module.exports = function execute(scope) {
                             });
                         });
                     });
-                    loadDataCallback(cloudapi, getArray(roles, true), log, users, networks, policies, machines, images, firewallRules);
+                    loadDataCallback(call, getArray(roles, true), log, users, networks, policies, machines, images, firewallRules);
                 }
-            })
+            });
         });
     };
 
 
-    var updateRoleTags = function (cloudapi, roles, log, users, networks, policies, machines, images, firewallRules) {
+    var updateRoleTags = function (call, roles, log, users, networks, policies, machines, images, firewallRules) {
         roles = roles.filter(function (role) {
             return role.default_members && role.default_members.length > 0;
         });
-
+        var cloudapi = call.cloud;
         var pushResourceRole = function (resourceRole, resource, role, datacenter) {
             datacenter = datacenter || 'all';
             if (!resourceRole[datacenter]) {
@@ -325,7 +321,7 @@ module.exports = function execute(scope) {
                                     resourcesByDatacenter[dataceter].forEach(function (resource) {
                                         pushResourceRole(resourceRole, resource, role, dataceter);
                                     });
-                                })
+                                });
                             });
                         }
                     });
@@ -381,16 +377,6 @@ module.exports = function execute(scope) {
             });
         });
         vasync.pipeline({'funcs': pool}, callback);
-    };
-
-    var parallel = function (items, action, call, callback) {
-        var pool = [];
-        items.forEach(function (item) {
-            pool.push(function (callback) {
-                call.cloud[action](item, callback);
-            });
-        });
-        vasync.parallel({'funcs': pool}, callback);
     };
 
     server.onCall('getParentAccount', function (call) {
@@ -504,7 +490,7 @@ module.exports = function execute(scope) {
         call.cloud.createRole(data, function (err, roleData) {
             call.done(err, roleData);
             if (!err) {
-                loadRoleTagData(call.cloud, roleData, call.log, updateRoleTags);
+                loadRoleTagData(call, roleData, call.log, updateRoleTags);
             }
         });
     });
@@ -515,7 +501,7 @@ module.exports = function execute(scope) {
         call.cloud.updateRole(data, function (err, roleData) {
             call.done(err, roleData);
             if (!err) {
-                loadRoleTagData(call.cloud, roleData, call.log, updateRoleTags);
+                loadRoleTagData(call, roleData, call.log, updateRoleTags);
             }
         });
     });
@@ -569,7 +555,7 @@ module.exports = function execute(scope) {
                     roles = roles.filter(function (role) {
                         return role.policies.indexOf(policy.name) !== -1;
                     });
-                    loadRoleTagData(call.cloud, roles, call.log, updateRoleTags);
+                    loadRoleTagData(call, roles, call.log, updateRoleTags);
                 });
             }
         });
@@ -595,6 +581,30 @@ module.exports = function execute(scope) {
         });
     });
 
+    function createUserConfig(call, userData, callback) {
+        var client = MantaClient.createClient(call);
+        var configDir = '~~/stor/.joyent/portal/' + userData.id;
+        var configPath = configDir + '/config.json';
+
+        client.mkdirp(configDir, function (error) {
+            if (error) {
+                return callback(error);
+            }
+            client.putFileContents(configPath, '{}', function (error) {
+                if (error) {
+                    return callback(error);
+                }
+                callback(null);
+            });
+        });
+    }
+
+    function removeUserConfig(call, userId, callback) {
+        var client = MantaClient.createClient(call);
+        var configDir = '~~/stor/.joyent/portal/' + userId;
+        client.rmr(configDir, {recursive: true}, callback);
+    }
+
     server.onCall('createUser', function (call) {
         var data = {};
         accountFields.forEach(function (f) {
@@ -616,11 +626,16 @@ module.exports = function execute(scope) {
             };
 
             (function checkUsersList() {
-                call.cloud.listUsers(function(listError, listData) {
+                call.cloud.listUsers(function (listError, listData) {
                     if (listError) {
                         call.done(listError);
                     } else if (searchUserInList(listData, userData)) {
                         call.done(null, userData);
+                        createUserConfig(call, userData, function (error) {
+                            if (error) {
+                                call.req.log.error({error: error}, 'Failed create user config');
+                            }
+                        });
                     } else {
                         setTimeout(checkUsersList, 1000);
                     }
@@ -629,19 +644,32 @@ module.exports = function execute(scope) {
         });
     });
 
-    server.onCall('deleteUser', function (call) {
-        if (call.data.ids) {
-            parallel(call.data.ids, 'deleteUser', call, function (err, data) {
-                if (err) {
-                    var error = err.toString().replace(/first of \d error: /, '');
-                    call.done(error, data);
-                    return;
+    server.onCall('deleteUser', {
+        verify: function (data) {
+            return Array.isArray(data.ids) || typeof (data.id) === 'string';
+        },
+        handler: function (call) {
+            var ids = call.data.ids || [call.data.id];
+            vasync.forEachParallel({
+                inputs: ids,
+                func: function (id, callback) {
+                    call.cloud.deleteUser(id, function (err) {
+                        callback(err);
+                        removeUserConfig(call, id, function (error) {
+                            if (error && error.statusCode !== 404) {
+                                call.req.log.error({error: error}, 'Failed remove user config');
+                            }
+                        });
+                    });
                 }
-                call.done(null, data);
-            });
-        } else {
-            call.cloud.deleteUser(call.data.id, function (err, data) {
-                call.done(err, data);
+            }, function (errors) {
+                var messages = null;
+                if (errors && Array.isArray(errors.ase_errors)) {
+                    messages = errors.ase_errors.map(function (err) {
+                        return err.message;
+                    });
+                }
+                call.done(messages);
             });
         }
     });
@@ -814,7 +842,7 @@ module.exports = function execute(scope) {
             (function checkList() {
                 call.cloud.listKeys({login: 'my'}, function (err, data) {
                     if (err) {
-                        req.log.error('Failed to get listKeys from cloudApi', err);
+                        call.req.log.error('Failed to get listKeys from cloudApi', err);
                         call.done(null);
                     } else if (!searchFromList(data, call.data)) {
                         call.done(null);
@@ -826,9 +854,12 @@ module.exports = function execute(scope) {
         });
     });
 
-    var getConfigPath = function (call, client, old) {
-        return '~~/stor' + (old ? '' : '/.joyent') + '/portal/config.' +
-                call.req.session.userName + '.json';
+    var getConfigPath = function (call, old) {
+        var configPath = '~~/stor/.joyent/portal';
+        if (call.req.session.parentAccount) {
+            configPath += '/' + call.req.session.userId;
+        }
+        return configPath + '/config' + (old ? '.' + call.req.session.userName : '') + '.json';
     };
 
     var readFileContents = function (client, path, callback) {
@@ -836,8 +867,8 @@ module.exports = function execute(scope) {
     };
 
     var readOldOrNewFile = function (call, client, callback) {
-        var oldConfigPath = getConfigPath(call, client, true);
-        var newConfigPath = getConfigPath(call, client, false);
+        var oldConfigPath = getConfigPath(call, true);
+        var newConfigPath = getConfigPath(call, false);
         readFileContents(client, oldConfigPath, function (oldErr, oldResult) {
             if (oldErr) {
                 if (oldErr.statusCode !== 404) {
@@ -853,7 +884,7 @@ module.exports = function execute(scope) {
                 });
                 return;
             }
-            client.rmr('~~/stor/portal', function (rmErr) {
+            client.unlink(oldConfigPath, {}, function (rmErr) {
                 if (rmErr) {
                     call.req.log.info('Cannot remove old user config');
                 }
@@ -894,7 +925,7 @@ module.exports = function execute(scope) {
 
     server.onCall('SetUserConfig', function (call) {
         var client = MantaClient.createClient(call);
-        var configPath = getConfigPath(call, client);
+        var configPath = getConfigPath(call);
 
         function checkResponse(callObj, error) {
             if (error) {
