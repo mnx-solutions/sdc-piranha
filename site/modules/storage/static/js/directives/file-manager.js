@@ -1,7 +1,10 @@
 'use strict';
 
 (function (app, ng) {
-    app.directive('fileManager', ['Account', 'localization', 'PopupDialog', 'fileman', '$timeout', '$qe', 'util', 'Storage', '$location', function (Account, localization, PopupDialog, fileman, $timeout, $qe, util, Storage, $location) {
+    app.directive('fileManager', ['Account', 'localization', 'PopupDialog', 'fileman', '$timeout', '$qe', 'util',
+            'Storage', '$location', 'rbac.Service', 'notification', '$rootScope',
+        function (Account, localization, PopupDialog, fileman, $timeout, $qe, util,
+                  Storage, $location, RbacService, notification, $rootScope) {
         return {
             restrict: 'EA',
             scope: {
@@ -16,6 +19,7 @@
                 scope.loading = true;
                 scope.filesTree = {};
                 scope.userConfig = Account.getUserConfig().$child('fileman');
+                scope.rbacEnabled = $rootScope.features.rbac === 'enabled';
 
                 var rootPath = '/';
                 var defaultPath = {path: 'public', parent: '/'};
@@ -218,6 +222,72 @@
                             templateUrl: 'storage/static/partials/info.html',
                             openCtrl: infoModalCtrl
                         });
+                    });
+                };
+
+                scope.roleTag = function () {
+                    var path = getObjectPath(lastSelectedFile);
+
+                    var roleTagCtrl = function ($scope, dialog) {
+                        $scope.recursive = false;
+                        $scope.loading = true;
+                        $scope.isDirectory = lastSelectedFile.type === 'directory';
+
+                        $qe.all([
+                            RbacService.listRoles(),
+                            RbacService.listPolicies(),
+                            fileman.getRoles(path, {}).promise
+                        ]).then(function (results) {
+                            var rbacRoles = results[0] || [];
+                            var rbacPolicies = results[1] || [];
+                            var resourceRoles = results[2] || [];
+                            var availableRoles = rbacRoles.map(function (role) {
+                                role.value = role.id;
+                                return role;
+                            }).sort(function (a, b) {
+                                return a.name.localeCompare(b.name);
+                            });
+                            $scope.assignedRoles = availableRoles.filter(function (role) {
+                                return resourceRoles.indexOf(role.name) !== -1;
+                            });
+                            $scope.roles = availableRoles.filter(function (availableRole) {
+                                var rulesForRole = availableRole.policies.map(function (policyName) {
+                                    var policyObj = rbacPolicies.find(function (policy) {
+                                        return policy.name === policyName;
+                                    });
+                                    return policyObj ? policyObj.rules.join() : '';
+                                }).join().toLowerCase();
+                                var hasFilePermissions = rulesForRole.indexOf('getobject') != -1 || rulesForRole.indexOf('putobject') != -1;
+                                var hasDirPermissions = rulesForRole.indexOf('getdirectory') != -1 || rulesForRole.indexOf('putdirectory') != -1;
+                                return $scope.isDirectory && (hasDirPermissions || hasFilePermissions) ||
+                                    !$scope.isDirectory && hasFilePermissions ||
+                                    $scope.assignedRoles.indexOf(availableRole) != -1;
+                            });
+                            $scope.loading = false;
+                        });
+
+                        $scope.save = function () {
+                            var assignedRoles = $scope.assignedRoles.map(function (role) {
+                                return role.name;
+                            });
+                            fileman.setRoles(path, {roles: assignedRoles, recursive: $scope.recursive}, function (setErr) {
+                                if (setErr) {
+                                    notification.error('Applying role tags resulted in error: ' + setErr);
+                                    return;
+                                }
+                                notification.success('Role tags successfully applied.')
+                            });
+                            $scope.close();
+                        };
+
+                        $scope.close = function () {
+                            dialog.close();
+                        };
+                    };
+
+                    return PopupDialog.custom({
+                        templateUrl: 'storage/static/partials/role-tag.html',
+                        openCtrl: roleTagCtrl
                     });
                 };
 

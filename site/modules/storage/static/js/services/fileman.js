@@ -17,18 +17,18 @@
                     data.originPath = path;
                     if (isAbsolutePath) {
                         data.path = path;
-                        serverTab.call({
+                        return serverTab.call({
                             name: name,
                             data: data,
                             done: callback
                         });
                     } else {
-                            data.path = '~~' + path;
-                            serverTab.call({
-                                name: name,
-                                data: data,
-                                done: callback
-                            });
+                        data.path = '~~' + path;
+                        return serverTab.call({
+                            name: name,
+                            data: data,
+                            done: callback
+                        });
                     }
                 };
             }
@@ -54,6 +54,10 @@
             fileman.unlink = createMethod('FileManDeleteFile');
 
             fileman.info = createMethod('FileManInfo');
+
+            fileman.getRoles = createMethod('FileManGetRoles');
+
+            fileman.setRoles = createMethod('FileManSetRoles');
 
             fileman.getFile = createMethod('FileManGet');
 

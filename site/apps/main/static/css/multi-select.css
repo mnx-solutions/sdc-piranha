@@ -1,0 +1,87 @@
+select,
+input,
+.ms-container .ms-selectable li.ms-elem-selectable,
+.ms-container .ms-selection li.ms-elem-selection,
+.jstree
+{
+    font-size: 16px;
+    font-weight: 200;
+}
+
+.ms-container ul.ms-list
+{
+    overflow-x: hidden;
+
+    width: 220px;
+    height: 300px;
+    padding: 0;
+}
+
+.ms-container .ms-list
+{
+    -webkit-border-radius: 0;
+    -moz-border-radius: 0;
+    border-radius: 0;
+}
+
+.ms-container .ms-selectable li:hover,
+.ms-container .ms-selection li:hover
+{
+    cursor: pointer;
+    text-decoration: none;
+
+    color: white;
+    background-color: #f60;
+}
+
+.ms-container
+{
+    background-position: center center;
+}
+
+.ms-container .ms-selectable li.ms-elem-selectable,
+.ms-container .ms-selection li.ms-elem-selection,
+.ms-container .select-header
+{
+    overflow: hidden;
+
+    padding: 4px 10px;
+
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.ms-container .select-header
+{
+    font-size: 14px;
+    font-weight: 500;
+
+    color: black;
+    border: solid 1px #ccc;
+    background-color: #cecece;
+}
+
+.ms-container .ms-list.ms-focus
+{
+    border-color: #ccc;
+}
+
+.ms-container .ms-selectable
+{
+    margin-right: 0;
+}
+
+.ms-container .ms-selection
+{
+    margin-left: 45px;
+}
+
+.ms-list li:hover
+{
+    cursor: pointer;
+}
+
+.striped
+{
+    background-color: #f4f4f4;
+}
