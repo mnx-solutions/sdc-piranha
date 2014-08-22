@@ -28,7 +28,7 @@
             $scope.invoices = [];
 
             Account.getAccount().then(function(account) {
-                if (account.provisionEnabled) {
+                if (account.provisionEnabled && !account.isSubuser) {
                     $q.all([
                         $q.when(BillingService.getInvoices())
                     ]).then(function (results) {
