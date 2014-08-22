@@ -1,191 +1,250 @@
-.holders-container {
-    margin-bottom: 30px;
-    margin-top: 20px;
+.holders-container
+{
+    position: relative;
+
     min-height: 350px;
     max-height: 100%;
+    margin-top: 20px;
+    margin-bottom: 30px;
     padding-left: 2px;
-    position: relative;
 }
 
-.package-holder {
-    background-color: #e9eff3;
-    border-right: 20px solid #FFFFFF;
+.package-holder
+{
+    position: relative;
+
     display: table-cell;
+
     min-width: 240px;
     padding-bottom: 5px;
-    position: relative;
+
     word-wrap: break-word;
+
+    border-right: 20px solid #fff;
+    background-color: #e9eff3;
 }
 
-.package-holder:last-child:after {
+.package-holder:last-child:after
+{
     position: relative;
     left: 100%;
+
     display: inline-block;
+
     width: 60px;
     height: 1px;
-    background-color: transparent;
+
     content: '';
+
+    background-color: transparent;
 }
 
 .package-holder .header,
-.package-holder .desc {
+.package-holder .desc
+{
     width: 236px;
     margin-left: 2px;
 }
 
 .package-holder.active,
-.package-holder:hover.active {
-    background-color: #CFFAE5;
+.package-holder:hover.active
+{
+    background-color: #cffae5;
 }
 
-.package-holder:hover {
+.package-holder:hover
+{
     background-color: #fef1d2;
 }
 
-.package-holder .header {
+.package-holder .header
+{
     font-weight: 300;
+
     z-index: 1;
 }
 
-.package-holder .control {
+.package-holder .control
+{
     position: relative;
-    margin: 15px 0 20px;
+
     width: 240px;
-    outline: 2px solid #BBC9D2;
-    background-color: #BBC9D2;
+    margin: 15px 0 20px;
+
+    outline: 2px solid #bbc9d2;
+    background-color: #bbc9d2;
 }
 
 .package-holder.active .control,
-.package-holder:hover.active .control {
-    background-color: #92EBB5;
-    outline: 2px solid #92EBB5;
+.package-holder:hover.active .control
+{
+    outline: 2px solid #92ebb5;
+    background-color: #92ebb5;
 }
 
-.package-holder:hover .control {
-    background-color: #ffb848;
+.package-holder:hover .control
+{
     outline: 2px solid #ffb848;
+    background-color: #ffb848;
 }
 
-.package-holder .control .btn {
+.package-holder .control .btn
+{
+    font-size: 16px;
+
     position: absolute;
     right: 10px;
     bottom: 5px;
-    background-color: #5d8096;
+
     color: white;
+    background-color: #5d8096;
     text-shadow: none;
-    font-size: 16px;
 }
 
 .package-holder.active .control .btn,
-.package-holder:hover.active .control .btn {
-    background-color: #28AA66;
+.package-holder:hover.active .control .btn
+{
+    background-color: #28aa66;
 }
 
-.package-holder:hover .control .btn {
-    background-color: #ff6600;
+.package-holder:hover .control .btn
+{
+    background-color: #f60;
 }
 
-.package-holder .control span.btn {
+.package-holder .control span.btn
+{
     cursor: default;
 }
 
-.package-holder .desc {
-    box-sizing:border-box;
+.package-holder .desc
+{
     -moz-box-sizing: border-box;
+         box-sizing: border-box;
 }
 
-.package-holder .control p {
-    float: left;
-    margin-top: 13px;
-    padding-right: 10px;
-    vertical-align: bottom;
+.package-holder .control p
+{
     font-size: 16px;
     line-height: 14px;
+
+    float: left;
+
+    margin-top: 13px;
+    padding-right: 10px;
+
+    vertical-align: bottom;
 }
 
-.control p.fees {
-    float: none;
-    margin: 0 0 45px;
-    min-height: 20px;
+.control p.fees
+{
     line-height: 19px;
+
+    float: none;
+
+    min-height: 20px;
+    margin: 0 0 45px;
 }
 
-.control span {
+.control span
+{
     font-size: 18px;
 }
 
-
-.package-holder p {
+.package-holder p
+{
     font-weight: 300;
+
     margin: 0 0 5px;
 }
 
-.package-holder h4 {
+.package-holder h4
+{
     font-size: 23px;
     font-weight: 300;
 }
 
-.package-holder h3 {
-    color: #333;
+.package-holder h3
+{
     font-size: 29px;
     font-weight: 200;
+
+    color: #333;
 }
 
-.package-holder h3 p {
-    vertical-align: top!important;
+.package-holder h3 p
+{
     font-size: 18px!important;
+
     margin-top: 10px!important;
     padding-right: 2px!important;
+
+    vertical-align: top!important;
 }
 
-.brim {
-    padding: 1px 15px 5px 15px;
+.brim
+{
     overflow: hidden;
+
+    padding: 1px 15px 5px 15px;
 }
 
-.arrow-right {
-    background: url("../img/arrow-right.png") no-repeat;
-    background-size: 15px 15px !important;
+.arrow-right
+{
     margin-left: 10px;
     padding-right: 16px;
+
     vertical-align: middle;
+
+    background: url('../img/arrow-right.png') no-repeat;
+    background-size: 15px 15px !important;
 }
 
-.package-holder .info {
+.package-holder .info
+{
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 16px;
+
     display: inline-block;
+
     box-sizing: content-box;
-    margin-left: 10px;
-    padding: 2px;
     width: 16px;
     height: 16px;
-    -webkit-border-radius: 50%;
-    -moz-border-radius: 50%;
-    border-radius: 50%;
-    background-color: #5d8096;
-    color: #e9eff3;
-    vertical-align: top;
+    margin-left: 10px;
+    padding: 2px;
+
     text-align: center;
+    vertical-align: top;
     text-decoration: none;
-    font-weight: 400;
-    font-size: 16px;
-    line-height: 16px;
+
+    color: #e9eff3;
+    -webkit-border-radius: 50%;
+       -moz-border-radius: 50%;
+            border-radius: 50%;
+    background-color: #5d8096;
 }
 
-.package-holder:hover .info {
-    background-color: #ff6600;
+.package-holder:hover .info
+{
     color: #fef1d2;
+    background-color: #f60;
 }
 
-.package-holder.active .info {
-    background-color: #28AA66;
-    color: #CFFAE5;
+.package-holder.active .info
+{
+    color: #cffae5;
+    background-color: #28aa66;
 }
 
-.header-text-section {
+.header-text-section
+{
     margin-bottom: 0;
 }
 
-.support-link {
-    color: #f60;
+.support-link
+{
     text-decoration: none;
+
+    color: #f60;
 }

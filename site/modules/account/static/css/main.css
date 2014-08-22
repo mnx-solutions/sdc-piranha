@@ -1,53 +1,71 @@
 .modal-header.message,
-.modal-header.confirm {
-    background-color: #ff6600;
+.modal-header.confirm
+{
+    background-color: #f60;
 }
 
-.item .title {
+.item .title
+{
     padding: 10px;
 }
 
-.item .key {
-    border-bottom: 1px solid #ddd;
-    color: #888;
+.item .key
+{
     padding-left: 10px;
+
+    color: #888;
+    border-bottom: 1px solid #ddd;
 }
 
-.item .value {
-    text-align: left !important;
-    border-bottom: 1px solid #ddd;
+.item .value
+{
     min-width: 300px;
     padding: 0 10px 0 10px;
+
+    text-align: left !important;
+
+    border-bottom: 1px solid #ddd;
 }
 
-.modal-header.error {
-    background-color: #ff0000;
+.modal-header.error
+{
+    background-color: #f00;
 }
 
-.modal-header {
-    color: white;
+.modal-header
+{
     padding: 9px 15px;
+
+    color: white;
     border-bottom: 1px solid #eee;
 }
 
-.breadcrumb {
-    padding: 0;
-    background-color: transparent!important;
+.breadcrumb
+{
     margin-top: 20px;
     margin-bottom: 10px!important;
+    padding: 0;
+
+    background-color: transparent!important;
 }
-.select2-container .select2-choice {
+
+.select2-container .select2-choice
+{
     background-color: #fafcfd !important;
 }
-.select2-container .select2-choice div b {
+
+.select2-container .select2-choice div b
+{
     background-color: #fafcfd !important;
-    box-shadow: inset 0 1px 1px rgba(0,0,0,0.075);
+    box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
 }
+
 .select2-container-active .select2-choice,
-.select2-container-multi.select2-container-active .select2-choices {
-    border: 1px solid #52A8EC;
+.select2-container-multi.select2-container-active .select2-choices
+{
+    border: 1px solid #52a8ec;
     outline: none;
-    -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(82, 168, 236, 0.6);
-    -moz-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(82, 168, 236, 0.6);
-    box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(82, 168, 236, 0.6);
+    -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075), 0 0 8px rgba(82, 168, 236, .6);
+       -moz-box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075), 0 0 8px rgba(82, 168, 236, .6);
+            box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075), 0 0 8px rgba(82, 168, 236, .6);
 }
