@@ -231,11 +231,23 @@ You can also define configuration options using command line. ex: `$ node index.
 - `zuora.soap` GuartTime TBD
 
 ## Common errors:
+
 `Cannot find module {X}`
     You don't have module X and need to install it using `npm install {X}`.
 
 `Invalid developer` message when logging in to the portal in the web browser.
     Your `sso.keyId` or `sso.keyPath` are wrong. Re-check them and make sure they are in SDC Admin. 
+
+## Misc
+
+### uncss
+
+Install `gulp` and run:
+
+    npm install --development
+    npm install -g gulp
+    cd tools
+    gulp uncss
 
 [1]:https://github.com/DeadAlready/node-easy-config
 [2]:https://github.com/trentm/node-bunyan
