@@ -3,13 +3,18 @@ package com.joyent.piranha.test;
 import com.joyent.piranha.PropertyHolder;
 import com.joyent.piranha.pageobject.*;
 import com.joyent.piranha.util.TestWrapper;
+import com.joyent.piranha.utils.ScreenshotTestRule;
+import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.Rule;
 import org.junit.Test;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.io.File;
 import java.io.IOException;
+import java.security.PublicKey;
 
 import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Configuration.baseUrl;
@@ -19,18 +24,19 @@ import static com.codeborne.selenide.Selenide.*;
 import static org.junit.Assert.assertTrue;
 
 public class UploadSSHKeyTest extends TestWrapper {
-    public static final String USER_NAME = PropertyHolder.getTestUserLogin();
-    public static final String PASSWORD = PropertyHolder.getTestUserPassword();
     private static NavBarMenu navBarMenu;
     private static SideBarMenu sideBarMenu;
+
+    @Rule
+    public ScreenshotTestRule screenshotTestRule = new ScreenshotTestRule();
 
     @BeforeClass
     public static void openDashboard() {
         timeout = BASE_TIMEOUT;
         baseUrl = BASE_URL;
-
         Login loginPage = open("/", Login.class);
-        loginPage.login(USER_NAME, PASSWORD);
+        String user_name = loginPage.createTestAccount(loginPage.clickSignUp());
+        page(CreateAccountPage.class).clickCreateAcccount(Dashboard.class);
         page(Dashboard.class).getFreeTierWidget().shouldBe(visible);
         navBarMenu = page(NavBarMenu.class);
         sideBarMenu = page(SideBarMenu.class);
@@ -44,7 +50,6 @@ public class UploadSSHKeyTest extends TestWrapper {
         accountSSH.clickImportPublicKey();
         $(".modal").waitUntil(visible, timeout);
         accountSSH.uploadFile(PropertyHolder.getPublicKeyPath());
-        $(".modal").waitWhile(visible, timeout);
         checkKeysNumber(numberOfKeys);
         accountSSH.clickImportPublicKey();
         accountSSH.uploadFile(PropertyHolder.getPublicKeyPath());
@@ -66,8 +71,6 @@ public class UploadSSHKeyTest extends TestWrapper {
 
     public void checkKeysNumber(int keys) {
         WebDriverWait webDriverWait = new WebDriverWait(driver, timeout);
-        final int currentKeys = keys;
-        webDriverWait.until((WebDriver input) -> page(AccountSSH.class).getNumberOfKeys() == currentKeys + 1);
+        webDriverWait.until((WebDriver input) -> page(AccountSSH.class).getNumberOfKeys() == keys + 1);
     }
-
 }
