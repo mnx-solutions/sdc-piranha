@@ -1,49 +1,70 @@
-.landing-create-account-link {
+.landing-create-account-link
+{
     cursor: pointer;
 }
-body {
-    background-color:#e4e7eb;
+
+body
+{
+    background-color: #e4e7eb;
 }
-.orange {
-    background-color: #ff6600;
+
+.orange
+{
     color: #fff;
+    background-color: #f60;
 }
-.orange-text {
-    color: #ff6600;
+
+.orange-text
+{
+    color: #f60;
 }
-.branding i {
+
+.branding i
+{
     font-style: italic;
 }
+
 /* Buttons */
-.branding .btn {
+
+.branding .btn
+{
+    font-size: 14px;
+
     padding: 7px 14px;
-    outline: none;
+
+    cursor: pointer;
+    text-transform: capitalize;
+
+    color: #333;
     border: 0;
     -webkit-border-radius: 0;
-    -moz-border-radius: 0;
-    border-radius: 0;
+       -moz-border-radius: 0;
+            border-radius: 0;
+    outline: none;
     background-image: none;
     -webkit-box-shadow: none;
-    -moz-box-shadow: none;
-    box-shadow: none;
-    color: #333333;
-    text-transform: capitalize;
-    font-size: 14px;
+       -moz-box-shadow: none;
+            box-shadow: none;
+
     filter: none;
-    cursor: pointer;
 }
-.btn.orange {
+
+.btn.orange
+{
     min-width: 100px;
+
+    color: #fff;
     outline: none;
     text-shadow: none;
-    color: #fff;
 }
+
 .btn.orange:hover,
 .btn.orange:focus,
 .btn.orange:active,
 .btn.orange.active,
 .btn.orange.disabled,
-.btn.orange[disabled] {
-    background-color: #ff6600 !important;
+.btn.orange[disabled]
+{
     color: #fff !important;
+    background-color: #f60 !important;
 }

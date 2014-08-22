@@ -1,95 +1,127 @@
-.new-debbuger-job-btn {
+.new-debbuger-job-btn
+{
     margin-top: -85px;
 }
 
-.new-debbuger-job-btn .btn-big {
+.new-debbuger-job-btn .btn-big
+{
     width: 235px !important;
 }
 
-.header-btn-ci {
+.header-btn-ci
+{
     position: relative;
+
     display: inline-block;
     float: right;
 }
 
-.debugger-action-btn {
+.debugger-action-btn
+{
     width: 153px;
 }
 
-.column-container {
+.column-container
+{
     white-space: nowrap;
 }
 
-.column {
+.column
+{
     display: inline-block;
+
     vertical-align: top;
 }
 
-.mdb-column-label {
+.mdb-column-label
+{
     min-width: 383px;
 }
 
-.mdb-common-container {
-    padding: 0 20px 0 0;
+.mdb-common-container
+{
     margin-bottom: 20px;
+    padding: 0 20px 0 0;
 }
 
-.mdb-counters-container {
+.mdb-counters-container
+{
     padding: 0 0 0 50px;
+
     border-left: 1px solid #ccc;
 }
 
-.mdb-common-table {
+.mdb-common-table
+{
     width: 100%;
 }
 
-.mdb-common-table td {
+.mdb-common-table td
+{
     padding: 1px 0;
 }
 
-.mdb-counter-row td {
+.mdb-counter-row td
+{
     padding-top: 7px;
     padding-right: 10px;
 }
 
-.mdb-counter-row td:first-child {
+.mdb-counter-row td:first-child
+{
     font-weight: bold;
+
     text-align: right;
 }
 
-.estimate-time {
+.estimate-time
+{
     height: 34px;
 }
 
-#collapse_objects, #collapse_modules {
+#collapse_objects,
+#collapse_modules
+{
     padding-top: 0;
     padding-bottom: 0;
 }
 
-.page-header {
+.page-header
+{
     padding-top: 7px;
 }
+
 /* TODO: move it to main.css and remove hardcode from all modules which has accordion */
-.panel-heading .accordion-toggle {
-    padding: 8px 15px;
+
+.panel-heading .accordion-toggle
+{
     display: block;
+
+    padding: 8px 15px;
+
     cursor: pointer;
 }
 
-.col-md-8, 
-.col-md-4 {
+.col-md-8,
+.col-md-4
+{
     padding-left: 0;
 }
 
-.file-label {
+.file-label
+{
     display: inline-flex;
+
     margin-top: 8px;
 }
 
-.file-name {
+.file-name
+{
     display: inline-block;
     overflow: hidden;
+
     max-width: 170px;
     padding-left: 5px;
+
     text-overflow: ellipsis;
 }
