@@ -2669,5 +2669,6 @@ span.btn-success
 
 .left-part
 {
+    min-width: 600px;
     width: 100%;
 }
