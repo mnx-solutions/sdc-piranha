@@ -66,4 +66,10 @@ public class SideBarMenu extends AbstractPageObject {
         clickMenu(POLICIES_MENU_TITLE);
         return page(Policies.class);
     }
+
+    public FileManager clickFileManager() {
+        clickStorage();
+        clickMenu(FILE_MANAGER_MENU_TITLE);
+        return page(FileManager.class);
+    }
 }
