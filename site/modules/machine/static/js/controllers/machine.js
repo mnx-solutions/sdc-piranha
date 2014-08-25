@@ -99,10 +99,11 @@
             // Handle case when machine loading fails or machine uuid is invalid
             $q.when($scope.machine).then(function () {
                 $scope.loading = false;
+                if (!$scope.machine.image) {
+                    locationReplace();
+                }
                 if ($scope.machine.name) {
                     $scope.newInstanceName = $scope.machine.name;
-                } else {
-                    locationReplace();
                 }
             }, function () {
                 locationReplace();
