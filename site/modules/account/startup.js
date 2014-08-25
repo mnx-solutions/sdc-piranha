@@ -188,6 +188,20 @@ module.exports = function execute(scope) {
                             })
                         }
                     });
+
+                    Object.keys(resultsHash.machines).forEach(function (datacenter) {
+                        var networksCache = {};
+                        resultsHash.networks[datacenter].forEach(function (network) {
+                            networksCache[network.id] = true;
+                        });
+                        resultsHash.machines[datacenter].forEach(function (machine) {
+                            machine.networks.forEach(function (network) {
+                                if (!networksCache[network]) {
+                                    resultsHash.networks[datacenter].push({id: network});
+                                }
+                            });
+                        });
+                    });
                     loadDataCallback(cloudapi, getArray(roles, true), log, users, networks, policies, machines, images, firewallRules);
                 }
             })
