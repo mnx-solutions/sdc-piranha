@@ -233,7 +233,7 @@
                     active: true,
                     type: 'html',
                     _getter: function (machine) {
-                        var html = '<a href="#!/compute/instance/' + machine.id + '" style="min-width: 140px;">' + machine.label + '</a>';
+                        var html = !machine.image ? machine.label : '<a href="#!/compute/instance/' + machine.id + '" style="min-width: 140px;">' + machine.label + '</a>';
                         if (machine.freetier) {
                             html += '<span> * FREE</span>';
                         }

@@ -42,6 +42,12 @@
             $scope.networks = [];
             $scope.defaultSshUser = 'root';
 
+            var locationReplace = function (path) {
+                path = path || '/compute';
+                $location.url(path);
+                $location.replace();
+            }
+
             var reloadPackages = function (currentPackageName, datacenter) {
                 $q.all([Package.package({datacenter: datacenter}), Package.package(currentPackageName)]).then(function (results) {
                     $scope.package = results[1];
@@ -83,8 +89,7 @@
                     $scope.freetier = data;
                 }, function (err) {
                     PopupDialog.errorObj(err, function () {
-                        $location.url('/compute/create/simple');
-                        $location.replace();
+                        locationReplace('/compute/create/simple');
                     });
                 });
             }
@@ -94,10 +99,14 @@
             // Handle case when machine loading fails or machine uuid is invalid
             $q.when($scope.machine).then(function () {
                 $scope.loading = false;
-                $scope.newInstanceName = $scope.machine.name;
+                if (!$scope.machine.image) {
+                    locationReplace();
+                }
+                if ($scope.machine.name) {
+                    $scope.newInstanceName = $scope.machine.name;
+                }
             }, function () {
-                $location.url('/compute');
-                $location.replace();
+                locationReplace();
             });
 
             $scope.visiblePasswords = {};
@@ -114,8 +123,7 @@
                             });
                         }
                     }, function () {
-                        $location.url('/compute');
-                        $location.replace();
+                        locationReplace();
                     });
                 }
             );
@@ -126,8 +134,7 @@
                     $q.when(Machine.machine(machineid)).then(function (machine) {
                         $scope.machine = machine;
                     }, function () {
-                        $location.url('/compute');
-                        $location.replace();
+                        locationReplace();
                     });
                 }
             );
@@ -441,8 +448,7 @@
                             );
 
                             if ($location.url() === '/compute/instance/' + machineid) {
-                                $location.url('/compute');
-                                $location.replace();
+                                locationReplace();
                             }
                             if (!$scope.machines.length && ($location.path() === '/compute' || $location.path() === currentLocation)) {
                                 Machine.gotoCreatePage();
