@@ -192,10 +192,6 @@
 
                 $timeout(function () {
                     // Map
-                    if (ErrorService.getLastErrors('dcUnreachable', 'all')) {
-                        service.updateRules();
-                    }
-
                     if (!id) {
                         if (!rules.job) {
                             service.updateRules().then(function () {
@@ -293,10 +289,8 @@
                                 }
                             }
 
-                            ErrorService.flushErrors('all', 'dcUnreachable');
                             function handleResponse(chunk) {
                                 if (chunk.status === 'error') {
-                                    ErrorService.setLastError('dcUnreachable', 'all', true);
                                     if (!ErrorService.getLastErrors('dcUnreachable', chunk.name)) {
                                         ErrorService.setLastError('dcUnreachable', chunk.name,
                                             'Datacenter {{name}} is currently not available. We are working on getting this datacenter back on.',

@@ -140,14 +140,12 @@
                     name: 'MachineList',
                     progress: function (err, job) {
                         var data = job.__read();
-                        ErrorService.flushErrors('dcUnreachable', 'all');
                         function handleResponse(chunk) {
                             if (chunk.status === 'error') {
                                 if (authorizationErrorDisable && chunk.error || chunk.error.restCode === 'NotAuthorized') {
                                     return;
                                 }
 
-                                ErrorService.setLastError('dcUnreachable', 'all', true);
                                 if (!ErrorService.getLastErrors('dcUnreachable', chunk.name)) {
                                     ErrorService.setLastError('dcUnreachable', chunk.name,
                                         'Datacenter {{name}} is currently not available. We are working on getting this datacenter back on.',
@@ -249,10 +247,6 @@
         };
 
         service.machine = function (id) {
-            if (ErrorService.getLastErrors('dcUnreachable', 'all')) {
-                service.updateMachines();
-            }
-
             if (id === true || (!id && !machines.job)) {
                 service.updateMachines();
                 return machines.list;

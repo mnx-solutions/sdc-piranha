@@ -88,12 +88,10 @@
                         },
                         progress: function (err, job) {
                             var data = job.__read();
-                            ErrorService.flushErrors('dcUnreachable', 'all');
                             function handleResponse(chunk) {
                                 images.list[chunk.name] = [];
                                 if (chunk.status === 'error') {
                                     images.error = err;
-                                    ErrorService.setLastError('dcUnreachable', 'all', true);
                                     if (!ErrorService.getLastErrors('dcUnreachable', chunk.name)) {
                                         ErrorService.setLastError('dcUnreachable', chunk.name,
                                             'Datacenter {{name}} is currently not available. We are working on getting this datacenter back on.',
