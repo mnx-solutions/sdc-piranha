@@ -30,7 +30,8 @@
             "limits",
             "mdb",
             "rbac",
-            "downloadSdc"
+            "downloadSdc",
+            "cdn"
         ],
         "auth": true,
         "error": true,

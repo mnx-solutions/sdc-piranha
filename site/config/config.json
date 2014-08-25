@@ -228,5 +228,6 @@
   , "cloudAnalytics": "yes"
   , "downloadSdc": "no"
   , "limitedSlb": "no"
+  , "cdn": "no"
   }
 }
