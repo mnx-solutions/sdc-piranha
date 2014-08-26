@@ -1,0 +1,29 @@
+<div class="modal-dialog">
+    <div class="modal-content">
+        <div class="modal-header message">
+            <h5><i class="glyphicon glyphicon-info-sign"></i><b>Role Tags</b></h5>
+        </div>
+        <div class="model-body" data-ng-show="loading">
+            <div class="loading-medium"></div>
+        </div>
+        <div class="modal-body" data-ng-hide="loading">
+            <div data-ng-hide="roles.length">Roles are not available, click to <a class="orange" href="#!/accounts/role/create">Create Role</a></div>
+            <div data-ng-show="roles.length">
+                <multi-select id="rolesSelect"
+                    data-items="roles"
+                    data-option-label="'name'"
+                    data-selected-items="assignedRoles"
+                    data-selection-header="AVAILABLE"
+                    data-selected-header="ASSIGNED">
+                </multi-select>
+            </div>
+            <span data-ng-show="isDirectory">
+                <input type="checkbox" data-ng-model="recursive"/> Apply to all nested objects
+            </span>
+        </div>
+        <div class="modal-footer">
+            <button data-ng-click="close()" class="btn grey-new effect-orange-button">Cancel</button>
+            <button data-ng-click="save()" class="btn orange">Apply Role Tags</button>
+        </div>
+    </div>
+</div>

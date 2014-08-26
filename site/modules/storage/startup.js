@@ -7,6 +7,7 @@ var manta = require('manta');
 var mantaNotAvailable = 'Manta service is not available.';
 var MANTA_PING_RETRIES = 15;
 var PING_ERROR_MESSAGE = 'Something went wrong.  Please try again in a minute.';
+var vasync = require('vasync');
 
 module.exports = function execute(scope) {
     var Manta = scope.api('MantaClient');
@@ -330,6 +331,76 @@ module.exports = function execute(scope) {
                 return;
             }
             call.done(null, data);
+        });
+    });
+
+    server.onCall('FileManGetRoles', function (call) {
+        var client = Manta.createClient(call);
+        client.info(call.data.path, function (err, info) {
+            if (err) {
+                checkResponse(call, true)(err);
+                return;
+            }
+            var roles;
+            if (info.headers['role-tag']) {
+                roles = info.headers['role-tag'].split(/\s*,\s*/);
+            } else {
+                roles = [];
+            }
+            call.done(null, roles);
+        });
+    });
+
+    var listDirectory = function (client, path, callback) {
+        client.ls(path, function (err, res) {
+            if (!err) {
+                var entries = [];
+                var onEntry = function (e) {
+                    entries.push(e);
+                };
+                res.on('directory', onEntry);
+                res.on('object', onEntry);
+                res.on('end', function () {
+                    callback(null, entries);
+                });
+            }
+        });
+    };
+
+    server.onCall('FileManSetRoles', function (call) {
+        var client = Manta.createClient(call);
+        var roles = call.data.roles || [];
+        var chattrOpts = {
+            headers: {'role-tag': roles.join(',') }
+        };
+        var roleTagDirectory = function (path, callback) {
+            listDirectory(client, path, function (err, list) {
+                list = list || [];
+                vasync.forEachParallel({
+                    func: function (entry, entryCallback) {
+                        var fullPath = entry.parent + '/' + entry.name;
+                        if (entry.type === 'directory') {
+                            roleTagDirectory(fullPath, entryCallback);
+                        } else {
+                            client.chattr(fullPath, chattrOpts, function (attrErr, info) {
+                                entryCallback(attrErr, roles);
+                            });
+                        }
+                    },
+                    inputs: list
+                }, callback);
+            });
+        };
+        client.chattr(call.data.path, chattrOpts, function (err, info) {
+            if (err) {
+                checkResponse(call, true)(err);
+                return;
+            }
+            if (call.data.recursive) {
+                roleTagDirectory(call.data.path, call.done.bind(call));
+            } else {
+                call.done(null, roles);
+            }
         });
     });
 
