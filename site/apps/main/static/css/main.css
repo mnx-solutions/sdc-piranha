@@ -5019,3 +5019,9 @@ label.checkbox.folder-name-form-checkbox
 {
     top: 1.1em;
 }
+
+.configurationForm .edit-value,
+.configurationForm .edit-value input
+{
+    width: 400px;
+}

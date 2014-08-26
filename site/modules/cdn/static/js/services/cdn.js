@@ -30,6 +30,14 @@
                 }).promise;
             };
 
+            service.createConfiguration = function (data, callback) {
+                return serverTab.call({
+                    name: 'CreateConfiguration',
+                    data: data,
+                    done: callback
+                }).promise;
+            };
+
             return service;
         }
     ]);

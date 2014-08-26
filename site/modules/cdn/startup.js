@@ -1,13 +1,16 @@
 'use strict';
 var config = require('easy-config');
+var vasync = require('vasync');
 
 if (!config.features || config.features.cdn !== 'disabled') {
 
     var cdnApi = function execute(scope) {
         var Manta = scope.api('MantaClient');
+        var cdn = scope.api('CdnClient');
         var server = scope.api('Server');
 
         var cdnConfigPath = '~~/stor/.joyent/portal/cdn/Fastly/config.json';
+        var mantaDomain = 'us-east.manta.joyent.com';
 
         var getCdnConfig = function (call, callback) {
             var client = Manta.createClient(call);
@@ -74,6 +77,43 @@ if (!config.features || config.features.cdn !== 'disabled') {
                         }
                         call.done();
                     });
+                });
+            }
+        });
+
+        server.onCall('CreateConfiguration', {
+            handler: function (call) {
+                var configuration = {};
+                cdn.createService(call, function (error, service) {
+                    if (error) {
+                        call.done(error, null);
+                    } else {
+                        configuration.service = JSON.parse(service);
+
+                        call.data.service_id = configuration.service.id;
+                        call.data.version = 1;
+
+                        vasync.parallel({
+                            'funcs': [
+                                function domain(callback) {
+                                    cdn.createDomain(call, callback);
+                                },
+                                function backend(callback) {
+                                    call.data.backend = mantaDomain;
+                                    cdn.createBackend(call, callback);
+                                }
+                            ]
+                        }, function (err, results) {
+                            if (err) {
+                                call.done(err, null);
+                            } else {
+                                results.operations.forEach(function (res) {
+                                    configuration[res.funcname] = JSON.parse(res.result);
+                                });
+                                call.done(null, configuration);
+                            }
+                        });
+                    }
                 });
             }
         });

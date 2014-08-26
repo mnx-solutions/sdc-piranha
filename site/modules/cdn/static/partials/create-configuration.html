@@ -1,0 +1,49 @@
+<div class="modal-dialog">
+    <div class="modal-content">
+        <div tabindex="-1" data-backdrop="static" data-focus-on="button">
+            <div class="modal-header message">
+                <h5><i class="glyphicon glyphicon-info-sign"></i><b>{{ title }}</b></h5>
+            </div>
+            <div class="modal-body">
+                <form name="configurationForm" class="configurationForm">
+                    <div class="form-group">
+                        <span class="orange-asterix edit-name">Support Name</span>
+                        <span class="edit-value">
+                            <input type="text"
+                                   id="name"
+                                   name="name"
+                                   data-ng-model="name"
+                                   required
+                                    />
+                        </span>
+                    </div>
+                    <div class="error"
+                         data-ng-show="configurationForm.name.$dirty && configurationForm.name.$error.required"
+                         data-translate>
+                        Missing Support Name
+                    </div>
+                    <div class="form-group">
+                        <span class="orange-asterix edit-name">Domain</span>
+                        <span class="edit-value">
+                            <input type="text"
+                                   id="domain"
+                                   name="domain"
+                                   data-ng-model="domain"
+                                   required
+                                    />
+                        </span>
+                    </div>
+                    <div class="error"
+                         data-ng-show="configurationForm.domain.$dirty && configurationForm.domain.$error.required"
+                         data-translate>
+                        Missing Domain
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button data-ng-click="close()" data-button-focus="false" data-label="Cancel" class="btn grey-new effect-orange-button">Cancel</button>
+                <button data-ng-click="create()" data-button-focus="false" data-ng-disabled="configurationForm.$invalid" class="btn orange">Create</button>
+            </div>
+        </div>
+    </div>
+</div>

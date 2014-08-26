@@ -89,6 +89,44 @@
                     }
                 );
             };
+
+            scope.createConfiguration = function () {
+                var createConfigurationModalCtrl = function ($scope, dialog) {
+                    $scope.title = 'Create CDN Configuration';
+                    $scope.close = function (res) {
+                        dialog.close(res);
+                    };
+
+                    $scope.create = function () {
+                        $scope.close({
+                            name: $scope.name,
+                            domain: $scope.domain,
+                            key: scope.apiKey
+                        });
+                    };
+                };
+
+                var opts = {
+                    templateUrl: 'cdn/static/partials/create-configuration.html',
+                    openCtrl: createConfigurationModalCtrl
+                };
+
+                PopupDialog.custom(
+                    opts,
+                    function (data) {
+                        if (data) {
+                            scope.loading = true;
+                            cdn.createConfiguration(data).then(function () {
+                                scope.loading = false;
+                            }, function (error) {
+                                showError(error);
+                                scope.loading = false;
+                            });
+                        }
+                    }
+                );
+            };
+
         }
     ]);
-}(window.JP.getModule('mdb')));
+}(window.JP.getModule('cdn')));
