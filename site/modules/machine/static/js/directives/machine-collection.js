@@ -11,7 +11,7 @@
                 machineId: '=',
                 review: '='
             },
-            link: function (scope, element, attrs) {
+            link: function (scope) {
                 var lastEditItem = null;
                 scope.internalCollection = [];
                 scope.addNew = function () {
@@ -42,7 +42,7 @@
                         scope.addNew();
                     }
                     if (scope.machineId) {
-                        Machine[scope.collectionName](scope.machineId).then(function (collection) {
+                        Machine[scope.collectionName].read(scope.machineId).then(function (collection) {
                             scope.collection = collection;
                             convertCollection();
                         });
@@ -51,56 +51,74 @@
                     }
                 };
                 scope.loadCollection();
-                scope.saveCollection = function (collection, obj) {
-                    var newCollection = {};
-                    var hasDuplicates = false;
-                    if (!collection) {
+
+                function hasDuplicate(item) {
+                    return scope.internalCollection.find(function (el) {
+                        return el && el.key === item.dirtyKey;
+                    });
+                }
+
+                function removeItem(item) {
+                    var index = scope.internalCollection.indexOf(item);
+                    if (index !== -1) {
+                        scope.internalCollection.splice(index, 1);
+                    }
+                }
+
+                scope.addItem = function (item) {
+                    if (scope.saving) {
                         return;
                     }
-                    obj = obj || {};
-                    var prepareInternalCollection = angular.noop;
 
-                    collection.forEach(function (item) {
-                        hasDuplicates = hasDuplicates || newCollection[item.dirtyKey];
-                        if (item.isNew || (item.key === obj.key && item.val === obj.val)) {
-                            item.key = obj.dirtyKey;
-                            item.val = obj.dirtyVal;
-                            prepareInternalCollection = function () {
-                                scope.internalCollection.some(function (element, index, array) {
-                                    var keyEquals = element !== obj && element.key === obj.dirtyKey;
-                                    if (keyEquals) {
-                                        array.splice(index, 1);
-                                    }
-                                    return keyEquals;
-                                });
-                                obj.key = obj.dirtyKey;
-                                obj.val = obj.dirtyVal;
-                                obj.saving = true;
-                            };
-                            newCollection[item.key] = item.val;
-                        } else if (!newCollection[item.key]) {
-                            newCollection[item.key] = item.val;
-                        }
-                    });
-                    var persistCollection = function () {
-                        if (scope.machineId) {
-                            scope.saving = true;
-                            Machine[scope.collectionName](scope.machineId, newCollection).then(function () {
-                                scope.loadCollection();
-                                scope.saving = false;
-                            }, function () {
-                                scope.saving = false;
-                                scope.internalCollection.forEach(function (item) {
-                                    item.saving = false;
-                                });
-                            });
-                        } else {
-                            scope.collection = newCollection;
-                            scope.loadCollection();
-                        }
-                    };
+                    var prevKey = item.key;
+                    var prevVal = item.val;
+                    var keyToUpdate = item.key;
+                    var data = {};
+                    scope.saving = item.saving = true;
 
-                    if (hasDuplicates) {
+                    if (lastEditItem && lastEditItem !== item && !lastEditItem.isNew) {
+                        scope.revertItem(lastEditItem);
+                    }
+
+                    data[item.dirtyKey] = item.dirtyVal;
+
+                    function done() {
+                        scope.saving = item.saving = false;
+                        scope.loadCollection();
+                    }
+
+                    function fail(error) {
+                        if (error) {
+                            PopupDialog.error(null, error);
+                        }
+                        if (!item.isNew) {
+                            item.key = item.dirtyKey = prevKey;
+                            item.val = item.dirtyVal = prevVal;
+                        }
+                        item.saving = scope.saving = false;
+                        scope.loadCollection();
+                    }
+                    
+                    function doCreate() {
+                        Machine[scope.collectionName].create(scope.machineId, data).then(done, fail);
+                    }
+
+                    function doUpdate() {
+                        Machine[scope.collectionName].update(scope.machineId, keyToUpdate, data).then(done, fail);
+                    }
+
+                    function createOrUpdate() {
+                        if (item.isNew) {
+                            doCreate();
+                            return;
+                        }
+
+                        doUpdate();
+                        removeItem(duplicate);
+                    }
+
+                    var duplicate = hasDuplicate(item);
+                    if (duplicate) {
                         PopupDialog.confirm(
                             null,
                             localization.translate(scope, null,
@@ -109,33 +127,16 @@
                                     name: scope.collectionName.replace(/s$/, '')
                                 }
                             ),
-                            function () {
-                                obj.edit = obj.isNew;
-                                prepareInternalCollection();
-                                persistCollection();
-                            }
+                            createOrUpdate,
+                            fail
                         );
                     } else {
-                        prepareInternalCollection();
-                        persistCollection();
+                        createOrUpdate();
                     }
+                    item.key = item.dirtyKey;
+                    item.val = item.dirtyVal;
                 };
-                scope.addItem = function (item) {
-                    if (scope.saving) {
-                        return;
-                    }
-                    if (lastEditItem && lastEditItem !== item && !lastEditItem.isNew) {
-                        scope.revertItem(lastEditItem);
-                    }
 
-                    var collection = angular.copy(scope.internalCollection);
-
-                    var lastItem = collection[collection.length - 1];
-                    if (lastItem.isNew && lastItem.key !== item.key) {
-                        collection.splice(collection.length - 1, 1);
-                    }
-                    scope.saveCollection(collection, item);
-                };
                 scope.editItem = function (item) {
                     if (lastEditItem && lastEditItem !== item && !lastEditItem.isNew) {
                         scope.revertItem(lastEditItem);
@@ -151,24 +152,19 @@
                     if (lastEditItem && !lastEditItem.isNew) {
                         scope.revertItem(lastEditItem);
                     }
-                    item.saving = true;
-                    var internalCollection = scope.internalCollection;
-                    var itemIndex = internalCollection.indexOf(item);
-                    var collection = angular.copy(internalCollection);
-                    collection.splice(itemIndex, 1);
-                    if (collection[collection.length - 1].isNew) {
-                        collection.splice(collection.length - 1, 1);
-                    }
-                    scope.saveCollection(collection);
+                    item.saving = scope.saving = true;
+                    Machine[scope.collectionName].delete(scope.machineId, item.key).then(function () {
+                        scope.saving = false;
+                        removeItem(item);
+                        scope.loadCollection();
+                    });
                 };
+
                 scope.revertItem = function (item) {
                     item.dirtyKey = item.key;
                     item.dirtyVal = item.val;
                     item.edit = false;
                 };
-                scope.$watch('collection', function () {
-                    scope.loadCollection();
-                });
             }
         };
     }]);
