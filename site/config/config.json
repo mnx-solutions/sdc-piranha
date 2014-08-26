@@ -148,14 +148,20 @@
 }
 , "images": {
     "types": {
-      "base": "13.3.0"
+    "apache": "14.1.0"
+    , "base": "13.3.0"
     , "base64": "13.3.0"
     , "cassandra": "14.1.0"
     , "centos-6": "2.5.0"
+    , "debian-7": "20140729"
     , "elasticsearch": "14.1.0"
     , "ghost": "13.4.2"
+    , "hadoop": "13.3.1"
     , "java": "14.1.0"
+    , "mongodb": "14.1.0"
     , "nginx": "14.1.0"
+    , "nodejs": "14.1.0"
+    , "percona": "14.1.0"
     , "postgresql": "14.1.0"
     , "standard": "14.1.0"
     , "standard64": "14.1.0"
