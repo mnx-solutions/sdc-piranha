@@ -1,13 +1,15 @@
-<div class="container-fluid container-position">
+<div class="container-fluid container-position" data-ng-controller="cdnController">
     <ul class="breadcrumb">
         <li><a href="#!/storage/intro">Storage</a></li>
     </ul>
     <div class="page-header">
         <h3 class="page-title">CDN Configurations</h3>
         <div class="beta-sticker">beta</div>
-        <div class="header-btn-ci">
-            <button type="button" class="btn btn-big orange align-text-btn">Set API Key</button>
+        <div class="header-btn-ci" data-ng-show="!loading">
+            <button type="button" data-ng-click="apiKeyAction('save')" class="btn btn-big orange align-text-btn" data-ng-hide="apiKey">Set API Key</button>
+            <button type="button" data-ng-click="apiKeyAction('update')" class="btn btn-big orange align-text-btn" data-ng-show="apiKey">Update API Key</button>
         </div>
     </div>
-    <div class="grid-no-entries">Integrate your Fastly account with Manta here. If you already have Fastly account, please use the button 'Set API Key' above, or you can create one <a href="https://www.fastly.com/signup/" target="_blank">here</a>.</div>
+    <div class="loading-large" data-ng-show="loading"></div>
+    <div class="grid-no-entries" data-ng-show="!apiKey && !loading">Integrate your Fastly account with Manta here. If you already have Fastly account, please use the button 'Set API Key' above, or you can create one <a href="https://www.fastly.com/signup/" target="_blank">here</a>.</div>
 </div>
