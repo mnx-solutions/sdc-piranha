@@ -46,7 +46,7 @@
                 path = path || '/compute';
                 $location.url(path);
                 $location.replace();
-            }
+            };
 
             var reloadPackages = function (currentPackageName, datacenter) {
                 $q.all([Package.package({datacenter: datacenter}), Package.package(currentPackageName)]).then(function (results) {
@@ -95,19 +95,6 @@
             }
 
             $scope.instanceMetadataEnabled = $scope.features.instanceMetadata === 'enabled';
-
-            // Handle case when machine loading fails or machine uuid is invalid
-            $q.when($scope.machine).then(function () {
-                $scope.loading = false;
-                if (!$scope.machine.image) {
-                    locationReplace();
-                }
-                if ($scope.machine.name) {
-                    $scope.newInstanceName = $scope.machine.name;
-                }
-            }, function () {
-                locationReplace();
-            });
 
             $scope.visiblePasswords = {};
 
@@ -158,6 +145,14 @@
             }, true);
 
             $q.when($scope.machine, function (m) {
+                $scope.machine = m;
+                $scope.loading = false;
+                if (!$scope.machine.image) {
+                    locationReplace();
+                }
+                if ($scope.machine.name) {
+                    $scope.newInstanceName = $scope.machine.name;
+                }
                 if ($scope.features.firewall === 'enabled') {
                     Machine.listFirewallRules(m).then(function (rules) {
                         $scope.firewallRules = rules;
@@ -199,6 +194,8 @@
                     $scope.dataset = {name: 'Image gone'};
                     $scope.imageCreateNotSupported = 'Instances without images are not supported by the image API.';
                 });
+            }, function () {
+                locationReplace();
             });
 
             function loadMachineNetworks() {
