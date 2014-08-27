@@ -26,7 +26,7 @@
             var message = question.error || question;
             if (angular.isObject(message)) {
                 messages = message;
-            } else if (messages.parts.indexOf(message) === -1) {
+            } else if (messages.parts.join().indexOf(message) === -1) {
                 messages.parts.push(message);
                 messages.concatenated = messages.parts.join('<br/>');
             }
