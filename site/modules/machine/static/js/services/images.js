@@ -2,6 +2,7 @@
 
 (function (ng, app) {
     app.factory('Image', [
+        '$rootScope',
         '$q',
         'serverTab',
         'localization',
@@ -10,7 +11,7 @@
         'util',
         '$location',
         'notification',
-        function ($q, serverTab, localization, PopupDialog, ErrorService, util, $location, notification) {
+        function ($rootScope, $q, serverTab, localization, PopupDialog, ErrorService, util, $location, notification) {
 
             var service = {};
             var list = [];
@@ -284,6 +285,7 @@
                     var isOnImagesPage = $location.path() === '/images';
                     var notificationMessage = 'New image "' + image.name + '" of version "' + image.version + '" ';
                     handleChunk(image, 'remove');
+                    $rootScope.$emit('createdImage', machineId);
                     if (isOnImagesPage) {
                         showError(image, 'Unable to create image "{{name}}": ', imageError);
                     } else {
@@ -332,6 +334,9 @@
                         if (!isOnImagesPage) {
                             notification.success(notificationMessage + 'has been successfully created.');
                         }
+
+                        $rootScope.$emit('createdImage', machineId);
+
                         handleChunk(result);
                     },
                     progress: function (err, job) {

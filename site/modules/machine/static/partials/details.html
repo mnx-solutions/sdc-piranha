@@ -323,14 +323,14 @@
                             </div>
                             <div class="pull-right">
 
-                                <div class="loading-medium spiner-height" data-ng-show="imageJob && !imageJob.finished"></div>
+                                <div class="loading-medium spiner-height" data-ng-show="(imageJob && !imageJob.finished) || creatingImage"></div>
 
                                 <a class="btn light margin-top-10 dpl-inline effect-orange-button" href="#!/images">My Images List</a>
                                 <button class="btn orange dpl-inline margin-top-10 image-form-btn"
                                         data-ng-click="clickCreateImage()"
                                         data-ng-hide="imageCreateNotSupported"
                                         data-translate
-                                        data-ng-disabled="(imageJob && !imageJob.finished)">
+                                        data-ng-disabled="(imageJob && !imageJob.finished) || (machine.job && !machine.job.finished) || creatingImage">
                                     Create Image
                                 </button>
                             </div>

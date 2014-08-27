@@ -3,6 +3,7 @@
 (function (app, ng) {
     app.controller('Machine.DetailsController',[
         '$scope',
+        '$rootScope',
         'requestContext',
         'Machine',
         'Package',
@@ -19,7 +20,7 @@
         'Account',
         'loggingService',
 
-        function ($scope, requestContext, Machine, Package, Network, firewall, $filter, $$track,
+        function ($scope, $rootScope, requestContext, Machine, Package, Network, firewall, $filter, $$track,
                   localization, $q, $location, PopupDialog, Image, FreeTier, Account, loggingService) {
             localization.bind('machine', $scope);
             requestContext.setUpRenderContext('machine.details', $scope, {
@@ -41,6 +42,10 @@
             $scope.newInstanceName = null;
             $scope.networks = [];
             $scope.defaultSshUser = 'root';
+
+            var creatingImages = $rootScope.commonConfig('creatingImages') || {};
+            $scope.creatingImage = creatingImages[machineid];
+            $scope.imageName = $scope.creatingImage || '';
 
             var locationReplace = function (path) {
                 path = path || '/compute';
@@ -97,6 +102,20 @@
             $scope.instanceMetadataEnabled = $scope.features.instanceMetadata === 'enabled';
 
             $scope.visiblePasswords = {};
+
+            $rootScope.$on(
+                'createdImage',
+                function (event, machineId) {
+                    creatingImages[machineId] = false;
+                    $rootScope.commonConfig('creatingImages', creatingImages);
+                    if (machineId === machineid) {
+                        $scope.imageName = $scope.imageDescription = $scope.imageVersion = '';
+                        $scope.imageForm.$pristine = true;
+                        $scope.imageForm.$dirty = false;
+                        $scope.creatingImage = false;
+                    }
+                }
+            );
 
             $scope.$on(
                 'event:forceUpdate',
@@ -339,15 +358,10 @@
                 function createImage() {
                     $scope.imageName = $scope.imageName || (Math.random() + 1).toString(36).substr(2, 7);
                     $scope.imageJob = Image.createImage($scope.machineid, $scope.machine.datacenter, $scope.imageName, $scope.imageDescription, $scope.imageVersion, function () {
+                        creatingImages[$scope.machineid] = $scope.imageName;
+                        $rootScope.commonConfig('creatingImages', creatingImages);
                         $location.path('/images');
                     });
-
-                    $scope.imageJob.done(function () {
-                        $scope.imageName = $scope.imageDescription = $scope.imageVersion = '';
-                        $scope.imageForm.$pristine = true;
-                        $scope.imageForm.$dirty = false;
-                    });
-
                 }
 
                 if ($scope.imageCreateNotSupported || $scope.machine.state !== 'stopped') {
