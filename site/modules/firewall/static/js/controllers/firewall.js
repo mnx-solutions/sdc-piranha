@@ -382,6 +382,7 @@
             };
 
             // FIXME: Get rid of copy-paste from provision.js!!!
+            var initialDatacenter;
             var switchToOtherDatacenter = function (datacenter, err) {
                 if ($scope.selectData.datacenters && $scope.selectData.datacenters.length > 0) {
                     var firstNonSelected = $scope.selectData.datacenters.find(function (dc) { return dc.text !== datacenter; });
@@ -400,7 +401,8 @@
                             )
                         );
 
-                        if (!err || (err && err.restCode !== 'NotAuthorized')) {
+                        if ((!err || (err && err.restCode !== 'NotAuthorized')) && firstNonSelected.text !== initialDatacenter) {
+                            initialDatacenter = initialDatacenter || datacenter;
                             $scope.selected.datacenter = firstNonSelected.text;
                         }
                     }
@@ -413,7 +415,9 @@
                     $scope.datasetsLoading = true;
                     $q.when(Image.image({ datacenter: newVal })).then(function (result) {
                         if (result.length === 0) {
-                            switchToOtherDatacenter(newVal);
+                            if (!result.error || result.error.restCode !== 'NotAuthorized') {
+                                switchToOtherDatacenter(newVal);
+                            }
                         } else {
                             $('#dcSelect').select2('val', newVal);
                             $scope.datacenter = newVal;

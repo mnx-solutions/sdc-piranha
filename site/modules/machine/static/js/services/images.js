@@ -70,9 +70,11 @@
                             return image.id === params.id;
                         });
                     }
-                    return images.list[datacenter].filter(function (image) {
+                    var result = images.list[datacenter].filter(function (image) {
                         return compareProperties(image, params);
                     });
+                    result.error = images.list[datacenter].error;
+                    return result;
                 } else {
                     return images.list['private'];
                 }
@@ -91,7 +93,7 @@
                             function handleResponse(chunk) {
                                 images.list[chunk.name] = [];
                                 if (chunk.status === 'error') {
-                                    images.error = err;
+                                    images.error = images.list[chunk.name].error = err || chunk.error;
                                     if (!ErrorService.getLastErrors('dcUnreachable', chunk.name)) {
                                         ErrorService.setLastError('dcUnreachable', chunk.name,
                                             'Datacenter {{name}} is currently not available. We are working on getting this datacenter back on.',
