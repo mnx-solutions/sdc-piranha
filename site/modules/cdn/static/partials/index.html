@@ -6,11 +6,32 @@
         <h3 class="page-title">CDN Configurations</h3>
         <div class="beta-sticker">beta</div>
         <div class="header-btn-ci" data-ng-show="!loading">
-            <button type="button" data-ng-click="apiKeyAction('save')" class="btn btn-big orange align-text-btn" data-ng-hide="apiKey">Set API Key</button>
-            <button type="button" data-ng-click="apiKeyAction('update')" class="btn btn-big orange align-text-btn" data-ng-show="apiKey">Update API Key</button>
+            <button type="button" data-ng-click="apiKeyAction('save')" class="btn btn-big orange align-text-btn" data-ng-hide="apiKey || resetApiKey">Set API Key</button>
+            <button type="button" data-ng-click="apiKeyAction('update')" data-ng-class="{'grey-new': apiKey}" class="btn btn-big orange align-text-btn" data-ng-show="apiKey || resetApiKey">Update API Key</button>
             <button type="button" data-ng-click="createConfiguration()" class="btn btn-big orange align-text-btn" data-ng-show="apiKey">Create Configuration</button>
         </div>
     </div>
     <div class="loading-large" data-ng-show="loading"></div>
+    <div class="row">
+        <div data-ng-show="apiKey && !loading">
+            <div data-grid-view
+                 data-user-config="gridUserConfig"
+                 data-props="gridProps"
+                 data-image-button-show="false"
+                 data-items="configurations"
+                 data-multisort="false"
+                 data-order="gridOrder"
+                 data-paginated="true"
+                 data-perPage="25"
+                 data-export-fields="exportFields"
+                 data-tab-filter-field="tabFilterField"
+                 data-tab-filter-default="tabFilterDefault"
+                 data-enabled-checkboxes="enabledCheckboxes"
+                 data-action-buttons="gridActionButtons"
+                 data-search-form="searchForm"
+                 data-no-entries-message="No configurations found.">
+            </div>
+        </div>
+    </div>
     <div class="grid-no-entries" data-ng-show="!apiKey && !loading">Integrate your Fastly account with Manta here. If you already have Fastly account, please use the button 'Set API Key' above, or you can create one <a href="https://www.fastly.com/signup/" target="_blank">here</a>.</div>
 </div>

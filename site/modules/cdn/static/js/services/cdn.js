@@ -38,6 +38,22 @@
                 }).promise;
             };
 
+            service.listConfigurations = function (data, callback) {
+                return serverTab.call({
+                    name: 'ListServices',
+                    data: data,
+                    done: callback
+                }).promise;
+            };
+
+            service.deleteConfiguration = function (data, callback) {
+                return serverTab.call({
+                    name: 'DeleteConfiguration',
+                    data: data,
+                    done: callback
+                }).promise;
+            };
+
             return service;
         }
     ]);

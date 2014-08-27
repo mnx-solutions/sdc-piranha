@@ -23,12 +23,35 @@
                         Missing Support Name
                     </div>
                     <div class="form-group">
+                        <span class="orange-asterix edit-name">Manta Directory</span>
+                        <span class="edit-value">
+                            <input type="text"
+                                   id="directory"
+                                   name="directory"
+                                   data-ng-model="directory"
+                                   required
+                                   data-ng-pattern="/^\/public([a-z0-9\/\.\-]*)$/"
+                                    />
+                        </span>
+                    </div>
+                    <div class="error"
+                         data-ng-show="configurationForm.directory.$dirty && configurationForm.directory.$error.required"
+                         data-translate>
+                        Missing Directory
+                    </div>
+                    <div class="error"
+                         data-ng-show="configurationForm.directory.$error.pattern"
+                         data-translate>
+                        Directory can begin with '/public' and contain only letters, digits, slashes and signs like '.' and '-'.
+                    </div>
+                    <div class="form-group">
                         <span class="orange-asterix edit-name">Domain</span>
                         <span class="edit-value">
                             <input type="text"
                                    id="domain"
                                    name="domain"
                                    data-ng-model="domain"
+                                   data-ng-pattern="/^[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,6}$/"
                                    required
                                     />
                         </span>
@@ -37,6 +60,11 @@
                          data-ng-show="configurationForm.domain.$dirty && configurationForm.domain.$error.required"
                          data-translate>
                         Missing Domain
+                    </div>
+                    <div class="error"
+                         data-ng-show="configurationForm.domain.$error.pattern"
+                         data-translate>
+                        Not a valid domain name.
                     </div>
                 </form>
             </div>

@@ -8,15 +8,22 @@
         'localization',
         'cdn',
         'PopupDialog',
-        function ($q, scope, requestContext, localization, cdn, PopupDialog) {
+        'fileman',
+        'Account',
+        function ($q, scope, requestContext, localization, cdn, PopupDialog, fileman, Account) {
             localization.bind('cdn', scope);
             requestContext.setUpRenderContext('cdn.index', scope);
+
+            scope.gridUserConfig = Account.getUserConfig().$child('CdnConfigurations');
 
             scope.mantaUnavailable = false;
             scope.loading = true;
             scope.apiKey = '';
+            scope.resetApiKey = false;
+            scope.configurations = [];
 
             var showError = function (err) {
+                scope.loading = false;
                 PopupDialog.error(
                     localization.translate(
                         scope,
@@ -30,13 +37,28 @@
                     )
                 );
             };
-
+            var loadConfigurations = function () {
+                cdn.listConfigurations({key: scope.apiKey}).then(function (configurations) {
+                    if (configurations) {
+                        scope.configurations = configurations;
+                    }
+                    scope.loading = false;
+                }, function (err) {
+                    if (err === 'You are not authorized to perform this action undefined') {
+                        scope.apiKey = '';
+                        scope.resetApiKey = true;
+                        err = 'You are not authorized please set you API key.';
+                    }
+                    showError(err);
+                });
+            };
             cdn.getApiKey().then(function (key) {
-                scope.apiKey = key;
+                if (key) {
+                    scope.apiKey = key;
+                }
+                loadConfigurations();
+            }, function () {
                 scope.loading = false;
-            }, function (err) {
-                scope.loading = false;
-                showError(err);
             });
 
             scope.apiKeyAction = function (actionType) {
@@ -73,7 +95,7 @@
                             };
                             var successCallback = function () {
                                 scope.apiKey = data.apiKey;
-                                scope.loading = false;
+                                loadConfigurations();
                             };
                             var errorCallback = function (error) {
                                 showError(error);
@@ -93,15 +115,35 @@
             scope.createConfiguration = function () {
                 var createConfigurationModalCtrl = function ($scope, dialog) {
                     $scope.title = 'Create CDN Configuration';
+                    $scope.directory = '/public';
                     $scope.close = function (res) {
                         dialog.close(res);
                     };
 
                     $scope.create = function () {
-                        $scope.close({
-                            name: $scope.name,
-                            domain: $scope.domain,
-                            key: scope.apiKey
+                        fileman.info($scope.directory, function (error) {
+                            if (error) {
+                                showError('The directory not found');
+                            } else {
+                                $scope.close({
+                                    name: $scope.name,
+                                    domain: $scope.domain,
+                                    key: scope.apiKey,
+                                    directory: $scope.directory
+                                });
+                                PopupDialog.message(
+                                    localization.translate(
+                                        scope,
+                                        null,
+                                        'Create CDN Configuration'
+                                    ),
+                                    localization.translate(
+                                        scope,
+                                        null,
+                                        'You’re almost configured. <a href="http://docs.fastly.com/guides/21837373/26628837" target="_blank">Please point CNAME of your domain to Fastly</a>'
+                                    )
+                                );
+                            }
                         });
                     };
                 };
@@ -117,7 +159,7 @@
                         if (data) {
                             scope.loading = true;
                             cdn.createConfiguration(data).then(function () {
-                                scope.loading = false;
+                                loadConfigurations();
                             }, function (error) {
                                 showError(error);
                                 scope.loading = false;
@@ -127,6 +169,92 @@
                 );
             };
 
+            scope.getCheckedItems = function () {
+                return scope.configurations.filter(function (el) {
+                    return el.checked;
+                });
+            };
+
+            function deleteConfiguration(messageTitle, messageBody) {
+                var checkedItems = scope.getCheckedItems();
+                if (checkedItems.length) {
+                    PopupDialog.confirm(
+                        localization.translate(
+                            scope,
+                            null,
+                            messageTitle
+                        ),
+                        localization.translate(
+                            scope,
+                            null,
+                            checkedItems.length > 1 ? messageBody.plural : messageBody.single
+                        ),
+                        function () {
+                            scope.loading = true;
+                            var deleteIds = checkedItems.map(function (item) {
+                                return item.id;
+                            });
+                            var opts = {
+                                key: scope.apiKey,
+                                ids: deleteIds
+                            };
+                            cdn.deleteConfiguration(opts).then(function () {
+                                loadConfigurations();
+                            }, function (err) {
+                                loadConfigurations();
+                                showError(err);
+                            });
+                        }
+                    );
+                }
+            }
+            scope.gridProps = [
+                {
+                    id: 'name',
+                    name: 'Name',
+                    sequence: 0,
+                    active: true
+                },
+                {
+                    id: 'directory',
+                    name: 'Manta Directory',
+                    sequence: 0,
+                    active: true
+                },
+                {
+                    id: 'checked',
+                    name: 'Domain Setup',
+                    sequence: 0,
+                    active: true,
+                    type: 'html',
+                    _getter: function (object) {
+                        return object.checked ? 'Yes' : 'No';
+                    }
+                }
+            ];
+
+            scope.exportFields = {
+                ignore: 'all'
+            };
+
+            scope.enabledCheckboxes = true;
+            scope.searchForm = true;
+            var actionMessages = {
+                delete: {
+                    single: 'Are you sure you want to delete the selected configuration?',
+                    plural: 'Are you sure you want to delete the selected configurations?'
+                }
+            };
+
+            scope.gridActionButtons = [
+                {
+                    label: 'Delete',
+                    action: function () {
+                        deleteConfiguration('Confirm: Delete configurations', actionMessages.delete);
+                    },
+                    sequence: 1
+                }
+            ];
         }
     ]);
 }(window.JP.getModule('cdn')));

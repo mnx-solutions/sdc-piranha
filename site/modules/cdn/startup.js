@@ -24,11 +24,22 @@ if (!config.features || config.features.cdn !== 'disabled') {
 
         };
 
+        var updateCdnConfig = function (call, config, callback) {
+            var client = Manta.createClient(call);
+            client.putFileContents(cdnConfigPath, JSON.stringify(config), function (err) {
+                if (err) {
+                    callback(err, null);
+                    return;
+                }
+                call.done();
+            });
+        };
+
         server.onCall('GetApiKey', {
             handler: function (call) {
                 getCdnConfig(call, function (error, result) {
                     if (error) {
-                        call(error);
+                        call.done(error);
                         return;
                     }
                     if (result && result.key) {
@@ -86,9 +97,9 @@ if (!config.features || config.features.cdn !== 'disabled') {
                 var configuration = {};
                 cdn.createService(call, function (error, service) {
                     if (error) {
-                        call.done(error, null);
+                        call.done(error.message || error, null);
                     } else {
-                        configuration.service = JSON.parse(service);
+                        configuration.service = service;
 
                         call.data.service_id = configuration.service.id;
                         call.data.version = 1;
@@ -101,16 +112,123 @@ if (!config.features || config.features.cdn !== 'disabled') {
                                 function backend(callback) {
                                     call.data.backend = mantaDomain;
                                     cdn.createBackend(call, callback);
+                                },
+                                function header(callback) {
+                                    cdn.createHeader(call, callback);
                                 }
                             ]
                         }, function (err, results) {
                             if (err) {
-                                call.done(err, null);
+                                cdn.deleteService(call, function () {
+                                    call.done(err.message || err, null);
+                                });
                             } else {
                                 results.operations.forEach(function (res) {
-                                    configuration[res.funcname] = JSON.parse(res.result);
+                                    configuration[res.funcname] = res.result;
                                 });
-                                call.done(null, configuration);
+                                getCdnConfig(call, function (err, config) {
+                                    if (err) {
+                                        call.done(err, configuration);
+                                    } else {
+                                        var confToManta = {
+                                            name: call.data.name,
+                                            service_id: call.data.service_id,
+                                            directory: call.data.directory,
+                                            domain: call.data.domain,
+                                            domainActive: false
+                                        };
+                                        if (!config.configurations) {
+                                            config.configurations = [];
+                                        }
+                                        config.configurations.push(confToManta);
+                                        updateCdnConfig(call, config, function (err) {
+                                            if (err) {
+                                                call.done(err, configuration);
+                                            }
+                                            call.done(null, configuration);
+                                        });
+                                    }
+                                });
+                            }
+                        });
+                    }
+                });
+            }
+        });
+
+        server.onCall('ListServices', {
+            handler: function (call) {
+                cdn.listServices(call, function (error, services) {
+                    if (error) {
+                        call.done(error, null);
+                    } else {
+                        getCdnConfig(call, function (err, data) {
+                            var result = [];
+                            if (data.configurations) {
+                                result = data.configurations;
+                                var cache = [];
+                                result.forEach(function (configuration) {
+                                    services.some(function (service) {
+                                        if (service.id === configuration.service_id) {
+                                            for (var key in service) {
+                                                if (!configuration[key]) {
+                                                    configuration[key] = service[key];
+                                                }
+                                            }
+                                            cache.push(configuration);
+                                            return true;
+                                        }
+                                    });
+                                });
+                                if (result > cache) {
+                                    data.configurations = cache;
+                                    updateCdnConfig(call, data, function (updateError) {
+                                        if (updateError) {
+                                            call.done(updateError);
+                                        } else {
+                                            call.done(null, result);
+                                        }
+                                    });
+                                } else {
+                                    call.done(null, result);
+                                }
+                            } else {
+                                call.done(null, result);
+                            }
+                        });
+                    }
+                });
+            }
+        });
+
+        server.onCall('DeleteConfiguration', {
+            handler: function (call) {
+                var funcs = [];
+                call.data.ids.forEach(function (id) {
+                    funcs.push(function (callback) {
+                        call.data.service_id = id;
+                        cdn.deleteService(call, callback);
+                    });
+                });
+                vasync.parallel({
+                    'funcs': funcs
+                }, function (err) {
+                    if (err) {
+                        call.done(err.message || err, null);
+                    } else {
+                        getCdnConfig(call, function (error, result) {
+                            if (error) {
+                                call.done(error);
+                            } else {
+                                call.data.ids.forEach(function (id) {
+                                    result.configurations.some(function (config) {
+                                        if (config.service_id === id) {
+                                            result.configurations.splice(result.configurations.indexOf(config), 1);
+                                            return true;
+                                        }
+                                    });
+                                });
+                                updateCdnConfig(call, result, call.done);
                             }
                         });
                     }
