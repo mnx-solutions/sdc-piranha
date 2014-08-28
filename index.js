@@ -80,7 +80,8 @@ app.get('/version', function (req, res, next) {
         } else {
             ret = {
                 git: gitInfo,
-                features: features
+                features: features,
+                hostname: require('os').hostname()
             }
         }
 
