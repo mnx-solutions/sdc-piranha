@@ -268,6 +268,9 @@
                         });
 
                         $scope.save = function () {
+                            if (!$scope.assignedRoles || $scope.assignedRoles.length === 0) {
+                                return showPopupDialog('error', 'Message', 'You must assign at least one role.');
+                            }
                             var assignedRoles = $scope.assignedRoles.map(function (role) {
                                 return role.name;
                             });

@@ -3,11 +3,11 @@
         <div class="modal-header message">
             <h5><i class="glyphicon glyphicon-info-sign"></i><b>Role Tags</b></h5>
         </div>
-        <div class="model-body" data-ng-show="loading">
+        <div class="modal-body" data-ng-show="loading">
             <div class="loading-medium"></div>
         </div>
-        <div class="modal-body" data-ng-hide="loading">
-            <div data-ng-hide="roles.length">Roles are not available, click to <a class="orange" data-ng-click="close()" href="#!/accounts/role/create">Create Role</a></div>
+        <div class="modal-body multi-select" data-ng-hide="loading">
+        <div data-ng-hide="roles.length">Roles are not available, click to <a class="orange" data-ng-click="close()" href="#!/accounts/role/create">Create Role</a></div>
             <div data-ng-show="roles.length">
                 <multi-select id="rolesSelect"
                     data-items="roles"

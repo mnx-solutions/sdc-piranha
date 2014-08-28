@@ -4558,6 +4558,11 @@ label.checkbox
     margin: 0;
 }
 
+.modal-body.multi-select {
+    margin: 0 auto;
+    width: 485px;
+}
+
 .modulizer-module-error .container
 {
     margin-left: 10px;
