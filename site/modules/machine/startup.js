@@ -144,6 +144,13 @@ module.exports = function execute(scope) {
         }, !!call.req.session.subId);
     });
 
+    server.onCall('DatacenterPing', function (call) {
+        var cloud = call.cloud.separate(call.data.datacenter);
+        cloud._client.client.get('/--ping', function (error, req, res, result) {
+            call.done(null, result && result.ping);
+        });
+    });
+
     function bindCollectionCRUD(collectionName, listMethod, createMethod, updateMethod, deleteMethod) {
         var upperCollectionName = collectionName.charAt(0).toUpperCase() + collectionName.slice(1);
 

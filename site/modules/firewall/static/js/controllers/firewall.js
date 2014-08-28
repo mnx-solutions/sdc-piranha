@@ -383,7 +383,7 @@
 
             // FIXME: Get rid of copy-paste from provision.js!!!
             var initialDatacenter;
-            var switchToOtherDatacenter = function (datacenter, err) {
+            var switchToOtherDatacenter = function (datacenter) {
                 if ($scope.selectData.datacenters && $scope.selectData.datacenters.length > 0) {
                     var firstNonSelected = $scope.selectData.datacenters.find(function (dc) { return dc.text !== datacenter; });
                     if (firstNonSelected) {
@@ -392,7 +392,7 @@
                                 null,
                                 null,
                                 'Error'
-                            ), err && err.restCode === 'NotAuthorized' ? err.message :
+                            ),
                             localization.translate(
                                 null,
                                 'machine',
@@ -401,7 +401,7 @@
                             )
                         );
 
-                        if ((!err || (err && err.restCode !== 'NotAuthorized')) && firstNonSelected.text !== initialDatacenter) {
+                        if (firstNonSelected.text !== initialDatacenter) {
                             initialDatacenter = initialDatacenter || datacenter;
                             $scope.selected.datacenter = firstNonSelected.text;
                         }
@@ -413,18 +413,12 @@
             $scope.$watch('selected.datacenter', function (newVal) {
                 if (newVal) {
                     $scope.datasetsLoading = true;
-                    $q.when(Image.image({ datacenter: newVal })).then(function (result) {
-                        if (result.length === 0) {
-                            if (!result.error || result.error.restCode !== 'NotAuthorized') {
-                                switchToOtherDatacenter(newVal);
-                            }
-                        } else {
+                    Datacenter.datacenterPing(newVal).then(function (result) {
+                        if (result === 'pong') {
                             $('#dcSelect').select2('val', newVal);
                             $scope.datacenter = newVal;
-                        }
-                    }, function (err) {
-                        if (err.restCode !== 'NotAuthorized') {
-                            switchToOtherDatacenter(newVal, err);
+                        } else {
+                            switchToOtherDatacenter(newVal);
                         }
                     });
                 }
