@@ -232,6 +232,7 @@
                         $scope.recursive = false;
                         $scope.loading = true;
                         $scope.isDirectory = lastSelectedFile.type === 'directory';
+                        $scope.isNotEmptyDirectory = $scope.isDirectory && scope.files.length !== 0;
 
                         $qe.all([
                             RbacService.listRoles(),

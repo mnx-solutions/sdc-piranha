@@ -15,7 +15,7 @@
     <button class="btn light effect-orange-button" data-ng-click="createFolder()"><i class="plus-icon"></i>New Folder</button>
     <button class="btn light effect-orange-button" data-ng-click="downloadFile()"><i class="download-icon"></i>Download</button>
     <button class="btn light effect-orange-button" data-ng-click="getInfo()"><i class="info-icon"></i>Get Info</button>
-    <button class="btn light effect-orange-button" data-ng-show="rbacEnabled" data-ng-click="roleTag()">Role Tag</button>
+    <button class="btn light effect-orange-button" data-ng-disabled="loadingFolder" data-ng-show="rbacEnabled" data-ng-click="roleTag()">Role Tag</button>
     <button class="btn light effect-orange-button" data-ng-click="deleteFile()"><i class="delete-icon"></i>Delete</button>
 </div>
 
