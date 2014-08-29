@@ -3953,7 +3953,8 @@ label.checkbox
 .info-icon,
 .plus-icon,
 .share-icon,
-.upload-icon
+.upload-icon,
+.tag-icon
 {
     float: left;
 
@@ -4018,6 +4019,11 @@ label.checkbox
     background-image: url('../img/upload-icon.png');
 }
 
+.tag-icon
+{
+    background-image: url('../img/tag-icon.png');
+}
+
 .effect-orange-button:hover .delete-icon
 {
     background-image: url('../img/delete-icon-white.png');
@@ -4036,6 +4042,11 @@ label.checkbox
 .effect-orange-button:hover .plus-icon
 {
     background-image: url('../img/plus-icon-white.png');
+}
+
+.effect-orange-button:hover .tag-icon
+{
+    background-image: url('../img/tag-icon-white.png');
 }
 
 .upload-icon-grey
