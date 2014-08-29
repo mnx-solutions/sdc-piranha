@@ -10,7 +10,8 @@
         'PopupDialog',
         'fileman',
         'Account',
-        function ($q, scope, requestContext, localization, cdn, PopupDialog, fileman, Account) {
+        '$location',
+        function ($q, scope, requestContext, localization, cdn, PopupDialog, fileman, Account, $location) {
             localization.bind('cdn', scope);
             requestContext.setUpRenderContext('cdn.index', scope);
 
@@ -22,7 +23,8 @@
             scope.resetApiKey = false;
             scope.configurations = [];
 
-            var showError = function (err) {
+            var showError = function (err, callback) {
+                callback = callback || function () {};
                 scope.loading = false;
                 PopupDialog.error(
                     localization.translate(
@@ -34,7 +36,7 @@
                         scope,
                         null,
                         err
-                    )
+                    ), callback
                 );
             };
             var loadConfigurations = function () {
@@ -44,10 +46,10 @@
                     }
                     scope.loading = false;
                 }, function (err) {
-                    if (err === 'You are not authorized to perform this action undefined') {
+                    if (/You are not authorized to perform this action/g.test(err)) {
                         scope.apiKey = '';
                         scope.resetApiKey = true;
-                        err = 'You are not authorized please set you API key.';
+                        err = 'You are not authorized, please set you API key.';
                     }
                     showError(err);
                 });
@@ -57,7 +59,14 @@
                     scope.apiKey = key;
                 }
                 loadConfigurations();
-            }, function () {
+            }, function (err) {
+                if (err && err.name === 'ConnectTimeoutError') {
+                    showError(err.message, function () {
+                        $location.url('/manta/intro');
+                        $location.replace();
+                    });
+                    return;
+                }
                 scope.loading = false;
             });
 
@@ -222,13 +231,18 @@
                     active: true
                 },
                 {
-                    id: 'checked',
+                    id: 'domainActive',
                     name: 'Domain Setup',
                     sequence: 0,
                     active: true,
-                    type: 'html',
+                    type: 'async',
                     _getter: function (object) {
-                        return object.checked ? 'Yes' : 'No';
+                        if (!object.domainActive) {
+                            return cdn.domainStatus({key: scope.apiKey, service_id: object.service_id, domain: object.domain}).then(function (status) {
+                                return status === true ? 'Yes' : 'No';
+                            }, showError);
+                        }
+                        return 'Yes';
                     }
                 }
             ];

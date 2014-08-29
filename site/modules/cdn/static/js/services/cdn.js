@@ -54,6 +54,14 @@
                 }).promise;
             };
 
+            service.domainStatus = function (data, callback) {
+                return serverTab.call({
+                    name: 'DomainStatus',
+                    data: data,
+                    done: callback
+                }).promise;
+            };
+
             return service;
         }
     ]);

@@ -7,9 +7,17 @@ module.exports = function execute(scope, register) {
         return fastly(call.data.key);
     }
 
+    var constructUrl = function (type, data) {
+        var result = '/service';
+        if (type !== 'service') {
+            result += '/' + data.service_id + '/version/' + data.version + '/' + type;
+        }
+        return result;
+    };
+
     function request(call, method, url, params, callback) {
         var client = createClient(call);
-        if (typeof params === 'function') {
+        if (typeof (params) === 'function') {
             callback = params;
             params = null;
         }
@@ -20,20 +28,25 @@ module.exports = function execute(scope, register) {
             } else if (error && !error.message) {
                 callback(error);
             } else {
-                callback(null, JSON.parse(result));
+                try {
+                    result = JSON.parse(result);
+                } catch (e) {
+                    result = {};
+                }
+                callback(null, result);
             }
         });
     }
 
     function createService(call, callback) {
-        request(call, 'POST', '/service', call.data, callback);
+        request(call, 'POST', constructUrl('service'), call.data, callback);
     }
 
     function createDomain(call, callback) {
         var opts = {
             name: call.data.domain
         };
-        request(call, 'POST', '/service/' + call.data.service_id + '/version/' + call.data.version + '/domain', opts, callback);
+        request(call, 'POST', constructUrl('domain', call.data), opts, callback);
     }
 
     function createBackend(call, callback) {
@@ -43,7 +56,7 @@ module.exports = function execute(scope, register) {
             name: 'Manta',
             port: 80
         };
-        request(call, 'POST', '/service/' + call.data.service_id + '/version/' + call.data.version + '/backend', opts, callback);
+        request(call, 'POST', constructUrl('backend', call.data), opts, callback);
     }
 
     function createHeader(call, callback) {
@@ -55,19 +68,24 @@ module.exports = function execute(scope, register) {
             src: '"/' + call.req.session.userName + call.data.directory + '"',
             ignore_if_set: 0
         };
-        request(call, 'POST', '/service/' + call.data.service_id + '/version/' + call.data.version + '/header', opts, callback);
+        request(call, 'POST', constructUrl('header', call.data), opts, callback);
     }
 
     function deleteService(call, callback) {
-        request(call, 'DELETE', '/service/' + call.data.service_id, callback);
+        request(call, 'DELETE', constructUrl('service') + '/' + call.data.service_id, callback);
     }
 
     function listServices(call, callback) {
-        request(call, 'GET', '/service', callback);
+        request(call, 'GET', constructUrl('service'), callback);
+    }
+
+    function domainStatus(call, callback) {
+        request(call, 'GET', constructUrl('domain', call.data) + '/check_all', callback);
     }
 
     var api = {};
     api.listServices = listServices;
+    api.domainStatus = domainStatus;
     api.deleteService = deleteService;
     api.createBackend = createBackend;
     api.createService = createService;

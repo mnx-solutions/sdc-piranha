@@ -7,7 +7,7 @@
             <div class="modal-body">
                 <form name="configurationForm" class="configurationForm">
                     <div class="form-group">
-                        <span class="orange-asterix edit-name">Support Name</span>
+                        <span class="orange-asterix edit-name">Service Name</span>
                         <span class="edit-value">
                             <input type="text"
                                    id="name"
@@ -20,7 +20,7 @@
                     <div class="error"
                          data-ng-show="configurationForm.name.$dirty && configurationForm.name.$error.required"
                          data-translate>
-                        Missing Support Name
+                        Missing Service Name.
                     </div>
                     <div class="form-group">
                         <span class="orange-asterix edit-name">Manta Directory</span>
@@ -30,14 +30,14 @@
                                    name="directory"
                                    data-ng-model="directory"
                                    required
-                                   data-ng-pattern="/^\/public([a-z0-9\/\.\-]*)$/"
+                                   data-ng-pattern="/^\/public([a-zA-Z0-9\/\.\-]*)$/"
                                     />
                         </span>
                     </div>
                     <div class="error"
                          data-ng-show="configurationForm.directory.$dirty && configurationForm.directory.$error.required"
                          data-translate>
-                        Missing Directory
+                        Missing Directory.
                     </div>
                     <div class="error"
                          data-ng-show="configurationForm.directory.$error.pattern"
@@ -59,7 +59,7 @@
                     <div class="error"
                          data-ng-show="configurationForm.domain.$dirty && configurationForm.domain.$error.required"
                          data-translate>
-                        Missing Domain
+                        Missing Domain.
                     </div>
                     <div class="error"
                          data-ng-show="configurationForm.domain.$error.pattern"

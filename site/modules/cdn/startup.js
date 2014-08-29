@@ -9,12 +9,11 @@ if (!config.features || config.features.cdn !== 'disabled') {
         var cdn = scope.api('CdnClient');
         var server = scope.api('Server');
 
-        var cdnConfigPath = '~~/stor/.joyent/portal/cdn/Fastly/config.json';
-        var mantaDomain = 'us-east.manta.joyent.com';
+        var CDN_CONFIG_PATH = '~~/stor/.joyent/portal/cdn/Fastly/config.json';
 
         var getCdnConfig = function (call, callback) {
             var client = Manta.createClient(call);
-            client.getFileContents(cdnConfigPath, 'utf8', function (err, config) {
+            client.getFileContents(CDN_CONFIG_PATH, 'utf8', function (err, config) {
                 if (err) {
                     callback(err, config);
                     return;
@@ -26,12 +25,12 @@ if (!config.features || config.features.cdn !== 'disabled') {
 
         var updateCdnConfig = function (call, config, callback) {
             var client = Manta.createClient(call);
-            client.putFileContents(cdnConfigPath, JSON.stringify(config), function (err) {
+            client.putFileContents(CDN_CONFIG_PATH, JSON.stringify(config), function (err) {
                 if (err) {
                     callback(err, null);
                     return;
                 }
-                call.done();
+                callback();
             });
         };
 
@@ -54,11 +53,11 @@ if (!config.features || config.features.cdn !== 'disabled') {
             handler: function (call) {
                 var client = Manta.createClient(call);
                 var putConfig = function (callObj, mantaClient) {
-                    return mantaClient.putFileContents(cdnConfigPath, JSON.stringify(callObj.data), function (error) {
+                    return mantaClient.putFileContents(CDN_CONFIG_PATH, JSON.stringify(callObj.data), function (error) {
                         if (error && error.statusCode === 404) {
-                            mantaClient.mkdirp(cdnConfigPath.substring(0, cdnConfigPath.lastIndexOf('/')), function (err) {
+                            mantaClient.mkdirp(CDN_CONFIG_PATH.substring(0, CDN_CONFIG_PATH.lastIndexOf('/')), function (err) {
                                 if (err) {
-                                    call.done(error);
+                                    call.done(err);
                                 } else {
                                     putConfig(callObj, mantaClient);
                                 }
@@ -81,7 +80,7 @@ if (!config.features || config.features.cdn !== 'disabled') {
                     }
                     config.key = call.data.key;
                     var client = Manta.createClient(call);
-                    client.putFileContents(cdnConfigPath, JSON.stringify(config), function (err) {
+                    client.putFileContents(CDN_CONFIG_PATH, JSON.stringify(config), function (err) {
                         if (error) {
                             call.done(err);
                             return;
@@ -110,7 +109,7 @@ if (!config.features || config.features.cdn !== 'disabled') {
                                     cdn.createDomain(call, callback);
                                 },
                                 function backend(callback) {
-                                    call.data.backend = mantaDomain;
+                                    call.data.backend = config.manta.url.replace('https://', '');
                                     cdn.createBackend(call, callback);
                                 },
                                 function header(callback) {
@@ -134,18 +133,14 @@ if (!config.features || config.features.cdn !== 'disabled') {
                                             name: call.data.name,
                                             service_id: call.data.service_id,
                                             directory: call.data.directory,
-                                            domain: call.data.domain,
-                                            domainActive: false
+                                            domain: call.data.domain
                                         };
                                         if (!config.configurations) {
                                             config.configurations = [];
                                         }
                                         config.configurations.push(confToManta);
                                         updateCdnConfig(call, config, function (err) {
-                                            if (err) {
-                                                call.done(err, configuration);
-                                            }
-                                            call.done(null, configuration);
+                                            call.done(err, configuration);
                                         });
                                     }
                                 });
@@ -180,14 +175,10 @@ if (!config.features || config.features.cdn !== 'disabled') {
                                         }
                                     });
                                 });
-                                if (result > cache) {
+                                if (result.length > cache.length) {
                                     data.configurations = cache;
                                     updateCdnConfig(call, data, function (updateError) {
-                                        if (updateError) {
-                                            call.done(updateError);
-                                        } else {
-                                            call.done(null, result);
-                                        }
+                                        call.done(updateError, data.configurations)
                                     });
                                 } else {
                                     call.done(null, result);
@@ -203,12 +194,11 @@ if (!config.features || config.features.cdn !== 'disabled') {
 
         server.onCall('DeleteConfiguration', {
             handler: function (call) {
-                var funcs = [];
-                call.data.ids.forEach(function (id) {
-                    funcs.push(function (callback) {
+                var funcs = call.data.ids.map(function (id) {
+                    return function (callback) {
                         call.data.service_id = id;
                         cdn.deleteService(call, callback);
-                    });
+                    };
                 });
                 vasync.parallel({
                     'funcs': funcs
@@ -232,6 +222,25 @@ if (!config.features || config.features.cdn !== 'disabled') {
                             }
                         });
                     }
+                });
+            }
+        });
+
+        server.onCall('DomainStatus', {
+            handler: function (call) {
+                call.data.version = 1;
+                var result = false;
+                cdn.domainStatus(call, function (err, data) {
+                    if (err) {
+                        call.done(err);
+                    } else {
+                        result = data.some(function (domain) {
+                            if (domain[0].name === call.data.domain) {
+                                return domain[2];
+                            }
+                        })
+                    }
+                    call.done(null, result);
                 });
             }
         });

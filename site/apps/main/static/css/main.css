@@ -5025,3 +5025,23 @@ label.checkbox.folder-name-form-checkbox
 {
     width: 400px;
 }
+
+.configurationForm .error,
+{
+    margin-bottom: 5px;
+}
+
+.configurationForm .form-group
+{
+    margin-bottom: 10px;
+}
+
+.apiKeyForm .edit-value,
+.apiKeyForm .edit-value input
+{
+    width: 465px;
+}
+
+.apiKeyForm .edit-name {
+    width: auto;
+}

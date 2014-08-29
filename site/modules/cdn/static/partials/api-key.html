@@ -5,14 +5,15 @@
                 <h5><i class="glyphicon glyphicon-info-sign"></i><b>{{ title }}</b></h5>
             </div>
             <div class="modal-body">
-                <form name="apiKeyForm">
+                <form name="apiKeyForm" class="apiKeyForm">
                     <div class="form-group">
-                        <span class="orange-asterix">API Key</span>
+                        <span class="orange-asterix edit-name">API Key</span>
                         <span class="edit-value">
                             <input type="text"
                                    id="apiKey"
                                    name="apiKey"
                                    data-ng-model="apiKey"
+                                   autofocus
                                    required
                                    />
                         </span>
@@ -20,7 +21,7 @@
                     <div class="error"
                          data-ng-show="apiKeyForm.apiKey.$dirty && apiKeyForm.apiKey.$error.required"
                          data-translate>
-                        Missing Api Key
+                        Missing Api Key.
                     </div>
                 </form>
             </div>
