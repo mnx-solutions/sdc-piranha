@@ -29,7 +29,7 @@
                     function convertCollection() {
                         scope.internalCollection = [];
                         for (var key in scope.collection) {
-                            if (key !== 'root_authorized_keys' && key !== 'credentials') {
+                            if (key !== 'root_authorized_keys' && key !== 'credentials' && key !== 'prepare-image:error' && key !== 'prepare-image:state') {
                                 scope.internalCollection.push({
                                     key: key,
                                     val: scope.collection[key],
