@@ -16,7 +16,7 @@
     "express": "3.4.2",
     "less": "1.5.0",
     "jade": "0.35.0",
-    "smartdc": "git://github.com/joyent/node-smartdc.git#8b77d055f5eb04eaa49fed8561983df0d9a7999a",
+    "smartdc": "git://github.com/joyent/node-smartdc.git#0fa5fc96ab99373f3119486da1cd0276168193ae",
     "vasync": "1.6.1",
     "easy-config": "0.2.1",
     "express-modulizer": "git+ssh://git@github.com:joyent/node-express-modulizer.git#bda4ccb545e592d7b5e25b665af8539b64c43994",
