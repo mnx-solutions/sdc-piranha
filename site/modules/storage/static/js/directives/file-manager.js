@@ -258,8 +258,8 @@
                                     });
                                     return policyObj ? policyObj.rules.join() : '';
                                 }).join().toLowerCase();
-                                var hasFilePermissions = rulesForRole.indexOf('getobject') != -1 || rulesForRole.indexOf('putobject') != -1;
-                                var hasDirPermissions = rulesForRole.indexOf('getdirectory') != -1 || rulesForRole.indexOf('putdirectory') != -1;
+                                var hasFilePermissions = rulesForRole.indexOf('getobject') != -1 || rulesForRole.indexOf('putobject') != -1 || rulesForRole.indexOf('deleteobject') != -1;
+                                var hasDirPermissions = rulesForRole.indexOf('getdirectory') != -1 || rulesForRole.indexOf('putdirectory') != -1 || rulesForRole.indexOf('deletedirectory') != -1;
                                 return $scope.isDirectory && (hasDirPermissions || hasFilePermissions) ||
                                     !$scope.isDirectory && hasFilePermissions ||
                                     $scope.assignedRoles.indexOf(availableRole) != -1;
