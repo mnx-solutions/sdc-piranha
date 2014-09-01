@@ -6,7 +6,6 @@ input[disabled]
 select
 {
     line-height: 20px;
-
     width: 340px !important;
     padding: 4px 6px;
 }
@@ -35,7 +34,7 @@ h4
 
 .edit-value-double
 {
-    width: 340px!important;
+    width: 341px!important;
 }
 
 .edit-value-double .input-prepend input
@@ -236,8 +235,8 @@ select.policy-form
 
 .edit-name
 {
-    width: 139px;
-    padding-right: 10px;
+    width: 142px;
+    padding-right: 7px;
 }
 
 .remove-icon
