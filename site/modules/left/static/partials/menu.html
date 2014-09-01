@@ -74,6 +74,14 @@
                             <span class="selected-sub"></span>
                         </a>
                     </li>
+                    <li class="sub"
+                        data-ng-class="{active: location.path().search('manta/cdn') == 1}"
+                        data-ng-show="features.cdn == 'enabled'">
+                        <a href="#!/manta/cdn">
+                            <span class="titles" data-translate>Fastly CDN</span>
+                            <span class="selected-sub"></span>
+                        </a>
+                    </li>
                 </ul>
             </li>
             <li class="nested" data-ng-show="features.mdb == 'enabled'" data-ng-class="{'active open': location.path().search('mdb') == 1}">

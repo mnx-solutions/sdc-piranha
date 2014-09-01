@@ -37,7 +37,8 @@
     "ursa": "git+ssh://git@github.com:13W/ursa.git",
     "manta": "1.4.3",
     "memorystream": "0.2.0",
-    "formidable": "1.0.15"
+    "formidable": "1.0.15",
+    "fastly": "1.2.0"
   },
   "devDependencies": {
     "grunt": "~0.4.1",
