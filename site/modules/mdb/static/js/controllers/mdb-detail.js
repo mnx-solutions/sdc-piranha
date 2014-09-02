@@ -117,6 +117,7 @@
 
             function processResult(result) {
                 $scope.loading = false;
+                $scope.processing = false;
                 if (result.coreFile) {
                     $scope.inputFile = [{filePath: result.coreFile}];
                 }
