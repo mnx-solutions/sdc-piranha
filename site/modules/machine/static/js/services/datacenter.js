@@ -103,6 +103,22 @@
             return datacenters.list.length > 0 ? datacenters.list : null;
         };
 
+        service.datacenterPing = function (datacenter) {
+            var call = serverTab.call({
+                name: 'DatacenterPing',
+                data: {
+                    datacenter: datacenter
+                },
+                done: function (err, job) {
+                    if (err) {
+                        return err;
+                    }
+                    return job && job.__read();
+                }
+            });
+            return call.promise;
+        };
+
         if(!datacenters.job) {
             // run updatePackages
             service.updateDatacenters();
