@@ -147,8 +147,14 @@
                                     if (subUserId) {
                                         RBAC.uploadUserKey(subUserId, result.data.keyName, result.data.keyData).then(function () {
                                             $rootScope.$broadcast('sshCreated', true);
-                                        }, function () {
-                                            var message = getKeyErrorMessage(result.data.keyData);
+                                        }, function (err) {
+                                            var message;
+                                            if (err && err.name === 'NotAuthorizedError') {
+                                                message = err.message;
+                                                errorCallback(message);
+                                                return;
+                                            }
+                                            message = getKeyErrorMessage(result.data.keyData);
                                             errorCallback(message + additionalMessage);
                                         });
                                     } else {
@@ -199,9 +205,15 @@
                                 }
 
                             },
-                            function () {
+                            function (err) {
                                 $rootScope.$broadcast('sshProgress', false);
-                                var message = getKeyErrorMessage(key.data);
+                                var message;
+                                if (err && err.name === 'NotAuthorizedError') {
+                                    message = err.message;
+                                    showPopupDialog('error', 'Error', message);
+                                    return;
+                                }
+                                message = getKeyErrorMessage(key.data);
                                 showPopupDialog('error', 'Error', message + additionalMessage);
                             }
                         );
