@@ -1261,10 +1261,10 @@
                 });
 
                 var customDatasets = Object.keys(selectedVersions.custom)
-                    .map(function (item) { return selectedVersions.custom[item][0]; });
+                    .map(function (item) { return selectedVersions.custom[item].pop(); });
 
                 var publicDatasets = Object.keys(selectedVersions.public)
-                    .map(function (item) { return selectedVersions.public[item][0]; });
+                    .map(function (item) { return selectedVersions.public[item].pop(); });
 
                 $scope.operating_systems = Object.keys(operating_systems);
                 $scope.datasets = publicDatasets.concat(customDatasets).filter(function (n) { return n; });
