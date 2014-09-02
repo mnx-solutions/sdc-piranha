@@ -52,7 +52,9 @@
                             <span class="selected-sub"></span>
                         </a>
                     </li>
-                    <li class="sub" data-ng-class="{active: location.path().search('manta/files') == 1}">
+                    <li class="sub"
+                        data-ng-class="{active: location.path().search('manta/files') == 1}"
+                        data-ng-show="features.manta == 'enabled'">
                         <a href="#!/manta/files">
                             <span class="titles" data-translate>File Manager</span>
                             <span class="selected-sub"></span>
@@ -60,7 +62,7 @@
                     </li>
                     <li class="sub"
                         data-ng-class="{active: location.path().search('manta/builder') == 1}"
-                        data-ng-show="features.mantaJobs == 'enabled'">
+                        data-ng-show="features.manta == 'enabled' && features.mantaJobs == 'enabled'">
                         <a href="#!/manta/builder">
                             <span class="titles" data-translate>Job Builder</span>
                             <span class="selected-sub"></span>
@@ -68,7 +70,7 @@
                     </li>
                     <li class="sub"
                         data-ng-class="{active: location.path().search('manta/jobs') == 1}"
-                        data-ng-show="features.mantaJobs == 'enabled'">
+                        data-ng-show="features.manta == 'enabled' && features.mantaJobs == 'enabled'">
                         <a href="#!/manta/jobs">
                             <span class="titles" data-translate>Job History</span>
                             <span class="selected-sub"></span>
