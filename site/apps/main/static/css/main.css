@@ -4895,10 +4895,8 @@ label.checkbox.folder-name-form-checkbox
 .breadcrumb > li:after
 {
     padding: 0 0 0 5px;
-
-    content: '/\00a0';
-
     color: #a9a9a9;
+    content: '/';
 }
 
 .description-column span
