@@ -17,6 +17,7 @@ public class TagSection extends AbstractPageObject {
 
     public void addItem(String key, String value, String section) {
         SelenideElement sectionElement = $("[data-collection-name=\"'" + section + "'\"]");
+        $("[data-ng-repeat=\"item in internalCollection\"]").waitUntil(Condition.visible, baseTimeout);
         int lines = sectionElement.$$("[data-ng-repeat=\"item in internalCollection\"]").size();
         SelenideElement row = sectionElement.$("[data-ng-repeat=\"item in internalCollection\"]", lines - 1);
         String el = section.equals("tags") ? "input" : "textarea";
