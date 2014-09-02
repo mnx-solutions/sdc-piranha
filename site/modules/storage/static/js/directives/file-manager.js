@@ -140,9 +140,9 @@
                                 } else {
                                     fileman.mkdir(getCurrentDirectory() + '/' + data.folderName, function (error) {
                                         if (error) {
+                                            scope.refreshingFolder = false;
                                             return PopupDialog.errorObj(error);
                                         }
-                                        scope.refreshingFolder = true;
                                         return scope.createFilesTree(true, parentPath);
                                     });
                                 }
