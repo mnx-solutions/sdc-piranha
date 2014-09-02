@@ -47,7 +47,7 @@
 
             </table>
         </div>
-        <div class="column mdb-counters-container">
+        <div class="column mdb-counters-container" data-ng-show="!processing">
             <table class="mdb-counters-table">
                 <tr class="mdb-counter-row" ng-repeat="(counter, nums) in counters">
                     <td>{{nums}}</td>
@@ -97,7 +97,7 @@
                             Modules Tree
                         </span>
                     </div>
-                    <div id="collapse_modules" class="panel-collapse collapse in">
+                    <div id="collapse_modules" class="panel-collapse collapse in" data-ng-show="!processing">
                         <div class="panel-body">
                             <div data-tree data-objects="modules" data-array-name="'name'" data-no-checkbox></div>
                         </div>
