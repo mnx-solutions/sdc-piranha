@@ -334,23 +334,23 @@
         };
 
         $scope.getActionButtons = function (item) {
-            if (!item) {
-                return $scope.actionButtons;
+            var actionButtons = [];
+            if (!item && $scope.actionButtons !== undefined) {
+                actionButtons = $scope.actionButtons;
             }
-            if (!$scope.actionButtons) {
-                return [];
+            if ($scope.actionButtons) {
+                actionButtons = $scope.actionButtons.filter(function (btn) {
+                    if (btn.show === undefined) {
+                        return true;
+                    }
+                    if (typeof (btn.show) === 'function') {
+                        return btn.show(item);
+                    }
+
+                    return !!btn.show;
+                });
             }
-
-            return $scope.actionButtons.filter(function (btn) {
-                if (btn.show === undefined) {
-                    return true;
-                }
-                if (typeof btn.show === 'function') {
-                    return btn.show(item);
-                }
-
-                return !!btn.show;
-            });
+            return actionButtons;
         };
 
         $scope.areColumnsEnabled = function () {

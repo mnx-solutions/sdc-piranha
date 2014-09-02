@@ -19,17 +19,20 @@
                 </div>
             </form>
         </div>
-        <div class="actions pull-right" data-ng-show="controls && pageNumSum" data-ng-class="{'actions-down': tabFilterField}">
-            <div class="btn-group">
-                <span id="button-actions" class="btn btn-default dropdown-toggle grid-small-font" data-toggle="dropdown" data-ng-hide="!getActionButtons(object).length | orderBy:'sequence'">
+        <div class="actions pull-right" data-ng-show="controls && pageNumSum" data-ng-class="{'actions-down': tabFilterField}" ng-init="actionButtonsList = getActionButtons(object)">
+            <div class="btn-group" ng-if="actionButtonsList.length > 1">
+                <span id="button-actions" class="btn btn-default dropdown-toggle grid-small-font" data-toggle="dropdown">
                     Actions
                     <i class="icon-drop-down"></i>
                 </span>
-                <ul id="option-list-actions" class="dropdown-menu grid-action-btn" data-ng-hide="!getActionButtons(object).length | orderBy:'sequence'">
-                    <li data-ng-repeat="btn in getActionButtons(object) | orderBy:'sequence'" class="clearfix">
+                <ul id="option-list-actions" class="dropdown-menu grid-action-btn">
+                    <li data-ng-repeat="btn in actionButtonsList | orderBy:'sequence'" class="clearfix">
                         <a data-action-button data-action-fn="btn.action" data-show-fn="btn.show" data-label="btn.label" data-object="object" class="grid-action-btn grid-small-font"></a>
                     </li>
                 </ul>
+            </div>
+            <div class="btn-group" ng-if="actionButtonsList.length == 1">
+                <a data-action-button data-action-fn="actionButtonsList[0].action" data-show-fn="actionButtonsList[0].show" data-label="actionButtonsList[0].label" data-object="object" class="btn btn-default grid-small-font btn-original-text"></a>
             </div>
             <div class="btn-group">
                 <button type="button" class="btn btn-default grid-small-font btn-original-text" data-ng-disabled="!pageNumSum" data-ng-hide="hideExport" data-ng-click="export('csv')">Export.csv</button>
