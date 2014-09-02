@@ -3737,9 +3737,8 @@ label.checkbox
 
 .select-datacenter
 {
+    width: 105px !important;
     font-size: 14px;
-
-    width: 100px !important;
 }
 
 .grid-tabs-container .select-datacenter
