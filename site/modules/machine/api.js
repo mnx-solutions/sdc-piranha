@@ -103,7 +103,7 @@ module.exports = function execute(scope, register) {
 
             var getEntity = function (entityType, poller) {
                 if (entityType === 'Image') {
-                    return client.getImage(objectId, poller, true);
+                    return client.getImage(objectId, poller, null, true);
                 } else {
                     return client['get' + entityType](objectId, true, poller, null, true);
                 }
