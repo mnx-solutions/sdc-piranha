@@ -1,6 +1,7 @@
 'use strict';
 
 var config = require('easy-config');
+var vasync = require('vasync');
 
 module.exports = function execute(scope) {
     var server = scope.api('Server');
@@ -143,14 +144,72 @@ module.exports = function execute(scope) {
         }, !!call.req.session.subId);
     });
 
-    var bindCollectionList = function (collectionName, listMethod) {
-        collectionName = collectionName.charAt(0).toUpperCase() + collectionName.slice(1);
-        server.onCall('Machine' + collectionName + 'List', {
-            verify: function (data) {
-                return data &&
-                    typeof (data.uuid) === 'string' &&
-                    typeof (data.datacenter) === 'string';
-            },
+    function bindCollectionCRUD(collectionName, listMethod, createMethod, updateMethod, deleteMethod) {
+        var upperCollectionName = collectionName.charAt(0).toUpperCase() + collectionName.slice(1);
+
+        function verifier(collectionName, hasData) {
+            return function (data) {
+                var isValid = typeof (data.uuid) === 'string' && typeof (data.datacenter) === 'string';
+                if (isValid && hasData) {
+                    isValid = typeof (data[collectionName]) !== 'undefined';
+                }
+                return isValid;
+
+            };
+        }
+
+        function collectionPoller(call, method, items, callback) {
+            var overallTimeout = false;
+            var overallTimer;
+            var pollerTimeout = config.polling['machine' + upperCollectionName + 'Timeout'];
+            if (pollerTimeout) {
+                overallTimer = setTimeout(function () {
+                    overallTimeout = true;
+                }, pollerTimeout);
+            }
+            return function poller(error) {
+                if (overallTimeout) {
+                    return callback(new Error(collectionName + ' ' + method + ' timeout'));
+                }
+                if (error) {
+                    return callback(error);
+                }
+
+                call.cloud.separate(call.data.datacenter)[listMethod](call.data.uuid, function (error, data) {
+                    var key;
+                    var dataEquals = true;
+                    if (!error) {
+                        if (typeof (items) === 'string') {
+                            var tmpKey = items;
+                            items = {};
+                            items[tmpKey] = true;
+                        }
+                        for (key in items) {
+                            switch (method) {
+                                case 'save':
+                                case 'create':
+                                case 'update':
+                                case 'add':
+                                    dataEquals = data[key] === items[key];
+                                    break;
+                                case 'delete':
+                                    dataEquals = !data.hasOwnProperty(key);
+                                    break;
+                            }
+                        }
+                        if (dataEquals) {
+                            clearTimeout(overallTimer);
+                            callback(null, data);
+                            return;
+                        }
+                    }
+                    setTimeout(poller, config.polling['machine' + upperCollectionName]);
+                }, null, null, true);
+            };
+        }
+
+        server.onCall('Machine' + upperCollectionName + 'List', {
+            verify: verifier(collectionName, false),
             handler: function (call) {
                 var machineId = call.data.uuid;
                 var machineInfo = {'datacenter': call.data.datacenter};
@@ -158,120 +217,57 @@ module.exports = function execute(scope) {
                 call.cloud.separate(call.data.datacenter)[listMethod](call.data.uuid, call.done.bind(call));
             }
         });
-    };
 
-    bindCollectionList('tags', 'listMachineTags');
+        var methods = {
+            create: createMethod,
+            delete: deleteMethod
+        };
+        Object.keys(methods).forEach(function (method) {
+            var upperCaseMethodName = method.charAt(0).toUpperCase() + method.slice(1);
+            server.onCall('Machine' + upperCollectionName + upperCaseMethodName, {
+                verify: verifier(collectionName, true),
+                handler: function (call) {
+                    var items = call.data[collectionName];
+                    call.cloud.separate(call.data.datacenter)[methods[method]](call.data.uuid, items, collectionPoller(call, method, items, call.done.bind(call)));
+                }
+            });
+        });
 
-    bindCollectionList('metadata', 'getMachineMetadata');
-
-    var bindCollectionSave = function (collectionName, listMethod, updateMethod, deleteMethod, deleteAllMethod) {
-        var upperCollectionName = collectionName.charAt(0).toUpperCase() + collectionName.slice(1);
-        server.onCall('Machine' + upperCollectionName + 'Save', {
+        server.onCall('Machine' + upperCollectionName + 'Update', {
             verify: function (data) {
-                return data &&
-                    typeof (data.uuid) === 'string' &&
-                    typeof (data[collectionName]) === 'object' &&
-                    typeof (data.datacenter) === 'string';
+                return verifier(collectionName, true)(data) && data.keyToUpdate;
             },
             handler: function (call) {
-                call.log.info('Handling machine ' + collectionName + ' save call, machine %s', call.data.uuid);
-
-                var newCollection = call.data[collectionName];
-                var newCollectionStr = JSON.stringify(newCollection);
-                var oldCollectionStr = null;
+                var keyToUpdate = call.data.keyToUpdate;
+                var item = call.data[collectionName];
                 var cloud = call.cloud.separate(call.data.datacenter);
-                var machineInfo = {
-                    datacenter: call.data.datacenter
-                };
-
-                var readCollection = function (callback) {
-                    cloud[listMethod](call.data.uuid, function (collectionErr, collection) {
-                        if (collection) {
-                            delete collection.root_authorized_keys;
-                        }
-                        callback(collectionErr, collection);
-                    }, null, true, true);
-                };
-
-                function updateState() {
-                    var overallTimer;
-                    var timer = setInterval(function () {
-                        call.log.debug(machineInfo, 'Polling for machine %s ' + collectionName + ' to become %s', call.data.uuid, newCollectionStr);
-                        readCollection(function (collectionErr, collection) {
-                            if (!collectionErr) {
-                                var readCollectionStr = JSON.stringify(collection);
-                                if (readCollectionStr === newCollectionStr) {
-                                    call.log.debug(machineInfo, 'Machine %s ' + collectionName + ' changed successfully', call.data.uuid);
-                                    clearInterval(timer);
-                                    clearTimeout(overallTimer);
-                                    call.done(null, collection);
-                                } else if (!oldCollectionStr) {
-                                    oldCollectionStr = readCollectionStr;
-                                } else if (readCollectionStr !== oldCollectionStr) {
-                                    clearInterval(timer);
-                                    clearTimeout(overallTimer);
-                                    call.log.warn(machineInfo, 'Other call changed ' + collectionName + ', returning new ' + collectionName + ' %j', collection);
-                                    call.done(null, collection);
-                                }
-                            } else {
-                                call.log.error(machineInfo, 'Cloud polling failed for %s , %o', call.data.uuid, collectionErr);
+                var pool = [];
+                if (!item.hasOwnProperty(keyToUpdate)) {
+                    pool.push(function (input, callback) {
+                        cloud[deleteMethod](call.data.uuid, keyToUpdate, collectionPoller(call, 'delete', keyToUpdate, function (error) {
+                            if (error) {
+                                callback(error);
+                                return;
                             }
-                        });
-                    }, config.polling['machine' + upperCollectionName]);
-
-                    //TODO: Move overall timeout (1 minute for now) to config
-                    overallTimer = setTimeout(function () {
-                        var timeoutMessage = 'Polling for ' + collectionName + ' operation timed out';
-                        call.log.error(machineInfo, timeoutMessage);
-                        clearInterval(timer);
-                        call.error(new Error(timeoutMessage));
-                    }, config.polling['machine' + upperCollectionName + 'Timeout'] || 60 * 1000);
+                            callback();
+                        }));
+                    });
                 }
+                pool.push(function (input, callback) {
+                    cloud[createMethod](call.data.uuid, item, collectionPoller(call, 'create', item, function (error, data) {
+                        callback(error, data);
+                    }));
+                });
 
-                var updateCollection = function () {
-                    if (Object.keys(newCollection).length === 0) {
-                        updateState();
-                        return;
-                    }
-                    cloud[updateMethod](call.data.uuid, newCollection, function (err) {
-                        if (err) {
-                            call.log.error(err);
-                            call.error(err);
-                            return;
-                        }
-                        updateState();
-                    });
-                };
-
-                if (Object.keys(newCollection).length === 0 && deleteAllMethod) {
-                    cloud[deleteAllMethod](call.data.uuid, function (err) {
-                        if (err) {
-                            call.log.error(err);
-                            call.error(err);
-                            return;
-                        }
-
-                        updateState();
-                    });
-                } else if (deleteMethod) {
-                    readCollection(function (collErr, oldCollection) {
-                        for (var key in oldCollection) {
-                            if (!newCollection[key]) {
-                                cloud[deleteMethod](call.data.uuid, key, function () {});
-                            }
-                        }
-                        updateCollection();
-                    });
-                } else {
-                    updateCollection();
-                }
+                vasync.pipeline({funcs: pool}, function (error, result) {
+                    call.done(error, result.successes.slice(-1));
+                });
             }
         });
-    };
+    }
 
-    bindCollectionSave('tags', 'listMachineTags', 'replaceMachineTags', null, 'deleteMachineTags');
-
-    bindCollectionSave('metadata', 'getMachineMetadata', 'updateMachineMetadata', 'deleteMachineMetadata', null);
+    bindCollectionCRUD('tags', 'listMachineTags', 'addMachineTags', 'replaceMachineTags', 'deleteMachineTag');
+    bindCollectionCRUD('metadata', 'getMachineMetadata', 'updateMachineMetadata', 'updateMachineMetadata', 'deleteMachineMetadata');
 
     /* GetMachine */
     server.onCall('MachineDetails', {

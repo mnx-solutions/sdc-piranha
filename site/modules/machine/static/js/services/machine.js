@@ -539,76 +539,105 @@
             machine.job = jobCall.getTracker();
             return jobCall;
         };
-
-            var bindCollectionListUpdate = function (collectionName) {
+            
+            function bindCollectionCRUD(collectionName) {
                 var upperCollectionName = collectionName.charAt(0).toUpperCase() + collectionName.slice(1);
-                service[collectionName] = function (id, data) {
-                    if (!id) {
-                        return false;
-                    }
-                    var d = $q.defer();
 
+                function createData(machine, data) {
+                    var out = {uuid: machine.id, datacenter: machine.datacenter};
+                    if (data) {
+                        out[collectionName] = data;
+                    }
+                    return out;
+                }
+
+                function done(machine, d, deleteReadJob) {
+                    return function (error, job) {
+                        if (error) {
+                            return d.reject(error);
+                        }
+
+                        var data = job.__read();
+                        machine[collectionName] = data;
+                        d.resolve(data);
+                        if (deleteReadJob) {
+                            delete machine[collectionName + 'ReadJob'];
+                        }
+                    }
+                }
+                
+                function getMachine(id, callback) {
                     var machine = service.machine(id);
-
-                    function list() {
-                        if (machine[collectionName]) {
-                            d.resolve(machine[collectionName]);
-                            return;
-                        }
-
-                        if (!machine[collectionName + 'Job']) {
-                            machine[collectionName + 'Job'] = serverTab.call({
-                                name: 'Machine' + upperCollectionName + 'List',
-                                data: {uuid: id, datacenter: machine.datacenter}
-                            }).deferred;
-                        }
-
-                        machine[collectionName + 'Job'].promise.then(function (result) {
-                            machine[collectionName] = result;
-                            d.resolve(result);
-                        });
-                    }
-
-                    function save() {
-                        var callData = {uuid: id, datacenter: machine.datacenter};
-                        callData[collectionName] = data;
-                        var job = serverTab.call({
-                            name: 'Machine' + upperCollectionName + 'Save',
-                            data: callData
-                        });
-
-                        job.promise.then(function (response) {
-                            if (collectionName === 'metadata' && machine[collectionName].credentials) {
-                                response.credentials = machine[collectionName].credentials;
+                    $q.when(machine).then(callback);
+                }
+                
+                function create(machineId, items) {
+                    var d = $q.defer();
+                    getMachine(machineId, function (machine) {
+                        var currentItems = machine[collectionName];
+                        var newItems = {};
+                        Object.keys(items).forEach(function (key) {
+                            if (!currentItems.hasOwnProperty(key)) {
+                                newItems[key] = items[key];
                             }
-                            machine[collectionName] = response;
-                            d.resolve(response);
-                        }, function (err) {
-                            d.reject(err);
-                            PopupDialog.error(
-                                localization.translate(null, null, 'Error'),
-                                localization.translate(null, 'machine',
-                                        err.restCode === 'NotAuthorized' ? err.message : 'Unable to save ' + collectionName + '.'
-                                )
-                            );
                         });
-                    }
-
-                    $q.when(machine).then(function (updatedMachine) {
-                        machine = updatedMachine;
-                        if (data) {
-                            save();
-                        } else {
-                            list();
-                        }
+                        serverTab.call({
+                            name: 'Machine' + upperCollectionName + 'Create',
+                            data: createData(machine, newItems),
+                            done: done(machine, d)
+                        })
                     });
-
                     return d.promise;
-                };
-            };
+                }
+                function read(machineId) {
+                    var d = $q.defer();
+                    getMachine(machineId, function (machine) {
+                        if (machine[collectionName + 'ReadJob']) {
+                            return machine[collectionName + 'ReadJob'];
+                        }
 
-        bindCollectionListUpdate('tags');
-        bindCollectionListUpdate('metadata');
+                        serverTab.call({
+                            name: 'Machine' + upperCollectionName + 'List',
+                            data: createData(machine),
+                            done: done(machine, d)
+                        });
+                    });
+                    return d.promise;
+                }
+                function update(machineId, keyToUpdate, item) {
+                    var d = $q.defer();
+                    getMachine(machineId, function (machine) {
+                        var data = createData(machine, item);
+                        data.keyToUpdate = keyToUpdate;
+                        serverTab.call({
+                            name: 'Machine' + upperCollectionName + 'Update',
+                            data: data,
+                            done: done(machine, d)
+                        })
+                    });
+                    return d.promise;
+                }
+                function remove(machineId, item) {
+                    var d = $q.defer();
+                    getMachine(machineId, function (machine) {
+                        serverTab.call({
+                            name: 'Machine' + upperCollectionName + 'Delete',
+                            data: createData(machine, item),
+                            done: done(machine, d)
+                        })
+                    });
+                    return d.promise;
+                }
+                service[collectionName] = {
+                    create: create,
+                    read: read,
+                    update: update,
+                    delete: remove
+                };
+            }
+            
+            bindCollectionCRUD('tags');
+            bindCollectionCRUD('metadata');
 
         service.checkFirstInstanceCreated = function (id) {
             var job = serverTab.call({
