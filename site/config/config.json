@@ -194,6 +194,7 @@
     ,"rbac"
     ,"mdb"
     ,"cloudAnalytics"
+    ,"cdn"
 ]
 , "features": {
     "fullVersion": "enabled"
