@@ -97,7 +97,8 @@
                         </div>
                         <div id="collapse_policies" class="panel-collapse collapse in">
                             <div class="panel-body">
-                                <div id="policies" data-tree data-objects="policyGroups" data-array-name="'name'"></div>
+                                <div data-ng-hide="policies.length">Policies are not available, <a class="orange" href="#!/accounts/policy/create">create your first policy</a> now</div>
+                                <div data-ng-show="policies.length" id="policies" data-tree data-objects="policyGroups" data-array-name="'name'"></div>
                             </div>
                         </div>
                     </div>

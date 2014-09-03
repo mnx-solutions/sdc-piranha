@@ -41,13 +41,13 @@
                     $scope.role = angular.copy(result[0]) || {};
                     var users = result[1] || [];
                     orderByLogin(users);
-                    var policies = angular.copy(result[2]) || [];
+                    $scope.policies = angular.copy(result[2]) || [];
                     var account = result[3] || [];
-                    policies.forEach(function (item) {
+                    $scope.policies.forEach(function (item) {
                         item.checked = $scope.role.policies.indexOf(item.name) > -1;
                     });
                     $scope.policyGroups = [
-                        {name: account.login + "'s policies", children: policies}
+                        {name: account.login + "'s policies", children: $scope.policies}
                     ];
 
                     $scope.role.members.forEach(function (login) {
@@ -80,14 +80,14 @@
                     $q.when(Account.getAccount(true))
                 ]).then(function (result) {
                     $scope.users = result[0] || [];
-                    var policies = result[1] || [];
+                    $scope.policies = result[1] || [];
                     var account = result[2] || [];
-                    policies.forEach(function (item) {
+                    $scope.policies.forEach(function (item) {
                         item.checked = false;
                     });
 
                     $scope.policyGroups = [
-                        {name: account.login + "'s policies", children: policies}
+                        {name: account.login + "'s policies", children: $scope.policies}
                     ];
 
                     $scope.users.forEach(function (user) {
