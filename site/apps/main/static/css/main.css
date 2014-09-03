@@ -3843,6 +3843,7 @@ label.checkbox
 .tooltip
 {
     position: fixed;
+    z-index: 99999;
 }
 
 .tooltip.left
@@ -3852,16 +3853,14 @@ label.checkbox
 
 .tooltip-inner
 {
-    font-size: 14px;
-
     overflow: hidden;
-
-    word-wrap: break-word;
-
-    color: #020001;
     border: 1px solid #f60;
     border-radius: 0;
     background-color: #fff2d2;
+    color: #020001;
+    white-space: normal;
+    word-wrap: break-word;
+    font-size: 14px;
 }
 
 .tooltip.in
