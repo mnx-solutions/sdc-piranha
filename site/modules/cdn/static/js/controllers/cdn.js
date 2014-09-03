@@ -54,21 +54,36 @@
                     showError(err);
                 });
             };
-            cdn.getApiKey().then(function (key) {
-                if (key) {
-                    scope.apiKey = key;
-                }
-                loadConfigurations();
-            }, function (err) {
-                if (err && err.name === 'ConnectTimeoutError') {
-                    showError(err.message, function () {
-                        $location.url('/manta/intro');
-                        $location.replace();
+            Account.getAccount().then(function (account) {
+                scope.provisionEnabled = account.provisionEnabled;
+                if (scope.provisionEnabled) {
+                    cdn.getApiKey().then(function (key) {
+                        if (key) {
+                            scope.apiKey = key;
+                        }
+                        loadConfigurations();
+                    }, function (err) {
+                        if (err && err.name === 'ConnectTimeoutError') {
+                            showError(err.message, function () {
+                                $location.url('/manta/intro');
+                                $location.replace();
+                            });
+                            return;
+                        }
+                        scope.loading = false;
                     });
-                    return;
+                } else {
+                    scope.loading = false;
                 }
-                scope.loading = false;
             });
+
+            scope.completeAccount = function () {
+                var submitBillingInfo = {
+                    btnTitle: 'Submit and Access Fastly',
+                    appendPopupMessage: 'Manta access will now be granted.'
+                };
+                Account.checkProvisioning(submitBillingInfo, null, null, null, false);
+            };
 
             scope.apiKeyAction = function (actionType) {
                 var apiKeyModalCtrl = function ($scope, dialog) {
