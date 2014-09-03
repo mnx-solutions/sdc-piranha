@@ -68,7 +68,11 @@ module.exports = function (scope, app) {
                 uploadFile(filePath, part, function (error) {
                     if (error) {
                         req.log.error({error: error}, 'Error while uploading files');
-                        res.send(error.statusCode || 500, error.message);
+                        if (error.name === 'NoMatchingRoleTagError') {
+                            res.json({status: 'error', message: error.message});
+                            return;
+                        }
+                        res.send(error.statusCode || 200, error.message);
                         return;
                     }
 
