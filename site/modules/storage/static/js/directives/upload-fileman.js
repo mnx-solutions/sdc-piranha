@@ -11,9 +11,9 @@
             },
             link: function (scope, element) {
                 function uploadFiles(files) {
-                    http.uploadFiles('storage/upload', scope.filemanUpload, files, function (error) {
-                        if (error) {
-                            PopupDialog.error(null, error);
+                    http.uploadFiles('storage/upload', scope.filemanUpload, files, function (error, data) {
+                        if (error || data.status === 'error') {
+                            PopupDialog.error(null, data.message || error);
                         }
                         scope.$parent.$emit('uploadReady', true, scope.filemanUpload);
                     });
