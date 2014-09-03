@@ -12,7 +12,7 @@
 
             var supportTracking = function (supportPackage, comment) {
                 var type = scope.package.type;
-                $q.when(Account.getAccount(), function (account) {
+                Account.getAccount().then(function (account) {
                     var data = {
                         id: account.id,
                         marketo: {}

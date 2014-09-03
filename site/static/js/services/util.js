@@ -118,6 +118,12 @@ window.JP.main.service('util', [
             return str === 'true';
         };
 
+        service.orderBy = function (name, items) {
+            return items.sort(function (a, b) {
+                return a[name].localeCompare(b[name]);
+            });
+        };
+
         return service;
     }]
 );

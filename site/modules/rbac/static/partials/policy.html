@@ -5,8 +5,8 @@
          --><li><a href="#!/accounts/policies">Policies</a></li>
         </ul>
         <div class="page-header row">
-            <h3 class="page-title" data-ng-show="model.policy.id">Policy Details</h3>
-            <h3 class="page-title" data-ng-hide="model.policy.id">Create Policy</h3>
+            <h3 class="page-title" data-ng-show="policy.id">Policy Details</h3>
+            <h3 class="page-title" data-ng-hide="policy.id">Create Policy</h3>
             <div class="beta-sticker">beta</div>
         </div>
         <div class="loading-large col-md-12" data-ng-show="loading"></div>
@@ -23,10 +23,10 @@
                         </div>
                         <div id="collapse-policy-summary" class="panel-collapse collapse in">
                             <div class="panel-body">
-                                <div class="form-group" data-ng-show="model.policy.id">
+                                <div class="form-group" data-ng-show="policy.id">
                                     <span class="edit-name">ID</span>
                                     <span class="edit-value">
-                                        <input type="text" class="policy-form" name="policyId" value="{{ model.policy.id }}" disabled />
+                                        <input type="text" class="policy-form" name="policyId" value="{{ policy.id }}" disabled />
                                     </span>
                                 </div>
                                 <form name="policyForm" class="policy-form">
@@ -36,7 +36,7 @@
                                             <input type="text"
                                                    class="policy-form"
                                                    name="policyName"
-                                                   data-ng-model="model.policy.dirtyName"
+                                                   data-ng-model="policy.dirtyName"
                                                    data-ng-pattern="/^[A-Za-z0-9]+[A-Za-z0-9\.\-\s]*$/"
                                                    required />
                                         </span>
@@ -56,7 +56,7 @@
                                 <div class="form-group">
                                     <span class="edit-name">Description</span>
                                     <span class="edit-value">
-                                        <input type="text" class="policy-form" name="policyDescription" data-ng-model="model.policy.dirtyDescription"/>
+                                        <input type="text" class="policy-form" name="policyDescription" data-ng-model="policy.dirtyDescription"/>
                                     </span>
                                 </div>
                             </div>
@@ -98,8 +98,8 @@
                                     <span class="edit-name">Rule {{rules.length + 1}}</span>
                                     <div class="dpl-inline" data-ng-click="focusOut()">
                                         <span class="edit-value">
-                                            <input type="text" class="policy-form" data-ng-model="model.newRule"/>
-                                        <button class="btn orange add-btn" data-ng-click="addRule()" data-ng-disabled="model.newRule.length == 0">Add</button>
+                                            <input type="text" class="policy-form" data-ng-model="newRule"/>
+                                        <button class="btn orange add-btn" data-ng-click="addRule()" data-ng-disabled="newRule.length == 0">Add</button>
                                         </span>
                                     </div>
                                 </div>
@@ -112,14 +112,14 @@
         </div>
         <div class="row btn-bottom-block" data-ng-show="!loading">
             <span class="orange-asterix-left">required fields</span>
-            <div class="pull-right" data-ng-hide="model.policy.id">
+            <div class="pull-right" data-ng-hide="policy.id">
                 <button class="btn light effect-orange-button" data-ng-click="cancel()">Cancel</button>
                 <button class="btn orange" data-ng-click="createPolicy(true)">Create Policy</button>
             </div>
-            <div class="pull-right" data-ng-show="model.policy.id">
+            <div class="pull-right" data-ng-show="policy.id">
                 <button class="btn light effect-orange-button" data-ng-click="cancel()">Cancel</button>
                 <button class="btn light effect-orange-button" data-ng-click="deletePolicy()">Delete</button>
-                <button class="btn orange" data-ng-click="updatePolicy(true)">Save</button>
+                <button class="btn orange" data-ng-click="updatePolicy()">Save</button>
             </div>
         </div>
     </div>

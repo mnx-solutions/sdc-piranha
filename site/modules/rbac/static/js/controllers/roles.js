@@ -28,12 +28,6 @@
                 PopupDialog.errorObj(err);
             };
 
-            $scope.getCheckedItems = function () {
-                return $scope.roles.filter(function (el) {
-                    return el.checked;
-                });
-            };
-
             $scope.noCheckBoxChecked = function () {
                 PopupDialog.error(
                     localization.translate(
@@ -97,12 +91,8 @@
                 {
                     label: 'Delete',
                     action: function () {
-                        var titleEnding = '';
-                        var checkedItems = $scope.getCheckedItems();
-                        if (checkedItems.length > 1) {
-                            titleEnding = 's';
-                        }
-                        if (checkedItems.length) {
+                        if ($scope.checkedItems.length) {
+                            var titleEnding = $scope.checkedItems.length === 1 ? '' : 's';
                             PopupDialog.confirm(
                                 localization.translate(
                                     $scope,
@@ -116,14 +106,14 @@
                                 ),
                                 function () {
                                     $scope.loading = true;
-                                    var deleteIds = [];
-                                    checkedItems.forEach(function (item) {
-                                        deleteIds.push(item.id);
+                                    var deleteIds = $scope.checkedItems.map(function (item) {
+                                        return item.id;
                                     });
                                     service.deleteRole(deleteIds).then(function () {
                                         service.listRoles().then(function (roles) {
                                             $scope.roles = roles;
                                             $scope.loading = false;
+                                            $scope.checkedItems = [];
                                         }, errorCallback);
                                     }, errorCallback);
                                 }

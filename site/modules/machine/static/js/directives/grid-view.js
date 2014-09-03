@@ -3,6 +3,7 @@
 (function (ng, app) {
     app.controller('GridViewController', ['$scope', '$filter', '$http', '$location', 'Account', '$rootScope', 'Datacenter', '$qe', '$sce', 'ErrorService', function ($scope, $filter, $http, $location, Account, $rootScope, Datacenter, $qe, $sce, ErrorService) {
         $scope.location = $location;
+        $scope.checkedItems = [];
 
         function refreshGrid() {
             $scope.refreshPager();
@@ -366,6 +367,8 @@
             $scope.pagedItems.forEach(function (el) {
                 el.checked = $scope.checkedAllCheckBox;
             });
+
+            $scope.checkedItems = $scope.checkedAllCheckBox ? $scope.pagedItems : [];
         };
 
         $scope.unSelectAllCheckbox = function () {
@@ -374,6 +377,7 @@
             $scope.items.forEach(function (el) {
                 el.checked = false;
             });
+            $scope.checkedItems = [];
         };
 
         $scope.disableSelectAllCheckbox = function () {
@@ -438,6 +442,10 @@
                     el.checked = false;
                 }
             });
+            $scope.checkedItems = $scope.pagedItems.filter(function (item) {
+                return item.checked;
+            });
+
             $scope.checkedAllCheckBox = areAllPagedItemsChecked();
         };
 
@@ -509,7 +517,8 @@
                 tabFilterUpdate: '=',
                 hideLargePagerOptions: '@',
                 noEntriesMessage: '@',
-                noEntriesMessageErrorType: '@'
+                noEntriesMessageErrorType: '@',
+                checkedItems: '=?'
             },
             controller: 'GridViewController',
             templateUrl: 'machine/static/partials/grid-view.html',

@@ -10,7 +10,8 @@
         'rbac.Service',
         'requestContext',
         'localization',
-        function ($q, $location, $scope, PopupDialog, Account, service, requestContext, localization) {
+        'util',
+        function ($q, $location, $scope, PopupDialog, Account, service, requestContext, localization, util) {
             $scope.role = {};
             $scope.policyGroups = [];
             $scope.users = [];
@@ -24,12 +25,6 @@
             var roleId = requestContext.getParam('id');
             var isNew = roleId && roleId === 'create';
 
-            var orderByLogin = function (items) {
-                return items.sort(function (a, b) {
-                    return a.login.localeCompare(b.login);
-                });
-            };
-
             if (!isNew) {
                 $scope.role.id = roleId;
                 $q.all([
@@ -40,7 +35,7 @@
                 ]).then(function (result) {
                     $scope.role = angular.copy(result[0]) || {};
                     var users = result[1] || [];
-                    orderByLogin(users);
+                    util.orderBy('login', users);
                     $scope.policies = angular.copy(result[2]) || [];
                     var account = result[3] || [];
                     $scope.policies.forEach(function (item) {
@@ -60,7 +55,7 @@
                         }
                         $scope.roleDefaultUsers = $scope.roleUsers;
                     });
-                    orderByLogin($scope.roleUsers);
+                    util.orderBy('login', $scope.roleUsers);
 
                     users.forEach(function (user) {
                         user.value = user.login;
@@ -93,7 +88,7 @@
                     $scope.users.forEach(function (user) {
                         user.value = user.login;
                     });
-                    orderByLogin($scope.users);
+                    util.orderBy('login', $scope.users);
                     if (!account.provisionEnabled) {
                         var submitBillingInfo = {
                             btnTitle: 'Submit and Access Create Role'

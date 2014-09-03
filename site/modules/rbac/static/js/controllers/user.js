@@ -13,7 +13,8 @@
         'rbac.Service',
         'rbac.User',
         'Account',
-        function ($q, $scope, $http, localization, $location, requestContext, BillingService, PopupDialog, service, RbacUser, Account) {
+        'util',
+        function ($q, $scope, $http, localization, $location, requestContext, BillingService, PopupDialog, service, RbacUser, Account, util) {
             $scope.loading = true;
             $scope.user = {};
             $scope.initial = {};
@@ -50,12 +51,6 @@
                 });
             };
 
-            // FIXME: DRY, see orderByLogin in role controller
-            var orderByName = function (items) {
-                return items.sort(function (a, b) {
-                    return a.name.localeCompare(b.name);
-                });
-            };
             $scope.user.isNew = userId && userId === 'create';
             if (!$scope.user.isNew) {
                 $q.all([
@@ -73,7 +68,7 @@
                     $scope.initial.address = $scope.user.address;
                     $scope.initial.city = $scope.user.city;
                     $scope.roles = result[1] || [];
-                    orderByName($scope.roles);
+                    util.orderBy('name', $scope.roles);
                     $scope.roles.forEach(function (role) {
                         if (role.members.indexOf($scope.user.login) >= 0) {
                             $scope.userRoles.push(role);
@@ -116,7 +111,7 @@
                 });
                 service.listRoles().then(function (roles) {
                     $scope.roles = roles || [];
-                    orderByName($scope.roles);
+                    util.orderBy('name', $scope.roles);
                     $scope.roles.forEach(function (item) {
                         item.value = item.id;
                     });

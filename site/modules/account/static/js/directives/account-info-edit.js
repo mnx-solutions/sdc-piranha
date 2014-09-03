@@ -25,7 +25,7 @@
                     $scope.formSubmitted = false;
 
                     $scope.setAccount = function () {
-                        $q.when(Account.getAccount(true), function (account) {
+                        Account.getAccount(true).then(function (account) {
                             $scope.account = ng.copy(account);
                             if ($scope.account.phone && $scope.account.phone.indexOf('+') !== 0) {
                                 $scope.account.phone = '+' + $scope.account.phone;

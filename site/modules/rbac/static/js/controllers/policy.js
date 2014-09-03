@@ -12,23 +12,21 @@
         'localization',
         function ($q, $scope, Account, service, PopupDialog, $location, requestContext, localization) {
             $scope.loading = true;
-            //FIXME: I don't see much sense in enclosing "model" property
-            $scope.model = {};
-            $scope.model.newRule = '';
-            $scope.model.policy = {};
-            $scope.model.policy.rules = [];
+            $scope.newRule = '';
+            $scope.policy = {};
+            $scope.policy.rules = [];
             $scope.rules = [];
             $scope.isFormSubmited = false;
 
             var policyId = requestContext.getParam('id');
             var isNew = policyId && policyId === 'create';
             if (!isNew) {
-                $scope.model.policy.id = policyId;
+                $scope.policy.id = policyId;
 
                 $q.when(service.getPolicy(policyId)).then(function (policy) {
                     $scope.storPolicy = angular.copy(policy);
-                    $scope.model.policy.dirtyName = $scope.model.policy.name = policy.name;
-                    $scope.model.policy.dirtyDescription = $scope.model.policy.description = policy.description;
+                    $scope.policy.dirtyName = $scope.policy.name = policy.name;
+                    $scope.policy.dirtyDescription = $scope.policy.description = policy.description;
                     policy.rules.forEach(function (res) {
                         $scope.rules.push({rule: res, edit: false});
                     });
@@ -103,13 +101,13 @@
             };
 
             var convertRules = function () {
-                $scope.model.policy.rules = $scope.rules.map(function (rule) {
+                $scope.policy.rules = $scope.rules.map(function (rule) {
                     return rule.rule;
                 });
             };
 
             var noRulesProvided = function () {
-                var isEmpty = $scope.model.policy.rules.length === 0;
+                var isEmpty = $scope.policy.rules.length === 0;
                 if (isEmpty) {
                     PopupDialog.error("Error", "Policy must have at least one rule.");
                 }
@@ -126,26 +124,20 @@
                 if (isFormInvalid()) {
                     return;
                 }
-                $scope.model.policy.name = $scope.model.policy.dirtyName;
-                $scope.model.policy.description = $scope.model.policy.dirtyDescription;
-                policyAction(service.createPolicy($scope.model.policy), true);
+                $scope.policy.name = $scope.policy.dirtyName;
+                $scope.policy.description = $scope.policy.dirtyDescription;
+                policyAction(service.createPolicy($scope.policy), true);
             };
 
-            //FIXME: Get rid of 'redirect' properties if we store rules only with policy
-            $scope.updatePolicy = function (redirect) {
+            $scope.updatePolicy = function () {
                 $scope.isFormSubmited = true;
                 convertRules();
                 if (isFormInvalid()) {
                     return;
                 }
-                if (!redirect) {
-                    $scope.storPolicy.rules = $scope.model.policy.rules;
-                    policyAction(service.updatePolicy($scope.storPolicy), redirect);
-                } else {
-                    $scope.model.policy.name = $scope.model.policy.dirtyName;
-                    $scope.model.policy.description = $scope.model.policy.dirtyDescription;
-                    policyAction(service.updatePolicy($scope.model.policy), redirect);
-                }
+                $scope.policy.name = $scope.policy.dirtyName;
+                $scope.policy.description = $scope.policy.dirtyDescription;
+                policyAction(service.updatePolicy($scope.policy), true);
             };
 
             $scope.deletePolicy = function () {
@@ -162,7 +154,7 @@
                     ),
                     function () {
                         $scope.loading = true;
-                        policyAction(service.deletePolicy($scope.model.policy.id), true);
+                        policyAction(service.deletePolicy($scope.policy.id), true);
                     }
                 );
             };
@@ -193,10 +185,10 @@
             };
 
             $scope.addRule = function () {
-                var newRule = $scope.model.newRule.toLowerCase();
+                var newRule = $scope.newRule.toLowerCase();
                 if (!checkRuleDuplicate(newRule)) {
                     $scope.rules.push({rule: newRule, edit: false});
-                    $scope.model.newRule = '';
+                    $scope.newRule = '';
                 }
             };
 

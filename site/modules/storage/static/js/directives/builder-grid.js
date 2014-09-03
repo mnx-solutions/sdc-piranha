@@ -1,7 +1,7 @@
 'use strict';
 
 (function (app) {
-    app.directive('builderGrid', ['PopupDialog', 'localization', 'Account', 'fileman', function (PopupDialog, localization, Account, fileman) {
+    app.directive('builderGrid', ['PopupDialog', 'localization', function (PopupDialog, localization) {
         return {
             restrict: 'EA',
             scope: {
@@ -18,9 +18,7 @@
                 }
 
                 function deleteRecord(messageBody) {
-                    var checkedArray = scope.getCheckedItems(scope.objects);
-
-                    if (checkedArray.length) {
+                    if (scope.checkedItems.length) {
                         PopupDialog.confirm(
                             localization.translate(
                                 scope,
@@ -32,7 +30,7 @@
                                 null,
                                 (function () {
                                     var result = messageBody.single;
-                                    if (checkedArray.length > 1) {
+                                    if (scope.checkedItems.length > 1) {
                                         result = messageBody.plural;
                                     }
                                     return result;
@@ -42,6 +40,7 @@
                                 scope.objects = scope.objects.filter(function (el) {
                                     return !el.checked;
                                 });
+                                scope.checkedItems = [];
                             }
                         );
                     } else {
@@ -82,13 +81,6 @@
                 scope.searchForm = true;
                 scope.enabledCheckboxes = true;
                 scope.placeHolderText = 'filter';
-
-                scope.getCheckedItems = function (obj) {
-                    return obj.filter(function (el) {
-                        return el.checked;
-                    });
-                };
-
             },
 
             templateUrl: 'storage/static/partials/builder-grid.html'

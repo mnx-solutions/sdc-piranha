@@ -194,7 +194,7 @@
                             });
 
                         } else {
-                            $q.when(Account.getAccount(), function (account) {
+                            Account.getAccount().then(function (account) {
                                 var form = $scope.form.cardHolderInfo;
                                 form.zipCode = account.postalCode;
                                 form.city = account.city;
@@ -290,7 +290,7 @@
                         return isPresent;
                     };
 
-                    $q.when(Account.getAccount(true), function (account) {
+                    Account.getAccount(true).then(function (account) {
                         $q.when($http.get('account/countryCodes'), function (data) {
                             $scope.countryCodes = data.data;
 
