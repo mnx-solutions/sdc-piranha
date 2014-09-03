@@ -117,6 +117,10 @@
 
                                             dialog.close({});
 
+                                            if (error.status === 403 && error.error) {
+                                                message = error.error;
+                                                return showPopupDialog('error', 'Error', message);
+                                            }
                                             return showPopupDialog('error', 'Error', message + additionalMessage);
                                         }
 
