@@ -233,7 +233,6 @@
                         $scope.loading = true;
                         $scope.isDirectory = lastSelectedFile.type === 'directory';
                         $scope.isNotEmptyDirectory = $scope.isDirectory && scope.files.length !== 0;
-
                         $qe.all([
                             RbacService.listRoles(),
                             RbacService.listPolicies(),
@@ -250,6 +249,9 @@
                             });
                             $scope.assignedRoles = availableRoles.filter(function (role) {
                                 return resourceRoles.indexOf(role.name) !== -1;
+                            });
+                            $scope.resourceRoles = $scope.assignedRoles.map(function (role) {
+                                return role.name;
                             });
                             $scope.roles = availableRoles.filter(function (availableRole) {
                                 var rulesForRole = availableRole.policies.map(function (policyName) {
@@ -268,20 +270,22 @@
                         });
 
                         $scope.save = function () {
-                            if (!$scope.assignedRoles || $scope.assignedRoles.length === 0) {
-                                return showPopupDialog('error', 'Message', 'You must assign at least one role.');
+                            if (!$scope.assignedRoles) {
+                                return $scope.close();
                             }
                             var assignedRoles = $scope.assignedRoles.map(function (role) {
                                 return role.name;
                             });
-                            fileman.setRoles(path, {roles: assignedRoles, recursive: $scope.recursive}, function (setErr) {
-                                if (setErr) {
-                                    notification.error('Applying role tags resulted in error: ' + setErr);
-                                    return;
-                                }
-                                notification.success('Role tags successfully applied.')
-                            });
-                            $scope.close();
+                            if (assignedRoles > $scope.resourceRoles || assignedRoles < $scope.resourceRoles) {
+                                fileman.setRoles(path, {roles: assignedRoles, recursive: $scope.recursive}, function (setErr) {
+                                    if (setErr) {
+                                        notification.error('Applying role tags resulted in error: ' + setErr);
+                                        return;
+                                    }
+                                    notification.success('Role tags successfully applied.')
+                                });
+                            }
+                            return $scope.close();
                         };
 
                         $scope.close = function () {
@@ -519,4 +523,4 @@
             }
         };
     }]);
-}(window.JP.getModule('Storage'), angular));
+}(window.JP.getModule('Storage'), window.angular));
