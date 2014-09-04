@@ -186,12 +186,23 @@
                 return action('deletePolicy', {ids: policyId}, ENTITY_TYPE.POLICY, ACCESS.WRITE);
             };
 
+            function rulesToLowerCase(ops) {
+                var rules = {};
+                if (Array.isArray(ops.rules)) {
+                    ops.rules.forEach(function (rule) {
+                        rules[rule.toLowerCase()] = true;
+                    });
+                    ops.rules = Object.getOwnPropertyNames(rules);
+                }
+                return ops;
+            }
+
             service.createPolicy = function (ops) {
-                return action('createPolicy', ops, ENTITY_TYPE.POLICY, ACCESS.WRITE);
+                return action('createPolicy', rulesToLowerCase(ops), ENTITY_TYPE.POLICY, ACCESS.WRITE);
             };
 
             service.updatePolicy = function (ops) {
-                return action('updatePolicy', ops, ENTITY_TYPE.POLICY, ACCESS.WRITE);
+                return action('updatePolicy', rulesToLowerCase(ops), ENTITY_TYPE.POLICY, ACCESS.WRITE);
             };
 
             return service;
