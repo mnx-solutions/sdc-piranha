@@ -117,11 +117,7 @@
 
 .file-name
 {
-    display: inline-block;
-    overflow: hidden;
-
     max-width: 170px;
-    padding-left: 5px;
 
     text-overflow: ellipsis;
 }
