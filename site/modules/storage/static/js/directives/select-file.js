@@ -110,7 +110,15 @@
                                 if (result.useMfind) {
                                     fileman.mfind(filePath, {mfind: result.mfind}, function (error, files) {
                                         scope.loading = false;
+                                        
                                         if (error) {
+                                            var errorMessage = 'None of your active roles are present on the resource';
+                                            if (new RegExp(errorMessage).test(error)) {
+                                                return showPopupDialog('error', 'Error', error);
+                                            }
+                                            if (error.code === "ForbiddenError") {
+                                                return showPopupDialog('error', 'Error', errorMessage + filePath + '.');
+                                            }
                                             return showPopupDialog('error', 'Error', 'An error occurred.');
                                         }
                                         return getFiles(files);

@@ -28,6 +28,10 @@
                         if (!err.message) {
                             err.message = err.code || err.errno || 'Internal error';
                         }
+                        if (typeof (err) === 'string') {
+                            PopupDialog.error(null, err);
+                            return;
+                        }
                         $scope.mantaUnavailable = true;
                         PopupDialog.error(null, err.message);
                     });
