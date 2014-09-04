@@ -117,6 +117,7 @@
                    data-ng-pattern="/^[A-Za-z]+[A-Za-z0-9\.\_]*$/"
                    data-ng-minlength="3"
                    data-ng-maxlength="32"
+                   data-ng-disabled="!!initial.login"
                    required/>
         </span>
         <span class="edit-error" data-ng-show="isFormSubmited || subAccountForm.login.$dirty">
