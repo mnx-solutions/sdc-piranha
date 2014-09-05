@@ -1,13 +1,18 @@
 package com.joyent.piranha.pageobject;
 
 
+import com.codeborne.selenide.Condition;
+import com.codeborne.selenide.SelenideElement;
+
 import static com.codeborne.selenide.Selectors.byText;
 import static com.codeborne.selenide.Selenide.$;
 import static com.codeborne.selenide.Selenide.page;
 
 public class Policies extends AbstractPageObject {
     public CreatePolicy clickCreatePolicy() {
-        $(byText("Create Policy")).click();
+        SelenideElement element = $(byText("Create Policy"));
+        element.waitUntil(Condition.visible, baseTimeout);
+        element.click();
         return page(CreatePolicy.class);
     }
 
