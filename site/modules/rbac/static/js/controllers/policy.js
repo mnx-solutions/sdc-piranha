@@ -169,7 +169,7 @@
 
             var checkRuleDuplicate = function (rule, index) {
                 var hasDuplicates = $scope.rules.some(function (r, i) {
-                    return r.rule === rule && i != index;
+                    return r.rule.toLowerCase() === rule.toLowerCase() && i !== index;
                 });
                 if (hasDuplicates) {
                     PopupDialog.error(
@@ -193,7 +193,7 @@
             };
 
             $scope.addRule = function () {
-                var newRule = $scope.model.newRule;
+                var newRule = $scope.model.newRule.toLowerCase();
                 if (!checkRuleDuplicate(newRule)) {
                     $scope.rules.push({rule: newRule, edit: false});
                     $scope.model.newRule = '';
@@ -201,6 +201,7 @@
             };
 
             $scope.saveRule = function (rule, index) {
+                rule.rule = rule.rule.toLowerCase();
                 if (!checkRuleDuplicate(rule.rule, index)) {
                     rule.edit = false;
                     $scope.rules[index].rule = rule.rule;
