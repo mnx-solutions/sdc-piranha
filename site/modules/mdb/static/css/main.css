@@ -111,6 +111,7 @@
 .file-label
 {
     display: inline-flex;
+    display: -ms-inline-flexbox;
 
     margin-top: 8px;
 }
@@ -121,7 +122,6 @@
     overflow: hidden;
 
     max-width: 170px;
-    padding-left: 5px;
 
     text-overflow: ellipsis;
 }
