@@ -493,11 +493,6 @@ input
     word-wrap: break-word;
 }
 
-.breadcrumb > li:after
-{
-    padding-right: 3px;
-}
-
 .left-part,
 .right-part
 {
