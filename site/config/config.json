@@ -195,6 +195,7 @@
     ,"mdb"
     ,"cloudAnalytics"
     ,"cdn"
+    ,"docker"
 ]
 , "features": {
     "fullVersion": "enabled"
@@ -229,5 +230,6 @@
   , "downloadSdc": "no"
   , "limitedSlb": "no"
   , "cdn": "yes"
+  , "docker": "no"
   }
 }

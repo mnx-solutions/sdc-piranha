@@ -1,0 +1,6 @@
+{
+    "em": {
+        "route": "/docker",
+        "auth": true
+    }
+}

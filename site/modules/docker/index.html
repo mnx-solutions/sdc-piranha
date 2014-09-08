@@ -1,0 +1,17 @@
+<div data-ng-switch="subview">
+    <div data-ng-switch-when="index">
+        <div data-ng-include="'docker/static/partials/index.html'"></div>
+    </div>
+    <div data-ng-switch-when="registries">
+        <div data-ng-include="'docker/static/partials/registries.html'"></div>
+    </div>
+    <div data-ng-switch-when="containers">
+        <div data-ng-include="'docker/static/partials/containers.html'"></div>
+    </div>
+    <div data-ng-switch-when="logManagement">
+        <div data-ng-include="'docker/static/partials/logs.html'"></div>
+    </div>
+    <div data-ng-switch-when="analytics">
+        <div data-ng-include="'docker/static/partials/analytics.html'"></div>
+    </div>
+</div>

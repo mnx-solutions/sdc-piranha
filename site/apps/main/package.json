@@ -31,7 +31,8 @@
             "mdb",
             "rbac",
             "downloadSdc",
-            "cdn"
+            "cdn",
+            "docker"
         ],
         "auth": true,
         "error": true,
