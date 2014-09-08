@@ -43,6 +43,65 @@
                             </div>
                         </div>
                     </div>
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <a class="accordion-toggle collapsed toggle-icon" data-toggle="collapse" data-target="#collapse_advanced">
+                                Advanced
+                            </a>
+                        </div>
+                        <div id="collapse_advanced" class="panel-collapse collapse">
+                            <div class="panel-body">
+                                <form name="advancedForm">
+                                    <div class="advanced-option">
+                                        <span class="reducers-label">Number of reducers (maximum of 1024):</span>
+                                        <span class="reducers-field">
+                                            <input type="number"
+                                                   name="numberOfReducers"
+                                                   data-ng-model="numberOfReducers"
+                                                   data-ng-pattern="/^(\d)+$/"
+                                                   min="1"
+                                                   max="1024" />
+                                        </span>
+                                        <span class="edit-error">
+                                            <div class="error"
+                                                data-translate
+                                                data-ng-show="advancedForm.numberOfReducers.$error.number || advancedForm.numberOfReducers.$error.pattern || advancedForm.numberOfReducers.$invalid && numberOfReducers + 1 <= 1">
+                                                Please provide integer number in the range (1 ... 1024).
+                                            </div>
+                                        </span>
+                                    </div>
+                                    <div class="advanced-option">
+                                        <span class="select-name">Amount of DRAM (MB):</span>
+                                        <div class="btn-group">
+                                            <select data-select-two
+                                                    id="amountOfDram"
+                                                    name="amountOfDram"
+                                                    class="dd-fixed-width"
+                                                    data-ng-model="amountOfDram"
+                                                    data-select="amountOfDram"
+                                                    data-ng-options="amountOfDram for amountOfDram in amountOfDramOptions"
+                                                    data-width="370px">
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="advanced-option">
+                                        <span class="select-name">Amount of disk space (GB):</span>
+                                        <div class="btn-group">
+                                            <select data-select-two
+                                                    id="amountOfDiskSpace"
+                                                    name="amountOfDiskSpace"
+                                                    class="dd-fixed-width"
+                                                    data-ng-model="amountOfDiskSpace"
+                                                    data-select="amountOfDiskSpace"
+                                                    data-ng-options="amountOfDiskSpace for amountOfDiskSpace in amountOfDiskSpaceOptions"
+                                                    data-width="370px">
+                                            </select>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
             <div class="right-part">
