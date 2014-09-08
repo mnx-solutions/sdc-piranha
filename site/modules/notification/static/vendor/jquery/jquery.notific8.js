@@ -118,7 +118,7 @@
                 n.removeClass('open');
                 n.height(0);
                 setTimeout(function () {
-                    n.remove()
+                    n.remove();
                 }, 200);
             } else {
                 styles[animate] = n.outerWidth() * -1;
@@ -252,27 +252,27 @@
      */
     $.notific8 = function (message, options) {
         switch (message) {
-        case 'configure':
-        case 'config':
-            return methods.configure.apply(this, [options]);
-        case 'zindex':
-            return methods.zindex.apply(this, [options]);
-        default:
-            if (typeof options === 'undefined') {
-                options = {};
-            }
+            case 'configure':
+            case 'config':
+                return methods.configure.apply(this, [options]);
+            case 'zindex':
+                return methods.zindex.apply(this, [options]);
+            default:
+                if (typeof options === 'undefined') {
+                    options = {};
+                }
 
-            // make sure that the stack containers exist
-            if ($('.jquery-notific8-container').size() === 0) {
-                methods.initContainers();
-            }
+                // make sure that the stack containers exist
+                if ($('.jquery-notific8-container').size() === 0) {
+                    methods.initContainers();
+                }
 
-            // make sure the edge settings exist
-            methods.checkEdges(options);
+                // make sure the edge settings exist
+                methods.checkEdges(options);
 
-            //display the notification in the right corner
-            $('.jquery-notific8-container.' + options.verticalEdge + '.' + options.horizontalEdge).notific8(message, options);
-            break;
+                //display the notification in the right corner
+                $('.jquery-notific8-container.' + options.verticalEdge + '.' + options.horizontalEdge).notific8(message, options);
+                break;
         }
     };
 
