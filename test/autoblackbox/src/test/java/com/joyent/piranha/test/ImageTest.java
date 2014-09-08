@@ -1,6 +1,7 @@
 package com.joyent.piranha.test;
 
 import static com.codeborne.selenide.Condition.visible;
+
 import com.joyent.piranha.PropertyHolder;
 import com.joyent.piranha.pageobject.*;
 import com.joyent.piranha.pageobject.CreateInstanceManual;
@@ -44,12 +45,16 @@ public class ImageTest extends TestWrapper {
 
     @Test
     public void imageCRUD() throws IOException {
-        InstanceDetails instanceDetails = sideBarMenu.clickCompute().getInstanceList().openInstanceDetails(InstanceRenameTests.TEST_INSTANCE_NAME);
+        InstanceList instanceList = sideBarMenu.clickCompute().getInstanceList();
+        instanceList.waitForLargeSpinnerDisappear();
+        instanceList.openGridTab(PropertyHolder.getDatacenter(0));
+        InstanceDetails instanceDetails = instanceList.openInstanceDetails(InstanceRenameTests.TEST_INSTANCE_NAME);
         ImagesSection imagesSection = instanceDetails.openImagesSection();
         final String imageName = "testImage" + System.currentTimeMillis();
         imagesSection.setImageName(imageName);
         ImageList imageList = imagesSection.clickCreateImage();
         imagesSection.clickButtonInModal("Yes");
+        instanceList.openGridTab(PropertyHolder.getDatacenter(0));
         imagesSection.waitForSmallSpinnerDisappear();
         $(byText(imageName)).shouldBe(visible);
         imageList.addGridColumn("Data Center");

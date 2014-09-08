@@ -57,7 +57,7 @@ public class PolicyTest extends TestWrapper {
         $(".policy-form-error:not(.ng-hide)").waitUntil(exist, timeout);
         $(byText("Name can contain only letters, digits, spaces and signs like \".\" and \"-\"")).shouldBe(visible);
         createPolicy.setName("testPolicy");
-        String role = "incorrectRole";
+        String role = "incorrectrole";
         createPolicy.addRule(role);
         createPolicy.clickCreatePolicy();
         assertTrue($(".modal").text().contains("Parse error on line 1:\n" + role));
@@ -77,7 +77,7 @@ public class PolicyTest extends TestWrapper {
         PolicyDetails policyDetails = policies.openPolicyDetails(policyName);
         String newPolicyName = "newPolicyName" + System.currentTimeMillis();
         policyDetails.setName(newPolicyName);
-        String role = "can testRole " + System.currentTimeMillis();
+        String role = "can testrole " + System.currentTimeMillis();
         policyDetails.addRule(role);
         policyDetails.clickSave();
         policyDetails.waitForLargeSpinnerDisappear();

@@ -106,10 +106,15 @@ public abstract class AbstractPageObject {
     }
 
     public void performAction(String action) {
-        clickActionsButton();
-        SelenideElement actionsList = $("#option-list-actions");
-        actionsList.waitUntil(visible, baseTimeout);
-        actionsList.$(byText(action)).click();
+        if ($("#button-actions").isDisplayed()) {
+            clickActionsButton();
+            SelenideElement actionsList = $("#option-list-actions");
+            actionsList.waitUntil(visible, baseTimeout);
+            actionsList.$(byText(action)).click();
+        } else {
+            $("[ng-if=\"actionButtonsList.length == 1\"] button").click();
+        }
+
     }
 
     public void clickActionsButton() {
