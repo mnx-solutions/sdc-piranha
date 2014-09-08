@@ -322,7 +322,7 @@
                 }, {
                     id: ng.toJson({
                         type: 'wildcard',
-                        text: 'all vms'
+                        text: 'vmall'
                     }),
                     text: 'All my VMs in DC'
                 }, {
