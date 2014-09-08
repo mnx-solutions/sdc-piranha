@@ -52,6 +52,16 @@
                 };
                 scope.loadCollection();
 
+                function updateCollection() {
+                    var newCollection = {};
+                    scope.internalCollection.forEach(function (collection) {
+                        if (!collection.isNew) {
+                            newCollection[collection.dirtyKey] = collection.dirtyVal;
+                        }
+                    });
+                    scope.collection = newCollection;
+                }
+
                 function hasDuplicate(item) {
                     return scope.internalCollection.find(function (el) {
                         return el && el.key === item.dirtyKey;
@@ -108,13 +118,23 @@
                     }
 
                     function createOrUpdate() {
-                        if (item.isNew) {
-                            doCreate();
-                            return;
-                        }
+                        if (!scope.machineId) {
+                            if (!item.isNew) {
+                                removeItem(item);
+                                updateCollection();
+                            }
+                            scope.collection[item.dirtyKey] = item.dirtyVal;
+                            scope.loadCollection();
+                            item.saving = scope.saving = false;
+                        } else {
+                            if (item.isNew) {
+                                doCreate();
+                                return;
+                            }
 
-                        doUpdate();
-                        removeItem(duplicate);
+                            doUpdate();
+                            removeItem(duplicate);
+                        }
                     }
 
                     var duplicate = hasDuplicate(item);
@@ -153,11 +173,18 @@
                         scope.revertItem(lastEditItem);
                     }
                     item.saving = scope.saving = true;
-                    Machine[scope.collectionName].delete(scope.machineId, item.key).then(function () {
-                        scope.saving = false;
+                    if (scope.machineId) {
+                        Machine[scope.collectionName].delete(scope.machineId, item.key).then(function () {
+                            scope.saving = false;
+                            removeItem(item);
+                            scope.loadCollection();
+                        });
+                    } else {
                         removeItem(item);
+                        updateCollection();
+                        scope.saving = false;
                         scope.loadCollection();
-                    });
+                    }
                 };
 
                 scope.revertItem = function (item) {
@@ -165,6 +192,12 @@
                     item.dirtyVal = item.val;
                     item.edit = false;
                 };
+
+                scope.$watch('collection', function () {
+                    if (!scope.machineId) {
+                        scope.loadCollection();
+                    }
+                });
             }
         };
     }]);
