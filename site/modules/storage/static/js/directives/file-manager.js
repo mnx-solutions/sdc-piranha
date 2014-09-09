@@ -479,22 +479,7 @@
                         btnTitle: 'Submit and Access Manta',
                         appendPopupMessage: 'Manta access will now be granted.'
                     };
-                    Account.checkProvisioning(submitBillingInfo, null, null, function (isSuccess) {
-                        if (isSuccess) {
-                            var fallback = function () {
-                                $location.path('/manta/intro');
-                            };
-                            Storage.listPing().then(function () {
-                                Storage.listPing().then(function () {
-                                    Storage.listPing().then(function () {
-                                        $location.path('/manta/files');
-                                    }, fallback);
-                                }, fallback);
-                            }, fallback);
-                        } else {
-                            $location.path('/manta/intro');
-                        }
-                    }, false);
+                    Account.checkProvisioning(submitBillingInfo, null, null, Storage.getAfterBillingHandler('/manta/files'), false);
                 };
 
                 Account.getAccount().then(function (account) {

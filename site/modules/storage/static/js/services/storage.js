@@ -6,7 +6,8 @@ window.fn = [];
         'serverTab',
         '$q',
         'PopupDialog',
-        function (serverTab, $q, PopupDialog) {
+        '$location',
+        function (serverTab, $q, PopupDialog, $location) {
 
             var service = {};
             function jobRequest(callName, data, suppressError, resultWrapper) {
@@ -68,6 +69,25 @@ window.fn = [];
 
             service.listPing = function (suppressError) {
                 return jobRequest('StorageListPing', null, suppressError);
+            };
+
+            service.getAfterBillingHandler = function (pageUrl) {
+                return function (isSuccess) {
+                    if (isSuccess) {
+                        var fallback = function () {
+                            $location.path('/manta/intro');
+                        };
+                        service.listPing().then(function () {
+                            service.listPing().then(function () {
+                                service.listPing().then(function () {
+                                    $location.path(pageUrl);
+                                }, fallback);
+                            }, fallback);
+                        }, fallback);
+                    } else {
+                        $location.path('/manta/intro');
+                    }
+                };
             };
 
             return service;

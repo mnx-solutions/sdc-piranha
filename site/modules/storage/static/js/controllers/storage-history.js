@@ -65,7 +65,7 @@
                         getJobsList().then(function (jobs) {
                             $scope.jobs = jobs;
                         });
-                    }, null, null, false);
+                    }, null, Storage.getAfterBillingHandler('/manta/jobs'), false);
                 };
 
 
