@@ -74,11 +74,11 @@ public class SubuserTest extends AbstractPageObject {
     @Test
     public void updateSubUserInfo() {
         String username = USERS.createTestSubUser();
-        String newName = "newName" + System.currentTimeMillis();
+        String emailAddress = "newEmail" + System.currentTimeMillis() + "@q.q";
         SubuserDetails subuserDetails = USERS.openSubuserDetails(username);
-        subuserDetails.setUsername(newName);
+        subuserDetails.setEmailAddress(emailAddress);
         subuserDetails.clickSave();
-        $(Users.grid).$(byText(newName)).shouldBe(visible);
+        $(Users.grid).$(byText(emailAddress)).shouldBe(visible);
     }
 
     @Test
