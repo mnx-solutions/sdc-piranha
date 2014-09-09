@@ -143,6 +143,7 @@ public class CreateInstanceManual extends AbstractPageObject implements CreateIn
         chooseImage(instanceVO.getImageName());
         selectPackage(instanceVO.getPackageVersion());
         selectPackageVersion(instanceVO.getVersion());
+        selectImageVersion(instanceVO.getVersion());
         clickReviewBtn();
         selectNetwork(0);
         setInstanceNameValue(instanceVO.getImageName());
@@ -151,6 +152,15 @@ public class CreateInstanceManual extends AbstractPageObject implements CreateIn
         page(Instances.class).getInstanceList().openGridTab(instanceVO.getDatacenter());
         waitForSmallSpinnerDisappear();
         return page(Instances.class);
+    }
+
+    private void selectImageVersion(String version) {
+        while (true) {
+            selectFromSelect2("#s2id_selectVersion", version);
+            if ($(byText(version)).isDisplayed()) {
+                break;
+            }
+        }
     }
 
     @Override
