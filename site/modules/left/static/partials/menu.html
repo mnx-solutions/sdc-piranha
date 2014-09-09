@@ -170,6 +170,41 @@
                     <span class="selected"></span>
                 </a>
             </li>
+            <li class="nested"
+                data-ng-show="features.docker == 'enabled'"
+                data-ng-class="{active: location.path().search('docker') == 1, open: location.path().search('/registries?') > 1 || location.path().search('/containers?') > 1 || location.path().search('/logs?') > 1 || location.path().search('/analytics?') > 1}">
+                <a href="#!/docker" class="docker-icon">
+                    <span class="title">Docker</span>
+                    <span class="selected"></span>
+                </a>
+                <ul class="sub-menu">
+                    <li left-list-item class="sub" data-ng-class="{active: location.path().search('docker/registries?') == 1}">
+                        <a href="#!/docker/registries">
+                            <span class="titles" data-translate>Registries</span>
+                            <span class="selected-sub"></span>
+                        </a>
+                    </li>
+                    <li left-list-item class="sub" data-ng-class="{active: location.path().search('docker/containers?') == 1}">
+                        <a href="#!/docker/containers">
+                            <span class="titles" data-translate>Containers</span>
+                            <span class="selected-sub"></span>
+                        </a>
+                    </li>
+                    <li left-list-item class="sub" data-ng-class="{active: location.path().search('docker/logs?') == 1}">
+                        <a href="#!/docker/logs">
+                            <span class="titles" data-translate>Log Management</span>
+                            <span class="selected-sub"></span>
+                        </a>
+                    </li>
+                    <li left-list-item class="sub" data-ng-class="{active: location.path().search('docker/analytics?') == 1}">
+                        <a href="#!/docker/analytics">
+                            <span class="titles" data-translate>Analytics</span>
+                            <span class="selected-sub"></span>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+
             <li>
                 <div class="sidebar-toggler" data-ng-class="{'sidebar-toggler-back': sideBarMin}" data-ng-click="toggleSideBar()"></div>
             </li>

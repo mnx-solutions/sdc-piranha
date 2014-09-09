@@ -278,6 +278,16 @@ li.active a.sdc-download-icon
     background-image: url('../img/download-orange.png') !important;
 }
 
+.docker-icon
+{
+    background-image: url('../img/docker-white.png');
+}
+
+li.active a.docker-icon
+{
+    background-image: url('../img/docker-orange.png') !important;
+}
+
 .dashboard-icon,
 .compute-icon,
 .storage-icon,
@@ -285,7 +295,8 @@ li.active a.sdc-download-icon
 .support-icon,
 .accounts-icon,
 .debug-icon,
-.sdc-download-icon
+.sdc-download-icon,
+.docker-icon
 {
     height: 22px;
 
@@ -487,3 +498,4 @@ li.active a.sdc-download-icon
 {
     max-height: none;
 }
+
