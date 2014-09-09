@@ -4895,7 +4895,7 @@ label.checkbox.folder-name-form-checkbox
 {
     padding: 0 0 0 5px;
     color: #a9a9a9;
-    content: '/';
+    content: '/\00a0';
 }
 
 .description-column span
