@@ -779,8 +779,7 @@ select.date-year
 .edit-value-double .input-group input
 {
     font-size: 16px;
-
-    width: 181px !important;
+    width: 180px !important;
     height: 30px;
 }
 
@@ -2644,8 +2643,7 @@ select::-ms-expand
 .toggle-icon
 {
     padding-left: 40px !important;
-
-    background: url('../img/accord_i_plus.png') no-repeat 15px center;
+    background: url('../img/accord_i_plus.png') no-repeat 13px center;
 }
 
 .collapsed.toggle-icon
@@ -5019,7 +5017,7 @@ label.checkbox.folder-name-form-checkbox
 .configurationForm .edit-value,
 .configurationForm .edit-value input
 {
-    width: 400px;
+    width: 395px;
 }
 
 .configurationForm .error,
@@ -5030,6 +5028,11 @@ label.checkbox.folder-name-form-checkbox
 .configurationForm .form-group
 {
     margin-bottom: 10px;
+}
+
+.configurationForm .edit-name
+{
+    width: 130px;
 }
 
 .apiKeyForm .edit-value,

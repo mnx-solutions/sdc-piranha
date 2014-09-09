@@ -47,7 +47,7 @@
 
 .create-images input
 {
-    text-indent: 6px;
+    padding-left: 6px;
 }
 
 .create-images input,
@@ -332,9 +332,8 @@
 
 .tag.editable input
 {
+    padding-left: 4px;
     height: 31px;
-
-    text-indent: 4px;
 }
 
 .tag.editable .key,
@@ -1391,35 +1390,35 @@ span.btn-success
 .wizard-steps
 {
     position: absolute;
-
     display: inline-block;
     clear: both;
     overflow: hidden;
-
-    width: 1000px;
     margin-top: 11px;
+    width: 1000px;
+    height: 33px;
+    font-size: 0;
 }
 
 .wizard-steps div
 {
     position: relative;
-
     display: inline-block;
+    font-size: 0;
 }
 
 .wizard-steps p
 {
     font-size: 16px;
     font-weight: 300;
-    line-height: 34px;
+    line-height: 33px;
 
     position: relative;
 
     display: block;
     float: left;
 
-    height: 34px;
-    margin-right: 20px;
+    height: 33px;
+    margin-right: 19px;
     padding: 0 3px 0 10px;
 
     text-decoration: none;
@@ -1448,7 +1447,7 @@ span.btn-success
 {
     position: absolute;
     top: 0;
-    right: -17px;
+    right: -16px;
 
     width: 0;
     height: 0;
@@ -1568,8 +1567,6 @@ span.btn-success
 .accordion-package-select .accordion-toggle
 {
     padding: 9px 15px;
-
-    border: 1px solid #dadcdd;
 }
 
 .accordion-package-select .panel-body
@@ -1587,6 +1584,7 @@ span.btn-success
 .accordion-package-select .panel-body span
 {
     display: inline-block;
+    box-sizing: content-box;
 }
 
 .accordion-package-select .panel-body span.ng-scope
@@ -1606,21 +1604,26 @@ span.btn-success
     padding-left: 40px;
 }
 
-.accordion-package-select .panel-body .memory,
 .accordion-package-select .panel-body .short-name
 {
-    box-sizing: content-box;
-    width: 145px;
+    width: 22%;
 }
 
+.accordion-package-select .panel-body .memory
+{
+    width: 20%;
+}
 .accordion-package-select .panel-body .cpu
 {
-    width: 110px;
+    width: 14%;
 }
 
 .accordion-package-select .panel-body .disk
 {
-    width: 120px;
+    width: 17%;
+}
+.accordion-package-select .panel-body .price {
+    max-width: 17%;
 }
 
 .accordion-package-select .package-info,
@@ -1628,16 +1631,14 @@ span.btn-success
 {
     width: 720px;
     height: 40px;
-
     border: 1px solid #dadcdd;
+    border-top: 0;
 }
 
 .accordion-package-select .package-info
 {
     line-height: 40px;
-
     margin-top: -1px;
-
     cursor: pointer;
     vertical-align: middle;
 }
@@ -1655,6 +1656,13 @@ span.btn-success
 .accordion-package-select .panel-heading
 {
     margin-top: -1px;
+    border: 1px solid #dadcdd;
+    border-top: 0;
+}
+
+.accordion-container > .accordion-package-title
+{
+    border-top: 1px solid #dadcdd;
 }
 
 .accordion-package-title
@@ -1939,12 +1947,10 @@ span.btn-success
 
 .instance-name-input
 {
-    font-size: 14px;
-
+    padding-left: 6px;
     width: 324px;
     height: 30px;
-
-    text-indent: 6px;
+    font-size: 14px;
 }
 
 .networks-box-3 span
@@ -1961,7 +1967,6 @@ span.btn-success
 .networks-box-3 label
 {
     display: block;
-
     margin-bottom: 5px;
 }
 
