@@ -73,7 +73,7 @@
                         btnTitle: 'Submit and Access Job Builder',
                         appendPopupMessage: 'Manta access will now be granted.'
                     };
-                    Account.checkProvisioning(submitBillingInfo, null, null, null, false);
+                    Account.checkProvisioning(submitBillingInfo, null, null, Storage.getAfterBillingHandler('/manta/builder'), false);
                 };
 
                 $scope.createJob = function () {

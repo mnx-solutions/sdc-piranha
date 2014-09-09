@@ -10,8 +10,8 @@
         'PopupDialog',
         'fileman',
         'Account',
-        '$location',
-        function ($q, scope, requestContext, localization, cdn, PopupDialog, fileman, Account, $location) {
+        'Storage',
+        function ($q, scope, requestContext, localization, cdn, PopupDialog, fileman, Account, Storage) {
             localization.bind('cdn', scope);
             requestContext.setUpRenderContext('cdn.index', scope);
 
@@ -82,7 +82,7 @@
                     btnTitle: 'Submit and Access Fastly',
                     appendPopupMessage: 'Manta access will now be granted.'
                 };
-                Account.checkProvisioning(submitBillingInfo, null, null, null, false);
+                Account.checkProvisioning(submitBillingInfo, null, null, Storage.getAfterBillingHandler('/manta/cdn'), false);
             };
 
             scope.apiKeyAction = function (actionType) {
