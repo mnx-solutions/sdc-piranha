@@ -133,8 +133,14 @@ var firewall = function execute (scope) {
             call.log.info('Update firewall rule ' + call.data.uuid);
             var cloud = call.cloud.separate(call.data.datacenter);
             var uuid = call.data.uuid;
-            var newRule = fwrule.create(call.data).text();
-
+            var newRule;
+            try {
+                newRule = fwrule.create(call.data);
+            } catch (e) {
+                call.done(e);
+                return;
+            }
+            newRule = newRule.text();
             cloud.updateFwRule(uuid, {
                 enabled: call.data.enabled,
                 rule: newRule
