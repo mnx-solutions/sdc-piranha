@@ -35,6 +35,21 @@
             var REVIEW_STEP_NAME = 'Review';
             var ACCOUNT_STEP_NAME = 'Account Information';
             var SSH_STEP_NAME = 'SSH Key';
+            var DOCKER_USER_SCRIPT = 'if [ -e /var/tmp/.docker-installed ]; then exit 0; fi;\
+                            sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 36A1D7869245C8950F966E92D8576A8BA88D21E9;\
+                            sudo sh -c "echo deb https://get.docker.io/ubuntu docker main > /etc/apt/sources.list.d/docker.list"; \
+                            sudo apt-get update; \
+                            sudo curl -sSL https://get.docker.io/ubuntu/ | sudo sh || /bin/true \
+                            export STATE=true ; while $STATE ; do if pgrep mkfs.ext3  >/dev/null ; then  echo "waiting for mkfs to complete"; else export STATE=false ; fi ; sleep 6 ; done ; \
+                            sudo mkdir /mnt/docker; \
+                            sudo service docker stop; \
+                            sudo echo \'DOCKER_OPTS="-g /mnt/docker/"\' >> /etc/default/docker ; \
+                            sudo service docker start; \
+                            touch /var/tmp/.docker-installed \
+                            sleep 5; \
+                            sudo docker pull google/cadvisor:latest \
+                            sudo docker run   --volume=/var/run:/var/run:rw   --volume=/sys:/sys:ro   --volume=/mnt/docker/:/var/lib/docker:ro   --publish=8088:8080   --detach=true   --name=cAdvisor google/cadvisor:latest;';
+
             $scope.setCreateInstancePage = Machine.setCreateInstancePage;
             $scope.provisionSteps = [
                 {
@@ -122,7 +137,7 @@
             $scope.filterSimpleImagesByDatacenter = function (image) {
                 return image.imageData.datacenter === $scope.data.datacenter;
             };
-            
+
             var deleteProvisionStep = function (stepName) {
                 if (stepName === SSH_STEP_NAME) {
                     $scope.reviewModel.createInstanceTitle = $scope.keys.length > 0 ? 'Create Instance' : 'Next';
@@ -201,6 +216,12 @@
                         });
                         $location.path('/compute/ssh');
                     } else if (!provisioningInProgress) {
+                        //add metadata and tags for docker host
+                        if ($scope.preSelectedImageId && $location.search().specification === 'dockerhost') {
+                            machineData.metadata['user-script'] = DOCKER_USER_SCRIPT;
+                            machineData.tags['JPC_tag'] = 'DockerHost';
+                        }
+
                         provisioningInProgress = true;
                         Machine.provisionMachine(machineData).done(function (err, job) {
                             provisioningInProgress = false;
@@ -295,7 +316,7 @@
                             }
                         });
 
-                        $location.path('/compute');
+                        $location.url('/compute');
                     }
                 };
                 var submitBillingInfo = {btnTitle: 'Next'};
@@ -1038,7 +1059,7 @@
                 }
                 return result;
             };
-            
+
             $scope.selectInstanceType = function (type) {
                 $scope.instanceType = type;
                 if (type === 'Public') {
@@ -1215,7 +1236,7 @@
                 var operating_systems = {All: 1};
 
                 $scope.datasetsLoading = false;
-                
+
                 datasets.forEach(function (dataset) {
                     operating_systems[dataset.os] = 1;
 
@@ -1225,7 +1246,7 @@
                     dataset.limit = checkLimit(dataset.id);
                     var datasetListVersions = listVersions[datasetVisibility][datasetName] = listVersions[datasetVisibility][datasetName] || [];
                     var datasetVersions = versions[datasetVisibility][datasetName];
-                    
+
                     if (!datasetVersions) {
                         datasetVersions = versions[datasetVisibility][datasetName] = {};
                         datasetVersions[datasetVersion] = dataset;
@@ -1488,7 +1509,7 @@
                 ng.element('.carousel-inner').scrollTop(0);
                 ng.element('.carousel').carousel('next');
             };
-            
+
             $scope.zenboxDialog = function (params) {
                 var props = angular.extend({}, $rootScope.zenboxParams, params);
                 window.Zenbox.show(null, props);

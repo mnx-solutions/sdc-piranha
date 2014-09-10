@@ -20,41 +20,53 @@
                 title: localization.translate(null, 'docker', 'See my Joyent Docker Instances')
             });
 
-            var image = ''; // TODO Ubuntu Image
-            $scope.data = {};
-            $scope.data.datacenter = 'local-u';
-
-            $scope.selectDatacenter = function (name) {
-                var datacenters = $scope.datacenters;
-                var datacenterName = null;
-                if (datacenters.length > 0) {
-                    var hasSpecifiedDatacenter = datacenters.some(function (datacenter) {
-                        return datacenter.name === name;
-                    });
-                    if (name && hasSpecifiedDatacenter) {
-                        datacenterName = name;
-                    } else {
-                        datacenterName = datacenters[0].name;
-                    }
-                }
-                if (datacenterName) {
-                    $scope.data.datacenter = datacenterName;
-                    $rootScope.commonConfig('datacenter', datacenterName);
-                }
+            $scope.data = {
+                datacenter: '',
+                imageId: ''
             };
 
-            var tasks =[
-                $q.when(Datacenter.datacenter()),
-            ];
-
-            $qe.every(tasks).then(function (result) {
-                $scope.datacenters = result[0];
+            Datacenter.datacenter().then(function (datacenters) {
+                $scope.datacenters = datacenters;
+                $scope.data.datacenter = $scope.datacenters[0].name;
             }, function (err) {
                 PopupDialog.errorObj(err);
             });
 
+            $scope.$watch('data.datacenter', function (newVal) {
+                if (newVal) {
+                    $scope.data.imageId = '';
+                    Image.image({ datacenter: newVal, public: true }).then(function (images) {
+                        var ubuntuImages = images.filter(function (image) {
+
+                            return image.name.indexOf('ubuntu') !== -1;
+                        });
+                        if (ubuntuImages.length > 0) {
+                            ubuntuImages.sort(function (a, b) {
+                                return -a.name.localeCompare(b.name);
+                            });
+                            $scope.data.imageId = ubuntuImages[0].id;
+                        } else {
+                            PopupDialog.message(
+                                localization.translate(
+                                    $scope,
+                                    null,
+                                    'Message'
+                                ),
+                                localization.translate(
+                                    $scope,
+                                    null,
+                                    'This datacenter has no “ubuntu” image suitable for creating docker host'
+                                )
+                            );
+                        }
+                    }, function (err) {
+                        PopupDialog.errorObj(err);
+                    });
+                }
+            });
+
             $scope.createDocker = function () {
-                $location.path('/compute/create/' + image);
+                $location.url('/compute/create/' + $scope.data.imageId + '?specification=dockerhost');
             };
         }
     ]);

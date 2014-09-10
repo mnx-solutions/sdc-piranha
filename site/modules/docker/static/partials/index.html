@@ -5,7 +5,7 @@
             <div class="control-panel">
                 <span>Data Center:</span>
                 <div class="provisioning-header-left-button btn-group">
-                    <select type="hidden" data-select-two id="selectDockerDatacenter" data-ng-model="data.datacenter" data-fn="selectDatacenter" data-select="data.datacenter" placeholder="No matches found">
+                    <select type="hidden" data-select-two id="selectDockerDatacenter" data-ng-model="data.datacenter" data-select="data.datacenter" placeholder="No matches found">
                         <option value=""></option>
                         <option data-ng-repeat="datacenter in datacenters | orderBy:$index" value="{{datacenter.name}}">
                             {{datacenter.name}}
@@ -13,7 +13,7 @@
                     </select>
                 </div>
             </div>
-            <button data-ng-click="createDocker()" type="button" class="btn btn-big orange text-to-left"><i class="plus-btn-icon"></i>Create Docker Host</button>
+            <button data-ng-disabled="!data.imageId" data-ng-click="createDocker()" type="button" class="btn btn-big orange text-to-left"><i class="plus-btn-icon"></i>Create Docker Host</button>
         </div>
     </div>
 </div>
