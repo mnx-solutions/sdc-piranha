@@ -145,9 +145,9 @@
                             localization.translate(
                                 null,
                                 'firewall',
-                                'Unable to update rule: {{error}}.',
+                                'Unable to update rule{{error}}.',
                                 {
-                                    error: (err.message) ? '<br />' + err.message : ''
+                                    error: (err.message) ? ': ' + err.message : ''
                                 }
                             ),
                             function () {}
