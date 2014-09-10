@@ -13,6 +13,11 @@
                              data-translate>
                             File path is invalid.
                         </div>
+                        <div class="error"
+                             data-ng-show="!folderNameForm.fullFilePath.$invalid && fullFilePath.length && ($$childTail.errorRolesResource || $$childHead.errorRolesResource)"
+                             data-translate>
+                            None of your active roles are present on the resource.
+                        </div>
                         <input type="text"
                                name="fullFilePath"
                                data-ng-model="fullFilePath"

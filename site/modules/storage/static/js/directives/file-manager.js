@@ -299,14 +299,26 @@
                     });
                 };
 
+                function checkErrorRolesResource(error) {
+                    var errorMessage = 'None of your active roles are present on the resource';
+                    if (error.indexOf(errorMessage) !== -1 && scope.popup) {
+                        scope.errorRolesResource = true;
+                    }
+                }
+
                 scope.createFilesTree = function (userAction, path, callback) {
                     path = path || scope.currentPath;
                     fileman.ls(path, function (error, result) {
                         scope.loadingFolder = false;
                         scope.loading = false;
                         scope.refreshingFolder = false;
+                        scope.errorRolesResource = false;
                         if (error) {
-                            return showPopupDialog('error', 'Error', error);
+                            checkErrorRolesResource(error);
+                            if (!scope.errorRolesResource) {
+                                return showPopupDialog('error', 'Error', error);
+                            }
+                            return;
                         }
 
                         scope.files = result.__read();
@@ -419,6 +431,12 @@
                         scope.createFilesTree(userAction, null, callback);
                     } else {
                         scope.refreshingFolder = false;
+                        fileman.info(scope.currentPath, function (error) {
+                            scope.errorRolesResource = false;
+                            if (error) {
+                                checkErrorRolesResource(error);
+                            }
+                        });
                         if (rootPath !== scope.currentPath && userAction && scope.userConfig.loaded()) {
                             var config = scope.userConfig.$child('fileman');
                             config.path = scope.currentPath;
