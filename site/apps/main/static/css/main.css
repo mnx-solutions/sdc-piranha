@@ -4589,6 +4589,11 @@ label.checkbox
     width: 580px;
 }
 
+.modal-dialog-role-tag
+{
+    min-width: 540px;
+}
+
 .modal-body
 {
     overflow-x: hidden;
@@ -4621,7 +4626,7 @@ label.checkbox
 
 .modal-open .modal
 {
-    overflow-x: hidden;
+    overflow-x: auto;
     overflow-y: auto;
 }
 
