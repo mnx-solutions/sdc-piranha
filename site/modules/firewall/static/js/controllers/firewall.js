@@ -127,8 +127,6 @@
             function extractVmInfo(machines) {
                 for(var m in machines) {
                     var machine = machines[m];
-                    // FIXME:
-                    //if(ng.isObject(machine) && machine.compute_node) {
                     if (ng.isObject(machine) && machine.firewall_supported) {
                         if(ng.isObject(machine.tags) && Object.keys(machine.tags).length) {
                             for(var tag in machine.tags) {

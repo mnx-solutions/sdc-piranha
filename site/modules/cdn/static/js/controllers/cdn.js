@@ -10,8 +10,8 @@
         'PopupDialog',
         'fileman',
         'Account',
-        'Storage',
-        function ($q, scope, requestContext, localization, cdn, PopupDialog, fileman, Account, Storage) {
+        '$location',
+        function ($q, scope, requestContext, localization, cdn, PopupDialog, fileman, Account, $location) {
             localization.bind('cdn', scope);
             requestContext.setUpRenderContext('cdn.index', scope);
 
@@ -193,15 +193,8 @@
                 );
             };
 
-            scope.getCheckedItems = function () {
-                return scope.configurations.filter(function (el) {
-                    return el.checked;
-                });
-            };
-
             function deleteConfiguration(messageTitle, messageBody) {
-                var checkedItems = scope.getCheckedItems();
-                if (checkedItems.length) {
+                if (scope.checkedItems.length) {
                     PopupDialog.confirm(
                         localization.translate(
                             scope,
@@ -211,11 +204,11 @@
                         localization.translate(
                             scope,
                             null,
-                            checkedItems.length > 1 ? messageBody.plural : messageBody.single
+                            scope.checkedItems.length > 1 ? messageBody.plural : messageBody.single
                         ),
                         function () {
                             scope.loading = true;
-                            var deleteIds = checkedItems.map(function (item) {
+                            var deleteIds = scope.checkedItems.map(function (item) {
                                 return item.id;
                             });
                             var opts = {
@@ -224,6 +217,7 @@
                             };
                             cdn.deleteConfiguration(opts).then(function () {
                                 loadConfigurations();
+                                scope.checkedItems = [];
                             }, function (err) {
                                 loadConfigurations();
                                 showError(err);

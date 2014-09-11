@@ -16,7 +16,6 @@
         '$rootScope',
         'Account',
         'FreeTier',
-
         function ($scope, $$track, $q, requestContext, Machine, Image, Package, localization, PopupDialog, $location, firewall, $rootScope, Account, FreeTier) {
             localization.bind('machine', $scope);
             requestContext.setUpRenderContext('machine.index', $scope, {
@@ -81,12 +80,6 @@
                 }
             });
 
-            $scope.getCheckedItems = function () {
-                return $scope.machines.filter(function (el) {
-                    return el.checked;
-                });
-            };
-
             $scope.noCheckBoxChecked = function(){
                 PopupDialog.error(
                     localization.translate(
@@ -120,8 +113,7 @@
             };
 
             function makeMachineAction(action, messageTitle, messageBody) {
-                var checkedInstances = $scope.getCheckedItems();
-                if (checkedInstances.length) {
+                if ($scope.checkedInstances.length) {
                     var checkedFreeMachines = true;
                     var checkedMachines = $scope.machines.filter(function (machine) {
                         if (machine.checked) {
@@ -157,7 +149,6 @@
                         }
                         return false;
                     });
-
                     PopupDialog.confirm(
                         localization.translate(
                             $scope,
@@ -169,7 +160,7 @@
                             null,
                             (function () {
                                 var result = messageBody.single;
-                                if (checkedInstances.length > 1) {
+                                if ($scope.checkedInstances.length > 1) {
                                     result = checkedFreeMachines && messageBody.freetier_plural ?
                                         messageBody.freetier_plural : messageBody.plural;
                                 } else if (checkedFreeMachines && messageBody.freetier_single) {
@@ -196,6 +187,7 @@
                                 }
                                 el.checked = false;
                             });
+                            $scope.checkedInstances = [];
                         }
                     );
                 } else {
@@ -429,8 +421,7 @@
 
             var doFirewallAction = function (action) {
                 var isFirewallNonSupported = false;
-                var checkedInstances = $scope.getCheckedItems();
-                var checkedInstancesQuantity = checkedInstances.length;
+                var checkedInstancesQuantity = $scope.checkedInstances.length;
 
                 if (checkedInstancesQuantity) {
                     var message = action + ' firewall for selected instance';
@@ -448,7 +439,7 @@
                             message
                         ),
                         function () {
-                            checkedInstances.forEach(function (machine) {
+                            $scope.checkedInstances.forEach(function (machine) {
                                 if (!machine.firewall_supported) {
                                     isFirewallNonSupported = true;
                                 } else if (action === 'Enable' !== machine.firewall_enabled) {

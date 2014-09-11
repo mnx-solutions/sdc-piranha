@@ -15,34 +15,30 @@
             link: function (scope, element, attrs) {
                 scope.id = attrs.id + '-select';
 
-                //FIXME: Rename to makeZebraStriped or similar
-                var striped = function () {
-                    angular.element('.ms-selectable' + ' li:visible').filter(":even").addClass("striped");
-                    angular.element('.ms-selectable' + ' li:visible').filter(":odd").removeClass("striped");
-                    angular.element('.ms-selection' + ' li:visible').filter(":even").addClass("striped");
-                    angular.element('.ms-selection' + ' li:visible').filter(":odd").removeClass("striped");
+                var makeZebraStriped = function () {
+                    ng.element('.ms-selectable' + ' li:visible').filter(":even").addClass("striped");
+                    ng.element('.ms-selectable' + ' li:visible').filter(":odd").removeClass("striped");
+                    ng.element('.ms-selection' + ' li:visible').filter(":even").addClass("striped");
+                    ng.element('.ms-selection' + ' li:visible').filter(":odd").removeClass("striped");
                 };
 
                 var initSelect = function initSelect() {
-                    angular.element('#' + scope.id).multiSelect({
-                        //FIXME: Let's use same names for our attributes, attrs.selectableHeader and attrs.selectionHeader
-                        selectableHeader: '<div class="select-header">' + attrs.selectionHeader + '</div>',
-                        selectionHeader: '<div class="select-header">' + attrs.selectedHeader + '</div>',
+                    var initElement = ng.element('#' + scope.id);
+                    initElement.multiSelect({
+                        selectableHeader: '<div class="select-header">' + attrs.selectableHeader + '</div>',
+                        selectionHeader: '<div class="select-header">' + attrs.selectionHeader + '</div>',
                         afterInit: function () {
                             $timeout(function () {
-                                striped();
+                                makeZebraStriped();
                             });
                         }
                     }).change(function () {
-                        //FIXME: Purpose of these two lines unobvious, explain in comment or remove
-                        var size = scope.selectedItems.length;
-                        scope.selectedItems.splice(0, size);
-                        //FIXME: Extract angular.element('#' + scope.id) to variable
-                        var val = angular.element('#' + scope.id).val() || [];
+                        scope.selectedItems.splice(0, scope.selectedItems.length);
+                        var val = initElement.val() || [];
                         val.forEach(function (index) {
                             scope.selectedItems.push(scope.items[index]);
                         });
-                        striped();
+                        makeZebraStriped();
                         if (scope.onItemSelect) {
                             scope.onItemSelect();
                         }
@@ -50,7 +46,7 @@
                 };
                 scope.$watch('notifyDataSetChanged', function () {
                     if (typeof (scope.notifyDataSetChanged) === 'boolean') {
-                        if (angular.element('#ms-' + scope.id).length) {
+                        if (ng.element('#ms-' + scope.id).length) {
                             // Removing not existing elements
                             scope.selectedItems.some(function (selectedItem, index) {
                                 var existingElements = scope.items.filter(function (item) {
@@ -62,7 +58,7 @@
                                 }
                                 return !isSelectedExists;
                             });
-                            angular.element('#' + scope.id).multiSelect('refresh');
+                            ng.element('#' + scope.id).multiSelect('refresh');
                         } else {
                             initSelect();
                         }

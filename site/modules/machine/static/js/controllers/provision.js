@@ -260,17 +260,6 @@
                             }
 
                             var newMachine = job.__read();
-                            if ($scope.features.freetier === 'enabled') {
-                                // TODO It seems like an extra call because we already have $scope.freetierOptions. Need to get rid of extra calls
-                                FreeTier.freetier().then(function (data) {
-                                    $scope.freetier = data;
-                                }, function (err) {
-                                    PopupDialog.errorObj(err, function () {
-                                        $location.url('/compute');
-                                        $location.replace();
-                                    });
-                                });
-                            }
                             $q.when(Machine.machine(), function (listMachines) {
                                 if (newMachine.id) {
                                     $q.when(Machine.checkFirstInstanceCreated(newMachine.id), function (uuid) {

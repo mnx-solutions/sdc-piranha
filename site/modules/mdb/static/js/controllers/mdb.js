@@ -10,7 +10,8 @@
         'Account',
         'PopupDialog',
         '$location',
-        function ($q, $scope, requestContext, localization, mdb, Account, PopupDialog, $location) {
+        'util',
+        function ($q, $scope, requestContext, localization, mdb, Account, PopupDialog, $location, util) {
             localization.bind('mdb', $scope);
             requestContext.setUpRenderContext('mdb.index', $scope);
             $scope.mantaUnavailable = true;
@@ -174,11 +175,7 @@
                 $scope.loading = false;
                 PopupDialog.errorObj(err);
             };
-            $scope.getCheckedItems = function () {
-                return $scope.objects.filter(function (el) {
-                    return el.checked;
-                });
-            };
+
             $scope.noCheckBoxChecked = function () {
                 PopupDialog.error(
                     localization.translate(
@@ -195,8 +192,7 @@
             };
 
             function makeJobAction(messageTitle, messageBody) {
-                var checkedItems = $scope.getCheckedItems();
-                if (checkedItems.length) {
+                if ($scope.checkedItems.length) {
                     PopupDialog.confirm(
                         localization.translate(
                             $scope,
@@ -206,11 +202,11 @@
                         localization.translate(
                             $scope,
                             null,
-                            checkedItems.length > 1 ? messageBody.plural : messageBody.single
+                            $scope.checkedItems.length > 1 ? messageBody.plural : messageBody.single
                         ),
                         function () {
                             $scope.loading = true;
-                            var deleteIds = checkedItems.map(function (item) {
+                            var deleteIds = $scope.checkedItems.map(function (item) {
                                 return item.jobId;
                             });
                             mdb.deleteJob(deleteIds).then(function () {

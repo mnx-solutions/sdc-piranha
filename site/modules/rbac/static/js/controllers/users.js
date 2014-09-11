@@ -31,12 +31,6 @@
                 PopupDialog.errorObj(err);
             };
 
-            $scope.getCheckedItems = function () {
-                return $scope.users.filter(function (el) {
-                    return el.checked;
-                });
-            };
-
             $scope.noCheckBoxChecked = function () {
                 PopupDialog.error(
                     localization.translate(
@@ -174,13 +168,8 @@
                 {
                     label: 'Delete',
                     action: function () {
-                        //FIXME: Let's create simple "pluralize" method in utils and use it here
-                        var titleEnding = '';
-                        var checkedItems = $scope.getCheckedItems();
-                        if (checkedItems.length > 1) {
-                            titleEnding = 's';
-                        }
-                        if (checkedItems.length) {
+                        if ($scope.checkedItems.length) {
+                            var titleEnding = $scope.checkedItems.length === 1 ? '' : 's';
                             PopupDialog.confirm(
                                 localization.translate(
                                     $scope,
@@ -194,12 +183,12 @@
                                 ),
                                 function () {
                                     $scope.loading = true;
-                                    var deleteIds = [];
-                                    checkedItems.forEach(function (item) {
-                                        deleteIds.push(item.id);
+                                    var deleteIds = $scope.checkedItems.map(function (item) {
+                                        return item.id;
                                     });
                                     service.deleteUser(deleteIds).then(function () {
                                         getUsersList();
+                                        $scope.checkedItems = [];
                                     }, function (err) {
                                         service.updateCache({ids: deleteIds}, {}, 'user', service.ACCESS.WRITE);
                                         PopupDialog.errorObj(err);

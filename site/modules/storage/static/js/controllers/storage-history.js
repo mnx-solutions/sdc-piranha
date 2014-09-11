@@ -243,18 +243,10 @@
                     );
                 }
 
-                $scope.getCheckedItems = function () {
-                    return $scope.jobs.filter(function (el) {
-                        return el.checked;
-                    });
-                };
-
                 var deleteRecord = function (messageBody, action) {
-                    var checkedArray = $scope.getCheckedItems();
-
-                    if (checkedArray.length > 0 || action === 'deleteAll') {
+                    if ($scope.checkedItems.length > 0 || action === 'deleteAll') {
                         var message = messageBody.single;
-                        if (checkedArray.length > 1) {
+                        if ($scope.checkedItems.length > 1) {
                             message = messageBody.plural;
                         }
                         if (action === 'deleteAll') {
@@ -295,10 +287,10 @@
 
                                 if (action === 'deleteAll') {
                                     setCheckboxChecked();
-                                    checkedArray = $scope.jobs;
+                                    $scope.checkedItems = $scope.jobs;
                                 }
                                 var promises = [];
-                                checkedArray.forEach(function (job) {
+                                $scope.checkedItems.forEach(function (job) {
                                     job.deleteJob = true;
                                     deleteJobFolder(job);
                                 });
@@ -307,6 +299,7 @@
                                     $scope.jobs = $scope.jobs.filter(function (el) {
                                         return !el.deleteJob;
                                     });
+                                    $scope.checkedItems = [];
                                     var locationPath =  $location.path();
                                     if (locationPath.search('/manta/jobs/') !== -1) {
                                         var currentId = locationPath.slice(12);

@@ -164,10 +164,7 @@
                 {
                     label: 'Delete',
                     action: function () {
-                        var checkedImages = $scope.images.filter(function (image) {
-                            return image.checked;
-                        });
-                        if (checkedImages.length > 0) {
+                        if ($scope.checkedImages.length > 0) {
                             PopupDialog.confirm(
                                 localization.translate(
                                     $scope,
@@ -178,9 +175,9 @@
                                     $scope,
                                     null,
                                     'Are you sure you want to delete {{image}}?',
-                                    {image: checkedImages.length === 1 ? 'this image' : 'these images'}
+                                    {image: $scope.checkedImages.length === 1 ? 'this image' : 'these images'}
                                 ), function () {
-                                    checkedImages.forEach(function (image) {
+                                    $scope.checkedImages.forEach(function (image) {
                                         $$track.event('image', 'delete');
 
                                         Image.deleteImage(image).promise.then(function () {
@@ -190,6 +187,7 @@
                                             }
                                         });
                                         image.checked = false;
+                                        $scope.checkedImages = [];
                                     });
                                 }
                             );

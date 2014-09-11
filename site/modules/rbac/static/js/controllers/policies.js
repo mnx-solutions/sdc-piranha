@@ -21,12 +21,6 @@
                 PopupDialog.errorObj(err);
             };
 
-            $scope.getCheckedItems = function () {
-                return $scope.policies.filter(function (el) {
-                    return el.checked;
-                });
-            };
-
             $scope.noCheckBoxChecked = function () {
                 PopupDialog.error(
                     localization.translate(
@@ -86,13 +80,8 @@
                 {
                     label: 'Delete',
                     action: function () {
-                        //FIXME: Let's create simple "pluralize" method in utils and use it here
-                        var titleEnding = 'y';
-                        var checkedItems = $scope.getCheckedItems();
-                        if (checkedItems.length > 1) {
-                            titleEnding = 'ies';
-                        }
-                        if (checkedItems.length) {
+                        if ($scope.checkedItems.length) {
+                            var titleEnding = $scope.checkedItems.length === 1 ? 'y' : 'ies';
                             PopupDialog.confirm(
                                 localization.translate(
                                     $scope,
@@ -106,15 +95,14 @@
                                 ),
                                 function () {
                                     $scope.loading = true;
-                                    var deleteIds = [];
-                                    //FIXME: Use Array.prototype.map here
-                                    checkedItems.forEach(function (item) {
-                                        deleteIds.push(item.id);
+                                    var deleteIds = $scope.checkedItems.map(function (item) {
+                                        return item.id;
                                     });
                                     service.deletePolicy(deleteIds).then(function () {
                                         service.listPolicies().then(function (policies) {
                                             $scope.policies = policies;
                                             $scope.loading = false;
+                                            $scope.checkedItems = [];
                                         }, errorCallback);
                                     }, errorCallback);
                                 }
