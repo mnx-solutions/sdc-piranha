@@ -296,9 +296,12 @@ if (!config.features || config.features.rbac !== 'disabled') {
                                         case 'updateimage':
                                             collectResourcesByDatacenters(images, command);
                                             break;
+                                        case 'enablefirewallrule':
+                                        case 'disablefirewallrule':
                                         case 'getfirewallrule':
                                         case 'updatefirewallrule':
                                         case 'deletefirewallrule':
+                                        case 'listfirewallrulemachines':
                                             collectResourcesByDatacenters(firewallRules, command);
                                             break;
                                         case 'uploaduserkey':
@@ -312,10 +315,25 @@ if (!config.features || config.features.rbac !== 'disabled') {
                                         case 'getnetwork':
                                             collectResourcesByDatacenters(networks, command);
                                             break;
+                                        case 'getmachine':
+                                        case 'renamemachine':
                                         case 'startmachine':
                                         case 'stopmachine':
                                         case 'deletemachine':
                                         case 'rebootmachine':
+
+                                        case 'getmachinemetadata':
+                                        case 'updatemachinemetadata':
+                                        case 'deletemachinemetadata':
+                                        case 'deleteallmachinemetadata':
+
+                                        case 'listmachinetags':
+                                        case 'getmachinetag':
+                                        case 'replacemachinetags':
+                                        case 'deletemachinetag':
+                                        case 'deletemachinetags':
+
+                                        case 'listmachinefirewallrules':
                                             collectResourcesByDatacenters(machines, command);
                                             break;
 
