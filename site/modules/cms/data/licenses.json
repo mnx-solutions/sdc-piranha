@@ -74,6 +74,30 @@
             "API Name": "ws2012std",
             "Pan-Instance Price Uplift": 0.06,
             "URN": "sdc:admin:ws2012std"
+        },
+        {
+            "API Name": "ScaleArc-MySQL-Platinum-2CPU-2GB",
+            "Pan-Instance Price Uplift": 1.113
+        },
+        {
+            "API Name": "ScaleArc-MySQL-Enterprise-1CPU-1GB",
+            "Pan-Instance Price Uplift": 0.413
+        },
+        {
+            "API Name": "ScaleArc-MySQL-Platinum-5CPU-32GB",
+            "Pan-Instance Price Uplift": 3.963
+        },
+        {
+            "API Name": "ScaleArc-MySQL-Enterprise-5CPU-10GB",
+            "Pan-Instance Price Uplift": 2.3
+        },
+        {
+            "API Name": "ScaleArc-MySQL-Enterprise-2CPU-2GB",
+            "Pan-Instance Price Uplift": 0.825
+        },
+        {
+            "API Name": "ScaleArc-MSSQL-Enterprise-2CPU-2GB",
+            "Pan-Instance Price Uplift": 1.388
         }
     ],
     "Portfolio Description": {
