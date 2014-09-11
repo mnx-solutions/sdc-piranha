@@ -29,6 +29,7 @@ public abstract class AbstractPageObject {
     static final String ACCOUNT_MENU_TITLE = "Accounts";
     static final String ROLES_MENU_TITLE = "Roles";
     static final String POLICIES_MENU_TITLE = "Policies";
+    static final String FILE_MANAGER_MENU_TITLE = "File Manager";
 
 
     public static int baseTimeout;

@@ -111,10 +111,20 @@ public final class PropertyHolder {
     }
 
     public static String getPublicKeyPath() {
-        return getPathToSShFolder() +  System.getProperty("env.publicKeyPath");
+        return getPathToSShFolder() + getPublicKeyName();
+    }
+
+    public static String getPublicKeyName() {
+        return System.getProperty("env.publicKeyPath");
     }
 
     public static String getCountry() {
         return System.getProperty("profile.billing.Country");
+    }
+    public static String getPublicKeyID() {
+        return System.getProperty("env.publicKeyID");
+    }
+    public static String getMantaUrl() {
+        return System.getProperty("manta.url");
     }
 }

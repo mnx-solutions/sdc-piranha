@@ -115,3 +115,7 @@ task UsagePageTest(type: Test) {
 task AdminSuite(type: Test) {
     include '**/AdminSuite.class'
 }
+
+task Manta(type: Test) {
+    include '**/Manta.class'
+}
