@@ -46,16 +46,34 @@ if (!config.features || config.features.rbac !== 'disabled') {
 
         // SubUser actions->resource
         var CUSTOM_RESOURCES = {
+            getmachine:            '/my/machines/%s',
+            renamemachine:         '/my/machines/%s',
             startmachine:          '/my/machines/%s',
             stopmachine:           '/my/machines/%s',
             deletemachine:         '/my/machines/%s',
             rebootmachine:         '/my/machines/%s',
 
+            getmachinemetadata:    '/my/machines/%s',
+            updatemachinemetadata: '/my/machines/%s',
+            deletemachinemetadata: '/my/machines/%s',
+            deleteallmachinemetadata: '/my/machines/%s',
+
+            listmachinetags:       '/my/machines/%s',
+            getmachinetag:         '/my/machines/%s',
+            replacemachinetags:    '/my/machines/%s',
+            deletemachinetag:      '/my/machines/%s',
+            deletemachinetags:     '/my/machines/%s',
+
+            listmachinefirewallrules: '/my/machines/%s',
+
             getnetwork:            '/my/networks/%s',
 
+            enablefirewallrule:    '/my/fwrules/%s',
+            disablefirewallrule:   '/my/fwrules/%s',
             deletefirewallrule:    '/my/fwrules/%s',
             updatefirewallrule:    '/my/fwrules/%s',
             getfirewallrule:       '/my/fwrules/%s',
+            listfirewallrulemachines: '/my/fwrules/%s',
 
             getimage:              '/my/images/%s',
             deleteimage:           '/my/images/%s',
@@ -278,9 +296,12 @@ if (!config.features || config.features.rbac !== 'disabled') {
                                         case 'updateimage':
                                             collectResourcesByDatacenters(images, command);
                                             break;
+                                        case 'enablefirewallrule':
+                                        case 'disablefirewallrule':
                                         case 'getfirewallrule':
                                         case 'updatefirewallrule':
                                         case 'deletefirewallrule':
+                                        case 'listfirewallrulemachines':
                                             collectResourcesByDatacenters(firewallRules, command);
                                             break;
                                         case 'uploaduserkey':
@@ -294,10 +315,25 @@ if (!config.features || config.features.rbac !== 'disabled') {
                                         case 'getnetwork':
                                             collectResourcesByDatacenters(networks, command);
                                             break;
+                                        case 'getmachine':
+                                        case 'renamemachine':
                                         case 'startmachine':
                                         case 'stopmachine':
                                         case 'deletemachine':
                                         case 'rebootmachine':
+
+                                        case 'getmachinemetadata':
+                                        case 'updatemachinemetadata':
+                                        case 'deletemachinemetadata':
+                                        case 'deleteallmachinemetadata':
+
+                                        case 'listmachinetags':
+                                        case 'getmachinetag':
+                                        case 'replacemachinetags':
+                                        case 'deletemachinetag':
+                                        case 'deletemachinetags':
+
+                                        case 'listmachinefirewallrules':
                                             collectResourcesByDatacenters(machines, command);
                                             break;
 
