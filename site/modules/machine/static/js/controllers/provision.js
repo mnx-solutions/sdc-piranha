@@ -821,8 +821,6 @@
                     if ($scope.networks && $scope.networks.length) {
                         setNetworks($scope.data.datacenter);
                     }
-                    $scope.data.metadata = {};
-                    $scope.data.tags = {};
 
                     var provisionForm = $scope.$$childTail.$$childTail && $scope.$$childTail.$$childTail.provisionForm;
                     if (provisionForm) {
@@ -835,7 +833,9 @@
                         datacenter: $scope.data.datacenter,
                         opsys: $scope.data.opsys,
                         name: null,
-                        dataset: $scope.data.dataset
+                        dataset: $scope.data.dataset,
+                        metadata: {},
+                        tags: {}
                     };
 
                     if (step === SELECT_PACKAGE_STEP) {
