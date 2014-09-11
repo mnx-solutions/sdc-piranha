@@ -63,9 +63,11 @@
                 }
 
                 function hasDuplicate(item) {
-                    return scope.internalCollection.find(function (el) {
+                    var duplicate = scope.internalCollection.find(function (el) {
                         return el && el.key === item.dirtyKey;
                     });
+                    
+                    return duplicate !== item && duplicate;
                 }
 
                 function removeItem(item) {
@@ -127,7 +129,7 @@
                             scope.loadCollection();
                             item.saving = scope.saving = false;
                         } else {
-                            if (item.isNew) {
+                            if (!duplicate && item.isNew) {
                                 doCreate();
                                 return;
                             }
@@ -139,6 +141,9 @@
 
                     var duplicate = hasDuplicate(item);
                     if (duplicate) {
+                        if (item.isNew) {
+                            keyToUpdate = duplicate.key;
+                        }
                         PopupDialog.confirm(
                             null,
                             localization.translate(scope, null,
