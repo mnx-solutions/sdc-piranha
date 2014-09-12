@@ -13,6 +13,13 @@
                 PopupDialog.errorObj(err);
             };
             var createSshList = function (keys) {
+                if (keys.length > 0) {
+                    keys.forEach(function (key) {
+                        if (key.name === key.fingerprint) {
+                            key.name = key.name.split(':').splice(-5).join('');
+                        }
+                    });
+                }
                 $scope.sshKeys = keys;
                 if (keys.length > 0) {
                     $scope.keyId = keys[0].fingerprint;
