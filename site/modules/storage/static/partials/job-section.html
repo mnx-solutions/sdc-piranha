@@ -3,7 +3,7 @@
         <a data-ng-click="toggleSection()"
            data-ng-class="{collapsed: !showSection}"
            class="accordion-toggle toggle-icon">
-            {{name}} <span class="badge">{{length || objects.length}}</span>
+            {{name}} <span class="badge">{{length || objects && objects.length}}</span>
         </a>
     </div>
 
