@@ -483,6 +483,10 @@ if (!config.features || config.features.rbac !== 'disabled') {
             });
         });
 
+        function capitalize(string) {
+            return string.charAt(0).toUpperCase() + string.slice(1);
+        }
+
         server.onCall('deleteUser', {
             verify: function (data) {
                 return Array.isArray(data.ids) || typeof (data.id) === 'string';
@@ -502,13 +506,17 @@ if (!config.features || config.features.rbac !== 'disabled') {
                         });
                     }
                 }, function (errors) {
-                    var messages = null;
-                    if (errors && Array.isArray(errors.ase_errors)) {
-                        messages = errors.ase_errors.map(function (err) {
-                            return err.message;
-                        });
+                    var result = null;
+                    if (errors) {
+                        result = errors;
+                        if (Array.isArray(errors.ase_errors) && errors.ase_errors.length === 1) {
+                            result.message = errors.ase_errors[0].message;
+                        }
+                        if (result && result.message) {
+                            result.message = capitalize(result.message);
+                        }
                     }
-                    call.done(messages);
+                    call.done(result);
                 });
             }
         });
