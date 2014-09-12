@@ -5,32 +5,63 @@
         '$scope',
         '$rootScope',
         '$q',
-        '$qe',
         'requestContext',
         'localization',
         '$location',
         'Datacenter',
         'Image',
-        'Machine',
         'PopupDialog',
+        'Docker',
 
-        function ($scope, $rootScope, $q, $qe, requestContext, localization, $location, Datacenter, Image, Machine, PopupDialog) {
+        function ($scope, $rootScope, $q, requestContext, localization, $location, Datacenter, Image, PopupDialog, Docker) {
             localization.bind('docker.index', $scope);
             requestContext.setUpRenderContext('docker.index', $scope, {
                 title: localization.translate(null, 'docker', 'See my Joyent Docker Instances')
             });
 
+            $scope.loading = true;
             $scope.data = {
                 datacenter: '',
                 imageId: ''
             };
 
-            Datacenter.datacenter().then(function (datacenters) {
-                $scope.datacenters = datacenters;
-                $scope.data.datacenter = $scope.datacenters[0].name;
-            }, function (err) {
+            var errorCallback = function (err) {
+                $scope.loading = false;
                 PopupDialog.errorObj(err);
-            });
+            };
+            var getDockerHostInfo = function (machine) {
+                Docker.hostInfo(machine).then(function (info) {
+                    machine.containers = info.Containers;
+                    machine.images = info.Images;
+                }, errorCallback);
+            };
+            var getDockerHostAnalytics = function () {
+                //TODO: Get real data from cAdvisor
+                $scope.dockerMachines.forEach(function (machine) {
+                    machine.cpuLoad = '35%';
+                    machine.memoryLoad = '85%';
+                });
+            };
+
+            $q.all([
+                $q.when(Datacenter.datacenter()),
+                $q.when(Docker.listHosts())
+            ]).then(function (result) {
+                $scope.datacenters = result[0] || [];
+                $scope.data.datacenter = $scope.datacenters[0].name;
+                $scope.dockerMachines = result[1] || [];
+                    if ($scope.dockerMachines.length > 0) {
+                        $scope.dockerMachines.forEach(function (machine) {
+                            getDockerHostInfo(machine);
+                        });
+                        getDockerHostAnalytics();
+                    };
+                $scope.loading = false;
+            }, function (err) {
+                    $scope.loading = false;
+                    PopupDialog.errorObj(err);
+                }
+            );
 
             $scope.$watch('data.datacenter', function (newVal) {
                 if (newVal) {

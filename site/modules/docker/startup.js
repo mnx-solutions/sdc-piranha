@@ -16,10 +16,14 @@ var Docker = function execute(scope) {
                 return data && data.host && typeof (data.host.primaryIp) === 'string';
             },
             handler: function (call) {
-                var client = Docker.createClient(call.data);
+                var client = Docker.createClient(call.data.host);
                 client[method](call.data.options, call.done.bind(call));
             }
         });
+    });
+
+    server.onCall('DockerHosts', function (call) {
+        Docker.listHosts(call, call.done.bind(call));
     });
 };
 
