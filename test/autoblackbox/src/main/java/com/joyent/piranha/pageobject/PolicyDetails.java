@@ -11,7 +11,7 @@ public class PolicyDetails extends CreatePolicy {
     }
 
     public Policies clickSave() {
-        $("[data-ng-click=\"updatePolicy(true)\"]").click();
+        $("[data-ng-click=\"updatePolicy()\"]").click();
         return page(Policies.class);
     }
 
