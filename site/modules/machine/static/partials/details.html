@@ -39,7 +39,8 @@
                                 </tr>
                                 <tr>
                                     <td>Image</td>
-                                    <td>{{dataset.name}}</td>
+                                    <td data-ng-show="dataset.name == 'Image gone'" class="tooltip-hover" data-toggle="tooltip" data-original-title="The image is no longer accessible because the image has been deleted, is inactive, or access privileges have been removed.">{{dataset.name}} <span class="glyphicon glyphicon-question-sign"></span></td>
+                                    <td data-ng-show="dataset.name != 'Image gone'" >{{dataset.name}}</td>
                                 </tr>
                                 <tr data-ng-show="dataset.version">
                                     <td>Image version</td>

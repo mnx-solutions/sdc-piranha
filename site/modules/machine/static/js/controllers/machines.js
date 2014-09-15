@@ -244,9 +244,14 @@
                     name: 'Image',
                     sequence: 3,
                     active: true,
+                    type: 'tooltip',
                     _getter: function (machine) {
                         if (machine.image && $scope.datasetsInfo) {
-                            return $scope.datasetsInfo[machine.image];
+                            var machineImage = {image: $scope.datasetsInfo[machine.image]};
+                            if (machineImage.image === 'Image gone') {
+                                machineImage.tooltip = 'The image is no longer accessible because the image has been deleted, is inactive, or access privileges have been removed.';
+                            }
+                            return machineImage;
                         }
                         return '';
                     }
