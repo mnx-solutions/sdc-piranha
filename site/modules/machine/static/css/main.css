@@ -2677,3 +2677,8 @@ span.btn-success
     min-width: 600px;
     width: 100%;
 }
+
+.tooltip-hover span.glyphicon
+{
+    top: 2px;
+}
