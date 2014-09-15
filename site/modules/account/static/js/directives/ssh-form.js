@@ -120,6 +120,9 @@
 
                     $scope.deleteKey = function (name, fingerprint, $event) {
                         $event.stopPropagation();
+                        if (name === fingerprint) {
+                            name = $scope.getKeyName({name: name, fingerprint: fingerprint});
+                        }
                         PopupDialog.confirm(null,
                             localization.translate($scope, null, 'Are you sure you want to delete "{{name}}" SSH key?', {name: name}),
                             function () {
