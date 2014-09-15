@@ -2,7 +2,7 @@
 
 (function (app) {
     app.controller(
-        'docker.AnalyticsController',
+        'Docker.AnalyticsController',
         ['$scope',
             function ($scope) {}
         ]);

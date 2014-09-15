@@ -205,7 +205,7 @@ module.exports = function execute(scope, register) {
 
     api.listHosts = function (call, callback) {
         vasync.forEachParallel({
-            inputs: call.cloud.listDatacenters(),
+            inputs: Object.keys(call.cloud.listDatacenters()),
             func: function (dcName, callback) {
                 call.cloud.separate(dcName).listMachines({}, {JPC_tag: 'DockerHost'}, function (error, machines) {
                     if (error) {
