@@ -3,6 +3,7 @@
 var restify = require('restify');
 var qs = require('querystring');
 var vasync = require('vasync');
+var fs = require('fs');
 
 var requestMap = {
     'GET': 'get',
@@ -11,6 +12,9 @@ var requestMap = {
     'DELETE': 'del',
     'HEAD': 'head'
 };
+
+// read sync startup script for Docker
+var startupScript = fs.readFileSync(__dirname + '/data/startup.sh', 'utf8');
 
 function formatUrl(url, params) {
     //noinspection JSLint
@@ -222,7 +226,16 @@ module.exports = function execute(scope, register) {
 
             callback(null, hosts);
         });
-        Machine.listMachines(call, {tags: 'docker'}, callback);
+    };
+
+    api.preprocessMachine = function (data) {
+        data.metadata['user-script'] = startupScript;
+        data.tags['JPC_tag'] = 'DockerHost';
+        return data;
+    };
+
+    api.postprocessMachine = function (data, callback) {
+        return callback(null);
     };
 
     api.createClient = function (machine) {

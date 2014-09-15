@@ -37,7 +37,6 @@
                     $scope.data.imageId = '';
                     Image.image({ datacenter: newVal, public: true }).then(function (images) {
                         var ubuntuImages = images.filter(function (image) {
-
                             return image.name.indexOf('ubuntu') !== -1;
                         });
                         if (ubuntuImages.length > 0) {
@@ -66,6 +65,7 @@
             });
 
             $scope.createDocker = function () {
+                $rootScope.commonConfig('datacenter', $scope.data.datacenter);
                 $location.url('/compute/create/' + $scope.data.imageId + '?specification=dockerhost');
             };
         }
