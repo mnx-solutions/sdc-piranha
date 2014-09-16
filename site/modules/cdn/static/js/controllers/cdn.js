@@ -10,8 +10,9 @@
         'PopupDialog',
         'fileman',
         'Account',
+        'Storage',
         '$location',
-        function ($q, scope, requestContext, localization, cdn, PopupDialog, fileman, Account, $location) {
+        function ($q, scope, requestContext, localization, cdn, PopupDialog, fileman, Account, Storage, $location) {
             localization.bind('cdn', scope);
             requestContext.setUpRenderContext('cdn.index', scope);
 
