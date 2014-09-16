@@ -28,11 +28,6 @@ module.exports = function execute(scope, register) {
             } else if (error && !error.message) {
                 callback(error);
             } else {
-                try {
-                    result = JSON.parse(result);
-                } catch (e) {
-                    result = {};
-                }
                 callback(null, result);
             }
         });
