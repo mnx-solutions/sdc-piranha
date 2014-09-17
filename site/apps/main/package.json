@@ -11,6 +11,7 @@
             "localization",
             "notification",
             "server",
+            "docker",
             "machine",
             "firewall",
             "menu",
@@ -31,8 +32,7 @@
             "mdb",
             "rbac",
             "downloadSdc",
-            "cdn",
-            "docker"
+            "cdn"
         ],
         "auth": true,
         "error": true,
