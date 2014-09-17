@@ -166,7 +166,7 @@ if (!config.features || config.features.cdn !== 'disabled') {
                                     services.some(function (service) {
                                         if (service.id === configuration.service_id) {
                                             for (var key in service) {
-                                                if (!configuration[key]) {
+                                                if (configuration[key]) {
                                                     configuration[key] = service[key];
                                                 }
                                             }
