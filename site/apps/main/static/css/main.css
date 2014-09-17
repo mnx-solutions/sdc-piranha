@@ -2889,7 +2889,7 @@ label.checkbox
 
 .dropdown-menu
 {
-    min-width: 98% !important;
+    min-width: 98%;
     margin-top: 0;
     padding: 0;
 
@@ -5048,4 +5048,19 @@ label.checkbox.folder-name-form-checkbox
 
 .apiKeyForm .edit-name {
     width: auto;
+}
+.form-control.datepicker
+{
+    padding: 2px 0 0 10px;
+    width: 110px;
+    height: 28px;
+    border-radius: 4px 0 0 4px;
+    font-weight: 200;
+    font-size: 16px;
+}
+.input-group-addon.calendar
+{
+    height: 28px;
+    border-radius: 0 4px 4px 0;
+    cursor: pointer;
 }

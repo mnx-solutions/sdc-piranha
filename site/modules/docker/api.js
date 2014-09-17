@@ -248,7 +248,10 @@ module.exports = function execute(scope, register) {
                     machines.forEach(function (machine) {
                         machine.datacenter = dcName;
                     });
-                    callback(null, machines);
+                    var createdMachines = machines.filter(function (machine) {
+                        return machine.primaryIp && machine.state === 'running';
+                    });
+                    callback(null, createdMachines);
                 });
             }
         }, function (errors, operations) {

@@ -10,6 +10,7 @@
                 "/vendor/angular/angular-route.js",
                 "/vendor/angular/angular-sanitize.js",
                 "/vendor/zendesk/zenbox.js",
+                "/vendor/bootstrap-datepicker/js/bootstrap-datepicker.min.js",
 				"/js/jp.js",
 				"/js/app.js",
 				"/js/config/routes.js",

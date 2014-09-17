@@ -2,6 +2,25 @@
     display: inline-block;
     padding: 8px 10px 0;
 }
+.date-range,
+.date-range-from {
+    font-size: 16px;
+}
+.date-range {
+    padding: 3px 10px;
+}
+.date-range-from {
+    padding: 3px 10px 3px 0;
+}
+.date-error {
+    margin-top: -2px;
+    border: 2px solid red;
+    border-radius: 5px;
+}
+.error {
+    margin-left: 20px;
+    line-height: 28px;
+}
 .dockers-wrapper {
     padding-bottom: 25px;
 }
@@ -284,6 +303,25 @@ span.btn-success
 {
     margin-left: 5px;
 }
+.docker-select-btn {
+    padding: 3px 10px;
+    border: 1px solid #ccc;
+    border-radius: 3px !important;
+    background-color: #eee;
+    text-transform: none;
+}
+.grid-mini-btn {
+    padding: 0 10px;
+    height: 20px;
+    font-size: 12px;
+}
+.grid-mini-btn.view {
+    margin-right: 10px;
+    background-color: #ccc;
+}
+.grid-mini-btn.download {
+    background-color: #E0E0E0;
+}
 .form-group {
     margin: 10px 0;
 }
@@ -300,4 +338,7 @@ span.btn-success
 }
 .btn-bottom-block {
     margin-bottom: 50px;
+}
+.date-range-wrapper {
+    height: 50px;
 }

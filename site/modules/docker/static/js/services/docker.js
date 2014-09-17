@@ -4,9 +4,11 @@
 (function (ng, app) {
     app.factory('Docker', [
         'serverTab',
-        function (serverTab) {
+        '$q',
+        function (serverTab, $q) {
 
         var service = {};
+        var cacheContainers = null;
         var containerActions = ['start', 'stop', 'pause', 'unpause', 'remove', 'inspect', 'restart', 'kill', 'logs'];
 
         function capitalize(str) {
@@ -115,6 +117,43 @@
             });
             return job.promise;
         };
+
+
+        service.hostContainers = function(machine) {
+            var job = serverTab.call({
+                name: 'DockerGetContainers',
+                data: {host: machine},
+                done: function (err, data) {
+                    if (err) {
+                        return false;
+                    }
+                    return data;
+                }
+            });
+            return job.promise;
+        };
+
+        service.listContainers = function (update) {
+            var deferred = $q.defer();
+            if (cacheContainers && !update) {
+                deferred.resolve(cacheContainers);
+            } else {
+                serverTab.call({
+                    name: 'listContainers',
+                    done: function (err, data) {
+                        if (err) {
+                            deferred.reject(err);
+                            return;
+                        }
+                        cacheContainers = data.__read();
+                        deferred.resolve(cacheContainers);
+                    }
+                });
+            }
+            return deferred.promise;
+        };
+
+        service.listContainers(true);
 
         return service;
     }]);

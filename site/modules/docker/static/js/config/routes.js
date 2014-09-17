@@ -7,7 +7,7 @@ window.JP.main.config(['routeProvider', function (routeProvider) {
     }
     routeProvider
         .when('/docker', {
-            title: 'Docker Dashboard',
+            title: 'Docker',
             action: 'docker.index'
         }).when('/docker/registries', {
             title: 'Registries',

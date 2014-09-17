@@ -1,6 +1,45 @@
 <div data-ng-controller="Docker.LogManagementController" class="container-fluid container-position">
+    <div data-breadcrumbs></div>
     <div class="row">
-        <h3 class="page-title white-line">Log Management</h3>
+        <h3 class="page-title">Docker Logs</h3>
+    </div>
+    <div class="loading-large col-md-12" data-ng-show="loading"></div>
+
+    <div data-ng-hide="loading">
+        <div class="date-range-wrapper">
+            <span class="date-range-from pull-left">From</span>
+            <span class="pull-left">
+                <span class="input-group date" datepicker data-date="date.start">
+                    <span class="form-control datepicker">{{date.start | date:'dd/MM/yyyy'}}</span>
+                    <span class="input-group-addon calendar"><span class="glyphicon glyphicon-calendar"></span></span>
+                </span>
+            </span>
+            <span class="date-range pull-left">To</span>
+            <span class="pull-left">
+                <span class="input-group date" datepicker data-date="date.end" data-ng-class="{'date-error': dateError}">
+                    <span class="form-control datepicker">{{date.end | date:'dd/MM/yyyy'}}</span>
+                    <span class="input-group-addon calendar"><span class="glyphicon glyphicon-calendar"></span></span>
+                </span>
+            </span>
+            <span class="error pull-left" data-ng-show="dateError">"To" date should be the same or after "From" date. </span>
+        </div>
+
+
+        <div data-grid-view
+             data-user-config="gridUserConfig"
+             data-multisort="false"
+             data-props="gridProps"
+             data-detail-props="gridDetailProps"
+             data-action-buttons="gridActionButtons"
+             data-items="containers"
+             data-order="gridOrder"
+             data-export-fields="exportFields"
+             data-place-Holder-Text="placeHolderText"
+             data-search-form="searchForm"
+             data-filter-all="{{query}}"
+             data-enabled-checkboxes="enabledCheckboxes"
+             data-items-type="container">
+        </div>
     </div>
 </div>
 
