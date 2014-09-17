@@ -5,7 +5,6 @@ var config = require('easy-config');
 module.exports = function execute(scope, register) {
     var info = scope.api('Info');
     var utils = scope.get('utils');
-    var dockerApi = scope.api('Docker');
 
     var api = {};
 
@@ -158,19 +157,16 @@ module.exports = function execute(scope, register) {
     }
 
     api.Create = function (call, options, callback) {
-        var createCallback = function (createErr, machineData) {
-            if (call.data.specification === 'docker') {
-                dockerApi.postprocessMachine(machineData, function (postErr) {
-                    callback(createErr || postErr, machineData);
-                });
-            } else {
-                callback(createErr, machineData);
-            }
-        };
-
         if (call.getImmediate) {
             call.getImmediate();
         }
+
+        if (options.specification === 'docker') {
+            // not declared in header, because both modules depend on each other
+            scope.api('Docker').createHost(call, options, callback);
+            return;
+        }
+
         call.log.info({options: options}, 'Creating machine %s', options.name);
 
         var cloud = call.cloud.separate(options.datacenter);
@@ -179,10 +175,6 @@ module.exports = function execute(scope, register) {
             metadata: 'metadata',
             tags: 'tag'
         };
-
-        if (options.specification === 'docker') {
-            dockerApi.preprocessMachine(options);
-        }
 
         for (var collectionName in transformCollections) {
             if (options[collectionName]) {
@@ -200,7 +192,7 @@ module.exports = function execute(scope, register) {
                     call.immediate(null, {machine: machine});
                 }
                 // poll for machine status to get running (provisioning)
-                pollForObjectStateChange(cloud, call, 'state', 'running', (60 * 60 * 1000), null, machine.id, createCallback);
+                pollForObjectStateChange(cloud, call, 'state', 'running', (60 * 60 * 1000), null, machine.id, callback);
             } else {
                 var noErrorLog = err.message && err.message.indexOf('QuotaExceeded') === 0;
                 if (noErrorLog) {

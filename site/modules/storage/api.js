@@ -31,7 +31,7 @@ module.exports = function execute(scope, register) {
     function putFileContents(filepath, data, callback) {
         data = typeof data === 'string' ? data : JSON.stringify(data);
         var fileStream = new MemoryStream(data);
-        this.put(filepath, fileStream, {size: data.length, mkdirp: true}, callback);
+        this.put(filepath, fileStream, {size: data.length, mkdirs: true}, callback);
     }
     function createClient(call) {
 

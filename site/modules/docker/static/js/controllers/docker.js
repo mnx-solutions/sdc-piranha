@@ -50,18 +50,19 @@
                 $scope.datacenters = result[0] || [];
                 $scope.data.datacenter = $scope.datacenters[0].name;
                 $scope.dockerMachines = result[1] || [];
-                    if ($scope.dockerMachines.length > 0) {
-                        $scope.dockerMachines.forEach(function (machine) {
+                if ($scope.dockerMachines.length > 0) {
+                    $scope.dockerMachines.forEach(function (machine) {
+                        if (machine.primaryIp) {
                             getDockerHostInfo(machine);
-                        });
-                        getDockerHostAnalytics();
-                    };
+                        }
+                    });
+                    getDockerHostAnalytics();
+                }
                 $scope.loading = false;
             }, function (err) {
-                    $scope.loading = false;
-                    PopupDialog.errorObj(err);
-                }
-            );
+                $scope.loading = false;
+                PopupDialog.errorObj(err);
+            });
 
             $scope.$watch('data.datacenter', function (newVal) {
                 if (newVal) {
