@@ -141,14 +141,18 @@
                 var createConfigurationModalCtrl = function ($scope, dialog) {
                     $scope.title = 'Create CDN Configuration';
                     $scope.directory = '/public';
+                    $scope.directoryNotFound = '';
                     $scope.close = function (res) {
                         dialog.close(res);
                     };
 
                     $scope.create = function () {
+                        if ($scope.directory !== $scope.directoryNotFound) {
+                            $scope.directoryNotFound = '';
+                        }
                         fileman.info($scope.directory, function (error) {
                             if (error) {
-                                showError('The directory not found');
+                                $scope.directoryNotFound = $scope.directory;
                             } else {
                                 $scope.close({
                                     name: $scope.name,
