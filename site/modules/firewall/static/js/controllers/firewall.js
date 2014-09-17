@@ -64,6 +64,7 @@
                 $scope.openRuleForm = !$scope.openRuleForm;
                 if ($scope.openRuleForm) {
                     $scope.resetData();
+                    $scope.selected.datacenter = $rootScope.commonConfig('datacenter') || $scope.datacenter;
                     scrollTo('create-rule');
                 }
             };
@@ -512,6 +513,8 @@
                 });
                 if ($scope.tabFilterDefault) {
                     $scope.tabFilterUpdate = $scope.tabFilterDefault;
+                } else if ($scope.datacenters.length > 0) {
+                    $scope.tabFilterUpdate = $scope.datacenters[0];
                 }
                 $scope.$watch('datacenter', function(dc){
                     if(dc) {
@@ -1082,6 +1085,7 @@
 
             $scope.$watch('tabFilterUpdate', function(tab) {
                 if (tab) {
+                    tab = tab.name || tab;
                     if (!$scope.data.uuid && tab !== 'all') {
                         $scope.datacenter = tab;
                     }
