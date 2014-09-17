@@ -210,7 +210,7 @@
                         function () {
                             scope.loading = true;
                             var deleteIds = scope.checkedItems.map(function (item) {
-                                return item.id;
+                                return item.service_id;
                             });
                             var opts = {
                                 key: scope.apiKey,
