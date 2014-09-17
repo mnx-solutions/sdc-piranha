@@ -91,7 +91,7 @@ module.exports = function execute(scope) {
             });
         }
 
-        if (datacenters.length > 1) {
+        if (datacenters.length >= 1) {
             dcPrefixes.forEach(function (dcPrefix) {
                 var datacentersByPrefix = datacenters.filter(function (datacenter) {
                     return datacenter.name.indexOf(dcPrefix) > -1;
