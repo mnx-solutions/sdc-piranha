@@ -30,11 +30,14 @@ function formatUrl(url, params) {
     });
 }
 
-function createCallback(callback) {
+function createCallback(callback, raw) {
     //noinspection JSLint
     return function (error, req, res, data) {
         if (error) {
             return callback(error);
+        }
+        if (raw) {
+            data = res.body.toString();
         }
         callback(null, data);
     };
@@ -60,9 +63,13 @@ function createMethod(opts) {
         var param;
 
         for (param in opts.params) {
-            if (opts.params.hasOwnProperty(param) && params.hasOwnProperty(param)) {
-                query[param] = params[param];
-                delete params[param];
+            if (opts.params.hasOwnProperty(param)) {
+                if (params.hasOwnProperty(param)) {
+                    query[param] = params[param];
+                    delete params[param];
+                } else if (opts.params[param] !== '=') {
+                    query[param] = opts.params[param];
+                }
             }
         }
         options.path += '?' + qs.stringify(query);
@@ -70,7 +77,7 @@ function createMethod(opts) {
             options.data = params;
         }
 
-        this.client[requestMap[options.method]](options, createCallback(callback));
+        this.client[requestMap[options.method]](options, createCallback(callback, opts.raw));
     };
 }
 
@@ -102,6 +109,17 @@ module.exports = function execute(scope, register) {
         inspect      : {
             method: 'GET',
             path: '/containers/:id/json'
+        },
+        logs         : {
+            method: 'GET',
+            path: '/containers/:id/logs',
+            raw: true,
+            params: {
+                stdout     : true,
+                stderr     : true,
+                timestamps : true,
+                tail       : 100
+            }
         },
         top          : {
             method: 'GET',
