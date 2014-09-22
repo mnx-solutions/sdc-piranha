@@ -29,7 +29,7 @@ module.exports = function (scope, app) {
         }
 
         function uploadFile(path, part, callback) {
-            var options = {type: part.mime, headers: {'max-content-length': metadata.files[part.filename]}};
+            var options = {type: part.mime, headers: {'max-content-length': metadata.files[part.filename]}, mkdirs: true};
             var ws = client.createWriteStream('~~/' + path + '/' + part.filename, options);
             ws.on('end', callback);
             ws.on('error', function (error) {
