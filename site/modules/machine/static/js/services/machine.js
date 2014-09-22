@@ -558,7 +558,11 @@
                         }
 
                         var data = job.__read();
+                        var oldCredentials = machine[collectionName].credentials;
                         machine[collectionName] = data;
+                        if (oldCredentials) {
+                            data.credentials = oldCredentials;
+                        }
                         d.resolve(data);
                         if (deleteReadJob) {
                             delete machine[collectionName + 'ReadJob'];
