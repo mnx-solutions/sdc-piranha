@@ -74,7 +74,7 @@ function createMethod(opts) {
         }
         options.path += '?' + qs.stringify(query);
         if (options.method === 'POST' || options.method === 'PUT') {
-            options.data = params;
+            return this.client[requestMap[options.method]](options, params, createCallback(callback, opts.raw));
         }
 
         this.client[requestMap[options.method]](options, createCallback(callback, opts.raw));
@@ -147,6 +147,14 @@ module.exports = function execute(scope, register) {
             method: 'POST',
             path: '/containers/:id/stop'
         },
+        pause        : {
+            method: 'POST',
+            path: '/containers/:id/pause'
+        },
+        unpause         : {
+            method: 'POST',
+            path: '/containers/:id/unpause'
+        },
         restart      : {
             method: 'POST',
             path: '/containers/:id/restart'
@@ -155,7 +163,7 @@ module.exports = function execute(scope, register) {
             method: 'POST',
             path: '/containers/:id/kill'
         },
-        destroy     : {
+        remove     : {
             method: 'DELETE',
             path: '/containers/:id'
         },

@@ -1,0 +1,190 @@
+<div data-ng-controller="Docker.ContainerCreateController">
+    <div class="container-fluid container-position container-min-width">
+        <ul class="breadcrumb">
+            <li><a href="#!/docker">Docker</a></li><!--
+        --><li><a href="#!/docker/containers">Docker Containers</a></li>
+        </ul>
+        <div class="page-header row">
+            <h3 class="page-title">Create Container</h3>
+        </div>
+        <div class="loading-large col-md-12" data-ng-show="loading"></div>
+        <div class="row" data-ng-hide="loading">
+            <div ng-hide="hosts.length">
+                Docker hosts are not available, click to <a class="orange" href="#!/docker">Create Docker Host</a>
+            </div>
+            <div ng-show="hosts.length" class="edit-form">
+                <form name="containerCreateForm">
+                    <div class="form-group">
+                        <span class="orange-asterix edit-image edit-label">Docker Host</span>
+                        <span class="edit-value">
+                            <select ui-select2="{minimumResultsForSearch: -1, width: '457px'}" id="hostSelect" data-ng-model="ip" ng-change="hostImages()" required >
+                                <option data-ng-repeat="host in hosts" value="{{host.primaryIp}}">
+                                    {{host.name}}
+                                </option>
+                            </select>
+                        </span>
+                    </div>
+                    <div class="form-group">
+                        <span class="orange-asterix edit-image edit-label">Image</span>
+                        <span class="edit-value">
+                            <select data-ng-disabled="!images.length" ui-select2="{minimumResultsForSearch: -1, width: '457px'}" id="imageSelect" data-ng-model="container.Image" required>
+                                <option data-ng-repeat="image in images" value="{{image}}">
+                                    {{image}}
+                                </option>
+                            </select>
+                        </span>
+                    </div>
+                    <div class="form-group">
+                        <span class="edit-containername edit-label">Container Name</span>
+                        <span class="edit-value">
+                            <input type="text"
+                                   name="name"
+                                   data-ng-model="container.name"
+                                    />
+                        </span>
+                    </div>
+                    <div class="form-group">
+                        <span class="edit-ports edit-label">Container Ports</span>
+                        <span class="edit-value">
+                            <input type="text"
+                                   name="ports"
+                                   data-ng-model="ports"
+                                   data-ng-pattern="/^(((\d{1,3}\.){3}\d{1,3}\:)?(\d{0,5}\:)?(\d{0,5})(\s)?)*$/"
+                                    />
+                        </span>
+                        <div class="edit-error" data-ng-show="isFormSubmited || containerCreateForm.ports.$dirty">
+                            <div class="error"
+                                 data-translate
+                                 data-ng-show="containerCreateForm.ports.$error.pattern">
+                                Must contain numbers and signs like '.', ':' and ' '.
+                            </div>
+                        </div>
+                        <div class="notation">Use space as delimeter. Publish a container's port to the host
+                            format: ip:hostPort:containerPort | ip::containerPort | hostPort:containerPort | containerPort
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <span class="edit-dns edit-label">DNS</span>
+                        <span class="edit-value">
+                            <input type="text"
+                                   name="dns"
+                                   data-ng-model="dns"
+                                   data-ng-pattern="/^((\d{1,3}\.){3}(\d{1,3})(\s{1})?)*$/"
+                                    />
+                        </span>
+                        <div class="edit-error" data-ng-show="isFormSubmited || containerCreateForm.dns.$dirty">
+                            <div class="error"
+                                 data-translate
+                                 data-ng-show="containerCreateForm.dns.$error.pattern">
+                                Must contain numbers and signs like '.' and ' '.
+                            </div>
+                        </div>
+                        <div class="notation">Set custom DNS servers. Use space as delimeter.</div>
+                    </div>
+                    <div class="form-group">
+                        <span class="edit-entrypoint edit-label">Entrypoint</span>
+                        <span class="edit-value">
+                            <input type="text"
+                                   name="entrypoint"
+                                   data-ng-model="entrypoint"
+                                   />
+                        </span>
+                        <div class="notation">Overwrite the default ENTRYPOINT of the image. Use space as delimeter.</div>
+                    </div>
+                    <div class="form-group">
+                        <span class="orange-asterix edit-commands edit-label">Command</span>
+                        <span class="edit-value">
+                            <input type="text"
+                                   name="commands"
+                                   data-ng-model="commands"
+                                   required
+                                    />
+                        </span>
+                    </div>
+                    <div class="form-group">
+                        <span class="orange-asterix edit-memory edit-label">Memory</span>
+                        <span class="edit-value">
+                            <input type="text"
+                                   name="memory"
+                                   data-ng-model="container.Memory"
+                                   required
+                                   data-ng-pattern="/^\d+$/"
+                            />
+                        </span>
+                        <div class="edit-error" data-ng-show="isFormSubmited || containerCreateForm.memory.$dirty">
+                            <div class="error"
+                                 data-translate
+                                 data-ng-show="containerCreateForm.memory.$error.pattern">
+                                Must contain only digits.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <span class="orange-asterix edit-memoryswap edit-label">MemorySwap</span>
+                        <span class="edit-value">
+                            <input type="text"
+                                   name="memoryswap"
+                                   data-ng-model="container.MemorySwap"
+                                   required
+                                   data-ng-pattern="/^\d+$/"
+                            />
+                        </span>
+                        <div class="edit-error" data-ng-show="isFormSubmited || containerCreateForm.memoryswap.$dirty">
+                            <div class="error"
+                                 data-translate
+                                 data-ng-show="containerCreateForm.memoryswap.$error.pattern">
+                                Must contain only digits.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <span class="orange-asterix edit-cpushares edit-label">CpuShares</span>
+                        <span class="edit-value">
+                            <input type="text"
+                                   name="cpushares"
+                                   data-ng-model="container.CpuShares"
+                                   required
+                                   data-ng-pattern="/^\d+$/"
+                            />
+                        </span>
+                        <div class="edit-error" data-ng-show="isFormSubmited || containerCreateForm.cpushares.$dirty">
+                            <div class="error"
+                                 data-translate
+                                 data-ng-show="containerCreateForm.cpushares.$error.pattern">
+                                Must contain only digits.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <span class="edit-workingdir edit-label">WorkingDir</span>
+                        <span class="edit-value">
+                            <input type="text"
+                                   name="workingdir"
+                                   data-ng-model="container.WorkingDir"
+                                    />
+                        </span>
+                    </div>
+                    <div class="form-group">
+                        <span class="edit-hostname edit-label">Hostname</span>
+                        <span class="edit-value">
+                            <input type="text"
+                                   name="hostname"
+                                   data-ng-model="container.Hostname"
+                                    />
+                        </span>
+                    </div>
+
+                    <hr data-ng-show="!loading" />
+                    <div class="row btn-bottom-block" data-ng-show="!loading">
+                        <span class="orange-asterix-left">required fields</span>
+                        <div class="pull-right">
+                            <button class="btn light effect-orange-button" data-ng-disabled="creating" data-ng-click="cancel()">Cancel</button>
+                            <button class="btn orange effect-orange-button" data-ng-disabled="containerCreateForm.$invalid || creating" data-ng-click="createContainer()">Create Container</button>
+                        </div>
+                        <div class="pull-right loading-medium-tr" data-ng-show="creating"></div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

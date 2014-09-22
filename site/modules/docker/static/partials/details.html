@@ -74,7 +74,7 @@
                     <div id="collapse_log" class="panel-collapse collapse">
                         <div class="panel-body panel-body-log">
                             <div class="container-log">
-                                <p data-ng-repeat="log in containerLogs track by $index">{{log}}</p>
+                                <p data-ng-show="containerLogs.length" data-ng-repeat="log in containerLogs track by $index">{{log}}</p>
                             </div>
                         </div>
                     </div>
@@ -86,15 +86,15 @@
                 <span class="status label label-info label-machine-details pull-left"
                       data-ng-class="{'btn-success': container.state == 'running'}"
                       data-ng-show="container.state">
-                    <span class="loading-small pull-left" data-ng-show="container.state == 'stopping'"></span>
-                    <i class="glyphicon glyphicon-ok" data-ng-show="container.state == 'running'"></i>
-                    <i class="warn_icon" data-ng-show="container.state == 'stopped'"></i>
+                    <span class="loading-small pull-left" data-ng-show="actionInProgress"></span>
+                    <i class="glyphicon glyphicon-ok" data-ng-show="container.state == 'running' && !actionInProgress"></i>
+                    <i class="warn_icon" data-ng-show="container.state == 'stopped' && !actionInProgress"></i>
                     <span data-translate>{{container.state}}</span>
                 </span>
 
                 <button data-ng-disabled=""
                         data-ng-show="container.state == 'stopped'"
-                        data-ng-click=""
+                        data-ng-click="makeContainerAction('start')"
                         data-toggle="tooltip"
                         data-placement="top"
                         data-html="true"
@@ -104,9 +104,9 @@
                     <p data-translate>Start</p>
                 </button>
 
-                <button data-ng-disabled=""
-                        data-ng-show="container.state == 'running'"
-                        data-ng-click=""
+                <button data-ng-disabled="container.state != 'running'"
+                        data-ng-show="container.state != 'stopped'"
+                        data-ng-click="makeContainerAction('stop')"
                         data-translate-attributes="data-original-title"
                         data-toggle="tooltip"
                         data-placement="top"
@@ -117,28 +117,42 @@
                     <p data-translate>Stop</p>
                 </button>
 
-                <button data-ng-disabled=""
-                        data-ng-click=""
+                <button data-ng-disabled="container.state == 'stopped'"
+                        data-ng-show="container.state != 'paused'"
+                        data-ng-click="makeContainerAction('pause')"
                         data-translate-attributes="data-original-title"
                         data-toggle="tooltip"
                         data-placement="top"
                         data-html="true"
-                        data-original-title="Click here to restart your container."
+                        data-original-title="Click here to pause your container."
                         class="state btn orange font_size tooltip-hover btn-machine-ctrl">
-                    <i class="reboot-icon"></i>
-                    <p data-translate>Restart</p>
+                    <i class="pause-icon"></i>
+                    <p data-translate>Pause</p>
                 </button>
 
-                <button data-ng-disabled=""
-                        data-ng-click=""
+                <button data-ng-disabled="container.state == 'stopped'"
+                        data-ng-show="container.state == 'paused'"
+                        data-ng-click="makeContainerAction('unpause')"
                         data-translate-attributes="data-original-title"
                         data-toggle="tooltip"
                         data-placement="top"
                         data-html="true"
-                        data-original-title="Click here to delete your container."
+                        data-original-title="Click here to unpause your container."
+                        class="state btn orange font_size tooltip-hover btn-machine-ctrl">
+                    <i class="icon-play"></i>
+                    <p data-translate>Unpause</p>
+                </button>
+
+                <button data-ng-disabled="container.state != 'stopped'"
+                        data-ng-click="makeContainerAction('remove')"
+                        data-translate-attributes="data-original-title"
+                        data-toggle="tooltip"
+                        data-placement="top"
+                        data-html="true"
+                        data-original-title="Click here to remove your container. Before that you need to stop container"
                         class="state btn orange font_size tooltip-hover btn-machine-ctrl">
                     <i class="delete-icon"></i>
-                    <p data-translate>Delete</p>
+                    <p data-translate>Remove</p>
                 </button>
             </div>
             <div class="panel panel-default">

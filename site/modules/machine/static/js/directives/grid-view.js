@@ -104,7 +104,7 @@
                     loadCurrentTabFilter();
                 });
             } else {
-                $scope.tabFilters = ['all'];
+                $scope.tabFilters = ['running', 'all'];
                 loadCurrentTabFilter();
             }
         }
@@ -407,13 +407,6 @@
                 refreshGrid();
 
                 if ($scope.tabFilterField) {
-                    if ($scope.tabFilterField !== 'datacenter') {
-                        items.forEach(function (item) {
-                            if ($scope.tabFilters.indexOf(item[$scope.tabFilterField]) === -1) {
-                                $scope.tabFilters.unshift(item[$scope.tabFilterField]);
-                            }
-                        });
-                    }
                     $scope.$parent.$emit('gridViewChangeTab', $scope.tabFilter || 'all');
                 }
             }
