@@ -34,6 +34,41 @@
             });
             return job.promise;
         };
+
+        service.inspectContainer = function (machine, containerid) {
+            var job = serverTab.call({
+                name: 'DockerInspect',
+                data: {
+                    host: machine,
+                    options: {id: containerid}
+                },
+                done: function (err, data) {
+                    if (err) {
+                        return false;
+                    }
+                    return data;
+                }
+            });
+            return job.promise;
+        };
+
+        service.getContainerLogs = function (machine, containerid) {
+            var job = serverTab.call({
+                name: 'DockerLogs',
+                data: {
+                    host: machine,
+                    options: {id: containerid}
+                },
+                done: function (err, data) {
+                    if (err) {
+                        return false;
+                    }
+                    return data;
+                }
+            });
+            return job.promise;
+        };
+
         return service;
     }]);
 }(window.angular, window.JP.getModule('docker')));

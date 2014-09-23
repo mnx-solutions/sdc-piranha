@@ -1,0 +1,160 @@
+<div class="container-fluid container-position" data-ng-controller="Container.DetailsController">
+
+    <ul class="breadcrumb">
+        <li><a href="#!/docker">Docker</a></li><!--
+     --><li><a href="#!/docker/containers">Containers</a></li>
+    </ul>
+    <h3 class="page-title">Container Details</h3>
+
+    <div class="inl-table">
+        <div class="left-part">
+            <div class="panel-group" id="accordion1">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <a class="accordion-toggle toggle-icon" data-toggle="collapse" data-parent="#accordion1"
+                           data-target="#collapse_summary">
+                            Summary
+                        </a>
+                    </div>
+                    <div id="collapse_summary" class="panel-collapse collapse in">
+                        <div class="panel-body">
+                            <table>
+                                <tr class="id-section">
+                                    <td>Name</td>
+                                    <td>{{container.name}}</td>
+                                </tr>
+                                <tr>
+                                    <td>Cmd</td>
+                                    <td>{{container.cmd}}</td>
+                                </tr>
+                                <tr>
+                                    <td>Entrypoint</td>
+                                    <td>{{container.entrypoint}}</td>
+                                </tr>
+                                <tr>
+                                    <td>Ports</td>
+                                    <td>{{container.ports}}</td>
+                                </tr>
+                                <tr>
+                                    <td>Hostname</td>
+                                    <td>{{container.hostname}}</td>
+                                </tr>
+                                <tr>
+                                    <td>Image</td>
+                                    <td>{{container.image}}</td>
+                                </tr>
+                                <tr>
+                                    <td>Memory</td>
+                                    <td>{{container.memory && (container.memory | sizeFormat)}}</td>
+                                </tr>
+                                <tr>
+                                    <td>Cpu Shares</td>
+                                    <td>{{container.cpuShares}}</td>
+                                </tr>
+                                <tr>
+                                    <td>Created</td>
+                                    <td>{{container.created | date:'yyyy-MM-dd HH:mm'}}</td>
+                                </tr>
+                                <tr>
+                                    <td>State</td>
+                                    <td>{{container.state}}</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <a class="accordion-toggle collapsed toggle-icon" data-toggle="collapse" data-parent="#accordion1"
+                           data-target="#collapse_log">
+                            Log
+                        </a>
+                    </div>
+                    <div id="collapse_log" class="panel-collapse collapse">
+                        <div class="panel-body panel-body-log">
+                            <div class="container-log">
+                                <p data-ng-repeat="log in containerLogs track by $index">{{log}}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="right-part">
+            <div class="details-btn-block">
+                <span class="status label label-info label-machine-details pull-left"
+                      data-ng-class="{'btn-success': container.state == 'running'}"
+                      data-ng-show="container.state">
+                    <span class="loading-small pull-left" data-ng-show="container.state == 'stopping'"></span>
+                    <i class="glyphicon glyphicon-ok" data-ng-show="container.state == 'running'"></i>
+                    <i class="warn_icon" data-ng-show="container.state == 'stopped'"></i>
+                    <span data-translate>{{container.state}}</span>
+                </span>
+
+                <button data-ng-disabled=""
+                        data-ng-show="container.state == 'stopped'"
+                        data-ng-click=""
+                        data-toggle="tooltip"
+                        data-placement="top"
+                        data-html="true"
+                        data-original-title="Click here to start your container."
+                        class="state btn orange font_size tooltip-hover btn-machine-ctrl">
+                    <i class="icon-play"></i>
+                    <p data-translate>Start</p>
+                </button>
+
+                <button data-ng-disabled=""
+                        data-ng-show="container.state == 'running'"
+                        data-ng-click=""
+                        data-translate-attributes="data-original-title"
+                        data-toggle="tooltip"
+                        data-placement="top"
+                        data-html="true"
+                        data-original-title="Click here to stop your container."
+                        class="state btn orange font_size tooltip-hover btn-machine-ctrl">
+                    <i class="stop-icon"></i>
+                    <p data-translate>Stop</p>
+                </button>
+
+                <button data-ng-disabled=""
+                        data-ng-click=""
+                        data-translate-attributes="data-original-title"
+                        data-toggle="tooltip"
+                        data-placement="top"
+                        data-html="true"
+                        data-original-title="Click here to restart your container."
+                        class="state btn orange font_size tooltip-hover btn-machine-ctrl">
+                    <i class="reboot-icon"></i>
+                    <p data-translate>Restart</p>
+                </button>
+
+                <button data-ng-disabled=""
+                        data-ng-click=""
+                        data-translate-attributes="data-original-title"
+                        data-toggle="tooltip"
+                        data-placement="top"
+                        data-html="true"
+                        data-original-title="Click here to delete your container."
+                        class="state btn orange font_size tooltip-hover btn-machine-ctrl">
+                    <i class="delete-icon"></i>
+                    <p data-translate>Delete</p>
+                </button>
+            </div>
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <a class="accordion-toggle collapsed toggle-icon" data-toggle="collapse" data-target="#collapse_analytics">
+                        Analytics
+                    </a>
+                </div>
+                <div id="collapse_analytics" class="panel-collapse collapse">
+                    <div class="panel-body">
+                        <div>
+                            <p></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
