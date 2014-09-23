@@ -374,17 +374,6 @@
                 });
             };
 
-            Account.getAccount(true).then(function (account) {
-                $scope.account = account;
-                if (!account.provisionEnabled) {
-                    addProvisionStep({
-                        name: ACCOUNT_STEP_NAME,
-                        template: 'machine/static/partials/wizard-account-info.html'
-                    });
-                }
-            });
-
-
             function getCreatedMachines() {
                 var deferred = $q.defer();
                 if ($scope.isMantaEnabled && $scope.isRecentInstancesEnabled) {
@@ -472,12 +461,14 @@
             ];
             tasks.push($q.when($scope.isProvisioningLimitsEnable ? getUserLimits(): []));
             tasks.push($q.when($scope.features.freetier === 'enabled' ? FreeTier.freetier(): []));
+            tasks.push($q.when(Account.getAccount(true)));
 
             $qe.every(tasks).then(function (result) {
                 $scope.simpleImages = [];
                 $scope.datasetsInfo = [];
                 $scope.keys = [];
                 $scope.datacenters = [];
+                $scope.account = result[6];
                 var simpleImages = [];
                 var networks = [];
                 var keysResult = result[0];
@@ -499,6 +490,13 @@
                 } else {
                     simpleImages = simpleImagesResult.images;
                     networks = simpleImagesResult.networks;
+                }
+
+                if (!$scope.account.provisionEnabled) {
+                    addProvisionStep({
+                        name: ACCOUNT_STEP_NAME,
+                        template: 'machine/static/partials/wizard-account-info.html'
+                    });
                 }
 
                 if ($scope.keys.length <= 0) {
