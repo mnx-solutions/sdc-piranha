@@ -400,7 +400,13 @@ module.exports = function execute(scope) {
                     func: function (entry, entryCallback) {
                         var fullPath = entry.parent + '/' + entry.name;
                         if (entry.type === 'directory') {
-                            roleTagDirectory(fullPath, entryCallback);
+                            client.chattr(fullPath, chattrOpts, function (attrErr, info) {
+                                if (attrErr) {
+                                    entryCallback(attrErr, roles);
+                                    return;
+                                }
+                                roleTagDirectory(fullPath, entryCallback);
+                            });
                         } else {
                             client.chattr(fullPath, chattrOpts, function (attrErr, info) {
                                 entryCallback(attrErr, roles);
