@@ -45,6 +45,7 @@
                     if (configurations) {
                         scope.configurations = configurations;
                     }
+                    scope.checkedItems = [];
                     scope.loading = false;
                 }, function (err) {
                     if (/You are not authorized to perform this action/g.test(err)) {
@@ -229,6 +230,8 @@
                             });
                         }
                     );
+                } else {
+                    showError('No configuration selected for the action.');
                 }
             }
             scope.gridProps = [
