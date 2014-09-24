@@ -231,7 +231,7 @@
                         }
                     );
                 } else {
-                    showError('No item selected for the action.');
+                    showError('No configuration selected for the action.');
                 }
             }
             scope.gridProps = [
