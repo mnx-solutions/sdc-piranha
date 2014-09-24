@@ -1,6 +1,25 @@
 <div data-ng-controller="Docker.RegistriesController" class="container-fluid container-position">
+    <breadcrumbs></breadcrumbs>
     <div class="row">
-        <h3 class="page-title">Registries</h3>
+        <h3 class="page-title white-line">Docker Registries</h3>
+        <div class="page-title-btn">
+            <button data-ng-click="connectNewRegistry()" type="button" class="btn btn-big orange text-to-left" data-ng-disabled="loading"><i class="plus-btn-icon"></i>Connect to new registry</button>
+        </div>
+    </div>
+
+    <div data-grid-view
+         data-user-config="gridUserConfig"
+         data-props="gridProps"
+         data-detail-props="gridDetailProps"
+         data-items="registries"
+         data-order="gridOrder"
+         data-multisort="false"
+         data-export-fields="exportFields"
+         data-place-Holder-Text="placeHolderText"
+         data-search-form="searchForm"
+         data-filter-all="{{query}}"
+         data-enabled-checkboxes="enabledCheckboxes"
+         data-items-type="registry">
     </div>
 </div>
 
