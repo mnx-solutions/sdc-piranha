@@ -312,3 +312,8 @@ input
 {
     margin-bottom: 20px;
 }
+
+.btn-bottom-block .rbac-doc
+{
+    padding-top: 15px;
+}
