@@ -220,22 +220,18 @@ a.orange
 
 .server
 {
-    font-size: 12px;
-    line-height: 15px;
-
     display: block;
     float: left;
     overflow: hidden;
-
+    margin: 0 8px 4px 0;
     width: 98px;
     height: 25px;
-    margin: 0 8px 8px 0;
-
-    cursor: default;
-
-    color: #333;
     border-radius: 4px;
     background-color: #959595;
+    color: #333;
+    font-size: 12px;
+    line-height: 15px;
+    cursor: default;
 }
 
 .server p
@@ -457,4 +453,9 @@ a.orange
 .tile.instance-bg
 {
     cursor: pointer;
+}
+
+.tile .center-text
+{
+    text-align: center;
 }
