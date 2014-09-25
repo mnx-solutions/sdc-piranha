@@ -13,6 +13,7 @@ MANTA_USER=$(/usr/sbin/mdata-get manta-account)
 KEYS_PATH=/root/.docker
 MANTA_DOCKER_PATH=/${MANTA_USER}/stor/.joyent/docker
 DOCKER_DIR=/mnt/docker
+LOGS_DIR=/mnt/manta
 
 for key in $(echo "user-script private-key public-key manta-account manta-url disable-tls");do
     /usr/sbin/mdata-delete ${key}
@@ -82,13 +83,13 @@ function installDocker {
 }
 
 function installLogRotator {
-    mkdir -p /mnt/manta
+    mkdir -p ${LOGS_DIR}
     cat <<END > /etc/logrotate.d/docker-containers
 ${DOCKER_DIR}/containers/*/*json.log {
     #rotate 10000
     size 10k
     copytruncate
-    olddir /mnt/manta
+    olddir ${LOGS_DIR}
     missingok
     notifempty
     sharedscripts
@@ -106,9 +107,12 @@ ${DOCKER_DIR}/containers/*/*json.log {
                 -H "Authorization: Signature keyId=\"\${keyId}\",algorithm=\"\${alg}\",signature=\"\${sig}\""
         }
 
-        for f in /mnt/manta/*;do
-            manta /${MANTA_USER}/stor/dockerLogs/\$(hostname)/\$(date +"%F")-\$(basename \${f}) -XPUT -T \${f}
-            mv \${f} \${f}.last
+        for f in \$(find ${LOGS_DIR} -type f ! -name '*-last.log');do
+            ContainerId=\$(basename \${f} | awk -F- '{print \$1}')
+            ContainerLogPath=/${MANTA_USER}/stor/dockerLogs/\$(hostname)/\${ContainerId}
+            manta \${ContainerLogPath} -XPUT -H "content-type: application/json; type=directory"
+            manta \${ContainerLogPath}/\$(date +"%F").log -XPUT -T \${f}
+            mv \${f} ${LOGS_DIR}/\${ContainerId}-last.log
         done
     endscript 
 }
