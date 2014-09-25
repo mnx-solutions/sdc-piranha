@@ -15,10 +15,13 @@ window.JP.main.config(['routeProvider', function (routeProvider) {
         }).when('/docker/containers', {
             title: 'Containers',
             action: 'docker.containers'
-        }).when('/docker/:hostid/:containerid', {
+        }).when('/docker/container/:hostid/:containerid', {
             title: 'Container Details',
             action: 'docker.details',
             showLatest: true
+        }).when('/docker/container/create', {
+            title: 'Create Container',
+            action: 'docker.container-create'
         }).when('/docker/logs', {
             title: 'Log Management',
             action: 'docker.logManagement'

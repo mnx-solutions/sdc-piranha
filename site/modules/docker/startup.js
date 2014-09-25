@@ -1,10 +1,12 @@
 'use strict';
 var config = require('easy-config');
+var vasync = require('vasync');
 
 var Docker = function execute(scope) {
     var Docker = scope.api('Docker');
     var server = scope.api('Server');
     var methods = Docker.getMethods();
+    var methodsForAllHosts = ['containers', 'getInfo'];
 
     function capitalize(str) {
         return str[0].toUpperCase() + str.substr(1);
@@ -24,6 +26,41 @@ var Docker = function execute(scope) {
                 });
             }
         });
+
+        if (methodsForAllHosts.indexOf(method) !== -1) {
+            server.onCall('Docker' + capitalize(method) + 'All', function (call) {
+                Docker.listHosts(call, function (error, hosts) {
+                    vasync.forEachParallel({
+                        inputs: hosts,
+                        func: function (host, callback) {
+                            Docker.createClient(call, host, function (error, client) {
+                                if (error) {
+                                    return callback(error);
+                                }
+                                client[method]({all: true}, function (err, response) {
+                                    if (response && method === 'containers' && Array.isArray(response)) {
+                                        response.forEach(function (container) {
+                                            container.hostName = host.name;
+                                            container.hostId = host.id;
+                                            container.primaryIp = host.primaryIp;
+                                            container.containers = container.Status.indexOf('Up') !== -1 ? 'running' : 'stopped';
+                                        });
+                                    }
+                                    callback(err, response);
+                                });
+                            });
+                        }
+                    }, function (errors, operations) {
+                        if (errors) {
+                            return call.done(errors);
+                        }
+                        var result = [].concat.apply([], operations.successes);
+
+                        call.done(null, result);
+                    });
+                });
+            });
+        }
     });
 
     server.onCall('DockerHosts', function (call) {

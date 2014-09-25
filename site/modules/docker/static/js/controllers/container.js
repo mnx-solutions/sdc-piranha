@@ -15,17 +15,30 @@
                 title: localization.translate(null, 'docker', 'View Joyent Container Details')
             });
 
-            var containerid = requestContext.getParam('containerid');
+            var containerId = requestContext.getParam('containerid');
             var hostid = requestContext.getParam('hostid');
+            var container = {
+                Id: containerId
+            };
+
+            $scope.loading = true;
+            $scope.actionInProgress = false;
 
             var errorCallback = function (err) {
                 $scope.loading = false;
+                $scope.actionInProgress = false;
                 PopupDialog.errorObj(err);
             };
+
+            function deleteTimeStamps(str) {
+                return str.replace(str.substr(0, str.indexOf('Z ', 1)) + 'Z ', '');
+            }
+
             var getDockerInspectContainer = function () {
                 var machine = $q.when(Machine.machine(hostid));
                 machine.then(function (machine) {
-                    Docker.inspectContainer(machine, containerid).then(function (info) {
+                    container.primaryIp = machine.primaryIp;
+                    Docker.inspectContainer(container).then(function (info) {
                         var containerCmd = info.Config.Cmd;
                         var containerState = 'stopped';
                         if (Array.isArray(containerCmd)) {
@@ -50,24 +63,31 @@
                             created: info.Created,
                             state: containerState
                         };
+                        $scope.actionInProgress = false;
                     }, errorCallback);
-                    Docker.getContainerLogs(machine, containerid).then(function (logs) {
+                    Docker.logsContainer(container).then(function (logs) {
                         $scope.containerLogs = [];
-                        logs = logs.split(/[\r\n]+/);
-                        function deleteTimeStamps(str) {
-                            return str.replace(str.substr(0, str.indexOf('Z ', 1)) + 'Z ', '');
-                        }
-                        if (Array.isArray(logs)) {
-                            logs.forEach(function (str) {
-                                $scope.containerLogs.push(deleteTimeStamps(str));
-                            });
-                        } else {
-                            $scope.containerLogs.push(deleteTimeStamps(logs));
+                        if (logs && typeof (logs) === 'string') {
+                            logs = logs.split(/[\r\n]+/);
+                            if (Array.isArray(logs)) {
+                                logs.forEach(function (str) {
+                                    $scope.containerLogs.push(deleteTimeStamps(str));
+                                });
+                            } else {
+                                $scope.containerLogs.push(deleteTimeStamps(logs));
+                            }
                         }
                     }, errorCallback);
                 });
             };
             getDockerInspectContainer();
+
+            $scope.makeContainerAction = function (action) {
+                $scope.actionInProgress = true;
+                Docker[action + 'Container'](container).then(function () {
+                    getDockerInspectContainer();
+                }, errorCallback);
+            }
         }
     ]);
 }(window.JP.getModule('docker')));

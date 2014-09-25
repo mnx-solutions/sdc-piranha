@@ -99,9 +99,9 @@
 {
     overflow: hidden;
     box-sizing: content-box;
-    padding: 18px;
-    min-width: 449px;
-    max-width: 449px;
+    padding: 18px 10px;
+    min-width: 465px;
+    max-width: 465px;
     background-color: #fef1d2;
 }
 .details-btn-block .status.label
@@ -126,6 +126,11 @@
     display: inline-block;
     height: 8px !important;
     vertical-align: top;
+}
+
+.details-btn-block button
+{
+    max-width: 110px;
 }
 .right-part .panel-default
 {
@@ -171,7 +176,8 @@
 .delete-icon,
 .reboot-icon,
 .icon-play,
-.stop-icon
+.stop-icon,
+.pause-icon
 {
     position: relative;
     left: -4px;
@@ -188,13 +194,16 @@
 .delete-icon
 {
     margin-top: 1px;
-    width: 19px;
     height: 18px;
     background-image: url('../img/btn_i_delete.png');
 }
 .reboot-icon
 {
     background-image: url('../img/btn_i_reboot.png');
+}
+.pause-icon
+{
+    background-image: url('../img/btn_i_pause.png');
 }
 .stop-icon
 {
@@ -274,4 +283,21 @@ span.btn-success
 .btn-machine-ctrl
 {
     margin-left: 5px;
+}
+.form-group {
+    margin: 10px 0;
+}
+.form-group span.edit-label {
+    display: inline-block;
+    margin-right: 10px;
+    width: 110px;
+    text-align: right;
+}
+.notation {
+    position: relative;
+    left: 125px;
+    width: 455px;
+}
+.btn-bottom-block {
+    margin-bottom: 50px;
 }
