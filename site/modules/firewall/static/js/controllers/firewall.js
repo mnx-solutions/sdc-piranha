@@ -1098,7 +1098,9 @@
             });
 
             $scope.$watch('openRuleForm', function(){
-
+                setTimeout(function () {
+                    ng.element('#port').focus();
+                }, 5);
                 if ($scope.openRuleForm === false) {
 
                     if ($scope.changeTab) {

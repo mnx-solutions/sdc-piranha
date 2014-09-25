@@ -24,6 +24,9 @@
                             $scope.qrImage = qr;
                             $scope.otpass = '';
                             $scope.tfaLoading = false;
+                            setTimeout(function () {
+                                ng.element('#otpass').focus();
+                            }, 5);
                         }, function () {
                             //Unauthorized
                             //It should redirect automatically
