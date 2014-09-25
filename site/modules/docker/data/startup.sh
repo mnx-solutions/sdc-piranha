@@ -12,6 +12,7 @@ MANTA_KEY_ID=$(ssh-keygen -lf /root/.ssh/user_id_rsa.pub | awk '{print $2}')
 MANTA_USER=$(/usr/sbin/mdata-get manta-account)
 KEYS_PATH=/root/.docker
 MANTA_DOCKER_PATH=/${MANTA_USER}/stor/.joyent/docker
+DOCKER_VERSION="-1.1.2"
 DOCKER_DIR=/mnt/docker
 LOGS_DIR=/mnt/manta
 
@@ -59,7 +60,7 @@ function installDocker {
     apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 36A1D7869245C8950F966E92D8576A8BA88D21E9;
     echo "deb https://get.docker.io/ubuntu docker main" > /etc/apt/sources.list.d/docker.list
     apt-get update;
-    apt-get install -y lxc-docker-1.1.2;
+    apt-get install -y lxc-docker${DOCKER_VERSION};
     
     local STATE=true
     while ${STATE} ; do
@@ -74,12 +75,45 @@ function installDocker {
     mkdir ${DOCKER_DIR}
     service docker stop
 
-    DOCKER_OPTS="-g ${DOCKER_DIR} -H tcp://0.0.0.0:4243 -H unix:///var/run/docker.sock --api-enable-cors=true"
-    if [ -z ${DISABLE_TLS} ]; then
-        DOCKER_OPTS="${DOCKER_OPTS} --tlsverify --tlscacert=${KEYS_PATH}/ca.pem --tlscert=${KEYS_PATH}/server-cert.pem --tlskey=${KEYS_PATH}/server-key.pem"
-    fi
-    echo "DOCKER_OPTS=\"${DOCKER_OPTS}\"" >> /etc/default/docker
+    echo "DOCKER_OPTS=\"-g /mnt/docker --api-enable-cors=true\"" >> /etc/default/docker
     service docker start
+}
+
+function createBalancer {
+    local name=$1
+    local port=$2    
+    local docker_address=$3
+    local cadviser_address=$4
+    apt-get install -y nginx
+    /etc/init.d/nginx stop
+    rm /etc/nginx/sites-available/default
+    usermod -a -G docker www-data
+
+    cat <<END > /etc/nginx/sites-enabled/${name}
+server {
+       listen ${port} ssl;
+       server_name localhost;
+
+       ssl on;
+       ssl_certificate /root/.docker/server-cert.pem;
+       ssl_certificate_key /root/.docker/server-key.pem;
+       ssl_client_certificate /root/.docker/ca.pem;
+       ssl_session_timeout 5m;
+
+       ssl_protocols TLSv1 TLSv1.1 TLSv1.2;
+       ssl_ciphers "HIGH:!aNULL:!MD5 or HIGH:!aNULL:!MD5:!3DES";
+       ssl_prefer_server_ciphers on;
+       ssl_verify_client on;
+
+       location / {
+      	    proxy_pass http://${docker_address};
+       }
+       location /utilization/ {
+            proxy_pass http://${cadviser_address}/api/v1.1/containers/;
+       }
+}
+END
+    /etc/init.d/nginx start
 }
 
 function installLogRotator {
@@ -129,6 +163,9 @@ fi
 writeStage "installing docker"
 installDocker
 
+writeStage "creating load balancer"
+createBalancer docker 4243 unix:/var/run/docker.sock 127.0.0.1:14242
+
 writeStage "installing log rotator"
 installLogRotator
 
@@ -141,7 +178,7 @@ docker run \
     -v /var/run/docker.sock:/var/run/docker.sock:rw \
     -v /sys:/sys:ro \
     -v ${DOCKER_DIR}/:/var/lib/docker:ro \
-    -p 8088:8080 \
-    -d --name=cAdvisor google/cadvisor:latest
+    -p 127.0.0.1:14242:8080 \
+    -d --name=cAdvisor google/cadvisor:latest -storage_driver=influxdb -log_dir=/
 
 writeStage "completed"
