@@ -393,40 +393,36 @@ module.exports = function execute(scope) {
         var chattrOpts = {
             headers: {'role-tag': roles.join(',') }
         };
-        var roleTagDirectory = function (path, callback) {
-            listDirectory(client, path, function (err, list) {
-                list = list || [];
-                vasync.forEachParallel({
-                    func: function (entry, entryCallback) {
-                        var fullPath = entry.parent + '/' + entry.name;
-                        if (entry.type === 'directory') {
-                            client.chattr(fullPath, chattrOpts, function (attrErr, info) {
-                                if (attrErr) {
-                                    entryCallback(attrErr, roles);
-                                    return;
-                                }
-                                roleTagDirectory(fullPath, entryCallback);
-                            });
-                        } else {
-                            client.chattr(fullPath, chattrOpts, function (attrErr, info) {
-                                entryCallback(attrErr, roles);
-                            });
-                        }
-                    },
-                    inputs: list
-                }, callback);
-            });
-        };
-        client.chattr(call.data.path, chattrOpts, function (err, info) {
+        var path = call.data.path;
+        var chunkSize = 50;
+        var queue = vasync.queue(function (entry, callback) {
+            var fullPath = entry;
+            if (path !== entry) {
+                fullPath = entry.parent + '/' + entry.name;
+            }
+            client.chattr(fullPath, chattrOpts, callback);
+        }, chunkSize);
+
+        queue.push(path);
+
+        client.ftw(path, function (err, res) {
             if (err) {
-                checkResponse(call, true)(err);
-                return;
+                return call.done(err);
             }
-            if (call.data.recursive) {
-                roleTagDirectory(call.data.path, call.done.bind(call));
-            } else {
-                call.done(null, roles);
-            }
+
+            res.on('entry', function (obj) {
+                queue.push(obj);
+            });
+
+            res.on('end', function () {
+                queue.drain = function () {
+                    call.done(null);
+                }
+            });
+
+            res.on('error', function (error) {
+                call.done(error);
+            });
         });
     });
 
