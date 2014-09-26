@@ -139,7 +139,7 @@
                 deferred.resolve(cacheContainers);
             } else {
                 serverTab.call({
-                    name: 'listContainers',
+                    name: 'DockerContainersAll',
                     done: function (err, data) {
                         if (err) {
                             deferred.reject(err);

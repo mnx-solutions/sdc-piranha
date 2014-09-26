@@ -67,36 +67,6 @@ var Docker = function execute(scope) {
         Docker.listHosts(call, call.done.bind(call));
     });
 
-    server.onCall('listContainers', function (call) {
-        Docker.listHosts(call, function (err, hosts) {
-            vasync.forEachParallel({
-                inputs: hosts,
-                func: function (host, callback) {
-                    if (!host.primaryIp) {
-                        return callback(null, []);
-                    }
-                    Docker.createClient(call, host, function (error, client) {
-                        if (error) {
-                            return callback(error);
-                        }
-                        client.containers({all: true}, function (error, containers) {
-                            if (error) {
-                                return callback(error);
-                            }
-                            containers.forEach(function (container) {
-                                container.hostName = host.name;
-                                container.hostId = host.id;
-                            });
-                            callback(null, containers);
-                        });
-                    });
-                }
-            }, function (errors, operations) {
-                var containers = [].concat.apply([], operations.successes);
-                call.done(null, containers);
-            })
-        });
-    });
 };
 
 if (!config.features || config.features.docker !== 'disabled') {
