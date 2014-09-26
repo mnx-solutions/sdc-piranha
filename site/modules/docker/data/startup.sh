@@ -12,6 +12,8 @@ MANTA_KEY_ID=$(ssh-keygen -lf /root/.ssh/user_id_rsa.pub | awk '{print $2}')
 MANTA_USER=$(/usr/sbin/mdata-get manta-account)
 KEYS_PATH=/root/.docker
 MANTA_DOCKER_PATH=/${MANTA_USER}/stor/.joyent/docker
+DOCKER_DIR=/mnt/docker
+LOGS_DIR=/mnt/manta
 
 for key in $(echo "user-script private-key public-key manta-account manta-url disable-tls");do
     /usr/sbin/mdata-delete ${key}
@@ -30,6 +32,9 @@ function manta {
     curl -sS ${MANTA_URL}"$@" -H "date: $now"  \
         -H "Authorization: Signature keyId=\"$keyId\",algorithm=\"$alg\",signature=\"$sig\""
 }
+
+manta /${MANTA_USER}/stor/dockerLogs -X PUT -H "content-type: application/json; type=directory"
+manta /${MANTA_USER}/stor/dockerLogs/$(hostname) -X PUT -H "content-type: application/json; type=directory"
 
 function writeStage {
     manta ${MANTA_DOCKER_PATH}/.status-$(hostname) -XPUT -d"{\"status\": \"$1\"}"
@@ -54,7 +59,7 @@ function installDocker {
     apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 36A1D7869245C8950F966E92D8576A8BA88D21E9;
     echo "deb https://get.docker.io/ubuntu docker main" > /etc/apt/sources.list.d/docker.list
     apt-get update;
-    apt-get install -y lxc-docker;
+    apt-get install -y lxc-docker-1.1.2;
     
     local STATE=true
     while ${STATE} ; do
@@ -66,15 +71,53 @@ function installDocker {
         sleep 6
     done
 
-    mkdir /mnt/docker
+    mkdir ${DOCKER_DIR}
     service docker stop
 
-    DOCKER_OPTS="-g /mnt/docker -H tcp://0.0.0.0:4243 -H unix:///var/run/docker.sock --api-enable-cors=true"
+    DOCKER_OPTS="-g ${DOCKER_DIR} -H tcp://0.0.0.0:4243 -H unix:///var/run/docker.sock --api-enable-cors=true"
     if [ -z ${DISABLE_TLS} ]; then
         DOCKER_OPTS="${DOCKER_OPTS} --tlsverify --tlscacert=${KEYS_PATH}/ca.pem --tlscert=${KEYS_PATH}/server-cert.pem --tlskey=${KEYS_PATH}/server-key.pem"
     fi
     echo "DOCKER_OPTS=\"${DOCKER_OPTS}\"" >> /etc/default/docker
     service docker start
+}
+
+function installLogRotator {
+    mkdir -p ${LOGS_DIR}
+    cat <<END > /etc/logrotate.d/docker-containers
+${DOCKER_DIR}/containers/*/*json.log {
+    #rotate 10000
+    size 10k
+    copytruncate
+    olddir ${LOGS_DIR}
+    missingok
+    notifempty
+    sharedscripts
+    postrotate
+        manta() {
+            alg=rsa-sha256
+            keyId=/${MANTA_USER}/keys/${MANTA_KEY_ID}
+            now=\$(LC_ALL=C date -u "+%a, %d %h %Y %H:%M:%S GMT")
+            sig=\$(echo "date:" \${now} | \\
+                        tr -d '\\n' | \\
+                        openssl dgst -sha256 -sign /root/.ssh/user_id_rsa | \\
+                        openssl enc -e -a | tr -d '\\n')
+        
+            curl -sS ${MANTA_URL}"\$@" -H "date: \${now}"  \\
+                -H "Authorization: Signature keyId=\"\${keyId}\",algorithm=\"\${alg}\",signature=\"\${sig}\""
+        }
+
+        for f in \$(find ${LOGS_DIR} -type f ! -name '*-last.log');do
+            ContainerId=\$(basename \${f} | awk -F- '{print \$1}')
+            ContainerLogPath=/${MANTA_USER}/stor/dockerLogs/\$(hostname)/\${ContainerId}
+            manta \${ContainerLogPath} -XPUT -H "content-type: application/json; type=directory"
+            manta \${ContainerLogPath}/\$(date +"%F").log -XPUT -T \${f}
+            mv \${f} ${LOGS_DIR}/\${ContainerId}-last.log
+        done
+    endscript 
+}
+END
+    apt-get install -y logrotate
 }
 
 writeStage "initialization"
@@ -86,14 +129,18 @@ fi
 writeStage "installing docker"
 installDocker
 
-writeStage "configuring"
+writeStage "installing log rotator"
+installLogRotator
+
 touch /var/tmp/.docker-installed
 sleep 5;
 
+writeStage "installing CAdvisor"
+
 docker run \
-    -v /var/run:/var/run:rw \
+    -v /var/run/docker.sock:/var/run/docker.sock:rw \
     -v /sys:/sys:ro \
-    -v /mnt/docker/:/var/lib/docker:ro \
+    -v ${DOCKER_DIR}/:/var/lib/docker:ro \
     -p 8088:8080 \
     -d --name=cAdvisor google/cadvisor:latest
 
