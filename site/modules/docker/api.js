@@ -30,11 +30,15 @@ function formatUrl(url, params) {
     });
 }
 
-function createCallback(callback, raw) {
+function createCallback(client, callback, raw) {
     //noinspection JSLint
     return function (error, req, res, data) {
+        client.close();
         if (error) {
-            return callback(error);
+            if (error.statusCode === 502 || error.statusCode === 504) {
+                error.message = 'Service unavailable';
+            }
+            return callback(error.message || error);
         }
         if (raw) {
             data = res.body.toString();
@@ -77,7 +81,7 @@ function createMethod(opts) {
             return this.client[requestMap[options.method]](options, params, createCallback(callback, opts.raw));
         }
 
-        this.client[requestMap[options.method]](options, createCallback(callback, opts.raw));
+        this.client[requestMap[options.method]](options, createCallback(this.client, callback, opts.raw));
     };
 }
 
@@ -182,6 +186,22 @@ module.exports = function execute(scope, register) {
         export       : {
             method: 'GET',
             path: '/containers/:id/export'
+        },
+        containerUtilization: {
+            method: 'POST',
+            path: '/utilization/docker/:id',
+            params: {
+                num_stats: 60,
+                num_samples: 0
+            }
+        },
+        hostUtilization: {
+            method: 'POST',
+            path: '/utilization/',
+            params: {
+                num_stats: 60,
+                num_samples: 0
+            }
         },
         images       : {
             method: 'GET',
