@@ -31,8 +31,8 @@
             };
             var getDockerHostInfo = function (machine) {
                 Docker.hostInfo(machine).then(function (info) {
-                    machine.containers = info.Containers;
-                    machine.images = info.Images;
+                    machine.containersCount = info.Containers;
+                    machine.imagesCount = info.Images;
                 }, errorCallback);
             };
             var getDockerHostAnalytics = function () {

@@ -66,6 +66,7 @@ var Docker = function execute(scope) {
     server.onCall('DockerHosts', function (call) {
         Docker.listHosts(call, call.done.bind(call));
     });
+
 };
 
 if (!config.features || config.features.docker !== 'disabled') {

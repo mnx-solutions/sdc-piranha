@@ -1,6 +1,6 @@
 <div data-ng-controller="Docker.IndexController" class="container-fluid container-position">
     <div class="row">
-        <h3 class="page-title white-line">Docker Dashboard</h3>
+        <h3 class="page-title">Docker Dashboard</h3>
         <div class="page-title-btn">
             <div class="control-panel">
                 <span>Data Center:</span>
@@ -27,11 +27,11 @@
             </div>
             <div class="info">
                 <span>Containers: </span>
-                <span>{{machine.containers}}</span>
+                <span>{{machine.containersCount}}</span>
             </div>
             <div class="info">
                 <span>Images: </span>
-                <span>{{machine.images}}</span>
+                <span>{{machine.imagesCount}}</span>
             </div>
             <div class="progress-wrapper">
                 <p class="title">CPU</p>

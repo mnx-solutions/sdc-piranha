@@ -135,6 +135,11 @@
                                 <span data-ng-switch-when="button">
                                     <div class="grid-small-font" data-action-button data-label-fn="prop.btn.getLabel" data-action-fn="prop.btn.action" data-class-fn="prop.btn.getClass" data-show-fn="prop.btn.show" data-disabled-fn="prop.btn.disabled" data-label="prop.btn.label" data-tooltip-text="prop.btn.tooltip" data-object="object"></div>
                                 </span>
+                                <span data-ng-switch-when="buttons">
+                                    <span class="grid-small-font" data-ng-repeat="btn in prop.buttons | orderBy:sequence">
+                                        <div data-action-button data-action-fn="btn.action" data-class-fn="btn.getClass" data-show-fn="btn.show" data-disabled-fn="btn.disabled" data-label="btn.label" data-tooltip-text="btn.tooltip" data-object="object"></div>
+                                    </span>
+                                </span>
                                 <span data-ng-switch-when="html" data-ng-bind-html="prop._getter(object)"></span>
                                 <span data-ng-switch-when="tooltip">
                                     <span data-ng-show="!!prop._getter(object)['tooltip']" class="tooltip-hover" data-toggle="tooltip" data-html="true" data-original-title="{{prop._getter(object)['tooltip']}}">{{prop._getter(object)['image']}} <span class="glyphicon glyphicon-question-sign"></span></span>
