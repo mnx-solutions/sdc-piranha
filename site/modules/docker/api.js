@@ -78,7 +78,7 @@ function createMethod(opts) {
         }
         options.path += '?' + qs.stringify(query);
         if (options.method === 'POST' || options.method === 'PUT') {
-            return this.client[requestMap[options.method]](options, params, createCallback(callback, opts.raw));
+            return this.client[requestMap[options.method]](options, params, createCallback(this.client, callback, opts.raw));
         }
 
         this.client[requestMap[options.method]](options, createCallback(this.client, callback, opts.raw));
