@@ -128,8 +128,8 @@
                         plural: 'Please confirm that you want to pause selected containers.'
                     },
                     unpause: {
-                        single: 'Unpause this container.',
-                        plural: 'Unpause selected containers.'
+                        single: 'Unpause this container?',
+                        plural: 'Unpause selected containers?'
                     },
                     remove: {
                         single: 'Please confirm that you want to remove this container.',
