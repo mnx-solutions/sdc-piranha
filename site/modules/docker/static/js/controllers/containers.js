@@ -85,6 +85,10 @@
                         id: 'Status',
                         name: 'Status',
                         sequence: 6,
+                        type: 'progress',
+                        _inProgress: function (object) {
+                            return object.actionInProgress;
+                        },
                         active: true
                     },
                     {
@@ -162,15 +166,16 @@
                                 var promises = [];
                                 $scope.checkedItems.forEach(function (container) {
                                     var deferred = $q.defer();
+                                    container.actionInProgress = true;
                                     Docker[action + 'Container'](container).then(function (response) {
                                         deferred.resolve(response);
-                                        console.log('resp', response);
                                     }, function (err) {
                                         deferred.reject(err);
                                         errorCallback(err);
+                                        container.actionInProgress = false;
+                                        container.checked = false;
                                     });
                                     promises.push(deferred.promise);
-                                    container.checked = false;
                                 });
 
                                 $q.all(promises).then(function () {
