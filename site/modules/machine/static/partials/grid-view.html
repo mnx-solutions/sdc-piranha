@@ -147,7 +147,7 @@
                                 </span>
                                 <span data-ng-switch-when="progress">
                                     <span data-ng-show="prop._inProgress(object)" class="loading-small loading-small-firewall pull-left"></span>
-                                    <span data-ng-bind-html="prop._getter(object)" class="grid-status-text"></span>
+                                    <span data-ng-bind-html="prop._getter(object) || object[prop.id]" class="grid-status-text"></span>
                                 </span>
                                 <span data-ng-switch-when="date">{{object[prop.id] | date: prop.format || 'yyyy-MM-dd HH:mm'}}</span>
                                 <span data-ng-switch-when="array">
