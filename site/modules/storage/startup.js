@@ -405,25 +405,31 @@ module.exports = function execute(scope) {
 
         queue.push(path);
 
-        client.ftw(path, function (err, res) {
-            if (err) {
-                return call.done(err);
-            }
-
-            res.on('entry', function (obj) {
-                queue.push(obj);
-            });
-
-            res.on('end', function () {
-                queue.drain = function () {
-                    call.done(null);
+        if (call.data.recursive) {
+            client.ftw(path, function (err, res) {
+                if (err) {
+                    return call.done(err);
                 }
-            });
 
-            res.on('error', function (error) {
-                call.done(error);
+                res.on('entry', function (obj) {
+                    queue.push(obj);
+                });
+
+                res.on('end', function () {
+                    queue.drain = function () {
+                        call.done(null);
+                    }
+                });
+
+                res.on('error', function (error) {
+                    call.done(error);
+                });
             });
-        });
+        } else {
+            queue.drain = function () {
+                call.done(null);
+            }
+        }
     });
 
     var pingStorage = function (call, pingFunc) {
