@@ -9,7 +9,8 @@
         '$q',
         'requestContext',
         'localization',
-        function ($scope, Docker, Machine, PopupDialog, $q, requestContext, localization) {
+        '$location',
+        function ($scope, Docker, Machine, PopupDialog, $q, requestContext, localization, $location) {
             localization.bind('docker', $scope);
             requestContext.setUpRenderContext('docker.details', $scope, {
                 title: localization.translate(null, 'docker', 'View Joyent Container Details')
@@ -78,6 +79,8 @@
                             }
                         }
                     }, errorCallback);
+                }, function () {
+                    $location.path('/docker/containers');
                 });
             };
             getDockerInspectContainer();
@@ -85,7 +88,11 @@
             $scope.makeContainerAction = function (action) {
                 $scope.actionInProgress = true;
                 Docker[action + 'Container'](container).then(function () {
-                    getDockerInspectContainer();
+                    if (action === 'remove') {
+                        $location.path('/docker/containers');
+                    } else {
+                        getDockerInspectContainer();
+                    }
                 }, errorCallback);
             }
         }
