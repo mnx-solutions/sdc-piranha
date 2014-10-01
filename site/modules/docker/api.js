@@ -95,7 +95,6 @@ function createApi(map, container) {
 }
 
 module.exports = function execute(scope, register) {
-    var Manta = scope.api('MantaClient');
     var disableTls = Boolean(config.docker && config.docker.disableTls);
     var queuedRequests = {};
     var api = {};
@@ -243,11 +242,63 @@ module.exports = function execute(scope, register) {
         }
     };
 
+    var registryAPIMethods = {
+        searchImage  : {
+            method: 'GET',
+            path: '/v1/search',
+            params: {
+                q   : '='
+            }
+        }
+    };
+
     function Docker(options) {
         this.client = restify.createJsonClient(options);
     }
 
+    function Registry(options) {
+        this.client = restify.createJsonClient(options);
+    }
+
+    // search on all hosts
+    Registry.prototype.search = function search(call, term, callback) {
+        api.listHosts(call, function (err, hosts) {
+            if (err) {
+                return callback(err);
+            }
+            vasync.forEachParallel({
+                inputs: hosts,
+                func: function (host, callback) {
+                    api.createRegistryClient(call, host, function (error, client) {
+                        if (error) {
+                            return callback(error);
+                        }
+                        client.searchImage({q: term}, callback);
+                    });
+                }
+            }, function (errors, operations) {
+                if (errors) {
+                    return callback(errors);
+                }
+                var result = [],
+                    names = {};
+                [].concat.apply([], operations.successes).map(function (response) {
+                    response.results.forEach(function (item) {
+                        if (names[item.name]) {
+                            return;
+                        }
+                        names[item.name] = true;
+                        result.push(item);
+                    });
+                });
+                callback(null, result);
+            });
+        });
+    };
+
     createApi(dockerAPIMethods, Docker.prototype);
+
+    createApi(registryAPIMethods, Registry.prototype);
 
     Docker.prototype.getClient = function () {
         return this.client;
@@ -287,7 +338,7 @@ module.exports = function execute(scope, register) {
 
     function generateCertificates(call, callback) {
 
-        var client = Manta.createClient(call);
+        var client = scope.api('MantaClient').createClient(call);
         var tmpDir = os.tmpdir() + '/' + Math.random().toString(16).substr(2);
         var options = {
             env: {
@@ -356,7 +407,7 @@ module.exports = function execute(scope, register) {
     }
 
     function getKeyPair(call, callback) {
-        var client = Manta.createClient(call);
+        var client = scope.api('MantaClient').createClient(call);
         var key;
 
         if (call.req.session.privateKey) {
@@ -378,7 +429,7 @@ module.exports = function execute(scope, register) {
     }
 
     function uploadKeys(call, keyPair, callback) {
-        var client = Manta.createClient(call);
+        var client = scope.api('MantaClient').createClient(call);
         vasync.parallel({
             funcs: [
                 function (callback) {
@@ -415,7 +466,7 @@ module.exports = function execute(scope, register) {
         delete options.specification;
         // not declared in header, because both modules depend on each other
         var Machine = scope.api('Machine');
-        var mantaClient = Manta.createClient(call);
+        var mantaClient = scope.api('MantaClient').createClient(call);
 
         options.metadata['user-script'] = startupScript;
 
@@ -455,7 +506,7 @@ module.exports = function execute(scope, register) {
     };
 
     api.getCertificates = function (call, callback, noCache) {
-        var client = Manta.createClient(call);
+        var client = scope.api('MantaClient').createClient(call);
         var retries = 3;
 
         function getFirstKey(object) {
@@ -509,7 +560,7 @@ module.exports = function execute(scope, register) {
     };
 
     api.getHostStatus = function (call, machineId, callback) {
-        var client = Manta.createClient(call);
+        var client = scope.api('MantaClient').createClient(call);
         client.getFileContents('~~/stor/.joyent/docker/.status-' + machineId, function (error, result) {
             var status = "unknown";
             if (!error) {
@@ -523,8 +574,8 @@ module.exports = function execute(scope, register) {
         });
     };
 
-    api.createClient = function (call, machine, callback) {
-        var qrKey = 'create-client-' + call.req.session.userId;
+    function createClient(call, Service, url, callback) {
+        var qrKey = 'create-' + Service.name + '-client-' + call.req.session.userId;
         var clientRequest = queuedRequests[qrKey];
 
         if (!clientRequest) {
@@ -539,8 +590,8 @@ module.exports = function execute(scope, register) {
             if (error) {
                 return callback(error);
             }
-            callback(null, new Docker({
-                url: (disableTls ? 'http://' : 'https://') + machine.primaryIp + ':4243',
+            callback(null, new Service({
+                url: url,
                 requestCert: true,
                 rejectUnauthorized: false,
                 ca: certificates.ca,
@@ -548,6 +599,14 @@ module.exports = function execute(scope, register) {
                 key: certificates.key
             }));
         });
+    }
+
+    api.createClient = function (call, machine, callback) {
+        createClient(call, Docker, (disableTls ? 'http://' : 'https://') + machine.primaryIp + ':4243', callback);
+    };
+
+    api.createRegistryClient = function (call, machine, callback) {
+        createClient(call, Registry, 'https://' + machine.primaryIp + ':5000', callback);
     };
 
     register('Docker', api);
