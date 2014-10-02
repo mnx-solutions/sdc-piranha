@@ -1488,6 +1488,9 @@
             };
 
             $scope.reviewPage = function () {
+                setTimeout(function () {
+                    ng.element('input[name="machineName"]').focus();
+                }, 5);
                 if ($scope.selectedPackageInfo && $scope.selectedPackageInfo.createdBySupport) {
                     var returnUrl = $location.path();
                     Account.checkProvisioning({btnTitle: 'Submit and Create Instance'}, function () {

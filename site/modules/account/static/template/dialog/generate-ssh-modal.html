@@ -13,7 +13,7 @@
                     <div class="controls">
                         <form name="keyNameForm" class="key-name-form">
                             <div class="clearfix">
-                                <input name="keyName" type="text" class="col-md-9 ssh-key-name" data-ng-model="keyName" data-ng-pattern="/^[a-zA-Z0-9\_\-\s]*$/" placeholder="optional" />
+                                <input name="keyName" type="text" class="col-md-9 ssh-key-name" data-ng-model="keyName" data-ng-pattern="/^[a-zA-Z0-9\_\-\s]*$/" placeholder="optional" data-auto-focus />
                             </div>
                             <p data-ng-show="keyNameForm.keyName.$invalid" class="error">SSH key name can contain only letters, digits and signs like '_' and '-'.</p>
                         </form>
