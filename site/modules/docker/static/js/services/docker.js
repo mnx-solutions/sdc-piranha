@@ -155,6 +155,29 @@
             return deferred.promise;
         };
 
+        service.containerUtilization = function (host, containerId, num_stats) {
+            if (host && host.state !== 'running') {
+                return;
+            }
+            var job = serverTab.call({
+                name: 'DockerContainerUtilization',
+                data: {
+                    host: host,
+                    options: {
+                        id: containerId,
+                        num_stats: num_stats || 60
+                    }
+                },
+                done: function (err, data) {
+                    if (err) {
+                        return false;
+                    }
+                    return data;
+                }
+            });
+            return job.promise;
+        };
+
         service.hostUtilization = function (machine) {
             return serverTab.call({
                 name: 'DockerHostUtilization',
