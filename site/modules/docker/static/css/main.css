@@ -332,6 +332,9 @@ span.btn-success
     width: 110px;
     text-align: right;
 }
+.digit-input {
+    width: 255px;
+}
 .notation {
     position: relative;
     left: 125px;

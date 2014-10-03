@@ -111,6 +111,9 @@
                     $scope.creating = true;
                     var containerPorts = parsePorts($scope.ports);
 
+                    $scope.container.Memory = $scope.memory * 1024 * 1024;
+                    $scope.container.MemorySwap = $scope.memorySwap * 1024 * 1024;
+
                     Docker.createContainer({host: {primaryIp: $scope.ip}, container: $scope.container}).then(function (response) {
                         var containerId = response.Id.slice(0, 12);
                         Docker.inspectContainer({primaryIp: $scope.ip, Id: containerId}).then(function (resp) {
