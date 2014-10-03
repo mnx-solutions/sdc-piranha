@@ -32,13 +32,7 @@
             };
 
             function deleteTimeStamps(str) {
-                var charArray = ['Z', ']'];
-                charArray.some(function (char) {
-                    if (str.indexOf(char + ' ', 1) > 0) {
-                        return str = str.replace(str.substr(0, str.indexOf(char + ' ', 1)) + char + ' ', '');
-                    }
-                });
-                return str;
+                return str.replace(str.substr(0, 8), '');
             }
 
             var getDockerInspectContainer = function () {
