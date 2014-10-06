@@ -106,16 +106,17 @@
                         <span class="edit-value">
                             <input type="text"
                                    name="memory"
-                                   data-ng-model="container.Memory"
+                                   class="digit-input"
+                                   data-ng-model="memory"
                                    required
-                                   data-ng-pattern="/^\d+$/"
-                            />
+                                   data-ng-pattern="/^(\d)*(\.\d{1,2})?$/"
+                            /> Mb
                         </span>
                         <div class="edit-error" data-ng-show="isFormSubmited || containerCreateForm.memory.$dirty">
                             <div class="error"
                                  data-translate
                                  data-ng-show="containerCreateForm.memory.$error.pattern">
-                                Must contain only digits.
+                                Must contain only digits and sign '.' and one or two digits after it.
                             </div>
                         </div>
                     </div>
@@ -124,16 +125,17 @@
                         <span class="edit-value">
                             <input type="text"
                                    name="memoryswap"
-                                   data-ng-model="container.MemorySwap"
+                                   class="digit-input"
+                                   data-ng-model="memorySwap"
                                    required
-                                   data-ng-pattern="/^\d+$/"
-                            />
+                                   data-ng-pattern="/^(\d)*(\.\d{1,2})?$/"
+                            /> Mb
                         </span>
                         <div class="edit-error" data-ng-show="isFormSubmited || containerCreateForm.memoryswap.$dirty">
                             <div class="error"
                                  data-translate
                                  data-ng-show="containerCreateForm.memoryswap.$error.pattern">
-                                Must contain only digits.
+                                Must contain only digits and sign '.' and one or two digits after it.
                             </div>
                         </div>
                     </div>
@@ -142,6 +144,7 @@
                         <span class="edit-value">
                             <input type="text"
                                    name="cpushares"
+                                   class="digit-input"
                                    data-ng-model="container.CpuShares"
                                    required
                                    data-ng-pattern="/^\d+$/"
