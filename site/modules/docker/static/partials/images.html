@@ -1,0 +1,39 @@
+<div data-ng-controller="Docker.ImagesController" class="container-fluid container-position">
+    <div class="row">
+        <ul class="breadcrumb">
+            <li><a href="#!/docker">Docker</a></li>
+        </ul>
+        <h3 class="page-title white-line">Docker Images</h3>
+        <div class="page-title-btn">
+            <button data-ng-click="searchImages()" type="button" class="btn btn-big orange text-to-left"><i class="plus-btn-icon"></i>Find Public Images on Docker Hub</button>
+            <button data-ng-click="createImage()" type="button" class="btn btn-big orange text-to-left"><i class="plus-btn-icon"></i>Create image from container</button>
+        </div>
+
+        <div class="loading-large col-md-12" data-ng-show="!images.length && loading"></div>
+
+        <div data-ng-show="images.length">
+            <div data-grid-view
+                 data-user-config="gridUserConfig"
+                 data-props="gridProps"
+                 data-detail-props="gridDetailProps"
+                 data-action-buttons="gridActionButtons"
+                 data-items="images"
+                 data-order="gridOrder"
+                 data-multisort="false"
+                 data-export-fields="exportFields"
+                 data-place-Holder-Text="placeHolderText"
+                 data-search-form="searchForm"
+                 data-filter-all="{{query}}"
+                 data-enabled-checkboxes="enabledCheckboxes"
+                 data-items-type="images"
+                 data-tab-filter-field="tabFilterField"
+                 data-tab-filter-default="tabFilterDefault"
+                 data-no-entries-message-error-type="dcUnreachable"
+                 data-checked-items="checkedItems">
+            </div>
+        </div>
+        <div data-ng-show="!images.length && !loading">
+            <div class="font-size16 margin-top-10">You don't have any images</div>
+        </div>
+    </div>
+</div>

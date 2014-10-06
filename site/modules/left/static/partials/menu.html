@@ -184,9 +184,15 @@
                             <span class="selected-sub"></span>
                         </a>
                     </li>
-                    <li left-list-item class="sub" data-ng-class="{active: location.path().search('docker/containers?') == 1}">
+                    <li left-list-item class="sub" data-ng-class="{active: location.path().search('docker/container?') == 1}">
                         <a href="#!/docker/containers">
                             <span class="titles" data-translate>Containers</span>
+                            <span class="selected-sub"></span>
+                        </a>
+                    </li>
+                    <li left-list-item class="sub" data-ng-class="{active: location.path().search('docker/images?') == 1}">
+                        <a href="#!/docker/images">
+                            <span class="titles" data-translate>Images</span>
                             <span class="selected-sub"></span>
                         </a>
                     </li>

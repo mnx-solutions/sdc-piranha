@@ -2,10 +2,10 @@
     <div class="container-fluid container-position container-min-width">
         <ul class="breadcrumb">
             <li><a href="#!/docker">Docker</a></li><!--
-        --><li><a href="#!/docker/containers">Docker Containers</a></li>
+        --><li><a href="#!/docker/{{type | lowercase}}">Docker {{type}}</a></li>
         </ul>
         <div class="page-header row">
-            <h3 class="page-title">Create Container</h3>
+            <h3 class="page-title">{{title}}</h3>
         </div>
         <div class="loading-large col-md-12" data-ng-show="loading"></div>
         <div class="row" data-ng-hide="loading">
@@ -17,14 +17,14 @@
                     <div class="form-group">
                         <span class="orange-asterix edit-image edit-label">Docker Host</span>
                         <span class="edit-value">
-                            <select ui-select2="{minimumResultsForSearch: -1, width: '457px'}" id="hostSelect" data-ng-model="ip" ng-change="hostImages()" required >
+                            <select ui-select2="{minimumResultsForSearch: -1, width: '457px'}" id="hostSelect" data-ng-model="ip" ng-change="changeHost()">
                                 <option data-ng-repeat="host in hosts" value="{{host.primaryIp}}">
                                     {{host.name}}
                                 </option>
                             </select>
                         </span>
                     </div>
-                    <div class="form-group">
+                    <div data-ng-hide="createImage" class="form-group">
                         <span class="orange-asterix edit-image edit-label">Image</span>
                         <span class="edit-value">
                             <select data-ng-disabled="!images.length" ui-select2="{minimumResultsForSearch: -1, width: '457px'}" id="imageSelect" data-ng-model="container.Image" required>
@@ -34,7 +34,17 @@
                             </select>
                         </span>
                     </div>
-                    <div class="form-group">
+                    <div data-ng-show="createImage" class="form-group">
+                        <span class="orange-asterix edit-image edit-label">Container</span>
+                        <span class="edit-value">
+                            <select data-ng-disabled="!containers.length" ui-select2="{minimumResultsForSearch: -1, width: '457px'}" id="containerSelect" data-ng-model="container.container" data-ng-change="changeContainer()" required>
+                                <option data-ng-repeat="container in containers" value="{{container.Id}}">
+                                    {{container.Names}}
+                                </option>
+                            </select>
+                        </span>
+                    </div>
+                    <div data-ng-hide="createImage" class="form-group">
                         <span class="edit-containername edit-label">Container Name</span>
                         <span class="edit-value">
                             <input type="text"
@@ -43,27 +53,45 @@
                                     />
                         </span>
                     </div>
-                    <div class="form-group">
+                    <div data-ng-hide="createImage" class="form-group">
                         <span class="edit-ports edit-label">Container Ports</span>
                         <span class="edit-value">
                             <input type="text"
                                    name="ports"
                                    data-ng-model="ports"
-                                   data-ng-pattern="/^(((\d{1,3}\.){3}\d{1,3}\:)?(\d{0,5}\:)?(\d{0,5})(\s)?)*$/"
+                                   data-ng-pattern="/^{{exposedPattern}}(\s{{exposedPattern}})*$/"
                                     />
                         </span>
                         <div class="edit-error" data-ng-show="isFormSubmited || containerCreateForm.ports.$dirty">
                             <div class="error"
                                  data-translate
                                  data-ng-show="containerCreateForm.ports.$error.pattern">
-                                Must contain numbers and signs like '.', ':' and ' '.
+                                Must contain numbers and signs like '.', ':' and ' '. Max value for port is 65535.
                             </div>
                         </div>
                         <div class="notation">Use space as delimeter. Publish a container's port to the host
                             format: ip:hostPort:containerPort | ip::containerPort | hostPort:containerPort | containerPort
                         </div>
                     </div>
-                    <div class="form-group">
+                    <div data-ng-show="createImage" class="form-group">
+                        <span class="edit-ports edit-label">Exposed Ports</span>
+                        <span class="edit-value">
+                            <input type="text"
+                                   name="exposedPorts"
+                                   data-ng-model="exposedPorts"
+                                   data-ng-pattern="/^{{portPattern}}(\s{{portPattern}})*$/"
+                                    />
+                        </span>
+                        <div class="edit-error" data-ng-show="isFormSubmited || containerCreateForm.exposedPorts.$dirty">
+                            <div class="error"
+                                 data-translate
+                                 data-ng-show="containerCreateForm.exposedPorts.$error.pattern">
+                                Must contain only numbers and ' '. Max value for port is 65535.
+                            </div>
+                        </div>
+                        <div class="notation">Use space as delimeter.</div>
+                    </div>
+                    <div data-ng-hide="createImage" class="form-group">
                         <span class="edit-dns edit-label">DNS</span>
                         <span class="edit-value">
                             <input type="text"
@@ -81,6 +109,42 @@
                         </div>
                         <div class="notation">Set custom DNS servers. Use space as delimeter.</div>
                     </div>
+                    <div data-ng-show="createImage" class="form-group">
+                        <span class="edit-tag edit-label">Tag</span>
+                        <span class="edit-value">
+                            <input type="text"
+                                   name="tag"
+                                   data-ng-model="container.tag"
+                                    />
+                        </span>
+                    </div>
+                    <div data-ng-show="createImage" class="form-group">
+                        <span class="edit-repo edit-label">Repository</span>
+                        <span class="edit-value">
+                            <input type="text"
+                                   name="repo"
+                                   data-ng-model="container.repo"
+                                    />
+                        </span>
+                    </div>
+                    <div data-ng-show="createImage" class="form-group">
+                        <span class="edit-message edit-label">Message</span>
+                        <span class="edit-value">
+                            <input type="text"
+                                   name="message"
+                                   data-ng-model="container.m"
+                                    />
+                        </span>
+                    </div>
+                    <div data-ng-show="createImage" class="form-group">
+                        <span class="edit-author edit-label">Author</span>
+                        <span class="edit-value">
+                            <input type="text"
+                                   name="author"
+                                   data-ng-model="container.author"
+                                    />
+                        </span>
+                    </div>
                     <div class="form-group">
                         <span class="edit-entrypoint edit-label">Entrypoint</span>
                         <span class="edit-value">
@@ -92,23 +156,21 @@
                         <div class="notation">Overwrite the default ENTRYPOINT of the image. Use space as delimeter.</div>
                     </div>
                     <div class="form-group">
-                        <span class="orange-asterix edit-commands edit-label">Command</span>
+                        <span class="edit-commands edit-label">Command</span>
                         <span class="edit-value">
                             <input type="text"
                                    name="commands"
                                    data-ng-model="commands"
-                                   required
                                     />
                         </span>
                     </div>
                     <div class="form-group">
-                        <span class="orange-asterix edit-memory edit-label">Memory</span>
+                        <span class="edit-memory edit-label">Memory</span>
                         <span class="edit-value">
                             <input type="text"
                                    name="memory"
                                    class="digit-input"
                                    data-ng-model="memory"
-                                   required
                                    data-ng-pattern="/^(\d)*(\.\d{1,2})?$/"
                             /> Mb
                         </span>
@@ -121,13 +183,12 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <span class="orange-asterix edit-memoryswap edit-label">MemorySwap</span>
+                        <span class="edit-memoryswap edit-label">MemorySwap</span>
                         <span class="edit-value">
                             <input type="text"
                                    name="memoryswap"
                                    class="digit-input"
                                    data-ng-model="memorySwap"
-                                   required
                                    data-ng-pattern="/^(\d)*(\.\d{1,2})?$/"
                             /> Mb
                         </span>
@@ -140,13 +201,12 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <span class="orange-asterix edit-cpushares edit-label">CpuShares</span>
+                        <span class="edit-cpushares edit-label">CpuShares</span>
                         <span class="edit-value">
                             <input type="text"
                                    name="cpushares"
                                    class="digit-input"
                                    data-ng-model="container.CpuShares"
-                                   required
                                    data-ng-pattern="/^\d+$/"
                             />
                         </span>
@@ -182,7 +242,7 @@
                         <span class="orange-asterix-left">required fields</span>
                         <div class="pull-right">
                             <button class="btn light effect-orange-button" data-ng-disabled="creating" data-ng-click="cancel()">Cancel</button>
-                            <button class="btn orange effect-orange-button" data-ng-disabled="containerCreateForm.$invalid || creating" data-ng-click="createContainer()">Create Container</button>
+                            <button class="btn orange effect-orange-button" data-ng-disabled="containerCreateForm.$invalid || creating" data-ng-click="create()">Create</button>
                         </div>
                         <div class="pull-right loading-medium-tr" data-ng-show="creating"></div>
                     </div>

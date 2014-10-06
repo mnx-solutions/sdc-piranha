@@ -146,8 +146,9 @@
                                     <span data-ng-show="!prop._getter(object)['tooltip']" data-ng-bind-html="prop._getter(object)['image']"></span>
                                 </span>
                                 <span data-ng-switch-when="progress">
-                                    <span data-ng-show="prop._inProgress(object)" class="loading-small loading-small-firewall pull-left"></span>
-                                    <span data-ng-bind-html="prop._getter(object) || object[prop.id]" class="grid-status-text"></span>
+                                    <span data-ng-show="prop._inProgress(object)" class="loading-small progres loading-small-firewall pull-left"></span>&nbsp;
+                                    <span data-ng-bind-html="prop._getter(object) || object[prop.id]" class="grid-status-text"></span>&nbsp;
+                                    <progress data-ng-show="prop._progressBar(object) && prop._progressBar(object).current" value="{{prop._progressBar(object).current}}" max="{{prop._progressBar(object).total}}"></progress>
                                 </span>
                                 <span data-ng-switch-when="date">{{object[prop.id] | date: prop.format || 'yyyy-MM-dd HH:mm'}}</span>
                                 <span data-ng-switch-when="array">

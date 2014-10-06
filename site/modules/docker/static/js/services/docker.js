@@ -9,7 +9,7 @@
 
         var service = {};
         var cacheContainers = null;
-        var containerActions = ['start', 'stop', 'pause', 'unpause', 'remove', 'inspect', 'restart', 'kill', 'logs'];
+        var containerActions = ['start', 'stop', 'pause', 'unpause', 'remove', 'inspect', 'restart', 'kill', 'logs', 'list'];
 
         function capitalize(str) {
             return str[0].toUpperCase() + str.substr(1);
@@ -56,20 +56,6 @@
             return job.promise;
         };
 
-        service.listContainers = function (machine) {
-            var job = serverTab.call({
-                name: 'DockerContainers',
-                data: {host: machine, options: {all: 1}},
-                done: function (err, data) {
-                    if (err) {
-                        return false;
-                    }
-                    return data;
-                }
-            });
-            return job.promise;
-        };
-
         service.createContainer = function (params) {
             var job = serverTab.call({
                 name: 'DockerCreate',
@@ -100,9 +86,22 @@
             };
         });
 
+        service.createImage = function (container) {
+            var job = serverTab.call({
+                name: 'DockerCommit',
+                data: {host: {primaryIp: container.primaryIp}, options: container},
+                done: function (err, data) {
+                    if (err) {
+                        return false;
+                    }
+                    return data;
+                }
+            });
+            return job.promise;
+        };
+
         service.listAllContainers = function (params) {
             var defaultParams = {
-                size: true,
                 all: true
             };
             var job = serverTab.call({
@@ -118,11 +117,13 @@
             return job.promise;
         };
 
-
-        service.hostContainers = function(machine) {
+        service.listAllImages = function (params) {
+            var defaultParams = {
+                all: false
+            };
             var job = serverTab.call({
-                name: 'DockerGetContainers',
-                data: {host: machine},
+                name: 'DockerImagesAll',
+                data: ng.extend(defaultParams, params || {}),
                 done: function (err, data) {
                     if (err) {
                         return false;
@@ -140,6 +141,7 @@
             } else {
                 serverTab.call({
                     name: 'DockerContainersAll',
+                    data: {all: true},
                     done: function (err, data) {
                         if (err) {
                             deferred.reject(err);
@@ -154,6 +156,55 @@
         };
 
         service.listContainers(true);
+
+        service.searchImage = function(host, term) {
+            var job = serverTab.call({
+                name: 'DockerSearchImage',
+                data: {host: host, options: {term: term}},
+                done: function (err, data) {
+                    if (err) {
+                        return false;
+                    }
+                    return data;
+                }
+            });
+            return job.promise;
+        };
+
+        service.removeImage = function(image) {
+            var job = serverTab.call({
+                name: 'DockerRemoveImage',
+                data: {host: {primaryIp: image.primaryIp}, options: {id: image.Id}},
+                done: function (err, data) {
+                    if (err) {
+                        return false;
+                    }
+                    return data;
+                }
+            });
+            return job.promise;
+        };
+
+        service.pullImage = function(host, image) {
+            var job = serverTab.call({
+                name: 'DockerPull',
+                data: {host: host, options: {fromImage: image.name}},
+                progress: function (err, job) {
+                    var data = job.__read();
+                    data.forEach(function (chunk) {
+                        image.progressDetail = chunk.hasOwnProperty('progressDetail') ? chunk.progressDetail : null;
+                        image.processStatus = chunk.status;
+                    });
+                },
+                done: function (err, data) {
+                    if (err) {
+                        return false;
+                    }
+                    return data;
+                }
+            });
+            return job.promise;
+        };
 
         return service;
     }]);
