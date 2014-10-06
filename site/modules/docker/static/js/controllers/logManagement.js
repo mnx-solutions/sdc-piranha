@@ -54,15 +54,15 @@
                     $scope.loading = false;
                 }, errorCallback);
 
-                $scope.viewLog = function (containerId, action) {
+                $scope.viewLog = function (hostId, containerId, action) {
                     var date = {
                         start: Math.floor($scope.date.start.getTime()/1000),
                         end: Math.floor($scope.date.end.getTime()/1000)
                     };
                     if (action === 'show') {
-                        window.open('docker/show?container=' + containerId + '&start=' + date.start + '&end=' + date.end, '_blank');
+                        window.open('docker/show?host=' + hostId + '&container=' + containerId + '&start=' + date.start + '&end=' + date.end, '_blank');
                     } else {
-                        window.location.href = 'docker/download?container=' + containerId + '&start=' + date.start + '&end=' + date.end;
+                        window.location.href = 'docker/download?host=' + hostId + '&container=' + containerId + '&start=' + date.start + '&end=' + date.end;
                     }
                 };
 
@@ -153,7 +153,7 @@
                                     return 'btn grid-mini-btn view effect-orange-button';
                                 },
                                 action: function (object) {
-                                    $scope.viewLog(object.Id, 'show');
+                                    $scope.viewLog(object.hostId, object.Id, 'show');
                                 },
                                 disabled: function (object) {
                                     return $scope.dateError;
@@ -165,7 +165,7 @@
                                     return 'btn grid-mini-btn download effect-orange-button';
                                 },
                                 action: function (object) {
-                                    $scope.viewLog(object.Id, 'download');
+                                    $scope.viewLog(object.hostId, object.Id, 'download');
                                 },
                                 disabled: function (object) {
                                     return $scope.dateError;
