@@ -35,11 +35,13 @@
                     machine.imagesCount = info.Images;
                 }, errorCallback);
             };
+
             var getDockerHostAnalytics = function () {
-                //TODO: Get real data from cAdvisor
                 $scope.dockerMachines.forEach(function (machine) {
-                    machine.cpuLoad = '35%';
-                    machine.memoryLoad = '85%';
+                    Docker.hostUsage(machine).then(function (usage) {
+                        machine.cpuLoad = usage.cpu + '%';
+                        machine.memoryLoad = usage.memory + '%';
+                    });
                 });
             };
 
@@ -95,6 +97,10 @@
                     });
                 }
             });
+
+            $scope.navigateMachine = function (machine) {
+                $location.url('/compute/instance/' + machine.id);
+            };
 
             $scope.createDocker = function () {
                 $rootScope.commonConfig('datacenter', $scope.data.datacenter);
