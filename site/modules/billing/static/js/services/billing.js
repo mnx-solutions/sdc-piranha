@@ -65,7 +65,7 @@
         };
 
         var billingResponseHandler = function (err, errMessage) {
-            if (err && err !== 'Not Implemented' && err.message.indexOf('Cannot find entity by key') === -1) {
+            if (err && err !== 'Not Implemented' && err.message && err.message.indexOf('Cannot find entity by key') === -1) {
                 PopupDialog.error(
                     localization.translate(
                         null,
