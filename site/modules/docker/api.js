@@ -239,7 +239,7 @@ module.exports = function execute(scope, register) {
                 repo: '='
             }
         },
-        getImageHistory : {
+        historyImage : {
             method: 'GET',
             path: '/images/:id/history'
         },
