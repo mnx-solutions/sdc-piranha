@@ -153,6 +153,54 @@
             return deferred.promise;
         };
 
+        service.hostUtilization = function (machine) {
+            return serverTab.call({
+                name: 'DockerHostUtilization',
+                data: {
+                    host: machine,
+                    options: {
+                        num_stats: 2
+                    }
+                }
+            }).promise;
+        };
+
+        function getOverallUsage(machineInfo, hostStats) {
+            var cur = hostStats.stats[hostStats.stats.length - 1];
+
+            var cpuUsage = 0;
+            var machineCores = machineInfo.cores || 1;
+            if (hostStats.spec.has_cpu && hostStats.stats.length >= 2) {
+                var prev = hostStats.stats[hostStats.stats.length - 2];
+                var rawUsage = cur.cpu.usage.total - prev.cpu.usage.total;
+                var intervalInNs = (new Date(cur.timestamp).getTime() - new Date(prev.timestamp).getTime()) * 1000000;
+
+                cpuUsage = Math.round(((rawUsage / intervalInNs) / machineCores) * 100);
+                if (cpuUsage > 100) {
+                    cpuUsage = 100;
+                }
+            }
+
+            var memoryUsage = 0;
+            var machineMemory = machineInfo.memory * 1024 * 1024;
+            if (hostStats.spec.has_memory) {
+                // Saturate to the machine size.
+                var limit = hostStats.spec.memory.limit;
+                if (limit > machineMemory) {
+                    limit = machineMemory;
+                }
+
+                memoryUsage = Math.round((cur.memory.usage / limit) * 100);
+            }
+            return {cpu: cpuUsage, memory: memoryUsage};
+        }
+
+        service.hostUsage = function (machine) {
+            return service.hostUtilization(machine).then(function (stats) {
+                return getOverallUsage(machine, stats);
+            });
+        };
+
         service.listContainers(true);
 
         return service;
