@@ -63,8 +63,8 @@ window.fn = [];
                 });
             };
 
-            service.ping = function (suppressError) {
-                return jobRequest('StoragePing', null, suppressError);
+            service.ping = function (data, suppressError) {
+                return jobRequest('StoragePing', data, suppressError);
             };
 
             service.listPing = function (suppressError) {

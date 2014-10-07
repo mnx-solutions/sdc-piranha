@@ -21,8 +21,9 @@
                 $scope.loading = true;
 
                 var errorCallback = function (err) {
-                    $scope.loading = false;
-                    PopupDialog.errorObj(err);
+                    Docker.errorCallback(err, function () {
+                        $scope.loading = false;
+                    });
                 };
 
                 var listAllContainers = function () {
@@ -280,7 +281,9 @@
                 $scope.tabFilterField = 'containers';
 
 
-                listAllContainers();
+                Docker.pingManta(function () {
+                    listAllContainers();
+                });
 
                 //create container
                 $scope.createContainer = function () {

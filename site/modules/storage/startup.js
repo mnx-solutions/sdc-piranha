@@ -454,14 +454,18 @@ module.exports = function execute(scope) {
                 }
                 call.done(null, 'pong');
             });
-        }
-        Billing.isActive(call.req.session.userId, function (err, isActive) {
-            if (err || !isActive) {
-                sendError(call, {message: PING_ERROR_MESSAGE});
-                return;
-            }
+        };
+        if (call.data) {
             pingManta();
-        });
+        } else {
+            Billing.isActive(call.req.session.userId, function (err, isActive) {
+                if (err || !isActive) {
+                    sendError(call, {message: PING_ERROR_MESSAGE});
+                    return;
+                }
+                pingManta();
+            });
+        }
     };
 
     server.onCall('StoragePing', function (call) {

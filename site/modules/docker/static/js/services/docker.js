@@ -1,17 +1,73 @@
 'use strict';
 
 
-(function (ng, app) { app.factory('Docker', [
-    'serverTab', '$q', 'EventBubble', 'Machine',
-    function (serverTab, $q, EventBubble, Machine) {
+(function (ng, app) {
+    app.factory('Docker', [
+        'serverTab',
+        'Account',
+        'errorContext',
+        'EventBubble',
+        'Machine',
+        'PopupDialog',
+        'localization',
+        'Storage',
+        '$q',
+        function (serverTab, Account, errorContext, EventBubble, Machine, PopupDialog, localization, Storage, $q) {
 
         var service = {};
         var containerActions = ['start', 'stop', 'pause', 'unpause', 'remove', 'inspect', 'restart', 'kill', 'logs'];
         var imageActions = ['remove', 'inspect', 'history'];
+        var billingIsActive = false;
+        var mantaIsActive = undefined;
 
         function capitalize(str) {
             return str[0].toUpperCase() + str.substr(1);
         }
+
+        service.errorCallback = function (err, callback) {
+            var messageMantaUnavailable = 'Manta service is not available.';
+            if ((err.message && err.message.indexOf(messageMantaUnavailable) >= 0) ||
+                (err && typeof(err) === 'string' && err.indexOf(messageMantaUnavailable) >= 0)) {
+                    errorContext.emit(new Error(localization.translate(null,
+                    'docker',
+                    'Our operations team is investigating.'
+                )));
+            } else {
+                PopupDialog.errorObj(err);
+            }
+            return callback();
+        };
+
+        service.pingManta = function (callback) {
+            function errorPingManta() {
+                errorContext.emit(new Error(localization.translate(null,
+                    'docker',
+                    'Our operations team is investigating.'
+                )));
+            }
+            function storagePing(billingEnabled) {
+                Storage.ping(billingEnabled).then(function () {
+                    mantaIsActive = true;
+                    callback();
+                }, function () {
+                    mantaIsActive = false;
+                    errorPingManta();
+                });
+            }
+            if (billingIsActive && mantaIsActive !== undefined) {
+                    mantaIsActive ? callback() : errorPingManta();
+            } else {
+                Account.getAccount().then(function (account) {
+                    var billingEnabled = account.provisionEnabled;
+                    if (billingEnabled) {
+                        billingIsActive = true;
+                    }
+                    storagePing(billingEnabled);
+                }, function () {
+                    errorPingManta();
+                });
+            }
+        };
 
         service.createContainer = function (params) {
             var job = serverTab.call({

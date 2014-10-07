@@ -16,16 +16,19 @@
                 $scope.loading = true;
                 $scope.registries = [];
 
-                var errorCallback = function (err, dialog) {
-                    $scope.loading = false;
-                    PopupDialog.errorObj(err);
+                var errorCallback = function (err) {
+                    Docker.errorCallback(err, function () {
+                        $scope.loading = false;
+                    });
                 };
 
                 $scope.registries = [];
 
-                Docker.getRegistriesList().then(function (list) {
-                    $scope.registries = list;
-                    $scope.loading = false;
+                Docker.pingManta(function () {
+                    Docker.getRegistriesList().then(function (list) {
+                        $scope.registries = list;
+                        $scope.loading = false;
+                    }, errorCallback);
                 });
 
                 var deleteFromRegistries = function (registry) {
