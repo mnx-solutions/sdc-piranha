@@ -494,12 +494,10 @@ module.exports = function execute(scope, register) {
         // not declared in header, because both modules depend on each other
         var Machine = scope.api('Machine');
         var mantaClient = scope.api('MantaClient').createClient(call);
-
+        options.metadata = options.metadata || {};
         options.metadata['user-script'] = startupScript;
-
-        options.tags = {
-            JPC_tag: 'DockerHost'
-        };
+        options.tags = options.tags || {};
+        options.tags.JPC_tag = 'DockerHost';
 
         if (disableTls) {
             options.metadata['disable-tls'] = disableTls;
