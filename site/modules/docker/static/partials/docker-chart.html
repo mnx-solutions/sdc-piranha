@@ -1,0 +1,25 @@
+<div class="utilization">
+    <div class="btn-group margin_btn_0 toggle-graf-width">
+        <button data-ng-click="toggleGraph()" id="control_{{$id}}"
+                data-ng-class="{disabled: !ready, btn: true}"
+                class="toggle-graf-btn toggle-btn-bg">
+            <p class="toggle-icon" data-ng-class="{collapsed: !showGraph}">{{ready && type.options.title || loadingText}}</p>
+        </button>
+    </div>
+    <div class="chart-container" id="chart_container_{{$id}}" data-ng-show="showGraph && ready">
+        <div>
+            <div class="y-axis" id="y_axis_{{$id}}"></div>
+            <div class="chart" id="chart_{{$id}}"></div>
+            <div class="x-axis" id="x_axis_{{$id}}"></div>
+            <div class="legend" id="legend_{{$id}}"></div>
+            <div class="graf-radio-group" data-toggle="buttons-radio">
+                <button class="btn default-margin default-margin-mini graf-radio-btn"
+                        data-ng-class="{active: renderer == activeRenderer}"
+                        data-ng-hide="heatmap"
+                        data-ng-repeat="renderer in renderers"
+                        data-ng-click="changeRenderer(renderer)">{{renderer}}
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

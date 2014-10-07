@@ -5,8 +5,9 @@
      --><li><a href="#!/docker/containers">Containers</a></li>
     </ul>
     <h3 class="page-title">Container Details</h3>
+    <div class="loading-large col-md-12" data-ng-show="loading"></div>
 
-    <div class="inl-table">
+    <div class="inl-table" data-ng-hide="loading">
         <div class="left-part">
             <div class="panel-group" id="accordion1">
                 <div class="panel panel-default">
@@ -92,7 +93,7 @@
                     <span data-translate>{{container.state}}</span>
                 </span>
 
-                <button data-ng-disabled=""
+                <button data-ng-disabled="actionInProgress"
                         data-ng-show="container.state == 'stopped'"
                         data-ng-click="makeContainerAction('start')"
                         data-toggle="tooltip"
@@ -104,7 +105,7 @@
                     <p data-translate>Start</p>
                 </button>
 
-                <button data-ng-disabled="container.state != 'running'"
+                <button data-ng-disabled="container.state != 'running' || actionInProgress"
                         data-ng-show="container.state != 'stopped'"
                         data-ng-click="makeContainerAction('stop')"
                         data-translate-attributes="data-original-title"
@@ -117,7 +118,7 @@
                     <p data-translate>Stop</p>
                 </button>
 
-                <button data-ng-disabled="container.state == 'stopped'"
+                <button data-ng-disabled="container.state == 'stopped' || actionInProgress"
                         data-ng-show="container.state != 'paused'"
                         data-ng-click="makeContainerAction('pause')"
                         data-translate-attributes="data-original-title"
@@ -130,7 +131,7 @@
                     <p data-translate>Pause</p>
                 </button>
 
-                <button data-ng-disabled="container.state == 'stopped'"
+                <button data-ng-disabled="container.state == 'stopped' || actionInProgress"
                         data-ng-show="container.state == 'paused'"
                         data-ng-click="makeContainerAction('unpause')"
                         data-translate-attributes="data-original-title"
@@ -143,7 +144,7 @@
                     <p data-translate>Unpause</p>
                 </button>
 
-                <button data-ng-disabled="container.state != 'stopped'"
+                <button data-ng-disabled="container.state != 'stopped' || actionInProgress"
                         data-ng-click="makeContainerAction('remove')"
                         data-translate-attributes="data-original-title"
                         data-toggle="tooltip"
@@ -155,19 +156,10 @@
                     <p data-translate>Remove</p>
                 </button>
             </div>
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <a class="accordion-toggle collapsed toggle-icon" data-toggle="collapse" data-target="#collapse_analytics">
-                        Analytics
-                    </a>
-                </div>
-                <div id="collapse_analytics" class="panel-collapse collapse">
-                    <div class="panel-body">
-                        <div>
-                            <p></p>
-                        </div>
-                    </div>
-                </div>
+            <div data-ng-if="container.state == 'running' && !actionInProgress">
+                <adviser-graph type="cpu"></adviser-graph>
+                <adviser-graph type="memory" data></adviser-graph>
+                <adviser-graph type="network" data></adviser-graph>
             </div>
         </div>
     </div>

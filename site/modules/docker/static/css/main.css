@@ -687,3 +687,74 @@ span.btn-success
 .date-range-wrapper {
     height: 50px;
 }
+.rickshaw_legend
+{
+    display: block !important;
+    float: right;
+    margin-top: 14px;
+    padding: 0;
+    background-color: transparent;
+    color: #333;
+    cursor: default;
+}
+
+.rickshaw_graph
+{
+    overflow: hidden;
+    margin-bottom: 10px;
+    max-width: 485px !important;
+}
+
+.rickshaw_legend .line .swatch
+{
+    border-radius: 0 !important;
+    vertical-align: middle;
+    cursor: default;
+}
+
+.rickshaw_legend label,
+.rickshaw_legend .label
+{
+    padding: 0;
+    vertical-align: middle;
+    font-size: 12px;
+}
+
+.heatmap-pos
+{
+    padding-left: 10px;
+    vertical-align: top;
+}
+.btn-group-chart
+{
+    margin-top: 10px;
+    margin-left: 20px;
+    padding-bottom: 20px;
+}
+.toggle-graf-width {
+    width: 100%;
+}
+.graf-radio-btn {
+    padding: 3px 10px !important;
+    background-color: #d6dce0 !important;
+    text-shadow: none !important;
+}
+
+.graf-radio-group {
+    padding-top: 10px;
+    padding-bottom: 15px;
+    padding-left: 45px;
+}
+.y-axis {
+    float: left;
+}
+.chart-container {
+    padding: 10px;
+}
+.utilization {
+    margin: 10px 0;
+    background-color: #e9eff4;
+}
+.graf-radio-btn.active {
+    background-color: #ffffff !important;
+}
