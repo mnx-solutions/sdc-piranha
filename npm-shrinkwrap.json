@@ -1991,7 +1991,7 @@
     "zuora": {
       "version": "0.1.7",
       "from": "zuora@git+ssh://git@github.com:joyent/node-zuora-rest.git",
-      "resolved": "git+ssh://git@github.com:joyent/node-zuora-rest.git#503494e0279bd4b790315dc03babf501cf49f32a",
+      "resolved": "git+ssh://git@github.com:joyent/node-zuora-rest.git#01df60a512bf204bf1038b25c26240c85fab5e63",
       "dependencies": {
         "validator": {
           "version": "2.0.0",
