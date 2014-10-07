@@ -25,27 +25,36 @@
                 <span>DC: </span>
                 <span>{{machine.datacenter}}</span>
             </div>
-            <div class="info">
-                <span>Containers: </span>
-                <span>{{machine.containersCount}}</span>
+            <div class="info" data-ng-hide="states[machine.id] == 'completed'">
+                <span>Status: </span>
+                <span>{{states[machine.id] || 'initializing'}}</span>
+                <div class="loading-medium-tr"></div>
             </div>
-            <div class="info">
-                <span>Images: </span>
-                <span>{{machine.imagesCount}}</span>
-            </div>
-            <div class="progress-wrapper">
-                <p class="title">CPU</p>
-                <div class="progress" title="{{machine.cpuLoad}}">
-                    <div class="progress-bar" ng-style="{width: machine.cpuLoad}"></div>
+            <div data-ng-show="states[machine.id] == 'completed'">
+                <div class="info">
+                    <span>Containers: </span>
+                    <span>{{machine.containersCount}}</span>
                 </div>
-                <p class="title">Memory</p>
-                <div class="progress" title="{{machine.memoryLoad}}">
-                    <div class="progress-bar" ng-style="{width: machine.memoryLoad}"></div>
+                <div class="info">
+                    <span>Images: </span>
+                    <span>{{machine.imagesCount}}</span>
+                </div>
+                <div class="progress-wrapper">
+                    <p class="title">CPU</p>
+                    <div class="progress" title="{{machine.cpuLoad}}">
+                        <div class="progress-bar" ng-style="{width: machine.cpuLoad}"></div>
+                    </div>
+                    <p class="title">Memory</p>
+                    <div class="progress" title="{{machine.memoryLoad}}">
+                        <div class="progress-bar" ng-style="{width: machine.memoryLoad}"></div>
+                    </div>
+                </div>
+                <div class="os-based ubuntu-logo">
+                    <p class="title">Ubuntu</p>
                 </div>
             </div>
-            <div class="os-based ubuntu-logo">
-                <p class="title">Ubuntu</p>
-            </div>
+            
+            
         </div>
     </div>
 </div>

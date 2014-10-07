@@ -1,7 +1,11 @@
 'use strict';
 var config = require('easy-config');
 var vasync = require('vasync');
+var util = require('util');
 var restify = require('restify');
+var dockerIndexClient = restify.createJsonClient({
+    url: 'https://index.docker.io'
+});
 
 var Docker = function execute(scope) {
     var Docker = scope.api('Docker');
@@ -9,6 +13,12 @@ var Docker = function execute(scope) {
     var methods = Docker.getMethods();
     var methodsForAllHosts = ['containers', 'getInfo', 'images'];
     var part;
+
+    function DockerHostUnreachable(host) {
+        this.message = 'Docker host "' + host + '" is unreachable.';
+    }
+
+    util.inherits(DockerHostUnreachable, Error);
 
     function capitalize(str) {
         return str[0].toUpperCase() + str.substr(1);
@@ -53,17 +63,38 @@ var Docker = function execute(scope) {
         return response;
     }
 
+    function waitClient(call, host, callback) {
+        var callOpts = call.data || {};
+
+        Docker.createClient(call, host, function (error, client) {
+            if (callOpts.wait && host.id) {
+                Docker.waitHost(call, host, function (status) {
+                    call.update(null, {hostId: host.id, status: status});
+                }, function (error) {
+                    callback(error, client);
+                });
+            } else {
+                callback(error, client);
+            }
+        });
+    }
+
     methods.forEach(function (method) {
         server.onCall('Docker' + capitalize(method), {
             verify: function (data) {
                 return data && data.host && typeof (data.host.primaryIp) === 'string';
             },
             handler: function (call) {
-                Docker.createClient(call, call.data.host, function (error, client) {
+                waitClient(call, call.data.host, function (error, client) {
                     if (error) {
                         return call.done(error);
                     }
-                    client[method](call.data.options, call.done.bind(call));
+                    client.ping(function (error) {
+                        if (error) {
+                            return call.done(new DockerHostUnreachable(call.data.host.primaryIp).message, true);
+                        }
+                        client[method](call.data.options, call.done.bind(call));
+                    });
                 });
             }
         });
@@ -71,32 +102,44 @@ var Docker = function execute(scope) {
         if (methodsForAllHosts.indexOf(method) !== -1) {
             server.onCall('Docker' + capitalize(method) + 'All', function (call) {
                 Docker.listHosts(call, function (error, hosts) {
+                    if (error) {
+                        return call.done(error);
+                    }
+
                     vasync.forEachParallel({
                         inputs: hosts,
                         func: function (host, callback) {
-                            Docker.createClient(call, host, function (error, client) {
+                            waitClient(call, host, function (error, client) {
                                 if (error) {
                                     return callback(error);
                                 }
-                                var data = call.data || {all: true};
-                                client[method](call.data, function (err, response) {
-                                    if (response && Array.isArray(response)) {
-                                        response.forEach(function (container) {
-                                            container.hostName = host.name;
-                                            container.hostId = host.id;
-                                            container.primaryIp = host.primaryIp;
-                                            if (method === 'containers') {
-                                                container.containers = container.Status.indexOf('Up') !== -1 ? 'running' : 'stopped';
-                                            }
-                                        });
+                                client.ping(function (error) {
+                                    if (error) {
+                                        return callback(new DockerHostUnreachable(host.primaryIp));
                                     }
-                                    callback(err, response);
+
+                                    client[method]({all: true}, function (err, response) {
+                                        if (response && Array.isArray(response)) {
+                                            response.forEach(function (container) {
+                                                container.hostName = host.name;
+                                                container.hostId = host.id;
+                                                container.primaryIp = host.primaryIp;
+                                                if (method === 'containers') {
+                                                    container.containers = container.Status.indexOf('Up') !== -1 ? 'running' : 'stopped';
+                                                }
+                                            });
+                                        }
+                                        callback(err, response);
+                                    });
                                 });
                             });
                         }
-                    }, function (errors, operations) {
-                        if (errors) {
-                            return call.done(errors);
+                    }, function (vasyncError, operations) {
+                        if (vasyncError) {
+                            var cause = vasyncError.jse_cause[0];
+                            if (cause) {
+                                return call.done(cause, cause instanceof DockerHostUnreachable);
+                            }
                         }
                         var result = [].concat.apply([], operations.successes);
 
@@ -142,21 +185,19 @@ var Docker = function execute(scope) {
         });
     });
 
-    server.onCall('getImageTags', function (call) {
-        var client = restify.createJsonClient({
-            url: 'https://index.docker.io',
-            headers: {
-                'Content-type': 'application/json',
-                'Access-Control-Allow-Origin': '*'
-            }
-        });
-        var path = '/v1/repositories/' + call.data.name + '/tags';
-        client.get(path, function (err, req, res, data) {
-            if (err) {
-                return call.done(err);
-            }
-            call.done(null, data);
-        });
+    server.onCall('DockerImageTags', {
+        verify: function (data) {
+            return data && data.options && typeof (data.options.name) === 'string';
+        },
+        handler: function (call) {
+            var path = '/v1/repositories/' + call.data.options.name + '/tags';
+            dockerIndexClient.get(path, function (err, req, res, data) {
+                if (err) {
+                    return call.done(err);
+                }
+                call.done(null, data);
+            });
+        }
     });
 };
 

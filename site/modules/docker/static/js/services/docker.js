@@ -1,61 +1,17 @@
 'use strict';
 
 
-(function (ng, app) {
-    app.factory('Docker', [
-        'serverTab',
-        '$q',
-        function (serverTab, $q) {
+(function (ng, app) { app.factory('Docker', [
+    'serverTab', '$q', 'EventBubble',
+    function (serverTab, $q, EventBubble) {
 
         var service = {};
-        var cacheContainers = null;
-        var containerActions = ['start', 'stop', 'pause', 'unpause', 'remove', 'inspect', 'restart', 'kill', 'logs', 'list'];
+        var containerActions = ['start', 'stop', 'pause', 'unpause', 'remove', 'inspect', 'restart', 'kill', 'logs'];
         var imageActions = ['remove', 'inspect', 'history'];
 
         function capitalize(str) {
             return str[0].toUpperCase() + str.substr(1);
         }
-
-        service.listHosts = function (call) {
-            var job = serverTab.call({
-                name: 'DockerHosts',
-                done: function (err, data) {
-                    if (err) {
-                        return false;
-                    }
-                    return data;
-                }
-            });
-            return job.promise;
-        };
-
-        service.hostInfo = function (machine) {
-            var job = serverTab.call({
-                name: 'DockerGetInfo',
-                data: {host: machine},
-                done: function (err, data) {
-                    if (err) {
-                        return false;
-                    }
-                    return data;
-                }
-            });
-            return job.promise;
-        };
-
-        service.listImages = function (machine) {
-            var job = serverTab.call({
-                name: 'DockerImages',
-                data: {host: machine, options: {all: false}},
-                done: function (err, data) {
-                    if (err) {
-                        return false;
-                    }
-                    return data;
-                }
-            });
-            return job.promise;
-        };
 
         service.createContainer = function (params) {
             var job = serverTab.call({
@@ -71,89 +27,116 @@
             return job.promise;
         };
 
+        service.cache = {};
+        service.jobs = {};
+
+        /**
+         * 
+         * @param options.host {Object} - machine object
+         * @param options.direct {Boolean} - direct call
+         * @param options.cache {Boolean} - return result from cache if exists
+         */
+        function createCall(method, options, progressHandler) {
+            var host = 'All';
+            if (options && options.host) {
+                host = options.host.primaryIp;
+            }
+            var jobKey = method + host;
+            var job = service.jobs[jobKey];
+            var cache = service.cache[jobKey];
+
+            if (angular.isFunction(options)) {
+                progressHandler = options;
+                options = null;
+            }
+            progressHandler = progressHandler || angular.noop;
+            if (options && !options.direct && options.cache && cache) {
+                var defer = $q.defer();
+                setTimeout(function () {
+                    defer.resolve(cache);
+                }, 1);
+                return defer.promise;
+            }
+
+            if (options && !options.direct && job) {
+                job.$on('update', progressHandler);
+                return job.promise;
+            }
+
+            job = service.jobs[jobKey] = EventBubble.$new();
+            job.$on('update', progressHandler);
+
+            var name = 'Docker' + capitalize(method);
+            if (!options || options.host === 'All') {
+                delete (options && options.host);
+                name += 'All';
+            }
+            options = options || {};
+            job.promise = serverTab.call({
+                name: name,
+                data: {
+                    host: options.host,
+                    wait: options.wait,
+                    options: options.options
+                },
+                progress: function (error, data) {
+                    if (!error && data) {
+                        data = data.__read();
+                        data = Array.isArray(data) && data.slice(-1)[0];
+                    }
+                    job.$emit('update', error, data);
+                },
+                done: function () {
+                    delete service.jobs[jobKey];
+                },
+                error: function (error) {
+                    job.$emit('done', error);
+                }
+            }).promise;
+
+            return job.promise;
+        }
+
+        service.listContainers = function (options) {
+            return createCall('containers', options);
+        };
+
+        service.listHosts = function (options) {
+            return createCall('hosts', options || {});
+        };
+
+        service.listImages = function (machine, options) {
+            options = angular.extend({
+                host: machine,
+                options: {all: false}
+            }, options);
+            return createCall('images', options);
+        };
+
+        service.hostInfo = function (options, progressHandler) {
+            return createCall('getInfo', options, progressHandler);
+        };
+
         containerActions.forEach(function (action) {
             service[action + 'Container'] = function (container) {
-                var job = serverTab.call({
-                    name: 'Docker' + capitalize(action),
-                    data: {host: {primaryIp: container.primaryIp}, options: container.options || {id: container.Id} },
-                    done: function (err, data) {
-                        if (err) {
-                            return false;
-                        }
-                        return data;
-                    }
-                });
-                return job.promise;
+                var data = {
+                    direct: true,
+                    host: {primaryIp: container.primaryIp},
+                    options: container.options || {id: container.Id}
+                };
+                return createCall(action, data);
             };
         });
 
         service.createImage = function (container) {
-            var job = serverTab.call({
-                name: 'DockerCommit',
-                data: {host: {primaryIp: container.primaryIp}, options: container},
-                done: function (err, data) {
-                    if (err) {
-                        return false;
-                    }
-                    return data;
-                }
-            });
-            return job.promise;
-        };
-
-        service.listAllContainers = function (params) {
-            var defaultParams = {
-                all: true
-            };
-            var job = serverTab.call({
-                name: 'DockerContainersAll',
-                data: ng.extend(defaultParams, params || {}),
-                done: function (err, data) {
-                    if (err) {
-                        return false;
-                    }
-                    return data;
-                }
-            });
-            return job.promise;
+            return createCall('commit', {host: {primaryIp: container.primaryIp}, options: container});
         };
 
         service.listAllImages = function (params) {
             var defaultParams = {
                 all: false
             };
-            var job = serverTab.call({
-                name: 'DockerImagesAll',
-                data: ng.extend(defaultParams, params || {}),
-                done: function (err, data) {
-                    if (err) {
-                        return false;
-                    }
-                    return data;
-                }
-            });
-            return job.promise;
-        };
-
-        service.listContainers = function (update) {
-            var deferred = $q.defer();
-            if (cacheContainers && !update) {
-                deferred.resolve(cacheContainers);
-            } else {
-                serverTab.call({
-                    name: 'DockerContainersAll',
-                    data: {all: true},
-                    done: function (err, data) {
-                        if (err) {
-                            deferred.reject(err);
-                            return;
-                        }
-                        cacheContainers = data.__read();
-                        deferred.resolve(cacheContainers);
-                    }
-                });
-            }
-            return deferred.promise;
+            return createCall('images', {host: 'All', options: ng.extend(defaultParams, params || {})});
         };
 
         service.containerUtilization = function (host, containerId, num_stats) {
@@ -179,16 +162,9 @@
             return job.promise;
         };
 
-        service.hostUtilization = function (machine) {
-            return serverTab.call({
-                name: 'DockerHostUtilization',
-                data: {
-                    host: machine,
-                    options: {
-                        num_stats: 2
-                    }
-                }
-            }).promise;
+        service.hostUtilization = function (options) {
+            options = angular.extend({options: {num_stats: 2}}, options);
+            return createCall('hostUtilization', options);
         };
 
         function getOverallUsage(machineInfo, hostStats) {
@@ -221,28 +197,20 @@
             return {cpu: cpuUsage, memory: memoryUsage};
         }
 
-        service.hostUsage = function (machine) {
-            return service.hostUtilization(machine).then(function (stats) {
-                return getOverallUsage(machine, stats);
+        service.hostUsage = function (options) {
+            return service.hostUtilization(options).then(function (stats) {
+                stats = Array.isArray(stats) ? stats.slice(-1)[0] : stats;
+                return getOverallUsage(options.host, stats);
             });
         };
 
-        service.listContainers(true);
-
-        service.searchImage = function(host, term) {
-            var job = serverTab.call({
-                name: 'DockerSearchImage',
-                data: {host: host, options: {term: term}},
-                done: function (err, data) {
-                    if (err) {
-                        return false;
-                    }
-                    return data;
-                }
-            });
-            return job.promise;
+        service.searchImage = function (host, term) {
+            return createCall('searchImage', {host: host, options: {term: term}});
         };
 
+        service.removeImage = function (image) {
+            return createCall('searchImage', {host: {primaryIp: image.primaryIp}, options: {id: image.Id}});
+        };
         imageActions.forEach(function (action) {
             service[action + 'Image'] = function (image) {
                 var job = serverTab.call({
@@ -259,40 +227,18 @@
             };
         });
 
-        service.pullImage = function(host, image) {
-            var job = serverTab.call({
-                name: 'DockerPull',
-                data: {host: host, options: {fromImage: image.name, tag: image.tag}},
-                progress: function (err, job) {
-                    var data = job.__read();
-                    data.forEach(function (chunk) {
-                        image.progressDetail = chunk.hasOwnProperty('progressDetail') ? chunk.progressDetail : null;
-                        image.processStatus = chunk.status;
-                    });
-                },
-                done: function (err, data) {
-                    if (err) {
-                        return false;
-                    }
-                    return data;
-                }
+        service.pullImage = function (host, image) {
+            return createCall('pull', {host: host, options: {fromImage: image.name}}, function (error, chunk) {
+                image.progressDetail = chunk.hasOwnProperty('progressDetail') ? chunk.progressDetail : null;
+                image.processStatus = chunk.status;
             });
-            return job.promise;
         };
 
         service.getImageTags = function(name) {
-            var job = serverTab.call({
-                name: 'getImageTags',
-                data: {name: name},
-                done: function (err, data) {
-                    if (err) {
-                        return false;
-                    }
-                    return data;
-                }
-            });
-            return job.promise;
+            return createCall('imageTags', {options: {name: name}, direct: true});
         };
+
+        service.listContainers();
 
         return service;
     }]);

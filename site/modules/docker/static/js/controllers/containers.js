@@ -26,7 +26,7 @@
                 };
 
                 var listAllContainers = function () {
-                    Docker.listAllContainers().then(function (containers) {
+                    Docker.listContainers().then(function (containers) {
                         $scope.containers = containers.map(function (container) {
                             container.Id = container.Id.slice(0, 12);
                             container.Names = container.Names.length ? container.Names.join(', ') : '';

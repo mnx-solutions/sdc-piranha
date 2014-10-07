@@ -121,6 +121,8 @@
   , "firewallRuleUpdateTimeout": 90000
   , "firewallRuleDeleteTimeout": 90000
   , "mantaJob": 1000
+  , "dockerHost": 1000
+  , "dockerHostTimeout": 300000
   }
 , "capishim": {
     "username": ""
