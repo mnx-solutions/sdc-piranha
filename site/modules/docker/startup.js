@@ -1,6 +1,7 @@
 'use strict';
 var config = require('easy-config');
 var vasync = require('vasync');
+var restify = require('restify');
 
 var Docker = function execute(scope) {
     var Docker = scope.api('Docker');
@@ -138,6 +139,23 @@ var Docker = function execute(scope) {
                 });
                 req.end();
             });
+        });
+    });
+
+    server.onCall('getImageTags', function (call) {
+        var client = restify.createJsonClient({
+            url: 'https://index.docker.io',
+            headers: {
+                'Content-type': 'application/json',
+                'Access-Control-Allow-Origin': '*'
+            }
+        });
+        var path = '/v1/repositories/' + call.data.name + '/tags';
+        client.get(path, function (err, req, res, data) {
+            if (err) {
+                return call.done(err);
+            }
+            call.done(null, data);
         });
     });
 };

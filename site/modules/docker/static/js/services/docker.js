@@ -236,7 +236,7 @@
         service.pullImage = function(host, image) {
             var job = serverTab.call({
                 name: 'DockerPull',
-                data: {host: host, options: {fromImage: image.name}},
+                data: {host: host, options: {fromImage: image.name, tag: image.tag}},
                 progress: function (err, job) {
                     var data = job.__read();
                     data.forEach(function (chunk) {
@@ -244,6 +244,20 @@
                         image.processStatus = chunk.status;
                     });
                 },
+                done: function (err, data) {
+                    if (err) {
+                        return false;
+                    }
+                    return data;
+                }
+            });
+            return job.promise;
+        };
+
+        service.getImageTags = function(name) {
+            var job = serverTab.call({
+                name: 'getImageTags',
+                data: {name: name},
                 done: function (err, data) {
                     if (err) {
                         return false;

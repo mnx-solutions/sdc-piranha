@@ -296,31 +296,44 @@
                         };
 
                         $scope.pullImage = function (image) {
-                            PopupDialog.confirm(
-                                localization.translate(
-                                    $scope,
-                                    null,
-                                    'Confirm to pull image'
-                                ),
-                                localization.translate(
-                                    $scope,
-                                    null,
-                                    'Please confirm that you want to pull this image on Docker host.'
-                                ), function () {
-                                    image.processing = true;
-                                    image.processStatus = "Preparing";
-                                    Docker.pullImage({primaryIp: $scope.hostIp}, image).then(function () {
-                                        image.processing = false;
-                                        image.processStatus = "Downloading complete";
-                                        if (image.progressDetail) {
-                                            delete image.progressDetail;
+                            var hostIp = $scope.hostIp;
+                            PopupDialog.custom({
+                                templateUrl: 'docker/static/partials/select-tag.html',
+                                openCtrl: function ($scope, dialog, Docker) {
+                                    $scope.name = image.name;
+                                    Docker.getImageTags(image.name).then(function (tags) {
+                                        $scope.tags = tags;
+                                        tags.push({name: 'all'});
+                                    });
+
+                                    $scope.pullImage = function () {
+                                        if (!$scope.tag) {
+                                            return false;
                                         }
-                                        listAllImages();
-                                    }, errorCallback);
-                                });
+                                        $scope.close();
+                                        image.tag = $scope.tag === 'all' ? '' : $scope.tag;
+                                        image.processing = true;
+                                        image.processStatus = "Preparing";
+                                        Docker.pullImage({primaryIp: hostIp}, image).then(function () {
+                                            image.processing = false;
+                                            image.processStatus = "Downloading complete";
+                                            if (image.progressDetail) {
+                                                delete image.progressDetail;
+                                            }
+                                            listAllImages();
+                                        }, errorCallback);
+                                    };
+
+                                    $scope.close = function () {
+                                        window.jQuery('#tagSelect').select2('close');
+                                        dialog.close();
+                                    };
+                                }
+                            });
                         };
 
                         $scope.close = function () {
+                            window.jQuery('#hostSelect').select2('close');
                             dialog.close();
                         };
                     };

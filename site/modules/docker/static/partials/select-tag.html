@@ -1,0 +1,28 @@
+<div class="modal-backdrop modal-select-tag-backdrop"></div>
+<div class="modal-dialog modal-select-tag">
+    <div class="modal-content">
+        <div tabindex="-1" data-backdrop="static" data-focus-on="button">
+            <div class="modal-header message">
+                <h5><i class="glyphicon glyphicon-info-sign"></i><b>Pull Image {{name}}</b></h5>
+            </div>
+            <div class="modal-body">
+                <form name="selectTagForm" class="selectTagForm">
+                    <div class="form-group">
+                        <span class="orange-asterix edit-image edit-label">Select image tag</span>
+                        <span class="edit-value">
+                            <select data-ng-disabled="!tags.length" ui-select2="{minimumResultsForSearch: -1, width: '250px'}" id="tagSelect" data-ng-model="tag" required>
+                                <option data-ng-repeat="tag in tags" value="{{tag.name}}">
+                                    {{tag.name}}
+                                </option>
+                            </select>
+                        </span>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button data-ng-click="close()" data-button-focus="false" data-label="Cancel" class="btn grey-new effect-orange-button">Cancel</button>
+                <button data-ng-click="pullImage()" data-button-focus="false" data-ng-disabled="selectTagForm.$invalid" class="btn orange">Pull</button>
+            </div>
+        </div>
+    </div>
+</div>
