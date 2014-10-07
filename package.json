@@ -28,7 +28,7 @@
     "moment": "2.3.1",
     "xml2js": "0.2.8",
     "mustache": "0.7.2",
-    "restify": "2.6.1",
+    "restify": "2.8.3",
     "speakeasy": "1.0.3",
     "sdc-clients": "git+ssh://git@git.joyent.com:node-sdc-clients.git#323f892c776f790cf1842e2ba26aeb87e6a2f8ea",
     "fwrule": "git+ssh://git@git.joyent.com:fwrule.git",

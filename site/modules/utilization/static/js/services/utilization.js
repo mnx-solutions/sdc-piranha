@@ -33,8 +33,7 @@
                             return '$' + util.getReadableCurrencyString(num);
                         };
                         utilizationCacheByMonth.bandwidth.formatTotal = utilizationCacheByMonth.bandwidth.format = function (num) {
-                            var formatted = util.getReadableFileSizeString(num);
-                            return formatted.value + ' ' + formatted.measure;
+                            return util.getReadableFileSizeString(num);
                         };
                         callback(null, utilizationCacheByMonth);
                     }

@@ -33,7 +33,6 @@ function formatUrl(url, params) {
 function createCallback(client, callback, raw) {
     //noinspection JSLint
     return function (error, req, res, data) {
-        client.close();
         if (error) {
             if (error.statusCode === 502 || error.statusCode === 504) {
                 error.message = 'Service unavailable';
@@ -56,7 +55,9 @@ function createMethod(opts) {
         if (!callback) {
             callback = function () {};
         }
-
+        if (!params) {
+            params = {};
+        }
 
         var options = {
             log: this.client.log,
@@ -65,7 +66,6 @@ function createMethod(opts) {
         };
         var query = {};
         var param;
-
         for (param in opts.params) {
             if (opts.params.hasOwnProperty(param)) {
                 if (params.hasOwnProperty(param)) {
@@ -76,12 +76,13 @@ function createMethod(opts) {
                 }
             }
         }
-        options.path += '?' + qs.stringify(query);
+        options.path += qs.stringify(query) ? '?' + qs.stringify(query) : '';
+        var client = opts.raw ? this.rawClient : this.client;
         if (options.method === 'POST' || options.method === 'PUT') {
-            return this.client[requestMap[options.method]](options, params, createCallback(this.client, callback, opts.raw));
+            return client[requestMap[options.method]](options, opts.raw ? callback : params, createCallback(client, callback, opts.noParse));
         }
 
-        this.client[requestMap[options.method]](options, createCallback(this.client, callback, opts.raw));
+        client[requestMap[options.method]](options, createCallback(client, callback, opts.noParse));
     };
 }
 
@@ -109,6 +110,13 @@ module.exports = function execute(scope, register) {
                 all    : '='
             }
         },
+        list         : {
+            method: 'GET',
+            path: '/containers/json',
+            params: {
+                all    : true
+            }
+        },
         inspect      : {
             method: 'GET',
             path: '/containers/:id/json'
@@ -116,7 +124,7 @@ module.exports = function execute(scope, register) {
         logs         : {
             method: 'GET',
             path: '/containers/:id/logs',
-            raw: true,
+            noParse: true,
             params: {
                 stdout     : true,
                 stderr     : true,
@@ -213,11 +221,29 @@ module.exports = function execute(scope, register) {
             method: 'GET',
             path: '/images/:id/json'
         },
+        pushImage : {
+            method: 'POST',
+            path: '/images/:name/push',
+            params: {
+                tag: '='
+            }
+        },
+        createImage : {
+            raw: true,
+            method: 'POST',
+            path: '/images/create',
+            params: {
+                fromImage: '=',
+                tag: '=',
+                registry: '=',
+                repo: '='
+            }
+        },
         getImageHistory : {
             method: 'GET',
             path: '/images/:id/history'
         },
-        deleteImage  : {
+        removeImage  : {
             method: 'DELETE',
             path: '/images/:id'
         },
@@ -254,6 +280,7 @@ module.exports = function execute(scope, register) {
 
     function Docker(options) {
         this.client = restify.createJsonClient(options);
+        this.rawClient = restify.createClient(options);
     }
 
     function Registry(options) {
@@ -596,7 +623,11 @@ module.exports = function execute(scope, register) {
                 rejectUnauthorized: false,
                 ca: certificates.ca,
                 cert: certificates.cert,
-                key: certificates.key
+                key: certificates.key,
+                headers: {
+                    'Content-type': 'application/json',
+                    'Access-Control-Allow-Origin': '*'
+                }
             }));
         });
     }

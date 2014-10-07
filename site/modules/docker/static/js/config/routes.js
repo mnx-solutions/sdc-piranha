@@ -21,7 +21,13 @@ window.JP.main.config(['routeProvider', function (routeProvider) {
             showLatest: true
         }).when('/docker/container/create', {
             title: 'Create Container',
-            action: 'docker.container-create'
+            action: 'docker.create'
+        }).when('/docker/images', {
+            title: 'Images',
+            action: 'docker.images'
+        }).when('/docker/image/create', {
+            title: 'Create Image',
+            action: 'docker.create'
         }).when('/docker/logs', {
             title: 'Log Management',
             action: 'docker.logManagement'

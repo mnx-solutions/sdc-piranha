@@ -11,8 +11,11 @@
     <div data-ng-switch-when="details">
         <div data-ng-include="'docker/static/partials/details.html'"></div>
     </div>
-    <div data-ng-switch-when="container-create">
+    <div data-ng-switch-when="create">
         <div data-ng-include="'docker/static/partials/container-create.html'"></div>
+    </div>
+    <div data-ng-switch-when="images">
+        <div data-ng-include="'docker/static/partials/images.html'"></div>
     </div>
     <div data-ng-switch-when="logManagement">
         <div data-ng-include="'docker/static/partials/logs.html'"></div>

@@ -12,10 +12,18 @@
             '$location',
             function ($scope, requestContext, localization, Docker, $q, PopupDialog, $location) {
                 localization.bind('docker', $scope);
-                requestContext.setUpRenderContext('docker.container-create', $scope, {
+                requestContext.setUpRenderContext('docker.create', $scope, {
                     title: localization.translate(null, 'docker', 'Create Docker Container')
                 });
                 $scope.loading = true;
+
+                $scope.title = 'Create Container';
+                $scope.createImage = false;
+                $scope.type = $location.path().search('image/create') === -1 ? 'Containers' : 'Images';
+                if ($scope.type === 'Images') {
+                    $scope.createImage = true;
+                    $scope.title = 'Create Image From Container';
+                }
 
                 var errorCallback = function (err) {
                     $scope.loading = false;
@@ -23,9 +31,14 @@
                     PopupDialog.errorObj(err);
                 };
 
-                $scope.hostImages = function (host) {
-                    if (host) {
+                var setDefaultValues = function (values) {
+                    $scope.commands = values.Command || '';
+                };
+
+                var hostImages = function (host) {
+                    if (host && host.primaryIp) {
                         $scope.images = [];
+                        $scope.container.container = 'base';
                         Docker.listImages(host).then(function (images) {
                             images.map(function (image) {
                                 image.RepoTags.map(function (tag) {
@@ -43,10 +56,52 @@
                     }
                 };
 
+                var hostContainers = function (host) {
+                    if (host && host.primaryIp) {
+                        $scope.container.Image = 'base';
+                        $scope.containers = [];
+                        Docker.listContainer(host).then(function (containers) {
+                            $scope.containers = containers.map(function (container) {
+                                container.Id = container.Id.slice(0, 12);
+                                container.Names = container.Names.length ? container.Names.join(', ') : '';
+                                return container;
+                            });
+                            $scope.container.container = $scope.containers[0].Id;
+                            $scope.container.primaryIp = host.primaryIp;
+                            setTimeout(function () {
+                                window.jQuery('#containerSelect').select2('val', $scope.container.container);
+                                setDefaultValues($scope.containers[0]);
+                            });
+                        });
+                    }
+                };
+
+                $scope.changeHost = function (host) {
+                    host = host || {primaryIp: $scope.ip};
+                    if ($scope.type === 'Images') {
+                        hostContainers(host);
+                    } else {
+                        hostImages(host);
+                    }
+                };
+
+                $scope.changeContainer = function () {
+                    if ($scope.container.container) {
+                        var container = $scope.containers.filter(function (container) {
+                            return container.Id === $scope.container.container;
+                        });
+                        setDefaultValues(container[0]);
+                    }
+                };
+
+                $scope.portPattern = '(6553[0-5]|655[0-2]\\d|65[0-4]\\d{2}|6[0-4]\\d{3}|[1-5]\\d{4}|[1-9]\\d{0,3})';
+                $scope.exposedPattern = '(((\\d{1,3}\.){3}\\d{1,3}\\:)?' + $scope.portPattern + '?\\:)?' + $scope.portPattern;
+
                 Docker.listHosts().then(function (hosts) {
                     $scope.hosts = hosts;
                     $scope.loading = false;
-                    $scope.hostImages(hosts[0]);
+                    $scope.memory = 0;
+                    $scope.memorySwap = 0;
                     $scope.container = {
                         "Hostname": "",
                         "Domainname": "",
@@ -65,7 +120,6 @@
                         "Env": null,
                         "Cmd": [],
                         "ExposedPorts": {},
-                        "Tag": "latest",
                         "WorkingDir": "",
                         "NetworkDisabled": false,
                         "name": ""
@@ -103,12 +157,21 @@
                     return portBindings;
                 }
 
-                $scope.createContainer = function () {
-                    $scope.container.Cmd = $scope.commands.split(' ');
-                    if ($scope.entrypoint) {
-                        $scope.container.Entrypoint = $scope.entrypoint.split(' ');
-                    }
-                    $scope.creating = true;
+                function parseCommands(commands) {
+                    return commands.match(/(?:[^\s"]+|"[^"]*")+/g).map(function (string) {
+                        var firstChar = string.substr(0, 1),
+                            lastChar = string.substr(-1);
+
+                        if ((firstChar === '"' && lastChar === '"') ||
+                            (firstChar === "'" && lastChar === "'")) {
+                            string = string.slice(1, -1);
+                        }
+
+                        return string;
+                    });
+                }
+
+                var createContainer = function () {
                     var containerPorts = parsePorts($scope.ports);
 
                     $scope.container.Memory = $scope.memory * 1024 * 1024;
@@ -150,8 +213,36 @@
                     }, errorCallback);
                 };
 
+                var createImage = function () {
+                    if ($scope.exposedPorts) {
+                        $scope.exposedPorts.split(' ').forEach(function (port) {
+                            $scope.container.ExposedPorts[port + '/tcp'] = {};
+                        });
+                    }
+
+                    Docker.createImage($scope.container).then(function () {
+                        $location.path('/docker/images');
+                    }, errorCallback);
+                };
+
+                $scope.create = function () {
+                    if ($scope.commands) {
+                        $scope.container.Cmd = parseCommands($scope.commands);
+                    }
+                    if ($scope.entrypoint) {
+                        $scope.container.Entrypoint = parseCommands($scope.entrypoint);
+                    }
+                    $scope.creating = true;
+
+                    if ($scope.type === 'Images') {
+                        createImage();
+                    } else {
+                        createContainer();
+                    }
+                };
+
                 $scope.cancel = function () {
-                    $location.path('/docker/containers');
+                    $location.path('/docker/' + $scope.type);
                 };
             }
         ]);
