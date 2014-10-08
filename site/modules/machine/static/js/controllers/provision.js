@@ -320,7 +320,8 @@
                     );
                     var title = 'Confirm: Create Instance';
                     var popupContent = billingStartMessage;
-                    if (dataset && dataset.eula || description && description.indexOf('Stingray') > -1) {
+                    if (dataset && dataset.eula || description && description.indexOf('Stingray') > -1 ||
+                        description && description.indexOf('SteelApp') > -1) {
                         title = 'Accept End-User License Agreement';
                         popupContent = {
                             templatePath: dataset.eula || 'slb/static/templates/eula.html',
