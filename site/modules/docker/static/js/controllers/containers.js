@@ -49,38 +49,42 @@
                 $scope.gridOrder = ['-created'];
                 $scope.gridProps = [
                     {
-                        id: 'hostName',
-                        name: 'Host',
+                        id: 'Id',
+                        name: 'Container ID',
                         sequence: 1,
                         active: true,
                         type: 'html',
                         _getter: function (container) {
-                            return '<a href="#!/docker/container/' + container.hostId + '/' + container.Id + '" style="min-width: 140px;">' + container.hostName + '</a>';
+                            return '<a href="#!/docker/container/' + container.hostId + '/' + container.Id + '" style="min-width: 140px;">' + container.Id + '</a>';
                         }
                     },
                     {
-                        id: 'Id',
-                        name: 'Container ID',
+                        id: 'Names',
+                        name: 'Names',
                         sequence: 2,
+                        active: true
+                    },
+                    {
+                        id: 'hostName',
+                        name: 'Host',
+                        sequence: 3,
                         active: true
                     },
                     {
                         id: 'Image',
                         name: 'Image',
-                        sequence: 3,
+                        sequence: 4,
                         active: true
                     },
                     {
                         id: 'Command',
                         name: 'Command',
-                        sequence: 4,
-                        active: true
+                        sequence: 5
                     },
                     {
                         id: 'Created',
                         name: 'Created',
-                        sequence: 5,
-                        active: true,
+                        sequence: 6,
                         reverseSort: true,
                         _getter: function (container) {
                             return $filter('humanDate')(container.Created);
@@ -89,7 +93,7 @@
                     {
                         id: 'Status',
                         name: 'Status',
-                        sequence: 6,
+                        sequence: 7,
                         type: 'progress',
                         _inProgress: function (object) {
                             return object.actionInProgress;
@@ -99,14 +103,7 @@
                     {
                         id: 'Ports',
                         name: 'Ports',
-                        sequence: 7,
-                        active: true
-                    },
-                    {
-                        id: 'Names',
-                        name: 'Names',
-                        sequence: 8,
-                        active: true
+                        sequence: 8
                     }
                 ];
                 
