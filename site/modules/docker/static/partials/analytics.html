@@ -1,6 +1,61 @@
-<div data-ng-controller="Docker.AnalyticsController" class="container-fluid container-position">
+<div data-ng-controller="Docker.AnalyticsController" class="container-fluid container-position container-min-width">
     <div class="row">
+        <ul class="breadcrumb">
+            <li><a href="#!/docker">Docker</a></li>
+        </ul>
         <h3 class="page-title">Analytics</h3>
+        <div ng-show="current.host" class="row">
+            <div class="chart-info">
+                <span class="name-chart">Docker Host</span>
+                <span class="value-chart">{{current.hostName}}</span>
+            </div>
+            <div class="chart-info" ng-show="current.container">
+                <span class="name-chart">Container ID</span>
+                <span class="value-chart-in">{{current.container | shortTag}}</span>
+            </div>
+        </div>
+        <div class="charts-container text-medium pull-left">
+            <adviser-graph data-ng-repeat="graph in graphs" type="graph" show-delete-btn="true"></adviser-graph>
+            <div class="separator-line" ng-show="current.host"></div>
+            <div class="vda-btn">
+                <a id="button-detailed-analytics" data-ng-show="current.container" href="#!/docker/container/{{hostId}}/{{current.container | shortTag}}"  class="btn light pull-right effect-orange-button">View Container Details</a>
+            </div>
+        </div>
+        <div class="pull-right alert alert-info">
+            <h5>Select Docker Host and Container:</h5>
+            <select ui-select2="{minimumResultsForSearch: -1, width: '210px', placeholder: '-- Choose Docker Host --'}" id="hostSelect" data-ng-model="current.host" data-ng-change="changeHost()" data-ng-disabled="changingHost">
+                <option></option>
+                <option data-ng-repeat="host in hosts" value={{host.primaryIp}}>
+                    {{host.name}}
+                </option>
+            </select>
+            <div class="loading-medium-transparent" data-ng-show="changingHost"></div>
+            <span data-ng-show="containers">
+                 <select ui-select2="{minimumResultsForSearch: -1, width: '210px', placeholder: '-- Choose Container --'}" id="containerSelect" data-ng-model="current.container" data-ng-change="changeContainer()">
+                     <option></option>
+                     <option data-ng-repeat="container in containers" value={{container.Id}}>
+                         {{container.Id | shortTag}}
+                     </option>
+                     <option value="">All containers</option>
+                 </select>
+            </span>
+            <span data-ng-show="current.host && !containers.length && !changingHost">
+                 You don't have running containers on this host. Please select another Docker Host.
+            </span>
+
+            <span data-ng-show="metrics && current.host && containers.length">
+                 <select ui-select2="{minimumResultsForSearch: -1, width: '210px', placeholder: '-- Choose Metric --'}" id="metricSelect" data-ng-model="current.metric">
+                     <option></option>
+                     <option data-ng-repeat="metric in metrics" value={{metric.val}}>
+                         {{metric.name}}
+                     </option>
+                 </select>
+            </span>
+            <p>Detailed analytics use pre-defined metrics to measure perfomance</p>
+            <button id="button-start" class="btn orange start-analytics-btn" data-ng-click="createDefault()" data-ng-disabled="!current.host || !containers.length">Start Analysis</button>
+            <p class="opt-title">Analytics Options:</p>
+            <button class="btn options-ctrl effect-orange-button" data-ng-click="deleteAll()" data-ng-disabled="!canDelete()">Delete All</button>
+            <button class="btn options-ctrl effect-orange-button" data-ng-click="create()" data-ng-disabled="!current.metric">Create</button>
+        </div>
     </div>
 </div>
-

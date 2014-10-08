@@ -54,7 +54,7 @@ window.JP.main.config(['routeProvider', function (routeProvider) {
         }).when('/docker/logs', {
             title: 'Log Management',
             action: 'docker.logManagement'
-        }).when('/docker/analytics', {
+        }).when('/docker/analytics/:hostid?/:containerid?', {
             title: 'Analytics',
             action: 'docker.analytics'
         });

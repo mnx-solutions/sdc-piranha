@@ -5120,3 +5120,76 @@ progress {
 .modal-select-tag-backdrop {
     z-index: 9999990;
 }
+
+/*      Analytics    */
+
+.charts-container
+{
+    width: 700px;
+    padding-bottom: 25px;
+}
+
+.alert-info
+{
+    box-sizing: content-box;
+    width: 210px;
+    padding: 25px 20px;
+    color: #000;
+    border: 0;
+    border-radius: 0;
+    background: #fef1d2;
+}
+
+.alert-info h5
+{
+    text-shadow: none;
+}
+
+.alert-info select
+{
+    width: 210px;
+    height: 30px;
+}
+
+.alert-info .select2-container
+{
+    margin-bottom: 10px;
+}
+
+.alert-info p
+{
+    font-size: 14px;
+    font-weight: 300;
+    margin: 10px 0;
+    text-shadow: none;
+}
+
+.toggle-graf-width
+{
+    width: 94%;
+}
+
+.toggle-graf-width button
+{
+    background-color: #e9eff4 !important;
+}
+
+.del-btn-graf
+{
+    width: 43px;
+    height: 36px;
+    margin-right: -42px;
+}
+
+.btn.pull-right
+{
+    clear: right;
+}
+
+.start-analytics-btn
+{
+    width: 210px;
+    margin-top: 5px;
+    margin-bottom: 25px;
+    text-align: left;
+}
