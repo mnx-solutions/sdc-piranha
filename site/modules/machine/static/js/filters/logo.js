@@ -8,6 +8,7 @@
 
             var instances = {
                 //soft
+                apache: "apache",
                 cassandra: "cassandra",
                 elasticsearch: "elasticsearch",
                 ghost: "ghost",
@@ -15,10 +16,12 @@
                 java: "java",
                 manta: "manta",
                 mongodb: "mongodb",
+                mysql: "mysql",
                 nginx: "nginx",
                 node: "node",
                 percona: "percona",
                 postgresql: "postgresql",
+                rails: "rails",
                 riak: "riak",
                 scalearc: "scalearc",
                 steelapp: "stingray",
