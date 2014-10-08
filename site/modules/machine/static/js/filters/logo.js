@@ -21,6 +21,7 @@
                 postgresql: "postgresql",
                 riak: "riak",
                 scalearc: "scalearc",
+                steelapp: "stingray",
                 stm: "stingray",
 
                 //os
