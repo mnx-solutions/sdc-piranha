@@ -605,6 +605,7 @@ module.exports = function execute(scope, register) {
 
         if (!clientRequest) {
             clientRequest = queuedRequests[qrKey] = new EventEmitter();
+            clientRequest.setMaxListeners(100);
             api.getCertificates(call, function (error, certificates) {
                 delete queuedRequests[qrKey];
                 clientRequest.emit('getCertificates', error, certificates);
