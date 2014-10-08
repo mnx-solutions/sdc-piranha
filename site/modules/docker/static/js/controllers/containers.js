@@ -55,7 +55,7 @@
                         active: true,
                         type: 'html',
                         _getter: function (container) {
-                            return '<a href="#!/docker/container/' + container.hostId + '/' + container.Id + '" style="min-width: 140px;">Docker-' + container.hostName + '</a>';
+                            return '<a href="#!/docker/container/' + container.hostId + '/' + container.Id + '" style="min-width: 140px;">' + container.hostName + '</a>';
                         }
                     },
                     {

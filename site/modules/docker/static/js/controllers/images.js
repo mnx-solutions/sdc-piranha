@@ -46,11 +46,7 @@
                         id: 'hostName',
                         name: 'Host',
                         sequence: 1,
-                        active: true,
-                        type: 'html',
-                        _getter: function (image) {
-                            return 'Docker-' + image.hostName;
-                        }
+                        active: true
                     },
                     {
                         id: 'repository',
