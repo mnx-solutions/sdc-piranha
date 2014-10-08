@@ -11,7 +11,7 @@
                         <span class="edit-value">
                             <select ui-select2="{minimumResultsForSearch: -1, width: '92%'}" id="hostSelect" data-ng-model="hostIp" required >
                                 <option data-ng-repeat="host in hosts" value="{{host.primaryIp}}">
-                                    Docker-{{host.name}}
+                                    {{host.name}}
                                 </option>
                             </select>
                         </span>
