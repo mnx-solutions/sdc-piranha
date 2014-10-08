@@ -242,7 +242,7 @@
                 };
 
                 $scope.cancel = function () {
-                    $location.path('/docker/' + $scope.type);
+                    $location.path('/docker/' + $scope.type.toLowerCase());
                 };
             }
         ]);
