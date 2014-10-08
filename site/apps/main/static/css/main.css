@@ -5069,6 +5069,7 @@ label.checkbox.folder-name-form-checkbox
 }
 
 .modal ~ .modal .modal-dialog {
+    z-index: 9999991;
     margin-top: 110px;
 }
 
@@ -5106,4 +5107,14 @@ progress {
 }
 .result-content {
     margin-top: 20px;
+}
+
+.modal-select-tag .edit-value {
+    width: 300px;
+}
+.modal-select-tag .edit-label {
+    margin: 0 20px 0 40px;
+}
+.modal-select-tag-backdrop {
+    z-index: 9999990;
 }
