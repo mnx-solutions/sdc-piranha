@@ -1,0 +1,96 @@
+<div class="container-fluid container-position" data-ng-controller="Docker.ImageDetailsController">
+
+    <ul class="breadcrumb">
+        <li><a href="#!/docker">Docker</a></li><!--
+     --><li><a href="#!/docker/images">Images</a></li>
+    </ul>
+    <h3 class="page-title">Image Details</h3>
+
+    <div class="inl-table">
+        <div class="left-part">
+            <div class="panel-group" id="accordion1">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <a class="accordion-toggle toggle-icon" data-toggle="collapse" data-parent="#accordion1"
+                           data-target="#collapse_summary">
+                            Summary
+                        </a>
+                    </div>
+                    <div id="collapse_summary" class="panel-collapse collapse in">
+                        <div class="panel-body">
+                            <table>
+                                <tr class="id-section">
+                                    <td>Id</td>
+                                    <td>{{image.Id | shortTag}}</td>
+                                </tr>
+                                <tr>
+                                    <td>OS</td>
+                                    <td data-ng-show="image.Os">{{image.Os}} - {{image.Architecture}}</td>
+                                </tr>
+                                <tr>
+                                    <td>Tags</td>
+                                    <td>{{image.info.Tags[0]}}</td>
+                                </tr>
+                                <tr>
+                                    <td>Size</td>
+                                    <td>{{image.Size  && (image.Size| sizeFormat:true)}}</td>
+                                </tr>
+                                <tr>
+                                    <td>Created</td>
+                                    <td>{{image.Created | date:'yyyy-MM-dd HH:mm'}}</td>
+                                </tr>
+                                <tr>
+                                    <td>CreatedBy</td>
+                                    <td>{{image.info.CreatedBy}}</td>
+                                </tr>
+                                <tr>
+                                    <td>Container</td>
+                                    <td data-ng-bind-html="imageContainer"></td>
+                                </tr>
+                                <tr data-ng-show="image.Author">
+                                    <td>Author</td>
+                                    <td>{{image.Author}}</td>
+                                </tr>
+                                <tr data-ng-show="image.Comment">
+                                    <td>Comment</td>
+                                    <td>{{image.Comment}}</td>
+                                </tr>
+                            </table>
+                            <div class="pull-right">
+                                <button class="btn light effect-orange-button" data-ng-click="removeImage()" data-ng-disabled="loading || actionInProgress">Remove</button>
+                            </div>
+                            <div class="loading-medium loading-medium-inline pull-right" data-ng-show="actionInProgress"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <a class="accordion-toggle collapsed toggle-icon" data-toggle="collapse" data-parent="#accordion1"
+                           data-target="#collapse_history">
+                            Image History
+                        </a>
+                    </div>
+                    <div id="collapse_history" class="panel-collapse collapse">
+                        <div data-ng-show="images.length">
+                            <div data-grid-view
+                                 data-user-config="gridUserConfig"
+                                 data-props="gridProps"
+                                 data-items="images"
+                                 data-paginated="false"
+                                 data-controls="false"
+                                 data-order="gridOrder"
+                                 data-items-type="images"
+                                 data-special-width="'detailsPage'"
+                                 data-search-form="searchForm"
+                                 data-export-fields="exportFields"
+                                 data-multisort="false"
+                                 class="grid-small-font indent">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

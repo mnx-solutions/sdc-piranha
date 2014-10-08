@@ -43,10 +43,14 @@
                 $scope.gridOrder = ['-Created'];
                 $scope.gridProps = [
                     {
-                        id: 'hostName',
-                        name: 'Host',
+                        id: 'Id',
+                        name: 'Image ID',
                         sequence: 1,
-                        active: true
+                        active: true,
+                        type: 'html',
+                        _getter: function (image) {
+                            return '<a href="#!/docker/image/' + image.hostId + '/' + image.Id + '" style="min-width: 140px;">' + image.Id + '</a>';
+                        }
                     },
                     {
                         id: 'repository',
@@ -73,8 +77,8 @@
                         }
                     },
                     {
-                        id: 'Id',
-                        name: 'Image ID',
+                        id: 'hostName',
+                        name: 'Host',
                         sequence: 4,
                         active: true
                     },
@@ -93,6 +97,7 @@
                         name: 'VirtualSize',
                         sequence: 6,
                         active: true,
+                        _order: 'VirtualSize',
                         _getter: function (image) {
                             return util.getReadableFileSizeString(image.VirtualSize);
                         }

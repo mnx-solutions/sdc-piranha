@@ -10,6 +10,7 @@
         var service = {};
         var cacheContainers = null;
         var containerActions = ['start', 'stop', 'pause', 'unpause', 'remove', 'inspect', 'restart', 'kill', 'logs', 'list'];
+        var imageActions = ['remove', 'inspect', 'history'];
 
         function capitalize(str) {
             return str[0].toUpperCase() + str.substr(1);
@@ -242,19 +243,21 @@
             return job.promise;
         };
 
-        service.removeImage = function(image) {
-            var job = serverTab.call({
-                name: 'DockerRemoveImage',
-                data: {host: {primaryIp: image.primaryIp}, options: {id: image.Id}},
-                done: function (err, data) {
-                    if (err) {
-                        return false;
+        imageActions.forEach(function (action) {
+            service[action + 'Image'] = function (image) {
+                var job = serverTab.call({
+                    name: 'Docker' + capitalize(action) + 'Image',
+                    data: {host: {primaryIp: image.primaryIp}, options: image.options || {id: image.Id} },
+                    done: function (err, data) {
+                        if (err) {
+                            return false;
+                        }
+                        return data;
                     }
-                    return data;
-                }
-            });
-            return job.promise;
-        };
+                });
+                return job.promise;
+            };
+        });
 
         service.pullImage = function(host, image) {
             var job = serverTab.call({

@@ -18,7 +18,15 @@ window.JP.main.config(['routeProvider', function (routeProvider) {
         }).when('/docker/container/:hostid/:containerid', {
             title: 'Container Details',
             action: 'docker.details',
-            showLatest: true
+            showLatest: true,
+            showText: true,
+            resolve: {
+                data: ['$route', '$location', function ($route, $location) {
+                    if (!$route.current.params.containerid || !$route.current.params.hostid) {
+                        $location.path('/dashboard');
+                    }
+                }]
+            }
         }).when('/docker/container/create', {
             title: 'Create Container',
             action: 'docker.create'
@@ -28,6 +36,18 @@ window.JP.main.config(['routeProvider', function (routeProvider) {
         }).when('/docker/image/create', {
             title: 'Create Image',
             action: 'docker.create'
+        }).when('/docker/image/:hostid/:imageid', {
+            title: 'Image Details',
+            action: 'docker.image-details',
+            showLatest: true,
+            showText: true,
+            resolve: {
+                data: ['$route', '$location', function ($route, $location) {
+                    if (!$route.current.params.imageid || !$route.current.params.hostid) {
+                        $location.path('/dashboard');
+                    }
+                }]
+            }
         }).when('/docker/logs', {
             title: 'Log Management',
             action: 'docker.logManagement'

@@ -758,3 +758,6 @@ span.btn-success
 .graf-radio-btn.active {
     background-color: #ffffff !important;
 }
+.loading-medium {
+    min-height: 35px;
+}
