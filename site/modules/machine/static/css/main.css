@@ -2045,6 +2045,7 @@ span.btn-success
     margin-top: 20px;
 }
 
+.small-icon.apache,
 .small-icon.cassandra,
 .small-icon.centos,
 .small-icon.chef,
@@ -2054,8 +2055,10 @@ span.btn-success
 .small-icon.hadoop,
 .small-icon.java,
 .small-icon.manta,
+.small-icon.mysql,
 .small-icon.node,
 .small-icon.percona,
+.small-icon.rails,
 .small-icon.riak,
 .small-icon.smart,
 .small-icon.smartmachine,
@@ -2075,6 +2078,7 @@ span.btn-success
     background-size: 20px;
 }
 
+.advanced-instance-title .apache,
 .advanced-instance-title .cassandra,
 .advanced-instance-title .centos,
 .advanced-instance-title .chef,
@@ -2084,8 +2088,10 @@ span.btn-success
 .advanced-instance-title .hadoop,
 .advanced-instance-title .java,
 .advanced-instance-title .manta,
+.advanced-instance-title .mysql,
 .advanced-instance-title .node,
 .advanced-instance-title .percona,
+.advanced-instance-title .rails,
 .advanced-instance-title .riak,
 .advanced-instance-title .smart,
 .advanced-instance-title .smartmachine,
@@ -2116,6 +2122,11 @@ span.btn-success
 .info.small-icon
 {
     background-position: 212px 51px;
+}
+
+.small-icon.apache
+{
+    background-image: url(../img/icons/apache.png);
 }
 
 .small-icon.cassandra
@@ -2164,6 +2175,11 @@ span.btn-success
     background-image: url(../img/icons/manta.png);
 }
 
+.small-icon.mysql
+{
+    background-image: url(../img/icons/mysql.png);
+}
+
 .small-icon.node,
 .node-logo
 {
@@ -2173,6 +2189,11 @@ span.btn-success
 .small-icon.percona
 {
     background-image: url(../img/icons/percona.png);
+}
+
+.small-icon.rails
+{
+    background-image: url(../img/icons/rails.png);
 }
 
 .small-icon.riak
