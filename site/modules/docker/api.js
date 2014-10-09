@@ -265,6 +265,10 @@ module.exports = function execute(scope, register) {
         auth         : {
             method: 'POST',
             path: '/auth'
+        },
+        ping         : {
+            method: 'GET',
+            path: '/_ping'
         }
     };
 
@@ -361,6 +365,51 @@ module.exports = function execute(scope, register) {
 
             callback(null, hosts);
         });
+    };
+
+    var waitForHosts = {};
+
+    api.waitHost = function waitHost(call, host, updateFunc, callback) {
+        var pollerKey = call.req.session.userId + '-' + host.primaryIp;
+        var poller = waitForHosts[pollerKey];
+        function installCallbacks() {
+            if (updateFunc) {
+                poller.on('state-update', updateFunc);
+            }
+            poller.on('completed', callback);
+            poller.on('error', callback);
+        }
+
+        if (poller) {
+            installCallbacks();
+            return;
+        }
+
+        poller = new EventEmitter();
+        waitForHosts[pollerKey] = poller;
+        installCallbacks();
+        poller.status = 'initializing';
+        poller.started = new Date();
+        function getHostStatus() {
+            if (new Date() > poller.started + config.polling.dockerHostTimeout) {
+                delete waitForHosts[pollerKey];
+                return poller.emit('error', 'Timeout');
+            }
+            api.getHostStatus(call, host.id, function (error, status) {
+                if (status === 'completed') {
+                    delete waitForHosts[pollerKey];
+                    return poller.emit('completed');
+                }
+
+                if (status !== poller.status) {
+                    poller.status = status;
+                    poller.emit('state-update', status);
+                }
+
+                setTimeout(getHostStatus, config.polling.dockerHost);
+            });
+        }
+        getHostStatus();
     };
 
     function generateCertificates(call, callback) {
@@ -494,8 +543,10 @@ module.exports = function execute(scope, register) {
         // not declared in header, because both modules depend on each other
         var Machine = scope.api('Machine');
         var mantaClient = scope.api('MantaClient').createClient(call);
+
         options.metadata = options.metadata || {};
         options.metadata['user-script'] = startupScript;
+
         options.tags = options.tags || {};
         options.tags.JPC_tag = 'DockerHost';
 
@@ -587,7 +638,7 @@ module.exports = function execute(scope, register) {
     api.getHostStatus = function (call, machineId, callback) {
         var client = scope.api('MantaClient').createClient(call);
         client.getFileContents('~~/stor/.joyent/docker/.status-' + machineId, function (error, result) {
-            var status = "unknown";
+            var status = "initializing";
             if (!error) {
                 try {
                     status = JSON.parse(result).status;
@@ -612,7 +663,7 @@ module.exports = function execute(scope, register) {
             });
         }
 
-        clientRequest.on('getCertificates', function (error, certificates) {
+        clientRequest.once('getCertificates', function (error, certificates) {
             if (error) {
                 return callback(error);
             }

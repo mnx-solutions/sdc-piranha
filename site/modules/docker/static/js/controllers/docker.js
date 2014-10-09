@@ -20,6 +20,7 @@
             });
 
             $scope.loading = true;
+            $scope.states = {};
             $scope.data = {
                 datacenter: '',
                 imageId: ''
@@ -30,7 +31,12 @@
                 PopupDialog.errorObj(err);
             };
             var getDockerHostInfo = function (machine) {
-                Docker.hostInfo(machine).then(function (info) {
+                $scope.states[machine.id] = 'initializing';
+                Docker.hostInfo({host: machine, wait: true}, function (error, state) {
+                    $scope.states[state.hostId] = state.status;
+                }).then(function (info) {
+                    info = Array.isArray(info) ? info.slice(-1)[0] : info;
+                    $scope.states[machine.id] = 'completed';
                     machine.containersCount = info.Containers;
                     machine.imagesCount = info.Images;
                 }, errorCallback);
@@ -38,7 +44,8 @@
 
             var getDockerHostAnalytics = function () {
                 $scope.dockerMachines.forEach(function (machine) {
-                    Docker.hostUsage(machine).then(function (usage) {
+                    Docker.hostUsage({host: machine, wait: true}).then(function (usage) {
+                        usage = Array.isArray(usage) ? usage.slice(-1)[0] : usage;
                         machine.cpuLoad = usage.cpu + '%';
                         machine.memoryLoad = usage.memory + '%';
                     });

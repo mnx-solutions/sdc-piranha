@@ -687,6 +687,11 @@ span.btn-success
 .date-range-wrapper {
     height: 50px;
 }
+.loading-medium-tr {
+    width: 210px;
+    position: absolute;
+    top: 150px;
+}
 .rickshaw_legend
 {
     display: block !important;
