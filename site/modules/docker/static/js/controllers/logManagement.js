@@ -24,7 +24,7 @@
                 };
 
                 var dateRangeValidation = function () {
-                    $scope.dateError = $scope.date.start > $scope.date.end;
+                    $scope.dateError = new Date($scope.date.start).setHours(0, 0, 0, 0) > new Date($scope.date.end).setHours(0, 0, 0, 0);
                 };
 
                 $scope.$watch('date.start', function () {
