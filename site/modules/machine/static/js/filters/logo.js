@@ -16,7 +16,7 @@
                 java: "java",
                 manta: "manta",
                 mongodb: "mongodb",
-                mysql: "mysql",
+                "mysql-cluster": "mysql",
                 nginx: "nginx",
                 node: "node",
                 percona: "percona",
