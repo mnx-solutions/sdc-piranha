@@ -46,7 +46,10 @@
                     <span class="loading-small loading-images-count pull-left" data-ng-hide="machine.imagesCount || machine.imagesCount == 0"></span>
                     <span class="pull-left">{{machine.imagesCount}}</span>
                 </div>
-                <div class="progress-wrapper">
+                <div class="progress-wrapper" data-ng-show="machine.cadvisorUnavailable">
+                    <p class="cadvisor-unavailable">cAdvisor is unavailable</p>
+                </div>
+                <div class="progress-wrapper" data-ng-hide="machine.cadvisorUnavailable">
                     <p class="title">CPU</p>
                     <div class="progress" title="{{machine.cpuLoad}}">
                         <div class="progress-bar" ng-style="{width: machine.cpuLoad}"></div>

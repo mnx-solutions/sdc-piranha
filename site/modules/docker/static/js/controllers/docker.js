@@ -64,6 +64,10 @@
                         usage = Array.isArray(usage) ? usage.slice(-1)[0] : usage;
                         machine.cpuLoad = usage.cpu + '%';
                         machine.memoryLoad = usage.memory + '%';
+                    }, function (error) {
+                        if (error === 'CAdvisor unavailable') {
+                            machine.cadvisorUnavailable = true;
+                        }
                     });
                 });
             };
