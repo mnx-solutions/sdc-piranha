@@ -2047,6 +2047,7 @@ span.btn-success
 
 .small-icon.apache,
 .small-icon.cassandra,
+.small-icon.couchdb,
 .small-icon.centos,
 .small-icon.chef,
 .small-icon.debian,
@@ -2080,6 +2081,7 @@ span.btn-success
 
 .advanced-instance-title .apache,
 .advanced-instance-title .cassandra,
+.advanced-instance-title .couchdb,
 .advanced-instance-title .centos,
 .advanced-instance-title .chef,
 .advanced-instance-title .debian,
@@ -2132,6 +2134,11 @@ span.btn-success
 .small-icon.cassandra
 {
     background-image: url(../img/icons/cassandra.png);
+}
+
+.small-icon.couchdb
+{
+    background-image: url(../img/icons/couchdb.png);
 }
 
 .small-icon.centos,
