@@ -10,6 +10,7 @@
                 //soft
                 apache: "apache",
                 cassandra: "cassandra",
+                couchdb: "couchdb",
                 elasticsearch: "elasticsearch",
                 ghost: "ghost",
                 hadoop: "hadoop",
