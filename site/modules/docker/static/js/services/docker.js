@@ -238,7 +238,7 @@
             return createCall('imageTags', {options: {name: name}, direct: true});
         };
 
-        service.listContainers();
+        service.listContainers({host: 'All', options: {all: true}});
 
         return service;
     }]);
