@@ -89,8 +89,8 @@
                 done: function () {
                     delete service.jobs[jobKey];
                 },
-                error: function (error) {
-                    job.$emit('done', error);
+                error: function () {
+                    delete service.jobs[jobKey];
                 }
             }).promise;
 
