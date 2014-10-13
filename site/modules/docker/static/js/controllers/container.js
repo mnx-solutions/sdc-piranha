@@ -108,12 +108,8 @@
             $scope.cpu.data = [];
             $scope.cpu.options = {
                 type: {
-                    abbr: 's',
-                    arity: 'numeric',
-                    base: 10,
-                    name: 'time',
-                    power: -9,
-                    unit: 'seconds'
+                    abbr: '%',
+                    power: 1
                 },
                 title: 'CPU: total usage',
                 legends: ['aggregated CPU usage'],
@@ -131,7 +127,7 @@
                 },
                 title: 'Memory usage',
                 legends: ['current memory usage', 'memory working set'],
-                colors: ['#FFC634', '#EDFF68']
+                colors: ['#cb513a', '#73c03a']
             };
             $scope.network = {};
             $scope.network.data = [];
