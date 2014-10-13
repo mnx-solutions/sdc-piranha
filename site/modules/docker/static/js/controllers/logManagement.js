@@ -38,7 +38,7 @@
                     $scope.containers = angular.copy(containers);
                     $scope.containers.forEach(function (container) {
                         container.Created = new Date(container.Created * 1000);
-                        container.Id = container.Id.slice(0, 12);
+                        container.ShortId = container.Id.slice(0, 12);
                         var ports = [];
                         container.Ports.forEach(function (port) {
                             if (port.IP && port.PrivatePort && port.PublicPort && port.Type) {
@@ -81,7 +81,7 @@
                         active: true
                     },
                     {
-                        id: 'Id',
+                        id: 'ShortId',
                         name: 'Container ID',
                         sequence: 2,
                         active: true
