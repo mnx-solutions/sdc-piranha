@@ -39,7 +39,10 @@
                     $scope.states[machine.id] = 'completed';
                     machine.containersCount = info.Containers;
                     machine.imagesCount = info.Images;
-                }, errorCallback);
+                }, function () {
+                    $scope.states[machine.id] = 'unreachable';
+                    errorCallback.apply(this, arguments);
+                });
             };
 
             var getDockerHostAnalytics = function () {

@@ -62,7 +62,9 @@ function createMethod(opts) {
         var options = {
             log: this.client.log,
             path: formatUrl(opts.path, params),
-            method: opts.method || 'GET'
+            method: opts.method || 'GET',
+            retries: opts.retries,
+            connectTimeout: opts.timeout
         };
         var query = {};
         var param;
@@ -268,6 +270,8 @@ module.exports = function execute(scope, register) {
         },
         ping         : {
             method: 'GET',
+            retries: false,
+            timeout: 3000,
             path: '/_ping'
         }
     };

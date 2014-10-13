@@ -28,7 +28,7 @@
             <div class="info" data-ng-hide="states[machine.id] == 'completed'">
                 <span>Status: </span>
                 <span>{{states[machine.id] || 'initializing'}}</span>
-                <div class="loading-medium-tr"></div>
+                <div class="loading-medium-tr" data-ng-hide="states[machine.id] == 'unreachable'"></div>
             </div>
             <div data-ng-show="states[machine.id] == 'completed'">
                 <div class="info">
