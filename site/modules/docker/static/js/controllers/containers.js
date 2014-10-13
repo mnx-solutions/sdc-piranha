@@ -46,6 +46,7 @@
                     $scope.gridUserConfig = Account.getUserConfig().$child('docker-containers');
                 }
 
+                $scope.query = requestContext.getParam('host') || '';
                 $scope.gridOrder = ['-created'];
                 $scope.gridProps = [
                     {

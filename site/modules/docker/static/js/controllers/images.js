@@ -40,6 +40,7 @@
                     }, errorCallback);
                 };
 
+                $scope.query = requestContext.getParam('host') || '';
                 $scope.gridOrder = ['-Created'];
                 $scope.gridProps = [
                     {
