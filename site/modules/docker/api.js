@@ -1,6 +1,7 @@
 "use strict";
 
 var restify = require('restify');
+var url = require('url');
 var qs = require('querystring');
 var vasync = require('vasync');
 var fs = require('fs');
@@ -34,6 +35,13 @@ function createCallback(client, callback, raw) {
     //noinspection JSLint
     return function (error, req, res, data) {
         if (error) {
+            if (error.statusCode && res.headers['content-type'] === 'text/html') {
+                var httpError = restify.errors.codeToHttpError(error.statusCode);
+                if (httpError && httpError.name) {
+                    error.message = httpError.name.replace(/([A-Z])/g, ' $1').trim().replace(' Error', '');
+
+                }
+            }
             if (error.statusCode === 502 || error.statusCode === 504) {
                 error.message = 'Service unavailable';
             }
@@ -270,8 +278,6 @@ module.exports = function execute(scope, register) {
         },
         ping         : {
             method: 'GET',
-            retries: false,
-            timeout: 3000,
             path: '/_ping'
         }
     };
@@ -283,6 +289,12 @@ module.exports = function execute(scope, register) {
             params: {
                 q   : '='
             }
+        },
+        ping: {
+            method: 'GET',
+            retries: false,
+            timeout: 3000,
+            path: '/v1/_ping'
         }
     };
 
@@ -690,8 +702,19 @@ module.exports = function execute(scope, register) {
         createClient(call, Docker, (disableTls ? 'http://' : 'https://') + machine.primaryIp + ':4243', callback);
     };
 
-    api.createRegistryClient = function (call, machine, callback) {
-        createClient(call, Registry, 'https://' + machine.primaryIp + ':5000', callback);
+    api.createRegistryClient = function (call, credentials, callback) {
+        var parsedUrl = url.parse(credentials.host);
+        var port = parseInt(credentials.port || parsedUrl.port, 10);
+        if (port) {
+            delete parsedUrl.host;
+            parsedUrl.port = port;
+        }
+
+        if (credentials.auth) {
+            parsedUrl.auth = new Buffer(credentials.auth, 'base64').toString('ascii');
+        }
+
+        createClient(call, Registry, url.format(parsedUrl), callback);
     };
 
     register('Docker', api);

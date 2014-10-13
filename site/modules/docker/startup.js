@@ -154,48 +154,55 @@ var Docker = function execute(scope) {
         Docker.listHosts(call, call.done.bind(call));
     });
 
-
-    server.onCall('DockerPull', function (call) {
-        Docker.createClient(call, call.data.host, function (error, client) {
-            if (error) {
-                return call.done(error);
-            }
-            client.createImage(call.data.options, function (err, req) {
-                if (err) {
-                    return call.done(err);
+    server.onCall('RegistryPing', {
+        verify: function (data) {
+            return data;
+        },
+        handler: function (call) {
+            Docker.createRegistryClient(call, call.data, function (error, client) {
+                if (error) {
+                    return call.done(error);
                 }
-                part = '';
-                req.on('result', function (error, res) {
-                    if (error) {
-                        return call.done(error);
-                    }
-                    res.on('data', function (data) {
-                        data = data.toString();
-                        data = jsonStreamParser(data);
-                        data.forEach(function (chunk) {
-                            call.update(null, chunk);
-                        });
-                    });
-                    res.on('end', function () {
-                        call.done(null);
-                    });
+                client.ping(function (err, result) {
+                    call.done(err, result);
                 });
-                req.end();
             });
+        }
+    });
+
+    server.onCall('DockerGetRegistriesList', function (call) {
+        var client = scope.api('MantaClient').createClient(call);
+        client.getFileContents('~~/stor/.joyent/docker/registries.json', function (error, list) {
+            if (error && error.statusCode !== 404) {
+                return call.done(error.message, true);
+            }
+            if (error && error.statusCode === 404) {
+                return call.done(null, []);
+            }
+
+            try {
+                list = JSON.parse(list);
+                list.forEach(function (regisry) {
+                    if (regisry.auth) {
+                        regisry.auth = null;
+                    }
+                });
+            } catch (e) {
+                call.log.warn('Registries list is corrupted');
+                list = [];
+            }
+            call.done(null, list);
         });
     });
 
-    server.onCall('DockerImageTags', {
+    server.onCall('DockerSaveRegistriesList', {
         verify: function (data) {
-            return data && data.options && typeof (data.options.name) === 'string';
+            return data && Array.isArray(data.options);
         },
         handler: function (call) {
-            var path = '/v1/repositories/' + call.data.options.name + '/tags';
-            dockerIndexClient.get(path, function (err, req, res, data) {
-                if (err) {
-                    return call.done(err);
-                }
-                call.done(null, data);
+            var client = scope.api('MantaClient').createClient(call);
+            client.putFileContents('~~/stor/.joyent/docker/registries.json', JSON.stringify(call.data.options), function (error) {
+                return call.done(error && error.message, true);
             });
         }
     });
