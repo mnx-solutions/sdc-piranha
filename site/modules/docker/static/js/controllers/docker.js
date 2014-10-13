@@ -109,6 +109,10 @@
                 $location.url('/compute/instance/' + machine.id);
             };
 
+            $scope.navigateContainersImages = function (route, host) {
+                $location.url('/docker/' + route + '?host=' + host);
+            };
+
             $scope.createDocker = function () {
                 $rootScope.commonConfig('datacenter', $scope.data.datacenter);
                 $location.url('/compute/create/' + $scope.data.imageId + '?specification=dockerhost');
