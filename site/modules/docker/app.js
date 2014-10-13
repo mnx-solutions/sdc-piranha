@@ -17,7 +17,7 @@ module.exports = function (scope, app) {
             headerType = 'text/plain';
         }
         var client = Manta.createClient({req: req});
-        var path = '~~/stor/dockerLogs/' + req.query.host + '/' + req.query.container;
+        var path = '~~/stor/.joyent/docker/logs/' + req.query.host + '/' + req.query.container;
         var filesInDateRange = [];
         var startDate = req.query.start;
         var endDate = req.query.end;
