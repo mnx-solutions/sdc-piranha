@@ -27,20 +27,6 @@
                 return deferred.promise;
             };
 
-            var listAllMachines = function () {
-                var deferred = $q.defer();
-                var pollMachines = function () {
-                    var machines = Machine.machine();
-                    if (machines.final) {
-                        deferred.resolve(machines);
-                    } else {
-                        setTimeout(pollMachines, 100);
-                    }
-                };
-                pollMachines();
-                return deferred.promise;
-            };
-
             var findPackageIdByName = function (packages, name) {
                 var result = null;
                 packages.forEach(function (packageObj) {
@@ -62,7 +48,7 @@
                 var deferred = $q.defer();
                 $q.all([
                     $q.when(freeTierOptions()),
-                    $q.when(listAllMachines()),
+                    $q.when(Machine.listAllMachines()),
                     $q.when(Datacenter.datacenter()),
                     $q.when(Account.getParentAccount())
                 ]).then(function (results) {

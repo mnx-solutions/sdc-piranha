@@ -2,8 +2,8 @@
 
 
 (function (ng, app) { app.factory('Docker', [
-    'serverTab', '$q', 'EventBubble',
-    function (serverTab, $q, EventBubble) {
+    'serverTab', '$q', 'EventBubble', 'Machine',
+    function (serverTab, $q, EventBubble, Machine) {
 
         var service = {};
         var containerActions = ['start', 'stop', 'pause', 'unpause', 'remove', 'inspect', 'restart', 'kill', 'logs'];
@@ -101,7 +101,15 @@
             return createCall('containers', options);
         };
 
-        service.listHosts = function (options) {
+        service.listHosts = function () {
+            return Machine.listAllMachines().then(function (machines) {
+                return machines.filter(function (machine) {
+                    return machine.tags && machine.tags.JPC_tag === 'DockerHost';
+                });
+            });
+        };
+
+        service.listHostsFull = function (options) {
             return createCall('hosts', options || {});
         };
 
