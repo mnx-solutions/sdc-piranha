@@ -34,8 +34,8 @@ function manta {
         -H "Authorization: Signature keyId=\"$keyId\",algorithm=\"$alg\",signature=\"$sig\""
 }
 
-manta /${MANTA_USER}/stor/dockerLogs -X PUT -H "content-type: application/json; type=directory"
-manta /${MANTA_USER}/stor/dockerLogs/$(hostname) -X PUT -H "content-type: application/json; type=directory"
+manta /${MANTA_USER}/stor/.joyent/docker/logs -X PUT -H "content-type: application/json; type=directory"
+manta /${MANTA_USER}/stor/.joyent/docker/logs/$(hostname) -X PUT -H "content-type: application/json; type=directory"
 
 function writeStage {
     manta ${MANTA_DOCKER_PATH}/.status-$(hostname) -XPUT -d"{\"status\": \"$1\"}"
@@ -176,7 +176,7 @@ ${DOCKER_DIR}/containers/*/*json.log {
 
         for f in \$(find ${LOGS_DIR} -type f ! -name '*-last.log');do
             ContainerId=\$(basename \${f} | awk -F- '{print \$1}')
-            ContainerLogPath=/${MANTA_USER}/stor/dockerLogs/\$(hostname)/\${ContainerId}
+            ContainerLogPath=/${MANTA_USER}/stor/.joyent/docker/logs/\$(hostname)/\${ContainerId}
             manta \${ContainerLogPath} -XPUT -H "content-type: application/json; type=directory"
             manta \${ContainerLogPath}/\$(date +"%F").log -XPUT -T \${f}
             mv \${f} ${LOGS_DIR}/\${ContainerId}-last.log
@@ -234,7 +234,7 @@ common: &common\\\\n\\
 joyent_manta: &joyent_manta\\\\n\\
     <<: *common\\\\n\\
     storage: joyent_manta\\\\n\\
-    path: _env:REGISTRY_PATH:'/%s/stor/registry'\\\\n\\
+    path: _env:REGISTRY_PATH:'/%s/stor/.joyent/docker/registry'\\\\n\\
     url: _env:MANTA_URL:'https://us-east.manta.joyent.com/'\\\\n\\
     insecure: _env:MANTA_TLS_INSECURE:False\\\\n\\
     key_id: _env:MANTA_KEY_ID\\\\n\\
