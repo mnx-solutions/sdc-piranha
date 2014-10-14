@@ -29,11 +29,11 @@
                     Docker.listContainers({host: 'All', options: {all: true}}).then(function (containers) {
                         $scope.containers = containers.map(function (container) {
                             container.Id = container.Id.slice(0, 12);
-                            container.Names = container.Names.length ? container.Names.join(', ') : '';
+                            container.NamesStr = container.Names.length ? container.Names.join(', ') : '';
                             var ports = container.Ports.map(function (port) {
                                 return port.IP + ':' + port.PublicPort;
                             });
-                            container.Ports = ports.length ? ports.join(', ') : '';
+                            container.PortsStr = ports.length ? ports.join(', ') : '';
                             return container;
                         });
                         $scope.loading = false;
@@ -60,7 +60,7 @@
                         }
                     },
                     {
-                        id: 'Names',
+                        id: 'NamesStr',
                         name: 'Names',
                         sequence: 2,
                         active: true
@@ -102,7 +102,7 @@
                         active: true
                     },
                     {
-                        id: 'Ports',
+                        id: 'PortsStr',
                         name: 'Ports',
                         sequence: 8
                     }
