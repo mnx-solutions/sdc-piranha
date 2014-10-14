@@ -78,13 +78,21 @@
                         name: 'Host',
                         _order: 'name',
                         sequence: 1,
-                        active: true
+                        active: true,
+                        type: 'html',
+                        _getter: function (container) {
+                            return '<a href="#!/compute/instance/' + container.hostId + '" style="min-width: 140px;">' + container.hostName + '</a>';
+                        }
                     },
                     {
                         id: 'ShortId',
                         name: 'Container ID',
                         sequence: 2,
-                        active: true
+                        active: true,
+                        type: 'html',
+                        _getter: function (container) {
+                            return '<a href="#!/docker/container/' + container.hostId + '/' + container.ShortId + '" style="min-width: 140px;">' + container.ShortId + '</a>';
+                        }
                     },
                     {
                         id: 'Image',
