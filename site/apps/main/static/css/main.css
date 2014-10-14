@@ -2887,7 +2887,7 @@ label.checkbox
 
 .dropdown-menu
 {
-    min-width: 98% !important;
+    min-width: 98%;
     margin-top: 0;
     padding: 0;
 
