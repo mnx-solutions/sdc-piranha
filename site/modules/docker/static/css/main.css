@@ -766,3 +766,6 @@ span.btn-success
 .loading-medium {
     min-height: 35px;
 }
+.empty-docker-hosts {
+    font-size: 16px;
+}
