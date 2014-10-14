@@ -9,6 +9,7 @@
         'Package',
         'Network',
         'firewall',
+        'Docker',
         '$filter',
         '$$track',
         'localization',
@@ -20,7 +21,7 @@
         'Account',
         'loggingService',
 
-        function ($scope, $rootScope, requestContext, Machine, Package, Network, firewall, $filter, $$track,
+        function ($scope, $rootScope, requestContext, Machine, Package, Network, firewall, Docker, $filter, $$track,
                   localization, $q, $location, PopupDialog, Image, FreeTier, Account, loggingService) {
             localization.bind('machine', $scope);
             requestContext.setUpRenderContext('machine.details', $scope, {
@@ -89,6 +90,26 @@
                 });
             };
 
+            var getHostContainers = function (machine) {
+                Docker.listContainers({host: machine, options: {all: true}}).then(function (containers) {
+                    $scope.containers = containers.map(function (container) {
+                        container.shortId = container.Id.slice(0, 12);
+                        container.Names = Array.isArray(container.Names) ? container.Names.join(', ') : container.Names;
+                        if (Array.isArray(container.Ports)) {
+                            var ports = container.Ports.map(function (port) {
+                                return port.IP + ':' + port.PublicPort;
+                            });
+                            container.Ports = ports.length ? ports.join(', ') : '';
+                        }
+                        container.hostId = machine.id;
+                        container.hostName = machine.name;
+                        return container;
+                    });
+                }, function (err) {
+                    PopupDialog.errorObj(err);
+                });
+            };
+
             if ($scope.features.freetier === 'enabled') {
                 $scope.freetier = FreeTier.freetier().then(function(data) {
                     $scope.freetier = data;
@@ -128,6 +149,9 @@
                                 $scope.firewallRules = rules;
                             });
                         }
+                        if ($scope.features.docker === 'enabled') {
+                            getHostContainers(m);
+                        }
                     }, function () {
                         locationReplace();
                     });
@@ -159,6 +183,10 @@
                                 $scope.firewallRules = rules;
                             });
                         }
+
+                        if ($scope.features.docker === 'enabled') {
+                            getHostContainers(machine);
+                        }
                     }
                 );
             }, true);
@@ -176,6 +204,9 @@
                     Machine.listFirewallRules(m).then(function (rules) {
                         $scope.firewallRules = rules;
                     });
+                }
+                if ($scope.features.docker === 'enabled') {
+                    getHostContainers(m);
                 }
 
                 $scope.dataset = Image.image({datacenter: m.datacenter, id: m.image});
@@ -612,6 +643,76 @@
                 };
 
                 $scope.searchForm = false;
+
+            }
+
+            if ($scope.features.docker === 'enabled') {
+                if ($scope.features.manta === 'enabled') {
+                    $scope.gridUserConfigDocker = Account.getUserConfig().$child('docker-machine-containers');
+                }
+                $scope.gridOrderDocker = ['-created'];
+                $scope.gridPropsDocker = [
+                    {
+                        id: 'Id',
+                        name: 'Container ID',
+                        sequence: 1,
+                        active: true,
+                        type: 'html',
+                        _getter: function (container) {
+                            return '<a href="#!/docker/container/' + container.hostId + '/' + container.shortId + '" style="min-width: 140px;">' + container.shortId + '</a>';
+                        }
+                    },
+                    {
+                        id: 'Names',
+                        name: 'Names',
+                        sequence: 2,
+                        active: false
+                    },
+                    {
+                        id: 'Image',
+                        name: 'Image',
+                        sequence: 3,
+                        active: true
+                    },
+                    {
+                        id: 'Command',
+                        name: 'Command',
+                        sequence: 4,
+                        active: false
+                    },
+                    {
+                        id: 'Created',
+                        name: 'Created',
+                        sequence: 5,
+                        active: false,
+                        reverseSort: true,
+                        _getter: function (container) {
+                            return $filter('humanDate')(container.Created);
+                        }
+                    },
+                    {
+                        id: 'Status',
+                        name: 'Status',
+                        sequence: 6,
+                        type: 'progress',
+                        _inProgress: function (object) {
+                            return object.actionInProgress;
+                        },
+                        active: true
+                    },
+                    {
+                        id: 'Ports',
+                        name: 'Ports',
+                        sequence: 7,
+                        active: false
+                    }
+                ];
+
+                $scope.exportFieldsDocker = {
+                    ignore: []
+                };
+
+                $scope.searchFormDocker = false;
 
             }
         }
