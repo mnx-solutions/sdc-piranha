@@ -216,7 +216,6 @@ var Docker = function execute(scope) {
                 if (err) {
                     return call.done(err);
                 }
-                part = '';
                 req.on('result', function (error, res) {
                     if (error) {
                         return call.done(error);
