@@ -206,6 +206,51 @@ var Docker = function execute(scope) {
             });
         }
     });
+
+    server.onCall('DockerPull', function (call) {
+        Docker.createClient(call, call.data.host, function (error, client) {
+            if (error) {
+                return call.done(error);
+            }
+            client.createImage(call.data.options, function (err, req) {
+                if (err) {
+                    return call.done(err);
+                }
+                part = '';
+                req.on('result', function (error, res) {
+                    if (error) {
+                        return call.done(error);
+                    }
+                    res.on('data', function (data) {
+                        data = data.toString();
+                        data = jsonStreamParser(data);
+                        data.forEach(function (chunk) {
+                            call.update(null, chunk);
+                        });
+                    });
+                    res.on('end', function () {
+                        call.done(null);
+                    });
+                });
+                req.end();
+            });
+        });
+    });
+
+    server.onCall('DockerImageTags', {
+        verify: function (data) {
+            return data && data.options && typeof (data.options.name) === 'string';
+        },
+        handler: function (call) {
+            var path = '/v1/repositories/' + call.data.options.name + '/tags';
+            dockerIndexClient.get(path, function (err, req, res, data) {
+                if (err) {
+                    return call.done(err);
+                }
+                call.done(null, data);
+            });
+        }
+    });
 };
 
 if (!config.features || config.features.docker !== 'disabled') {
