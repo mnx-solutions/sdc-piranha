@@ -692,6 +692,10 @@ span.btn-success
     position: absolute;
     top: 150px;
 }
+.loading-medium-transparent {
+    width: auto;
+    height: 34px;
+}
 .rickshaw_legend
 {
     display: block !important;
