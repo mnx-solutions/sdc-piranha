@@ -94,6 +94,27 @@
                 if (!machine.tags || machine.tags.JPC_tag !== 'DockerHost') {
                     return;
                 }
+                Docker.hostInfo({host: machine}).then(function (info) {
+                    $scope.dockerHostInfo = {
+                        containers: info.Containers,
+                        debug: Boolean(info.Debug),
+                        driver: info.Driver,
+                        executionDriver: info.ExecutionDriver,
+                        iPv4Forwarding: Boolean(info.IPv4Forwarding),
+                        images: info.Images,
+                        indexServerAddress: info.IndexServerAddress,
+                        initPath: info.InitPath,
+                        initSha1: info.InitSha1,
+                        kernelVersion: info.KernelVersion,
+                        memoryLimit: Boolean(info.MemoryLimit),
+                        nEventsListener: info.NEventsListener,
+                        nfd: info.NFd,
+                        nGoroutines: info.NGoroutines,
+                        swapLimit: Boolean(info.SwapLimit)
+                    };
+                }, function (err) {
+                    PopupDialog.errorObj(err);
+                });
                 Docker.listContainers({host: machine, options: {all: true}}).then(function (containers) {
                     $scope.containers = containers.map(function (container) {
                         container.shortId = container.Id.slice(0, 12);
