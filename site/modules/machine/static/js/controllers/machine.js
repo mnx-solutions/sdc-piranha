@@ -91,6 +91,9 @@
             };
 
             var getHostContainers = function (machine) {
+                if (!machine.tags || machine.tags.JPC_tag !== 'DockerHost') {
+                    return;
+                }
                 Docker.listContainers({host: machine, options: {all: true}}).then(function (containers) {
                     $scope.containers = containers.map(function (container) {
                         container.shortId = container.Id.slice(0, 12);

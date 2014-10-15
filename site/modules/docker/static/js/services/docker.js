@@ -246,8 +246,6 @@
             return createCall('imageTags', {options: {name: name}, direct: true});
         };
 
-        service.listContainers({host: 'All', options: {all: true}});
-
         service.listRegistries = function () {
             var job = serverTab.call({
                 name: 'listRegistries',
