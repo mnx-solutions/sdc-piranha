@@ -772,4 +772,24 @@ span.btn-success
 }
 .empty-docker-hosts {
     font-size: 16px;
+}.registry-form {
+    padding-bottom: 65px;
+}
+.registry-form tr {
+    border-bottom: solid white 15px;
+}
+.registry-form td:first-child {
+    padding-right: 20px;
+    text-align: right;
+    white-space: nowrap;
+}
+.registry-form tr,
+.registry-form td:last-child,
+.registry-form td:last-child input {
+    width: 100%;
+}
+.registry-form input {
+    height: 30px;
+    padding: 0 10px;
+    background-color: #fafcfd;
 }

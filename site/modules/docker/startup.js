@@ -171,25 +171,39 @@ var Docker = function execute(scope) {
     });
 
     server.onCall('DockerGetRegistriesList', function (call) {
+        var defaultRegistry = {
+            id: 'default',
+            api: 'v1',
+            host: 'https://index.docker.io',
+            port: '80',
+            username: 'none'
+        };
         var client = scope.api('MantaClient').createClient(call);
         client.getFileContents('~~/stor/.joyent/docker/registries.json', function (error, list) {
             if (error && error.statusCode !== 404) {
                 return call.done(error.message, true);
             }
             if (error && error.statusCode === 404) {
-                return call.done(null, []);
+                return call.done(null, [defaultRegistry]);
             }
 
             try {
+                var checkDefaultRegistry = false;
                 list = JSON.parse(list);
                 list.forEach(function (regisry) {
                     if (regisry.auth) {
                         regisry.auth = null;
                     }
+                    if (regisry.id === 'default') {
+                        checkDefaultRegistry = true;
+                    }
                 });
+                if (!checkDefaultRegistry) {
+                    list.push(defaultRegistry);
+                }
             } catch (e) {
                 call.log.warn('Registries list is corrupted');
-                list = [];
+                list = [defaultRegistry];
             }
             call.done(null, list);
         });
