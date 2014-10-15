@@ -31,11 +31,34 @@
                 if ($scope.features.manta === 'enabled') {
                     $scope.gridUserConfig = Account.getUserConfig().$child('docker-images');
                 }
-
+                var getGroupedImages = function (originalImages) {
+                    var groupedImages = [];
+                    originalImages.forEach(function (origImage) {
+                        var found = false;
+                        groupedImages.forEach(function (grImage) {
+                            if (origImage.Id === grImage.Id) {
+                                if (!grImage.hostIds) {
+                                    grImage.hostIds = [grImage.hostId];
+                                }
+                                if (!grImage.hostNames) {
+                                    grImage.hostNames = [grImage.hostName];
+                                }
+                                grImage.hostIds.push(origImage.hostId);
+                                grImage.hostNames.push(origImage.hostName);
+                                found = true;
+                            }
+                        });
+                        if (!found) {
+                            groupedImages.push(origImage);
+                        }
+                    });
+                    return groupedImages;
+                };
+                var imagesWithoutGrouping = [];
                 var listAllImages = function (all) {
                     topImages = all ? topImages : [];
                     Docker.listAllImages(all ? {all: true} : null).then(function (images) {
-                        $scope.images = images.map(function (image) {
+                        images.forEach(function (image) {
                             image.Id = image.Id.slice(0, 12);
                             if (all) {
                                 image.images = topImages.indexOf(image.Id) === -1 ? 'all' : 'top';
@@ -43,8 +66,9 @@
                                 image.images = 'top';
                                 topImages.push(image.Id);
                             }
-                            return image;
                         });
+                        imagesWithoutGrouping = angular.copy(images);
+                        $scope.images = getGroupedImages(images);
                         $scope.loading = false;
                     }, errorCallback);
                 };
@@ -59,7 +83,13 @@
                         active: true,
                         type: 'html',
                         _getter: function (image) {
-                            return '<a href="#!/docker/image/' + image.hostId + '/' + image.Id + '" style="min-width: 140px;">' + image.Id + '</a>';
+                            var html;
+                            if (!image.hostIds) {
+                                html = '<a href="#!/docker/image/' + image.hostId + '/' + image.Id + '" style="min-width: 140px;">' + image.Id + '</a>';
+                            } else {
+                                html = '<span>' + image.Id + '</span>';
+                            }
+                            return html;
                         }
                     },
                     {
@@ -90,7 +120,21 @@
                         id: 'hostName',
                         name: 'Host',
                         sequence: 4,
-                        active: true
+                        active: true,
+                        type: 'html',
+                        _getter: function (image) {
+                            var html;
+                            if (!image.hostIds) {
+                                html = '<span>' + image.hostName + '</span>';
+                            } else {
+                                var html = [];
+                                image.hostIds.forEach(function (hostId, index) {
+                                    html.push('<a href="#!/docker/image/' + hostId + '/' + image.Id + '">' + image.hostNames[index] + '</a>');
+                                });
+                                html = html.join(', ');
+                            }
+                            return html;
+                        }
                     },
                     {
                         id: 'Created',
@@ -121,8 +165,22 @@
                     }
                 };
 
-                function makeImageAction(action, messageTitle, messageBody) {
+                function makeImageAction (action, messageTitle, messageBody) {
+                    var messageGroup = '';
                     if ($scope.checkedItems.length) {
+                        var groupingImages = [];
+                        $scope.checkedItems.forEach(function (image) {
+                            if (image.hostNames && image.hostNames.length) {
+                                groupingImages = imagesWithoutGrouping.filter(function (item) {
+                                    return item.ParentId === image.ParentId && item.hostName !== image.hostName;
+                                });
+                            }
+                        });
+                        if (groupingImages.length) {
+                            $scope.checkedItems = $scope.checkedItems.concat(groupingImages);
+                            messageGroup = ' Please note that image can belong to multiple hosts.';
+                        }
+
                         var actionFunction = function () {
                             var promises = [];
                             $scope.checkedItems.forEach(function (image) {
@@ -157,7 +215,7 @@
                                 localization.translate(
                                     $scope,
                                     null,
-                                    messageBody[$scope.checkedItems.length > 1 ? 'plural' : 'single']
+                                    messageBody[$scope.checkedItems.length > 1 ? 'plural' : 'single'] + messageGroup
                                 ), actionFunction
                             );
                         } else {
