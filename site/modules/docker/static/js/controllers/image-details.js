@@ -127,6 +127,10 @@
             $scope.searchForm = false;
             $scope.enabledCheckboxes = false;
 
+            $scope.createContainer = function () {
+                $location.path('/docker/container/create/' + hostId + '/' + imageId);
+            };
+
             $scope.removeImage = function () {
                 PopupDialog.confirm(
                     localization.translate(

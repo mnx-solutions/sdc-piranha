@@ -17,7 +17,7 @@
                     <div class="form-group">
                         <span class="orange-asterix edit-image edit-label">Docker Host</span>
                         <span class="edit-value">
-                            <select ui-select2="{minimumResultsForSearch: -1, width: '457px'}" id="hostSelect" data-ng-model="ip" ng-change="changeHost()">
+                            <select ui-select2="{minimumResultsForSearch: -1, width: '457px'}" id="hostSelect" data-ng-model="ip" ng-change="changeHost()" data-ng-disabled="!(images.length || containers.length)">
                                 <option data-ng-repeat="host in hosts" value="{{host.primaryIp}}">
                                     {{host.name}}
                                 </option>
@@ -28,8 +28,8 @@
                         <span class="orange-asterix edit-image edit-label">Image</span>
                         <span class="edit-value">
                             <select data-ng-disabled="!images.length" ui-select2="{minimumResultsForSearch: -1, width: '457px'}" id="imageSelect" data-ng-model="container.Image" required>
-                                <option data-ng-repeat="image in images" value="{{image}}">
-                                    {{image}}
+                                <option data-ng-repeat="image in images" value="{{image.name}}">
+                                    {{image.name}}
                                 </option>
                             </select>
                         </span>

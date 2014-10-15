@@ -17,6 +17,9 @@
                 });
                 $scope.loading = true;
 
+                var sourceId = requestContext.getParam('sourceid');
+                var hostId = requestContext.getParam('hostid');
+
                 $scope.title = 'Create Container';
                 $scope.createImage = false;
                 $scope.type = $location.path().search('image/create') === -1 ? 'Containers' : 'Images';
@@ -35,20 +38,30 @@
                     $scope.commands = values.Command || '';
                 };
 
+                var selectSource = function (items, id) {
+                    var defaultItem;
+                    if (sourceId && Array.isArray(items)) {
+                        defaultItem = items.filter(function (item) {
+                            return item.Id === sourceId;
+                        });
+                    }
+                    defaultItem = (defaultItem && defaultItem[0]) || items[0];
+                    return id ? defaultItem[id] : defaultItem;
+                };
+
                 var hostImages = function (host) {
                     if (host && host.primaryIp) {
                         $scope.images = [];
                         $scope.container.container = 'base';
                         Docker.listImages(host).then(function (images) {
-                            images.map(function (image) {
-                                image.RepoTags.map(function (tag) {
-                                    var repoTag = tag.split(':')[0];
-                                    if (repoTag !== '<none>' && $scope.images.indexOf(tag) === -1) {
-                                        $scope.images.push(tag);
-                                    }
-                                });
+
+                            $scope.images = images.map(function (image) {
+                                var tag = image.RepoTags[0];
+                                image.Id = image.Id.slice(0, 12);
+                                image.name = tag === '<none>:<none>' ? image.Id : tag;
+                                return image;
                             });
-                            $scope.container.Image = $scope.images[0];
+                            $scope.container.Image = selectSource($scope.images, 'name');
                             setTimeout(function () {
                                 window.jQuery('#imageSelect').select2('val', $scope.container.Image);
                             });
@@ -66,7 +79,7 @@
                                 container.Names = container.Names.length ? container.Names.join(', ') : '';
                                 return container;
                             });
-                            $scope.container.container = $scope.containers[0].Id;
+                            $scope.container.container = selectSource($scope.containers, 'Id');
                             $scope.container.primaryIp = host.primaryIp;
                             setTimeout(function () {
                                 window.jQuery('#containerSelect').select2('val', $scope.container.container);
@@ -98,7 +111,7 @@
                 $scope.exposedPattern = '(((\\d{1,3}\.){3}\\d{1,3}\\:)?' + $scope.portPattern + '?\\:)?' + $scope.portPattern;
 
                 Docker.listHosts().then(function (hosts) {
-                    $scope.hosts = hosts;
+                    $scope.hosts = hosts || [];
                     $scope.loading = false;
                     $scope.memory = 0;
                     $scope.memorySwap = 0;
@@ -124,6 +137,14 @@
                         "NetworkDisabled": false,
                         "name": ""
                     };
+                    if (hostId) {
+                        $scope.hosts.forEach(function (host) {
+                            if (hostId === host.id) {
+                                $scope.ip = host.primaryIp;
+                                $scope.changeHost();
+                            }
+                        });
+                    }
                 }, errorCallback);
 
                 function parsePorts(ports) {
