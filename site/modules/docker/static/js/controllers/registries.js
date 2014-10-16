@@ -8,23 +8,12 @@
             'Account',
             'PopupDialog',
             'localization',
+            '$location',
 
-            function ($scope, Docker, Account, PopupDialog, localization) {
+            function ($scope, Docker, Account, PopupDialog, localization, $location) {
 
                 $scope.loading = true;
                 $scope.registries = [];
-                $scope.errorText = '';
-
-                var newRegistry = function () {
-                    $scope.registry = {
-                        api: null,
-                        host: null,
-                        port: null,
-                        username: null,
-                        password: null
-                    };
-                };
-                newRegistry();
 
                 var errorCallback = function (err, dialog) {
                     $scope.loading = false;
@@ -37,19 +26,6 @@
                     $scope.registries = list;
                     $scope.loading = false;
                 });
-
-                var addRegistry = function (registry) {
-                    if (!registry.username || registry.username.length === 0) {
-                        registry.username = 'none';
-                    }
-                    if (registry.username !== 'none' && registry.password && registry.password.length > 0) {
-                        registry.auth = window.btoa(registry.username + ':' + registry.password);
-                    }
-                    registry.password = null;
-
-                    $scope.registries.push(registry);
-                    Docker.saveRegistriesList(angular.copy($scope.registries));
-                };
 
                 var deleteFromRegistries = function (registry) {
                     PopupDialog.confirm(
@@ -108,9 +84,21 @@
                         type: 'buttons',
                         buttons: [
                             {
-                                label: 'Delete',
+                                label: 'Edit',
                                 getClass: function () {
                                     return 'btn grid-mini-btn view effect-orange-button';
+                                },
+                                disabled: function (object) {
+                                    return !object.id;
+                                },
+                                action: function (object) {
+                                    $scope.connectNewRegistry(object.id);
+                                }
+                            },
+                            {
+                                label: 'Delete',
+                                getClass: function () {
+                                    return 'btn grid-mini-btn download effect-orange-button';
                                 },
                                 action: function (object) {
                                     deleteFromRegistries(object);
@@ -127,68 +115,9 @@
                 $scope.enabledCheckboxes = false;
                 $scope.placeHolderText = 'filter registries';
 
-                var checkExists = function (connectedRegistry) {
-                    var exist = false;
-                    if (!connectedRegistry.username || !connectedRegistry.username.length) {
-                        connectedRegistry.username = 'none';
-                    }
-                    $scope.registries.forEach(function (registry) {
-                        if (registry.api === connectedRegistry.api &&
-                            registry.host === connectedRegistry.host &&
-                            registry.port === connectedRegistry.port &&
-                            registry.username === connectedRegistry.username) {
-                            exist = true;
-                        }
-                    });
-                    return exist;
-                };
-
-                $scope.connectNewRegistry = function () {
-                    newRegistry();
-                    var opts = {
-                        templateUrl: 'docker/static/partials/connect-registry.html',
-                        openCtrl: function ($scope, dialog, Docker) {
-                            $scope.loadingRegistry = false;
-                            $scope.connect = function () {
-                                $scope.connectError = false;
-                                $scope.loadingRegistry = true;
-                                Docker.registryPing($scope.registry).then(function (result) {
-                                    if (result) {
-                                        $scope.connectError = false;
-                                        $scope.loadingRegistry = false;
-                                        var registryExist = checkExists($scope.registry);
-                                        if (registryExist) {
-                                            $scope.loadingRegistry = false;
-                                            PopupDialog.error(
-                                                localization.translate(
-                                                    $scope,
-                                                    null,
-                                                    'Error'
-                                                ),
-                                                localization.translate(
-                                                    $scope,
-                                                    null,
-                                                    'Such a registry already exists.'
-                                                )
-                                            );
-                                        } else {
-                                            addRegistry($scope.registry);
-                                            dialog.close();
-                                        }
-                                    }
-                                }, function (err) {
-                                    $scope.errorText = err;
-                                    $scope.connectError = true;
-                                    $scope.loadingRegistry = false;
-                                });
-                            };
-
-                            $scope.close = function () {
-                                dialog.close();
-                            };
-                        }
-                    };
-                    PopupDialog.custom(opts);
+                $scope.connectNewRegistry = function (registry) {
+                    registry = registry || 'create';
+                    $location.path('docker/registry/' + registry);
                 };
             }
         ]);

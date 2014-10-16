@@ -12,6 +12,9 @@ window.JP.main.config(['routeProvider', function (routeProvider) {
         }).when('/docker/registries', {
             title: 'Registries',
             action: 'docker.registries'
+        }).when('/docker/registry/:id', {
+            title: 'Registry',
+            action: 'docker.registry'
         }).when('/docker/containers', {
             title: 'Containers',
             action: 'docker.containers'

@@ -1,0 +1,44 @@
+<div data-ng-controller="Docker.RegistryController" class="container-fluid container-position">
+    <ul class="breadcrumb">
+        <li><a href="#!/docker">Docker</a></li><!--
+        --><li><a href="#!/docker/registries">Docker Registries</a></li>
+    </ul>
+    <div class="row" data-ng-hide="loading">
+        <h3 class="page-title" data-ng-hide="registryId">Connect to New Registry</h3>
+        <h3 class="page-title" data-ng-show="registryId">Edit Registry</h3>
+    </div>
+    <div class="loading-large col-md-12" data-ng-show="loading"></div>
+    <div class="registry-form" data-ng-hide="loading">
+        <form name="registryForm" id="registryForm">
+            <table>
+                <tr>
+                    <td class="orange-asterix">API Version</td>
+                    <td><input name="api" type="text" data-ng-model="registry.api" data-ng-disabled="loadingRegistry" data-auto-focus required/></td>
+                </tr>
+                <tr>
+                    <td class="orange-asterix">Hostname</td>
+                    <td><input name="host" type="text" data-ng-model="registry.host" data-ng-disabled="loadingRegistry" required/></td>
+                </tr>
+                <tr>
+                    <td class="orange-asterix">Port</td>
+                    <td><input name="port" type="text" data-ng-model="registry.port" data-ng-disabled="loadingRegistry" required/></td>
+                </tr>
+                <tr>
+                    <td>Username</td>
+                    <td><input name="username" type="text" data-ng-model="registry.username" data-ng-disabled="loadingRegistry"/></td>
+                </tr>
+                <tr>
+                    <td>Password</td>
+                    <td><input name="password" type="password" data-ng-model="registry.password" data-ng-disabled="loadingRegistry"/></td>
+                </tr>
+            </table>
+        </form>
+        <hr>
+        <span class="orange-asterix-left">required fields</span>
+        <div class="pull-right">
+            <a href="#!/docker/registries" class="btn grey-new effect-orange-button">Cancel</a>
+            <button data-ng-click="connectRegistry()" class="btn orange" data-ng-disabled="registryForm.$invalid">Connect</button>
+        </div>
+    </div>
+</div>
+
