@@ -76,6 +76,7 @@
                 name: name,
                 data: {
                     host: options.host,
+                    registry: options.registry,
                     wait: options.wait,
                     options: options.options
                 },
@@ -212,13 +213,10 @@
             });
         };
 
-        service.searchImage = function (host, term) {
-            return createCall('searchImage', {host: host, options: {term: term}});
+        service.searchImage = function (registryId, term) {
+            return createCall('searchImage', {registry: registryId, options: {q: term}});
         };
 
-        service.removeImage = function (image) {
-            return createCall('searchImage', {host: {primaryIp: image.primaryIp}, options: {id: image.Id}});
-        };
         imageActions.forEach(function (action) {
             service[action + 'Image'] = function (image) {
                 var job = serverTab.call({
@@ -236,14 +234,14 @@
         });
 
         service.pullImage = function (host, image) {
-            return createCall('pull', {host: host, options: {fromImage: image.name}}, function (error, chunk) {
+            return createCall('pull', {host: host, options: {fromImage: image.name, tag: image.tag}}, function (error, chunk) {
                 image.progressDetail = chunk.hasOwnProperty('progressDetail') ? chunk.progressDetail : null;
                 image.processStatus = chunk.status;
             });
         };
 
-        service.getImageTags = function(name) {
-            return createCall('imageTags', {options: {name: name}, direct: true});
+        service.getImageTags = function (registryId, name) {
+            return createCall('imageTags', {registry: registryId, options: {name: name}, direct: true});
         };
 
         service.listRegistries = function () {

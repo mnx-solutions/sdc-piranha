@@ -256,13 +256,6 @@ module.exports = function execute(scope, register) {
             method: 'DELETE',
             path: '/images/:id'
         },
-        searchImage  : {
-            method: 'GET',
-            path: '/images/search',
-            params: {
-                term   : '='
-            }
-        },
         getInfo         : {
             method: 'GET',
             path: '/info'
@@ -288,6 +281,10 @@ module.exports = function execute(scope, register) {
             params: {
                 q   : '='
             }
+        },
+        imageTags  : {
+            method: 'GET',
+            path: '/v1/repositories/:name/tags'
         },
         ping: {
             method: 'GET',

@@ -8,6 +8,16 @@
             <div class="modal-body">
                 <form name="selectTagForm" class="selectTagForm">
                     <div class="form-group">
+                        <span class="orange-asterix edit-host edit-label">Docker Host</span>
+                        <span class="edit-value">
+                            <select data-ng-disabled="!hosts.length" ui-select2="{minimumResultsForSearch: -1, width: '250px'}" id="hostSelect" data-ng-model="hostIp" required >
+                                <option data-ng-repeat="host in hosts" value="{{host.primaryIp}}">
+                                    {{host.name}}
+                                </option>
+                            </select>
+                        </span>
+                    </div>
+                    <div class="form-group">
                         <span class="orange-asterix edit-image edit-label">Select image tag</span>
                         <span class="edit-value">
                             <select data-ng-disabled="!tags.length" ui-select2="{minimumResultsForSearch: -1, width: '250px'}" id="tagSelect" data-ng-model="tag" required>

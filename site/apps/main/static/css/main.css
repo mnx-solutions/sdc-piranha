@@ -5088,7 +5088,7 @@ label.checkbox.folder-name-form-checkbox
     vertical-align: bottom;
 }
 .modal-dialog-find-images .configurationForm .edit-value input {
-    width: 90%;
+    width: 91%;
 }
 .modal-dialog-find-images .configurationForm button {
     margin-left: 30px;
@@ -5114,6 +5114,8 @@ progress {
 }
 .modal-select-tag .edit-label {
     margin: 0 20px 0 40px;
+    display: inline-block;
+    width: 120px;
 }
 .modal-select-tag-backdrop {
     z-index: 9999990;

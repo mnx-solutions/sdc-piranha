@@ -3,9 +3,6 @@ var config = require('easy-config');
 var vasync = require('vasync');
 var util = require('util');
 var restify = require('restify');
-var dockerIndexClient = restify.createJsonClient({
-    url: 'https://index.docker.io'
-});
 
 var Docker = function execute(scope) {
     var Docker = scope.api('Docker');
@@ -13,6 +10,7 @@ var Docker = function execute(scope) {
     var methods = Docker.getMethods();
     var methodsForAllHosts = ['containers', 'getInfo', 'images'];
     var part;
+    var registriesCache = {};
 
     function DockerHostUnreachable(host) {
         this.message = 'Docker host "' + host + '" is unreachable.';
@@ -186,15 +184,15 @@ var Docker = function execute(scope) {
             if (error && error.statusCode === 404) {
                 return call.done(null, [defaultRegistry]);
             }
-
             try {
                 var checkDefaultRegistry = false;
                 list = JSON.parse(list);
-                list.forEach(function (regisry) {
-                    if (regisry.auth) {
-                        regisry.auth = null;
+                list.forEach(function (registry) {
+                    registriesCache[registry.id] = util._extend({}, registry);
+                    if (registry.auth) {
+                        registry.auth = null;
                     }
-                    if (regisry.id === 'default') {
+                    if (registry.id === 'default') {
                         checkDefaultRegistry = true;
                     }
                 });
@@ -215,7 +213,11 @@ var Docker = function execute(scope) {
         },
         handler: function (call) {
             var client = scope.api('MantaClient').createClient(call);
+            var registriesList = call.data.options;
             client.putFileContents('~~/stor/.joyent/docker/registries.json', JSON.stringify(call.data.options), function (error) {
+                registriesList.forEach(function (registry) {
+                    registriesCache[registry.id] = registry;
+                });
                 return call.done(error && error.message, true);
             });
         }
@@ -230,6 +232,7 @@ var Docker = function execute(scope) {
                 if (err) {
                     return call.done(err);
                 }
+                part = '';
                 req.on('result', function (error, res) {
                     if (error) {
                         return call.done(error);
@@ -252,15 +255,40 @@ var Docker = function execute(scope) {
 
     server.onCall('DockerImageTags', {
         verify: function (data) {
-            return data && data.options && typeof (data.options.name) === 'string';
+            return data && data.options && typeof (data.options.name) === 'string' && data.registry;
         },
         handler: function (call) {
-            var path = '/v1/repositories/' + call.data.options.name + '/tags';
-            dockerIndexClient.get(path, function (err, req, res, data) {
-                if (err) {
-                    return call.done(err);
+            var registry = registriesCache[call.data.registry];
+            if (!registry) {
+                return call.done();
+            }
+            Docker.createRegistryClient(call, registry, function (error, client) {
+                if (error) {
+                    return call.done(error);
                 }
-                call.done(null, data);
+                client.imageTags(call.data.options, function (err, result) {
+                    call.done(err, result);
+                });
+            });
+        }
+    });
+
+    server.onCall('DockerSearchImage', {
+        verify: function (data) {
+            return data && data.options && typeof (data.options.q) === 'string' && data.registry;
+        },
+        handler: function (call) {
+            var registry = registriesCache[call.data.registry];
+            if (!registry) {
+                return call.done();
+            }
+            Docker.createRegistryClient(call, registry, function (error, client) {
+                if (error) {
+                    return call.done(error);
+                }
+                client.searchImage(call.data.options, function (err, result) {
+                    call.done(err, result);
+                });
             });
         }
     });

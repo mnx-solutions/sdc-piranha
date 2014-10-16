@@ -217,19 +217,27 @@
                 $scope.searchImages = function () {
 
                     var findImagesCtrl = function ($scope, dialog, Docker) {
+                        var registry;
                         $scope.term = '';
                         $scope.loading = true;
                         $scope.searching = false;
-                        Docker.listHosts().then(function (hosts) {
-                            $scope.hosts = hosts || [];
+                        Docker.getRegistriesList().then(function (list) {
+                            $scope.registries = list || [];
                             $scope.loading = false;
                         });
 
                         $scope.findImages = function () {
                             $scope.searching = true;
                             $scope.showResult = false;
-                            Docker.searchImage({primaryIp: $scope.hostIp}, $scope.term).then(function (images) {
-                                $scope.findedImages = images || [];
+                            registry = $scope.registryId;
+                            if (!registry) {
+                                $scope.searching = false;
+                                $scope.showResult = true;
+                                return;
+                            }
+
+                            Docker.searchImage(registry, $scope.term).then(function (images) {
+                                $scope.findedImages = (images && images.results) || [];
                                 $scope.searching = false;
                                 $scope.showResult = true;
                             }, function () {
@@ -311,14 +319,17 @@
                         };
 
                         $scope.pullImage = function (image) {
-                            var hostIp = $scope.hostIp;
                             PopupDialog.custom({
                                 templateUrl: 'docker/static/partials/select-tag.html',
                                 openCtrl: function ($scope, dialog, Docker) {
                                     $scope.name = image.name;
-                                    Docker.getImageTags(image.name).then(function (tags) {
-                                        $scope.tags = tags;
-                                        tags.push({name: 'all'});
+                                    $q.all([
+                                        $q.when(Docker.listHosts()),
+                                        $q.when(Docker.getImageTags(registry, $scope.name))
+                                    ]).then(function (result) {
+                                        $scope.hosts = result[0] || [];
+                                        $scope.tags = result[1] || [];
+                                        $scope.tags.push({name: 'all'});
                                     });
 
                                     $scope.pullImage = function () {
@@ -329,7 +340,7 @@
                                         image.tag = $scope.tag === 'all' ? '' : $scope.tag;
                                         image.processing = true;
                                         image.processStatus = "Preparing";
-                                        Docker.pullImage({primaryIp: hostIp}, image).then(function () {
+                                        Docker.pullImage({primaryIp: $scope.hostIp}, image).then(function () {
                                             image.processing = false;
                                             image.processStatus = "Downloading complete";
                                             if (image.progressDetail) {
@@ -341,6 +352,7 @@
 
                                     $scope.close = function () {
                                         window.jQuery('#tagSelect').select2('close');
+                                        window.jQuery('#hostSelect').select2('close');
                                         dialog.close();
                                     };
                                 }
@@ -348,7 +360,7 @@
                         };
 
                         $scope.close = function () {
-                            window.jQuery('#hostSelect').select2('close');
+                            window.jQuery('#registrySelect').select2('close');
                             dialog.close();
                         };
                     };
