@@ -31,7 +31,7 @@ function formatUrl(url, params) {
     });
 }
 
-function createCallback(client, callback, raw) {
+function createCallback(callback, raw) {
     //noinspection JSLint
     return function (error, req, res, data) {
         if (error) {
@@ -80,7 +80,6 @@ function createMethod(opts) {
             if (opts.params.hasOwnProperty(param)) {
                 if (params.hasOwnProperty(param)) {
                     query[param] = params[param];
-                    delete params[param];
                 } else if (opts.params[param] !== '=') {
                     query[param] = opts.params[param];
                 }
@@ -89,10 +88,10 @@ function createMethod(opts) {
         options.path += qs.stringify(query) ? '?' + qs.stringify(query) : '';
         var client = opts.raw ? this.rawClient : this.client;
         if (options.method === 'POST' || options.method === 'PUT') {
-            return client[requestMap[options.method]](options, opts.raw ? callback : params, createCallback(client, callback, opts.noParse));
+            return client[requestMap[options.method]](options, opts.raw ? callback : params, createCallback(callback, opts.noParse));
         }
 
-        client[requestMap[options.method]](options, createCallback(client, callback, opts.noParse));
+        client[requestMap[options.method]](options, createCallback(callback, opts.noParse));
     };
 }
 

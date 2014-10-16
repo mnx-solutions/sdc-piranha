@@ -19,6 +19,8 @@
                     title: localization.translate(null, 'docker', 'See my Joyent Docker Images')
                 });
 
+                var allImages = false;
+                var topImages = [];
                 $scope.loading = true;
 
                 var errorCallback = function (err) {
@@ -30,10 +32,17 @@
                     $scope.gridUserConfig = Account.getUserConfig().$child('docker-images');
                 }
 
-                var listAllImages = function () {
-                    Docker.listAllImages().then(function (images) {
+                var listAllImages = function (all) {
+                    topImages = all ? topImages : [];
+                    Docker.listAllImages(all ? {all: true} : null).then(function (images) {
                         $scope.images = images.map(function (image) {
                             image.Id = image.Id.slice(0, 12);
+                            if (all) {
+                                image.images = topImages.indexOf(image.Id) === -1 ? 'all' : 'top';
+                            } else {
+                                image.images = 'top';
+                                topImages.push(image.Id);
+                            }
                             return image;
                         });
                         $scope.loading = false;
@@ -182,6 +191,9 @@
                         action: function () {
                             makeImageAction('remove', 'Confirm: Remove images', gridMessages.remove);
                         },
+                        show: function () {
+                            return $scope.tab !== 'all';
+                        },
                         sequence: 1
                     }
                 ];
@@ -192,6 +204,7 @@
                 $scope.searchForm = true;
                 $scope.enabledCheckboxes = true;
                 $scope.placeHolderText = 'filter images';
+                $scope.tabFilterField = 'images';
 
 
                 listAllImages();
@@ -322,7 +335,7 @@
                                             if (image.progressDetail) {
                                                 delete image.progressDetail;
                                             }
-                                            listAllImages();
+                                            listAllImages(allImages);
                                         }, errorCallback);
                                     };
 
@@ -345,6 +358,17 @@
                         openCtrl: findImagesCtrl
                     });
                 };
+
+
+                $scope.$on('gridViewChangeTab', function (event, tab) {
+                    $scope.tab = tab;
+                    if (tab === 'all' && !allImages) {
+                        allImages = true;
+                        $scope.loading = true;
+                        $scope.images = [];
+                        listAllImages(true);
+                    }
+                });
 
             }
         ]);

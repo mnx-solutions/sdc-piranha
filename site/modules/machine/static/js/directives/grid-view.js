@@ -104,8 +104,14 @@
                     loadCurrentTabFilter();
                 });
             } else {
-                $scope.tabFilters = ['running', 'all'];
-                loadCurrentTabFilter();
+                if ($scope.tabFilterField === 'containers') {
+                    $scope.tabFilters = ['running', 'all'];
+                    loadCurrentTabFilter();
+                } else {
+                    $scope.tabFilters = ['top', 'all'];
+                    $scope.tabFilter = 'top';
+                    setCurrentTabFilter();
+                }
             }
         }
 
