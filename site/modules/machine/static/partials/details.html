@@ -412,6 +412,68 @@
                     </div>
                     <div id="collapse_docker" class="panel-collapse collapse">
                         <div class="panel-body">
+                            <table>
+                                <tr class="id-section">
+                                    <td>Containers</td>
+                                    <td>{{dockerHostInfo.containers}}</td>
+                                </tr>
+                                <tr>
+                                    <td>Debug</td>
+                                    <td>{{dockerHostInfo.debug}}</td>
+                                </tr>
+                                <tr>
+                                    <td>Storage Driver</td>
+                                    <td>{{dockerHostInfo.driver}}</td>
+                                </tr>
+                                <tr>
+                                    <td>Execution Driver</td>
+                                    <td>{{dockerHostInfo.executionDriver}}</td>
+                                </tr>
+                                <tr>
+                                    <td>IPv4Forwarding</td>
+                                    <td>{{dockerHostInfo.iPv4Forwarding}}</td>
+                                </tr>
+                                <tr>
+                                    <td>Images</td>
+                                    <td>{{dockerHostInfo.images}}</td>
+                                </tr>
+                                <tr>
+                                    <td>IndexServerAddress</td>
+                                    <td>{{dockerHostInfo.indexServerAddress}}</td>
+                                </tr>
+                                <tr>
+                                    <td>InitPath</td>
+                                    <td>{{dockerHostInfo.initPath}}</td>
+                                </tr>
+                                <tr>
+                                    <td>InitSha1</td>
+                                    <td>{{dockerHostInfo.initSha1}}</td>
+                                </tr>
+                                <tr>
+                                    <td>KernelVersion</td>
+                                    <td>{{dockerHostInfo.kernelVersion}}</td>
+                                </tr>
+                                <tr>
+                                    <td>MemoryLimit</td>
+                                    <td>{{dockerHostInfo.memoryLimit}}</td>
+                                </tr>
+                                <tr>
+                                    <td>NEventsListener</td>
+                                    <td>{{dockerHostInfo.nEventsListener}}</td>
+                                </tr>
+                                <tr>
+                                    <td>NFd</td>
+                                    <td>{{dockerHostInfo.nfd}}</td>
+                                </tr>
+                                <tr>
+                                    <td>NGoroutines</td>
+                                    <td>{{dockerHostInfo.nGoroutines}}</td>
+                                </tr>
+                                <tr>
+                                    <td>SwapLimit</td>
+                                    <td>{{dockerHostInfo.swapLimit}}</td>
+                                </tr>
+                            </table>
                             <div data-ng-show="containers.length >= 1">
                                 <div data-grid-view
                                      data-user-config="gridUserConfigDocker"
