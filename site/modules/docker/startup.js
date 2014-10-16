@@ -175,7 +175,7 @@ var Docker = function execute(scope) {
             id: 'default',
             api: 'v1',
             host: 'https://index.docker.io',
-            port: '80',
+            port: '443',
             username: 'none'
         };
         var client = scope.api('MantaClient').createClient(call);
