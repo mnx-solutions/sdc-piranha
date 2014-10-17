@@ -30,13 +30,13 @@ window.JP.main.config(['routeProvider', function (routeProvider) {
                     }
                 }]
             }
-        }).when('/docker/container/create', {
+        }).when('/docker/container/create/:hostid?/:sourceid?', {
             title: 'Create Container',
             action: 'docker.create'
         }).when('/docker/images', {
             title: 'Images',
             action: 'docker.images'
-        }).when('/docker/image/create', {
+        }).when('/docker/image/create/:hostid?/:sourceid?', {
             title: 'Create Image',
             action: 'docker.create'
         }).when('/docker/image/:hostid/:imageid', {

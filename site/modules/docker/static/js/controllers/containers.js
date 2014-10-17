@@ -136,11 +136,19 @@
                     restart: {
                         single: 'Please confirm that you want to restart this container.',
                         plural: 'Please confirm that you want to restart selected containers.'
+                    },
+                    createImage: {
+                        plural: 'Please confirm that you want to create images from selected containers.'
                     }
                 };
 
                 function makeContainerAction(action, messageTitle, messageBody) {
                     if ($scope.checkedItems.length) {
+                        if (action === 'createImage' && $scope.checkedItems.length === 1) {
+                            var container = $scope.checkedItems[0];
+                            $location.path('/docker/image/create/' + container.hostId + '/' + container.Id);
+                            return;
+                        }
                         PopupDialog.confirm(
                             localization.translate(
                                 $scope,
@@ -156,8 +164,14 @@
                                 var promises = [];
                                 $scope.checkedItems.forEach(function (container) {
                                     var deferred = $q.defer();
+                                    var command = action;
                                     container.actionInProgress = true;
-                                    Docker[action + 'Container'](container).then(function (response) {
+                                    if (action === 'createImage') {
+                                        container.container = container.Id;
+                                    } else {
+                                        command += 'Container';
+                                    }
+                                    Docker[command](container).then(function (response) {
                                         deferred.resolve(response);
                                     }, function (err) {
                                         deferred.reject(err);
@@ -170,6 +184,9 @@
 
                                 $q.all(promises).then(function () {
                                     $scope.checkedItems = [];
+                                    if (action === 'createImage') {
+                                        return $location.path('/docker/images');
+                                    }
                                     listAllContainers();
                                 });
                             }
@@ -242,6 +259,13 @@
                         label: 'Restart',
                         action: function () {
                             makeContainerAction('restart', 'Confirm: Restart containers', gridMessages.restart);
+                        },
+                        sequence: 7
+                    },
+                    {
+                        label: 'Create Image',
+                        action: function () {
+                            makeContainerAction('createImage', 'Confirm: Create images from containers', gridMessages.createImage);
                         },
                         sequence: 7
                     }
