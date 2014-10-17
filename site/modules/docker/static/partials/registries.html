@@ -3,7 +3,10 @@
     <div class="row">
         <h3 class="page-title">Docker Registries</h3>
         <div class="page-title-btn">
-            <button data-ng-click="connectNewRegistry()" type="button" class="btn btn-big orange text-to-left" data-ng-disabled="loading"><i class="plus-btn-icon"></i>Connect to new registry</button>
+            <button data-ng-click="connectNewRegistry()" type="button" class="btn btn-big orange text-to-left" 
+                    data-ng-disabled="loading"><i class="plus-btn-icon"></i>Add Existing Registry</button>
+            <button data-ng-click="createNewRegistry()" type="button" class="btn btn-big orange text-to-left" 
+                    data-ng-disabled="loading"><i class="plus-btn-icon"></i>Create New Registry</button>
         </div>
     </div>
     <div class="loading-large col-md-12" data-ng-show="loading"></div>

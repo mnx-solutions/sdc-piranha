@@ -1,0 +1,28 @@
+<div class="modal-dialog">
+    <div class="modal-content">
+        <div tabindex="-1" data-backdrop="static" data-focus-on="button">
+            <div class="modal-header message">
+                <h5><i class="glyphicon glyphicon-info-sign"></i><b>Create new Docker Registry</b></h5>
+            </div>
+            <div class="modal-body loading-medium" data-ng-show="loading"></div>
+            <div class="modal-body registry-form" data-ng-hide="loading">
+                <form name="newRegistryForm">
+                    <div class="form-group clearfix" data-ng-show="hosts.length">
+                        <label class="control-label" for="hostSelect">Docker Host *</label>
+                        <select id="hostSelect"
+                                data-ng-model="registry.host"
+                                data-ng-options="host.name for host in hosts"
+                                ui-select2="{width: '82%'}"
+                                required>
+                        </select>
+                    </div>
+                    <div class="form-group clearfix" data-ng-show="!hosts.length">There are no available hosts to create registry</div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button data-ng-click="close()" data-button-focus="false" data-label="Cancel" class="btn grey-new effect-orange-button">Cancel</button>
+                <button data-ng-click="create()" data-button-focus="true" data-label="Create" class="btn orange" data-ng-disabled="loading && !hosts.length">Create</button>
+            </div>
+        </div>
+    </div>
+</div>

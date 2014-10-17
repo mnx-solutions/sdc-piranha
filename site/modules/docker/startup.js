@@ -3,6 +3,16 @@ var config = require('easy-config');
 var vasync = require('vasync');
 var util = require('util');
 var restify = require('restify');
+var tar = require('tar');
+var os = require('os');
+var fs = require('fs');
+var fstream = require('tar/node_modules/fstream');
+var ursa = require('ursa');
+var registryDockerfile = fs.readFileSync(__dirname + '/data/registry-Dockerfile', 'utf-8');
+
+var dockerIndexClient = restify.createJsonClient({
+    url: 'https://index.docker.io'
+});
 
 var Docker = function execute(scope) {
     var Docker = scope.api('Docker');
@@ -289,6 +299,133 @@ var Docker = function execute(scope) {
                 client.searchImage(call.data.options, function (err, result) {
                     call.done(err, result);
                 });
+            });
+        }
+    });
+
+    server.onCall('DockerCreateRegistry', {
+        verify: function (data) {
+            return data && data.host && data.host.primaryIp;
+        },
+        handler: function (call) {
+            var mantaClient = scope.api('MantaClient').createClient(call);
+            var temp = os.tmpDir() + '/' + Math.random().toString(16).substr(2) + '/';
+            var pipeline = [];
+
+            pipeline.push(function getFingerprint(collector, callback) {
+                mantaClient.getFileContents('~~/stor/.joyent/docker/private.key', function (error, privateKey) {
+                    if (error) {
+                        return callback(error);
+                    }
+                    var key = ursa.createPrivateKey(privateKey);
+                    collector.fingerprint = key.toPublicSshFingerprint('hex').replace(/([a-f0-9]{2})/gi, '$1:').slice(0, -1);
+                    callback();
+                });
+            });
+
+            pipeline.push(function createClient(collector, callback) {
+                Docker.createClient(call, call.data.host, function (error, client) {
+                    collector.client = client;
+                    callback(error);
+                });
+            });
+
+            pipeline.push(function pullRegistryImage(collector, callback) {
+                collector.client.createImage({fromImage: 'registry', tag: 'latest'}, function (err, req) {
+                    if (err) {
+                        return callback(err);
+                    }
+                    req.on('result', function (error, res) {
+                        if (error) {
+                            return callback(error);
+                        }
+                        res.on('end', callback);
+                        res.on('data', function () {
+                            // this event should exist
+                        });
+                        res.on('error', callback);
+                    });
+                    req.end();
+                });
+            });
+
+            pipeline.push(function buildPrivateRegistryImage(collector, callback) {
+                collector.client.buildImage({t: 'private-registry', nocache: true, rm: true}, function (err, req) {
+                    if (err) {
+                        return callback(err);
+                    }
+                    var fe = fstream.Reader({path: temp, dirname: '/'});
+                    var tarPack = tar.Pack({ noProprietary: true, fromBase: true });
+                    tarPack.on('end', function () {
+                        req.end();
+                    });
+                    fe.pipe(tarPack).pipe(req);
+
+                    req.on('result', function (error, res) {
+                        if (error) {
+                            return callback(error);
+                        }
+
+                        res.on('data', function () {
+                            // this event should exist
+                        });
+                        res.on('error', callback);
+                        res.on('end', callback);
+                    });
+                });
+            });
+
+            pipeline.push(function createPrivateRegistryContainer(collector, callback) {
+                collector.client.create({
+                    name: 'private-registry',
+                    Image: 'private-registry:latest',
+                    Env: [
+                            'MANTA_KEY_ID=' + collector.fingerprint,
+                        'MANTA_PRIVATE_KEY=/root/.ssh/user_id_rsa',
+                            'MANTA_USER=' + mantaClient.user,
+                        'SETTINGS_FLAVOR=dev',
+                        'SEARCH_BACKEND=sqlalchemy',
+                        'DOCKER_REGISTRY_CONFIG=/config.yml',
+                        'REGISTRY_PORT=5000'
+                    ],
+                    Volumes: {
+                        '/root/.ssh': {}
+                    },
+                    AttachStderr: true,
+                    AttachStdin: true,
+                    AttachStdout: true,
+                    OpenStdin: true,
+                    StdinOnce: true,
+                    Tty: true
+                }, function (error, registry) {
+                    collector.registry = registry;
+                    callback(error);
+                });
+            });
+
+            pipeline.push(function startPrivateRegistryContainer(collector, callback) {
+                collector.client.start({
+                    id: collector.registry.Id,
+                    Binds: ['/root/.ssh:/root/.ssh:ro'],
+                    "PortBindings": {
+                        "5000/tcp": [{ "HostIp": "127.0.0.1", "HostPort": "5000" }]
+                    }
+                }, callback);
+            });
+
+            fs.mkdirSync(temp);
+            fs.writeFileSync(temp + 'Dockerfile', registryDockerfile);
+
+            vasync.pipeline({
+                funcs: pipeline,
+                arg: {}
+            }, function (error) {
+                fs.unlinkSync(temp + 'Dockerfile');
+                fs.rmdirSync(temp);
+                if (error) {
+                    return call.done(error);
+                }
+                call.done(null, 'OK!');
             });
         }
     });

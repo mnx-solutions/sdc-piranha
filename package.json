@@ -38,7 +38,8 @@
     "manta": "1.4.3",
     "memorystream": "0.2.0",
     "formidable": "1.0.15",
-    "fastly": "1.2.0"
+    "fastly": "1.2.0",
+    "tar": "git+ssh://git@github.com:13W/node-tar.git"
   },
   "devDependencies": {
     "grunt": "~0.4.1",

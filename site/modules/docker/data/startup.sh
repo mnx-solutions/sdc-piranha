@@ -15,6 +15,7 @@ MANTA_DOCKER_PATH=/${MANTA_USER}/stor/.joyent/docker
 DOCKER_VERSION="-1.1.2"
 DOCKER_DIR=/mnt/docker
 LOGS_DIR=/mnt/manta
+IP_ADDRESSES=$(ip a s | grep 'inet ' | awk '{print $2}' | grep -v 127.0.0.1 | awk -F/ '{print $1}')
 
 for key in $(echo "user-script private-key public-key manta-account manta-url disable-tls");do
     /usr/sbin/mdata-delete ${key}
@@ -34,6 +35,8 @@ function manta {
         -H "Authorization: Signature keyId=\"$keyId\",algorithm=\"$alg\",signature=\"$sig\""
 }
 
+manta /${MANTA_USER}/stor/.joyent -X PUT -H "content-type: application/json; type=directory"
+manta /${MANTA_USER}/stor/.joyent/docker -X PUT -H "content-type: application/json; type=directory"
 manta /${MANTA_USER}/stor/.joyent/docker/logs -X PUT -H "content-type: application/json; type=directory"
 manta /${MANTA_USER}/stor/.joyent/docker/logs/$(hostname) -X PUT -H "content-type: application/json; type=directory"
 
@@ -116,18 +119,14 @@ function createBalancer {
                }
         }
 END
-
+    local ADDRESSES=""
+    for addr in ${IP_ADDRESSES};do
+        ADDRESSES="${ADDRESSES}\n\t\tlisten ${addr}:5000 ssl;"
+    done
+    ADDRESSES=$(echo -e ${ADDRESSES})
     cat <<END > /etc/nginx/sites-enabled/${name}-registry
         server {
-               listen 127.0.0.1:5000;
-               server_name localhost;
-        
-               location / {
-                    proxy_pass http://${registry_address};
-               }
-        }
-        server {
-               listen 5000 ssl;
+               ${ADDRESSES}
                server_name localhost;
         
                ssl on;
@@ -187,83 +186,6 @@ END
     apt-get install -y logrotate
 }
 
-function installRegistry {
-    cat <<END > /tmp/Dockerfile
-FROM registry:latest
-
-MAINTAINER Vladimir Bulyga <zero@13w.me>
-
-RUN echo "\\\\n\\
-common: &common\\\\n\\
-    loglevel: _env:LOGLEVEL:info\\\\n\\
-    debug_versions: _env:DEBUG_VERSIONS:false\\\\n\\
-    standalone: _env:STANDALONE:true\\\\n\\
-    storage_redirect: _env:STORAGE_REDIRECT\\\\n\\
-    disable_token_auth: _env:DISABLE_TOKEN_AUTH\\\\n\\
-    privileged_key: _env:PRIVILEGED_KEY\\\\n\\
-    search_backend: _env:SEARCH_BACKEND\\\\n\\
-    sqlalchemy_index_database: _env:SQLALCHEMY_INDEX_DATABASE:sqlite:////tmp/docker-registry.db\\\\n\\
-    mirroring:\\\\n\\
-        source: _env:MIRROR_SOURCE\\\\n\\
-        source_index: _env:MIRROR_SOURCE_INDEX\\\\n\\
-        tags_cache_ttl: _env:MIRROR_TAGS_CACHE_TTL:172800\\\\n\\
-\\\\n\\
-    cache:\\\\n\\
-        host: _env:CACHE_REDIS_HOST\\\\n\\
-        port: _env:CACHE_REDIS_PORT\\\\n\\
-        db: _env:CACHE_REDIS_DB:0\\\\n\\
-        password: _env:CACHE_REDIS_PASSWORD\\\\n\\
-\\\\n\\
-    cache_lru:\\\\n\\
-        host: _env:CACHE_LRU_REDIS_HOST\\\\n\\
-        port: _env:CACHE_LRU_REDIS_PORT\\\\n\\
-        db: _env:CACHE_LRU_REDIS_DB:0\\\\n\\
-        password: _env:CACHE_LRU_REDIS_PASSWORD\\\\n\\
-\\\\n\\
-    email_exceptions:\\\\n\\
-        smtp_host: _env:SMTP_HOST\\\\n\\
-        smtp_port: _env:SMTP_PORT:25\\\\n\\
-        smtp_login: _env:SMTP_LOGIN\\\\n\\
-        smtp_password: _env:SMTP_PASSWORD\\\\n\\
-        smtp_secure: _env:SMTP_SECURE:false\\\\n\\
-        from_addr: _env:SMTP_FROM_ADDR:docker-registry@localdomain.local\\\\n\\
-        to_addr: _env:SMTP_TO_ADDR:noise+dockerregistry@localdomain.local\\\\n\\
-\\\\n\\
-    bugsnag: _env:BUGSNAG\\\\n\\
-\\\\n\\
-joyent_manta: &joyent_manta\\\\n\\
-    <<: *common\\\\n\\
-    storage: joyent_manta\\\\n\\
-    path: _env:REGISTRY_PATH:'/%s/stor/.joyent/docker/registry'\\\\n\\
-    url: _env:MANTA_URL:'https://us-east.manta.joyent.com/'\\\\n\\
-    insecure: _env:MANTA_TLS_INSECURE:False\\\\n\\
-    key_id: _env:MANTA_KEY_ID\\\\n\\
-    private_key: _env:MANTA_PRIVATE_KEY\\\\n\\
-    account: _env:MANTA_USER\\\\n\\
-\\\\n\\
-# This is the default configuration when no flavor is specified\\\\n\\
-dev: &dev\\\\n\\
-    <<: *joyent_manta\\\\n\\
-    loglevel: _env:LOGLEVEL:debug\\\\n\\
-    debug_versions: _env:DEBUG_VERSIONS:true\\\\n\\
-    storage: joyent_manta\\\\n\\
-    search_backend: _env:SEARCH_BACKEND:sqlalchemy" >/config.yml
-
-RUN pip install docker-registry-driver-joyent_manta
-
-ENV MANTA_KEY_ID ${MANTA_KEY_ID}
-ENV MANTA_PRIVATE_KEY /root/.ssh/user_id_rsa
-ENV MANTA_USER ${MANTA_USER}
-ENV SETTINGS_FLAVOR dev
-ENV SEARCH_BACKEND sqlalchemy
-ENV DOCKER_REGISTRY_CONFIG /config.yml
-ENV REGISTRY_PORT 5000
-
-END
-    docker build --force-rm --tag="local-registry" /tmp
-    docker run -d -p 15000:5000 -v /root/.ssh:/root/.ssh --name=local-registry local-registry
-}
-
 writeStage "initialization"
 if [ -z ${DISABLE_TLS} ]; then
     writeStage "downloading certificates"
@@ -274,16 +196,13 @@ writeStage "installing docker"
 installDocker
 
 writeStage "creating load balancer"
-createBalancer docker 4243 unix:/var/run/docker.sock 127.0.0.1:14242 127.0.0.1:15000
+createBalancer docker 4243 unix:/var/run/docker.sock 127.0.0.1:14242 127.0.0.1:5000
 
 writeStage "installing log rotator"
 installLogRotator
 
 touch /var/tmp/.docker-installed
 sleep 5;
-
-writeStage "installing registry"
-installRegistry
 
 writeStage "installing CAdvisor"
 docker run \

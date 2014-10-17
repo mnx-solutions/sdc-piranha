@@ -248,6 +248,17 @@ module.exports = function execute(scope, register) {
                 repo: '='
             }
         },
+        buildImage: {
+            method: 'POST',
+            path: '/build',
+            raw: true,
+            params: {
+                t: '=',         // repository name (and optionally a tag) to be applied to the resulting image in case of success
+                rm: '=',        // remove intermediate containers after a successful build (default behavior)
+                nocache: '=',   // do not use the cache when building the image
+                q: '='          // suppress verbose build output
+            }
+        },
         historyImage : {
             method: 'GET',
             path: '/images/:id/history'
