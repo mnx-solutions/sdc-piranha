@@ -118,7 +118,7 @@ var Docker = function execute(scope) {
                                         return callback(new DockerHostUnreachable(host.primaryIp));
                                     }
 
-                                    client[method](call.data.options, function (err, response) {
+                                    client[method](util._extend({}, call.data.options), function (err, response) {
                                         if (response && Array.isArray(response)) {
                                             response.forEach(function (container) {
                                                 container.hostName = host.name;

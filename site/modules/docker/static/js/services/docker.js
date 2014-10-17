@@ -41,7 +41,7 @@
             if (options && options.host) {
                 host = options.host.primaryIp;
             }
-            var jobKey = method + host;
+            var jobKey = method + host + JSON.stringify(options || {});
             var job = service.jobs[jobKey];
             var cache = service.cache[jobKey];
 
