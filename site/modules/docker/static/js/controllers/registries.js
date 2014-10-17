@@ -4,13 +4,14 @@
     app.controller(
         'Docker.RegistriesController', [
             '$scope',
+            '$q',
             'Docker',
             'Account',
             'PopupDialog',
             'localization',
             '$location',
 
-            function ($scope, Docker, Account, PopupDialog, localization, $location) {
+            function ($scope, $q, Docker, Account, PopupDialog, localization, $location) {
 
                 $scope.loading = true;
                 $scope.registries = [];
@@ -119,6 +120,66 @@
                     registry = registry || 'create';
                     $location.path('docker/registry/' + registry);
                 };
+
+                $scope.createNewRegistry = function () {
+                    var opts = {
+                        templateUrl: 'docker/static/partials/new-registry.html',
+                        openCtrl: function ($scope, dialog, Docker) {
+                            $scope.hosts = [];
+                            $scope.registry = {
+                                host: '',
+                                username: '',
+                                password: ''
+                            };
+                            $scope.loading = true;
+                            $q.all([Docker.listHosts(), Docker.listContainers({cache: true, host: 'All'})]).then(function (result) {
+                                var hosts = {};
+                                var availableHosts = result[0];
+                                var containers = result[1];
+                                availableHosts.forEach(function (host) {
+                                    hosts[host.name] = host;
+                                });
+
+                                containers.forEach(function (container) {
+                                    if (container.Names.indexOf('/local-registry') !== -1 || container.Names.indexOf('/private-registry') !== -1) {
+                                        delete hosts[container.hostName];
+                                    }
+                                });
+
+                                Object.keys(hosts).forEach(function (hostName) {
+                                    $scope.hosts.push(hosts[hostName]);
+                                });
+
+                                $scope.loading = false;
+                            });
+
+                            $scope.close = function () {
+                                dialog.close();
+                            };
+                            $scope.create = function () {
+                                dialog.close();
+
+                                Docker.createNewRegistry(angular.extend({}, $scope.registry)).then(
+                                    function () {
+                                        Docker.getRegistriesList().then(function (list) {
+                                            list.push({
+                                                api: 'v1',
+                                                host: 'http://' + $scope.registry.host.primaryIp,
+                                                port: 5000
+                                            });
+                                            Docker.saveRegistriesList(list);
+                                        });
+                                    },
+                                    function (error) {
+                                        PopupDialog.error(null, error);
+                                    }
+                                );
+                            };
+                        }
+                    };
+                    PopupDialog.custom(opts);
+                };
             }
-        ]);
+        ]
+    );
 }(window.JP.getModule('docker')));

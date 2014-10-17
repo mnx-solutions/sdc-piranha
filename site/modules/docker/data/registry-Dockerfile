@@ -1,0 +1,61 @@
+FROM registry:latest
+
+MAINTAINER Vladimir Bulyga <zero@13w.me>
+
+RUN pip install docker-registry-driver-joyent_manta
+
+RUN echo "\\n\
+common: &common\\n\
+    loglevel: _env:LOGLEVEL:info\\n\
+    debug_versions: _env:DEBUG_VERSIONS:false\\n\
+    standalone: _env:STANDALONE:true\\n\
+    storage_redirect: _env:STORAGE_REDIRECT\\n\
+    disable_token_auth: _env:DISABLE_TOKEN_AUTH:true\\n\
+    privileged_key: _env:PRIVILEGED_KEY\\n\
+    search_backend: _env:SEARCH_BACKEND\\n\
+    sqlalchemy_index_database: _env:SQLALCHEMY_INDEX_DATABASE:sqlite:////tmp/docker-registry.db\\n\
+    mirroring:\\n\
+        source: _env:MIRROR_SOURCE\\n\
+        source_index: _env:MIRROR_SOURCE_INDEX\\n\
+        tags_cache_ttl: _env:MIRROR_TAGS_CACHE_TTL:172800\\n\
+\\n\
+    cache:\\n\
+        host: _env:CACHE_REDIS_HOST\\n\
+        port: _env:CACHE_REDIS_PORT\\n\
+        db: _env:CACHE_REDIS_DB:0\\n\
+        password: _env:CACHE_REDIS_PASSWORD\\n\
+\\n\
+    cache_lru:\\n\
+        host: _env:CACHE_LRU_REDIS_HOST\\n\
+        port: _env:CACHE_LRU_REDIS_PORT\\n\
+        db: _env:CACHE_LRU_REDIS_DB:0\\n\
+        password: _env:CACHE_LRU_REDIS_PASSWORD\\n\
+\\n\
+    email_exceptions:\\n\
+        smtp_host: _env:SMTP_HOST\\n\
+        smtp_port: _env:SMTP_PORT:25\\n\
+        smtp_login: _env:SMTP_LOGIN\\n\
+        smtp_password: _env:SMTP_PASSWORD\\n\
+        smtp_secure: _env:SMTP_SECURE:false\\n\
+        from_addr: _env:SMTP_FROM_ADDR:docker-registry@localdomain.local\\n\
+        to_addr: _env:SMTP_TO_ADDR:noise+dockerregistry@localdomain.local\\n\
+\\n\
+    bugsnag: _env:BUGSNAG\\n\
+\\n\
+joyent_manta: &joyent_manta\\n\
+    <<: *common\\n\
+    storage: joyent_manta\\n\
+    path: _env:REGISTRY_PATH:'/%s/stor/.joyent/docker/registry'\\n\
+    url: _env:MANTA_URL:'https://us-east.manta.joyent.com/'\\n\
+    insecure: _env:MANTA_TLS_INSECURE:False\\n\
+    key_id: _env:MANTA_KEY_ID\\n\
+    private_key: _env:MANTA_PRIVATE_KEY\\n\
+    account: _env:MANTA_USER\\n\
+\\n\
+# This is the default configuration when no flavor is specified\\n\
+dev: &dev\\n\
+    <<: *joyent_manta\\n\
+    loglevel: _env:LOGLEVEL:debug\\n\
+    debug_versions: _env:DEBUG_VERSIONS:true\\n\
+    storage: joyent_manta\\n\
+    search_backend: _env:SEARCH_BACKEND:sqlalchemy" >/config.yml

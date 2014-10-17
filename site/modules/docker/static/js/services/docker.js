@@ -283,6 +283,10 @@
             return createCall('saveRegistriesList', {options: list, direct: true});
         };
 
+        service.createNewRegistry = function (opts) {
+            return createCall('createRegistry', angular.extend({direct: true, host: opts.host, options: opts}));
+        };
+
         return service;
     }]);
 }(window.angular, window.JP.getModule('docker')));

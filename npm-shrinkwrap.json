@@ -2016,6 +2016,11 @@
       "from": "ursa@git+ssh://git@github.com:13W/ursa.git",
       "resolved": "git+ssh://git@github.com:13W/ursa.git#48888cd06bf9cd3c740ff03967a656abcc77af0b"
     },
+    "tar": {
+      "version": "1.0.1",
+      "from": "tar@git+ssh://git@github.com:13W/node-tar.git",
+      "resolved": "git+ssh://git@github.com:13W/node-tar.git#9d13cc49daa361182332176e0042a21b265f96f6"
+    },
     "vasync": {
       "version": "1.3.3",
       "from": "vasync@1.3.3",
