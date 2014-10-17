@@ -17,10 +17,11 @@
 
                 $scope.loading = true;
                 $scope.registries = [];
+                $scope.registryApiVersions = ['v1'];
 
                 var newRegistry = function () {
                     $scope.registry = {
-                        api: null,
+                        api: $scope.registryApiVersions[0],
                         host: null,
                         port: null,
                         username: null,

@@ -770,9 +770,11 @@ span.btn-success
 .loading-medium {
     min-height: 35px;
 }
+.registry-form .api-version,
 .empty-docker-hosts {
     font-size: 16px;
-}.registry-form {
+}
+.registry-form {
     padding-bottom: 65px;
 }
 .registry-form tr {
@@ -783,6 +785,8 @@ span.btn-success
     text-align: right;
     white-space: nowrap;
 }
+.registry-form .btn-group,
+.registry-form .api-version,
 .registry-form tr,
 .registry-form td:last-child,
 .registry-form td:last-child input {
