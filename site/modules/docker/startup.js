@@ -182,6 +182,31 @@ var Docker = function execute(scope) {
         }
     });
 
+    var getRegestries = function (call, callback) {
+        var client = scope.api('MantaClient').createClient(call);
+        client.getFileContents('~~/stor/.joyent/docker/registries.json', function (error, list) {
+            if (error && error.statusCode !== 404) {
+                return call.done(error.message, true);
+            }
+
+            try {
+                list = JSON.parse(list);
+            }
+            catch (e) {
+                call.log.warn('Registries list is corrupted');
+                list = [];
+            }
+            callback(error, list);
+        });
+    };
+
+    var saveRegistries = function (call, data) {
+        var client = scope.api('MantaClient').createClient(call);
+        client.putFileContents('~~/stor/.joyent/docker/registries.json', JSON.stringify(data), function (error) {
+            return call.done(error && error.message, true);
+        });
+    };
+
     server.onCall('DockerGetRegistriesList', function (call) {
         var defaultRegistry = {
             id: 'default',
@@ -190,49 +215,67 @@ var Docker = function execute(scope) {
             port: '443',
             username: 'none'
         };
-        var client = scope.api('MantaClient').createClient(call);
-        client.getFileContents('~~/stor/.joyent/docker/registries.json', function (error, list) {
-            if (error && error.statusCode !== 404) {
-                return call.done(error.message, true);
-            }
+        getRegestries(call, function (error, list) {
             if (error && error.statusCode === 404) {
                 return call.done(null, [defaultRegistry]);
             }
-            try {
-                var checkDefaultRegistry = false;
-                list = JSON.parse(list);
-                list.forEach(function (registry) {
-                    registriesCache[registry.id] = util._extend({}, registry);
-                    if (registry.auth) {
-                        registry.auth = null;
-                    }
-                    if (registry.id === 'default') {
-                        checkDefaultRegistry = true;
-                    }
-                });
-                if (!checkDefaultRegistry) {
-                    list.push(defaultRegistry);
+
+            var checkDefaultRegistry = false;
+            list.forEach(function (registry) {
+                registriesCache[registry.id] = util._extend({}, registry);
+                if (registry.auth) {
+                    registry.auth = null;
                 }
-            } catch (e) {
-                call.log.warn('Registries list is corrupted');
-                list = [defaultRegistry];
+                if (registry.id === 'default') {
+                    checkDefaultRegistry = true;
+                }
+            });
+            if (!checkDefaultRegistry) {
+                list.push(defaultRegistry);
             }
             call.done(null, list);
         });
     });
 
-    server.onCall('DockerSaveRegistriesList', {
+    server.onCall('DockerSaveRegistry', {
         verify: function (data) {
-            return data && Array.isArray(data.options);
+            return data && data.registry && data.registry.id;
         },
         handler: function (call) {
-            var client = scope.api('MantaClient').createClient(call);
-            var registriesList = call.data.options;
-            client.putFileContents('~~/stor/.joyent/docker/registries.json', JSON.stringify(call.data.options), function (error) {
-                registriesList.forEach(function (registry) {
-                    registriesCache[registry.id] = registry;
+            var savedRegistry = call.data.registry;
+            getRegestries(call, function (error, list) {
+                var edited;
+                list = list.map(function (registry) {
+                    if (savedRegistry.id === registry.id) {
+                        registry = savedRegistry;
+                        edited = true;
+                    }
+                    return registry;
                 });
-                return call.done(error && error.message, true);
+
+                if (!edited) {
+                    list.push(savedRegistry);
+                }
+                registriesCache[savedRegistry.id] = savedRegistry;
+                saveRegistries(call, list);
+            });
+        }
+    });
+
+    server.onCall('DockerDeleteRegistry', {
+        verify: function (data) {
+            return data && data.registry && data.registry.id;
+        },
+        handler: function (call) {
+            var registry = call.data.registry;
+            getRegestries(call, function (error, list) {
+                var index;
+                var exist = list.some(function (item, i) { index = i; return item.id === registry.id});
+                if (exist) {
+                    delete registriesCache[registry.id];
+                    list.splice(index, 1);
+                    saveRegistries(call, list);
+                }
             });
         }
     });

@@ -279,8 +279,12 @@
             return createCall('getRegistriesList', {direct: true});
         };
 
-        service.saveRegistriesList = function (list) {
-            return createCall('saveRegistriesList', {options: list, direct: true});
+        service.saveRegistry = function (registry) {
+            return createCall('saveRegistry', {registry: registry, direct: true});
+        };
+
+        service.deleteRegistry = function (registry) {
+            return createCall('deleteRegistry', {registry: registry, direct: true});
         };
 
         service.createNewRegistry = function (opts) {
