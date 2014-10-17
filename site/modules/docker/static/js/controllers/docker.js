@@ -30,15 +30,21 @@
                 $scope.loading = false;
                 PopupDialog.errorObj(err);
             };
-            var getDockerHostInfo = function (machine) {
+            var getDockerHostInfo = function (machine, images) {
                 $scope.states[machine.id] = 'initializing';
                 Docker.hostInfo({host: machine, wait: true}, function (error, state) {
                     $scope.states[state.hostId] = state.status;
                 }).then(function (info) {
+                    var imagesCount = 0;
                     info = Array.isArray(info) ? info.slice(-1)[0] : info;
                     $scope.states[machine.id] = 'completed';
+                    if (images.length > 0) {
+                        imagesCount = images.filter(function (image) {
+                            return machine.id === image.hostId;
+                        }).length;
+                    }
                     machine.containersCount = info.Containers;
-                    machine.imagesCount = info.Images;
+                    machine.imagesCount = imagesCount;
                 }, function () {
                     $scope.states[machine.id] = 'unreachable';
                     errorCallback.apply(this, arguments);
@@ -57,15 +63,17 @@
 
             $q.all([
                 $q.when(Datacenter.datacenter()),
-                $q.when(Docker.listHosts())
+                $q.when(Docker.listHosts()),
+                $q.when(Docker.listAllImages())
             ]).then(function (result) {
                 $scope.datacenters = result[0] || [];
                 $scope.data.datacenter = $scope.datacenters[0].name;
                 $scope.dockerMachines = result[1] || [];
+                $scope.dockerImages = result[2] || [];
                 if ($scope.dockerMachines.length > 0) {
                     $scope.dockerMachines.forEach(function (machine) {
                         if (machine.primaryIp) {
-                            getDockerHostInfo(machine);
+                            getDockerHostInfo(machine, $scope.dockerImages);
                         }
                     });
                     getDockerHostAnalytics();
