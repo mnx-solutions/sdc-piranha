@@ -68,11 +68,13 @@
             ]).then(function (result) {
                 $scope.datacenters = result[0] || [];
                 $scope.data.datacenter = $scope.datacenters[0].name;
-                $scope.dockerMachines = result[1] || [];
+                $scope.dockerMachines = [];
+                var dockerMachines = result[1] || [];
                 $scope.dockerImages = result[2] || [];
-                if ($scope.dockerMachines.length > 0) {
-                    $scope.dockerMachines.forEach(function (machine) {
+                if (dockerMachines.length > 0) {
+                    dockerMachines.forEach(function (machine) {
                         if (machine.primaryIp) {
+                            $scope.dockerMachines.push(machine);
                             getDockerHostInfo(machine, $scope.dockerImages);
                         }
                     });
