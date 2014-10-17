@@ -99,7 +99,6 @@
                     $scope.loading = true;
                     Docker.registryPing($scope.registry).then(function (result) {
                         if (result) {
-                            $scope.loading = false;
                             var registryExist = checkExists($scope.registry);
                             if (registryExist) {
                                 $scope.loading = false;
