@@ -13,7 +13,18 @@
             <table>
                 <tr>
                     <td class="orange-asterix">API Version</td>
-                    <td><input name="api" type="text" data-ng-model="registry.api" data-ng-disabled="loadingRegistry" data-auto-focus required/></td>
+                    <td>
+                        <div class="btn-group">
+                            <select data-select-two
+                                    id="registryApi"
+                                    name="registryApi"
+                                    class="api-version"
+                                    data-ng-model="registry.api"
+                                    data-select="registry.api"
+                                    data-ng-options="registryApi for registryApi in registryApiVersions">
+                            </select>
+                        </div>
+                    </td>
                 </tr>
                 <tr>
                     <td class="orange-asterix">Hostname</td>
