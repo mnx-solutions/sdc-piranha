@@ -46,11 +46,16 @@
                         $scope.registries.forEach(function (registry) {
                             if (registry.id === $scope.registryId) {
                                 $scope.registry = registry;
+                                $scope.portChanged($scope.registry.port);
                             }
                         });
                     }
                     $scope.loading = false;
                 });
+
+                $scope.portChanged = function (port) {
+                    $scope.portValid = /^\d+$/.test(port) && port > -1 && port < 65536;
+                };
 
                 var addRegistry = function (registry) {
                     if (registry.username && registry.password && registry.password.length > 0) {
