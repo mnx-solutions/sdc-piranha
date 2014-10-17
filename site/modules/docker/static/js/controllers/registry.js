@@ -120,6 +120,11 @@
                             }
                         }
                     }, function (err) {
+                        if (err.indexOf('html') > -1 || err.toLowerCase().indexOf('not found') > -1) {
+                            err = 'The requested URL <code>/v1/_ping</code> was not found.';
+                        } else if (err.indexOf('Internal Server') > -1) {
+                            err = 'Internal Server Error';
+                        }
                         PopupDialog.errorObj('Failed to connect: ' + err);
                         $scope.loading = false;
                     });

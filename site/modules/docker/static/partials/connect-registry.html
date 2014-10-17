@@ -8,27 +8,27 @@
                 <form name="newRegistryForm">
                     <div class="form-group clearfix">
                         <label class="control-label">API Version *</label>
-                        <input name="api" type="text" data-ng-model="registry.api" class="long-input" required/>
+                        <input name="api" type="text" data-ng-model="registry.api" data-ng-disabled="loadingRegistry" class="long-input" required/>
                     </div>
 
                     <div class="form-group clearfix">
                         <label class="control-label">Hostname *</label>
-                        <input name="host" type="text" data-ng-model="registry.host" class="long-input" required/>
+                        <input name="host" type="text" data-ng-model="registry.host" data-ng-disabled="loadingRegistry" class="long-input" required/>
                     </div>
 
                     <div class="form-group clearfix">
                         <label class="control-label">Port *</label>
-                        <input name="port" type="text" data-ng-model="registry.port" class="long-input" required/>
+                        <input name="port" type="text" data-ng-model="registry.port" data-ng-disabled="loadingRegistry" class="long-input" required/>
                     </div>
 
                     <div class="form-group clearfix">
                         <label class="control-label">Username</label>
-                        <input name="username" type="text" data-ng-model="registry.username" class="long-input"/>
+                        <input name="username" type="text" data-ng-model="registry.username" data-ng-disabled="loadingRegistry" class="long-input"/>
                     </div>
 
                     <div class="form-group clearfix">
                         <label class="control-label">Password</label>
-                        <input name="password" type="password" data-ng-model="registry.password" class="long-input"/>
+                        <input name="password" type="password" data-ng-model="registry.password" data-ng-disabled="loadingRegistry" class="long-input"/>
                     </div>
 
                 </form>
