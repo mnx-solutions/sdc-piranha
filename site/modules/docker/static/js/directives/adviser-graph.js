@@ -6,7 +6,8 @@
             restrict: 'E',
             replace: true,
             scope: {
-                type: '='
+                type: '=',
+                showDeleteBtn: '=?'
             },
             link: function ($scope, $element, $attr) {
                 $scope.showGraph = true;
@@ -153,6 +154,10 @@
                 };
                 $scope.toggleGraph = function () {
                     $scope.showGraph = !$scope.showGraph;
+                };
+
+                $scope.deleteGraph = function () {
+                    delete $scope.$parent.graphs[$scope.type.metric];
                 };
 
                 $scope.$watchCollection('type', function (item) {

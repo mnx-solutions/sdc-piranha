@@ -696,15 +696,27 @@ span.btn-success
     width: auto;
     height: 34px;
 }
+.page .chart_container {
+    display: inline-block;
+    height: 150px;
+}
+
 .rickshaw_legend
 {
-    display: block !important;
+    display: block;
     float: right;
     margin-top: 14px;
     padding: 0;
     background-color: transparent;
     color: #333;
     cursor: default;
+}
+
+.page .rickshaw_legend {
+    display: inline-block;
+    padding-left: 10px;
+    min-width: 100px;
+    vertical-align: top;
 }
 
 .rickshaw_graph
@@ -740,7 +752,7 @@ span.btn-success
     margin-left: 20px;
     padding-bottom: 20px;
 }
-.toggle-graf-width {
+.block .toggle-graf-width {
     width: 100%;
 }
 .graf-radio-btn {
@@ -753,6 +765,12 @@ span.btn-success
     padding-top: 10px;
     padding-bottom: 15px;
     padding-left: 45px;
+}
+.page .graf-radio-group {
+    position: relative;
+    float: right;
+    margin-top: -44px;
+    padding: 0 20px 44px 0;
 }
 .y-axis {
     float: left;
@@ -796,4 +814,51 @@ span.btn-success
     height: 30px;
     padding: 0 10px;
     background-color: #fafcfd;
+}
+.alert-info,
+.vda-btn {
+    margin-top: 10px;
+}
+.chart-info {
+    display: block;
+    padding-bottom: 10px;
+}
+.chart-info span {
+    text-align: left;
+}
+.name-chart {
+    display: inline-block;
+    width: 120px;
+    color: #375675;
+    font-weight: 300;
+    font-size: 15px;
+}
+.value-chart,
+.value-chart-in {
+    display: inline-block;
+    width: 500px;
+    font-size: 15px;
+}
+.value-chart {
+    color: #000;
+    font-weight: 500;
+}
+.value-chart-in {
+    color: #666;
+    font-weight: 300;
+}
+.separator-line {
+    border-bottom: 1px solid #ccc;
+}
+.options-ctrl {
+    margin-top: 1px;
+    padding: 0 6px;
+    min-width: 10px;
+    height: 34px;
+    background-color: #fffbf2 !important;
+    color: #f60;
+    text-shadow: none;
+}
+.vda-btn .btn {
+    margin-top: 10px;
 }

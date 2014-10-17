@@ -157,9 +157,10 @@
                 </button>
             </div>
             <div data-ng-if="container.state == 'running' && !actionInProgress">
-                <adviser-graph type="cpu"></adviser-graph>
-                <adviser-graph type="memory" data></adviser-graph>
-                <adviser-graph type="network" data></adviser-graph>
+                <adviser-graph data-ng-repeat="graph in graphs" type="graph"></adviser-graph>
+                <div class="vda-btn">
+                    <a id="button-detailed-analytics" href="#!/docker/analytics/{{machine.id}}/{{container.infoId}}" class="btn light pull-right effect-orange-button"><i class="chart-icon"></i>View Detailed Analytics</a>
+                </div>
             </div>
         </div>
     </div>

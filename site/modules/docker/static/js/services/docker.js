@@ -148,19 +148,13 @@
             return createCall('images', {host: 'All', options: ng.extend(defaultParams, params || {})});
         };
 
-        service.containerUtilization = function (host, containerId, num_stats) {
-            if (host && host.state !== 'running') {
+        service.containerUtilization = function (options) {
+            if (options.host && options.host.state !== 'running') {
                 return;
             }
             var job = serverTab.call({
                 name: 'DockerContainerUtilization',
-                data: {
-                    host: host,
-                    options: {
-                        id: containerId,
-                        num_stats: num_stats || 60
-                    }
-                },
+                data: options,
                 done: function (err, data) {
                     if (err) {
                         return false;
@@ -173,7 +167,17 @@
 
         service.hostUtilization = function (options) {
             options = angular.extend({options: {num_stats: 2}}, options);
-            return createCall('hostUtilization', options);
+            var job = serverTab.call({
+                name: 'DockerHostUtilization',
+                data: options,
+                done: function (err, data) {
+                    if (err) {
+                        return false;
+                    }
+                    return data;
+                }
+            });
+            return job.promise;
         };
 
         function getOverallUsage(machineInfo, hostStats) {

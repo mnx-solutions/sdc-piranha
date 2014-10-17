@@ -1,16 +1,21 @@
-<div class="utilization">
+<div class="utilization" data-ng-class="{page: showDeleteBtn, block: !showDeleteBtn}">
     <div class="btn-group margin_btn_0 toggle-graf-width">
         <button data-ng-click="toggleGraph()" id="control_{{$id}}"
                 data-ng-class="{disabled: !ready, btn: true}"
                 class="toggle-graf-btn toggle-btn-bg">
             <p class="toggle-icon" data-ng-class="{collapsed: !showGraph}">{{ready && type.options.title || loadingText}}</p>
         </button>
+        <button data-ng-show="showDeleteBtn" data-ng-click="deleteGraph()" class="btn del-btn-graf toggle-btn-bg pull-right" title="delete graph">
+            <div class="pull-right remove-icon"></div>
+        </button>
     </div>
     <div class="chart-container" id="chart_container_{{$id}}" data-ng-show="showGraph && ready">
         <div>
-            <div class="y-axis" id="y_axis_{{$id}}"></div>
-            <div class="chart" id="chart_{{$id}}"></div>
-            <div class="x-axis" id="x_axis_{{$id}}"></div>
+            <div class="chart_container">
+                <div class="y-axis" id="y_axis_{{$id}}"></div>
+                <div class="chart" id="chart_{{$id}}"></div>
+                <div class="x-axis" id="x_axis_{{$id}}"></div>
+            </div>
             <div class="legend" id="legend_{{$id}}"></div>
             <div class="graf-radio-group" data-toggle="buttons-radio">
                 <button class="btn default-margin default-margin-mini graf-radio-btn"
