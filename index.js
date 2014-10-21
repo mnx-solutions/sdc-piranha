@@ -164,3 +164,19 @@ m.init(opts, function (err) {
 
     m.run(config.server.port);
 });
+
+// this code should discover all unhandled error events
+var events = require('events'),
+    EventEmitter = events.EventEmitter,
+    NewEventEmitter = function NewEventEmitter() {
+        EventEmitter.apply(this);
+        this._events = {
+            error: function defaultEmptyErrorHandler(error) {
+                if (typeof this._events.error === 'function' || (Array.isArray(this._events.error) && this._events.error.length === 1)) {
+                    logger.fatal({error: error}, 'Unhandled error event!');
+                }
+            }
+        };
+    };
+util.inherits(NewEventEmitter, EventEmitter);
+events.EventEmitter = NewEventEmitter;
