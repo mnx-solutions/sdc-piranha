@@ -136,6 +136,7 @@
                                 var hosts = {};
                                 var availableHosts = result[0];
                                 var containers = result[1];
+                                $scope.registry.host = availableHosts[0];
                                 availableHosts.forEach(function (host) {
                                     hosts[host.name] = host;
                                 });
@@ -154,6 +155,7 @@
                             });
 
                             $scope.close = function () {
+                                window.jQuery('#hostSelect').select2('close');
                                 dialog.close();
                             };
                             $scope.create = function () {
