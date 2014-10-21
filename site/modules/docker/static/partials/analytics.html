@@ -13,6 +13,11 @@
                 <span class="name-chart">Container ID</span>
                 <span class="value-chart-in">{{current.container | shortTag}}</span>
             </div>
+            <div class="chart-info" ng-show="current.container && current.containerNames">
+                <span class="name-chart" ng-show="current.containerNames.split(', ').length > 1">Container Names</span>
+                <span class="name-chart" ng-show="current.containerNames.split(', ').length == 1">Container Name</span>
+                <span class="value-chart-in">[{{current.containerNames}}]</span>
+            </div>
         </div>
         <div class="charts-container text-medium pull-left">
             <adviser-graph data-ng-repeat="graph in graphs" type="graph" show-delete-btn="true"></adviser-graph>
@@ -34,7 +39,7 @@
                  <select ui-select2="{minimumResultsForSearch: -1, width: '210px', placeholder: '-- Choose Container --'}" id="containerSelect" data-ng-model="current.container" data-ng-change="changeContainer()">
                      <option></option>
                      <option data-ng-repeat="container in containers" value={{container.Id}}>
-                         {{container.Id | shortTag}}
+                         {{container.Id | shortTag}} [{{container.Names[0]}}]
                      </option>
                      <option value="">All containers</option>
                  </select>
