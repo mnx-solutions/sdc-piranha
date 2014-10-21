@@ -6,6 +6,9 @@ window.JP.main.config([
         routeProvider.when('/compute', {
             title: 'Compute',
             action: 'machine.index'
+        }).when('/compute/dockerHost', {
+            title: 'Compute',
+            action: 'machine.index'
         }).when('/compute/instance/:machineid', {
             title: 'Instance Details',
             action: 'machine.details',
