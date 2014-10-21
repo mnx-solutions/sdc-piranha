@@ -50,8 +50,16 @@
                             <input type="text"
                                    name="name"
                                    data-ng-model="container.name"
+                                   data-ng-pattern="/^[a-zA-Z0-9\.\_\-]*$/"
                                     />
                         </span>
+                        <div class="edit-error" data-ng-show="isFormSubmited || containerCreateForm.name.$dirty">
+                            <div class="error"
+                                 data-translate
+                                 data-ng-show="containerCreateForm.name.$error.pattern">
+                                Invalid container name ({{containerCreateForm.name.$viewValue}}), only [a-zA-Z0-9_.-] are allowed
+                            </div>
+                        </div>
                     </div>
                     <div data-ng-hide="createImage" class="form-group">
                         <span class="edit-ports edit-label">Container Ports</span>

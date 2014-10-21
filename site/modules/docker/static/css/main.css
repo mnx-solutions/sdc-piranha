@@ -2,16 +2,6 @@
     display: inline-block;
     padding: 8px 10px 0;
 }
-.date-range,
-.date-range-from {
-    font-size: 16px;
-}
-.date-range {
-    padding: 3px 10px;
-}
-.date-range-from {
-    padding: 3px 10px 3px 0;
-}
 .date-error {
     margin-top: -2px;
     border: 2px solid red;
@@ -356,15 +346,6 @@ span.btn-success
 }
 .date-range-from {
     padding: 3px 10px 3px 0;
-}
-.date-error {
-    margin-top: -2px;
-    border: 2px solid red;
-    border-radius: 5px;
-}
-.error {
-    margin-left: 20px;
-    line-height: 28px;
 }
 .dockers-wrapper {
     padding-bottom: 25px;
@@ -861,4 +842,8 @@ span.btn-success
 }
 .vda-btn .btn {
     margin-top: 10px;
+}
+.edit-form .error {
+    margin-left: 5px;
+    line-height: 20px;
 }
