@@ -9,8 +9,10 @@
                 <form name="newRegistryForm">
                     <div class="form-group clearfix" data-ng-show="hosts.length">
                         <label class="control-label" for="hostSelect">Docker Host *</label>
-                        <select id="hostSelect"
+                        <select data-select-two
+                                id="hostSelect"
                                 data-ng-model="registry.host"
+                                data-select="registry.host.name"
                                 data-ng-options="host.name for host in hosts"
                                 ui-select2="{width: '82%'}"
                                 required>
