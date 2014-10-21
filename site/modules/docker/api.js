@@ -531,22 +531,32 @@ module.exports = function execute(scope, register) {
                         if (err) {
                             return callback(err);
                         }
-                        var neededKey = Array.isArray(keys) && keys.find(function (key) {
-                            return key.name === 'docker-key' || key.fingerprint === keyPair.fingerprint;
+                        if (!Array.isArray(keys)) {
+                            call.cloud.createKey({name: 'docker-key', key: keyPair.publicKey}, callback);
+                            return;
+                        }
+
+                        var keyExist = keys.find(function (key) {
+                            return key.fingerprint === keyPair.fingerprint;
                         });
+                        var neededKey = keys.find(function (key) {
+                            return key.name === 'docker-key';
+                        });
+
+                        if (keyExist) {
+                            return callback(null);
+                        }
                         if (!neededKey) {
                             call.cloud.createKey({name: 'docker-key', key: keyPair.publicKey}, callback);
-                        } else {
-                            if (neededKey.fingerprint === keyPair.fingerprint) {
-                                return callback(null);
-                            }
-
-                            call.cloud.deleteKey(neededKey.id, function () {
-                                call.cloud.createKey({name: 'docker-key', key: keyPair.publicKey}, function (err) {
-                                    callback(err);
-                                });
-                            });
+                            return;
                         }
+
+                        call.cloud.deleteKey(neededKey.id, function (error) {
+                            if (error) {
+                                return callback(error);
+                            }
+                            call.cloud.createKey({name: 'docker-key', key: keyPair.publicKey}, callback);
+                        });
                     });
                 }
             ]
