@@ -17,7 +17,7 @@
         <div class="charts-container text-medium pull-left">
             <adviser-graph data-ng-repeat="graph in graphs" type="graph" show-delete-btn="true"></adviser-graph>
             <div class="separator-line" ng-show="current.host"></div>
-            <div class="vda-btn">
+            <div class="detailed-analytics-btn">
                 <a id="button-detailed-analytics" data-ng-show="current.container" href="#!/docker/container/{{hostId}}/{{current.container | shortTag}}"  class="btn light pull-right effect-orange-button">View Container Details</a>
             </div>
         </div>
