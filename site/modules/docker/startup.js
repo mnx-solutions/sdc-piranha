@@ -144,11 +144,15 @@ var Docker = function execute(scope) {
                         }
                     }, function (vasyncError, operations) {
                         if (vasyncError) {
-                            var cause = vasyncError.jse_cause[0];
-                            if (cause) {
-                                return call.done(cause, cause instanceof DockerHostUnreachable);
+                            var cause = vasyncError.jse_cause || vasyncError.ase_errors;
+                            if (Array.isArray(cause)) {
+                                cause = cause[0];
+                            } else {
+                                return call.done(vasyncError);
                             }
+                            return call.done(cause, cause instanceof DockerHostUnreachable);
                         }
+
                         var result = [].concat.apply([], operations.successes);
 
                         call.done(null, result);
