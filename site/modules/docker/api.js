@@ -71,8 +71,8 @@ function createMethod(opts) {
             log: this.client.log,
             path: formatUrl(opts.path, params),
             method: opts.method || 'GET',
-            retries: opts.retries,
-            connectTimeout: opts.timeout
+            retries: opts.retries || false,
+            connectTimeout: opts.timeout || 3000
         };
         var query = {};
         var param;
