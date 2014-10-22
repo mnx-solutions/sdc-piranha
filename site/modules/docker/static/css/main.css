@@ -506,7 +506,7 @@ span.btn-success
 {
     overflow: auto;
     padding: 0 5px;
-    max-height: 1018px;
+    max-height: 508px;
     border: 1px solid #ccc;
     white-space: nowrap;
 }
@@ -797,7 +797,7 @@ span.btn-success
     background-color: #fafcfd;
 }
 .alert-info,
-.vda-btn {
+.detailed-analytics-btn {
     margin-top: 10px;
 }
 .chart-info {
@@ -840,10 +840,10 @@ span.btn-success
     color: #f60;
     text-shadow: none;
 }
-.vda-btn .btn {
-    margin-top: 10px;
-}
-.edit-form .error {
+.container-detailed-analytics-btn {
+    padding-top: 10px;
+    padding-bottom: 75px;
+}.edit-form .error {
     margin-left: 5px;
     line-height: 20px;
 }

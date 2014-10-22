@@ -12,8 +12,7 @@
             <div class="panel-group" id="accordion1">
                 <div class="panel panel-default">
                     <div class="panel-heading">
-                        <a class="accordion-toggle toggle-icon" data-toggle="collapse" data-parent="#accordion1"
-                           data-target="#collapse_summary">
+                        <a class="accordion-toggle toggle-icon" data-toggle="collapse" data-target="#collapse_summary">
                             Summary
                         </a>
                     </div>
@@ -67,12 +66,11 @@
 
                 <div class="panel panel-default">
                     <div class="panel-heading">
-                        <a class="accordion-toggle collapsed toggle-icon" data-toggle="collapse" data-parent="#accordion1"
-                           data-target="#collapse_log">
+                        <a class="accordion-toggle toggle-icon" data-toggle="collapse" data-target="#collapse_log">
                             Log
                         </a>
                     </div>
-                    <div id="collapse_log" class="panel-collapse collapse">
+                    <div id="collapse_log" class="panel-collapse collapse in">
                         <div class="panel-body panel-body-log">
                             <div class="container-log">
                                 <p data-ng-show="containerLogs.length" data-ng-repeat="log in containerLogs track by $index">{{log}}</p>
@@ -158,7 +156,7 @@
             </div>
             <div data-ng-if="container.state == 'running' && !actionInProgress">
                 <adviser-graph data-ng-repeat="graph in graphs" type="graph"></adviser-graph>
-                <div class="vda-btn">
+                <div class="container-detailed-analytics-btn">
                     <a id="button-detailed-analytics" href="#!/docker/analytics/{{machine.id}}/{{container.infoId}}" class="btn light pull-right effect-orange-button"><i class="chart-icon"></i>View Detailed Analytics</a>
                 </div>
             </div>
