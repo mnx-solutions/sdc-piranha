@@ -61,18 +61,9 @@
                     if (!registry.id) {
                         registry.id = uuid();
                         $scope.registries.push(registry);
-                    } else {
-                        $scope.registries.forEach(function (existingRegistry) {
-                            if (registry.id === existingRegistry.id) {
-                                if (registry.username !== 'none' && registry.password && registry.password.length > 0) {
-                                    registry.auth = window.btoa(registry.username + ':' + registry.password);
-                                }
-                                existingRegistry = registry;
-                            }
-                        });
                     }
                     registry.password = null;
-                    Docker.saveRegistriesList(angular.copy($scope.registries)).then(function () {
+                    Docker.saveRegistry(registry).then(function () {
                         $location.path('docker/registries');
                     });
                 };

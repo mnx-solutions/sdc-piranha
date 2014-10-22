@@ -43,8 +43,8 @@
                             var index = $scope.registries.indexOf(registry);
                             if (index !== -1) {
                                 $scope.registries.splice(index, 1);
+                                Docker.deleteRegistry(registry);
                             }
-                            Docker.saveRegistriesList(angular.copy($scope.registries));
                         }
                     );
                 };
