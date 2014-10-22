@@ -113,7 +113,7 @@
                         active: true,
                         type: 'html',
                         _getter: function (image) {
-                            return image.RepoTags[0].split(':')[1];
+                            return image.RepoTags ? Docker.getImageTagsList(image.RepoTags) : '';
                         }
                     },
                     {

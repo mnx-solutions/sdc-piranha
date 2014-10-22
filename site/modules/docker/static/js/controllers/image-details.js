@@ -50,6 +50,10 @@
                             image.Id = image.Id.slice(0, 12);
                             image.Created = new Date(image.Created * 1000);
                         });
+                        $scope.imageInfoTags = '';
+                        if ($scope.image.info) {
+                            $scope.imageInfoTags = $scope.image.info.Tags.join(', ');
+                        }
                         $scope.imageContainer = $scope.image.Container.slice(0, 12);
                         Docker.inspectContainer({primaryIp: primaryIp, Id: $scope.imageContainer}).then(function (resp) {
                             $scope.imageContainer = '<a href="#!/docker/container/' + hostId + '/' + $scope.imageContainer + '">' + $scope.imageContainer + '</a>';
@@ -90,7 +94,7 @@
                     active: true,
                     type: 'html',
                     _getter: function (image) {
-                        return image.Tags ? image.Tags[0].split(':')[1] : '';
+                        return image.Tags ? Docker.getImageTagsList(image.Tags) : '';
                     }
                 },
                 {
