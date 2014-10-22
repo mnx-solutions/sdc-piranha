@@ -58,29 +58,21 @@
                 var imagesWithoutGrouping = [];
                 var listAllImages = function (all) {
                     topImages = all ? topImages : [];
-                    Docker.listAllImages(all ? {all: true} : null).then(function (images) {
-                        Docker.listHosts().then(function (machines) {
-                            images.forEach(function (image) {
-                                image.ShorId = image.Id.slice(0, 12);
-                                if (all) {
-                                    image.images = topImages.indexOf(image.ShorId) === -1 ? 'all' : 'top';
-                                } else {
-                                    image.images = 'top';
-                                    topImages.push(image.ShorId);
-                                }
-                                image.repository = image.RepoTags ? image.RepoTags[0].split(':')[0] : '';
-                                machines.some(function (machine) {
-                                    if (machine.name === image.hostName) {
-                                        image.HostId = machine.id;
-                                        return true;
-                                    }
-                                });
-                            });
-                            imagesWithoutGrouping = angular.copy(images);
-                            $scope.images = getGroupedImages(images);
-                            $scope.loading = false;
+                    Docker.listAllImages(all ? {all: true, cache: true} : {cache: true}).then(function (images) {
+                        images.forEach(function (image) {
+                            image.ShorId = image.Id.slice(0, 12);
+                            if (all) {
+                                image.images = topImages.indexOf(image.ShorId) === -1 ? 'all' : 'top';
+                            } else {
+                                image.images = 'top';
+                                topImages.push(image.ShorId);
+                            }
+                            image.repository = image.RepoTags ? image.RepoTags[0].split(':')[0] : '';
+                        });
+                        imagesWithoutGrouping = angular.copy(images);
+                        $scope.images = getGroupedImages(images);
+                        $scope.loading = false;
                         }, errorCallback);
-                    }, errorCallback);
                 };
 
                 $scope.query = requestContext.getParam('host') || '';
@@ -165,7 +157,7 @@
                         }
                     },
                     {
-                        id: 'HostId',
+                        id: 'hostId',
                         name: 'Host Id',
                         sequence: 7,
                         active: true
@@ -285,7 +277,7 @@
                 $scope.placeHolderText = 'filter images';
                 $scope.tabFilterField = 'images';
                 if (requestContext.getParam('host')) {
-                    $scope.forceActive = 'HostId';
+                    $scope.forceActive = 'hostId';
                 }
 
 
@@ -327,7 +319,7 @@
                         $scope.term = '';
                         $scope.loading = true;
                         $scope.searching = false;
-                        Docker.getRegistriesList(true).then(function (result) {
+                        Docker.getRegistriesList({aggregate: true}).then(function (result) {
                             $scope.registries = result.short;
                             $scope.fullRegistriesList = result.full;
                             $scope.registries = Docker.addRegistryUsernameToHost($scope.registries);

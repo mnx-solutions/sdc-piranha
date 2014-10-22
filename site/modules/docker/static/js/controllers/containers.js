@@ -26,27 +26,19 @@
                     });
                 };
 
-                var listAllContainers = function () {
-                    Docker.listContainers({host: 'All', options: {all: true}, suppressErrors: true}).then(function (containers) {
-                        Docker.listHosts().then(function (machines) {
-                            $scope.containers = containers.map(function (container) {
-                                container.ShortId = container.Id.slice(0, 12);
-                                var ports = [];
-                                container.Ports.forEach(function (port) {
-                                    if (port.IP && port.PublicPort) {
-                                        ports.push(port.IP + ':' + port.PublicPort);
-                                    }
-                                });
-                                container.PortsStr = ports.length ? ports.join(', ') : '';
-                                machines.some(function (machine) {
-                                    if (machine.name === container.hostName) {
-                                        container.HostId = machine.id;
-                                        return true;
-                                    }
-                                });
-                                return container;
+                var listAllContainers = function (cache) {
+                    Docker.listContainers({host: 'All', cache: cache, options: {all: true}, suppressErrors: true}).then(function (containers) {
+                        $scope.containers = containers.map(function (container) {
+                            container.ShortId = container.Id.slice(0, 12);
+                            var ports = [];
+                            container.Ports.forEach(function (port) {
+                                if (port.IP && port.PublicPort) {
+                                    ports.push(port.IP + ':' + port.PublicPort);
+                                }
                             });
-                        }, errorCallback);
+                            container.PortsStr = ports.length ? ports.join(', ') : '';
+                            return container;
+                        });
 
                         $scope.loading = false;
                     }, function (err) {
@@ -119,7 +111,7 @@
                         sequence: 8
                     },
                     {
-                        id: 'HostId',
+                        id: 'hostId',
                         name: 'Host Id',
                         sequence: 9,
                         active: true
@@ -206,7 +198,12 @@
                                     if (action === 'createImage') {
                                         return $location.path('/docker/images');
                                     }
-                                    listAllContainers();
+                                    $scope.checkedItems.forEach(function (container) {
+                                        container.actionInProgress = false;
+                                        container.checked = false;
+                                    });
+                                    $scope.checkedItems = [];
+                                    listAllContainers(true);
                                 });
                             }
                         );
@@ -298,11 +295,11 @@
                 $scope.placeHolderText = 'filter containers';
                 $scope.tabFilterField = 'containers';
                 if (requestContext.getParam('host')) {
-                    $scope.forceActive = 'HostId'
+                    $scope.forceActive = 'hostId';
                 }
 
                 Docker.pingManta(function () {
-                    listAllContainers();
+                    listAllContainers(true);
                 });
 
                 //create container
