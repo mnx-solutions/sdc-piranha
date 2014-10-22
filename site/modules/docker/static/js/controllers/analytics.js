@@ -26,6 +26,7 @@
                 host: '',
                 hostName: '',
                 container: '',
+                containerNames: '',
                 metric: ''
             };
 
@@ -83,6 +84,7 @@
                         $scope.containers.forEach(function (container) {
                             if (containerId === container.Id) {
                                 $scope.current.container = containerId;
+                                $scope.current.containerNames = container.Names && container.Names.join(', ');
                                 $scope.metrics = hostMetrics.concat(networkMetrics);
                                 $scope.defaultMetrics = ['cpuTotal', 'memory', 'network'];
                             }
@@ -100,6 +102,9 @@
                 if ($scope.current.container) {
                     $scope.metrics = hostMetrics.concat(networkMetrics);
                     $scope.defaultMetrics = ['cpuTotal', 'memory', 'network'];
+                    $scope.current.containerNames = $scope.containers.filter(function (container) {
+                        return containerId === container.Id;
+                    })[0].Names.join(', ');
                 } else {
                     $scope.metrics = hostMetrics;
                     $scope.defaultMetrics = ['cpuTotal', 'memory'];
