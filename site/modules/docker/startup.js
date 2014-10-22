@@ -10,10 +10,6 @@ var fstream = require('tar/node_modules/fstream');
 var ursa = require('ursa');
 var registryDockerfile = fs.readFileSync(__dirname + '/data/registry-Dockerfile', 'utf-8');
 
-var dockerIndexClient = restify.createJsonClient({
-    url: 'https://index.docker.io'
-});
-
 var Docker = function execute(scope) {
     var Docker = scope.api('Docker');
     var server = scope.api('Server');

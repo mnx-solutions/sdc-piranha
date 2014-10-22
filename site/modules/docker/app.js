@@ -5,6 +5,33 @@ var vasync = require('vasync');
 
 module.exports = function (scope, app) {
     var Manta = scope.api('MantaClient');
+    var Docker = scope.api('Docker');
+
+    function DockerHostUnreachable(host) {
+        this.message = 'Docker host "' + host + '" is unreachable.';
+    }
+
+    function timeFormat(measure) {
+        return measure < 10 ? '0' + measure : measure;
+    }
+
+    function getTime(str) {
+        str += ' ' + new Date().getFullYear();
+        var date = new Date(str);
+        var time = '';
+        if (!isNaN(date.getTime())) {
+            time += date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate() + 'T';
+            time += timeFormat(date.getHours()) + ':' + timeFormat(date.getMinutes()) + ':' + timeFormat(date.getSeconds()) + ':' + date.getMilliseconds() + 'Z';
+        }
+        return time;
+    }
+
+    function getLogFormat(log) {
+        var endBracketPosition = log.indexOf(']') || 1;
+        var time = getTime(log.slice(log.indexOf('[') + 1 || 1, endBracketPosition));
+
+        return '{"log": "' + log.slice(endBracketPosition + 2, log.length - 1) + '", "stream":"stderr", "time":"' + time + '"}\n';
+    }
 
     var getFile = function (req, res, action) {
         var messageError;
@@ -17,18 +44,25 @@ module.exports = function (scope, app) {
             headerType = 'text/plain';
         }
         var client = Manta.createClient({req: req});
-        var path = '~~/stor/.joyent/docker/logs/' + req.query.host + '/' + req.query.container;
+        var host = req.query.host;
+        var container = req.query.container;
+        var path = '~~/stor/.joyent/docker/logs/' + host + '/' + container;
         var filesInDateRange = [];
         var startDate = req.query.start;
         var endDate = req.query.end;
+        var ip = req.query.ip;
+        var startCurrentDay = Math.ceil(new Date().setHours(0, 0, 0, 0) / 1000);
         function getfilesInDateRange(path, action, callback) {
             client.ftw(path, function (err, entriesStream) {
                 if (err) {
+                    if (err.statusCode === 404) {
+                        return callback(null, []);
+                    }
                     return callback(err);
                 }
 
                 entriesStream.on('entry', function (obj) {
-                    var fileDate = Math.floor(new Date(obj.name.split('.log')[0]).getTime()/1000);
+                    var fileDate = Math.floor(new Date(obj.name.split('.log')[0]).getTime() / 1000);
                     if (startDate <= fileDate && endDate >= fileDate) {
                         filesInDateRange.push(path + '/' + obj.name);
                     }
@@ -55,22 +89,60 @@ module.exports = function (scope, app) {
 
         function getLogsStream(files, callback) {
             var queue = vasync.queue(function (file, callback) {
-                var logStream = client.createReadStream(file);
-                logStream.on('data', function (data) {
-                    res.write(data);
-                });
-                logStream.on('error', function (error) {
-                    req.log.error({error: error}, messageError);
-                    callback(error);
-                });
-                logStream.on('end', function () {
-                    callback();
-                });
+                if (file) {
+                    var logStream = client.createReadStream(file);
+                    logStream.on('data', function (data) {
+                        res.write(data);
+                    });
+                    logStream.on('error', function (error) {
+                        req.log.error({error: error}, messageError);
+                        callback(error);
+                    });
+                    logStream.on('end', function () {
+                        callback();
+                    });
+                } else {
+                    Docker.createClient({req: req}, {primaryIp: ip}, function (error, client) {
+                        if (error) {
+                            return callback(error);
+                        }
+                        client.ping(function (error) {
+                            if (error) {
+                                return callback(new DockerHostUnreachable(ip));
+                            }
+                            client.logs({id: container.slice(0, 12), tail: 'all'}, function (err, response) {
+                                if (err) {
+                                    return callback(err);
+                                }
+                                if (response && response.length) {
+                                    var code;
+                                    var logs = '';
+                                    var t = 8;
+                                    for (var i = 0, len = response.length; i < len; i++) {
+                                        code = response.charCodeAt(i);
+                                        if (code === 2 && i > t) {
+                                            var log = response.slice(t, i);
+                                            logs += getLogFormat(log);
+                                            t = i;
+                                        }
+                                    }
+                                    logs += getLogFormat(response.slice(t));
+                                    res.write(logs);
+                                }
+                                callback();
+                            });
+                        });
+                    });
+                }
             }, 1);
 
             files.forEach(function (file) {
                 queue.push(file);
             });
+
+            if (endDate >= startCurrentDay) {
+                queue.push();
+            }
 
             queue.drain = function () {
                 callback();
@@ -86,7 +158,7 @@ module.exports = function (scope, app) {
             if (error) {
                 return res.end(error.message);
             }
-            if (filesInDateRange.length > 0) {
+            if (filesInDateRange.length > 0 || endDate >= startCurrentDay) {
                 getLogsStream(filesInDateRange, function (error) {
                     if (error) {
                         return res.end(error.message);
