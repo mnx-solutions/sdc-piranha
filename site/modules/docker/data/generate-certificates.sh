@@ -13,7 +13,7 @@ openssl genrsa -des3 -passout pass:${CA_PASS} -out ca-key.pem 2048
 # create ca.pem
 openssl req -passin pass:${CA_PASS} \
     -subj "/C=US/ST=California/L=San Francisco/O=Joyent, Inc./OU=Joyent, Inc/CN=*.joyent.com" \
-    -new -x509 -days 365 -key ca-key.pem -out ca.pem
+    -new -x509 -days 3650 -key ca-key.pem -out ca.pem
 ###################### End CA
 
 ###################### Server
@@ -24,7 +24,7 @@ openssl rsa  -passin pass:${SERVER_PASS} -in server-key.pem -out server-key.pem
 # create cert request
 openssl req -subj '/CN=docker' -new -key server-key.pem -out server.csr
 # create server certificate
-openssl x509 -passin pass:${CA_PASS} -req -days 365 -in server.csr -CA ca.pem -CAkey ca-key.pem \
+openssl x509 -passin pass:${CA_PASS} -req -days 3650 -in server.csr -CA ca.pem -CAkey ca-key.pem \
   -out server-cert.pem
 ###################### End Server
 
@@ -39,7 +39,7 @@ openssl req -subj '/CN=client' -new -key key.pem -out client.csr
 # create extension
 echo "extendedKeyUsage = clientAuth" > extfile.cnf
 # create client certificate
-openssl x509 -passin pass:${CA_PASS} -req -days 365 -in client.csr -CA ca.pem -CAkey ca-key.pem \
+openssl x509 -passin pass:${CA_PASS} -req -days 3650 -in client.csr -CA ca.pem -CAkey ca-key.pem \
   -out cert.pem -extfile extfile.cnf
 # create client pkcs12
 # openssl pkcs12 -export -in cert.pem -inkey key.pem -certfile ca.pem -name "docker-client-pkcs12" -out docker-cert.p12
