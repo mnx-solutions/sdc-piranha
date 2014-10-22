@@ -66,6 +66,13 @@
                                 if (!imageExists && !$scope.datasetsInfo[machine.image]) {
                                     $scope.datasetsInfo[machine.image] = 'Image gone';
                                 }
+                                if (currentLocation === '/compute/dockerHost') {
+                                    $scope.gridProps.forEach(function (prop) {
+                                        if (prop.id === 'tags') {
+                                            prop.active = true;
+                                        }
+                                    });
+                                }
                                 $scope.loading = false;
                             }, function (err) {
                                 $scope.loading = false;

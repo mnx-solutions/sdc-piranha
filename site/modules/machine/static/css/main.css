@@ -1172,32 +1172,6 @@ span.btn-success
     width: 1050px !important;
 }
 
-.hotlinks
-{
-    font-size: 14px;
-    line-height: 24px;
-
-    margin-right: 50px;
-
-    color: #d3d3d3;
-}
-
-.hotlinks a,
-.hotlinks span.active-link
-{
-    font-weight: 500;
-
-    vertical-align: middle;
-    text-decoration: none;
-
-    color: #f60;
-}
-
-.hotlinks span.active-link
-{
-    color: #333;
-}
-
 .advanced-instance-box
 {
     float: left;

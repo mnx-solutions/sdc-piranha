@@ -486,7 +486,7 @@
         multisort: true,
         controls: true
     })
-    .directive('gridView', ['gridConfig', '$rootScope', function (gridConfig, $rootScope) {
+    .directive('gridView', ['gridConfig', '$rootScope', '$location', function (gridConfig, $rootScope, $location) {
         return {
             restrict: 'EA',
             scope: {
@@ -687,15 +687,23 @@
                         }
 
                         $scope.props.forEach(function (el) {
+                            var ignoreProp;
+                            if ($location.path() === '/compute/dockerHost') {
+                                ignoreProp = 'tags';
+                            }
                             if (propKeys[el.id]) {
-                                el.active = propKeys[el.id].active;
-                                if (!el.id2) {
-                                    if (propKeys[el.id].order) {
-                                        el.order = propKeys[el.id].order;
+                                if (el.id !== ignoreProp) {
+                                    el.active = propKeys[el.id].active;
+                                    if (!el.id2) {
+                                        if (propKeys[el.id].order) {
+                                            el.order = propKeys[el.id].order;
+                                        }
+                                        if (propKeys[el.id].reorder) {
+                                            el.reorder = propKeys[el.id].reorder;
+                                        }
                                     }
-                                    if (propKeys[el.id].reorder) {
-                                        el.reorder = propKeys[el.id].reorder;
-                                    }
+                                } else {
+                                    $scope.filterAll = 'DockerHost';
                                 }
                             } else {
                                 propKeys[el.id] = el;
