@@ -187,8 +187,7 @@ var Docker = function execute(scope) {
 
             try {
                 list = JSON.parse(list);
-            }
-            catch (e) {
+            } catch (e) {
                 call.log.warn('Registries list is corrupted');
                 list = [];
             }
@@ -266,7 +265,7 @@ var Docker = function execute(scope) {
             var registry = call.data.registry;
             getRegestries(call, function (error, list) {
                 var index;
-                var exist = list.some(function (item, i) { index = i; return item.id === registry.id});
+                var exist = list.some(function (item, i) { index = i; return item.id === registry.id; });
                 if (exist) {
                     delete registriesCache[registry.id];
                     list.splice(index, 1);

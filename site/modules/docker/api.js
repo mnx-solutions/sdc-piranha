@@ -527,6 +527,38 @@ module.exports = function execute(scope, register) {
         });
     }
 
+    function keyPoller(call, keyExists, callback) {
+        var start = new Date();
+        return function (error) {
+            if (error) {
+                return callback(error);
+            }
+
+            function retry() {
+                if (new Date() - start > config.polling.sshCreateKeyTimeout) {
+                    return callback(new Error('Poller error: SSH ' + (keyExists ? 'create' : 'delete') + ' key timeout'));
+                }
+                setTimeout(function () {
+                    keyPoller(call, keyExists, callback);
+                }, config.polling.sshCreateKey);
+            }
+
+            function isDockerKeyExists(keys) {
+                return keys.some(function (key) {
+                    return key.name === 'docker-key';
+                });
+            }
+
+            call.cloud.listKeys(function (error, keys) {
+                if (!error && Array.isArray(keys) && isDockerKeyExists(keys) === keyExists) {
+                    callback();
+                    return;
+                }
+                retry();
+            }, true);
+        };
+    }
+
     function uploadKeys(call, keyPair, callback) {
         var client = scope.api('MantaClient').createClient(call);
         vasync.parallel({
@@ -540,7 +572,7 @@ module.exports = function execute(scope, register) {
                             return callback(err);
                         }
                         if (!Array.isArray(keys)) {
-                            call.cloud.createKey({name: 'docker-key', key: keyPair.publicKey}, callback);
+                            call.cloud.createKey({name: 'docker-key', key: keyPair.publicKey}, keyPoller(call, true, callback));
                             return;
                         }
 
@@ -555,16 +587,16 @@ module.exports = function execute(scope, register) {
                             return callback(null);
                         }
                         if (!neededKey) {
-                            call.cloud.createKey({name: 'docker-key', key: keyPair.publicKey}, callback);
+                            call.cloud.createKey({name: 'docker-key', key: keyPair.publicKey}, keyPoller(call, true, callback));
                             return;
                         }
 
-                        call.cloud.deleteKey(neededKey.id, function (error) {
+                        call.cloud.deleteKey(neededKey, keyPoller(call, false, function (error) {
                             if (error) {
                                 return callback(error);
                             }
-                            call.cloud.createKey({name: 'docker-key', key: keyPair.publicKey}, callback);
-                        });
+                            call.cloud.createKey({name: 'docker-key', key: keyPair.publicKey}, keyPoller(call, true, callback));
+                        }));
                     });
                 }
             ]
