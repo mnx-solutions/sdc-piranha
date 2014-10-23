@@ -37,8 +37,9 @@
                     <span>{{machine.containersCount}}</span>
                 </div>
                 <div class="info">
-                    <span><a href="" data-ng-click="navigateContainersImages('images', machine.name)">Images</a>: </span>
-                    <span>{{machine.imagesCount}}</span>
+                    <span class="info-images-label pull-left"><a href="" data-ng-click="navigateContainersImages('images', machine.name)">Images</a>: </span>
+                    <span class="loading-small loading-images-count pull-left" data-ng-show="!machine.imagesCount"></span>
+                    <span class="pull-left">{{machine.imagesCount}}</span>
                 </div>
                 <div class="progress-wrapper">
                     <p class="title">CPU</p>
