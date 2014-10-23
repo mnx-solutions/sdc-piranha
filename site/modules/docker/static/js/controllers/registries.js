@@ -160,18 +160,8 @@
                             };
                             $scope.create = function () {
                                 dialog.close();
-
                                 Docker.createNewRegistry(angular.extend({}, $scope.registry)).then(
-                                    function () {
-                                        Docker.getRegistriesList().then(function (list) {
-                                            list.push({
-                                                api: 'v1',
-                                                host: 'http://' + $scope.registry.host.primaryIp,
-                                                port: 5000
-                                            });
-                                            Docker.saveRegistriesList(list);
-                                        });
-                                    },
+                                    angular.noop,
                                     function (error) {
                                         PopupDialog.error(null, error);
                                     }
