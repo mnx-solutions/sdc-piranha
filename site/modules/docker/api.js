@@ -196,8 +196,8 @@ module.exports = function execute(scope, register) {
             method: 'DELETE',
             path: '/containers/:id',
             params: {
-                v       : '=',
-                force   : '='
+                v: '=',
+                force: '='
             }
         },
         commit      : {
