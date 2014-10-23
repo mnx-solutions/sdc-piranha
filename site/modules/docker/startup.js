@@ -212,6 +212,7 @@ var Docker = function execute(scope) {
             username: 'none'
         };
         getRegestries(call, function (error, list) {
+            registriesCache['default'] = defaultRegistry;
             if (error && error.statusCode === 404) {
                 return call.done(null, [defaultRegistry]);
             }
