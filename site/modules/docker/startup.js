@@ -8,6 +8,7 @@ var os = require('os');
 var fs = require('fs');
 var fstream = require('tar/node_modules/fstream');
 var ursa = require('ursa');
+var uuid = require('../../static/vendor/uuid/uuid.js');
 var registryDockerfile = fs.readFileSync(__dirname + '/data/registry-Dockerfile', 'utf-8');
 
 var Docker = function execute(scope) {
@@ -468,7 +469,19 @@ var Docker = function execute(scope) {
                 if (error) {
                     return call.done(error);
                 }
-                call.done(null, 'OK!');
+                getRegestries(call, function (error, list) {
+                    var registry = {
+                        id: uuid.v4(),
+                        api: 'v1',
+                        host: 'http://' + call.data.host.primaryIp,
+                        port: 5000,
+                        username: 'none',
+                        password: ''
+                    };
+                    list.push(registry);
+                    registriesCache[registry.id] = registry;
+                    saveRegistries(call, list);
+                });
             });
         }
     });
