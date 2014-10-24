@@ -136,7 +136,6 @@
                                 var hosts = {};
                                 var availableHosts = result[0];
                                 var containers = result[1];
-                                $scope.registry.host = availableHosts[0];
                                 availableHosts.forEach(function (host) {
                                     hosts[host.name] = host;
                                 });
@@ -151,6 +150,7 @@
                                     $scope.hosts.push(hosts[hostName]);
                                 });
 
+                                $scope.registry.host = $scope.hosts[0];
                                 $scope.loading = false;
                             });
 
