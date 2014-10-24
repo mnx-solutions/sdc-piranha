@@ -843,7 +843,14 @@ span.btn-success
 .container-detailed-analytics-btn {
     padding-top: 10px;
     padding-bottom: 75px;
-}.edit-form .error {
+}
+.edit-form .error {
     margin-left: 5px;
     line-height: 20px;
+}
+.info-images-label {
+    margin-right: 5px;
+}
+.loading-images-count {
+    margin-top: 3px;
 }
