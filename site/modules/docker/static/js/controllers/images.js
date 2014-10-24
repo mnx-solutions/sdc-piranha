@@ -283,7 +283,9 @@
                         $scope.loading = true;
                         $scope.searching = false;
                         Docker.getRegistriesList().then(function (list) {
-                            $scope.registries = list || [];
+                            $scope.registries = list.filter(function (registry) {
+                                return !registry.processing;
+                            });
                             $scope.loading = false;
                         });
 
