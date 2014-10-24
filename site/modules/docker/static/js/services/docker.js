@@ -291,6 +291,14 @@
             return createCall('createRegistry', angular.extend({direct: true, host: opts.host, options: opts}));
         };
 
+        service.getImageTagsList = function (imageTags) {
+            var repoTags = imageTags.map(function (repoTag) {
+                var repoTagArray = repoTag.split(':');
+                return repoTagArray[repoTagArray.length - 1];
+            });
+            return repoTags.join(', ');
+        };
+
         return service;
     }]);
 }(window.angular, window.JP.getModule('docker')));
