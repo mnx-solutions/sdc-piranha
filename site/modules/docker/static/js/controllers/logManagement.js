@@ -19,8 +19,9 @@
                 };
 
                 var errorCallback = function (err) {
-                    $scope.loading = false;
-                    PopupDialog.errorObj(err);
+                    Docker.errorCallback(err, function () {
+                        $scope.loading = false;
+                    });
                 };
 
                 var dateRangeValidation = function () {
@@ -34,25 +35,27 @@
                     dateRangeValidation();
                 });
 
-                Docker.listContainers({cache: true, host: 'All'}).then(function (containers) {
-                    $scope.containers = angular.copy(containers);
-                    $scope.containers.forEach(function (container) {
-                        container.Created = new Date(container.Created * 1000);
-                        container.ShortId = container.Id.slice(0, 12);
-                        var ports = [];
-                        container.Ports.forEach(function (port) {
-                            if (port.IP && port.PrivatePort && port.PublicPort && port.Type) {
-                                ports.push(port.IP + ':' + port.PrivatePort + ' -> ' + port.PublicPort + '/' + port.Type);
+                Docker.pingManta(function () {
+                    Docker.listContainers({cache: true, host: 'All'}).then(function (containers) {
+                        $scope.containers = angular.copy(containers);
+                        $scope.containers.forEach(function (container) {
+                            container.Created = new Date(container.Created * 1000);
+                            container.ShortId = container.Id.slice(0, 12);
+                            var ports = [];
+                            container.Ports.forEach(function (port) {
+                                if (port.IP && port.PrivatePort && port.PublicPort && port.Type) {
+                                    ports.push(port.IP + ':' + port.PrivatePort + ' -> ' + port.PublicPort + '/' + port.Type);
+                                }
+                            });
+                            if (ports.length === 0) {
+                                container.Ports[0] = 'none';
+                            } else {
+                                container.Ports = ports;
                             }
                         });
-                        if (ports.length === 0) {
-                            container.Ports[0] = 'none';
-                        } else {
-                            container.Ports = ports;
-                        }
-                    });
-                    $scope.loading = false;
-                }, errorCallback);
+                        $scope.loading = false;
+                    }, errorCallback);
+                });
 
                 $scope.viewLog = function (container, action) {
                     var date = {

@@ -43,17 +43,19 @@
             ];
             var timerUpdateStats = 0;
 
-            Docker.listHosts().then(function (hosts) {
-                $scope.hosts = hosts || [];
-                if (hostId) {
-                    $scope.hosts.forEach(function (host) {
-                        if (hostId === host.id) {
-                            $scope.current.host = host.primaryIp;
-                            $scope.current.hostName = host.name;
-                            $scope.changeHost();
-                        }
-                    });
-                }
+            Docker.pingManta(function () {
+                Docker.listHosts().then(function (hosts) {
+                    $scope.hosts = hosts || [];
+                    if (hostId) {
+                        $scope.hosts.forEach(function (host) {
+                            if (hostId === host.id) {
+                                $scope.current.host = host.primaryIp;
+                                $scope.current.hostName = host.name;
+                                $scope.changeHost();
+                            }
+                        });
+                    }
+                });
             });
 
             $scope.changeHost = function () {

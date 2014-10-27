@@ -45,6 +45,10 @@ function createCallback(callback, raw) {
             if (error.statusCode === 502 || error.statusCode === 504) {
                 error.message = 'Service unavailable';
             }
+            if ((error.message && error.message.indexOf('bad certificate') >= 0) ||
+                (error.statusCode === 400)) {
+                error.message = 'Manta service is not available.';
+            }
             return callback(error.message || error);
         }
         if (raw) {

@@ -24,8 +24,9 @@
                 $scope.loading = true;
 
                 var errorCallback = function (err) {
-                    $scope.loading = false;
-                    PopupDialog.errorObj(err);
+                    Docker.errorCallback(err, function () {
+                        $scope.loading = false;
+                    });
                 };
 
                 if ($scope.features.manta === 'enabled') {
@@ -265,7 +266,9 @@
                 $scope.tabFilterField = 'images';
 
 
-                listAllImages();
+                Docker.pingManta(function () {
+                    listAllImages();
+                });
 
                 $scope.createImage = function () {
                     $location.path('/docker/image/create');

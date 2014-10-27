@@ -27,8 +27,9 @@
             };
 
             var errorCallback = function (err) {
-                $scope.loading = false;
-                PopupDialog.errorObj(err);
+                Docker.errorCallback(err, function () {
+                    $scope.loading = false;
+                });
             };
 
             function getHostImagesCount(machine) {
@@ -64,27 +65,29 @@
                 });
             };
 
-            $q.all([
-                $q.when(Datacenter.datacenter()),
-                $q.when(Docker.listHosts())
-            ]).then(function (result) {
-                $scope.datacenters = result[0] || [];
-                $scope.data.datacenter = $scope.datacenters[0].name;
-                $scope.dockerMachines = [];
-                var dockerMachines = result[1] || [];
-                if (dockerMachines.length > 0) {
-                    dockerMachines.forEach(function (machine) {
-                        if (machine.primaryIp) {
-                            $scope.dockerMachines.push(machine);
-                            getDockerHostInfo(machine);
-                        }
-                    });
-                    getDockerHostAnalytics();
-                }
-                $scope.loading = false;
-            }, function (err) {
-                $scope.loading = false;
-                PopupDialog.errorObj(err);
+            Docker.pingManta(function () {
+                $q.all([
+                    $q.when(Datacenter.datacenter()),
+                    $q.when(Docker.listHosts())
+                ]).then(function (result) {
+                    $scope.datacenters = result[0] || [];
+                    $scope.data.datacenter = $scope.datacenters[0].name;
+                    $scope.dockerMachines = [];
+                    var dockerMachines = result[1] || [];
+                    if (dockerMachines.length > 0) {
+                        dockerMachines.forEach(function (machine) {
+                            if (machine.primaryIp) {
+                                $scope.dockerMachines.push(machine);
+                                getDockerHostInfo(machine);
+                            }
+                        });
+                        getDockerHostAnalytics();
+                    }
+                    $scope.loading = false;
+                }, function (err) {
+                    $scope.loading = false;
+                    PopupDialog.errorObj(err);
+                });
             });
 
             $scope.$watch('data.datacenter', function (newVal) {
