@@ -189,7 +189,11 @@ module.exports = function execute(scope, register) {
         },
         remove     : {
             method: 'DELETE',
-            path: '/containers/:id'
+            path: '/containers/:id',
+            params: {
+                v       : '=',
+                force   : '='
+            }
         },
         commit      : {
             method: 'POST',

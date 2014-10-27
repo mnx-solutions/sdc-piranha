@@ -15,7 +15,7 @@
         function (serverTab, Account, errorContext, EventBubble, Machine, PopupDialog, localization, Storage, $q) {
 
         var service = {};
-        var containerActions = ['start', 'stop', 'pause', 'unpause', 'remove', 'inspect', 'restart', 'kill', 'logs'];
+        var containerActions = ['start', 'stop', 'pause', 'unpause', 'inspect', 'restart', 'kill', 'logs'];
         var imageActions = ['remove', 'inspect', 'history'];
         var billingIsActive = false;
         var mantaIsActive = undefined;
@@ -130,12 +130,7 @@
             options = options || {};
             job.promise = serverTab.call({
                 name: name,
-                data: {
-                    host: options.host,
-                    registry: options.registry,
-                    wait: options.wait,
-                    options: options.options
-                },
+                data: options,
                 progress: function (error, data) {
                     if (!error && data) {
                         data = data.__read();
@@ -180,6 +175,16 @@
 
         service.hostInfo = function (options, progressHandler) {
             return createCall('getInfo', options, progressHandler);
+        };
+
+        service.removeContainer = function (container) {
+            var data = {
+                direct: true,
+                host: {primaryIp: container.primaryIp},
+                options: container.options || {id: container.Id},
+                container: container
+            }
+            return createCall('remove', data);
         };
 
         containerActions.forEach(function (action) {

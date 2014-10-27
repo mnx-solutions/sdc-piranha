@@ -92,7 +92,7 @@
                             name: info.Name,
                             cmd: containerCmd,
                             entrypoint: info.Config.Entrypoint,
-                            ports: info.Config.ExposedPorts,
+                            Ports: info.Config.ExposedPorts,
                             hostname: info.Config.Hostname,
                             image: info.Config.Image,
                             memory: info.Config.Memory,
