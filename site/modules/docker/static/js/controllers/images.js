@@ -403,9 +403,14 @@
                                         image.tag = $scope.tag === 'all' ? '' : $scope.tag;
                                         image.processing = true;
                                         image.processStatus = "Preparing";
-                                        Docker.pullImage({primaryIp: $scope.hostIp}, image).then(function () {
+                                        Docker.pullImage({primaryIp: $scope.hostIp}, image).then(function (chunk) {
+                                            if (!chunk.length) {
+                                                image.processStatus = 'Download error';
+                                            }
+                                            if (image.processStatus === 'Download complete') {
+                                                image.processStatus = 'Downloading complete';
+                                            }
                                             image.processing = false;
-                                            image.processStatus = "Downloading complete";
                                             if (image.progressDetail) {
                                                 delete image.progressDetail;
                                             }

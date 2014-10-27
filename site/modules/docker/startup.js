@@ -16,7 +16,6 @@ var Docker = function execute(scope) {
     var server = scope.api('Server');
     var methods = Docker.getMethods();
     var methodsForAllHosts = ['containers', 'getInfo', 'images'];
-    var part;
     var registriesCache = {};
 
     function DockerHostUnreachable(host) {
@@ -29,9 +28,8 @@ var Docker = function execute(scope) {
         return str[0].toUpperCase() + str.substr(1);
     }
 
-    function jsonStreamParser(stream) {
-        stream = part + stream;
-        var response = [], index, json, nextLine = 0;
+    function jsonStreamParser(res, eachCallback) {
+        var accumulatedData = '';
         function parse(part) {
             try {
                 return JSON.parse(part);
@@ -45,27 +43,22 @@ var Docker = function execute(scope) {
             return (indexOf >= 0) ? (indexOf + (startpos || 0)) : indexOf;
         }
 
-        //noinspection JSLint
-        while ((index = regexIndexOf(stream, /}\s*{/, nextLine)) > -1) {
-            part = stream.slice(nextLine, index + 1);
+        res.on('data', function (data) {
+            var nextLine = 0;
+            accumulatedData += data.toString();
+            //noinspection JSLint
+            var index;
+            while ((index = regexIndexOf(accumulatedData, /(?:\}\s*\{|\}\s*$)/, nextLine)) !== -1) {
+                var part = accumulatedData.slice(nextLine, index + 1);
 
-            json = parse(part);
-            if (json === undefined) {
-                break;
+                var json = parse(part.trim());
+                if (json === undefined) {
+                    break;
+                }
+                eachCallback(json);
+                nextLine = index + 1;
             }
-
-            response.push(json);
-            nextLine = index + 1;
-        }
-
-        //last try
-        part = stream.slice(nextLine);
-
-        json = parse(part);
-        if (json !== undefined) {
-            response.push(json);
-        }
-        return response;
+        });
     }
 
     function waitClient(call, host, callback) {
@@ -303,20 +296,20 @@ var Docker = function execute(scope) {
                 if (err) {
                     return call.done(err);
                 }
-                part = '';
                 req.on('result', function (error, res) {
                     if (error) {
                         return call.done(error);
                     }
-                    res.on('data', function (data) {
-                        data = data.toString();
-                        data = jsonStreamParser(data);
-                        data.forEach(function (chunk) {
-                            call.update(null, chunk);
-                        });
+
+                    jsonStreamParser(res, function (chunk) {
+                        call.update(null, chunk);
                     });
+
                     res.on('end', function () {
                         call.done(null);
+                    });
+                    res.on('error', function (error) {
+                        call.done(error);
                     });
                 });
                 req.end();
