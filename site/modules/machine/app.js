@@ -60,6 +60,15 @@ module.exports = function (scope, app) {
             case 'policy':
                 prefix += 'policies-';
                 break;
+            case 'registry':
+                prefix += 'docker-registries-';
+                break;
+            case 'container':
+                prefix += 'docker-containers-';
+                break;
+            case 'images':
+                prefix += 'docker-images-';
+                break;
             default:
                 break;
         }

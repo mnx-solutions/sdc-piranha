@@ -26,7 +26,12 @@
 
                 Docker.pingManta(function () {
                     Docker.getRegistriesList().then(function (list) {
-                        $scope.registries = list;
+                        $scope.registries = ng.copy(list);
+                        $scope.registries.forEach(function (registry) {
+                            registry.api_version = registry.api;
+                            registry.hostname = registry.host;
+                            registry.login = registry.username || '';
+                        });
                         $scope.loading = false;
                     }, errorCallback);
                 });
@@ -120,7 +125,7 @@
                 ];
                 $scope.gridActionButtons = [];
                 $scope.exportFields = {
-                    ignore: []
+                    ignore: ['password', 'auth', 'api', 'host']
                 };
                 $scope.searchForm = true;
                 $scope.enabledCheckboxes = false;
