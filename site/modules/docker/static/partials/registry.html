@@ -39,6 +39,15 @@
                     <td><input name="username" type="text" data-ng-model="registry.username" data-ng-disabled="loadingRegistry"/></td>
                 </tr>
                 <tr>
+                    <td data-ng-class="{'orange-asterix': registry.username.length > 0 && registry.password.length > 0}">Email</td>
+                    <td><input name="email" type="email"
+                               data-ng-model="registry.email"
+                               data-ng-disabled="loadingRegistry"
+                               data-ng-pattern="/^[a-z0-9!#$%&'*+/=?^_`{|}~.-]+@[a-z0-9-]+(\.[a-z0-9-]+)+$/i"
+                               data-ng-required="registry.username.length && registry.password.length"/>
+                    </td>
+                </tr>
+                <tr>
                     <td>Password</td>
                     <td><input name="password" type="password" data-ng-model="registry.password" data-ng-disabled="loadingRegistry"/></td>
                 </tr>

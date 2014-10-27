@@ -1,6 +1,6 @@
 'use strict';
 
-(function (app) {
+(function (ng, app) {
     app.controller(
         'Docker.RegistryController', [
             '$scope',
@@ -25,6 +25,7 @@
                         host: null,
                         port: null,
                         username: null,
+                        email: null,
                         password: null
                     };
                 };
@@ -52,10 +53,7 @@
                 });
 
                 var addRegistry = function (registry) {
-                    if (!registry.username || registry.username.length === 0) {
-                        registry.username = 'none';
-                    }
-                    if (registry.username !== 'none' && registry.password && registry.password.length > 0) {
+                    if (registry.username && registry.password && registry.password.length > 0) {
                         registry.auth = window.btoa(registry.username + ':' + registry.password);
                     }
                     if (!registry.id) {
@@ -70,15 +68,13 @@
 
                 var checkExists = function (connectedRegistry) {
                     var exist = false;
-                    if (!connectedRegistry.username || !connectedRegistry.username.length) {
-                        connectedRegistry.username = 'none';
-                    }
                     $scope.registries.forEach(function (registry) {
                         registry.id = registry.id || '';
                         if (registry.api === connectedRegistry.api &&
                             registry.host === connectedRegistry.host &&
                             registry.port === connectedRegistry.port &&
-                            registry.username === connectedRegistry.username &&
+                            registry.username == connectedRegistry.username &&
+                            registry.email == connectedRegistry.email &&
                             registry.id !== connectedRegistry.id) {
                             exist = true;
                         }
@@ -88,26 +84,33 @@
 
                 $scope.connectRegistry = function () {
                     $scope.loading = true;
-                    Docker.registryPing($scope.registry).then(function (result) {
+                    var registryExist = checkExists($scope.registry);
+                    if (registryExist) {
+                        $scope.loading = false;
+                        return PopupDialog.error(
+                            localization.translate(
+                                $scope,
+                                null,
+                                'Error'
+                            ),
+                            localization.translate(
+                                $scope,
+                                null,
+                                'Such a registry already exists.'
+                            )
+                        );
+                    }
+                    var registry = ng.extend({}, $scope.registry);
+                    var action = 'registryPing';
+                    if (registry.username && registry.password) {
+                        action = 'auth';
+                        registry.serveraddress = registry.host + '/' + registry.api + '/';
+                        delete registry.host;
+                        delete registry.api;
+                    }
+                    Docker[action](registry).then(function (result) {
                         if (result) {
-                            var registryExist = checkExists($scope.registry);
-                            if (registryExist) {
-                                $scope.loading = false;
-                                PopupDialog.error(
-                                    localization.translate(
-                                        $scope,
-                                        null,
-                                        'Error'
-                                    ),
-                                    localization.translate(
-                                        $scope,
-                                        null,
-                                        'Such a registry already exists.'
-                                    )
-                                );
-                            } else {
-                                addRegistry($scope.registry);
-                            }
+                            addRegistry($scope.registry);
                         }
                     }, function (err) {
                         if (err.indexOf('html') > -1 || err.toLowerCase().indexOf('not found') > -1) {
@@ -121,4 +124,4 @@
                 };
             }
         ]);
-}(window.JP.getModule('docker')));
+}(window.angular, window.JP.getModule('docker')));
