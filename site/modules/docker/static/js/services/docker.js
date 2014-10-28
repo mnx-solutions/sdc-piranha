@@ -331,6 +331,30 @@
             return job.promise;
         };
 
+        service.auth = function (options) {
+            var defer = $q.defer();
+            return service.listHosts().then(function (hosts) {
+                if (!hosts.length) {
+                    defer.reject('You don\'t have Docker hosts');
+                    return defer.promise;
+                }
+                var job = serverTab.call({
+                    name: 'DockerAuth',
+                    data: {host: hosts[0], options: options},
+                    done: function (err, data) {
+                        if (err) {
+                            return false;
+                        }
+                        return data;
+                    }
+                });
+                return job.promise;
+            }, function (error) {
+                defer.reject(error);
+                return defer.promise;
+            });
+        };
+
         service.getRegistriesList = function () {
             return createCall('getRegistriesList', {direct: true});
         };

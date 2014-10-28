@@ -503,9 +503,7 @@ var Docker = function execute(scope) {
                             id: uuid.v4(),
                             api: 'v1',
                             host: host,
-                            port: 5000,
-                            username: 'none',
-                            password: ''
+                            port: '5000'
                         };
                         list.push(registry);
                     }

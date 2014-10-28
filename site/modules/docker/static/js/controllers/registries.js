@@ -188,7 +188,7 @@
                                     return item.host === 'http://' + $scope.registry.host.primaryIp && parseInt(item.port, 10) === 5000;
                                 });
                                 if (registryExist) {
-                                    dialog.close();
+                                    $scope.close();
                                     return PopupDialog.error(
                                         localization.translate(
                                             $scope,
@@ -206,15 +206,13 @@
                                     id: uuid(),
                                     api: 'v1',
                                     host: 'http://' + $scope.registry.host.primaryIp,
-                                    port: 5000,
-                                    username: '',
-                                    password: '',
+                                    port: '5000',
                                     processing: true
                                 };
 
                                 Docker.saveRegistry(registry);
                                 list.push(registry);
-                                dialog.close();
+                                $scope.close();
                                 Docker.createNewRegistry(ng.extend({}, $scope.registry)).then(function () {
                                     $rootScope.$broadcast('createdRegistry', registry);
                                 }, function (error) {
