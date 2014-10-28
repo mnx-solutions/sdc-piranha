@@ -20,6 +20,14 @@
                     } else {
                         scope.date = new Date(ev.date);
                     }
+                }).on('show', function (ev) {
+                    if ($(el).attr('toggled') === 'open') {
+                        $(el).datepicker('hide');
+                    } else {
+                        $(el).attr('toggled', 'open');
+                    }
+                }).on('hide', function (ev) {
+                    $(el).attr('toggled', 'close');
                 });
                 $(el).datepicker("setDate", scope.date);
             }
