@@ -1,4 +1,4 @@
-<div class="modal-dialog">
+<div class="modal-dialog modal-dialog-new-registry">
     <div class="modal-content">
         <div tabindex="-1" data-backdrop="static" data-focus-on="button">
             <div class="modal-header message">
@@ -8,7 +8,7 @@
             <div class="modal-body registry-form" data-ng-hide="loading">
                 <form name="newRegistryForm">
                     <div class="form-group clearfix" data-ng-show="hosts.length">
-                        <label class="control-label" for="hostSelect">Docker Host *</label>
+                        <label class="control-label" for="hostSelect">Docker Host</label>
                         <select data-select-two
                                 id="hostSelect"
                                 data-ng-model="registry.host"
@@ -18,8 +18,9 @@
                                 required>
                         </select>
                     </div>
-                    <div class="form-group clearfix" data-ng-show="!hosts.length">There are no available hosts to create registry</div>
+                    <div class="form-group clearfix" data-ng-show="!hosts.length">There are no available hosts to create registry.</div>
                 </form>
+                <div class="registry-note">Please note, to create new registry, your Docker host VM should have at least 1 Gb of RAM.</div>
             </div>
             <div class="modal-footer">
                 <button data-ng-click="close()" data-button-focus="false" data-label="Cancel" class="btn grey-new effect-orange-button">Cancel</button>
