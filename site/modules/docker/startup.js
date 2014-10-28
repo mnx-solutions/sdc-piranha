@@ -77,23 +77,132 @@ var Docker = function execute(scope) {
         });
     }
 
+    var getRegistries = function (call, client, callback) {
+        if (typeof (client) === 'function') {
+            callback = client;
+            client = scope.api('MantaClient').createClient(call);
+        }
+
+        client.getFileContents('~~/stor/.joyent/docker/registries.json', function (error, list) {
+            if (error && error.statusCode !== 404) {
+                return call.done(error.message, true);
+            }
+
+            try {
+                list = JSON.parse(list);
+            } catch (e) {
+                call.log.warn('Registries list is corrupted');
+                list = [];
+            }
+            callback(error, list);
+        });
+    };
+
+    var saveRegistries = function (call, data, client, callback) {
+        if (typeof (client) === 'function') {
+            callback = client;
+            client = null;
+        }
+        callback = callback || call.done;
+        client = client || scope.api('MantaClient').createClient(call);
+        client.putFileContents('~~/stor/.joyent/docker/registries.json', JSON.stringify(data), function (error) {
+            return callback(error && error.message, true);
+        });
+    };
+
+    var deleteRegistry = function (call, key, value, callback) {
+        getRegistries(call, function (error, list) {
+            var id;
+            list = list.filter(function (item) {
+                var condition = key === 'host' ? item.host === value && parseInt(item.port, 10) === 5000 : item[key] === value;
+                if (condition) {
+                    id = item.id;
+                }
+                return !condition;
+            });
+            if (id) {
+                delete registriesCache[id];
+                return saveRegistries(call, list, callback);
+            }
+        });
+    };
+
+    var methodHandlers = {};
+    methods.forEach(function (method) {
+        methodHandlers[method] = function (call, callback) {
+
+            waitClient(call, call.data.host, function (error, client) {
+                if (error) {
+                    return callback(error);
+                }
+                client.ping(function (error) {
+                    if (error) {
+                        return callback(new DockerHostUnreachable(call.data.host.primaryIp).message, true);
+                    }
+                    client[method](call.data.options, callback);
+                });
+            });
+        };
+    });
+
+    var oldRemove = methodHandlers.remove;
+
+    methodHandlers.remove = function (call, callback) {
+        oldRemove(call, function (err, result) {
+            if (err) {
+                return callback(err);
+            }
+            var container = call.data.container;
+            var ports = [];
+            if (container.Ports.length) {
+                ports = container.Ports.map(function (port) {
+                    return port.PublicPort;
+                });
+            } else {
+                var isPrivateRegistryName = container.Names.some(function (name) {
+                    return name === '/private-registry';
+                });
+                ports = isPrivateRegistryName && container.Image.indexOf('private-registry') >= 0 ? [5000] : [];
+            }
+            var host = call.data.host.primaryIp;
+            if (ports.length) {
+                // delete registry
+                return getRegistries(call, function (error, list) {
+                    var matchingRegistryId;
+                    list = list.filter(function (item) {
+                        if (item.host.substr(item.host.indexOf('://') + 3) === host) {
+                            var matchingPorts = ports.some(function (port) {
+                                return port === parseInt(item.port, 10);
+                            });
+                            matchingRegistryId = matchingPorts ? item.id : null;
+                            return !matchingPorts;
+                        } else {
+                            return true;
+                        }
+                    });
+                    if (matchingRegistryId) {
+                        delete registriesCache[matchingRegistryId];
+                        return saveRegistries(call, list, function (errSave) {
+                            if (errSave) {
+                                call.log.warn(errSave);
+                            }
+                            callback(null, result);
+                        });
+                    }
+                });
+            } else {
+                callback(null, result);
+            }
+        });
+    };
+
     methods.forEach(function (method) {
         server.onCall('Docker' + capitalize(method), {
             verify: function (data) {
                 return data && data.host && typeof (data.host.primaryIp) === 'string';
             },
             handler: function (call) {
-                waitClient(call, call.data.host, function (error, client) {
-                    if (error) {
-                        return call.done(error);
-                    }
-                    client.ping(function (error) {
-                        if (error) {
-                            return call.done(new DockerHostUnreachable(call.data.host.primaryIp).message, true);
-                        }
-                        client[method](call.data.options, call.done.bind(call));
-                    });
-                });
+                methodHandlers[method](call, call.done.bind(call));
             }
         });
 
@@ -172,55 +281,6 @@ var Docker = function execute(scope) {
         }
     });
 
-    var getRegistries = function (call, client, callback) {
-        if (typeof (client) === 'function') {
-            callback = client;
-            client = scope.api('MantaClient').createClient(call);
-        }
-
-        client.getFileContents('~~/stor/.joyent/docker/registries.json', function (error, list) {
-            if (error && error.statusCode !== 404) {
-                return call.done(error.message, true);
-            }
-
-            try {
-                list = JSON.parse(list);
-            } catch (e) {
-                call.log.warn('Registries list is corrupted');
-                list = [];
-            }
-            callback(error, list);
-        });
-    };
-
-    var saveRegistries = function (call, data, client, callback) {
-        if (typeof (client) === 'function') {
-            callback = client;
-            client = null;
-        }
-        callback = callback || call.done;
-        client = client || scope.api('MantaClient').createClient(call);
-        client.putFileContents('~~/stor/.joyent/docker/registries.json', JSON.stringify(data), function (error) {
-            return callback(error && error.message, true);
-        });
-    };
-
-    var deleteRegistry = function (call, key, value, callback) {
-        getRegistries(call, function (error, list) {
-            var id;
-            list = list.filter(function (item) {
-                if (item[key] === value) {
-                    id = item.id;
-                }
-                return item[key] !== value;
-            });
-            if (id) {
-                delete registriesCache[id];
-                return saveRegistries(call, list, callback);
-            }
-        });
-    };
-
     server.onCall('DockerGetRegistriesList', function (call) {
         var defaultRegistry = {
             id: 'default',
@@ -283,7 +343,35 @@ var Docker = function execute(scope) {
         },
         handler: function (call) {
             var registry = call.data.registry;
-            deleteRegistry(call, 'id', registry.id);
+            deleteRegistry(call, 'id', registry.id, function (err) {
+                if (err) {
+                    return call.done(err);
+                }
+                var host = registry.host;
+                waitClient(call, {primaryIp: host.substr(host.indexOf('://') + 3)}, function (error, client) {
+                    if (error) {
+                        return call.done(error);
+                    }
+                    client.ping(function (errPing) {
+                        if (errPing) {
+                            return call.done(new DockerHostUnreachable(host).message, true);
+                        }
+                        client.containers({}, function (err, containers) {
+                            if (err) {
+                                return call.done(err);
+                            }
+                            var matchingContainers = containers.filter(function (container) {
+                                return container.Ports.some(function (port) {
+                                    return port.PublicPort === parseInt(registry.port, 10);
+                                });
+                            });
+                            if (matchingContainers[0]) {
+                                client.remove({id: matchingContainers[0].Id.substr(0, 12), v: true, force: true}, call.done.bind(call));
+                            }
+                        });
+                    });
+                });
+            });
         }
     });
 
