@@ -91,7 +91,7 @@
             };
 
             var getHostContainers = function (machine) {
-                if (!machine.tags || machine.tags.JPC_tag !== 'DockerHost') {
+                if (!machine.tags || machine.tags.JPC_tag !== 'DockerHost' || !machine.ips.length) {
                     return;
                 }
                 Docker.hostInfo({host: machine}).then(function (info) {
