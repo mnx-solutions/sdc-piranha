@@ -5120,6 +5120,9 @@ progress {
 .modal-select-tag-backdrop {
     z-index: 9999990;
 }
+.modal-dialog-new-registry {
+    width: 630px;
+}
 
 /*      Analytics    */
 

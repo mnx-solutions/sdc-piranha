@@ -161,7 +161,9 @@
                                 var availableHosts = result[0];
                                 var containers = result[1];
                                 availableHosts.forEach(function (host) {
-                                    hosts[host.name] = host;
+                                    if (host.memory >= 1024) {
+                                        hosts[host.name] = host;
+                                    }
                                 });
 
                                 containers.forEach(function (container) {
