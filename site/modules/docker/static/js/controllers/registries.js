@@ -1,6 +1,6 @@
 'use strict';
 
-(function (app) {
+(function (ng, app) {
     app.controller(
         'Docker.RegistriesController', [
             '$scope',
@@ -66,6 +66,10 @@
                         id: 'host',
                         name: 'Hostname',
                         sequence: 2,
+                        type: 'progress',
+                        _inProgress: function (object) {
+                            return object.processing;
+                        },
                         active: true
                     },
                     {
@@ -93,7 +97,7 @@
                                     return 'btn grid-mini-btn view effect-orange-button';
                                 },
                                 disabled: function (object) {
-                                    return !object.id;
+                                    return !object.id || object.processing;
                                 },
                                 action: function (object) {
                                     $scope.connectNewRegistry(object.id);
@@ -103,6 +107,9 @@
                                 label: 'Delete',
                                 getClass: function () {
                                     return 'btn grid-mini-btn download effect-orange-button';
+                                },
+                                disabled: function (object) {
+                                    return !object.id || object.processing;
                                 },
                                 action: function (object) {
                                     deleteFromRegistries(object);
@@ -123,11 +130,25 @@
                     registry = registry || 'create';
                     $location.path('docker/registry/' + registry);
                 };
+                $scope.$on('createdRegistry', function (event, data) {
+                     $scope.registries.forEach(function (registry) {
+                         if (registry.id === data.id) {
+                             delete registry.processing;
+                         }
+                     });
+                });
+
+                $scope.$on('failedRegistry', function (event, data) {
+                    $scope.registries = $scope.registries.filter(function (registry) {
+                         return registry.id !== data.id
+                     });
+                });
 
                 $scope.createNewRegistry = function () {
+                    var list = $scope.registries;
                     var opts = {
                         templateUrl: 'docker/static/partials/new-registry.html',
-                        openCtrl: function ($scope, dialog, Docker) {
+                        openCtrl: function ($scope, $rootScope, dialog, Docker) {
                             $scope.hosts = [];
                             $scope.registry = {
                                 host: '',
@@ -161,14 +182,45 @@
                                 window.jQuery('#hostSelect').select2('close');
                                 dialog.close();
                             };
+                            
                             $scope.create = function () {
+                                var registryExist = list.some(function (item) {
+                                    return item.host === 'http://' + $scope.registry.host.primaryIp && parseInt(item.port, 10) === 5000;
+                                });
+                                if (registryExist) {
+                                    dialog.close();
+                                    return PopupDialog.error(
+                                        localization.translate(
+                                            $scope,
+                                            null,
+                                            'Error'
+                                        ),
+                                        localization.translate(
+                                            $scope,
+                                            null,
+                                            'This registry already exists.'
+                                        )
+                                    );
+                                }
+                                var registry = {
+                                    id: uuid(),
+                                    api: 'v1',
+                                    host: 'http://' + $scope.registry.host.primaryIp,
+                                    port: 5000,
+                                    username: '',
+                                    password: '',
+                                    processing: true
+                                };
+
+                                Docker.saveRegistry(registry);
+                                list.push(registry);
                                 dialog.close();
-                                Docker.createNewRegistry(angular.extend({}, $scope.registry)).then(
-                                    angular.noop,
-                                    function (error) {
-                                        PopupDialog.error(null, error);
-                                    }
-                                );
+                                Docker.createNewRegistry(ng.extend({}, $scope.registry)).then(function () {
+                                    $rootScope.$broadcast('createdRegistry', registry);
+                                }, function (error) {
+                                    $rootScope.$broadcast('failedRegistry', registry);
+                                    PopupDialog.error(null, error);
+                                });
                             };
                         }
                     };
@@ -177,4 +229,4 @@
             }
         ]
     );
-}(window.JP.getModule('docker')));
+}(window.angular, window.JP.getModule('docker')));

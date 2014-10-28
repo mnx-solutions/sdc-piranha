@@ -179,8 +179,12 @@ var Docker = function execute(scope) {
         }
     });
 
-    var getRegestries = function (call, callback) {
-        var client = scope.api('MantaClient').createClient(call);
+    var getRegistries = function (call, client, callback) {
+        if (typeof (client) === 'function') {
+            callback = client;
+            client = scope.api('MantaClient').createClient(call);
+        }
+
         client.getFileContents('~~/stor/.joyent/docker/registries.json', function (error, list) {
             if (error && error.statusCode !== 404) {
                 return call.done(error.message, true);
@@ -196,10 +200,31 @@ var Docker = function execute(scope) {
         });
     };
 
-    var saveRegistries = function (call, data) {
-        var client = scope.api('MantaClient').createClient(call);
+    var saveRegistries = function (call, data, client, callback) {
+        if (typeof (client) === 'function') {
+            callback = client;
+            client = null;
+        }
+        callback = callback || call.done;
+        client = client || scope.api('MantaClient').createClient(call);
         client.putFileContents('~~/stor/.joyent/docker/registries.json', JSON.stringify(data), function (error) {
-            return call.done(error && error.message, true);
+            return callback(error && error.message, true);
+        });
+    };
+
+    var deleteRegistry = function (call, key, value, callback) {
+        getRegistries(call, function (error, list) {
+            var id;
+            list = list.filter(function (item) {
+                if (item[key] === value) {
+                    id = item.id;
+                }
+                return item[key] !== value;
+            });
+            if (id) {
+                delete registriesCache[id];
+                return saveRegistries(call, list, callback);
+            }
         });
     };
 
@@ -211,7 +236,7 @@ var Docker = function execute(scope) {
             port: '443',
             username: 'none'
         };
-        getRegestries(call, function (error, list) {
+        getRegistries(call, function (error, list) {
             registriesCache['default'] = defaultRegistry;
             if (error && error.statusCode === 404) {
                 return call.done(null, [defaultRegistry]);
@@ -240,7 +265,7 @@ var Docker = function execute(scope) {
         },
         handler: function (call) {
             var savedRegistry = call.data.registry;
-            getRegestries(call, function (error, list) {
+            getRegistries(call, function (error, list) {
                 var edited;
                 list = list.map(function (registry) {
                     if (savedRegistry.id === registry.id) {
@@ -265,15 +290,7 @@ var Docker = function execute(scope) {
         },
         handler: function (call) {
             var registry = call.data.registry;
-            getRegestries(call, function (error, list) {
-                var index;
-                var exist = list.some(function (item, i) { index = i; return item.id === registry.id; });
-                if (exist) {
-                    delete registriesCache[registry.id];
-                    list.splice(index, 1);
-                    saveRegistries(call, list);
-                }
-            });
+            deleteRegistry(call, 'id', registry.id);
         }
     });
 
@@ -466,21 +483,34 @@ var Docker = function execute(scope) {
             }, function (error) {
                 fs.unlinkSync(temp + 'Dockerfile');
                 fs.rmdirSync(temp);
+                var host = 'http://' + call.data.host.primaryIp;
                 if (error) {
-                    return call.done(error);
+                    return deleteRegistry(call, 'host', host, function (err) {
+                        return call.done(error);
+                    });
                 }
-                getRegestries(call, function (error, list) {
-                    var registry = {
-                        id: uuid.v4(),
-                        api: 'v1',
-                        host: 'http://' + call.data.host.primaryIp,
-                        port: 5000,
-                        username: 'none',
-                        password: ''
-                    };
-                    list.push(registry);
+                getRegistries(call, mantaClient, function (error, list) {
+                    var registry;
+                    list = list.map(function (item) {
+                        if (item.host === host) {
+                            delete item.processing;
+                            registry = item;
+                        }
+                        return item;
+                    });
+                    if (!registry || !registry.id) {
+                        registry = {
+                            id: uuid.v4(),
+                            api: 'v1',
+                            host: host,
+                            port: 5000,
+                            username: 'none',
+                            password: ''
+                        };
+                        list.push(registry);
+                    }
                     registriesCache[registry.id] = registry;
-                    saveRegistries(call, list);
+                    saveRegistries(call, list, mantaClient);
                 });
             });
         }
