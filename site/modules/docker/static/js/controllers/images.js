@@ -163,10 +163,14 @@
                     remove: {
                         single: 'Please confirm that you want to remove this image.',
                         plural: 'Please confirm that you want to remove selected images.'
+                    },
+                    push: {
+                        single: 'Please confirm that you want to push this image.',
+                        plural: 'Please confirm that you want to push selected images.'
                     }
                 };
 
-                function makeImageAction (action, messageTitle, messageBody) {
+                function makeImageAction(action, messageTitle, messageBody) {
                     var messageGroup = '';
                     if ($scope.checkedItems.length) {
                         var groupingImages = [];
@@ -217,7 +221,8 @@
                                     $scope,
                                     null,
                                     messageBody[$scope.checkedItems.length > 1 ? 'plural' : 'single'] + messageGroup
-                                ), actionFunction
+                                ),
+                                actionFunction
                             );
                         } else {
                             actionFunction();
@@ -239,8 +244,7 @@
                             $scope,
                             null,
                             'No images selected for the action.'
-                        ), function () {
-                        }
+                        )
                     );
                 };
 

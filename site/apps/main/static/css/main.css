@@ -5077,6 +5077,8 @@ label.checkbox.folder-name-form-checkbox
     margin: 10px 0;
 }
 
+
+.modal-dialog-push-image .form-group span.edit-label,
 .modal-dialog-find-images .form-group span.edit-label {
     display: inline-block;
     margin-right: 10px;

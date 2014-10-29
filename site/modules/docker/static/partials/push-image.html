@@ -1,0 +1,39 @@
+<div class="modal-dialog modal-dialog-push-image">
+    <div class="modal-content">
+        <div tabindex="-1" data-backdrop="static" data-focus-on="button">
+            <div class="modal-header message">
+                <h5><i class="glyphicon glyphicon-info-sign"></i><b>Push image {{ imageName }}</b></h5>
+            </div>
+            <div class="modal-body loading-medium" data-ng-show="loading"></div>
+            <div class="modal-body registry-form" data-ng-hide="loading">
+                <form name="newRegistryForm" class="configurationForm">
+                    <div class="form-group">
+                        <span class="orange-asterix edit-label">Registry</span>
+                        <span class="edit-value">
+                                    <select data-select-two
+                                            id="registrySelect"
+                                            data-ng-model="input.registry"
+                                            data-select="input.registry.host"
+                                            data-ng-options="registry.host for registry in registries"
+                                            ui-select2="{width: '100%'}"
+                                            required>
+                                    </select>
+                        </span>
+                    </div>
+                    <div class="form-group">
+                        <span class="orange-asterix edit-label">Name</span>
+                        <span class="edit-value">
+                                    <input type="text"
+                                           name="name"
+                                           data-ng-model="input.name"/>
+                        </span>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button data-ng-click="close()" data-button-focus="false" data-label="Cancel" class="btn grey-new effect-orange-button">Cancel</button>
+                <button data-ng-click="push()" data-button-focus="true" data-label="Push" class="btn orange" data-ng-disabled="loading && input.name && input.registry">Push</button>
+            </div>
+        </div>
+    </div>
+</div>

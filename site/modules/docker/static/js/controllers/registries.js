@@ -184,7 +184,7 @@
                                 window.jQuery('#hostSelect').select2('close');
                                 dialog.close();
                             };
-                            
+
                             $scope.create = function () {
                                 var registryExist = list.some(function (item) {
                                     return item.host === 'https://' + $scope.registry.host.primaryIp && parseInt(item.port, 10) === 5000;
@@ -209,7 +209,8 @@
                                     api: 'v1',
                                     host: 'https://' + $scope.registry.host.primaryIp,
                                     port: '5000',
-                                    processing: true
+                                    processing: true,
+                                    type: 'local'
                                 };
 
                                 Docker.saveRegistry(registry);

@@ -19,20 +19,16 @@
                 $scope.registries = [];
                 $scope.registryApiVersions = ['v1'];
 
-                var newRegistry = function () {
+                var newRegistry = function (type) {
                     $scope.registry = {
                         api: $scope.registryApiVersions[0],
                         host: null,
                         port: null,
                         username: null,
                         email: null,
-                        password: null
+                        password: null,
+                        type: type
                     };
-                };
-
-                var errorCallback = function (err) {
-                    $scope.loading = false;
-                    PopupDialog.errorObj(err);
                 };
 
                 $scope.registries = [];
@@ -41,7 +37,7 @@
                     $scope.registries = list;
                     if ($scope.registryId === 'create') {
                         $scope.registryId = null;
-                        newRegistry();
+                        newRegistry('remote');
                     } else {
                         $scope.registries.forEach(function (registry) {
                             if (registry.id === $scope.registryId) {
@@ -76,11 +72,11 @@
                     $scope.registries.forEach(function (registry) {
                         registry.id = registry.id || '';
                         if (registry.api === connectedRegistry.api &&
-                            registry.host === connectedRegistry.host &&
-                            registry.port === connectedRegistry.port &&
-                            registry.username == connectedRegistry.username &&
-                            registry.email == connectedRegistry.email &&
-                            registry.id !== connectedRegistry.id) {
+                                registry.host === connectedRegistry.host &&
+                                registry.port === connectedRegistry.port &&
+                                registry.username == connectedRegistry.username &&
+                                registry.email == connectedRegistry.email &&
+                                registry.id !== connectedRegistry.id) {
                             exist = true;
                         }
                     });
