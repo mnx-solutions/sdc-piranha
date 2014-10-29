@@ -28,15 +28,15 @@
                 </tr>
                 <tr>
                     <td class="orange-asterix">Hostname</td>
-                    <td><input name="host" type="text" data-ng-model="registry.host" data-ng-disabled="loadingRegistry" required/></td>
+                    <td><input name="host" type="text" data-ng-model="registry.host" required/></td>
                 </tr>
                 <tr>
                     <td class="orange-asterix">Port</td>
-                    <td><input name="port" type="text" data-ng-model="registry.port" data-ng-disabled="loadingRegistry" required/></td>
+                    <td><input name="port" type="text" class="ng-dirty" data-ng-class="{'ng-invalid': !portValid, 'ng-valid': portValid}" data-ng-change="portChanged(registry.port)" data-ng-model="registry.port"/></td>
                 </tr>
                 <tr>
                     <td>Username</td>
-                    <td><input name="username" type="text" data-ng-model="registry.username" data-ng-disabled="loadingRegistry"/></td>
+                    <td><input name="username" type="text" data-ng-model="registry.username"/></td>
                 </tr>
                 <tr>
                     <td data-ng-class="{'orange-asterix': registry.username.length > 0 && registry.password.length > 0}">Email</td>
@@ -49,7 +49,7 @@
                 </tr>
                 <tr>
                     <td>Password</td>
-                    <td><input name="password" type="password" data-ng-model="registry.password" data-ng-disabled="loadingRegistry"/></td>
+                    <td><input name="password" type="password" data-ng-model="registry.password"/></td>
                 </tr>
             </table>
         </form>
@@ -57,7 +57,7 @@
         <span class="orange-asterix-left">required fields</span>
         <div class="pull-right">
             <a href="#!/docker/registries" class="btn grey-new effect-orange-button">Cancel</a>
-            <button data-ng-click="connectRegistry()" class="btn orange" data-ng-disabled="registryForm.$invalid">Connect</button>
+            <button data-ng-click="connectRegistry()" class="btn orange" data-ng-disabled="registryForm.$invalid || !portValid">Connect</button>
         </div>
     </div>
 </div>
