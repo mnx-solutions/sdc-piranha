@@ -73,7 +73,7 @@
                     if (host && host.primaryIp) {
                         $scope.container.Image = 'base';
                         $scope.containers = [];
-                        Docker.listContainers({host: host}).then(function (containers) {
+                        Docker.listContainers({host: host, options: {all: true}}).then(function (containers) {
                             $scope.containers = containers.map(function (container) {
                                 container.Id = container.Id.slice(0, 12);
                                 container.Names = container.Names.length ? container.Names.join(', ') : '';
