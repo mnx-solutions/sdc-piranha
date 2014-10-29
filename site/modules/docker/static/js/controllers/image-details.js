@@ -51,7 +51,7 @@
                             image.Created = new Date(image.Created * 1000);
                         });
                         $scope.imageInfoTags = '';
-                        if ($scope.image.info) {
+                        if ($scope.image.info && $scope.image.info.Tags) {
                             $scope.imageInfoTags = $scope.image.info.Tags.join(', ');
                         }
                         $scope.imageContainer = $scope.image.Container.slice(0, 12);
