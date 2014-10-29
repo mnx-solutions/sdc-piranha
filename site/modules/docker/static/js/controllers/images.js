@@ -392,6 +392,13 @@
                                     ]).then(function (result) {
                                         $scope.hosts = result[0] || [];
                                         $scope.tags = result[1] || [];
+                                        if (!Array.isArray($scope.tags)) {
+                                            var tagsArr = [];
+                                            for (var tagKey in $scope.tags) {
+                                                tagsArr.push({name: tagKey});
+                                            }
+                                            $scope.tags = tagsArr;
+                                        }
                                         $scope.tags.push({name: 'all'});
                                     });
 

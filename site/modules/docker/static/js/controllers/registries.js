@@ -187,7 +187,7 @@
                             
                             $scope.create = function () {
                                 var registryExist = list.some(function (item) {
-                                    return item.host === 'http://' + $scope.registry.host.primaryIp && parseInt(item.port, 10) === 5000;
+                                    return item.host === 'https://' + $scope.registry.host.primaryIp && parseInt(item.port, 10) === 5000;
                                 });
                                 if (registryExist) {
                                     $scope.close();
@@ -207,7 +207,7 @@
                                 var registry = {
                                     id: uuid(),
                                     api: 'v1',
-                                    host: 'http://' + $scope.registry.host.primaryIp,
+                                    host: 'https://' + $scope.registry.host.primaryIp,
                                     port: '5000',
                                     processing: true
                                 };
