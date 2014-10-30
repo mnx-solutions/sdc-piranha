@@ -564,7 +564,7 @@ var Docker = function execute(scope) {
             }, function (error) {
                 fs.unlinkSync(temp + 'Dockerfile');
                 fs.rmdirSync(temp);
-                var host = 'http://' + call.data.host.primaryIp;
+                var host = 'https://' + call.data.host.primaryIp;
                 if (error) {
                     return deleteRegistry(call, 'host', host, function (err) {
                         return call.done(error);
