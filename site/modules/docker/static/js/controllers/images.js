@@ -67,6 +67,7 @@
                                 image.images = 'top';
                                 topImages.push(image.Id);
                             }
+                            image.repository = image.RepoTags ? image.RepoTags[0].split(':')[0] : '';
                         });
                         imagesWithoutGrouping = angular.copy(images);
                         $scope.images = getGroupedImages(images);
@@ -96,15 +97,12 @@
                     {
                         id: 'repository',
                         name: 'Repository',
-                        _order: 'repo',
+                        _order: 'repository',
                         sequence: 2,
                         active: true,
                         type: 'progress',
                         _inProgress: function (image) {
                             return image.actionInProgress;
-                        },
-                        _getter: function (image) {
-                            return image.RepoTags[0].split(':')[0];
                         }
                     },
                     {
@@ -122,6 +120,7 @@
                         name: 'Host',
                         sequence: 4,
                         active: true,
+                        _order: 'hostName',
                         type: 'html',
                         _getter: function (image) {
                             var html;
