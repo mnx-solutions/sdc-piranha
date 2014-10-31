@@ -146,12 +146,89 @@
                         $scope,
                         null,
                         'Please confirm that you want to remove this image.'
-                    ), function () {
+                    ),
+                    function () {
                         $scope.actionInProgress = true;
                         Docker.removeImage(image).then(function () {
                             $location.path('/docker/images');
                         }, errorCallback);
-                    });
+                    }
+                );
+            };
+
+            function parseTag(tag) {
+                var parts = /(?:([^:]+:\d+)\/)?((?:([^\/]+)\/)?([^:]+))(?::(\w+))?/.exec(tag);
+                if (!parts || !tag) {
+                    return {};
+                }
+
+                return {
+                    tag: parts[5],
+                    name: parts[4],
+                    repository: parts[3] || '',
+                    fullname: parts[2],
+                    registry: parts[1]
+                };
+            }
+
+            function urlParser(url) {
+                var a = document.createElement('a');
+                a.href = url;
+                return a;
+            }
+
+            $scope.pushImage = function () {
+                PopupDialog.custom({
+                    templateUrl: 'docker/static/partials/push-image.html',
+                    openCtrl: ['$scope', 'dialog', 'Docker', 'notification', function (scope, dialog, Docker, notification) {
+                        var tags = $scope.image.info.Tags || [];
+                        var parsedTag = parseTag(tags[0]);
+                        scope.loading = true;
+                        scope.registries = [];
+                        scope.tag = '';
+                        scope.imageName = parsedTag.fullname;
+                        scope.input = {
+                            registry: {},
+                            name: parsedTag.fullname || ''
+                        };
+
+                        Docker.getRegistriesList().then(function (registries) {
+                            scope.registries = registries;
+                            if (parsedTag.registry) {
+                                scope.input.registry = registries.find(function (registry) {
+                                    return urlParser(registry.host).host === parsedTag.registry;
+                                });
+                            }
+                            scope.loading = false;
+                        }, errorCallback);
+
+                        scope.close = function () {
+                            dialog.close();
+                        };
+
+                        scope.push = function () {
+                            PopupDialog.message(null, 'Pushing images takes some time. You can continue your work and get notification once push is completed.');
+                            Docker.pushImage({
+                                host: {primaryIp: image.primaryIp},
+                                options: {
+                                    image: angular.copy($scope.image),
+                                    registry: scope.input.registry,
+                                    tag: parsedTag.tag,
+                                    name: scope.input.name
+                                }
+                            }, function (error) {
+                                if (error) {
+                                    notification.error(error);
+                                }
+                            }).then(function (result) {
+                                notification.success('Pushing of image "' + scope.input.name + '" is completed.');
+                            }, function (error) {
+                                notification.error(error);
+                            });
+                            dialog.close();
+                        };
+                    }]
+                });
             };
         }
     ]);

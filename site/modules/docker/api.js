@@ -238,7 +238,17 @@ module.exports = function execute(scope, register) {
             method: 'GET',
             path: '/images/:id/json'
         },
+        tagImage: {
+            method: 'POST',
+            path: '/images/:name/tag',
+            params: {
+                repo: '=',
+                tag: '=',
+                force: '='
+            }
+        },
         pushImage : {
+            raw: true,
             method: 'POST',
             path: '/images/:name/push',
             params: {

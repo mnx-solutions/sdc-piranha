@@ -8,6 +8,7 @@ var os = require('os');
 var fs = require('fs');
 var fstream = require('tar/node_modules/fstream');
 var ursa = require('ursa');
+var url = require('url');
 var uuid = require('../../static/vendor/uuid/uuid.js');
 var registryDockerfile = fs.readFileSync(__dirname + '/data/registry-Dockerfile', 'utf-8');
 
@@ -287,7 +288,8 @@ var Docker = function execute(scope) {
             api: 'v1',
             host: 'https://index.docker.io',
             port: '443',
-            username: 'none'
+            username: 'none',
+            type: 'global'
         };
         getRegistries(call, function (error, list) {
             registriesCache['default'] = defaultRegistry;
@@ -347,30 +349,34 @@ var Docker = function execute(scope) {
                 if (err) {
                     return call.done(err);
                 }
-                var host = registry.host;
-                waitClient(call, {primaryIp: host.substr(host.indexOf('://') + 3)}, function (error, client) {
-                    if (error) {
-                        return call.done(error);
-                    }
-                    client.ping(function (errPing) {
-                        if (errPing) {
-                            return call.done(new DockerHostUnreachable(host).message, true);
+                var host = url.parse(registry.host).hostname;
+                if (registry.type === 'local') {
+                    waitClient(call, {primaryIp: host}, function (error, client) {
+                        if (error) {
+                            return call.done(error);
                         }
-                        client.containers({}, function (err, containers) {
-                            if (err) {
-                                return call.done(err);
+                        client.ping(function (errPing) {
+                            if (errPing) {
+                                return call.done(new DockerHostUnreachable(host).message, true);
                             }
-                            var matchingContainers = containers.filter(function (container) {
-                                return container.Ports.some(function (port) {
-                                    return port.PublicPort === parseInt(registry.port, 10);
+                            client.containers({}, function (err, containers) {
+                                if (err) {
+                                    return call.done(err);
+                                }
+                                var matchingContainers = containers.filter(function (container) {
+                                    return container.Ports.some(function (port) {
+                                        return port.PublicPort === parseInt(registry.port, 10);
+                                    });
                                 });
+                                if (matchingContainers[0]) {
+                                    client.remove({id: matchingContainers[0].Id.substr(0, 12), v: true, force: true}, call.done.bind(call));
+                                }
                             });
-                            if (matchingContainers[0]) {
-                                client.remove({id: matchingContainers[0].Id.substr(0, 12), v: true, force: true}, call.done.bind(call));
-                            }
                         });
                     });
-                });
+                } else {
+                    call.done(null, 'OK');
+                }
             });
         }
     });
@@ -403,6 +409,172 @@ var Docker = function execute(scope) {
                 req.end();
             });
         });
+    });
+
+    function parseTag(tag) {
+        var parts = /(?:([^:]+:\d+)\/)?((?:([^\/]+)\/)?([^:]+))(?::(\w+))?/.exec(tag);
+        if (!parts) {
+            return {};
+        }
+
+        return {
+            tag: parts[5],
+            name: parts[4],
+            repository: parts[3] || '',
+            fullname: parts[2],
+            registry: parts[1]
+        };
+    }
+
+    server.onCall('DockerUploadImage', {
+        verify: function (data) {
+            return data && data.host && data.host.primaryIp
+                && data.options && data.options.image && data.options.image.Id && data.options.registry && data.options.name;
+        },
+        handler: function (call) {
+            var image = call.data.options.image;
+            var registry = call.data.options.registry;
+            var name = call.data.options.name;
+            var parsedTag = parseTag(name);
+            var pipeline = [];
+            var registryUrl = url.parse(registry.host).hostname + ':' + registry.port;
+            var taggedName = registry.username + '/' + parsedTag.name;
+            if (registryUrl !== 'index.docker.io:443') {
+                registry.type = registry.type || 'local';
+                registryUrl = registry.type === 'local' ? 'localhost:5000' : registryUrl;
+                taggedName = registryUrl + '/' + parsedTag.fullname;
+            }
+
+            pipeline.push(function createClient(collector, callback) {
+                Docker.createClient(call, call.data.host, function (error, client) {
+                    collector.client = client;
+                    callback(error);
+                });
+            });
+
+            pipeline.push(function getRegistry(collector, callback) {
+                getRegistries(call, function (error, list) {
+                    if (error) {
+                        if (error.statusCode !== 404) {
+                            return callback(error.message || error);
+                        }
+                        return callback('Please fill authentication information for the registry.');
+                    }
+
+                    var registryRecord = list.find(function (item) {
+                        return item.id === registry.id;
+                    });
+                    if (!registryRecord) {
+                        if (registry.type === 'global') {
+                            return callback('Please fill authentication information for the registry.');
+                        }
+                        return callback('Registry not found!');
+                    }
+
+                    if (!registryRecord.auth) {
+                        collector.registry = {
+                            auth: '',
+                            email: ''
+                        };
+                        return callback();
+                    }
+
+                    var auth = new Buffer(registryRecord.auth, 'base64').toString('utf8').split(':');
+                    collector.registry = {
+                        username: auth[0],
+                        password: auth[1],
+                        email: registryRecord.email,
+                        serveraddress: registryRecord.host + '/' + registry.api + '/'
+                    };
+                    callback();
+                });
+            });
+
+            pipeline.push(function addTag(collector, callback) {
+                collector.client.tagImage({
+                    name: image.Id,
+                    repo: taggedName
+                }, callback);
+            });
+
+            pipeline.push(function getImageSlices(collector, callback) {
+                collector.client.historyImage({id: image.Id}, function (error, slices) {
+                    collector.slices = slices;
+                    callback(error);
+                });
+            });
+
+            pipeline.push(function pushImage(collector, callback) {
+                var images = {};
+                var total = 0;
+                var buffer = 0;
+                collector.slices.forEach(function (slice) {
+                    total += slice.Size;
+                    images[slice.Id.substr(0, 12)] = slice;
+                });
+                var uploaded = total;
+
+                collector.client.pushImage({
+                    tag: parsedTag.tag,
+                    name: taggedName
+                }, function (error, req) {
+                    if (error) {
+                        return callback(error);
+                    }
+                    if (collector.registry) {
+                        req.setHeader('X-Registry-Auth', new Buffer(JSON.stringify(collector.registry)).toString('base64'));
+                    }
+
+                    req.on('result', function (error, res) {
+                        if (error) {
+                            return callback(error);
+                        }
+                        res.on('error', callback);
+                        res.on('end', callback);
+                        jsonStreamParser(res, function (chunk) {
+                            var currentImage = images[chunk.id];
+                            if (chunk.error) {
+                                return call.update(chunk.error);
+                            }
+                            if (!chunk.id || !currentImage) {
+                                return call.update(null, {status: chunk.status});
+                            }
+
+                            if (chunk.status === 'Image already pushed, skipping') {
+                                uploaded -= currentImage.Size;
+                            } else if (chunk.progressDetail) {
+                                var progressDetail = chunk.progressDetail;
+                                if (chunk.status === 'Pushing') {
+                                    uploaded -= progressDetail.current || 0;
+                                } else if (chunk.status === 'Buffering to disk') {
+                                    buffer += progressDetail.current || 0;
+                                }
+                            }
+
+                            var result = {
+                                status: chunk.status,
+                                total: total,
+                                uploaded: total - uploaded,
+                                percents: Math.floor((total - uploaded) * 100 / total),
+                                buffer: buffer
+                            };
+                            call.log.debug({chunk: chunk, result: result}, 'chunk received');
+                            call.update(null, result);
+                        });
+                    });
+                    req.end();
+                });
+            });
+            vasync.pipeline({
+                funcs: pipeline,
+                arg: {}
+            }, function (error) {
+                if (error) {
+                    return call.done(error);
+                }
+                call.done(null, 'OK');
+            });
+        }
     });
 
     server.onCall('DockerImageTags', {
@@ -522,9 +694,9 @@ var Docker = function execute(scope) {
                     name: 'private-registry',
                     Image: 'private-registry:latest',
                     Env: [
-                            'MANTA_KEY_ID=' + collector.fingerprint,
+                        'MANTA_KEY_ID=' + collector.fingerprint,
                         'MANTA_PRIVATE_KEY=/root/.ssh/user_id_rsa',
-                            'MANTA_USER=' + mantaClient.user,
+                        'MANTA_USER=' + mantaClient.user,
                         'SETTINGS_FLAVOR=dev',
                         'SEARCH_BACKEND=sqlalchemy',
                         'DOCKER_REGISTRY_CONFIG=/config.yml',
@@ -584,7 +756,8 @@ var Docker = function execute(scope) {
                             id: uuid.v4(),
                             api: 'v1',
                             host: host,
-                            port: '5000'
+                            port: '5000',
+                            type: 'local'
                         };
                         list.push(registry);
                     }

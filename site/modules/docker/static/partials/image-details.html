@@ -5,7 +5,9 @@
      --><li><a href="#!/docker/images">Images</a></li>
     </ul>
     <h3 class="page-title">Image Details</h3>
-
+    <div class="page-title-btn">
+        <button data-ng-disabled="loading" data-ng-click="pushImage()" type="button" class="btn btn-big orange text-to-left">Push Image</button>
+    </div>
     <div class="loading-large span12" data-ng-show="loading"></div>
 
     <div class="inl-table" data-ng-hide="loading">

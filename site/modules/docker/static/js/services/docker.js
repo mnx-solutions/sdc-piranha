@@ -1,24 +1,23 @@
 'use strict';
 
 
-(function (ng, app) {
-    app.factory('Docker', [
-        'serverTab',
-        'Account',
-        'errorContext',
-        'EventBubble',
-        'Machine',
-        'PopupDialog',
-        'localization',
-        'Storage',
-        '$q',
-        function (serverTab, Account, errorContext, EventBubble, Machine, PopupDialog, localization, Storage, $q) {
+(function (ng, app) {app.factory('Docker', [
+    'serverTab',
+    'Account',
+    'errorContext',
+    'EventBubble',
+    'Machine',
+    'PopupDialog',
+    'localization',
+    'Storage',
+    '$q',
+    function (serverTab, Account, errorContext, EventBubble, Machine, PopupDialog, localization, Storage, $q) {
 
         var service = {};
         var containerActions = ['start', 'stop', 'pause', 'unpause', 'inspect', 'restart', 'kill', 'logs'];
         var imageActions = ['remove', 'inspect', 'history'];
         var billingIsActive = false;
-        var mantaIsActive = undefined;
+        var mantaIsActive;
 
         function capitalize(str) {
             return str[0].toUpperCase() + str.substr(1);
@@ -55,7 +54,11 @@
                 });
             }
             if (billingIsActive && mantaIsActive !== undefined) {
-                    mantaIsActive ? callback() : errorPingManta();
+                if (mantaIsActive) {
+                    callback();
+                } else {
+                    errorPingManta();
+                }
             } else {
                 Account.getAccount().then(function (account) {
                     var billingEnabled = account.provisionEnabled;
@@ -124,10 +127,11 @@
 
             var name = 'Docker' + capitalize(method);
             if (!options || options.host === 'All') {
-                delete (options && options.host);
+                options = options || {};
+                delete options.host;
                 name += 'All';
             }
-            options = options || {};
+
             job.promise = serverTab.call({
                 name: name,
                 data: options,
@@ -374,6 +378,10 @@
 
         service.createNewRegistry = function (opts) {
             return createCall('createRegistry', angular.extend({direct: true, host: opts.host, options: opts}));
+        };
+
+        service.pushImage = function (opts) {
+            return createCall('uploadImage', opts);
         };
 
         service.getImageTagsList = function (imageTags) {
