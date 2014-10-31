@@ -737,6 +737,7 @@ var Docker = function execute(scope) {
                         'MANTA_KEY_ID=' + collector.fingerprint,
                         'MANTA_PRIVATE_KEY=/root/.ssh/user_id_rsa',
                         'MANTA_USER=' + mantaClient.user,
+                        'MANTA_SUBUSER=' + Docker.SUBUSER_LOGIN,
                         'SETTINGS_FLAVOR=dev',
                         'SEARCH_BACKEND=sqlalchemy',
                         'DOCKER_REGISTRY_CONFIG=/config.yml',

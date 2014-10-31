@@ -51,6 +51,7 @@ joyent_manta: &joyent_manta\\n\
     key_id: _env:MANTA_KEY_ID\\n\
     private_key: _env:MANTA_PRIVATE_KEY\\n\
     account: _env:MANTA_USER\\n\
+    subuser: _env:MANTA_SUBUSER\\n\
 \\n\
 # This is the default configuration when no flavor is specified\\n\
 dev: &dev\\n\

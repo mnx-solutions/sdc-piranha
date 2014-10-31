@@ -389,47 +389,7 @@ module.exports = function execute(scope) {
 
     server.onCall('FileManSetRoles', function (call) {
         var client = Manta.createClient(call);
-        var roles = call.data.roles || [];
-        var chattrOpts = {
-            headers: {'role-tag': roles.join(',') }
-        };
-        var path = call.data.path;
-        var chunkSize = 50;
-        var queue = vasync.queue(function (entry, callback) {
-            var fullPath = entry;
-            if (path !== entry) {
-                fullPath = entry.parent + '/' + entry.name;
-            }
-            client.chattr(fullPath, chattrOpts, callback);
-        }, chunkSize);
-
-        queue.push(path);
-
-        if (call.data.recursive) {
-            client.ftw(path, function (err, res) {
-                if (err) {
-                    return call.done(err);
-                }
-
-                res.on('entry', function (obj) {
-                    queue.push(obj);
-                });
-
-                res.on('end', function () {
-                    queue.drain = function () {
-                        call.done(null);
-                    }
-                });
-
-                res.on('error', function (error) {
-                    call.done(error);
-                });
-            });
-        } else {
-            queue.drain = function () {
-                call.done(null);
-            }
-        }
+        client.setRoleTags(call.data.path, call.data.roles, call.data.recursive, call.done.bind(call));
     });
 
     var pingStorage = function (call, pingFunc) {

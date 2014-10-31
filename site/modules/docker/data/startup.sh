@@ -10,6 +10,7 @@ DISABLE_TLS=$(/usr/sbin/mdata-get disable-tls)
 MANTA_URL=$(/usr/sbin/mdata-get manta-url)
 MANTA_KEY_ID=$(ssh-keygen -lf /root/.ssh/user_id_rsa.pub | awk '{print $2}')
 MANTA_USER=$(/usr/sbin/mdata-get manta-account)
+MANTA_SUBUSER=$(/usr/sbin/mdata-get manta-subuser)
 KEYS_PATH=/root/.docker
 MANTA_DOCKER_PATH=/${MANTA_USER}/stor/.joyent/docker
 DOCKER_VERSION="-1.1.2"
@@ -17,14 +18,21 @@ DOCKER_DIR=/mnt/docker
 LOGS_DIR=/mnt/manta
 IP_ADDRESSES=$(ip a s | grep 'inet ' | awk '{print $2}' | grep -v 127.0.0.1 | awk -F/ '{print $1}')
 
-for key in $(echo "user-script private-key public-key manta-account manta-url disable-tls");do
+if [ ! -e ${KEYS_PATH} ];then
+    mkdir -p ${KEYS_PATH}
+fi
+mdata-get ca > ${KEYS_PATH}/ca.pem
+mdata-get server-key > ${KEYS_PATH}/server-key.pem
+mdata-get server-cert > ${KEYS_PATH}/server-cert.pem
+
+for key in $(echo "user-script private-key public-key manta-account manta-url disable-tls ca server-key server-cert");do
     /usr/sbin/mdata-delete ${key}
 done
 
 
 function manta {
     local alg=rsa-sha256
-    local keyId=/${MANTA_USER}/keys/${MANTA_KEY_ID}
+    local keyId=/${MANTA_USER}/${MANTA_SUBUSER}/keys/${MANTA_KEY_ID}
     local now=$(LC_ALL=C date -u "+%a, %d %h %Y %H:%M:%S GMT")
     local sig=$(echo "date:" ${now} | \
                 tr -d '\n' | \
@@ -35,23 +43,11 @@ function manta {
         -H "Authorization: Signature keyId=\"$keyId\",algorithm=\"$alg\",signature=\"$sig\""
 }
 
-manta /${MANTA_USER}/stor/.joyent -X PUT -H "content-type: application/json; type=directory"
-manta /${MANTA_USER}/stor/.joyent/docker -X PUT -H "content-type: application/json; type=directory"
-manta /${MANTA_USER}/stor/.joyent/docker/logs -X PUT -H "content-type: application/json; type=directory"
-manta /${MANTA_USER}/stor/.joyent/docker/logs/$(hostname) -X PUT -H "content-type: application/json; type=directory"
+manta ${MANTA_DOCKER_PATH}/logs -X PUT -H "content-type: application/json; type=directory"
+manta ${MANTA_DOCKER_PATH}/logs/$(hostname) -X PUT -H "content-type: application/json; type=directory"
 
 function writeStage {
     manta ${MANTA_DOCKER_PATH}/.status-$(hostname) -XPUT -d"{\"status\": \"$1\"}"
-}
-
-function downloadCertificates {
-    if [ ! -e ${KEYS_PATH} ];then
-        mkdir -p ${KEYS_PATH}
-    fi
-
-    for f in $(echo "ca.pem server-cert.pem server-key.pem key.pem cert.pem");do
-        manta ${MANTA_DOCKER_PATH}/${f} > ${KEYS_PATH}/${f}
-    done
 }
 
 function installDocker {
@@ -162,7 +158,7 @@ ${DOCKER_DIR}/containers/*/*json.log {
     postrotate
         manta() {
             alg=rsa-sha256
-            keyId=/${MANTA_USER}/keys/${MANTA_KEY_ID}
+            keyId=/${MANTA_USER}/${MANTA_SUBUSER}/keys/${MANTA_KEY_ID}
             now=\$(LC_ALL=C date -u "+%a, %d %h %Y %H:%M:%S GMT")
             sig=\$(echo "date:" \${now} | \\
                         tr -d '\\n' | \\
@@ -175,7 +171,7 @@ ${DOCKER_DIR}/containers/*/*json.log {
 
         for f in \$(find ${LOGS_DIR} -type f ! -name '*-last.log');do
             ContainerId=\$(basename \${f} | awk -F- '{print \$1}')
-            ContainerLogPath=/${MANTA_USER}/stor/.joyent/docker/logs/\$(hostname)/\${ContainerId}
+            ContainerLogPath=${MANTA_DOCKER_PATH}/logs/\$(hostname)/\${ContainerId}
             manta \${ContainerLogPath} -XPUT -H "content-type: application/json; type=directory"
             manta \${ContainerLogPath}/\$(date +"%F").log -XPUT -T \${f}
             mv \${f} ${LOGS_DIR}/\${ContainerId}-last.log
@@ -185,12 +181,6 @@ ${DOCKER_DIR}/containers/*/*json.log {
 END
     apt-get install -y logrotate
 }
-
-writeStage "initialization"
-if [ -z ${DISABLE_TLS} ]; then
-    writeStage "downloading certificates"
-    downloadCertificates
-fi
 
 writeStage "installing docker"
 installDocker
