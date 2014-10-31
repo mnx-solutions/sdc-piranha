@@ -205,7 +205,7 @@
                             var host;
                             for (host in portBindings) {
                                 if (portBindings.hasOwnProperty(host)) {
-                                    portBindings[host] = containerPorts[host] || {"HostPort": "", "HostIp": ""};
+                                    portBindings[host] = containerPorts[host] || [{"HostPort": "", "HostIp": ""}];
                                 }
                             }
                             var volumes = resp.Config.Volumes;
