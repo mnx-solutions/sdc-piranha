@@ -213,31 +213,42 @@ var Docker = function execute(scope) {
                     if (error) {
                         return call.done(error);
                     }
-
+                    var suppressErrors = [];
                     vasync.forEachParallel({
                         inputs: hosts,
                         func: function (host, callback) {
-                            waitClient(call, host, function (error, client) {
-                                if (error) {
-                                    return callback(error);
+                            Docker.getHostStatus(call, host.id, function (error, status) {
+                                if (error || status !== 'completed') {
+                                    return callback(null, []);
                                 }
-                                client.ping(function (error) {
+                                Docker.createClient(call, host, function (error, client) {
                                     if (error) {
-                                        return callback(new DockerHostUnreachable(host.primaryIp));
+                                        suppressErrors.push(error);
+                                        return callback(null, []);
                                     }
 
-                                    client[method](util._extend({}, call.data.options), function (err, response) {
-                                        if (response && Array.isArray(response)) {
-                                            response.forEach(function (container) {
-                                                container.hostName = host.name;
-                                                container.hostId = host.id;
-                                                container.primaryIp = host.primaryIp;
-                                                if (method === 'containers') {
-                                                    container.containers = container.Status.indexOf('Up') !== -1 ? 'running' : 'stopped';
-                                                }
-                                            });
+                                    client.ping(function (error) {
+                                        if (error) {
+                                            suppressErrors.push(error);
+                                            return callback(null, []);
                                         }
-                                        callback(err, response);
+                                        client[method](util._extend({}, call.data.options), function (err, response) {
+                                            if (err) {
+                                                suppressErrors.push(err);
+                                                return callback(null, []);
+                                            }
+                                            if (response && Array.isArray(response)) {
+                                                response.forEach(function (container) {
+                                                    container.hostName = host.name;
+                                                    container.hostId = host.id;
+                                                    container.primaryIp = host.primaryIp;
+                                                    if (method === 'containers') {
+                                                        container.containers = container.Status.indexOf('Up') !== -1 ? 'running' : 'stopped';
+                                                    }
+                                                });
+                                            }
+                                            callback(null, response);
+                                        });
                                     });
                                 });
                             });
@@ -254,7 +265,9 @@ var Docker = function execute(scope) {
                         }
 
                         var result = [].concat.apply([], operations.successes);
-
+                        if (suppressErrors.length) {
+                            result.push({suppressErrors: suppressErrors});
+                        }
                         call.done(null, result);
                     });
                 });
@@ -264,6 +277,33 @@ var Docker = function execute(scope) {
 
     server.onCall('DockerHosts', function (call) {
         Docker.listHosts(call, call.done.bind(call));
+    });
+
+    server.onCall('DockerCompletedHosts', function (call) {
+        Docker.listHosts(call, function (error, hosts) {
+            if (error) {
+                return call.done(error);
+            }
+            vasync.forEachParallel({
+                inputs: hosts,
+                func: function (host, callback) {
+                    Docker.getHostStatus(call, host.id, function (error, status) {
+                        if (error || status !== 'completed') {
+                            callback(null, []);
+                        }
+                        if (status === 'completed') {
+                            callback(null, [host]);
+                        }
+                    });
+                }
+            }, function (vasyncErrors, operations) {
+                if (vasyncErrors) {
+                    return call.done(vasyncErrors);
+                }
+                var result = [].concat.apply([], operations.successes);
+                call.done(null, result);
+            });
+        });
     });
 
     server.onCall('RegistryPing', {

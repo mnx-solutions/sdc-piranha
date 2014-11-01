@@ -24,8 +24,16 @@
             callbackCancel = callbackCancel || angular.noop;
             var isNew = messages.parts.length === 0;
             var message = question.error || question;
-            if (angular.isObject(message)) {
+            if (ng.isObject(message) && !Array.isArray(message)) {
                 messages = message;
+            } else if (Array.isArray(message)) {
+                message.forEach(function (mes) {
+                    var part = mes.error || mes;
+                    if (messages.parts.join().indexOf(part) === -1) {
+                        messages.parts.push(part);
+                        messages.concatenated = messages.parts.join('<br/>');
+                    }
+                });
             } else if (messages.parts.join().indexOf(message) === -1) {
                 messages.parts.push(message);
                 messages.concatenated = messages.parts.join('<br/>');
@@ -68,7 +76,7 @@
         };
 
         factory.error = function (title, question, callback) {
-            if ((ng.isObject(question) && !question.error) || question.code === 'EHOSTUNREACH') {
+            if ((ng.isObject(question) && !question.error && !Array.isArray(question)) || question.code === 'EHOSTUNREACH') {
                 return;
             }
             // TODO: Translate
