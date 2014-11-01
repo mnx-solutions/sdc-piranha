@@ -1,7 +1,7 @@
 <div class="modal-dialog modal-dialog-find-images">
     <div class="modal-content">
         <div class="modal-header message">
-            <h5><i class="glyphicon glyphicon-info-sign"></i><b>Find Images in Registries</b></h5>
+            <h5><i class="glyphicon glyphicon-info-sign"></i><b>Pull Images from Registries</b></h5>
         </div>
         <div class="modal-body loading-medium" data-ng-show="loading"></div>
         <div data-ng-hide="loading" class="modal-body">
@@ -26,12 +26,13 @@
                                    required
                                     />
                         </span>
-                    <button data-ng-disabled="configurationForm.$invalid || searching" data-ng-click="findImages()" class="btn orange">Find Images</button>
+                    <button data-ng-disabled="configurationForm.$invalid || searching" data-ng-click="pull()" class="btn orange">Pull</button>
+                    <button data-ng-disabled="configurationForm.$invalid || searching" data-ng-click="findImages()" class="btn grey-new effect-orange-button">Find Public Images</button>
                 </div>
             </form>
             <div class="result-content">
                 <div data-ng-show="searching" class="loading-medium"></div>
-                <div data-ng-show="showResult">
+                <div data-ng-show="showResult || pulling">
                     <div data-ng-show="findedImages.length">
                         <div data-grid-view
                              data-user-config="gridUserConfig"
@@ -54,7 +55,7 @@
                              data-checked-items="checkedItems">
                         </div>
                     </div>
-                    <div data-ng-show="!findedImages.length">
+                    <div data-ng-show="!findedImages.length && !pulling">
                         <div class="font-size16 margin-top-10">No images found</div>
                     </div>
                 </div>

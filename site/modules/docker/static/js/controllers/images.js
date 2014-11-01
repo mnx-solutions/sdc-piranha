@@ -294,7 +294,55 @@
                             $scope.loading = false;
                         });
 
+                        $scope.pull = function () {
+                            var image = Docker.parseTag($scope.term);
+                            var registryId = $scope.registryId;
+                            var findedImages =  $scope.findedImages = [];
+                            $scope.pulling = true;
+                            PopupDialog.custom({
+                                templateUrl: 'docker/static/partials/select-tag.html',
+                                openCtrl: function ($scope, dialog, Docker) {
+                                    $scope.name = image.name;
+                                    $scope.tag = 'all';
+                                    $scope.hideTags = true;
+                                    Docker.listHosts().then(function (hosts) {
+                                        $scope.hosts = hosts || [];
+                                    });
+
+                                    $scope.pullImage = function () {
+                                        findedImages.push(image);
+                                        $scope.close();
+                                        image.processing = true;
+                                        image.processStatus = "Preparing";
+                                        Docker.pullImage({primaryIp: $scope.hostIp}, image, registryId).then(function (chunk) {
+                                            if (!chunk.length) {
+                                                image.processStatus = 'Download error';
+                                            }
+                                            if (image.processStatus === 'Download complete') {
+                                                image.processStatus = 'Downloading complete';
+                                            }
+                                            image.processing = false;
+                                            if (image.progressDetail) {
+                                                delete image.progressDetail;
+                                            }
+                                            listAllImages(allImages);
+                                        }, function (err) {
+                                            findedImages.splice(0, 1);
+                                            errorCallback(err);
+                                        });
+                                    };
+
+                                    $scope.close = function () {
+                                        window.jQuery('#tagSelect').select2('close');
+                                        window.jQuery('#hostSelect').select2('close');
+                                        dialog.close();
+                                    };
+                                }
+                            });
+                        };
+
                         $scope.findImages = function () {
+                            $scope.pulling = false;
                             $scope.searching = true;
                             $scope.showResult = false;
                             registry = $scope.registryId;
@@ -360,7 +408,7 @@
                                         $scope.pullImage(object);
                                     },
                                     disabled: function (object) {
-                                        return object.processing;
+                                        return object.processing || $scope.pulling;
                                     }
                                 }
                             },

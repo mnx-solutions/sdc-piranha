@@ -54,14 +54,10 @@
                 };
 
                 var addRegistry = function (registry) {
-                    if (registry.username && registry.password && registry.password.length > 0) {
-                        registry.auth = window.btoa(registry.username + ':' + registry.password);
-                    }
                     if (!registry.id) {
                         registry.id = uuid();
                         $scope.registries.push(registry);
                     }
-                    registry.password = null;
                     Docker.saveRegistry(registry).then(function () {
                         $location.path('docker/registries');
                     });
