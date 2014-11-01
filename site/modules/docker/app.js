@@ -26,11 +26,12 @@ module.exports = function (scope, app) {
         return time;
     }
 
-    function getLogFormat(log) {
+    function getLogFormat(log, inputStr) {
+        inputStr = inputStr || 'stdout';
         var endBracketPosition = log.indexOf(']') || 1;
         var time = getTime(log.slice(log.indexOf('[') + 1 || 1, endBracketPosition));
 
-        return '{"log": "' + log.slice(endBracketPosition + 2, log.length - 1) + '", "stream":"stderr", "time":"' + time + '"}\n';
+        return '{"log": "' + log.slice(endBracketPosition + 2, log.length - 1) + '", "stream":"' + inputStr  + '", "time":"' + time + '"}\n';
     }
 
     var getFile = function (req, res, action) {
@@ -115,18 +116,25 @@ module.exports = function (scope, app) {
                                     return callback(err);
                                 }
                                 if (response && response.length) {
+                                    var responses = response.split('\n');
                                     var code;
                                     var logs = '';
-                                    var t = 8;
-                                    for (var i = 0, len = response.length; i < len; i++) {
-                                        code = response.charCodeAt(i);
-                                        if (code === 2 && i > t) {
-                                            var log = response.slice(t, i);
-                                            logs += getLogFormat(log);
-                                            t = i;
+                                    var inputStr = null;
+                                    responses.pop();
+                                    responses.forEach(function (response) {
+                                        var i;
+                                        for (i = 0; i < response.length; i++) {
+                                            code = response.charCodeAt(i);
+                                            if (code === 2) {
+                                                inputStr = 'stderr';
+                                            }
+                                            if (code > 4 || code < 2048) {
+                                                break;
+                                            }
                                         }
-                                    }
-                                    logs += getLogFormat(response.slice(t));
+
+                                        logs += getLogFormat(response.substr(i), inputStr);
+                                    });
                                     res.write(logs);
                                 }
                                 callback();
