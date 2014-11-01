@@ -135,12 +135,6 @@
                         active: true
                     },
                     {
-                        id: 'SizeRw',
-                        name: 'File Size',
-                        sequence: 8,
-                        active: true
-                    },
-                    {
                         id: 'Ports',
                         name: 'Ports',
                         type: 'html',
@@ -148,13 +142,13 @@
                             var html = '<span>' + object.Ports.join(" ,") + '</span>';
                             return html;
                         },
-                        sequence: 9,
+                        sequence: 8,
                         active: false
                     },
                     {
                         id: '',
                         name: 'Action',
-                        sequence: 10,
+                        sequence: 9,
                         active: true,
                         type: 'buttons',
                         buttons: [
