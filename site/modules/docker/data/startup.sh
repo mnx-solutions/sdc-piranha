@@ -210,6 +210,6 @@ docker run \
     -v /sys:/sys:ro \
     -v ${DOCKER_DIR}/:/var/lib/docker:ro \
     -p 127.0.0.1:14242:8080 \
-    -d --name=cAdvisor google/cadvisor:latest -storage_driver=influxdb -log_dir=/
+    -d --name=cAdvisor google/cadvisor:latest
 
 writeStage "completed"
