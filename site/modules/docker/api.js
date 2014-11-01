@@ -11,6 +11,11 @@ var exec = require('child_process').exec;
 var os = require('os');
 var EventEmitter = require('events').EventEmitter;
 
+var SUBUSER_LOGIN = 'docker';
+var SUBUSER_OBJ_NAME = 'docker';
+var SUBUSER_OBJ_NAME_REGISTRY = SUBUSER_OBJ_NAME + '-registry';
+var SUBUSER_PASSWORD = 'R?5{N/9aFGc{9Y~';
+
 var requestMap = {
     'GET': 'get',
     'PUT': 'put',
@@ -465,7 +470,9 @@ module.exports = function execute(scope, register) {
         var certMap = {
             'ca.pem': 'ca',
             'cert.pem': 'cert',
-            'key.pem': 'key'
+            'key.pem': 'key',
+            'server-cert.pem': 'server-cert',
+            'server-key.pem': 'server-key'
         };
         var certificates = {};
         function done(error) {
@@ -545,7 +552,7 @@ module.exports = function execute(scope, register) {
         });
     }
 
-    function keyPoller(call, keyExists, callback) {
+    function keyPoller(call, subId, keyExists, callback) {
         var start = new Date();
         return function (error) {
             if (error) {
@@ -557,17 +564,17 @@ module.exports = function execute(scope, register) {
                     return callback(new Error('Poller error: SSH ' + (keyExists ? 'create' : 'delete') + ' key timeout'));
                 }
                 setTimeout(function () {
-                    keyPoller(call, keyExists, callback);
+                    keyPoller(call, subId, keyExists, callback);
                 }, config.polling.sshCreateKey);
             }
 
             function isDockerKeyExists(keys) {
                 return keys.some(function (key) {
-                    return key.name === 'docker-key';
+                    return key.name === SUBUSER_OBJ_NAME;
                 });
             }
 
-            call.cloud.listKeys(function (error, keys) {
+            call.cloud.listUserKeys(subId, function (error, keys) {
                 if (!error && Array.isArray(keys) && isDockerKeyExists(keys) === keyExists) {
                     callback();
                     return;
@@ -577,48 +584,192 @@ module.exports = function execute(scope, register) {
         };
     }
 
-    function uploadKeys(call, keyPair, callback) {
+    function deleteSubAccount(call, subId, deleteCallback) {
+        vasync.waterfall([
+            function (callback) {
+                call.cloud.listUserKeys(subId, function (listErr, keys) {
+                    callback(listErr, keys);
+                });
+            },
+            function (keys, callback) {
+                vasync.forEachPipeline({
+                    inputs: keys,
+                    func: function (key, pipeCallback) {
+                        call.cloud.deleteUserKey(subId, key.fingerprint, pipeCallback);
+                    }
+                }, callback);
+            },
+            function (_, callback) {
+                call.cloud.listRoles(function (listErr, roles) {
+                    callback(listErr, roles);
+                });
+            },
+            function (roles, callback) {
+                var dockerRole = roles.find(function (role) { return role.name === SUBUSER_OBJ_NAME; });
+                if (dockerRole) {
+                    call.cloud.deleteRole(dockerRole.id, callback);
+                } else {
+                    callback();
+                }
+            },
+            function (callback) {
+                call.cloud.listPolicies(function (listErr, policies) {
+                    callback(listErr, policies);
+                });
+            },
+            function (policies, callback) {
+                var dockerPolicy = policies.find(function (policy) { return policy.name === SUBUSER_OBJ_NAME; });
+                if (dockerPolicy) {
+                    call.cloud.deletePolicy(dockerPolicy.id, callback);
+                } else {
+                    callback();
+                }
+            },
+            function (callback) {
+                call.cloud.deleteUser(subId, callback);
+            }
+        ], deleteCallback);
+    }
+
+    function setupManta(call, setupCallback) {
         var client = scope.api('MantaClient').createClient(call);
+        var dockerPath = '/' + call.req.session.userName + '/stor/.joyent/docker';
+        var registryPath = dockerPath + '/registry';
+        vasync.waterfall([
+            function (callback) {
+                client.mkdirp(registryPath, function (mkdirErr) {
+                    callback(mkdirErr);
+                });
+            },
+            function (callback) {
+                client.setRoleTags(dockerPath, [SUBUSER_OBJ_NAME], true, function (setErr) {
+                    callback(setErr);
+                });
+            },
+            function (callback) {
+                client.setRoleTags(registryPath, [SUBUSER_OBJ_NAME_REGISTRY], true, function (setRegErr) {
+                    callback(setRegErr);
+                });
+            }
+        ], setupCallback);
+    }
+
+    function setupSubAccount(call, keyPair, setupCallback) {
+        var dockerUser;
+        vasync.waterfall([
+            function (callback) {
+                call.cloud.getAccount(function (accountErr, acccount) {
+                    callback(accountErr, acccount);
+                });
+            },
+            function (account, callback) {
+                var emailParts = account.email.split('@');
+                emailParts[0] += '+' + SUBUSER_LOGIN;
+                var userData = {
+                    lastName: SUBUSER_LOGIN,
+                    email: emailParts.join('@'),
+                    login: SUBUSER_LOGIN,
+                    password: SUBUSER_PASSWORD
+                };
+                call.cloud.createUser(userData, callback);
+            },
+            function (user, callback) {
+                dockerUser = user;
+                call.cloud.createPolicy({
+                    name: SUBUSER_OBJ_NAME,
+                    rules: ['can putobject', 'can putdirectory']
+                }, function () {
+                    callback();
+                });
+            },
+            function (callback) {
+                call.cloud.createRole({
+                    name: SUBUSER_OBJ_NAME,
+                    policies: [SUBUSER_OBJ_NAME],
+                    members: [dockerUser.login],
+                    default_members: [dockerUser.login]
+                }, function () {
+                    callback();
+                });
+            },
+            function (callback) {
+                call.cloud.createPolicy({
+                    name: SUBUSER_OBJ_NAME_REGISTRY,
+                    rules: ['can putobject', 'can putdirectory', 'can getobject', 'can getdirectory', 'can deleteobject', 'can deletedirectory']
+                }, function () {
+                    callback();
+                });
+            },
+            function (callback) {
+                call.cloud.createRole({
+                    name: SUBUSER_OBJ_NAME_REGISTRY,
+                    policies: [SUBUSER_OBJ_NAME_REGISTRY],
+                    members: [dockerUser.login],
+                    default_members: [dockerUser.login]
+                }, function () {
+                    callback();
+                });
+            },
+            function (callback) {
+                setupManta(call, callback);
+            },
+            function (callback) {
+                call.cloud.uploadUserKey(dockerUser.id, {
+                    name: SUBUSER_OBJ_NAME,
+                    key: keyPair.publicKey
+                }, callback);
+            },
+            function (_, callback) {
+                keyPoller(call, dockerUser.id, true, callback)();
+            }
+        ], setupCallback);
+    }
+
+    function checkAndCreateSubAccount(call, keyPair, callback) {
+        call.cloud.listUsers(function (listErr, users) {
+            if (listErr) {
+                return callback(listErr);
+            }
+            var dockerUser = users.find(function (user) {
+                return user.login === SUBUSER_LOGIN;
+            });
+            if (dockerUser) {
+                call.cloud.listUserKeys(dockerUser.id, function (listErr, keys) {
+                    if (listErr) {
+                        return callback(listErr);
+                    }
+                    var dockerKey = keys.find(function (key) {
+                        return key.name === SUBUSER_OBJ_NAME;
+                    });
+                    if (dockerKey) {
+                        setupManta(call, callback);
+                    } else {
+                        deleteSubAccount(call, dockerUser.id, function (deleteErr) {
+                            if (deleteErr) {
+                                return callback(deleteErr);
+                            }
+                            setupSubAccount(call, keyPair, callback);
+                        });
+                    }
+                });
+            } else {
+                setupSubAccount(call, keyPair, callback);
+            }
+        });
+    }
+
+    function uploadKeys(call, keyPair, uploadCallback) {
         vasync.parallel({
             funcs: [
                 function (callback) {
+                    var client = scope.api('MantaClient').createClient(call);
                     client.putFileContents('~~/stor/.joyent/docker/private.key', keyPair.privateKey, callback);
                 },
                 function (callback) {
-                    call.cloud.listKeys(function (err, keys) {
-                        if (err) {
-                            return callback(err);
-                        }
-                        if (!Array.isArray(keys)) {
-                            call.cloud.createKey({name: 'docker-key', key: keyPair.publicKey}, keyPoller(call, true, callback));
-                            return;
-                        }
-
-                        var keyExist = keys.find(function (key) {
-                            return key.fingerprint === keyPair.fingerprint;
-                        });
-                        var neededKey = keys.find(function (key) {
-                            return key.name === 'docker-key';
-                        });
-
-                        if (keyExist) {
-                            return callback(null);
-                        }
-                        if (!neededKey) {
-                            call.cloud.createKey({name: 'docker-key', key: keyPair.publicKey}, keyPoller(call, true, callback));
-                            return;
-                        }
-
-                        call.cloud.deleteKey(neededKey, keyPoller(call, false, function (error) {
-                            if (error) {
-                                return callback(error);
-                            }
-                            call.cloud.createKey({name: 'docker-key', key: keyPair.publicKey}, keyPoller(call, true, callback));
-                        }));
-                    });
+                    checkAndCreateSubAccount(call, keyPair, callback);
                 }
             ]
-        }, callback);
+        }, uploadCallback);
     }
 
     api.createHost = function (call, options, callback) {
@@ -653,12 +804,16 @@ module.exports = function execute(scope, register) {
             options.metadata['private-key'] = keyPair.privateKey;
             options.metadata['public-key'] = keyPair.publicKey;
             options.metadata['manta-account'] = mantaClient.user;
+            options.metadata['manta-subuser'] = SUBUSER_LOGIN;
             options.metadata['manta-url'] = mantaClient._url;
 
-            api.getCertificates(call, function (error) {
+            api.getCertificates(call, function (error, certificates) {
                 if (error) {
                     return callback(error);
                 }
+                options.metadata['ca'] = certificates.ca;
+                options.metadata['server-cert'] = certificates['server-cert'];
+                options.metadata['server-key'] = certificates['server-key'];
                 uploadKeysAndCreateMachine(keyPair, options);
             }, true);
         });
@@ -677,8 +832,15 @@ module.exports = function execute(scope, register) {
             }
             call.req.session.dockerCerts = {};
             var certificates = {};
+            var certArr = [
+                {ca: 'ca.pem'},
+                {cert: 'cert.pem'},
+                {key: 'key.pem'},
+                {'server-cert': 'server-cert.pem'},
+                {'server-key': 'server-key.pem'}
+            ];
             vasync.forEachParallel({
-                inputs: [{ca: 'ca.pem'}, {cert: 'cert.pem'}, {key: 'key.pem'}],
+                inputs: certArr,
                 func: function (input, callback) {
                     var key = getFirstKey(input);
                     if (call.req.session.dockerCerts[key]) {
@@ -783,6 +945,8 @@ module.exports = function execute(scope, register) {
 
         createClient(call, Registry, url.format(parsedUrl), callback);
     };
+
+    api.SUBUSER_LOGIN = SUBUSER_LOGIN;
 
     register('Docker', api);
 };
