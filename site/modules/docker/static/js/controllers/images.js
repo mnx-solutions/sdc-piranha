@@ -313,6 +313,7 @@
                             });
                         };
 
+                        $scope.gridOrder = ['-star_count'];
                         $scope.gridProps = [
                             {
                                 id: 'name',
