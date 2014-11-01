@@ -305,14 +305,13 @@
                                 return;
                             }
 
-                            Docker.searchImage(registry, $scope.term).then(function (images) {
+                            var updateImages = function (err, images) {
                                 $scope.findedImages = (images && images.results) || [];
                                 $scope.searching = false;
                                 $scope.showResult = true;
-                            }, function () {
-                                $scope.searching = false;
-                                $scope.showResult = true;
-                            });
+                            };
+
+                            Docker.searchImage(registry, $scope.term).then(updateImages.bind(null, null), updateImages);
                         };
 
                         $scope.gridOrder = ['-star_count'];
