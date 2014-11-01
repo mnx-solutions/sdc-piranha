@@ -10,8 +10,8 @@
             'localization',
             '$location',
             'requestContext',
-
-            function ($scope, Docker, Account, PopupDialog, localization, $location, requestContext) {
+            'notification',
+            function ($scope, Docker, Account, PopupDialog, localization, $location, requestContext, notification) {
 
                 $scope.registryId = requestContext.getParam('id');
 
@@ -111,6 +111,10 @@
                     }
                     Docker[action](registry).then(function (result) {
                         if (result) {
+                            var hubMessage = result.Status || result.toString();
+                            if (action === 'auth' && hubMessage.indexOf('Account created') !== -1) {
+                                notification.success(hubMessage);
+                            }
                             addRegistry($scope.registry);
                         }
                     }, function (err) {
