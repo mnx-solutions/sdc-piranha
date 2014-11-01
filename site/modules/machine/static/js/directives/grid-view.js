@@ -702,7 +702,7 @@
                                             el.reorder = propKeys[el.id].reorder;
                                         }
                                     }
-                                } else {
+                                } else if (ignoreProp) {
                                     $scope.filterAll = 'DockerHost';
                                 }
                             } else {
