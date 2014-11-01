@@ -68,7 +68,7 @@
 
             getDockerInspectImage();
 
-            $scope.gridOrder = [];
+            $scope.gridOrder = ['-Created'];
             $scope.gridProps = [
                 {
                     id: 'Id',
