@@ -156,7 +156,7 @@
                                 password: ''
                             };
                             $scope.loading = true;
-                            $q.all([Docker.listHosts(), Docker.listContainers({cache: true, host: 'All'})]).then(function (result) {
+                            $q.all([Docker.completedHosts(), Docker.listContainers({cache: true, host: 'All', suppressErrors: true})]).then(function (result) {
                                 var hosts = {};
                                 var availableHosts = result[0];
                                 var containers = result[1];

@@ -131,7 +131,8 @@
                 delete options.host;
                 name += 'All';
             }
-
+            options = options || {};
+            var suppressErrors = options.suppressErrors;
             job.promise = serverTab.call({
                 name: name,
                 data: options,
@@ -142,7 +143,19 @@
                     }
                     job.$emit('update', error, data);
                 },
-                done: function () {
+                done: function (err, job) {
+                    if (suppressErrors) {
+                        var data = job.__read();
+                        for (var i = 0; i < data.length;) {
+                            var item = data[i];
+                            if (item.hasOwnProperty('suppressErrors')) {
+                                PopupDialog.errorObj(item.suppressErrors);
+                                data.splice(i, 1);
+                            } else {
+                                i++;
+                            }
+                        }
+                    }
                     delete service.jobs[jobKey];
                 },
                 error: function () {
@@ -154,6 +167,9 @@
         }
 
         service.listContainers = function (options) {
+            if (!options.host || options.host === 'All') {
+                options.suppressErrors = options.suppressErrors || true;
+            }
             return createCall('containers', options);
         };
 
@@ -167,6 +183,10 @@
 
         service.listHostsFull = function (options) {
             return createCall('hosts', options || {});
+        };
+
+        service.completedHosts = function (options) {
+            return createCall('completedHosts', options || {});
         };
 
         service.listImages = function (machine, options) {
@@ -208,7 +228,8 @@
 
         service.listAllImages = function (params) {
             var defaultParams = {
-                all: false
+                all: false,
+                suppressErrors: true
             };
             return createCall('images', {host: 'All', options: ng.extend(defaultParams, params || {})});
         };
