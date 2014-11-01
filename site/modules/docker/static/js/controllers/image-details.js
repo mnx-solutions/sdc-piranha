@@ -203,6 +203,7 @@
                         }, errorCallback);
 
                         scope.close = function () {
+                            window.jQuery('#registrySelect').select2('close');
                             dialog.close();
                         };
 
@@ -225,7 +226,7 @@
                             }, function (error) {
                                 notification.error(error);
                             });
-                            dialog.close();
+                            scope.close();
                         };
                     }]
                 });
