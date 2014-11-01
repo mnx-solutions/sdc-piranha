@@ -289,6 +289,8 @@
                         Docker.getRegistriesList().then(function (list) {
                             $scope.registries = list.filter(function (registry) {
                                 return !registry.processing;
+                            }).sort(function (a, b) {
+                                return (b.id === 'default') - (a.id === 'default');
                             });
                             $scope.loading = false;
                         });
