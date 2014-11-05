@@ -356,16 +356,10 @@ module.exports = function execute(scope) {
 
     server.onCall('FileManGetRoles', function (call) {
         var client = Manta.createClient(call);
-        client.info(call.data.path, function (err, info) {
+        client.getRoleTags(call.data.path, function (err, roles) {
             if (err) {
                 checkResponse(call, true)(err);
                 return;
-            }
-            var roles;
-            if (info.headers['role-tag']) {
-                roles = info.headers['role-tag'].split(/\s*,\s*/);
-            } else {
-                roles = [];
             }
             call.done(null, roles);
         });

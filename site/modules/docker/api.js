@@ -642,6 +642,23 @@ module.exports = function execute(scope, register) {
                 });
             },
             function (callback) {
+                var overallTimeout = Date.now() + 5 * 60 * 1000;
+                var trySettingRoleTag = function (cb) {
+                    client.setRoleTags(dockerPath, [SUBUSER_OBJ_NAME], false, function () {
+                        client.getRoleTags(dockerPath, function (getErr, roles) {
+                            if (roles.length === 1) {
+                                cb(null);
+                            } else if (Date.now() > overallTimeout) {
+                                cb('Cannot set role tags for docker folder');
+                            } else {
+                                trySettingRoleTag(cb);
+                            }
+                        });
+                    });
+                };
+                trySettingRoleTag(callback);
+            },
+            function (callback) {
                 client.setRoleTags(dockerPath, [SUBUSER_OBJ_NAME], true, function (setErr) {
                     callback(setErr);
                 });
