@@ -172,13 +172,13 @@
             </li>
             <li class="nested"
                 data-ng-show="features.docker == 'enabled'"
-                data-ng-class="{active: location.path().search('docker') == 1, open: location.path().search('/registries?') > 1 || location.path().search('/containers?') > 1 || location.path().search('/logs?') > 1 || location.path().search('/analytics?') > 1 || location.path().search('/images?') > 1}">
+                data-ng-class="{active: location.path().search('docker') == 1, open: location.path().search('/registr?') > 1 || location.path().search('/containers?') > 1 || location.path().search('/logs?') > 1 || location.path().search('/analytics?') > 1 || location.path().search('/images?') > 1}">
                 <a href="#!/docker" class="docker-icon">
                     <span class="title">Docker</span>
                     <span class="selected"></span>
                 </a>
                 <ul class="sub-menu">
-                    <li left-list-item class="sub" data-ng-class="{active: location.path().search('docker/registries?') == 1}">
+                    <li left-list-item class="sub" data-ng-class="{active: location.path().search('docker/registr?') == 1}">
                         <a href="#!/docker/registries">
                             <span class="titles" data-translate>Registries</span>
                             <span class="selected-sub"></span>
