@@ -156,21 +156,6 @@
                 );
             };
 
-            function parseTag(tag) {
-                var parts = /(?:([^:]+:\d+)\/)?((?:([^\/]+)\/)?([^:]+))(?::(\w+))?/.exec(tag);
-                if (!parts || !tag) {
-                    return {};
-                }
-
-                return {
-                    tag: parts[5],
-                    name: parts[4],
-                    repository: parts[3] || '',
-                    fullname: parts[2],
-                    registry: parts[1]
-                };
-            }
-
             function urlParser(url) {
                 var a = document.createElement('a');
                 a.href = url;
@@ -182,14 +167,14 @@
                     templateUrl: 'docker/static/partials/push-image.html',
                     openCtrl: ['$scope', 'dialog', 'Docker', 'notification', function (scope, dialog, Docker, notification) {
                         var tags = $scope.image.info.Tags || [];
-                        var parsedTag = parseTag(tags[0]);
+                        var parsedTag = Docker.parseTag(tags[0]);
                         scope.loading = true;
                         scope.registries = [];
                         scope.tag = '';
-                        scope.imageName = parsedTag.fullname;
+                        scope.imageName = parsedTag.name;
                         scope.input = {
                             registry: {},
-                            name: parsedTag.fullname || ''
+                            name: parsedTag.name || ''
                         };
 
                         Docker.getRegistriesList().then(function (registries) {

@@ -207,7 +207,7 @@
                 host: {primaryIp: container.primaryIp},
                 options: container.options || {id: container.Id},
                 container: container
-            }
+            };
             return createCall('remove', data);
         };
 
@@ -323,8 +323,16 @@
             };
         });
 
-        service.pullImage = function (host, image) {
-            return createCall('pull', {host: host, options: {fromImage: image.name, tag: image.tag}}, function (error, chunk) {
+        service.pullImage = function (host, image, registryId) {
+            return createCall('pull', {host: host, options: {fromImage: image.name, tag: image.tag, registry: image.registry, repo: image.repository, registryId: registryId}}, function (error, chunk) {
+                if (chunk.error) {
+                    image.processStatus = 'Error';
+                    var errorMessage = chunk.errorDetail || chunk;
+                    if (chunk.error === 'HTTP code: 404') {
+                        errorMessage.message = 'Cannot pull image “' + image.name  + '”: not found.';
+                    }
+                    return PopupDialog.errorObj(errorMessage);
+                }
                 image.progressDetail = chunk.hasOwnProperty('progressDetail') ? chunk.progressDetail : null;
                 image.processStatus = chunk.status;
             });
@@ -361,16 +369,30 @@
             return job.promise;
         };
 
-        service.auth = function (options) {
-            var defer = $q.defer();
-            return service.listHosts().then(function (hosts) {
-                if (!hosts.length) {
-                    defer.reject('You don\'t have Docker hosts');
+        service.auth = function (options, dockerHost) {
+            function getHost (host) {
+                var defer = $q.defer();
+                if (host) {
+                    defer.resolve(host);
                     return defer.promise;
                 }
+                service.listHosts().then(function (hosts) {
+                    if (!hosts.length) {
+                        defer.reject('You don\'t have Docker hosts');
+                        return;
+                    }
+                    defer.resolve(hosts[0]);
+
+                }, function (error) {
+                    defer.reject(error);
+                });
+                return defer.promise;
+            }
+
+            return getHost(dockerHost).then(function (host) {
                 var job = serverTab.call({
                     name: 'DockerAuth',
-                    data: {host: hosts[0], options: options},
+                    data: {host: host, options: options},
                     done: function (err, data) {
                         if (err) {
                             return false;
@@ -380,6 +402,7 @@
                 });
                 return job.promise;
             }, function (error) {
+                var defer = $q.defer();
                 defer.reject(error);
                 return defer.promise;
             });
@@ -411,6 +434,21 @@
                 return repoTagArray[repoTagArray.length - 1];
             });
             return repoTags.join(', ');
+        };
+
+        service.parseTag = function (tag) {
+            var parts = /(?:([^:]+:\d+)\/)?((?:([^\/]+)\/)?([^:]+))(?::(\w+))?/.exec(tag);
+            if (!parts) {
+                return {};
+            }
+
+            return {
+                tag: parts[5],
+                onlyname: parts[4],
+                repository: parts[3] || '',
+                name: parts[2],
+                registry: parts[1]
+            };
         };
 
         return service;

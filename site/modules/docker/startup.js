@@ -360,6 +360,19 @@ var Docker = function execute(scope) {
         },
         handler: function (call) {
             var savedRegistry = call.data.registry;
+            if (savedRegistry.username && savedRegistry.password && savedRegistry.password.length > 0 && savedRegistry.email) {
+                var auth = {
+                    username: savedRegistry.username,
+                    password: savedRegistry.password,
+                    email: savedRegistry.email,
+                    serveraddress: savedRegistry.host + '/' + savedRegistry.api + '/'
+                };
+                savedRegistry.auth = new Buffer(JSON.stringify(auth)).toString('base64');
+            } else {
+                savedRegistry.auth = new Buffer(JSON.stringify({auth: '', email: ''})).toString('base64');
+            }
+
+            delete savedRegistry.password;
             getRegistries(call, function (error, list) {
                 var edited;
                 list = list.map(function (registry) {
@@ -421,15 +434,19 @@ var Docker = function execute(scope) {
         }
     });
 
-    server.onCall('DockerPull', function (call) {
+    var pullImage = function (call, options, auth) {
         Docker.createClient(call, call.data.host, function (error, client) {
             if (error) {
                 return call.done(error);
             }
-            client.createImage(call.data.options, function (err, req) {
+            client.createImage(options, function (err, req) {
                 if (err) {
                     return call.done(err);
                 }
+                if (auth) {
+                    req.setHeader('X-Registry-Auth', auth);
+                }
+
                 req.on('result', function (error, res) {
                     if (error) {
                         return call.done(error);
@@ -449,6 +466,40 @@ var Docker = function execute(scope) {
                 req.end();
             });
         });
+    };
+
+    server.onCall('DockerPull', {
+        verify: function (data) {
+            return data && data.host && data.host.primaryIp
+                && data.options && data.options.fromImage;
+        },
+        handler: function (call) {
+            var options = call.data.options;
+            var registryId = options.registryId;
+            if (!registryId) {
+                return pullImage(call, options);
+            }
+            getRegistries(call, function (error, list) {
+                if (error && registryId !== 'default') {
+                    if (error.statusCode !== 404) {
+                        return call.done(error.message || error);
+                    }
+                    return call.done('Please fill authentication information for the registry.');
+                }
+
+                var registryRecord = list.find(function (item) {
+                    return item.id === registryId;
+                });
+
+                if (!registryRecord  && registryId !== 'default') {
+                    return call.done('Registry not found.');
+                }
+                registryRecord = registryRecord || {};
+                var auth = registryRecord.auth || new Buffer(JSON.stringify({auth: '', email: ''})).toString('base64');
+
+                pullImage(call, options, auth);
+            });
+        }
     });
 
     function parseTag(tag) {
@@ -511,21 +562,8 @@ var Docker = function execute(scope) {
                         return callback('Registry not found!');
                     }
 
-                    if (!registryRecord.auth) {
-                        collector.registry = {
-                            auth: '',
-                            email: ''
-                        };
-                        return callback();
-                    }
+                    collector.registryAuth = registryRecord.auth || new Buffer(JSON.stringify({auth: '', email: ''})).toString('base64');
 
-                    var auth = new Buffer(registryRecord.auth, 'base64').toString('utf8').split(':');
-                    collector.registry = {
-                        username: auth[0],
-                        password: auth[1],
-                        email: registryRecord.email,
-                        serveraddress: registryRecord.host + '/' + registry.api + '/'
-                    };
                     callback();
                 });
             });
@@ -561,8 +599,8 @@ var Docker = function execute(scope) {
                     if (error) {
                         return callback(error);
                     }
-                    if (collector.registry) {
-                        req.setHeader('X-Registry-Auth', new Buffer(JSON.stringify(collector.registry)).toString('base64'));
+                    if (collector.registryAuth) {
+                        req.setHeader('X-Registry-Auth', collector.registryAuth);
                     }
 
                     req.on('result', function (error, res) {
