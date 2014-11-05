@@ -185,7 +185,7 @@ END
 writeStage "installing docker"
 installDocker
 
-writeStage "creating load balancer"
+writeStage "setting up API"
 createBalancer docker 4243 unix:/var/run/docker.sock 127.0.0.1:14242 127.0.0.1:5000
 
 writeStage "installing log rotator"
