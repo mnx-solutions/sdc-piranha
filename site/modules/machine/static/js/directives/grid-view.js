@@ -486,7 +486,7 @@
         multisort: true,
         controls: true
     })
-    .directive('gridView', ['gridConfig', '$rootScope', '$location', function (gridConfig, $rootScope, $location) {
+    .directive('gridView', ['gridConfig', '$rootScope', function (gridConfig, $rootScope) {
         return {
             restrict: 'EA',
             scope: {
@@ -501,6 +501,7 @@
                 columnsButton: '=',
                 actionsButton: '=',
                 specialWidth: '=',
+                forceActive: '=?',
                 //TODO: What are these forms?
                 searchForm: '=',
                 instForm: '=',
@@ -687,23 +688,19 @@
                         }
 
                         $scope.props.forEach(function (el) {
-                            var ignoreProp;
-                            if ($location.path() === '/compute/dockerHost') {
-                                ignoreProp = 'tags';
-                            }
                             if (propKeys[el.id]) {
-                                if (el.id !== ignoreProp) {
+                                if (el.id === $scope.forceActive) {
+                                    el.active = true;
+                                } else {
                                     el.active = propKeys[el.id].active;
-                                    if (!el.id2) {
-                                        if (propKeys[el.id].order) {
-                                            el.order = propKeys[el.id].order;
-                                        }
-                                        if (propKeys[el.id].reorder) {
-                                            el.reorder = propKeys[el.id].reorder;
-                                        }
+                                }
+                                if (!el.id2) {
+                                    if (propKeys[el.id].order) {
+                                        el.order = propKeys[el.id].order;
                                     }
-                                } else if (ignoreProp) {
-                                    $scope.filterAll = 'DockerHost';
+                                    if (propKeys[el.id].reorder) {
+                                        el.reorder = propKeys[el.id].reorder;
+                                    }
                                 }
                             } else {
                                 propKeys[el.id] = el;

@@ -28,15 +28,24 @@
 
                 var listAllContainers = function () {
                     Docker.listContainers({host: 'All', options: {all: true}, suppressErrors: true}).then(function (containers) {
-                        $scope.containers = containers.map(function (container) {
-                            container.Id = container.Id.slice(0, 12);
-                            container.NamesStr = container.Names.length ? container.Names.join(', ') : '';
-                            var ports = container.Ports.map(function (port) {
-                                return port.IP + ':' + port.PublicPort;
+                        Docker.listHosts().then(function (machines) {
+                            $scope.containers = containers.map(function (container) {
+                                container.ShortId = container.Id.slice(0, 12);
+                                container.NamesStr = container.Names.length ? container.Names.join(', ') : '';
+                                var ports = container.Ports.map(function (port) {
+                                    return port.IP + ':' + port.PublicPort;
+                                });
+                                container.PortsStr = ports.length ? ports.join(', ') : '';
+                                machines.some(function (machine) {
+                                    if (machine.name === container.hostName) {
+                                        container.HostId = machine.id;
+                                        return true;
+                                    }
+                                });
+                                return container;
                             });
-                            container.PortsStr = ports.length ? ports.join(', ') : '';
-                            return container;
-                        });
+                        }, errorCallback);
+
                         $scope.loading = false;
                     }, function (err) {
                         errorCallback(err);
@@ -51,13 +60,13 @@
                 $scope.gridOrder = ['-created'];
                 $scope.gridProps = [
                     {
-                        id: 'Id',
+                        id: 'ShortId',
                         name: 'Container ID',
                         sequence: 1,
                         active: true,
                         type: 'html',
                         _getter: function (container) {
-                            return '<a href="#!/docker/container/' + container.hostId + '/' + container.Id + '" style="min-width: 140px;">' + container.Id + '</a>';
+                            return '<a href="#!/docker/container/' + container.hostId + '/' + container.ShortId + '" style="min-width: 140px;">' + container.ShortId + '</a>';
                         }
                     },
                     {
@@ -106,6 +115,12 @@
                         id: 'PortsStr',
                         name: 'Ports',
                         sequence: 8
+                    },
+                    {
+                        id: 'HostId',
+                        name: 'Host Id',
+                        sequence: 9,
+                        active: true
                     }
                 ];
                 
@@ -279,7 +294,9 @@
                 $scope.enabledCheckboxes = true;
                 $scope.placeHolderText = 'filter containers';
                 $scope.tabFilterField = 'containers';
-
+                if (requestContext.getParam('host')) {
+                    $scope.forceActive = 'HostId'
+                }
 
                 Docker.pingManta(function () {
                     listAllContainers();

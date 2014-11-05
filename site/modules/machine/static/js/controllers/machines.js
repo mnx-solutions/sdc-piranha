@@ -67,6 +67,8 @@
                                     $scope.datasetsInfo[machine.image] = 'Image gone';
                                 }
                                 if (currentLocation === '/compute/dockerHost') {
+                                    $scope.forceActive = 'tags';
+                                    $scope.query = 'DockerHost';
                                     $scope.gridProps.forEach(function (prop) {
                                         if (prop.id === 'tags') {
                                             prop.active = true;
