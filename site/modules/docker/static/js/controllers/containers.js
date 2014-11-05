@@ -172,50 +172,13 @@
                                     } else {
                                         command += 'Container';
                                     }
-                                    var rejectedAction = function (err, container) {
+                                    Docker[command](container).then(function (response) {
+                                        deferred.resolve(response);
+                                    }, function (err) {
                                         deferred.reject(err);
                                         errorCallback(err);
                                         container.actionInProgress = false;
                                         container.checked = false;
-                                    };
-                                    function removeRunningContainer(container) {
-                                        container.options = {
-                                            id: container.Id,
-                                            v: true,
-                                            force: true
-                                        };
-                                        Docker.removeContainer(container).then(function (response) {
-                                            deferred.resolve(response);
-                                        }, function (err) {
-                                            rejectedAction(err, container)
-                                        });
-                                    }
-                                    Docker[command](container).then(function (response) {
-                                        deferred.resolve(response);
-                                    }, function (err) {
-                                        if (typeof(err) === 'string' && err.indexOf('remove a running container') !== -1) {
-                                            PopupDialog.confirm(
-                                                localization.translate(
-                                                    $scope,
-                                                    null,
-                                                    'Confirm: Remove running containers'
-                                                ),
-                                                localization.translate(
-                                                    $scope,
-                                                    null,
-                                                    "The container is running. Are you sure you'd like to remove a running container ?"
-                                                ), function () {
-                                                    container.actionInProgress = true;
-                                                    container.checked = true;
-                                                    removeRunningContainer(container);
-                                                }, function () {
-                                                    deferred.reject(err);
-                                                    container.actionInProgress = false;
-                                                    container.checked = false;
-                                                });
-                                        } else {
-                                            rejectedAction(err, container);
-                                        }
                                     });
                                     promises.push(deferred.promise);
                                 });

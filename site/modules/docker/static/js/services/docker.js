@@ -205,7 +205,7 @@
             var data = {
                 direct: true,
                 host: {primaryIp: container.primaryIp},
-                options: container.options || {id: container.Id},
+                options: container.options || {id: container.Id, force: true},
                 container: container
             }
             return createCall('remove', data);
