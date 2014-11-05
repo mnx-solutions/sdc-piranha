@@ -956,6 +956,42 @@ var Docker = function execute(scope) {
         }
     });
 
+    server.onCall('DockerForceRemoveImage', {
+        verify: function (data) {
+            return data && data.options && data.options.id && data.host && data.host.primaryIp;
+        },
+        handler: function (call) {
+            Docker.createClient(call, call.data.host, function (error, client) {
+                if (error) {
+                    return call.done(error, true);
+                }
+                client.images(function (error, images) {
+                    if (error) {
+                        return call.done(error, true);
+                    }
+                    var image = images.find(function (image) {
+                        return image.Id.substr(0, 12) === call.data.options.id.substr(0, 12);
+                    });
+                    if (!image) {
+                        return call.done('Image "' + call.data.options.id + '" not found', true);
+                    }
+                    var tags = image.RepoTags || [image.Id];
+                    var funcs = [];
+                    tags.forEach(function () {
+                        funcs.push(function (callback) {
+                            client.removeImage({id: image.Id, force: true}, function (error) {
+                                callback(error);
+                            });
+                        });
+                    });
+                    vasync.parallel({
+                        funcs: funcs
+                    }, call.done.bind(call));
+                });
+            });
+        }
+    });
+
     server.onCall('DockerImageTags', {
         verify: function (data) {
             return data && data.options && typeof (data.options.name) === 'string' && data.registry;

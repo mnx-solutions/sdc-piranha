@@ -136,24 +136,47 @@
             };
 
             $scope.removeImage = function () {
-                PopupDialog.confirm(
-                    localization.translate(
-                        $scope,
-                        null,
-                        'Confirm: Remove image'
-                    ),
-                    localization.translate(
-                        $scope,
-                        null,
-                        'Please confirm that you want to remove this image.'
-                    ),
-                    function () {
-                        $scope.actionInProgress = true;
-                        Docker.removeImage(image).then(function () {
-                            $location.path('/docker/images');
-                        }, errorCallback);
+                $scope.actionInProgress = true;
+                Docker.listContainers({host: {primaryIp: image.primaryIp}, options: {all: true}}).then(function (containers) {
+                    var container = containers.find(function (container) {
+                        return (Array.isArray($scope.image.info.Tags) && $scope.image.info.Tags.indexOf(container.Image) !== -1)
+                            || container.Image.substr(0, 12) === $scope.image.Id.substr(0, 12);
+                    });
+
+                    if (container) {
+                        $scope.actionInProgress = false;
+                        PopupDialog.message(null, 'This image has active containers.  Please remove them first.');
+                        return;
                     }
-                );
+                    if ($scope.image.info.Tags && $scope.image.info.Tags.length > 1) {
+                        PopupDialog.confirm(
+                            localization.translate($scope, null, 'Confirm: Remove image'),
+                            localization.translate($scope, null, 'This image has more than one tag.  Are you sure you want to remove it?'),
+                            function () {
+                                Docker.forceRemoveImage({host: {primaryIp: image.primaryIp}, options: {id: image.Id}}).then(function () {
+                                    $location.path('/docker/images');
+                                }, errorCallback);
+                            },
+                            function () {
+                                $scope.actionInProgress = false;
+                            }
+                        );
+                    } else {
+                        PopupDialog.confirm(
+                            localization.translate($scope, null, 'Confirm: Remove image'),
+                            localization.translate($scope, null, 'Please confirm that you want to remove this image.'),
+                            function () {
+                                Docker.removeImage({host: {primaryIp: image.primaryIp}, options: {id: image.Id}}).then(function () {
+                                    $location.path('/docker/images');
+                                }, errorCallback);
+                            },
+                            function () {
+                                $scope.actionInProgress = false;
+                            }
+                        );
+                    }
+
+                });
             };
 
             function urlParser(url) {
