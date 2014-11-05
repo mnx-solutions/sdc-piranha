@@ -79,7 +79,7 @@
                     {
                         id: 'hostName',
                         name: 'Host',
-                        _order: 'name',
+                        _order: 'hostName',
                         sequence: 1,
                         active: true,
                         type: 'html',
