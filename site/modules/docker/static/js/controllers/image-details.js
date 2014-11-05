@@ -47,7 +47,7 @@
                             if ($scope.image.Id === image.Id) {
                                 $scope.image.info = image;
                             }
-                            image.Id = image.Id.slice(0, 12);
+                            image.ShortId = image.Id.slice(0, 12);
                             image.Created = new Date(image.Created * 1000);
                         });
                         $scope.imageInfoTags = '';
@@ -56,7 +56,7 @@
                         }
                         $scope.imageContainer = $scope.image.Container.slice(0, 12);
                         Docker.inspectContainer({primaryIp: primaryIp, Id: $scope.imageContainer}).then(function (resp) {
-                            $scope.imageContainer = '<a href="#!/docker/container/' + hostId + '/' + $scope.imageContainer + '">' + $scope.imageContainer + '</a>';
+                            $scope.imageContainer = '<a href="#!/docker/container/' + hostId + '/' + $scope.image.Container + '">' + $scope.imageContainer + '</a>';
                         });
                         $scope.loading = false;
                         $scope.actionInProgress = false;

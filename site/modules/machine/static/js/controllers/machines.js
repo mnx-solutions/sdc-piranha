@@ -181,14 +181,25 @@
                             checkedMachines.forEach(function (el) {
                                 if (action === 'delete') {
                                     $$track.event('machine', 'delete');
-                                    Machine.deleteMachine(el.id).then(function (err, data) {
+                                    var resolvedDeleteAction = function (el) {
                                         if (!$scope.machines.length && currentLocation === $location.path()) {
                                             Machine.gotoCreatePage();
                                         }
                                         el.checked = false;
-                                    }, function (err) {
-                                        PopupDialog.errorObj(err);
-                                    });
+                                    };
+                                    if (el.tags && el.tags.JPC_tag === 'DockerHost') {
+                                        Machine.deleteDockerMachine(el).then(function () {
+                                            resolvedDeleteAction(el);
+                                        }, function (err) {
+                                            PopupDialog.errorObj(err);
+                                        });
+                                    } else {
+                                        Machine.deleteMachine(el.id).then(function () {
+                                            resolvedDeleteAction(el);
+                                        }, function (err) {
+                                            PopupDialog.errorObj(err);
+                                        });
+                                    }
 
                                 } else {
                                     $$track.event('machine', action);

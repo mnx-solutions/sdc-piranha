@@ -494,23 +494,21 @@
                         $$track.event('machine', 'delete');
 
                         // Redirect if complete
-                        Machine.deleteMachine(machineid).then(function (data) {
+                        var resolvedDeleteAction = function (machineid) {
                             PopupDialog.message(
-                                    localization.translate(
-                                            $scope,
-                                            null,
-                                            'Message'
-                                    ),
-                                    localization.translate(
-                                            $scope,
-                                            null,
-                                            'Your instance "{{name}}" has been successfully deleted.',
-                                            {
-                                                name: $scope.machine['name']
-                                            }
-                                    ),
-                                    function () {
+                                localization.translate(
+                                    $scope,
+                                    null,
+                                    'Message'
+                                ),
+                                localization.translate(
+                                    $scope,
+                                    null,
+                                    'Your instance "{{name}}" has been successfully deleted.',
+                                    {
+                                        name: $scope.machine.name
                                     }
+                                )
                             );
 
                             if ($location.url() === '/compute/instance/' + machineid) {
@@ -519,7 +517,16 @@
                             if (!$scope.machines.length && ($location.path() === '/compute' || $location.path() === currentLocation)) {
                                 Machine.gotoCreatePage();
                             }
-                        });
+                        };
+                        if ($scope.machine.tags && $scope.machine.tags.JPC_tag === 'DockerHost') {
+                            Machine.deleteDockerMachine($scope.machine).then(function () {
+                                resolvedDeleteAction(machineid);
+                            });
+                        } else {
+                            Machine.deleteMachine(machineid).then(function () {
+                                resolvedDeleteAction(machineid);
+                            });
+                        }
                     });
             };
 
@@ -683,7 +690,7 @@
                         active: true,
                         type: 'html',
                         _getter: function (container) {
-                            return '<a href="#!/docker/container/' + container.hostId + '/' + container.shortId + '" style="min-width: 140px;">' + container.shortId + '</a>';
+                            return '<a href="#!/docker/container/' + container.hostId + '/' + container.Id + '" style="min-width: 140px;">' + container.shortId + '</a>';
                         }
                     },
                     {

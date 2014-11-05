@@ -107,6 +107,10 @@
                 if ($scope.tabFilterField === 'containers') {
                     $scope.tabFilters = ['running', 'all'];
                     loadCurrentTabFilter();
+                } else if ($scope.tabFilterField === 'logs') {
+                    $scope.tabFilters = ['existing', 'deleted'];
+                    $scope.tabFilter = 'existing';
+                    setCurrentTabFilter();
                 } else {
                     $scope.tabFilters = ['top', 'all'];
                     $scope.tabFilter = 'top';
