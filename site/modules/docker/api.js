@@ -12,9 +12,9 @@ var os = require('os');
 var EventEmitter = require('events').EventEmitter;
 
 var SUBUSER_LOGIN = 'docker';
+var SUBUSER_REGISTRY_LOGIN = SUBUSER_LOGIN + '_registry';
 var SUBUSER_OBJ_NAME = 'docker';
 var SUBUSER_OBJ_NAME_REGISTRY = SUBUSER_OBJ_NAME + '-registry';
-var SUBUSER_PASSWORD = 'R?5{N/9aFGc{9Y~';
 
 var requestMap = {
     'GET': 'get',
@@ -664,7 +664,7 @@ module.exports = function execute(scope, register) {
                 });
             },
             function (callback) {
-                client.setRoleTags(registryPath, [SUBUSER_OBJ_NAME_REGISTRY], true, function (setRegErr) {
+                client.setRoleTags(registryPath, [SUBUSER_OBJ_NAME, SUBUSER_OBJ_NAME_REGISTRY], true, function (setRegErr) {
                     callback(setRegErr);
                 });
             }
@@ -673,10 +673,25 @@ module.exports = function execute(scope, register) {
 
     function setupSubAccount(call, keyPair, setupCallback) {
         var dockerUser;
+        var dockerRegistryUser;
         vasync.waterfall([
             function (callback) {
                 call.cloud.getAccount(function (accountErr, acccount) {
                     callback(accountErr, acccount);
+                });
+            },
+            function (account, callback) {
+                var emailParts = account.email.split('@');
+                emailParts[0] += '+' + SUBUSER_REGISTRY_LOGIN;
+                var userData = {
+                    lastName: SUBUSER_REGISTRY_LOGIN,
+                    email: emailParts.join('@'),
+                    login: SUBUSER_REGISTRY_LOGIN,
+                    password: (Math.random().toString(36) + 'ABC123').substr(2)
+                };
+                call.cloud.createUser(userData, function (error, user) {
+                    dockerRegistryUser = user;
+                    callback(error, account);
                 });
             },
             function (account, callback) {
@@ -686,7 +701,7 @@ module.exports = function execute(scope, register) {
                     lastName: SUBUSER_LOGIN,
                     email: emailParts.join('@'),
                     login: SUBUSER_LOGIN,
-                    password: SUBUSER_PASSWORD
+                    password: (Math.random().toString(36) + 'ABC123').substr(2)
                 };
                 call.cloud.createUser(userData, callback);
             },
@@ -721,8 +736,8 @@ module.exports = function execute(scope, register) {
                 call.cloud.createRole({
                     name: SUBUSER_OBJ_NAME_REGISTRY,
                     policies: [SUBUSER_OBJ_NAME_REGISTRY],
-                    members: [dockerUser.login],
-                    default_members: [dockerUser.login]
+                    members: [dockerRegistryUser.login],
+                    default_members: [dockerRegistryUser.login]
                 }, function () {
                     callback();
                 });
@@ -737,7 +752,18 @@ module.exports = function execute(scope, register) {
                 }, callback);
             },
             function (_, callback) {
-                keyPoller(call, dockerUser.id, true, callback)();
+                keyPoller(call, dockerUser.id, true, function (error) {
+                    callback(error);
+                })();
+            },
+            function (callback) {
+                call.cloud.uploadUserKey(dockerRegistryUser.id, {
+                    name: SUBUSER_OBJ_NAME,
+                    key: keyPair.publicKey
+                }, callback);
+            },
+            function (_, callback) {
+                keyPoller(call, dockerRegistryUser.id, true, callback)();
             }
         ], setupCallback);
     }
@@ -964,6 +990,7 @@ module.exports = function execute(scope, register) {
     };
 
     api.SUBUSER_LOGIN = SUBUSER_LOGIN;
+    api.SUBUSER_REGISTRY_LOGIN = SUBUSER_REGISTRY_LOGIN;
 
     register('Docker', api);
 };
