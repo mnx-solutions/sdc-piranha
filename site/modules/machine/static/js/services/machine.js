@@ -15,8 +15,7 @@
         'Account',
         '$location',
         'ErrorService',
-        'fileman',
-        function (serverTab, $rootScope, $q, $timeout, localization, Package, Dataset, util, PopupDialog, Account, $location, ErrorService, fileman) {
+        function (serverTab, $rootScope, $q, $timeout, localization, Package, Dataset, util, PopupDialog, Account, $location, ErrorService) {
 
         var service = {};
         var machines = {job: null, index: {}, list: [], search: {}};
@@ -411,14 +410,6 @@
                         job.machine.state = job.machine.prevState;
                     }
                     return;
-                }
-
-                var dockerMachines = machines.list.filter(function (machine) {
-                    return machine.tags && machine.tags.JPC_tag === 'DockerHost';
-                });
-                // This is the last DockerHost
-                if (dockerMachines.length === 1 && dockerMachines[0] === job.machine) {
-                    fileman.rmr('/stor/.joyent/docker', function () {});
                 }
 
                 machines.list.splice(machines.list.indexOf(job.machine), 1);
