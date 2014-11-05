@@ -79,6 +79,21 @@ module.exports = function execute(scope, register) {
         }
     }
 
+    function getRoleTags(path, callback) {
+        this.info(path, function (err, info) {
+            if (err) {
+                return callback(err);
+            }
+            var roles;
+            if (info.headers['role-tag']) {
+                roles = info.headers['role-tag'].split(/\s*,\s*/);
+            } else {
+                roles = [];
+            }
+            callback(null, roles);
+        });
+    }
+
     function createClient(call) {
 
         var options = {
@@ -116,6 +131,7 @@ module.exports = function execute(scope, register) {
         client.getFileContents = getFileContents;
         client.putFileContents = putFileContents;
         client.setRoleTags = setRoleTags;
+        client.getRoleTags = getRoleTags;
         return client;
     }
 
