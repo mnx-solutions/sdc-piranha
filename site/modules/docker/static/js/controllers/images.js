@@ -315,6 +315,7 @@
                             var image = Docker.parseTag($scope.term);
                             var registryId = $scope.registryId;
                             var findedImages =  $scope.findedImages = [];
+                            var parentScope = $scope;
                             $scope.pulling = true;
                             PopupDialog.custom({
                                 templateUrl: 'docker/static/partials/select-tag.html',
@@ -331,7 +332,7 @@
                                         $scope.close();
                                         image.processing = true;
                                         image.processStatus = "Preparing";
-                                        Docker.pullImage({primaryIp: $scope.hostIp}, image, registryId).then(function (chunk) {
+                                        Docker.pullImage({primaryIp: $scope.hostIp}, image, parentScope.registryId).then(function (chunk) {
                                             if (!chunk.length) {
                                                 image.processStatus = 'Download error';
                                             }
@@ -363,6 +364,7 @@
                             $scope.searching = true;
                             $scope.showResult = false;
                             registry = $scope.registryId;
+
                             if (!registry) {
                                 $scope.searching = false;
                                 $scope.showResult = true;
@@ -452,6 +454,7 @@
                         };
 
                         $scope.pullImage = function (image) {
+                            var parentScope = $scope;
                             PopupDialog.custom({
                                 templateUrl: 'docker/static/partials/select-tag.html',
                                 openCtrl: function ($scope, dialog, Docker) {
@@ -480,7 +483,21 @@
                                         image.tag = $scope.tag === 'all' ? '' : $scope.tag;
                                         image.processing = true;
                                         image.processStatus = "Preparing";
-                                        Docker.pullImage({primaryIp: $scope.hostIp}, image).then(function (chunk) {
+
+                                        var selectedRegistry = parentScope.registries.find(function (registry) {
+                                            return registry.id === parentScope.registryId;
+                                        });
+                                        if (selectedRegistry) {
+                                            if (selectedRegistry.type === 'local') {
+                                                image.name = 'localhost:5000/' + image.name;
+                                            } else if (selectedRegistry.type === 'remote') {
+                                                var parser = document.createElement('a');
+                                                parser.href = selectedRegistry.host;
+                                                image.name = parser.host + selectedRegistry.port + '/' + image.name;
+                                            }
+                                        }
+
+                                        Docker.pullImage({primaryIp: $scope.hostIp}, image, parentScope.registryId).then(function (chunk) {
                                             if (!chunk.length) {
                                                 image.processStatus = 'Download error';
                                             }
