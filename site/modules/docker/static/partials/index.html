@@ -16,6 +16,7 @@
             <button data-ng-disabled="!data.imageId" data-ng-click="createDocker()" type="button" class="btn btn-big orange text-to-left"><i class="plus-btn-icon"></i>Create Docker Host</button>
         </div>
     </div>
+    <div class="beta-sticker">beta</div>
     <div class="loading-large" data-ng-show="loading"></div>
     <div class="row dockers-wrapper" data-ng-show="dockerMachines.length >= 1 && !loading">
         <div class="docker-wrapper" data-ng-repeat="machine in dockerMachines" data-ng-click="navigateMachine(machine)">
