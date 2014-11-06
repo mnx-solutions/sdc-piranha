@@ -59,19 +59,27 @@
                 var listAllImages = function (all) {
                     topImages = all ? topImages : [];
                     Docker.listAllImages(all ? {all: true} : null).then(function (images) {
-                        images.forEach(function (image) {
-                            image.Id = image.Id.slice(0, 12);
-                            if (all) {
-                                image.images = topImages.indexOf(image.Id) === -1 ? 'all' : 'top';
-                            } else {
-                                image.images = 'top';
-                                topImages.push(image.Id);
-                            }
-                            image.repository = image.RepoTags ? image.RepoTags[0].split(':')[0] : '';
-                        });
-                        imagesWithoutGrouping = angular.copy(images);
-                        $scope.images = getGroupedImages(images);
-                        $scope.loading = false;
+                        Docker.listHosts().then(function (machines) {
+                            images.forEach(function (image) {
+                                image.ShorId = image.Id.slice(0, 12);
+                                if (all) {
+                                    image.images = topImages.indexOf(image.ShorId) === -1 ? 'all' : 'top';
+                                } else {
+                                    image.images = 'top';
+                                    topImages.push(image.ShorId);
+                                }
+                                image.repository = image.RepoTags ? image.RepoTags[0].split(':')[0] : '';
+                                machines.some(function (machine) {
+                                    if (machine.name === image.hostName) {
+                                        image.HostId = machine.id;
+                                        return true;
+                                    }
+                                });
+                            });
+                            imagesWithoutGrouping = angular.copy(images);
+                            $scope.images = getGroupedImages(images);
+                            $scope.loading = false;
+                        }, errorCallback);
                     }, errorCallback);
                 };
 
@@ -87,9 +95,9 @@
                         _getter: function (image) {
                             var html;
                             if (!image.hostIds) {
-                                html = '<a href="#!/docker/image/' + image.hostId + '/' + image.Id + '" style="min-width: 140px;">' + image.Id + '</a>';
+                                html = '<a href="#!/docker/image/' + image.hostId + '/' + image.ShorId + '" style="min-width: 140px;">' + image.ShorId + '</a>';
                             } else {
-                                html = '<span>' + image.Id + '</span>';
+                                html = '<span>' + image.ShorId + '</span>';
                             }
                             return html;
                         }
@@ -129,7 +137,7 @@
                             } else {
                                 var html = [];
                                 image.hostIds.forEach(function (hostId, index) {
-                                    html.push('<a href="#!/docker/image/' + hostId + '/' + image.Id + '">' + image.hostNames[index] + '</a>');
+                                    html.push('<a href="#!/docker/image/' + hostId + '/' + image.ShorId + '">' + image.hostNames[index] + '</a>');
                                 });
                                 html = html.join(', ');
                             }
@@ -155,6 +163,12 @@
                         _getter: function (image) {
                             return util.getReadableFileSizeString(image.VirtualSize);
                         }
+                    },
+                    {
+                        id: 'HostId',
+                        name: 'Host Id',
+                        sequence: 7,
+                        active: true
                     }
                 ];
 
@@ -267,6 +281,9 @@
                 $scope.enabledCheckboxes = true;
                 $scope.placeHolderText = 'filter images';
                 $scope.tabFilterField = 'images';
+                if (requestContext.getParam('host')) {
+                    $scope.forceActive = 'HostId'
+                }
 
 
                 Docker.pingManta(function () {
