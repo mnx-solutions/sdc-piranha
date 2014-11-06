@@ -282,7 +282,7 @@
                 $scope.placeHolderText = 'filter images';
                 $scope.tabFilterField = 'images';
                 if (requestContext.getParam('host')) {
-                    $scope.forceActive = 'HostId'
+                    $scope.forceActive = 'HostId';
                 }
 
 
@@ -293,6 +293,29 @@
                 $scope.createImage = function () {
                     $location.path('/docker/image/create');
                 };
+
+                function getHostname(address) {
+                    var a = document.createElement('a');
+                    a.href = address;
+                    return a.hostname;
+                }
+
+                function getSelectedRegistry(scope) {
+                    return scope.registries.find(function (registry) {
+                        return registry.id === scope.registryId;
+                    });
+                }
+
+                function setRegistryHost(scope, image) {
+                    var selectedRegistry = getSelectedRegistry(scope);
+                    if (selectedRegistry) {
+                        if (selectedRegistry.type === 'local') {
+                            image.name = 'localhost:5000/' + image.name;
+                        } else if (selectedRegistry.type === 'remote') {
+                            image.name = getHostname(selectedRegistry.host) + ':' + selectedRegistry.port + '/' + image.name;
+                        }
+                    }
+                }
 
                 //search images
                 $scope.searchImages = function () {
@@ -311,9 +334,20 @@
                             $scope.loading = false;
                         });
 
+                        function allowedIP($currentScope) {
+                            return function () {
+                                var selectedRegistry = getSelectedRegistry($scope);
+                                if (!selectedRegistry || !$currentScope.hostIp || selectedRegistry.type === 'global' || selectedRegistry.type === 'remote') {
+                                    return true;
+                                }
+
+                                return $scope.registries.some(function (registry) {
+                                    return registry.type === 'local' && getHostname(registry.host) === $currentScope.hostIp;
+                                });
+                            };
+                        }
                         $scope.pull = function () {
                             var image = Docker.parseTag($scope.term);
-                            var registryId = $scope.registryId;
                             var findedImages =  $scope.findedImages = [];
                             var parentScope = $scope;
                             $scope.pulling = true;
@@ -327,11 +361,13 @@
                                         $scope.hosts = hosts || [];
                                     });
 
+                                    $scope.allowedIP = allowedIP($scope);
                                     $scope.pullImage = function () {
                                         findedImages.push(image);
                                         $scope.close();
                                         image.processing = true;
                                         image.processStatus = "Preparing";
+                                        setRegistryHost(parentScope, image);
                                         Docker.pullImage({primaryIp: $scope.hostIp}, image, parentScope.registryId).then(function (chunk) {
                                             if (!chunk.length) {
                                                 image.processStatus = 'Download error';
@@ -434,7 +470,7 @@
                             {
                                 id: '',
                                 name: 'Process',
-                                sequence:7,
+                                sequence: 7,
                                 active: true,
                                 type: 'progress',
                                 _inProgress: function (object) {
@@ -445,7 +481,7 @@
                                 },
                                 _getter: function (object) {
                                     return object.processStatus;
-                                },
+                                }
                             }
                         ];
 
@@ -475,6 +511,7 @@
                                         $scope.tags.push({name: 'all'});
                                     });
 
+                                    $scope.allowedIP = allowedIP($scope);
                                     $scope.pullImage = function () {
                                         if (!$scope.tag) {
                                             return false;
@@ -484,18 +521,7 @@
                                         image.processing = true;
                                         image.processStatus = "Preparing";
 
-                                        var selectedRegistry = parentScope.registries.find(function (registry) {
-                                            return registry.id === parentScope.registryId;
-                                        });
-                                        if (selectedRegistry) {
-                                            if (selectedRegistry.type === 'local') {
-                                                image.name = 'localhost:5000/' + image.name;
-                                            } else if (selectedRegistry.type === 'remote') {
-                                                var parser = document.createElement('a');
-                                                parser.href = selectedRegistry.host;
-                                                image.name = parser.host + selectedRegistry.port + '/' + image.name;
-                                            }
-                                        }
+                                        setRegistryHost(parentScope, image);
 
                                         Docker.pullImage({primaryIp: $scope.hostIp}, image, parentScope.registryId).then(function (chunk) {
                                             if (!chunk.length) {

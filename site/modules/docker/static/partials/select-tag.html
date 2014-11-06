@@ -17,6 +17,7 @@
                             </select>
                         </span>
                     </div>
+                    <div class="form-group error" data-ng-show="hosts.length && !allowedIP()">You must have local registry created on this host in order to pull</div>
                     <div data-ng-hide="hideTags" class="form-group">
                         <span class="orange-asterix edit-image edit-label">Select image tag</span>
                         <span class="edit-value">
@@ -31,7 +32,7 @@
             </div>
             <div class="modal-footer">
                 <button data-ng-click="close()" data-button-focus="false" data-label="Cancel" class="btn grey-new effect-orange-button">Cancel</button>
-                <button data-ng-click="pullImage()" data-button-focus="false" data-ng-disabled="selectTagForm.$invalid" class="btn orange">Pull</button>
+                <button data-ng-click="pullImage()" data-button-focus="false" data-ng-disabled="selectTagForm.$invalid || !allowedIP()" class="btn orange">Pull</button>
             </div>
         </div>
     </div>
