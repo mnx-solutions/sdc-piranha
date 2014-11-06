@@ -15,9 +15,11 @@ var registryDockerfile = fs.readFileSync(__dirname + '/data/registry-Dockerfile'
 var Docker = function execute(scope) {
     var Docker = scope.api('Docker');
     var server = scope.api('Server');
+    var machine = scope.api('Machine');
     var methods = Docker.getMethods();
     var methodsForAllHosts = ['containers', 'getInfo', 'images'];
     var registriesCache = {};
+    var removedContainersCache = {};
 
     function DockerHostUnreachable(host) {
         this.message = 'Docker host "' + host + '" is unreachable.';
@@ -128,6 +130,36 @@ var Docker = function execute(scope) {
         });
     };
 
+    var REMOVED_LOGS_PATH = '~~/stor/.joyent/docker/removed-logs.json';
+
+    var getRemovedContainersList = function (call, callback) {
+        var client = scope.api('MantaClient').createClient(call);
+        client.getFileContents(REMOVED_LOGS_PATH, function (error, list) {
+            if (error && error.statusCode !== 404) {
+                return callback(error.message, true);
+            }
+
+            try {
+                list = JSON.parse(list);
+            } catch (e) {
+                call.log.warn('Removed docker containers list is corrupted');
+                list = [];
+            }
+            callback(null, list);
+        });
+    };
+
+    var saveRemovedContainersList = function (call, data, callback) {
+        callback = callback || call.done;
+        var client = scope.api('MantaClient').createClient(call);
+        client.putFileContents(REMOVED_LOGS_PATH, JSON.stringify(data), function (error) {
+            if (error && error.statusCode !== 404) {
+                return callback(error.message, true);
+            }
+            return callback(null);
+        });
+    };
+
     var methodHandlers = {};
     methods.forEach(function (method) {
         methodHandlers[method] = function (call, callback) {
@@ -146,56 +178,118 @@ var Docker = function execute(scope) {
         };
     });
 
-    var oldRemove = methodHandlers.remove;
+    function saveLogsToManta(call, logPath, logs, callback) {
+        var mantaclient = scope.api('MantaClient').createClient(call);
+        mantaclient.putFileContents(logPath, JSON.stringify(logs), function (error) {
+            return callback(error && error.message, true);
+        });
+    }
 
     methodHandlers.remove = function (call, callback) {
-        oldRemove(call, function (err, result) {
-            if (err) {
-                return callback(err);
+        waitClient(call, call.data.host, function (error, client) {
+            if (error) {
+                return callback(error);
             }
-            var container = call.data.container;
-            var ports = [];
-            if (container.Ports.length) {
-                ports = container.Ports.map(function (port) {
-                    return port.PublicPort;
-                });
-            } else {
-                var isPrivateRegistryName = container.Names.some(function (name) {
-                    return name === '/private-registry';
-                });
-                ports = isPrivateRegistryName && container.Image.indexOf('private-registry') >= 0 ? [5000] : [];
-            }
-            var host = call.data.host.primaryIp;
-            if (ports.length) {
-                // delete registry
-                return getRegistries(call, function (error, list) {
-                    var matchingRegistryId;
-                    list = list.filter(function (item) {
-                        if (item.host.substr(item.host.indexOf('://') + 3) === host) {
-                            var matchingPorts = ports.some(function (port) {
-                                return port === parseInt(item.port, 10);
-                            });
-                            matchingRegistryId = matchingPorts ? item.id : null;
-                            return !matchingPorts;
-                        } else {
-                            return true;
-                        }
-                    });
-                    if (matchingRegistryId) {
-                        delete registriesCache[matchingRegistryId];
-                        return saveRegistries(call, list, function (errSave) {
-                            if (errSave) {
-                                call.log.warn(errSave);
-                            }
-                            callback(null, result);
-                        });
-                    } else {
-                        callback(null, result);
+            client.ping(function (error) {
+                if (error) {
+                    return callback(new DockerHostUnreachable(call.data.host.primaryIp).message, true);
+                }
+
+                return client.logs({id: call.data.container.Id, tail: 'all'}, function (err, response) {
+                    if (err) {
+                        return callback(err);
                     }
+                    var logs = '';
+                    if (response && response.length) {
+                        logs = Docker.parseLogResponse(response);
+                    }
+                    var tomorrowDate = Docker.dateFormat(new Date(new Date().getTime() + 24 * 60 * 60 * 1000).setHours(0, 0, 0, 0));
+                    var logPath = '~~/stor/.joyent/docker/logs/' + call.data.container.hostId + '/' + call.data.container.Id + '/' + tomorrowDate + '.log';
+                    saveLogsToManta(call, logPath, logs, function (error) {
+                        if (error) {
+                            return call.done(error);
+                        }
+                        client.remove(call.data.options, function (error, result) {
+                            if (error) {
+                                return call.done(error);
+                            }
+                            getRemovedContainersList(call, function (error, removedContainers) {
+                                if (error) {
+                                    if (error.statusCode === 404) {
+                                        removedContainers = [];
+                                    } else {
+                                        return callback(error.message, true);
+                                    }
+                                }
+                                var removedContainer = {
+                                    Id: call.data.container.Id,
+                                    Image: call.data.container.Image,
+                                    Names: call.data.container.Names,
+                                    hostId: call.data.container.hostId,
+                                    hostName: call.data.container.hostName
+                                };
+                                var hostId = call.data.container.hostId;
+                                removedContainers.push(removedContainer);
+                                if (Array.isArray(removedContainersCache[hostId])) {
+                                    removedContainersCache[hostId] = removedContainersCache[hostId].concat(removedContainers);
+                                } else {
+                                    removedContainersCache[hostId] = removedContainers;
+                                }
+                                var duplicateRemovedContainers = {};
+                                removedContainersCache[hostId] = removedContainersCache[hostId].filter(function (removedContainer) {
+                                    return removedContainer.Id in duplicateRemovedContainers ? 0 : duplicateRemovedContainers[removedContainer.Id] = removedContainer.Id;
+                                });
+                                saveRemovedContainersList(call, removedContainersCache[hostId], function (error) {
+                                    if (error) {
+                                        return call.log.warn(error.message, true);
+                                    }
+                                    var container = call.data.container;
+                                    var ports = [];
+                                    if (container.Ports && container.Ports.length > 0) {
+                                        ports = container.Ports.map(function (port) {
+                                            return port.PublicPort;
+                                        });
+                                    } else {
+                                        var isPrivateRegistryName = container.Names.some(function (name) {
+                                            return name === '/private-registry';
+                                        });
+                                        ports = isPrivateRegistryName && container.Image.indexOf('private-registry') >= 0 ? [5000] : [];
+                                    }
+                                    var host = call.data.host.primaryIp;
+                                    if (ports.length) {
+                                        // delete registry
+                                        return getRegistries(call, function (error, list) {
+                                            var matchingRegistryId;
+                                            list = list.filter(function (item) {
+                                                if (item.host.substr(item.host.indexOf('://') + 3) === host) {
+                                                    var matchingPorts = ports.some(function (port) {
+                                                        return port === parseInt(item.port, 10);
+                                                    });
+                                                    matchingRegistryId = matchingPorts ? item.id : null;
+                                                    return !matchingPorts;
+                                                } else {
+                                                    return true;
+                                                }
+                                            });
+                                            if (matchingRegistryId) {
+                                                delete registriesCache[matchingRegistryId];
+                                                return saveRegistries(call, list, function (errSave) {
+                                                    if (errSave) {
+                                                        call.log.warn(errSave);
+                                                    }
+                                                    callback(null, result);
+                                                });
+                                            }
+                                        });
+                                    } else {
+                                        callback(null, result);
+                                    }
+                                });
+                            });
+                        });
+                    });
                 });
-            } else {
-                callback(null, result);
-            }
+            });
         });
     };
 
@@ -306,6 +400,159 @@ var Docker = function execute(scope) {
                 call.done(null, result);
             });
         });
+    });
+
+    server.onCall('GetRemovedContainers', function (call) {
+        getRemovedContainersList(call, function (error, removedContainers) {
+            if (error) {
+                return call.done(error.message, true);
+            }
+            call.done(null, removedContainers);
+        });
+    });
+
+    server.onCall('RemoveDeletedContainerLogs', function (call) {
+        var logs = call.data.logs;
+        var client = scope.api('MantaClient').createClient(call);
+        function getRemovedContainers(logs, callback) {
+            vasync.forEachPipeline({
+                func: function (removedContainerLog, callback) {
+                    getRemovedContainersList(call, function (error, removedContainers) {
+                        if (error) {
+                            return callback(error.message, true);
+                        }
+                        var path = '~~/stor/.joyent/docker/logs/' + removedContainerLog.hostId + '/' + removedContainerLog.Id;
+                        var countHostRemovedContainers = removedContainers.filter(function (removedContainer) {
+                            return removedContainer.hostId === removedContainerLog.hostId;
+                        }).length;
+                        removedContainers = removedContainers.filter(function (removedContainer) {
+                            return removedContainer.Id !== removedContainerLog.Id;
+                        });
+                        if (removedContainerLog.hostState === 'removed' && countHostRemovedContainers === 1) {
+                            path = '~~/stor/.joyent/docker/logs/' + removedContainerLog.hostId;
+                        }
+                        client.rmr(path, function (error) {
+                            if (error && error.statusCode !== 404) {
+                                return callback(error.message, true);
+                            }
+                            saveRemovedContainersList(call, removedContainers, callback);
+                        });
+                    });
+                },
+                inputs: logs
+            }, callback);
+        }
+        if (logs.length > 0) {
+            getRemovedContainers(logs, function (error) {
+                if (error) {
+                    return call.done(error.message, true);
+                }
+                call.done();
+            });
+        } else {
+            call.done();
+        }
+    });
+
+    server.onCall('DockerDeleteMachine', {
+        verify: function (data) {
+            return typeof data === 'object' &&
+                data.hasOwnProperty('uuid') && data.hasOwnProperty('datacenter');
+        },
+
+        handler: function(call) {
+            var options = {
+                uuid: call.data.uuid,
+                datacenter: call.data.datacenter
+            };
+            var removedContainerList = [];
+            var getHostContainers = function (call, callback) {
+                Docker.createClient(call, call.data.host, function (error, client) {
+                    if (error) {
+                        return call.done(error.message, true);
+                    }
+                    client.containers({all: true}, function (error, containers) {
+                        if (error) {
+                            return call.done(error.message, true);
+                        }
+                        return callback(error, containers, client);
+                    });
+                });
+            };
+            getHostContainers(call, function (error, hostContainers, client) {
+                if (error) {
+                    return call.done(error.message, true);
+                }
+                hostContainers.forEach(function (hostContainer, count) {
+                    var removedContainer = {
+                        Id: hostContainer.Id,
+                        Image: hostContainer.Image,
+                        Names: hostContainer.Names,
+                        hostId: call.data.uuid,
+                        hostName: call.data.host.hostName,
+                        hostState: 'removed'
+                    };
+                    removedContainerList.push(removedContainer);
+                    client.logs({id: hostContainer.Id, tail: 'all'}, function (err, response) {
+                        if (err) {
+                            return call.done(err);
+                        }
+                        var logs ='';
+                        if (response && response.length) {
+                            logs = Docker.parseLogResponse(response);
+                        }
+                        var tomorrowDate = Docker.dateFormat(new Date(new Date().getTime() + 24 * 60 * 60 * 1000).setHours(0, 0, 0, 0));
+                        var logPath = '~~/stor/.joyent/docker/logs/' + call.data.uuid + '/' + hostContainer.Id + '/' + tomorrowDate + '.log';
+                        saveLogsToManta(call, logPath, logs, function (error) {
+                            if (error) {
+                                return call.done(error);
+                            }
+                            if (hostContainers.length - 1 === count) {
+                                machine.Delete(call, options, function (error) {
+                                    if (error) {
+                                        call.done(error.message, true);
+                                    }
+                                    getRemovedContainersList(call, function (error, removedContainers) {
+                                        if (error) {
+                                            if (error.statusCode === 404) {
+                                                removedContainers = [];
+                                            } else {
+                                                return call.done(error.message, true);
+                                            }
+                                        }
+                                        if (removedContainers.length > 0) {
+                                            removedContainers = removedContainers.map(function (removedContainer) {
+                                                if (call.data.uuid === removedContainer.hostId) {
+                                                    removedContainer.hostState = 'removed';
+                                                }
+                                                return removedContainer;
+                                            });
+                                        }
+                                        removedContainerList = removedContainerList.concat(removedContainers);
+                                        var hostId = call.data.uuid;
+                                        if (Array.isArray(removedContainersCache[hostId])) {
+                                            removedContainersCache[hostId] = removedContainersCache[hostId].concat(removedContainerList);
+                                        } else {
+                                            removedContainersCache[hostId] = removedContainerList;
+                                        }
+                                        var duplicateRemovedContainers = {};
+                                        removedContainersCache[hostId] = removedContainersCache[hostId].filter(function (removedContainer) {
+                                            return removedContainer.Id in duplicateRemovedContainers ? 0 : duplicateRemovedContainers[removedContainer.Id] = removedContainer.Id;
+                                        });
+                                        saveRemovedContainersList(call, removedContainersCache[hostId], function (error) {
+                                            if (error) {
+                                                call.done(error.message, true);
+                                            }
+                                            call.done();
+                                        });
+                                    });
+                                });
+                            }
+                        });
+                    });
+                });
+            });
+        }
     });
 
     server.onCall('RegistryPing', {

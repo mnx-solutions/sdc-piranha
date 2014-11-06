@@ -994,6 +994,58 @@ module.exports = function execute(scope, register) {
         createClient(call, Registry, url.format(parsedUrl), callback);
     };
 
+    function pad(measure) {
+        return measure < 10 ? '0' + measure : measure;
+    }
+
+    function getTime(str) {
+        str += ' ' + new Date().getFullYear();
+        var date = new Date(str);
+        var time = '';
+        if (!isNaN(date.getTime())) {
+            time = date.getFullYear() + '-' + pad(date.getMonth() + 1) + '-' + pad(date.getDate()) + 'T' +
+                pad(date.getHours()) + ':' + pad(date.getMinutes()) + ':' + pad(date.getSeconds()) +
+                ':' + date.getMilliseconds() + 'Z';
+        }
+        return time;
+    }
+
+    function getLogFormat(log, inputStr) {
+        inputStr = inputStr || 'stdout';
+        var endBracketPosition = log.indexOf(']') || 1;
+        var time = getTime(log.slice(log.indexOf('[') + 1 || 1, endBracketPosition));
+
+        return '{"log": "' + log.slice(endBracketPosition + 2, log.length - 1) + '", "stream":"' + inputStr  + '", "time":"' + time + '"}\n';
+    }
+
+    api.dateFormat = function (sourceDate) {
+        sourceDate = new Date(sourceDate);
+        return sourceDate.getFullYear() + '-' + pad(sourceDate.getMonth() + 1) + '-' + pad(sourceDate.getDate());
+    };
+
+    api.parseLogResponse = function (response) {
+        var responses = response.split('\n');
+        var code;
+        var logs = '';
+        var inputStr = null;
+        responses.pop();
+        responses.forEach(function (response) {
+            var i;
+            for (i = 0; i < response.length; i++) {
+                code = response.charCodeAt(i);
+                if (code === 2) {
+                    inputStr = 'stderr';
+                }
+                if (code > 4 || code < 2048) {
+                    break;
+                }
+            }
+
+            logs += getLogFormat(response.substr(i), inputStr);
+        });
+        return logs;
+    };
+
     api.SUBUSER_LOGIN = SUBUSER_LOGIN;
     api.SUBUSER_REGISTRY_LOGIN = SUBUSER_REGISTRY_LOGIN;
 

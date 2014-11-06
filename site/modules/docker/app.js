@@ -11,29 +11,6 @@ module.exports = function (scope, app) {
         this.message = 'Docker host "' + host + '" is unreachable.';
     }
 
-    function timeFormat(measure) {
-        return measure < 10 ? '0' + measure : measure;
-    }
-
-    function getTime(str) {
-        str += ' ' + new Date().getFullYear();
-        var date = new Date(str);
-        var time = '';
-        if (!isNaN(date.getTime())) {
-            time += date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate() + 'T';
-            time += timeFormat(date.getHours()) + ':' + timeFormat(date.getMinutes()) + ':' + timeFormat(date.getSeconds()) + ':' + date.getMilliseconds() + 'Z';
-        }
-        return time;
-    }
-
-    function getLogFormat(log, inputStr) {
-        inputStr = inputStr || 'stdout';
-        var endBracketPosition = log.indexOf(']') || 1;
-        var time = getTime(log.slice(log.indexOf('[') + 1 || 1, endBracketPosition));
-
-        return '{"log": "' + log.slice(endBracketPosition + 2, log.length - 1) + '", "stream":"' + inputStr  + '", "time":"' + time + '"}\n';
-    }
-
     var getFile = function (req, res, action) {
         var messageError;
         var headerType;
@@ -111,30 +88,13 @@ module.exports = function (scope, app) {
                             if (error) {
                                 return callback(new DockerHostUnreachable(ip));
                             }
-                            client.logs({id: container.slice(0, 12), tail: 'all'}, function (err, response) {
+                            client.logs({id: container, tail: 'all'}, function (err, response) {
                                 if (err) {
                                     return callback(err);
                                 }
+                                var logs = '';
                                 if (response && response.length) {
-                                    var responses = response.split('\n');
-                                    var code;
-                                    var logs = '';
-                                    var inputStr = null;
-                                    responses.pop();
-                                    responses.forEach(function (response) {
-                                        var i;
-                                        for (i = 0; i < response.length; i++) {
-                                            code = response.charCodeAt(i);
-                                            if (code === 2) {
-                                                inputStr = 'stderr';
-                                            }
-                                            if (code > 4 || code < 2048) {
-                                                break;
-                                            }
-                                        }
-
-                                        logs += getLogFormat(response.substr(i), inputStr);
-                                    });
+                                    logs = Docker.parseLogResponse(response);
                                     res.write(logs);
                                 }
                                 callback();

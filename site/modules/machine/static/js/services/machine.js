@@ -454,6 +454,17 @@
             return fn(uuid);
         };
 
+        function showError(instance, err, callback) {
+            return PopupDialog.errorObj(err, callback, localization.translate(
+                null,
+                'machine',
+                'Unable to create instance {{name}} ({{uuid}}).',
+                {
+                    name: (instance.name || ''),
+                    uuid: (instance.id || '')
+                }
+            ) + ' ' + (err.message || err));
+        }
 
         service.provisionMachine = function (data) {
             var id = window.uuid.v4();
@@ -467,18 +478,6 @@
 
             machines.list.push(machine);
             machines.index[id] = machine;
-
-            function showError(instance, err, callback) {
-                return PopupDialog.errorObj(err, callback, localization.translate(
-                        null,
-                        'machine',
-                        'Unable to create instance {{name}} ({{uuid}}).',
-                        {
-                            name: (instance.name || ''),
-                            uuid: (instance.id || '')
-                        }
-                ) + ' ' + (err.message || err));
-            }
 
             var jobCall = serverTab.call({
                 name: 'MachineCreate',
@@ -663,6 +662,31 @@
             };
             pollMachines();
             return deferred.promise;
+        };
+
+        service.deleteDockerMachine = function (machine) {
+            var machineState = machine.state;
+            machine.state = 'deleting';
+            handleChunk(machine);
+            var job = serverTab.call({
+                name: 'DockerDeleteMachine',
+                data: { uuid: machine.id,
+                    datacenter: machine.datacenter,
+                    host: {primaryIp: machine.primaryIp, hostName: machine.name} },
+                done: function (err) {
+                    if (!err) {
+                        handleChunk(machine, 'delete');
+                        machines.list.splice(machines.list.indexOf(machine), 1);
+                        delete machines.index[machine.id];
+                    } else {
+                        machine.state = machineState;
+                        showError(machine, 'Unable to delete machine "{{name}}": ', err);
+                    }
+                }
+            });
+
+            machine.job = job.getTracker();
+            return job.promise;
         };
 
         return service;

@@ -451,6 +451,21 @@
             };
         };
 
+        service.getRemovedContainers = function () {
+            var job = serverTab.call({
+                name: 'GetRemovedContainers'
+            });
+            return job.promise;
+        };
+
+        service.removeDeletedContainerLogs = function (logs) {
+            var job = serverTab.call({
+                name: 'RemoveDeletedContainerLogs',
+                data: {logs: logs}
+            });
+            return job.promise;
+        };
+
         return service;
     }]);
 }(window.angular, window.JP.getModule('docker')));

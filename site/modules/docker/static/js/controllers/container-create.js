@@ -57,8 +57,8 @@
 
                             $scope.images = images.map(function (image) {
                                 var tag = image.RepoTags[0];
-                                image.Id = image.Id.slice(0, 12);
-                                image.name = tag === '<none>:<none>' ? image.Id : tag;
+                                image.ShortId = image.Id.slice(0, 12);
+                                image.name = tag === '<none>:<none>' ? image.ShortId : tag;
                                 return image;
                             });
                             $scope.container.Image = selectSource($scope.images, 'name');
@@ -75,7 +75,7 @@
                         $scope.containers = [];
                         Docker.listContainers({host: host, options: {all: true}}).then(function (containers) {
                             $scope.containers = containers.map(function (container) {
-                                container.Id = container.Id.slice(0, 12);
+                                container.ShortId = container.Id.slice(0, 12);
                                 container.Names = container.Names.length ? container.Names.join(', ') : '';
                                 return container;
                             });
@@ -199,7 +199,7 @@
                     $scope.container.MemorySwap = $scope.memorySwap * 1024 * 1024;
 
                     Docker.createContainer({host: {primaryIp: $scope.ip}, container: $scope.container}).then(function (response) {
-                        var containerId = response.Id.slice(0, 12);
+                        var containerId = response.Id;
                         Docker.inspectContainer({primaryIp: $scope.ip, Id: containerId}).then(function (resp) {
                             var portBindings = ng.copy(resp.Config.ExposedPorts);
                             var host;

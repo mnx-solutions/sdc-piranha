@@ -131,6 +131,12 @@
             $scope.makeContainerAction = function (action) {
                 $scope.actionInProgress = true;
                 statsTimerControl(false);
+                if (action === 'remove') {
+                    container.Image = $scope.container.image;
+                    container.Names = [$scope.container.name];
+                    container.hostId = $scope.machine.id;
+                    container.hostName = $scope.machine.name;
+                }
                 Docker[action + 'Container'](container).then(function () {
                     if (action === 'remove') {
                         $location.path('/docker/containers');

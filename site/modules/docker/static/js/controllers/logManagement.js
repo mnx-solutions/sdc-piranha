@@ -7,8 +7,9 @@
             'Docker',
             'PopupDialog',
             'Account',
+            'localization',
 
-            function ($scope, Docker, PopupDialog, Account) {
+            function ($scope, Docker, PopupDialog, Account, localization) {
                 $scope.loading = true;
                 $scope.containers = [];
                 var today = new Date();
@@ -26,6 +27,21 @@
 
                 var dateRangeValidation = function () {
                     $scope.dateError = new Date($scope.date.start).setHours(0, 0, 0, 0) > new Date($scope.date.end).setHours(0, 0, 0, 0);
+                };
+
+                var listRemovedContainers = function () {
+                    Docker.getRemovedContainers().then(function (containers) {
+                        $scope.removedContainers = containers;
+                        $scope.removedContainers.forEach(function (container) {
+                            container.ShortId = container.Id.slice(0, 12);
+                            container.logs = 'deleted';
+                        });
+                        $scope.containers = $scope.containers.filter(function (container) {
+                            return container.logs !== 'deleted';
+                        });
+                        $scope.containers = $scope.containers.concat($scope.removedContainers);
+                        $scope.loading = false;
+                    }, errorCallback);
                 };
 
                 $scope.$watch('date.start', function () {
@@ -52,8 +68,9 @@
                             } else {
                                 container.Ports = ports;
                             }
+                            container.logs = 'existing';
                         });
-                        $scope.loading = false;
+                        listRemovedContainers();
                     }, errorCallback);
                 });
 
@@ -63,8 +80,10 @@
                         end: Math.floor($scope.date.end.getTime()/1000)
                     };
                     if (action === 'show') {
-                        window.open('docker/show?host=' + container.hostId + '&container=' + container.Id + '&ip=' + container.primaryIp +  '&start=' + date.start + '&end=' + date.end, '_blank');
+                        container.primaryIp = container.primaryIp || '';
+                        window.open('docker/show?host=' + container.hostId + '&container=' + container.Id + '&ip=' + container.primaryIp + '&start=' + date.start + '&end=' + date.end, '_blank');
                     } else {
+                        container.primaryIp = container.primaryIp || '';
                         window.location.href = 'docker/download?host=' + container.hostId + '&container=' + container.Id + '&ip=' + container.primaryIp + '&start=' + date.start + '&end=' + date.end;
                     }
                 };
@@ -73,8 +92,80 @@
                     $scope.gridUserConfig = Account.getUserConfig().$child('dockerLogs');
                 }
 
+                var gridMessages = {
+                    remove: {
+                        single: 'Please confirm that you want to remove this log.',
+                        plural: 'Please confirm that you want to remove selected logs.'
+                    }
+                };
+
+                function removeContainerLogs(messageTitle, messageBody) {
+                    if ($scope.checkedItems.length) {
+                        PopupDialog.confirm(
+                            localization.translate(
+                                $scope,
+                                null,
+                                messageTitle
+                            ),
+                            localization.translate(
+                                $scope,
+                                null,
+                                messageBody[$scope.checkedItems.length > 1 ? 'plural' : 'single']
+                            ), function () {
+                                var logs = [];
+                                var checkedLogs = function (checked) {
+                                    $scope.checkedItems.forEach(function (log) {
+                                        if (checked) {
+                                            logs.push(log);
+                                        }
+                                        log.actionInProgress = checked;
+                                        log.checked = checked;
+                                    });
+                                };
+                                checkedLogs(true);
+                                Docker.removeDeletedContainerLogs(logs).then(function () {
+                                    $scope.checkedItems = [];
+                                    listRemovedContainers();
+                                }, function (err) {
+                                    checkedLogs(false);
+                                    errorCallback(err);
+                                });
+                            }
+                        );
+                    } else {
+                        $scope.noCheckBoxChecked();
+                    }
+                }
+
+                $scope.noCheckBoxChecked = function () {
+                    PopupDialog.error(
+                        localization.translate(
+                            $scope,
+                            null,
+                            'Error'
+                        ),
+                        localization.translate(
+                            $scope,
+                            null,
+                            'No logs selected for the action.'
+                        ), function () {
+                        }
+                    );
+                };
+
                 $scope.gridOrder = [];
-                $scope.gridActionButtons = [];
+                $scope.gridActionButtons = [
+                    {
+                        label: 'Remove',
+                        action: function () {
+                            removeContainerLogs('Confirm: Remove logs', gridMessages.remove);
+                        },
+                        show: function () {
+                            return $scope.tab !== 'existing';
+                        },
+                        sequence: 1
+                    }
+                ];
                 $scope.gridProps = [
                     {
                         id: 'hostName',
@@ -84,7 +175,11 @@
                         active: true,
                         type: 'html',
                         _getter: function (container) {
-                            return '<a href="#!/compute/instance/' + container.hostId + '" style="min-width: 140px;">' + container.hostName + '</a>';
+                            var html = '<a href="#!/compute/instance/' + container.hostId + '" style="min-width: 140px;">' + container.hostName + '</a>';
+                            if (container.hostState === 'removed') {
+                                html = '<span>' + container.hostName + '</span>';
+                            }
+                            return html;
                         }
                     },
                     {
@@ -94,7 +189,11 @@
                         active: true,
                         type: 'html',
                         _getter: function (container) {
-                            return '<a href="#!/docker/container/' + container.hostId + '/' + container.ShortId + '" style="min-width: 140px;">' + container.ShortId + '</a>';
+                            var html = '<a href="#!/docker/container/' + container.hostId + '/' + container.ShortId + '" style="min-width: 140px;">' + container.ShortId + '</a>';
+                            if (container.logs === 'deleted') {
+                                html = '<span>' + container.ShortId + '</span>';
+                            }
+                            return html;
                         }
                     },
                     {
@@ -120,7 +219,10 @@
                         id: 'Status',
                         name: 'Status',
                         sequence: 6,
-                        type: 'date',
+                        type: 'progress',
+                        _inProgress: function (object) {
+                            return object.actionInProgress;
+                        },
                         active: true
                     },
                     {
@@ -139,7 +241,11 @@
                         name: 'Ports',
                         type: 'html',
                         _getter: function (object) {
-                            var html = '<span>' + object.Ports.join(" ,") + '</span>';
+                            var ports = '';
+                            if (object.Ports) {
+                                ports = object.Ports.join(" ,");
+                            }
+                            var html = '<span>' + ports + '</span>';
                             return html;
                         },
                         sequence: 8,
@@ -179,10 +285,16 @@
                         ]
                     }
                 ];
-                $scope.enabledCheckboxes = false;
+                $scope.enabledCheckboxes = true;
                 $scope.searchForm = true;
                 $scope.placeHolderText = 'filter containers';
+                $scope.tabFilterField = 'logs';
                 $scope.exportFields = [];
+
+                $scope.$on('gridViewChangeTab', function (event, tab) {
+                    $scope.tab = tab;
+                });
+
             }
         ]);
 }(window.JP.getModule('docker')));
