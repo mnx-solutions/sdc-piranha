@@ -203,7 +203,7 @@
                             var promises = [];
                             $scope.checkedItems.forEach(function (image) {
                                 image.actionInProgress = true;
-                                image.checked = true;
+                                image.checked = false;
                                 var deferred = $q.defer();
                                 Docker[action + 'Image'](image).then(function (response) {
                                     deferred.resolve(response);
@@ -219,7 +219,6 @@
                             });
 
                             $q.all(promises).then(function () {
-                                $scope.checkedItems = [];
                                 listAllImages();
                             });
                         };

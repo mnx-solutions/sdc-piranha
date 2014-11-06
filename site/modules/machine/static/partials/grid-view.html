@@ -110,7 +110,7 @@
                         <td width="10" data-ng-show="enabledCheckboxes">
                             <label class="checkbox">
                                 <div class="checker" data-ng-class="{hover:show}" data-ng-mouseenter="show = true" data-ng-mouseleave="show = false">
-                                <span data-ng-click="selectCheckbox(object)" data-ng-class="{checked: object.checked}" data-ng-disabled="(object.fireWallActionRunning) || (object.job && !object.job.finished) || object.deleteJob">
+                                <span data-ng-click="selectCheckbox(object)" data-ng-class="{checked: object.checked}" data-ng-disabled="isCheckBoxDisabled(object)">
                                     <input type="checkbox" class="group-checkable" data-set=".checkboxes" value="">
                                 </span>
                                 </div>

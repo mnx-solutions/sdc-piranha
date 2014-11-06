@@ -390,10 +390,18 @@
             $scope.checkedItems = [];
         };
 
+        var actionInProgress = function (el) {
+            return (el.fireWallActionRunning) || (el.job && !el.job.finished) || el.deleteJob || el.actionInProgress;
+        };
+
         $scope.disableSelectAllCheckbox = function () {
             $scope.isCheckedAllCheckBoxDisabled = $scope.items.some(function (el) {
-                return (el.fireWallActionRunning) || (el.job && !el.job.finished) || el.deleteJob;
+                return actionInProgress(el);
             });
+        };
+
+        $scope.isCheckBoxDisabled = function (el) {
+            return actionInProgress(el);
         };
 
         $scope.$watch('items', function (items) {
