@@ -235,5 +235,6 @@
   , "limitedSlb": "yes"
   , "cdn": "yes"
   , "docker": "no"
+  , "dockerMemoryLimit": "no"
   }
 }

@@ -35,6 +35,7 @@
             var REVIEW_STEP_NAME = 'Review';
             var ACCOUNT_STEP_NAME = 'Account Information';
             var SSH_STEP_NAME = 'SSH Key';
+            var DOCKERHOST_MINIMUM_MEMORY = 2048;
 
             $scope.setCreateInstancePage = Machine.setCreateInstancePage;
             $scope.provisionSteps = [
@@ -404,7 +405,7 @@
                                 packages.forEach(function (pkg) {
                                     packagesByName[pkg.name] = pkg.id;
                                 });
-                                angular.copy(simpleImages).forEach(function (image) {
+                                ng.copy(simpleImages).forEach(function (image) {
                                     var params = {
                                         datacenter: datacenter.name
                                     };
@@ -797,9 +798,10 @@
                 $scope.showReConfigure = false;
                 $scope.showFinishConfiguration = false;
                 if (step === CHOOSE_IMAGE_STEP) {
-                    angular.element('#filterProperty').val('No filter');
+                    ng.element('#filterProperty').val('No filter');
                     $scope.preSelectedImage = null;
                     $scope.preSelectedImageId = null;
+                    $location.search('specification', null);
                 }
                 if (step !== REVIEW_STEP) {
                     if ($scope.networks && $scope.networks.length) {
@@ -1278,6 +1280,11 @@
                 if (newDatacenter !== $scope.data.datacenter) {
                     return;
                 }
+                if ($scope.preSelectedImageId && $location.search().specification === 'dockerhost' && $scope.features.dockerMemoryLimit === 'enabled') {
+                    packages = packages.filter(function (p) {
+                        return p.memory >= DOCKERHOST_MINIMUM_MEMORY;
+                    });
+                }
                 var indexPackageTypes = {};
                 var packageTypes = [];
                 packages.forEach(function (p) {
@@ -1315,7 +1322,7 @@
             }
 
             function processRecentInstances(recentInstances, datasets) {
-                recentInstances = angular.copy(recentInstances);
+                recentInstances = ng.copy(recentInstances);
                 if (recentInstances.length > 0) {
                     datasets.forEach(function (dataset) {
                         recentInstances = recentInstances.map(function (instance) {
@@ -1484,7 +1491,7 @@
             };
 
             $scope.zenboxDialog = function (params) {
-                var props = angular.extend({}, $rootScope.zenboxParams, params);
+                var props = ng.extend({}, $rootScope.zenboxParams, params);
                 window.Zenbox.show(null, props);
             };
 
@@ -1506,7 +1513,7 @@
                             request_description: 'API Name: ' + el.name
                         });
                         loggingService.log('info', 'User is ordering instance package from support', el);
-                    }, angular.noop, function (isSuccess) {
+                    }, ng.noop, function (isSuccess) {
                         $location.path(returnUrl);
                         if (isSuccess) {
                             $rootScope.commonConfig('preSelectedData', {
