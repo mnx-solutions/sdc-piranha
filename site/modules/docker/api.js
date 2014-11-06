@@ -416,7 +416,7 @@ module.exports = function execute(scope, register) {
     var waitForHosts = {};
 
     api.waitHost = function waitHost(call, host, updateFunc, callback) {
-        var pollerKey = call.req.session.userId + '-' + host.primaryIp;
+        var pollerKey = call.req.session.userId + '-' + host.id;
         var poller = waitForHosts[pollerKey];
         function installCallbacks() {
             if (updateFunc) {
@@ -436,11 +436,14 @@ module.exports = function execute(scope, register) {
         installCallbacks();
         poller.status = 'initializing';
         poller.started = new Date();
-        function getHostStatus() {
-            if (new Date() > poller.started + config.polling.dockerHostTimeout) {
-                delete waitForHosts[pollerKey];
-                return poller.emit('error', 'Timeout');
+        setTimeout(function () {
+            var pollerExists = !!waitForHosts[pollerKey];
+            delete waitForHosts[pollerKey];
+            if (pollerExists) {
+                poller.emit('error', 'Timeout');
             }
+        }, config.polling.dockerHostTimeout);
+        function getHostStatus() {
             api.getHostStatus(call, host.id, function (error, status) {
                 if (status === 'completed') {
                     delete waitForHosts[pollerKey];
@@ -452,7 +455,9 @@ module.exports = function execute(scope, register) {
                     poller.emit('state-update', status);
                 }
 
-                setTimeout(getHostStatus, config.polling.dockerHost);
+                if (waitForHosts[pollerKey]) {
+                    setTimeout(getHostStatus, config.polling.dockerHost);
+                }
             });
         }
         getHostStatus();
