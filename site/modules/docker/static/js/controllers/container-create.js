@@ -61,10 +61,12 @@
                                 image.name = tag === '<none>:<none>' ? image.ShortId : tag;
                                 return image;
                             });
-                            $scope.container.Image = selectSource($scope.images, 'name');
-                            setTimeout(function () {
-                                window.jQuery('#imageSelect').select2('val', $scope.container.Image);
-                            });
+                            if ($scope.images.length > 0) {
+                                $scope.container.Image = selectSource($scope.images, 'name');
+                                setTimeout(function () {
+                                    window.jQuery('#imageSelect').select2('val', $scope.container.Image);
+                                });
+                            }
                         });
                     }
                 };
@@ -79,12 +81,14 @@
                                 container.Names = container.Names.length ? container.Names.join(', ') : '';
                                 return container;
                             });
-                            $scope.container.container = selectSource($scope.containers, 'Id');
                             $scope.container.primaryIp = host.primaryIp;
-                            setTimeout(function () {
-                                window.jQuery('#containerSelect').select2('val', $scope.container.container);
-                                setDefaultValues($scope.containers[0]);
-                            });
+                            if ($scope.containers.length > 0) {
+                                $scope.container.container = selectSource($scope.containers, 'Id');
+                                setTimeout(function () {
+                                    window.jQuery('#containerSelect').select2('val', $scope.container.container);
+                                    setDefaultValues($scope.containers[0]);
+                                });
+                            }
                         });
                     }
                 };
