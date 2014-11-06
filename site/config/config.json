@@ -122,7 +122,7 @@
   , "firewallRuleDeleteTimeout": 90000
   , "mantaJob": 1000
   , "dockerHost": 5000
-  , "dockerHostTimeout": 300000
+  , "dockerHostTimeout": 600000
   , "sshCreateKey": 1000
   , "sshCreateKeyTimeout": 300000
   }
