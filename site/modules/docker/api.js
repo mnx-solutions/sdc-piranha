@@ -664,7 +664,7 @@ module.exports = function execute(scope, register) {
                 });
             },
             function (callback) {
-                client.setRoleTags(registryPath, [SUBUSER_OBJ_NAME, SUBUSER_OBJ_NAME_REGISTRY], true, function (setRegErr) {
+                client.setRoleTags(registryPath, [SUBUSER_OBJ_NAME_REGISTRY], true, function (setRegErr) {
                     callback(setRegErr);
                 });
             }
