@@ -62,6 +62,16 @@
                             </div>
                         </div>
                     </div>
+                    <div class="form-group">
+                        <span class="edit-env edit-label">Environment Variables</span>
+                        <span class="edit-value">
+                            <input type="text"
+                                   name="env"
+                                   data-ng-model="environment"
+                                    />
+                        </span>
+                        <div class="notation">Format: "VAR=value". Use space as delimeter.</div>
+                    </div>
                     <div data-ng-hide="createImage" class="form-group">
                         <span class="edit-ports edit-label">Container Ports</span>
                         <span class="edit-value">
@@ -235,6 +245,44 @@
                                    data-ng-model="container.WorkingDir"
                                     />
                         </span>
+                    </div>
+                    <div class="form-group">
+                        <span class="edit-volumes edit-label">Volumes</span>
+                        <span class="edit-value">
+                            <input type="text"
+                                   name="volumes"
+                                   data-ng-model="volumes"
+                                    />
+                        </span>
+                        <div class="notation">Use space as delimeter. Mountpoint paths (strings) inside the container<br />
+                            <strong>container_path</strong>: to create a new volume for the container,<br />
+                            <strong>host_path:container_path</strong>: to bind-mount a host path into the container,<br />
+                            <strong>host_path:container_path:&#60ro|rw&#62</strong>: to make the bind-mount &#60read-only|read-write&#62 inside the container.</div>
+                    </div>
+                    <div data-ng-hide="createImage" class="form-group">
+                        <span class="edit-volumesfrom edit-label">Volumes From</span>
+                        <span class="edit-value">
+                            <input type="text"
+                                   name="volumesfrom"
+                                   data-ng-model="volumesFrom"
+                                    />
+                        </span>
+                        <div class="notation">A list of volumes to inherit from another container. Specified in the form &#60container name&#62[:&#60ro|rw&#62]</div>
+                    </div>
+                    <div  data-ng-hide="createImage" class="form-group">
+                        <span class="edit-network edit-label">Network Mode</span>
+                        <span class="edit-value">
+                            <input type="text"
+                                   name="network"
+                                   data-ng-model="networkMode"
+                                    />
+                        </span>
+                        <div class="notation">Set the Network mode for the container<br />
+                            <strong>bridge</strong>: creates a new network stack for the container on the docker bridge<br />
+                            <strong>none</strong>: no networking for this container<br />
+                            <strong>container:&#60name|id&#62</strong>: reuses another container network stack<br />
+                            <strong>host</strong>: use the host network stack inside the container. Note: the host mode gives the container full access to local system services such as D-bus and is therefore considered insecure.
+                        </div>
                     </div>
                     <div class="form-group">
                         <span class="edit-hostname edit-label">Hostname</span>
