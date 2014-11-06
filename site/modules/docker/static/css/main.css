@@ -11,6 +11,10 @@
     margin-left: 20px;
     line-height: 28px;
 }
+.manta-disclaimer-dashboard {
+    padding-top: 10px;
+}
+.manta-disclaimer,
 .dockers-wrapper {
     padding-bottom: 25px;
 }
