@@ -459,7 +459,7 @@ span.btn-success
     padding-bottom: 65px;
 }
 .registry-form tr {
-    border-bottom: solid white 15px;
+    border-bottom: solid white 20px;
 }
 .registry-form td:first-child {
     padding-right: 20px;
@@ -538,4 +538,7 @@ span.btn-success
 }
 .beta-sticker {
     margin-bottom: 5px;
+}
+.registry-host .edit-error {
+    margin: -5px 0 0 -17px;
 }
