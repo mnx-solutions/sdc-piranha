@@ -59,15 +59,11 @@
                             container.ShortId = container.Id.slice(0, 12);
                             var ports = [];
                             container.Ports.forEach(function (port) {
-                                if (port.IP && port.PrivatePort && port.PublicPort && port.Type) {
-                                    ports.push(port.IP + ':' + port.PrivatePort + ' -> ' + port.PublicPort + '/' + port.Type);
+                                if (port.IP && port.PublicPort) {
+                                    ports.push(port.IP + ':' + port.PublicPort);
                                 }
                             });
-                            if (ports.length === 0) {
-                                container.Ports[0] = 'none';
-                            } else {
-                                container.Ports = ports;
-                            }
+                            container.PortsStr = ports.length ? ports.join(', ') : '';
                             container.logs = 'existing';
                         });
                         listRemovedContainers();
@@ -232,17 +228,8 @@
                         active: true
                     },
                     {
-                        id: 'Ports',
+                        id: 'PortsStr',
                         name: 'Ports',
-                        type: 'html',
-                        _getter: function (object) {
-                            var ports = '';
-                            if (object.Ports) {
-                                ports = object.Ports.join(" ,");
-                            }
-                            var html = '<span>' + ports + '</span>';
-                            return html;
-                        },
                         sequence: 8,
                         active: false
                     },
