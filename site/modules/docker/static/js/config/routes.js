@@ -5,19 +5,29 @@ window.JP.main.config(['routeProvider', function (routeProvider) {
     if (features && features.docker !== 'enabled') {
         return;
     }
+    var dockerResolve = {
+        data: ['$rootScope', '$location', function ($rootScope, $location) {
+            if (!$rootScope.dockerHostsAvailable) {
+                $location.path('/docker');
+            }
+        }]
+    };
     routeProvider
         .when('/docker', {
             title: 'Docker',
             action: 'docker.index'
         }).when('/docker/registries', {
             title: 'Registries',
-            action: 'docker.registries'
+            action: 'docker.registries',
+            resolve: dockerResolve
         }).when('/docker/registry/:id', {
             title: 'Registry',
-            action: 'docker.registry'
+            action: 'docker.registry',
+            resolve: dockerResolve
         }).when('/docker/containers', {
             title: 'Containers',
-            action: 'docker.containers'
+            action: 'docker.containers',
+            resolve: dockerResolve
         }).when('/docker/container/:hostid/:containerid', {
             title: 'Container Details',
             action: 'docker.details',
@@ -32,13 +42,16 @@ window.JP.main.config(['routeProvider', function (routeProvider) {
             }
         }).when('/docker/container/create/:hostid?/:sourceid?', {
             title: 'Create Container',
-            action: 'docker.create'
+            action: 'docker.create',
+            resolve: dockerResolve
         }).when('/docker/images', {
             title: 'Images',
-            action: 'docker.images'
+            action: 'docker.images',
+            resolve: dockerResolve
         }).when('/docker/image/create/:hostid?/:sourceid?', {
             title: 'Create Image',
-            action: 'docker.create'
+            action: 'docker.create',
+            resolve: dockerResolve
         }).when('/docker/image/:hostid/:imageid', {
             title: 'Image Details',
             action: 'docker.image-details',
@@ -53,9 +66,11 @@ window.JP.main.config(['routeProvider', function (routeProvider) {
             }
         }).when('/docker/logs', {
             title: 'Log Management',
-            action: 'docker.logManagement'
+            action: 'docker.logManagement',
+            resolve: dockerResolve
         }).when('/docker/analytics/:hostid?/:containerid?', {
             title: 'Analytics',
-            action: 'docker.analytics'
+            action: 'docker.analytics',
+            resolve: dockerResolve
         });
 }]);

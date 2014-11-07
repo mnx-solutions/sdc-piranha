@@ -142,7 +142,7 @@
             $scope.completeAccount = function () {
                 Account.checkProvisioning({btnTitle: 'Submit and Access Docker'}, null, null, function () {
                     $location.path('/docker');
-                });
+                }, false);
             };
         }
     ]);
