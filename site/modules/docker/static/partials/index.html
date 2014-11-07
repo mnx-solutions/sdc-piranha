@@ -27,6 +27,10 @@
                 <span>DC: </span>
                 <span>{{machine.datacenter}}</span>
             </div>
+            <div class="info">
+                <span>IP: </span>
+                <span>{{machine.primaryIp}}</span>
+            </div>
             <div class="info" data-ng-hide="states[machine.id] == 'completed'">
                 <span>Status: </span>
                 <span>{{states[machine.id] || 'initializing'}}</span>
