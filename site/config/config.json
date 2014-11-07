@@ -194,7 +194,7 @@
     "dockerVersion": "1.1.2"
     , "cadvisorVersion": "0.5.0"
     , "registryVersion": "0.8.0"
-    , "registryDriverVersion": "0.0.15"
+    , "registryDriverVersion": "0.0.16"
 }  
 , "subUserDenied" : [
     "slb"
