@@ -65,13 +65,15 @@
 
                 var checkExists = function (connectedRegistry) {
                     var exist = false;
+                    var checkAuth = true;
                     $scope.registries.forEach(function (registry) {
+                        if (connectedRegistry.username && connectedRegistry.password) {
+                            checkAuth = registry.username == connectedRegistry.username && registry.email == connectedRegistry.email;
+                        }
                         registry.id = registry.id || '';
                         if (registry.api === connectedRegistry.api &&
                                 registry.host === connectedRegistry.host &&
-                                registry.port === connectedRegistry.port &&
-                                registry.username == connectedRegistry.username &&
-                                registry.email == connectedRegistry.email &&
+                                registry.port === connectedRegistry.port && checkAuth &&
                                 registry.id !== connectedRegistry.id) {
                             exist = true;
                         }
