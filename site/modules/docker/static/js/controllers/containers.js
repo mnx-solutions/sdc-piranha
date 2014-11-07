@@ -186,6 +186,7 @@
                                     } else {
                                         command += 'Container';
                                     }
+                                    container.checked = false;
                                     Docker[command](container).then(function (response) {
                                         deferred.resolve(response);
                                     }, function (err) {
@@ -199,7 +200,6 @@
                                 });
 
                                 $q.all(promises).then(function () {
-                                    $scope.checkedItems = [];
                                     if (action === 'createImage') {
                                         return $location.path('/docker/images');
                                     }
