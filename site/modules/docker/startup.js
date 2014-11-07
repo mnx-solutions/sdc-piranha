@@ -538,14 +538,14 @@ var Docker = function execute(scope) {
                                             });
                                             if (listLength !== list.length) {
                                                 saveRegistries(call, list, function (err) {
-                                                    if (err) {
-                                                        return callback(err);
-                                                    }
-                                                    callback();
+                                                    callback(err);
                                                 });
+                                            } else {
+                                                callback();
                                             }
+                                        } else {
+                                            callback();
                                         }
-                                        callback();
                                     });
                                 },
                                 function updateRemovedContainerList(callback) {
