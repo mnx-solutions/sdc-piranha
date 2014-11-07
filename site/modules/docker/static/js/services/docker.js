@@ -45,12 +45,14 @@
                 )));
             }
             function storagePing(billingEnabled) {
-                Storage.ping(billingEnabled).then(function () {
+                Storage.ping(billingEnabled, true).then(function () {
                     mantaIsActive = true;
                     callback();
                 }, function () {
                     mantaIsActive = false;
-                    errorPingManta();
+                    if (billingEnabled) {
+                        errorPingManta();
+                    }
                 });
             }
             if (billingIsActive && mantaIsActive !== undefined) {

@@ -12,8 +12,9 @@
         'Image',
         'PopupDialog',
         'Docker',
+        'Account',
 
-        function ($scope, $rootScope, $q, requestContext, localization, $location, Datacenter, Image, PopupDialog, Docker) {
+        function ($scope, $rootScope, $q, requestContext, localization, $location, Datacenter, Image, PopupDialog, Docker, Account) {
             localization.bind('docker.index', $scope);
             requestContext.setUpRenderContext('docker.index', $scope, {
                 title: localization.translate(null, 'docker', 'See my Joyent Docker Instances')
@@ -65,29 +66,32 @@
                 });
             };
 
-            Docker.pingManta(function () {
-                $q.all([
-                    $q.when(Datacenter.datacenter()),
-                    $q.when(Docker.listHosts())
-                ]).then(function (result) {
-                    $scope.datacenters = result[0] || [];
-                    $scope.data.datacenter = $scope.datacenters[0].name;
-                    $scope.dockerMachines = [];
-                    var dockerMachines = result[1] || [];
-                    if (dockerMachines.length > 0) {
-                        dockerMachines.forEach(function (machine) {
-                            if (machine.primaryIp) {
-                                $scope.dockerMachines.push(machine);
-                                getDockerHostInfo(machine);
-                            }
+            $q.all([
+                $q.when(Datacenter.datacenter()),
+                $q.when(Docker.listHosts()),
+                Account.getAccount()
+            ]).then(function (result) {
+                $scope.datacenters = result[0] || [];
+                $scope.data.datacenter = $scope.datacenters[0].name;
+                $scope.dockerMachines = [];
+                var dockerMachines = result[1] || [];
+                if (dockerMachines.length > 0) {
+                    $scope.dockerMachines = dockerMachines.filter(function (machine) {
+                        return machine.primaryIp;
+                    });
+                    Docker.pingManta(function () {
+                        $scope.dockerMachines.forEach(function (machine) {
+                            getDockerHostInfo(machine);
                         });
                         getDockerHostAnalytics();
-                    }
-                    $scope.loading = false;
-                }, function (err) {
-                    $scope.loading = false;
-                    PopupDialog.errorObj(err);
-                });
+                    });
+                }
+                var account = result[2] || {};
+                $scope.provisionEnabled = account.provisionEnabled;
+                $scope.loading = false;
+            }, function (err) {
+                $scope.loading = false;
+                PopupDialog.errorObj(err);
             });
 
             $scope.$watch('data.datacenter', function (newVal) {
@@ -133,6 +137,12 @@
             $scope.createDocker = function () {
                 $rootScope.commonConfig('datacenter', $scope.data.datacenter);
                 $location.url('/compute/create/' + $scope.data.imageId + '?specification=dockerhost');
+            };
+
+            $scope.completeAccount = function () {
+                Account.checkProvisioning({btnTitle: 'Submit and Access Docker'}, null, null, function () {
+                    $location.path('/docker');
+                }, false);
             };
         }
     ]);
