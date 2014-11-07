@@ -111,6 +111,11 @@
                             if (action === 'auth' && hubMessage.indexOf('Account created') !== -1) {
                                 notification.success(hubMessage);
                             }
+                            if (action === 'registryPing') {
+                                delete $scope.registry.username;
+                                delete $scope.registry.password;
+                                delete $scope.registry.email;
+                            }
                             addRegistry($scope.registry);
                         }
                     }, function (err) {
