@@ -234,7 +234,7 @@
   , "downloadSdc": "no"
   , "limitedSlb": "yes"
   , "cdn": "yes"
-  , "docker": "no"
-  , "dockerMemoryLimit": "no"
+  , "docker": "yes"
+  , "dockerMemoryLimit": "yes"
   }
 }
