@@ -440,7 +440,7 @@ module.exports = function execute(scope, register) {
             var pollerExists = !!waitForHosts[pollerKey];
             delete waitForHosts[pollerKey];
             if (pollerExists) {
-                poller.emit('error', 'Docker host "' + host.name + '" has not been installed. Try to delete it and create again.');
+                poller.emit('error', 'The installation of Docker host "' + host.name + '" has timed out. Please refresh the page.');
             }
         }, config.polling.dockerHostTimeout);
         function getHostStatus() {
