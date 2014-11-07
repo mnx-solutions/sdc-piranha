@@ -7,7 +7,7 @@ window.JP.main.config(['routeProvider', function (routeProvider) {
     }
     var dockerResolve = {
         data: ['$rootScope', '$location', function ($rootScope, $location) {
-            if (!$rootScope.dockerHostsAvailable) {
+            if (typeof ($rootScope.dockerHostsAvailable) === 'boolean' && !$rootScope.dockerHostsAvailable) {
                 $location.path('/docker');
             }
         }]

@@ -76,12 +76,12 @@
                 $scope.dockerMachines = [];
                 var dockerMachines = result[1] || [];
                 if (dockerMachines.length > 0) {
+                    $scope.dockerMachines = dockerMachines.filter(function (machine) {
+                        return machine.primaryIp;
+                    });
                     Docker.pingManta(function () {
-                        dockerMachines.forEach(function (machine) {
-                            if (machine.primaryIp) {
-                                $scope.dockerMachines.push(machine);
-                                getDockerHostInfo(machine);
-                            }
+                        $scope.dockerMachines.forEach(function (machine) {
+                            getDockerHostInfo(machine);
                         });
                         getDockerHostAnalytics();
                     });
