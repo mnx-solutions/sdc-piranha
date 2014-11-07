@@ -56,7 +56,7 @@ joyent_manta: &joyent_manta\\n\
 # This is the default configuration when no flavor is specified\\n\
 dev: &dev\\n\
     <<: *joyent_manta\\n\
-    loglevel: _env:LOGLEVEL:debug\\n\
+    loglevel: _env:LOGLEVEL:critical\\n\
     debug_versions: _env:DEBUG_VERSIONS:true\\n\
     storage: joyent_manta\\n\
     search_backend: _env:SEARCH_BACKEND:sqlalchemy" >/config.yml
