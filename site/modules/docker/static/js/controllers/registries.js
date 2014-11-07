@@ -131,17 +131,17 @@
                     $location.path('docker/registry/' + registry);
                 };
                 $scope.$on('createdRegistry', function (event, data) {
-                     $scope.registries.forEach(function (registry) {
-                         if (registry.id === data.id) {
-                             delete registry.processing;
-                         }
-                     });
+                    $scope.registries.forEach(function (registry) {
+                        if (registry.id === data.id) {
+                            delete registry.processing;
+                        }
+                    });
                 });
 
                 $scope.$on('failedRegistry', function (event, data) {
                     $scope.registries = $scope.registries.filter(function (registry) {
-                         return registry.id !== data.id
-                     });
+                        return registry.id !== data.id;
+                    });
                 });
 
                 $scope.createNewRegistry = function () {
@@ -156,19 +156,21 @@
                                 password: ''
                             };
                             $scope.loading = true;
-                            $q.all([Docker.completedHosts(), Docker.listContainers({cache: true, host: 'All', suppressErrors: true})]).then(function (result) {
+                            $q.all([Docker.completedHosts(), Docker.getRegistriesList()]).then(function (result) {
                                 var hosts = {};
                                 var availableHosts = result[0];
-                                var containers = result[1];
+                                var registries = result[1];
+                                var parser = document.createElement('a');
                                 availableHosts.forEach(function (host) {
                                     if (host.memory >= 1024) {
-                                        hosts[host.name] = host;
+                                        hosts[host.primaryIp] = host;
                                     }
                                 });
 
-                                containers.forEach(function (container) {
-                                    if (container.Names.indexOf('/local-registry') !== -1 || container.Names.indexOf('/private-registry') !== -1) {
-                                        delete hosts[container.hostName];
+                                registries.forEach(function (registry) {
+                                    if (registry.type === 'local') {
+                                        parser.href = registry.host;
+                                        delete hosts[parser.hostname];
                                     }
                                 });
 

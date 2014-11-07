@@ -342,19 +342,6 @@
             return createCall('imageTags', {registry: registryId, options: {name: name}, direct: true});
         };
 
-        service.listRegistries = function () {
-            var job = serverTab.call({
-                name: 'listRegistries',
-                done: function (err, data) {
-                    if (err) {
-                        return false;
-                    }
-                    return data;
-                }
-            });
-            return job.promise;
-        };
-
         service.registryPing = function (registry) {
             var job = serverTab.call({
                 name: 'RegistryPing',
