@@ -173,7 +173,13 @@
                                 });
 
                                 Object.keys(hosts).forEach(function (hostName) {
-                                    $scope.hosts.push(hosts[hostName]);
+                                    var host = hosts[hostName];
+                                    var registryExist = list.some(function (item) {
+                                        return item.host === 'https://' + host.primaryIp && parseInt(item.port, 10) === 5000;
+                                    });
+                                    if (!registryExist) {
+                                        $scope.hosts.push(host);
+                                    }
                                 });
 
                                 $scope.registry.host = $scope.hosts[0];
@@ -186,24 +192,6 @@
                             };
 
                             $scope.create = function () {
-                                var registryExist = list.some(function (item) {
-                                    return item.host === 'https://' + $scope.registry.host.primaryIp && parseInt(item.port, 10) === 5000;
-                                });
-                                if (registryExist) {
-                                    $scope.close();
-                                    return PopupDialog.error(
-                                        localization.translate(
-                                            $scope,
-                                            null,
-                                            'Error'
-                                        ),
-                                        localization.translate(
-                                            $scope,
-                                            null,
-                                            'This registry already exists.'
-                                        )
-                                    );
-                                }
                                 var registry = {
                                     id: uuid(),
                                     api: 'v1',
