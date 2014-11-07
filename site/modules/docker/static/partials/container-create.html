@@ -18,7 +18,7 @@
                     <div class="form-group">
                         <span class="orange-asterix edit-image edit-label">Docker Host</span>
                         <span class="edit-value">
-                            <select ui-select2="{minimumResultsForSearch: -1, width: '457px'}" id="hostSelect" data-ng-model="ip" ng-change="changeHost()" data-ng-disabled="!(images.length || containers.length)">
+                            <select ui-select2="{minimumResultsForSearch: -1, width: '457px'}" id="hostSelect" data-ng-model="ip" ng-change="changeHost()" data-ng-disabled="loadingHostDetails">
                                 <option data-ng-repeat="host in hosts" value="{{host.primaryIp}}">
                                     {{host.name}}
                                 </option>
