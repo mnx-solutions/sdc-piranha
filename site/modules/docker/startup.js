@@ -136,7 +136,7 @@ var Docker = function execute(scope) {
         var client = scope.api('MantaClient').createClient(call);
         client.getFileContents(REMOVED_LOGS_PATH, function (error, list) {
             if (error && error.statusCode !== 404) {
-                return callback(error.message, true);
+                return callback(error, true);
             }
 
             try {
@@ -469,7 +469,7 @@ var Docker = function execute(scope) {
             var getHostContainers = function (call, callback) {
                 Docker.createClient(call, call.data.host, function (error, client) {
                     if (error) {
-                        return call.done(error.message, true);
+                        return callback(error, [], client);
                     }
                     client.containers({all: true}, function (error, containers) {
                         if (error) {
@@ -481,43 +481,80 @@ var Docker = function execute(scope) {
             };
             getHostContainers(call, function (error, hostContainers, client) {
                 if (error) {
-                    return call.done(error.message, true);
+                    call.update(null, error);
+                    hostContainers = [];
                 }
-                hostContainers.forEach(function (hostContainer, count) {
-                    var removedContainer = {
-                        Id: hostContainer.Id,
-                        Image: hostContainer.Image,
-                        Names: hostContainer.Names,
-                        hostId: call.data.uuid,
-                        hostName: call.data.host.hostName,
-                        hostState: 'removed'
-                    };
-                    removedContainerList.push(removedContainer);
-                    client.logs({id: hostContainer.Id, tail: 'all'}, function (err, response) {
-                        if (err) {
-                            return call.done(err);
-                        }
-                        var logs ='';
-                        if (response && response.length) {
-                            logs = Docker.parseLogResponse(response);
-                        }
-                        var tomorrowDate = Docker.dateFormat(new Date(new Date().getTime() + 24 * 60 * 60 * 1000).setHours(0, 0, 0, 0));
-                        var logPath = '~~/stor/.joyent/docker/logs/' + call.data.uuid + '/' + hostContainer.Id + '/' + tomorrowDate + '.log';
-                        saveLogsToManta(call, logPath, logs, function (error) {
-                            if (error) {
-                                return call.done(error);
+                vasync.forEachParallel({
+                    inputs: hostContainers,
+                    func: function (hostContainer, callback) {
+                        var removedContainer = {
+                            Id: hostContainer.Id,
+                            Image: hostContainer.Image,
+                            Names: hostContainer.Names,
+                            hostId: call.data.uuid,
+                            hostName: call.data.host.hostName,
+                            hostState: 'removed'
+                        };
+                        removedContainerList.push(removedContainer);
+                        client.logs({id: hostContainer.Id, tail: 'all'}, function (err, response) {
+                            if (err) {
+                                return callback(err);
                             }
-                            if (hostContainers.length - 1 === count) {
-                                machine.Delete(call, options, function (error) {
-                                    if (error) {
-                                        call.done(error.message, true);
-                                    }
+                            var logs = '';
+                            if (response && response.length) {
+                                logs = Docker.parseLogResponse(response);
+                            }
+                            var tomorrowDate = Docker.dateFormat(new Date(new Date().getTime() + 24 * 60 * 60 * 1000).setHours(0, 0, 0, 0));
+                            var logPath = '~~/stor/.joyent/docker/logs/' + call.data.uuid + '/' + hostContainer.Id + '/' + tomorrowDate + '.log';
+                            saveLogsToManta(call, logPath, logs, function (error) {
+                                callback(error);
+                            });
+                        });
+                    }
+                }, function (vasyncError, operations) {
+                    if (vasyncError) {
+                        var cause = vasyncError.jse_cause || vasyncError.ase_errors;
+                        if (Array.isArray(cause)) {
+                            call.update(null, cause);
+                        } else {
+                            call.update(null, vasyncError);
+                        }
+                    }
+                    machine.Delete(call, options, function (error) {
+                        if (error) {
+                            return call.done(error.message, true);
+                        }
+                        vasync.parallel({
+                            'funcs': [
+                                function updateRegistries(callback) {
+                                    getRegistries(call, function (err, list) {
+                                        if (err) {
+                                            return callback(err);
+                                        }
+                                        var listLength = list.length;
+                                        if (listLength) {
+                                            list = list.filter(function (item) {
+                                                return item.host.indexOf(call.data.host.primaryIp) === -1;
+                                            });
+                                            if (listLength !== list.length) {
+                                                saveRegistries(call, list, function (err) {
+                                                    callback(err);
+                                                });
+                                            } else {
+                                                callback();
+                                            }
+                                        } else {
+                                            callback();
+                                        }
+                                    });
+                                },
+                                function updateRemovedContainerList(callback) {
                                     getRemovedContainersList(call, function (error, removedContainers) {
                                         if (error) {
                                             if (error.statusCode === 404) {
                                                 removedContainers = [];
                                             } else {
-                                                return call.done(error.message, true);
+                                                return callback(error.message);
                                             }
                                         }
                                         if (removedContainers.length > 0) {
@@ -541,13 +578,23 @@ var Docker = function execute(scope) {
                                         });
                                         saveRemovedContainersList(call, removedContainersCache[hostId], function (error) {
                                             if (error) {
-                                                call.done(error.message, true);
+                                                return callback(error);
                                             }
-                                            call.done();
+                                            callback();
                                         });
                                     });
-                                });
+                                }
+                            ]
+                        }, function (err) {
+                            if (err) {
+                                var cause = err.jse_cause || err.ase_errors;
+                                if (Array.isArray(cause)) {
+                                    call.update(null, cause);
+                                } else {
+                                    call.update(null, err);
+                                }
                             }
+                            call.done();
                         });
                     });
                 });

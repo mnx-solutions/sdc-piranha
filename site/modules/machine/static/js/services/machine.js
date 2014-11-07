@@ -673,6 +673,12 @@
                 data: { uuid: machine.id,
                     datacenter: machine.datacenter,
                     host: {primaryIp: machine.primaryIp, hostName: machine.name} },
+                progress: function (err, job) {
+                    var data = job.__read();
+                    if (data && data.length) {
+                        PopupDialog.errorObj(data);
+                    }
+                },
                 done: function (err) {
                     if (!err) {
                         handleChunk(machine, 'delete');
