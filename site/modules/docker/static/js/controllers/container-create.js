@@ -115,6 +115,7 @@
                     $scope.loading = false;
                     $scope.memory = 0;
                     $scope.memorySwap = 0;
+                    $scope.networkMode = 'bridge';
                     $scope.container = {
                         "Hostname": "",
                         "Domainname": "",
@@ -199,37 +200,19 @@
                     $scope.container.MemorySwap = $scope.memorySwap * 1024 * 1024;
 
                     Docker.createContainer({host: {primaryIp: $scope.ip}, container: $scope.container}).then(function (response) {
-                        var containerId = response.Id;
-                        Docker.inspectContainer({primaryIp: $scope.ip, Id: containerId}).then(function (resp) {
-                            var portBindings = ng.copy(resp.Config.ExposedPorts);
-                            var host;
-                            for (host in portBindings) {
-                                if (portBindings.hasOwnProperty(host)) {
-                                    portBindings[host] = containerPorts[host] || [{"HostPort": "", "HostIp": ""}];
-                                }
+                        var container = {
+                            primaryIp: $scope.ip,
+                            options: {
+                                id: response.Id,
+                                "Binds": $scope.binds || [],
+                                "Dns": $scope.dns ? $scope.dns.split(' ') : null,
+                                "VolumesFrom": $scope.volumesFrom ? $scope.volumesFrom.split(' ') : [],
+                                "PortBindings": containerPorts,
+                                "NetworkMode": $scope.networkMode
                             }
-                            var volumes = resp.Config.Volumes;
-                            var binds = [];
-                            if (volumes && typeof volumes === 'object') {
-                                var volume;
-                                for (volume in volumes) {
-                                    if (volumes.hasOwnProperty(volume)) {
-                                        binds.push(volume + ":" + volume + ":rw");
-                                    }
-                                }
-                            }
-                            var container = {
-                                primaryIp: $scope.ip,
-                                options: {
-                                    id: containerId,
-                                    "Binds": binds,
-                                    "Dns": $scope.dns ? $scope.dns.split(' ') : null,
-                                    "PortBindings": portBindings
-                                }
-                            };
-                            Docker.startContainer(container).then(function () {
-                                $location.path('/docker/containers');
-                            }, errorCallback);
+                        };
+                        Docker.startContainer(container).then(function () {
+                            $location.path('/docker/containers');
                         }, errorCallback);
                     }, errorCallback);
                 };
@@ -253,8 +236,20 @@
                     if ($scope.entrypoint) {
                         $scope.container.Entrypoint = parseCommands($scope.entrypoint);
                     }
-                    $scope.creating = true;
+                    if ($scope.environment) {
+                        $scope.container.Env = $scope.environment.split(' ');
+                    }
 
+                    if ($scope.volumes) {
+                        $scope.binds = $scope.volumes.split(' ');
+                        var volumes = {};
+                        $scope.binds.forEach(function (volume) {
+                            var parsed = volume.split(':'); // containerPath || hostPath:containerPath || hostPath:containerPath:permission
+                            volumes[parsed[1] || parsed[0]] = {};
+                        });
+                        $scope.container.Volumes = volumes;
+                    }
+                    $scope.creating = true;
                     if ($scope.type === 'Images') {
                         createImage();
                     } else {
