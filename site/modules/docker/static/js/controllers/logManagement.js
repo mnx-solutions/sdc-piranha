@@ -52,7 +52,7 @@
                 });
 
                 Docker.pingManta(function () {
-                    Docker.listContainers({cache: true, host: 'All'}).then(function (containers) {
+                    Docker.listContainers({cache: true, host: 'All', options: {all: true}}).then(function (containers) {
                         $scope.containers = angular.copy(containers);
                         $scope.containers.forEach(function (container) {
                             container.Created = new Date(container.Created * 1000);
