@@ -29,7 +29,20 @@
                 </tr>
                 <tr>
                     <td class="orange-asterix">Hostname</td>
-                    <td><input name="host" type="text" data-ng-model="registry.host" required/></td>
+                    <td class="registry-host">
+                        <div><input name="host"
+                               type="text"
+                               data-ng-model="registry.host"
+                               data-ng-pattern="/^(http|https)\://[a-zA-Z0-9\-\.]+((\.[a-zA-Z]{2,3})|(\.[0-9]{1,3}){3})(:[a-zA-Z0-9]*)?/?([a-zA-Z0-9\-\._\?\,\'/\\\+&amp;%\$#\=~])*$/"
+                               required/></div>
+                        <div class="edit-error" data-ng-show="registryForm.host.$dirty">
+                            <div class="error"
+                                 data-translate
+                                 data-ng-show="registryForm.host.$error.pattern">
+                                Hostname should start with 'http://' or 'https://' followed by IP-address or domain name.
+                            </div>
+                        </div>
+                    </td>
                 </tr>
                 <tr>
                     <td class="orange-asterix">Port</td>
