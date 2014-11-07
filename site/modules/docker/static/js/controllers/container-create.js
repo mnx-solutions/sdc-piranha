@@ -51,6 +51,7 @@
 
                 var hostImages = function (host) {
                     if (host && host.primaryIp) {
+                        $scope.loadingHostDetails = true;
                         $scope.images = [];
                         $scope.container.container = 'base';
                         Docker.listImages(host).then(function (images) {
@@ -61,16 +62,22 @@
                                 image.name = tag === '<none>:<none>' ? image.ShortId : tag;
                                 return image;
                             });
-                            $scope.container.Image = selectSource($scope.images, 'name');
-                            setTimeout(function () {
-                                window.jQuery('#imageSelect').select2('val', $scope.container.Image);
-                            });
+                            if ($scope.images.length > 0) {
+                                $scope.container.Image = selectSource($scope.images, 'name');
+                                setTimeout(function () {
+                                    window.jQuery('#imageSelect').select2('val', $scope.container.Image);
+                                });
+                            } else {
+                                errorCallback('This docker host does not have images available for new container.');
+                            }
+                            $scope.loadingHostDetails = false;
                         });
                     }
                 };
 
                 var hostContainers = function (host) {
                     if (host && host.primaryIp) {
+                        $scope.loadingHostDetails = true;
                         $scope.container.Image = 'base';
                         $scope.containers = [];
                         Docker.listContainers({host: host, options: {all: true}}).then(function (containers) {
@@ -78,12 +85,17 @@
                                 container.ShortId = container.Id.slice(0, 12);
                                 return container;
                             });
-                            $scope.container.container = selectSource($scope.containers, 'Id');
                             $scope.container.primaryIp = host.primaryIp;
-                            setTimeout(function () {
-                                window.jQuery('#containerSelect').select2('val', $scope.container.container);
-                                setDefaultValues($scope.containers[0]);
-                            });
+                            if ($scope.containers.length > 0) {
+                                $scope.container.container = selectSource($scope.containers, 'Id');
+                                setTimeout(function () {
+                                    window.jQuery('#containerSelect').select2('val', $scope.container.container);
+                                    setDefaultValues($scope.containers[0]);
+                                });
+                            } else {
+                                errorCallback('This docker host does not have containers for new image.');
+                            }
+                            $scope.loadingHostDetails = false;
                         });
                     }
                 };
