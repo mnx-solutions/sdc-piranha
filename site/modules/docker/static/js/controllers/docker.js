@@ -95,7 +95,7 @@
                     $scope.data.imageId = '';
                     Image.image({ datacenter: newVal, public: true }).then(function (images) {
                         var ubuntuImages = images.filter(function (image) {
-                            return image.name.indexOf('ubuntu') !== -1;
+                            return image.name.indexOf('ubuntu-cert') !== -1 && image.name.indexOf('.04') !== -1;
                         });
                         if (ubuntuImages.length > 0) {
                             ubuntuImages.sort(function (a, b) {
