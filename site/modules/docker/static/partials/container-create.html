@@ -40,7 +40,7 @@
                         <span class="edit-value">
                             <select data-ng-disabled="!containers.length" ui-select2="{minimumResultsForSearch: -1, width: '457px'}" id="containerSelect" data-ng-model="container.container" data-ng-change="changeContainer()" required>
                                 <option data-ng-repeat="container in containers" value="{{container.Id}}">
-                                    {{container.Names}}
+                                    {{container.NamesStr}}
                                 </option>
                             </select>
                         </span>

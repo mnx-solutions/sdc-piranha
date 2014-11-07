@@ -76,7 +76,6 @@
                         Docker.listContainers({host: host, options: {all: true}}).then(function (containers) {
                             $scope.containers = containers.map(function (container) {
                                 container.ShortId = container.Id.slice(0, 12);
-                                container.Names = container.Names.length ? container.Names.join(', ') : '';
                                 return container;
                             });
                             $scope.container.container = selectSource($scope.containers, 'Id');

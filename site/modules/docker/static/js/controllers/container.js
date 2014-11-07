@@ -89,7 +89,7 @@
                             containerState = 'running';
                         }
                         $scope.container = {
-                            name: info.Name,
+                            name: info.Name.substring(1),
                             cmd: containerCmd,
                             entrypoint: info.Config.Entrypoint,
                             Ports: info.Config.ExposedPorts,

@@ -86,7 +86,7 @@
                         $scope.containers.forEach(function (container) {
                             if (containerId === container.Id) {
                                 $scope.current.container = containerId;
-                                $scope.current.containerNames = container.Names && container.Names.join(', ');
+                                $scope.current.containerNames = container.NamesStr;
                                 $scope.metrics = hostMetrics.concat(networkMetrics);
                                 $scope.defaultMetrics = ['cpuTotal', 'memory', 'network'];
                             }
@@ -106,7 +106,7 @@
                     $scope.defaultMetrics = ['cpuTotal', 'memory', 'network'];
                     $scope.current.containerNames = $scope.containers.filter(function (container) {
                         return containerId === container.Id;
-                    })[0].Names.join(', ');
+                    })[0].NamesStr;
                 } else {
                     $scope.metrics = hostMetrics;
                     $scope.defaultMetrics = ['cpuTotal', 'memory'];

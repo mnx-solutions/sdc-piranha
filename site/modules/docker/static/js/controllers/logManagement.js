@@ -226,14 +226,9 @@
                         active: true
                     },
                     {
-                        id: 'Names',
+                        id: 'NamesStr',
                         name: 'Names',
                         sequence: 7,
-                        type: 'html',
-                        _getter: function (object) {
-                            var html = '<span>' + object.Names.join(", ") + '</span>';
-                            return html;
-                        },
                         active: true
                     },
                     {
