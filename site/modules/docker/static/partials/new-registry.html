@@ -24,7 +24,7 @@
             </div>
             <div class="modal-footer">
                 <button data-ng-click="close()" data-button-focus="false" data-label="Cancel" class="btn grey-new effect-orange-button">Cancel</button>
-                <button data-ng-click="create()" data-button-focus="true" data-label="Create" class="btn orange" data-ng-disabled="loading && !hosts.length">Create</button>
+                <button data-ng-click="create()" data-button-focus="true" data-label="Create" class="btn orange" data-ng-disabled="loading || !hosts.length">Create</button>
             </div>
         </div>
     </div>
