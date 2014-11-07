@@ -31,7 +31,6 @@
                         Docker.listHosts().then(function (machines) {
                             $scope.containers = containers.map(function (container) {
                                 container.ShortId = container.Id.slice(0, 12);
-                                container.NamesStr = container.Names.length ? container.Names.join(', ') : '';
                                 var ports = container.Ports.map(function (port) {
                                     return port.IP + ':' + port.PublicPort;
                                 });

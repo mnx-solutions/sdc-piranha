@@ -91,6 +91,21 @@
         service.cache = {};
         service.jobs = {};
 
+        var doneHandler = {
+            containers: function (err, job) {
+                var data = job.__read();
+                if (data && data.length) {
+                    data.forEach(function (container) {
+                        if (container.Names && container.Names.length) {
+                            container.NamesStr = container.Names.map(function (name) {
+                                return name.substring(1);
+                            }).join(', ');
+                        }
+                    });
+                }
+            }
+        };
+
         /**
          * 
          * @param options.host {Object} - machine object
@@ -157,6 +172,9 @@
                                 i++;
                             }
                         }
+                    }
+                    if (method in doneHandler) {
+                        doneHandler[method](err, job);
                     }
                     delete service.jobs[jobKey];
                 },

@@ -694,7 +694,7 @@
                         }
                     },
                     {
-                        id: 'Names',
+                        id: 'NamesStr',
                         name: 'Names',
                         sequence: 2,
                         active: false

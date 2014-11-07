@@ -40,7 +40,7 @@
                  <select ui-select2="{minimumResultsForSearch: -1, width: '210px', placeholder: '-- Choose Container --'}" id="containerSelect" data-ng-model="current.container" data-ng-change="changeContainer()">
                      <option></option>
                      <option data-ng-repeat="container in containers" value={{container.Id}}>
-                         {{container.Id | shortTag}} [{{container.Names[0]}}]
+                         {{container.Id | shortTag}} [{{container.Names[0].substring(1)}}]
                      </option>
                      <option value="">All containers</option>
                  </select>
