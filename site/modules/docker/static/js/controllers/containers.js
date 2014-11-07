@@ -193,6 +193,7 @@
                                         errorCallback(err);
                                         container.actionInProgress = false;
                                         container.checked = false;
+                                        listAllContainers();
                                     });
                                     promises.push(deferred.promise);
                                 });
