@@ -31,7 +31,7 @@
 .docker-wrapper .name {
     overflow: hidden;
     box-sizing: content-box;
-    padding: 15px 15px 10px 15px;
+    padding: 10px 15px 2px 15px;
     width: 190px;
     height: 35px;
     font-weight: bold;
@@ -367,7 +367,7 @@ span.btn-success
 .docker-wrapper .name {
     overflow: hidden;
     box-sizing: content-box;
-    padding: 15px 15px 10px 15px;
+    padding: 10px 15px 2px 15px;
     width: 190px;
     height: 35px;
     font-weight: bold;
