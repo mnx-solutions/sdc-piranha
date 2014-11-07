@@ -665,13 +665,13 @@ var Docker = function execute(scope) {
                                 if (err) {
                                     return call.done(err);
                                 }
-                                var matchingContainers = containers.find(function (container) {
+                                var matchingContainer = containers.find(function (container) {
                                     return container.Ports.some(function (port) {
                                         return port.PublicPort === parseInt(registry.port, 10);
                                     });
                                 });
-                                if (matchingContainers) {
-                                    client.remove({id: matchingContainers.Id, v: true, force: true}, function (error) {
+                                if (matchingContainer) {
+                                    client.remove({id: matchingContainer.Id, v: true, force: true}, function (error) {
                                         if (error) {
                                             return call.done(error, false);
                                         }
