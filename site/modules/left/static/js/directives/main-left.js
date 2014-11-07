@@ -45,6 +45,8 @@
                 };
 
                 $scope.currentYear = (new Date()).getFullYear();
+
+                $rootScope.dockerHostsAvailable = false;
             }
         };
     }]);

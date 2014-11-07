@@ -62,10 +62,22 @@
             </div>
         </div>
     </div>
-    <a href="#!/compute/dockerHost" class="orange-link" data-ng-show="dockerMachines.length && !loading">Docker compute instances</a>
-    <div data-ng-show="dockerMachines.length < 1 && !loading">
-        <div class="empty-docker-hosts">You don't have Docker hosts. Create one now.</div>
+    <div class="empty-docker-hosts" data-ng-show="dockerMachines.length < 1 && !loading">
+        <p>Welcome to Docker on the Joyent Public Cloud. Here you can easily:</p>
+        <ul>
+            <li>Create a Docker host from a certified Ubuntu 14.10 image from Canonical</li>
+            <li>Manage existing images, or download Docker images that other people have already created</li>
+            <li>Start Docker containers from any Docker image, including your own</li>
+            <li>Access and use the Docker Public Registry or deploy your own private registry using Joyent's object store, Manta, as the backend</li>
+            <li>View the logs from any Docker Container which are also persisted in Manta</li>
+        </ul>
+        <p>All communication between components is encrypted and secured by private X.509 certificates</p>
+        <p data-ng-hide="provisionEnabled">Please <a data-ng-click="completeAccount()">Complete your Account Information</a> in order to begin using Docker on the Joyent Public Cloud</p>
+        <p data-ng-show="provisionEnabled">You don't have Docker hosts. Create one now.</p>
     </div>
+
+    <a href="#!/compute/dockerHost" class="orange-link" data-ng-show="dockerMachines.length && !loading">Docker compute instances</a>
+
     <div mantadisclaimer class="manta-disclaimer manta-disclaimer-dashboard"></div>
 </div>
 
