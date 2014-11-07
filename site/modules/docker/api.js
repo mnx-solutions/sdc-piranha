@@ -854,6 +854,8 @@ module.exports = function execute(scope, register) {
             options.metadata['manta-account'] = mantaClient.user;
             options.metadata['manta-subuser'] = SUBUSER_LOGIN;
             options.metadata['manta-url'] = mantaClient._url;
+            options.metadata['docker-version'] = config.docker.dockerVersion;
+            options.metadata['cadvisor-version'] = config.docker.cadvisorVersion;
 
             api.getCertificates(call, function (error, certificates) {
                 if (error) {

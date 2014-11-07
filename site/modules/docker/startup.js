@@ -952,6 +952,7 @@ var Docker = function execute(scope) {
             var mantaClient = scope.api('MantaClient').createClient(call);
             var temp = os.tmpDir() + '/' + Math.random().toString(16).substr(2) + '/';
             var pipeline = [];
+            var installConfig = config.docker || {};
 
             pipeline.push(function getFingerprint(collector, callback) {
                 mantaClient.getFileContents('~~/stor/.joyent/docker/private.key', function (error, privateKey) {
@@ -968,25 +969,6 @@ var Docker = function execute(scope) {
                 Docker.createClient(call, call.data.host, function (error, client) {
                     collector.client = client;
                     callback(error);
-                });
-            });
-
-            pipeline.push(function pullRegistryImage(collector, callback) {
-                collector.client.createImage({fromImage: 'registry', tag: 'latest'}, function (err, req) {
-                    if (err) {
-                        return callback(err);
-                    }
-                    req.on('result', function (error, res) {
-                        if (error) {
-                            return callback(error);
-                        }
-                        res.on('end', callback);
-                        res.on('data', function () {
-                            // this event should exist
-                        });
-                        res.on('error', callback);
-                    });
-                    req.end();
                 });
             });
 
@@ -1056,7 +1038,10 @@ var Docker = function execute(scope) {
             });
 
             fs.mkdirSync(temp);
-            fs.writeFileSync(temp + 'Dockerfile', registryDockerfile);
+            var tempDockerFile = registryDockerfile;
+            tempDockerFile = tempDockerFile.replace('{{REGISTRY_VERSION}}', (installConfig.registryVersion ? ':' + installConfig.registryVersion : ':latest'));
+            tempDockerFile = tempDockerFile.replace('{{REGISTRY_DRIVER_VERSION}}', (installConfig.registryDriverVersion ? '==' + installConfig.registryDriverVersion : ''));
+            fs.writeFileSync(temp + 'Dockerfile', tempDockerFile);
 
             vasync.pipeline({
                 funcs: pipeline,
