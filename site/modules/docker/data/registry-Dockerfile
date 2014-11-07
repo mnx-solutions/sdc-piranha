@@ -1,8 +1,8 @@
-FROM registry:latest
+FROM registry{{REGISTRY_VERSION}}
 
 MAINTAINER Vladimir Bulyga <zero@13w.me>
 
-RUN pip install docker-registry-driver-joyent_manta
+RUN pip install docker-registry-driver-joyent_manta{{REGISTRY_DRIVER_VERSION}}
 
 RUN echo "\\n\
 common: &common\\n\

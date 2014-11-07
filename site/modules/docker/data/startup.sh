@@ -11,9 +11,18 @@ MANTA_URL=$(/usr/sbin/mdata-get manta-url)
 MANTA_KEY_ID=$(ssh-keygen -lf /root/.ssh/user_id_rsa.pub | awk '{print $2}')
 MANTA_USER=$(/usr/sbin/mdata-get manta-account)
 MANTA_SUBUSER=$(/usr/sbin/mdata-get manta-subuser)
+DOCKER_VERSION=$(/usr/sbin/mdata-get docker-version)
+CADVISOR_VERSION=$(/usr/sbin/mdata-get cadvisor-version)
+if [ ! -z "${DOCKER_VERSION}" ];then
+    DOCKER_VERSION="-${DOCKER_VERSION}"
+fi
+if [ ! -z "${CADVISOR_VERSION}" ];then
+    CADVISOR_VERSION=":${CADVISOR_VERSION}"
+else
+    CADVISOR_VERSION=":latest"
+fi
 KEYS_PATH=/root/.docker
 MANTA_DOCKER_PATH=/${MANTA_USER}/stor/.joyent/docker
-DOCKER_VERSION="-1.1.2"
 DOCKER_DIR=/mnt/docker
 LOGS_DIR=/mnt/manta
 IP_ADDRESSES=$(ip a s | grep 'inet ' | awk '{print $2}' | grep -v 127.0.0.1 | awk -F/ '{print $1}')
@@ -200,6 +209,6 @@ docker run \
     -v /sys:/sys:ro \
     -v ${DOCKER_DIR}/:/var/lib/docker:ro \
     -p 127.0.0.1:14242:8080 \
-    -d --name=cAdvisor google/cadvisor:latest
+    -d --name=cAdvisor google/cadvisor${CADVISOR_VERSION}
 
 writeStage "completed"
