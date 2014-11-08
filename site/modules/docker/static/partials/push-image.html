@@ -21,12 +21,23 @@
                         </span>
                     </div>
                     <div class="form-group">
-                        <span class="orange-asterix edit-label">Name</span>
-                        <span class="edit-value">
+                        <div>
+                            <span class="orange-asterix edit-label">Name</span>
+                            <span class="edit-value">
                                     <input type="text"
                                            name="name"
-                                           data-ng-model="input.name"/>
-                        </span>
+                                           data-ng-pattern="/^[A-Za-z0-9\-\_][^\.\/ ]{3}[A-Za-z0-9\-\_\/]*$/"
+                                           data-ng-model="input.name"
+                                           required/>
+                            </span>
+                        </div>
+                        <div class="edit-error" data-ng-show="newRegistryForm.name.$dirty">
+                            <div class="error"
+                                 data-translate
+                                 data-ng-show="newRegistryForm.name.$error.pattern">
+                                The 'owner name' in 'owner name'/'image name' must be at least 4 characters long.
+                            </div>
+                        </div>
                     </div>
                 </form>
             </div>
