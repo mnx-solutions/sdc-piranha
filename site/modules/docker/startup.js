@@ -473,7 +473,7 @@ var Docker = function execute(scope) {
                     }
                     client.containers({all: true}, function (error, containers) {
                         if (error) {
-                            return call.done(error.message, true);
+                            return callback(error, [], client);
                         }
                         return callback(error, containers, client);
                     });
@@ -481,7 +481,7 @@ var Docker = function execute(scope) {
             };
             getHostContainers(call, function (error, hostContainers, client) {
                 if (error) {
-                    call.update(null, error);
+                    call.log.warn({error: error.message || error}, 'Unable to retrieve host containers to persist logs');
                     hostContainers = [];
                 }
                 vasync.forEachParallel({
@@ -513,12 +513,8 @@ var Docker = function execute(scope) {
                     }
                 }, function (vasyncError, operations) {
                     if (vasyncError) {
-                        var cause = vasyncError.jse_cause || vasyncError.ase_errors;
-                        if (Array.isArray(cause)) {
-                            call.update(null, cause);
-                        } else {
-                            call.update(null, vasyncError);
-                        }
+                        var cause = vasyncError.jse_cause || vasyncError.ase_errors || vasyncError;
+                        call.log.warn({error: cause}, 'Error while persisting container logs');
                     }
                     machine.Delete(call, options, function (error) {
                         if (error) {
@@ -587,12 +583,8 @@ var Docker = function execute(scope) {
                             ]
                         }, function (err) {
                             if (err) {
-                                var cause = err.jse_cause || err.ase_errors;
-                                if (Array.isArray(cause)) {
-                                    call.update(null, cause);
-                                } else {
-                                    call.update(null, err);
-                                }
+                                var cause = err.jse_cause || err.ase_errors || err;
+                                call.log.warn({error: cause}, 'Error while updating registries list');
                             }
                             call.done();
                         });
