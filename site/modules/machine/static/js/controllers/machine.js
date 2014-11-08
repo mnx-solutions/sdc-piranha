@@ -94,43 +94,52 @@
                 if (!machine.tags || machine.tags.JPC_tag !== 'DockerHost' || !machine.ips.length) {
                     return;
                 }
-                Docker.hostInfo({host: machine}).then(function (info) {
-                    $scope.dockerHostInfo = {
-                        containers: info.Containers,
-                        debug: Boolean(info.Debug),
-                        driver: info.Driver,
-                        executionDriver: info.ExecutionDriver,
-                        iPv4Forwarding: Boolean(info.IPv4Forwarding),
-                        images: info.Images,
-                        indexServerAddress: info.IndexServerAddress,
-                        initPath: info.InitPath,
-                        initSha1: info.InitSha1,
-                        kernelVersion: info.KernelVersion,
-                        memoryLimit: Boolean(info.MemoryLimit),
-                        nEventsListener: info.NEventsListener,
-                        nfd: info.NFd,
-                        nGoroutines: info.NGoroutines,
-                        swapLimit: Boolean(info.SwapLimit)
-                    };
-                }, function (err) {
-                    PopupDialog.errorObj(err);
-                });
-                Docker.listContainers({host: machine, options: {all: true}}).then(function (containers) {
-                    $scope.containers = containers.map(function (container) {
-                        container.shortId = container.Id.slice(0, 12);
-                        container.Names = Array.isArray(container.Names) ? container.Names.join(', ') : container.Names;
-                        if (Array.isArray(container.Ports)) {
-                            var ports = container.Ports.map(function (port) {
-                                return port.IP + ':' + port.PublicPort;
-                            });
-                            container.Ports = ports.length ? ports.join(', ') : '';
-                        }
-                        container.hostId = machine.id;
-                        container.hostName = machine.name;
-                        return container;
+                Docker.completedHosts().then(function (availableHosts) {
+                    var isInCompleted = availableHosts.some(function (host) {
+                        return host.id === machine.id;
                     });
-                }, function (err) {
-                    PopupDialog.errorObj(err);
+                    if (!isInCompleted) {
+                        return;
+                    }
+                    $scope.isDockerCompleteHost = true;
+                    Docker.hostInfo({host: machine}).then(function (info) {
+                        $scope.dockerHostInfo = {
+                            containers: info.Containers,
+                            debug: Boolean(info.Debug),
+                            driver: info.Driver,
+                            executionDriver: info.ExecutionDriver,
+                            iPv4Forwarding: Boolean(info.IPv4Forwarding),
+                            images: info.Images,
+                            indexServerAddress: info.IndexServerAddress,
+                            initPath: info.InitPath,
+                            initSha1: info.InitSha1,
+                            kernelVersion: info.KernelVersion,
+                            memoryLimit: Boolean(info.MemoryLimit),
+                            nEventsListener: info.NEventsListener,
+                            nfd: info.NFd,
+                            nGoroutines: info.NGoroutines,
+                            swapLimit: Boolean(info.SwapLimit)
+                        };
+                    }, function (err) {
+                        PopupDialog.errorObj(err);
+                    });
+                    Docker.listContainers({host: machine, options: {all: true}}).then(function (containers) {
+                        $scope.containers = containers.map(function (container) {
+                            container.shortId = container.Id.slice(0, 12);
+                            container.Names = Array.isArray(container.Names) ? container.Names.join(', ') : container.Names;
+                            if (Array.isArray(container.Ports)) {
+                                var ports = container.Ports.map(function (port) {
+                                    return port.IP + ':' + port.PublicPort;
+                                });
+                                container.Ports = ports.length ? ports.join(', ') : '';
+                            }
+                            container.hostId = machine.id;
+                            container.hostName = machine.name;
+                            return container;
+                        });
+                    }, function (err) {
+                        PopupDialog.errorObj(err);
+                    });
                 });
             };
 
