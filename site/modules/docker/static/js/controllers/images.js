@@ -205,7 +205,12 @@
                                 image.actionInProgress = true;
                                 image.checked = false;
                                 var deferred = $q.defer();
-                                Docker[action + 'Image'](image).then(function (response) {
+                                var options = image;
+                                if (action === 'remove' && image.RepoTags && image.RepoTags.length > 0) {
+                                    action = 'forceRemove';
+                                    options = {host: {primaryIp: image.primaryIp}, options: {id: image.Id}};
+                                }
+                                Docker[action + 'Image'](options).then(function (response) {
                                     deferred.resolve(response);
                                     image.actionInProgress = false;
                                     image.checked = false;
