@@ -401,7 +401,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="panel panel-default" data-ng-if="features.docker != 'disabled' && machine.tags.JPC_tag && machine.tags.JPC_tag.indexOf('DockerHost') > -1">
+                <div class="panel panel-default" data-ng-if="features.docker != 'disabled' && isDockerCompleteHost">
                     <div class="panel-heading">
                         <a class="accordion-toggle collapsed toggle-icon" data-toggle="collapse" data-parent="#accordion1"
                            data-target="#collapse_docker">
