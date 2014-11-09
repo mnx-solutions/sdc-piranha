@@ -1,11 +1,12 @@
 <div class="modal-dialog modal-dialog-find-images">
     <div class="modal-content">
         <div class="modal-header message">
-            <h5><i class="glyphicon glyphicon-info-sign"></i><b>Pull Images from Registries</b></h5>
+            <h5><i class="glyphicon glyphicon-info-sign"></i><b>Pull Images</b></h5>
         </div>
         <div class="modal-body loading-medium" data-ng-show="loading"></div>
         <div data-ng-hide="loading" class="modal-body">
             <form name="configurationForm" class="configurationForm">
+                <div>Note: Docker Hub private images are not included into search results.</div>
                 <div class="form-group">
                     <span class="orange-asterix edit-host edit-label">Docker Registry</span>
                         <span class="edit-value">
@@ -26,8 +27,8 @@
                                    required
                                     />
                         </span>
-                    <button data-ng-disabled="configurationForm.$invalid || searching" data-ng-click="pull()" class="btn orange">Pull</button>
-                    <button data-ng-disabled="configurationForm.$invalid || searching" data-ng-click="findImages()" class="btn grey-new effect-orange-button">Find Public Images</button>
+                    <button data-ng-disabled="configurationForm.$invalid || searching" data-ng-click="pull()" class="btn grey-new effect-orange-button">Pull</button>
+                    <button data-ng-disabled="configurationForm.$invalid || searching" data-ng-click="findImages()" class="btn orange">Search</button>
                 </div>
             </form>
             <div class="result-content">
