@@ -26,7 +26,7 @@
                             <span class="edit-value">
                                     <input type="text"
                                            name="name"
-                                           data-ng-pattern="/^[A-Za-z0-9\-\_][^\.\/ ]{3}[A-Za-z0-9\-\_\/]*$/"
+                                           data-ng-pattern="/(^[\w\-]+$)|(^[\w\-]{4,}\/[\w\-\/]+$)/"
                                            data-ng-model="input.name"
                                            required/>
                             </span>
