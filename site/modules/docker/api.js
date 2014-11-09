@@ -288,7 +288,11 @@ module.exports = function execute(scope, register) {
         },
         removeImage  : {
             method: 'DELETE',
-            path: '/images/:id'
+            path: '/images/:id',
+            params: {
+                force: '=',
+                noprune: '='
+            }
         },
         getInfo         : {
             method: 'GET',
@@ -970,8 +974,7 @@ module.exports = function execute(scope, register) {
                 cert: certificates.cert,
                 key: certificates.key,
                 headers: {
-                    'Content-type': 'application/json',
-                    'Access-Control-Allow-Origin': '*'
+                    'Content-type': 'application/json'
                 }
             }));
         });

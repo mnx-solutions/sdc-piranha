@@ -473,6 +473,10 @@
             return job.promise;
         };
 
+        service.forceRemoveImage = function (options) {
+            return createCall('forceRemoveImage', angular.extend({}, options, {direct: true}));
+        };
+
         return service;
     }]);
 }(window.angular, window.JP.getModule('docker')));
