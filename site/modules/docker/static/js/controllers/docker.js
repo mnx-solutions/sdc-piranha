@@ -20,6 +20,8 @@
                 title: localization.translate(null, 'docker', 'See my Joyent Docker Instances')
             });
 
+            var UBUNTU_IMAGE_NAME = 'ubuntu-certified-14.04';
+
             $scope.loading = true;
             $scope.states = {};
             $scope.data = {
@@ -99,11 +101,11 @@
                     $scope.data.imageId = '';
                     Image.image({ datacenter: newVal, public: true }).then(function (images) {
                         var ubuntuImages = images.filter(function (image) {
-                            return image.name.indexOf('ubuntu-cert') !== -1 && image.name.indexOf('.04') !== -1;
+                            return image.name.indexOf(UBUNTU_IMAGE_NAME) !== -1;
                         });
                         if (ubuntuImages.length > 0) {
                             ubuntuImages.sort(function (a, b) {
-                                return -a.name.localeCompare(b.name);
+                                return -a.version.localeCompare(b.version);
                             });
                             $scope.data.imageId = ubuntuImages[0].id;
                         } else {
