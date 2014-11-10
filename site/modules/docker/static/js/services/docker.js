@@ -443,8 +443,8 @@
             return repoTags.join(', ');
         };
 
-        service.parseTag = function (tag) {
-            var parts = /(?:([^:]+:\d+)\/)?((?:([^\/]+)\/)?([^:]+))(?::(\w+))?/.exec(tag);
+        service.parseTag = function parseTag(tag) {
+            var parts = /(?:([^:]+:\d+)\/)?((?:([^\/]+)\/)?([^:]+))(?::([^$]+))?/.exec(tag);
             if (!parts) {
                 return {};
             }

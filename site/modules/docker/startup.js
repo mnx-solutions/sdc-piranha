@@ -796,7 +796,7 @@ var Docker = function execute(scope) {
     });
 
     function parseTag(tag) {
-        var parts = /(?:([^:]+:\d+)\/)?((?:([^\/]+)\/)?([^:]+))(?::(\w+))?/.exec(tag);
+        var parts = /(?:([^:]+:\d+)\/)?((?:([^\/]+)\/)?([^:]+))(?::([^$]+))?/.exec(tag);
         if (!parts) {
             return {};
         }
