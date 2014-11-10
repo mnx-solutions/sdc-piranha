@@ -214,7 +214,17 @@
                             window.jQuery('#registrySelect').select2('close');
                             dialog.close();
                         };
-
+                        scope.errorMessage = function () {
+                            var viewValue = scope.newRegistryForm.name.$viewValue;
+                            var tag = Docker.parseTag(viewValue);
+                            var message = '';
+                            if (tag.repository && tag.repository.length < 4) {
+                                message = 'The author part must be at least 4 characters long.';
+                            } else if (!/^[a-z0-9-\.\/:]+$/.test(viewValue)) {
+                                message = 'Please do not use special characters.';
+                            }
+                            return message;
+                        };
                         scope.push = function () {
                             PopupDialog.message(null, 'Pushing images takes some time. You can continue your work and get notification once push is completed.');
                             Docker.pushImage({

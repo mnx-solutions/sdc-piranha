@@ -864,7 +864,8 @@ var Docker = function execute(scope) {
             pipeline.push(function addTag(collector, callback) {
                 collector.client.tagImage({
                     name: image.Id,
-                    repo: taggedName
+                    repo: taggedName,
+                    tag: (parsedTag.tag || 'latest')
                 }, callback);
             });
 
@@ -886,7 +887,7 @@ var Docker = function execute(scope) {
                 var uploaded = total;
 
                 collector.client.pushImage({
-                    tag: parsedTag.tag,
+                    tag: parsedTag.tag || 'latest',
                     name: taggedName
                 }, function (error, req) {
                     if (error) {
