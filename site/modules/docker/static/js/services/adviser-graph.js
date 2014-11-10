@@ -1,7 +1,7 @@
 'use strict';
 
 (function (ng, app) {
-    app.factory('adviserGraph', ['$rootScope', function ($rootScope) {
+    app.factory('adviserGraph', ['$rootScope', 'util', function ($rootScope, util) {
         var defaultMetrics = ['cpuTotal', 'memory', 'network'];
         return {
             init: function (metrics) {
@@ -129,8 +129,15 @@
                                 y2 = (cur.cpu.usage.system - prev.cpu.usage.system) / intervalInNs;
                                 break;
                             case 'memory':
-                                y = cur.memory.usage;
-                                y2 = cur.memory.working_set;
+                                var currentMemoryUsage = util.getReadableFileSize(cur.memory.usage);
+                                var currentMemoryWorkingSet = util.getReadableFileSize(cur.memory.working_set);
+                                var memoryAbbreviation = currentMemoryWorkingSet.measure;
+                                y = currentMemoryUsage.value;
+                                y2 = currentMemoryWorkingSet.value;
+                                if (cur.memory.usage < cur.memory.working_set) {
+                                    memoryAbbreviation = currentMemoryUsage.measure;
+                                }
+                                metrics.memory.options.type = {abbr: memoryAbbreviation};
                                 break;
                             case 'network':
                                 y = (cur.network.tx_bytes - prev.network.tx_bytes) / intervalInSec;
