@@ -26,7 +26,7 @@
                             <span class="edit-value">
                                     <input type="text"
                                            name="name"
-                                           data-ng-pattern="/(^[\w\-]+$)|(^[\w\-]{4,}\/[\w\-\/]+$)/"
+                                           data-ng-pattern="/^(?:[\w\-\.]+|^[\w\-\.]{4,}\/[\w\-\/\.]+)(?::.*)?$/"
                                            data-ng-model="input.name"
                                            required/>
                             </span>
@@ -35,7 +35,7 @@
                             <div class="error"
                                  data-translate
                                  data-ng-show="newRegistryForm.name.$error.pattern">
-                                The author part must be at least 4 characters long.
+                                {{errorMessage()}}
                             </div>
                         </div>
                     </div>
