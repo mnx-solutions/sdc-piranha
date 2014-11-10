@@ -34,15 +34,22 @@
                         $scope.removedContainers = containers;
                         $scope.removedContainers.forEach(function (container) {
                             container.ShortId = container.Id.slice(0, 12);
-                            container.logs = 'deleted';
+                            container.logs = 'Deleted';
                         });
                         $scope.containers = $scope.containers.filter(function (container) {
-                            return container.logs !== 'deleted';
+                            return container.logs !== 'Deleted';
                         });
                         $scope.containers = $scope.containers.concat($scope.removedContainers);
                         $scope.loading = false;
                     }, errorCallback);
                 };
+
+                function setLogsTab(container) {
+                    container.logs = 'All existing';
+                    if ($scope.tab === 'Running' && container.Status.indexOf('Up') !== -1) {
+                        container.logs = 'Running';
+                    }
+                }
 
                 $scope.$watch('date.start', function () {
                     dateRangeValidation();
@@ -64,7 +71,7 @@
                                 }
                             });
                             container.PortsStr = ports.length ? ports.join(', ') : '';
-                            container.logs = 'existing';
+                            setLogsTab(container);
                         });
                         listRemovedContainers();
                     }, errorCallback);
@@ -157,7 +164,7 @@
                             removeContainerLogs('Confirm: Remove logs', gridMessages.remove);
                         },
                         show: function () {
-                            return $scope.tab !== 'existing';
+                            return $scope.tab !== 'Running' && $scope.tab !== 'All existing';
                         },
                         sequence: 1
                     }
@@ -275,6 +282,11 @@
 
                 $scope.$on('gridViewChangeTab', function (event, tab) {
                     $scope.tab = tab;
+                    $scope.containers.forEach(function (container) {
+                        if (container.logs !== 'Deleted') {
+                            setLogsTab(container);
+                        }
+                    });
                 });
 
             }
