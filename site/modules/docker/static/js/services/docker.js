@@ -221,6 +221,10 @@
             return createCall('getInfo', options, progressHandler);
         };
 
+        service.hostVersion = function (options) {
+            return createCall('getVersion', options);
+        };
+
         service.removeContainer = function (container) {
             var data = {
                 direct: true,
