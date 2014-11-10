@@ -166,7 +166,7 @@
                             localization.translate($scope, null, 'Confirm: Remove image'),
                             localization.translate($scope, null, 'Please confirm that you want to remove this image.'),
                             function () {
-                                Docker.removeImage({host: {primaryIp: image.primaryIp}, options: {id: image.Id}}).then(function () {
+                                Docker.removeImage(image).then(function () {
                                     $location.path('/docker/images');
                                 }, errorCallback);
                             },
