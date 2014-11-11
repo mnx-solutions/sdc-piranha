@@ -6,16 +6,35 @@ window.JP.main.config(['routeProvider', function (routeProvider) {
         return;
     }
     var dockerResolve = {
-        data: ['$rootScope', '$location', function ($rootScope, $location) {
-            if (!$rootScope.provisionEnabled || (typeof ($rootScope.dockerHostsAvailable) === 'boolean' && !$rootScope.dockerHostsAvailable)) {
-                $location.path('/docker');
+        data: ['$rootScope', '$location', '$q', 'Docker', 'Account', function ($rootScope, $location, $q, Docker, Account) {
+
+            function changePath() {
+                if ($location.path() !== '/docker' && (!$rootScope.provisionEnabled || !$rootScope.dockerHostsAvailable)) {
+                    $location.path('/docker');
+                }
+            }
+
+            if (typeof ($rootScope.provisionEnabled) !== 'boolean' || typeof ($rootScope.dockerHostsAvailable) !== 'boolean') {
+                $q.all([
+                    $q.when(Account.getAccount()),
+                    $q.when(Docker.listHosts())
+                ]).then(function (result) {
+                    var account = result[0] || {};
+                    var hosts = result[1] || [];
+                    $rootScope.provisionEnabled = account.provisionEnabled || false;
+                    $rootScope.dockerHostsAvailable = hosts.length > 0;
+                    changePath();
+                });
+            } else {
+                changePath();
             }
         }]
     };
     routeProvider
         .when('/docker', {
             title: 'Docker',
-            action: 'docker.index'
+            action: 'docker.index',
+            resolve: dockerResolve
         }).when('/docker/registries', {
             title: 'Registries',
             action: 'docker.registries',
