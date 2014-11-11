@@ -103,6 +103,22 @@ config.log.serializers = {
         } else {
             return bunyan.stdSerializers.err(err);
         }
+    },
+    obj: function (obj) {
+        var cloneNode = function (node) {
+            if (!node || typeof(node) !== 'object') {
+                return node;
+            }
+
+            var newNode = {};
+            for (var key in node) {
+                if (node.hasOwnProperty(key) && key !== 'metadata') {
+                    newNode[key] = cloneNode(node[key]);
+                }
+            }
+            return newNode;
+        };
+        return cloneNode(obj);
     }
 };
 
