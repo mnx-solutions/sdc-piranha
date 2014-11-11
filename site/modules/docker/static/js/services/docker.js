@@ -448,7 +448,7 @@
         };
 
         service.parseTag = function parseTag(tag) {
-            var parts = /(?:([^:]+:\d+)\/)?((?:([^\/]+)\/)?([^:]+))(?::([^$]+))?/.exec(tag);
+            var parts = /(?:([^:]+:\d+)\/)?((?:([^\/]+)\/)?([^:]+))(?::(.+$))?/.exec(tag);
             if (!parts) {
                 return {};
             }
