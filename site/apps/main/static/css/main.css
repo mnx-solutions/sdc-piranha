@@ -1908,6 +1908,12 @@ a
     background-size: 24px 24px;
 }
 
+.loading-medium-transparent.indicator
+{
+    width: 30px;
+    height: 30px;
+}
+
 .loading-medium.item
 {
     width: 30px;
