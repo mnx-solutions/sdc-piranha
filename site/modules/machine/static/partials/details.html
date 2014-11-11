@@ -413,7 +413,7 @@
                             <div class="beta-sticker tab">beta</div>
                             <table>
                                 <tr class="id-section">
-                                    <td>Containers</td>
+                                    <td><a data-ng-click="navigateContainersImages('containers', machineid)">Containers</a></td>
                                     <td>{{dockerHostInfo.containers}}</td>
                                 </tr>
                                 <tr>
@@ -433,7 +433,7 @@
                                     <td>{{dockerHostInfo.iPv4Forwarding}}</td>
                                 </tr>
                                 <tr>
-                                    <td>Images</td>
+                                    <td><a data-ng-click="navigateContainersImages('images', machineid)">Images</a></td>
                                     <td>{{dockerHostInfo.images}}</td>
                                 </tr>
                                 <tr>
@@ -472,7 +472,24 @@
                                     <td>SwapLimit</td>
                                     <td>{{dockerHostInfo.swapLimit}}</td>
                                 </tr>
+                                <tr>
+                                    <td>Version</td>
+                                    <td>{{dockerVersion}}</td>
+                                </tr>
                             </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel panel-default" data-ng-if="features.docker != 'disabled' && isDockerCompleteHost">
+                    <div class="panel-heading">
+                        <a class="accordion-toggle collapsed toggle-icon" data-toggle="collapse" data-parent="#accordion1"
+                           data-target="#collapse_docker_containers">
+                            Docker Containers
+                        </a>
+                    </div>
+                    <div id="collapse_docker_containers" class="panel-collapse collapse">
+                        <div class="panel-body">
+                            <div class="beta-sticker tab">beta</div>
                             <div data-ng-show="containers.length >= 1">
                                 <div data-grid-view
                                      data-user-config="gridUserConfigDocker"
@@ -485,6 +502,8 @@
                                      data-special-width="'detailsPage'"
                                      data-search-form="searchFormDocker"
                                      data-export-fields="exportFieldsDocker"
+                                     data-tab-filter-field="tabFilterField"
+                                     data-tab-filter-default="tabFilterDefault"
                                      data-multisort="false"
                                      class="grid-small-font indent"></div>
                             </div>

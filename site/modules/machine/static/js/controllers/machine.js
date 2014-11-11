@@ -123,23 +123,33 @@
                     }, function (err) {
                         PopupDialog.errorObj(err);
                     });
-                    Docker.listContainers({host: machine, options: {all: true}}).then(function (containers) {
+                    Docker.hostVersion({host: machine, wait: true}).then(function (version) {
+                        $scope.dockerVersion = version.Version || '';
+                    }, function (err) {
+                        PopupDialog.errorObj(err);
+                    });
+                    Docker.listContainers({host: machine, options: {all: true}, suppressErrors: true}).then(function (containers) {
                         $scope.containers = containers.map(function (container) {
                             container.shortId = container.Id.slice(0, 12);
                             container.Names = Array.isArray(container.Names) ? container.Names.join(', ') : container.Names;
-                            if (Array.isArray(container.Ports)) {
-                                var ports = container.Ports.map(function (port) {
-                                    return port.IP + ':' + port.PublicPort;
-                                });
-                                container.Ports = ports.length ? ports.join(', ') : '';
-                            }
+                            var ports = [];
+                            container.Ports.forEach(function (port) {
+                                if (port.IP && port.PublicPort) {
+                                    ports.push(port.IP + ':' + port.PublicPort);
+                                }
+                            });
+                            container.PortsStr = ports.length ? ports.join(', ') : '';
                             container.hostId = machine.id;
                             container.hostName = machine.name;
+                            container.containers = container.Status.indexOf('Up') !== -1 ? 'running' : 'stopped';
                             return container;
                         });
                     }, function (err) {
                         PopupDialog.errorObj(err);
                     });
+                    $scope.navigateContainersImages = function (route, host) {
+                        $location.url('/docker/' + route + '?host=' + host);
+                    };
                 });
             };
 
@@ -741,7 +751,7 @@
                         active: true
                     },
                     {
-                        id: 'Ports',
+                        id: 'PortsStr',
                         name: 'Ports',
                         sequence: 7,
                         active: false
@@ -753,6 +763,7 @@
                 };
 
                 $scope.searchFormDocker = false;
+                $scope.tabFilterField = 'containers';
 
             }
         }
