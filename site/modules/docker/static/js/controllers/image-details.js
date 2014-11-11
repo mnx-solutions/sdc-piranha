@@ -196,16 +196,19 @@
                         scope.tag = '';
                         scope.imageName = parsedTag.name;
                         scope.input = {
-                            registry: {},
+                            registryId: '',
                             name: parsedTag.name || ''
                         };
 
                         Docker.getRegistriesList().then(function (registries) {
                             scope.registries = registries;
                             if (parsedTag.registry) {
-                                scope.input.registry = registries.find(function (registry) {
+                                var imageRegistry = registries.find(function (registry) {
                                     return urlParser(registry.host).host === parsedTag.registry;
                                 });
+                                if (imageRegistry) {
+                                    scope.input.registryId = imageRegistry.id;
+                                }
                             }
                             scope.loading = false;
                         }, errorCallback);
@@ -226,12 +229,15 @@
                             return message;
                         };
                         scope.push = function () {
+                            var registry = scope.registries.find(function (registry) {
+                                return registry.id === scope.input.registryId;
+                            });
                             PopupDialog.message(null, 'Pushing images takes some time. You can continue your work and get notification once push is completed.');
                             Docker.pushImage({
                                 host: {primaryIp: image.primaryIp},
                                 options: {
                                     image: angular.copy($scope.image),
-                                    registry: scope.input.registry,
+                                    registry: registry,
                                     tag: parsedTag.tag,
                                     name: scope.input.name
                                 }
