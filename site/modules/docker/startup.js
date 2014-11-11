@@ -930,7 +930,6 @@ var Docker = function execute(scope) {
                                 percents: Math.floor((total - uploaded) * 100 / total),
                                 buffer: buffer
                             };
-                            call.log.debug({chunk: chunk, result: result}, 'chunk received');
                             call.update(null, result);
                         });
                     });
