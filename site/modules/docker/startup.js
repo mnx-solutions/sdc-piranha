@@ -953,39 +953,57 @@ var Docker = function execute(scope) {
             return data && data.options && data.options.id && data.host && data.host.primaryIp;
         },
         handler: function (call) {
-            Docker.createClient(call, call.data.host, function (error, client) {
-                if (error) {
-                    return call.done(error, true);
-                }
-                client.images(function (error, images) {
-                    if (error) {
-                        return call.done(error, true);
-                    }
-                    var image = images.find(function (image) {
-                        return image.Id.substr(0, 12) === call.data.options.id.substr(0, 12);
+            var dockerClient;
+            var image;
+            var imageShortId = call.data.options.id.substr(0, 12);
+            vasync.waterfall([
+                function (callback) {
+                    Docker.createClient(call, call.data.host, callback);
+                },
+                function (client, callback) {
+                    dockerClient = client;
+                    client.images(callback);
+                },
+                function (images, callback) {
+                    image = images.find(function (img) {
+                        return img.Id.substr(0, 12) === imageShortId;
                     });
                     if (!image) {
-                        return call.done('Image "' + call.data.options.id + '" not found', true);
+                        return callback('Image "' + imageShortId + '" not found', true);
                     }
+                    dockerClient.containers({all: true}, callback);
+                },
+                function (containers, callback) {
+                    var usedByContainer = containers.find(function (container) {
+                        return container.Image.substr(0, 12) === imageShortId || image.RepoTags && image.RepoTags.indexOf(container.Image) !== -1;
+                    });
+                    if (usedByContainer) {
+                        callback('Image "' + imageShortId + '" is used by container "' + usedByContainer.Id.substr(0, 12) + '" and cannot be deleted');
+                    } else {
+                        callback();
+                    }
+                },
+                function (callback) {
                     var tags = image.RepoTags || [image.Id];
                     var tagsMap = {};
                     tags.forEach(function (tag) {
                         var tagRepository = tag.split(':')[0];
                         tagsMap[tagRepository] = true;
                     });
+                    var tagsCount = Object.keys(tagsMap).length;
                     var funcs = [];
-                    for (var i = 0; i < Object.keys(tagsMap).length; i++) {
+                    for (var i = 0; i < tagsCount; i++) {
                         funcs.push(function (callback) {
-                            client.removeImage({id: image.Id, force: true}, function (error) {
+                            dockerClient.removeImage({id: image.Id, force: true}, function (error) {
                                 callback(error);
                             });
                         });
                     }
                     vasync.parallel({
                         funcs: funcs
-                    }, call.done.bind(call));
-                });
-            });
+                    }, callback);
+                }
+            ], call.done.bind(call));
         }
     });
 
