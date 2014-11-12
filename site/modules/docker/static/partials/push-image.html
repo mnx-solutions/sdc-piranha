@@ -24,16 +24,16 @@
                             <span class="edit-value">
                                     <input type="text"
                                            name="name"
-                                           data-ng-pattern="/^(?:[\w\-\.]+|^[\w\-\.]{4,}\/[\w\-\/\.]+)(?::.*)?$/"
                                            data-ng-model="input.name"
+                                           data-ng-change="validateName()"
                                            required/>
                             </span>
                         </div>
                         <div class="edit-error" data-ng-show="newRegistryForm.name.$dirty">
                             <div class="error"
                                  data-translate
-                                 data-ng-show="newRegistryForm.name.$error.pattern">
-                                {{errorMessage()}}
+                                 data-ng-show="errorMessage">
+                                {{errorMessage}}
                             </div>
                         </div>
                     </div>

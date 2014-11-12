@@ -217,16 +217,25 @@
                             window.jQuery('#registrySelect').select2('close');
                             dialog.close();
                         };
-                        scope.errorMessage = function () {
+                        scope.validateName = function () {
                             var viewValue = scope.newRegistryForm.name.$viewValue;
-                            var tag = Docker.parseTag(viewValue);
-                            var message = '';
-                            if (tag.repository && tag.repository.length < 4) {
-                                message = 'The author part must be at least 4 characters long.';
-                            } else if (!/^[a-z0-9-\.\/:]+$/.test(viewValue)) {
-                                message = 'Please do not use special characters.';
+                            var parsedTag = Docker.parseTag(viewValue);
+                            var isValid = !!parsedTag;
+
+                            if (parsedTag) {
+                                if (parsedTag.repository && !/^[a-z0-9_]{4,30}$/.test(parsedTag.repository)) {
+                                    scope.errorMessage = 'Namespace error: only [a-z0-9_] are allowed, size between 4 and 30';
+                                } else if (!/^[a-z0-9-_\.]+$/.test(parsedTag.onlyname)) {
+                                    scope.errorMessage = 'Name error: only [a-z0-9-_.] are allowed';
+                                } else if (parsedTag.tag && !/^[A-Za-z0-9_\.\-]{2,30}$/.test(parsedTag.tag)) {
+                                    scope.errorMessage = 'Tag error: only [A-Za-z0-9_.-] are allowed, minimum 2, maximum 30 in length';
+                                } else {
+                                    scope.errorMessage = '';
+                                }
+                                isValid = false;
                             }
-                            return message;
+
+                            scope.newRegistryForm.$setValidity('name', isValid);
                         };
                         scope.push = function () {
                             var registry = scope.registries.find(function (registry) {
