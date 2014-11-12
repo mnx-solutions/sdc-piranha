@@ -43,6 +43,12 @@
             ];
             var timerUpdateStats = 0;
 
+            var errorCallback = function (err) {
+                Docker.errorCallback(err, function () {
+                    $scope.changingHost = false;
+                });
+            };
+
             Docker.pingManta(function () {
                 Docker.listHosts().then(function (hosts) {
                     $scope.hosts = hosts || [];
@@ -93,7 +99,7 @@
                         });
                     }
                     $scope.changingHost = false;
-                });
+                }, errorCallback);
             };
 
             $scope.changeContainer = function () {
