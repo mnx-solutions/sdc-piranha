@@ -213,8 +213,6 @@
                                 }
                                 Docker[currentAction + 'Image'](currentData).then(function (response) {
                                     deferred.resolve(response);
-                                    image.actionInProgress = false;
-                                    image.checked = false;
                                 }, function (err) {
                                     deferred.reject(err);
                                     image.actionInProgress = false;
