@@ -2,7 +2,7 @@
 	"em": {
 		"static": {
 			"js": [
-                "//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js",
+                "/vendor/jquery/jquery.min.js",
                 "/vendor/bootstrap/js/bootstrap.min.js",
 				"/vendor/angular/angular.js",
 				"/vendor/angular/angular-resource.js",
