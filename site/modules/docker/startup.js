@@ -18,7 +18,6 @@ var Docker = function execute(scope) {
     var machine = scope.api('Machine');
     var methods = Docker.getMethods();
     var methodsForAllHosts = ['containers', 'getInfo', 'images'];
-    var registriesCache = {};
     var removedContainersCache = {};
 
     function DockerHostUnreachable(host) {
@@ -80,55 +79,6 @@ var Docker = function execute(scope) {
         });
     }
 
-    var getRegistries = function (call, client, callback) {
-        if (typeof (client) === 'function') {
-            callback = client;
-            client = scope.api('MantaClient').createClient(call);
-        }
-
-        client.getFileContents('~~/stor/.joyent/docker/registries.json', function (error, list) {
-            if (error && error.statusCode !== 404) {
-                return call.done(error.message, true);
-            }
-
-            try {
-                list = JSON.parse(list);
-            } catch (e) {
-                call.log.warn('Registries list is corrupted');
-                list = [];
-            }
-            callback(error, list);
-        });
-    };
-
-    var saveRegistries = function (call, data, client, callback) {
-        if (typeof (client) === 'function') {
-            callback = client;
-            client = null;
-        }
-        callback = callback || call.done;
-        client = client || scope.api('MantaClient').createClient(call);
-        client.putFileContents('~~/stor/.joyent/docker/registries.json', JSON.stringify(data), function (error) {
-            return callback(error && error.message, true);
-        });
-    };
-
-    var deleteRegistry = function (call, key, value, callback) {
-        getRegistries(call, function (error, list) {
-            var id;
-            list = list.filter(function (item) {
-                var condition = key === 'host' ? item.host === value && parseInt(item.port, 10) === 5000 : item[key] === value;
-                if (condition) {
-                    id = item.id;
-                }
-                return !condition;
-            });
-            if (id) {
-                delete registriesCache[id];
-                return saveRegistries(call, list, callback);
-            }
-        });
-    };
 
     var REMOVED_LOGS_PATH = '~~/stor/.joyent/docker/removed-logs.json';
 
@@ -258,7 +208,7 @@ var Docker = function execute(scope) {
                                     var host = call.data.host.primaryIp;
                                     if (ports.length) {
                                         // delete registry
-                                        return getRegistries(call, function (error, list) {
+                                        return Docker.getRegistries(call, function (error, list) {
                                             var matchingRegistryId;
                                             list = list.filter(function (item) {
                                                 if (item.host.substr(item.host.indexOf('://') + 3) === host) {
@@ -272,8 +222,8 @@ var Docker = function execute(scope) {
                                                 }
                                             });
                                             if (matchingRegistryId) {
-                                                delete registriesCache[matchingRegistryId];
-                                                return saveRegistries(call, list, function (errSave) {
+                                                delete Docker.registriesCache[matchingRegistryId];
+                                                return Docker.saveRegistries(call, list, function (errSave) {
                                                     if (errSave) {
                                                         call.log.warn(errSave);
                                                     }
@@ -523,7 +473,7 @@ var Docker = function execute(scope) {
                         vasync.parallel({
                             'funcs': [
                                 function updateRegistries(callback) {
-                                    getRegistries(call, function (err, list) {
+                                    Docker.getRegistries(call, function (err, list) {
                                         if (err) {
                                             return callback(err);
                                         }
@@ -533,7 +483,7 @@ var Docker = function execute(scope) {
                                                 return item.host.indexOf(call.data.host.primaryIp) === -1;
                                             });
                                             if (listLength !== list.length) {
-                                                saveRegistries(call, list, function (err) {
+                                                Docker.saveRegistries(call, list, function (err) {
                                                     callback(err);
                                                 });
                                             } else {
@@ -619,15 +569,15 @@ var Docker = function execute(scope) {
             username: 'none',
             type: 'global'
         };
-        getRegistries(call, function (error, list) {
-            registriesCache['default'] = defaultRegistry;
+        Docker.getRegistries(call, function (error, list) {
+            Docker.registriesCache['default'] = defaultRegistry;
             if (error && error.statusCode === 404) {
                 return call.done(null, [defaultRegistry]);
             }
 
             var checkDefaultRegistry = false;
             list.forEach(function (registry) {
-                registriesCache[registry.id] = util._extend({}, registry);
+                Docker.registriesCache[registry.id] = util._extend({}, registry);
                 if (registry.auth) {
                     registry.auth = null;
                 }
@@ -661,7 +611,7 @@ var Docker = function execute(scope) {
             }
 
             delete savedRegistry.password;
-            getRegistries(call, function (error, list) {
+            Docker.getRegistries(call, function (error, list) {
                 var edited;
                 list = list.map(function (registry) {
                     if (savedRegistry.id === registry.id) {
@@ -674,8 +624,8 @@ var Docker = function execute(scope) {
                 if (!edited) {
                     list.push(savedRegistry);
                 }
-                registriesCache[savedRegistry.id] = savedRegistry;
-                saveRegistries(call, list);
+                Docker.registriesCache[savedRegistry.id] = savedRegistry;
+                Docker.saveRegistries(call, list);
             });
         }
     });
@@ -686,7 +636,7 @@ var Docker = function execute(scope) {
         },
         handler: function (call) {
             var registry = call.data.registry;
-            deleteRegistry(call, 'id', registry.id, function (err) {
+            Docker.deleteRegistry(call, 'id', registry.id, function (err) {
                 if (err) {
                     return call.done(err);
                 }
@@ -769,10 +719,10 @@ var Docker = function execute(scope) {
         handler: function (call) {
             var options = call.data.options;
             var registryId = options.registryId;
-            if (!registryId) {
+            if (!registryId || registryId === 'local') {
                 return pullImage(call, options);
             }
-            getRegistries(call, function (error, list) {
+            Docker.getRegistries(call, function (error, list) {
                 if (error && registryId !== 'default') {
                     if (error.statusCode !== 404) {
                         return call.done(error.message || error);
@@ -837,7 +787,12 @@ var Docker = function execute(scope) {
             });
 
             pipeline.push(function getRegistry(collector, callback) {
-                getRegistries(call, function (error, list) {
+                if (registry.type === 'local') {
+                    collector.registryAuth = new Buffer(JSON.stringify({auth: '', email: ''})).toString('base64');
+                    return callback();
+                }
+
+                Docker.getRegistries(call, function (error, list) {
                     if (error) {
                         if (error.statusCode !== 404) {
                             return callback(error.message || error);
@@ -854,8 +809,9 @@ var Docker = function execute(scope) {
                         }
                         return callback('Registry not found!');
                     }
-
-                    collector.registryAuth = registryRecord.auth || new Buffer(JSON.stringify({auth: '', email: ''})).toString('base64');
+                    if (registryRecord.auth) {
+                        collector.registryAuth = registryRecord.auth;
+                    }
 
                     callback();
                 });
@@ -885,7 +841,6 @@ var Docker = function execute(scope) {
                     images[slice.Id.substr(0, 12)] = slice;
                 });
                 var uploaded = total;
-
                 collector.client.pushImage({
                     tag: parsedTag.tag || 'latest',
                     name: taggedName
@@ -989,7 +944,7 @@ var Docker = function execute(scope) {
             return data && data.options && typeof (data.options.name) === 'string' && data.registry;
         },
         handler: function (call) {
-            var registry = registriesCache[call.data.registry];
+            var registry = Docker.registriesCache[call.data.registry];
             if (!registry) {
                 return call.done();
             }
@@ -1009,7 +964,11 @@ var Docker = function execute(scope) {
             return data && data.options && typeof (data.options.q) === 'string' && data.registry;
         },
         handler: function (call) {
-            var registry = registriesCache[call.data.registry];
+            if (call.data.registry === 'local') {
+                Docker.searchPrivateImage(call, call.data.options.q, call.done.bind(call));
+                return;
+            }
+            var registry = Docker.registriesCache[call.data.registry];
             if (!registry) {
                 return call.done();
             }
@@ -1131,11 +1090,11 @@ var Docker = function execute(scope) {
                 fs.rmdirSync(temp);
                 var host = 'https://' + call.data.host.primaryIp;
                 if (error) {
-                    return deleteRegistry(call, 'host', host, function (err) {
+                    return Docker.deleteRegistry(call, 'host', host, function (err) {
                         return call.done(error);
                     });
                 }
-                getRegistries(call, mantaClient, function (error, list) {
+                Docker.getRegistries(call, mantaClient, function (error, list) {
                     var registry;
                     list = list.map(function (item) {
                         if (item.host === host) {
@@ -1154,8 +1113,8 @@ var Docker = function execute(scope) {
                         };
                         list.push(registry);
                     }
-                    registriesCache[registry.id] = registry;
-                    saveRegistries(call, list, mantaClient);
+                    Docker.registriesCache[registry.id] = registry;
+                    Docker.saveRegistries(call, list, mantaClient);
                 });
             });
         }
