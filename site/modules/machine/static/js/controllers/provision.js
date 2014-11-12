@@ -185,7 +185,22 @@
                 });
             };
 
-            var provisioningInProgress = false;
+            $scope.provisioningInProgress = false;
+
+            var waitForCreatingMachinesToFinish = function (callback) {
+                Machine.listAllMachines().then(function (machines) {
+                    var hasCreating = machines.some(function (machine) {
+                        return machine.state === 'creating';
+                    });
+                    if (hasCreating) {
+                        setTimeout(function () {
+                            waitForCreatingMachinesToFinish(callback);
+                        }, 1000);
+                    } else {
+                        callback();
+                    }
+                });
+            };
 
             var provision = function (machine) {
                 var finalProvision = function () {
@@ -202,96 +217,98 @@
                             machine: machineData
                         });
                         $location.path('/compute/ssh');
-                    } else if (!provisioningInProgress) {
+                    } else if (!$scope.provisioningInProgress) {
                         //add flag for docker host
                         if ($scope.preSelectedImageId && $location.search().specification === 'dockerhost') {
                             machineData.specification = 'docker';
                         }
 
-                        provisioningInProgress = true;
-                        Machine.provisionMachine(machineData).done(function (err, job) {
-                            provisioningInProgress = false;
-                            var quotaExceededHeader = 'QuotaExceeded: ';
+                        $scope.provisioningInProgress = true;
+                        waitForCreatingMachinesToFinish(function () {
+                            Machine.provisionMachine(machineData).done(function (err, job) {
+                                $scope.provisioningInProgress = false;
+                                var quotaExceededHeader = 'QuotaExceeded: ';
 
-                            if (err && err.message && err.message.indexOf('Free tier') > -1) {
-                                var freeDatacenters = [];
-                                var messagePart2 = '.';
-                                $scope.datacenters.forEach(function (datacenter) {
-                                    var isFreeDatacenter = $scope.freeTierOptions.some(function (freeImage) {
-                                        return freeImage.datacenters.indexOf(datacenter.name) !== -1;
-                                    });
-                                    if (isFreeDatacenter) {
-                                        freeDatacenters.push(datacenter.name);
-                                    }
-                                });
-                                if (freeDatacenters.length > 0) {
-                                    freeDatacenters = freeDatacenters.join(', ');
-                                    messagePart2 = ', and you still have the capacity for free tier instances in ' + freeDatacenters + '.';
-                                }
-                                err.message = err.message + ' This limitation applies per data center' + messagePart2;
-                            }
-
-                            if (err && err.message && err.message.indexOf(quotaExceededHeader) === 0) {
-                                var redirectUrl = '/compute/create/simple';
-                                PopupDialog.error(null, err.message.substr(quotaExceededHeader.length), function () {
-                                    if (err.message.indexOf('Free tier offering is limited') === -1) {
-                                        redirectUrl = '/dashboard';
-                                        $scope.zenboxDialog({
-                                            request_subject: 'Please raise my provisioning limits'
+                                if (err && err.message && err.message.indexOf('Free tier') > -1) {
+                                    var freeDatacenters = [];
+                                    var messagePart2 = '.';
+                                    $scope.datacenters.forEach(function (datacenter) {
+                                        var isFreeDatacenter = $scope.freeTierOptions.some(function (freeImage) {
+                                            return freeImage.datacenters.indexOf(datacenter.name) !== -1;
                                         });
-                                    }
-                                    $location.path(redirectUrl);
-                                });
-                                return;
-                            }
-
-                            var newMachine = job.__read();
-                            $q.when(Machine.machine(), function (listMachines) {
-                                if (newMachine.id) {
-                                    $q.when(Machine.checkFirstInstanceCreated(newMachine.id), function (uuid) {
-                                        if (!uuid || typeof (uuid) === 'object') {
-                                            $$track.marketo_machine_provision($scope.account);
+                                        if (isFreeDatacenter) {
+                                            freeDatacenters.push(datacenter.name);
                                         }
                                     });
-                                } else if (err && listMachines.length === 0) {
-                                    $location.path('/compute/create/simple');
+                                    if (freeDatacenters.length > 0) {
+                                        freeDatacenters = freeDatacenters.join(', ');
+                                        messagePart2 = ', and you still have the capacity for free tier instances in ' + freeDatacenters + '.';
+                                    }
+                                    err.message = err.message + ' This limitation applies per data center' + messagePart2;
+                                }
+
+                                if (err && err.message && err.message.indexOf(quotaExceededHeader) === 0) {
+                                    var redirectUrl = '/compute/create/simple';
+                                    PopupDialog.error(null, err.message.substr(quotaExceededHeader.length), function () {
+                                        if (err.message.indexOf('Free tier offering is limited') === -1) {
+                                            redirectUrl = '/dashboard';
+                                            $scope.zenboxDialog({
+                                                request_subject: 'Please raise my provisioning limits'
+                                            });
+                                        }
+                                        $location.path(redirectUrl);
+                                    });
+                                    return;
+                                }
+
+                                var newMachine = job.__read();
+                                $q.when(Machine.machine(), function (listMachines) {
+                                    if (newMachine.id) {
+                                        $q.when(Machine.checkFirstInstanceCreated(newMachine.id), function (uuid) {
+                                            if (!uuid || typeof (uuid) === 'object') {
+                                                $$track.marketo_machine_provision($scope.account);
+                                            }
+                                        });
+                                    } else if (err && listMachines.length === 0) {
+                                        $location.path('/compute/create/simple');
+                                    }
+                                });
+
+                                if (!err && $scope.isMantaEnabled && $scope.isRecentInstancesEnabled) {
+                                    $q.when($scope.freeTierOptions).then(function () {
+                                        if (!machineData.freetier) {
+                                            $scope.createdMachines = Account.getUserConfig().$child('createdMachines');
+                                            $scope.createdMachines.$load(function (error, config) {
+                                                config.createdMachines = config.createdMachines || [];
+                                                var creationDate = new Date(newMachine.created).getTime();
+                                                var listedMachine = config.createdMachines.find(function (m) {
+                                                    return m.dataset === machineData.dataset &&
+                                                        m.package === machineData.package;
+                                                });
+
+                                                if (listedMachine) {
+                                                    listedMachine.provisionTimes += 1;
+                                                    listedMachine.creationDate = creationDate;
+                                                } else {
+                                                    var createdMachine = {
+                                                        dataset: machineData.dataset,
+                                                        package: machineData.package,
+                                                        provisionTimes: 1,
+                                                        creationDate: creationDate
+                                                    };
+                                                    config.createdMachines.push(createdMachine);
+                                                }
+
+                                                config.dirty(true);
+                                                config.$save();
+                                            });
+                                        }
+                                    });
                                 }
                             });
 
-                            if (!err && $scope.isMantaEnabled && $scope.isRecentInstancesEnabled) {
-                                $q.when($scope.freeTierOptions).then(function () {
-                                    if (!machineData.freetier) {
-                                        $scope.createdMachines = Account.getUserConfig().$child('createdMachines');
-                                        $scope.createdMachines.$load(function (error, config) {
-                                            config.createdMachines = config.createdMachines || [];
-                                            var creationDate = new Date(newMachine.created).getTime();
-                                            var listedMachine = config.createdMachines.find(function (m) {
-                                                return m.dataset === machineData.dataset &&
-                                                        m.package === machineData.package;
-                                            });
-
-                                            if (listedMachine) {
-                                                listedMachine.provisionTimes += 1;
-                                                listedMachine.creationDate = creationDate;
-                                            } else {
-                                                var createdMachine = {
-                                                    dataset: machineData.dataset,
-                                                    package: machineData.package,
-                                                    provisionTimes: 1,
-                                                    creationDate: creationDate
-                                                };
-                                                config.createdMachines.push(createdMachine);
-                                            }
-
-                                            config.dirty(true);
-                                            config.$save();
-                                        });
-                                    }
-                                });
-                            }
+                            $location.url('/compute');
                         });
-
-                        $location.url('/compute');
                     }
                 };
                 var submitBillingInfo = {btnTitle: 'Next'};
