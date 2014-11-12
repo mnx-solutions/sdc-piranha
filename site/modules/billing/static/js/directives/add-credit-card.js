@@ -390,6 +390,7 @@
                                         );
                                         window.scrollTo(0, 0);
                                     }
+                                    $rootScope.provisionEnabled = true;
                                     $scope.errs = null;
                                     $q.when(BillingService.getDefaultCreditCard(), function (credit) {
                                         $scope.prev = credit;
