@@ -32,10 +32,36 @@
     overflow: hidden;
     box-sizing: content-box;
     padding: 10px 15px 2px 15px;
-    width: 190px;
     height: 35px;
     font-weight: bold;
     font-size: 16px;
+}
+.docker-wrapper .name p {
+    overflow: hidden;
+    height: 23px;
+    width: 205px;
+    vertical-align: top;
+    text-overflow: ellipsis;
+    word-wrap: break-word;
+}
+.docker-wrapper .name .label {
+    font-size: 12px;
+    font-weight: 700;
+    line-height: 1;
+    position: relative;
+    top: -2px;
+    display: inline-block;
+    padding: 0 .6em .3em;
+    cursor: pointer;
+    text-align: center;
+    vertical-align: baseline;
+    white-space: nowrap;
+    color: #020001;
+    border: none;
+    border-radius: .25em;
+    outline: none;
+    background-color: #f7f8f9;
+    text-shadow: none;
 }
 .docker-wrapper .info {
     overflow: hidden;
