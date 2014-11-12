@@ -968,14 +968,19 @@ var Docker = function execute(scope) {
                         return call.done('Image "' + call.data.options.id + '" not found', true);
                     }
                     var tags = image.RepoTags || [image.Id];
+                    var tagsMap = {};
+                    tags.forEach(function (tag) {
+                        var tagRepository = tag.split(':')[0];
+                        tagsMap[tagRepository] = true;
+                    });
                     var funcs = [];
-                    tags.forEach(function () {
+                    for (var i = 0; i < Object.keys(tagsMap).length; i++) {
                         funcs.push(function (callback) {
                             client.removeImage({id: image.Id, force: true}, function (error) {
                                 callback(error);
                             });
                         });
-                    });
+                    }
                     vasync.parallel({
                         funcs: funcs
                     }, call.done.bind(call));
