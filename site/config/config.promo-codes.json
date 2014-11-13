@@ -78,5 +78,10 @@
         "expirationDate": "2020-12-30",
         "startDate": "2014-06-22",
         "ratePlanName": "SDC7 Download"
+    },
+    "DOCKERJOY": {
+        "expirationDate": "2014-12-31",
+        "startDate": "2014-11-12",
+        "ratePlanName": "DOCKERJOY"
     }
 }
