@@ -322,7 +322,6 @@
 
                 //search images
                 $scope.searchImages = function () {
-
                     var findImagesCtrl = function ($scope, dialog, Docker) {
                         var registry;
                         $scope.term = '';

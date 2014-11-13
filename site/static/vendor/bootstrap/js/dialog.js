@@ -32,7 +32,7 @@ dialogModule.provider("$dialog", function(){
 
 	var globalOptions = {};
 
-  var activeBackdrops = {value : 0};
+  var activeDialogs = {value : 0};
 
   // The `options({})` allows global configuration of all dialogs in the application.
   //
@@ -205,28 +205,20 @@ dialogModule.provider("$dialog", function(){
       this.deferred.resolve(result);
     };
 
+    var zIndex = 9999900;
     Dialog.prototype._addElementsToDom = function(){
+      activeDialogs.value++;
+      body.append(this.backdropEl);
+      this.backdropEl.css('z-index', zIndex + activeDialogs.value);
       body.append(this.modalEl);
-
-      if(this.options.backdrop) { 
-        if (activeBackdrops.value === 0) {
-          body.append(this.backdropEl); 
-        }
-        activeBackdrops.value++;
-      }
-
+      this.modalEl.css('z-index', zIndex + activeDialogs.value);
       this._open = true;
     };
 
     Dialog.prototype._removeElementsFromDom = function(){
       this.modalEl.remove();
-
-      if(this.options.backdrop) { 
-        activeBackdrops.value--;
-        if (activeBackdrops.value === 0) {
-          this.backdropEl.remove(); 
-        }
-      }
+      this.backdropEl.remove();
+      activeDialogs.value--;
       this._open = false;
     };
 

@@ -1501,7 +1501,6 @@ div .disabled
 
 .modal
 {
-    z-index: 9999990 !important;
     overflow-y: auto;
     border-radius: 0;
 }
@@ -4799,11 +4798,6 @@ label.checkbox.folder-name-form-checkbox
     vertical-align: top;
 }
 
-.modal-backdrop
-{
-    z-index: 9999980;
-}
-
 .page-title-btn
 {
     float: right;
@@ -5127,9 +5121,7 @@ progress {
     display: inline-block;
     width: 120px;
 }
-.modal-select-tag-backdrop {
-    z-index: 9999990;
-}
+
 .modal-dialog-new-registry {
     width: 630px;
 }
