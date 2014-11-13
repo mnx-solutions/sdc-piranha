@@ -419,8 +419,42 @@
             });
         };
 
-        service.getRegistriesList = function () {
-            return createCall('getRegistriesList', {direct: true});
+        service.getRegistriesList = function (aggregate, forHost) {
+            var call = createCall('getRegistriesList', {direct: true});
+            if (!aggregate) {
+                return call;
+            }
+            var q = $q.defer();
+            call.then(function (list) {
+                var privateRegistry = false;
+                var registries = [];
+                var allowedHost = true;
+                if (forHost) {
+                    allowedHost = list.some(function (registry) {
+                        return registry.host.indexOf(forHost) !== -1;
+                    });
+                }
+                list.forEach(function (registry) {
+                    if (!registry.processing) {
+                        if (allowedHost && registry.type === 'local' && !privateRegistry) {
+                            registries.push({
+                                id: 'local',
+                                host: 'private registry',
+                                type: 'local'
+                            });
+                            privateRegistry = true;
+                        } else if (registry.type !== 'local') {
+                            registries.push(registry);
+                        }
+                    }
+                });
+
+                registries.sort(function (a, b) {
+                    return (b.id === 'default') - (a.id === 'default');
+                });
+                q.resolve({short: registries, full: list});
+            }, q.reject.bind(q));
+            return q.promise;
         };
 
         service.saveRegistry = function (registry) {

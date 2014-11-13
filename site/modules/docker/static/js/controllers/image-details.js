@@ -200,16 +200,8 @@
                             name: parsedTag.name || ''
                         };
 
-                        Docker.getRegistriesList().then(function (registries) {
-                            scope.registries = registries;
-                            if (parsedTag.registry) {
-                                var imageRegistry = registries.find(function (registry) {
-                                    return urlParser(registry.host).host === parsedTag.registry;
-                                });
-                                if (imageRegistry) {
-                                    scope.input.registryId = imageRegistry.id;
-                                }
-                            }
+                        Docker.getRegistriesList(true, image.primaryIp).then(function (result) {
+                            scope.registries = result.short;
                             scope.loading = false;
                         }, errorCallback);
 
@@ -238,9 +230,19 @@
                             scope.newRegistryForm.$setValidity('name', isValid);
                         };
                         scope.push = function () {
-                            var registry = scope.registries.find(function (registry) {
-                                return registry.id === scope.input.registryId;
-                            });
+                            var registry;
+                            if (scope.input.registryId === 'local') {
+                                registry = {
+                                    id: 'local',
+                                    host: 'http://localhost',
+                                    port: 5000,
+                                    type: 'local'
+                                };
+                            } else {
+                                registry = scope.registries.find(function (registry) {
+                                    return registry.id === scope.input.registryId;
+                                });
+                            }
                             PopupDialog.message(null, 'Pushing images takes some time. You can continue your work and get notification once push is completed.');
                             Docker.pushImage({
                                 host: {primaryIp: image.primaryIp},

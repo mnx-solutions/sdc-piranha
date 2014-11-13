@@ -24,6 +24,8 @@ var requestMap = {
     'HEAD': 'head'
 };
 
+var registriesCache = {};
+
 // read sync startup script for Docker
 var startupScript = fs.readFileSync(__dirname + '/data/startup.sh', 'utf8');
 
@@ -340,42 +342,6 @@ module.exports = function execute(scope, register) {
     function Registry(options) {
         this.client = restify.createJsonClient(options);
     }
-
-    // search on all hosts
-    Registry.prototype.search = function search(call, term, callback) {
-        api.listHosts(call, function (err, hosts) {
-            if (err) {
-                return callback(err);
-            }
-            vasync.forEachParallel({
-                inputs: hosts,
-                func: function (host, callback) {
-                    api.createRegistryClient(call, host, function (error, client) {
-                        if (error) {
-                            return callback(error);
-                        }
-                        client.searchImage({q: term}, callback);
-                    });
-                }
-            }, function (errors, operations) {
-                if (errors) {
-                    return callback(errors);
-                }
-                var result = [],
-                    names = {};
-                [].concat.apply([], operations.successes).map(function (response) {
-                    response.results.forEach(function (item) {
-                        if (names[item.name]) {
-                            return;
-                        }
-                        names[item.name] = true;
-                        result.push(item);
-                    });
-                });
-                callback(null, result);
-            });
-        });
-    };
 
     createApi(dockerAPIMethods, Docker.prototype);
 
@@ -1049,6 +1015,97 @@ module.exports = function execute(scope, register) {
             logs += getLogFormat(response.substr(i), inputStr);
         });
         return logs;
+    };
+
+    api.registriesCache = registriesCache;
+    api.getRegistries = function (call, client, callback) {
+        if (typeof (client) === 'function') {
+            callback = client;
+            client = scope.api('MantaClient').createClient(call);
+        }
+
+        client.getFileContents('~~/stor/.joyent/docker/registries.json', function (error, list) {
+            if (error && error.statusCode !== 404) {
+                return call.done(error.message, true);
+            }
+
+            try {
+                list = JSON.parse(list);
+            } catch (e) {
+                call.log.warn('Registries list is corrupted');
+                list = [];
+            }
+            callback(error, list);
+        });
+    };
+
+    api.saveRegistries = function (call, data, client, callback) {
+        if (typeof (client) === 'function') {
+            callback = client;
+            client = null;
+        }
+        callback = callback || call.done;
+        client = client || scope.api('MantaClient').createClient(call);
+        client.putFileContents('~~/stor/.joyent/docker/registries.json', JSON.stringify(data), function (error) {
+            return callback(error && error.message, true);
+        });
+    };
+
+    api.deleteRegistry = function (call, key, value, callback) {
+        api.getRegistries(call, function (error, list) {
+            var id;
+            list = list.filter(function (item) {
+                var condition = key === 'host' ? item.host === value && parseInt(item.port, 10) === 5000 : item[key] === value;
+                if (condition) {
+                    id = item.id;
+                }
+                return !condition;
+            });
+            if (id) {
+                delete registriesCache[id];
+                return api.saveRegistries(call, list, callback);
+            }
+        });
+    };
+
+    // search on all hosts
+    api.searchPrivateImage = function searchPrivateImage(call, term, callback) {
+        api.getRegistries(call, function (error, registries) {
+            if (error) {
+                return callback(error);
+            }
+            vasync.forEachParallel({
+                inputs: registries.filter(function (registry) {
+                    return registry.type === 'local';
+                }),
+                func: function (registry, callback) {
+
+                    api.createRegistryClient(call, registry, function (error, client) {
+                        if (error) {
+                            return callback(null, []);
+                        }
+                        client.searchImage({q: term}, callback);
+                    });
+                }
+            }, function (errors, operations) {
+                var results = [],
+                    names = {};
+                [].concat.apply([], operations.successes).map(function (response) {
+                    response.results.forEach(function (item) {
+                        if (names[item.name]) {
+                            return;
+                        }
+                        names[item.name] = true;
+                        results.push(item);
+                    });
+                });
+                callback(null, {
+                    num_results: results.length,
+                    query: term,
+                    results: results
+                });
+            });
+        });
     };
 
     api.SUBUSER_LOGIN = SUBUSER_LOGIN;

@@ -328,12 +328,9 @@
                         $scope.term = '';
                         $scope.loading = true;
                         $scope.searching = false;
-                        Docker.getRegistriesList().then(function (list) {
-                            $scope.registries = list.filter(function (registry) {
-                                return !registry.processing;
-                            }).sort(function (a, b) {
-                                return (b.id === 'default') - (a.id === 'default');
-                            });
+                        Docker.getRegistriesList(true).then(function (result) {
+                            $scope.registries = result.short;
+                            $scope.fullRegistriesList = result.full;
                             $scope.loading = false;
                         });
 
@@ -344,7 +341,7 @@
                                     return true;
                                 }
 
-                                return $scope.registries.some(function (registry) {
+                                return $scope.fullRegistriesList.some(function (registry) {
                                     return registry.type === 'local' && getHostname(registry.host) === $currentScope.hostIp;
                                 });
                             };
