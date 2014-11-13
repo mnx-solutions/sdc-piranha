@@ -441,7 +441,12 @@
                 return call;
             }
             var q = $q.defer();
-            call.then(function (list) {
+            $q.all([
+                call,
+                createCall('containers', {host: 'All', cache: true, options: {all: true}, suppressErrors: true})
+            ]).then(function (results) {
+                var list = results[0] || [];
+                var containers = results[1] || [];
                 var privateRegistry = false;
                 var registries = [];
                 var allowedHost = true;
@@ -453,12 +458,17 @@
                 list.forEach(function (registry) {
                     if (!registry.processing) {
                         if (allowedHost && registry.type === 'local' && !privateRegistry) {
-                            registries.push({
-                                id: 'local',
-                                host: 'private registry',
-                                type: 'local'
+                            var isRunningRegistryContainer = containers.some(function (container) {
+                                return container.NamesStr === 'private-registry' && registry.host.indexOf(container.primaryIp) !== -1 && container.Status.indexOf('Up') !== -1;
                             });
-                            privateRegistry = true;
+                            if (isRunningRegistryContainer) {
+                                registries.push({
+                                    id: 'local',
+                                    host: 'private registry',
+                                    type: 'local'
+                                });
+                                privateRegistry = true;
+                            }
                         } else if (registry.type !== 'local') {
                             registries.push(registry);
                         }
