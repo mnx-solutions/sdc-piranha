@@ -14,10 +14,10 @@ window.JP.main.config(['routeProvider', function (routeProvider) {
                 }
             }
 
-            if (typeof ($rootScope.provisionEnabled) !== 'boolean' || typeof ($rootScope.dockerHostsAvailable) !== 'boolean') {
+            if (typeof ($rootScope.provisionEnabled) !== 'boolean' || typeof ($rootScope.dockerHostsAvailable) === 'undefined') {
                 $q.all([
                     $q.when(Account.getAccount()),
-                    $q.when(Docker.listHosts())
+                    $q.when(Docker.completedHosts())
                 ]).then(function (result) {
                     var account = result[0] || {};
                     var hosts = result[1] || [];
@@ -26,7 +26,14 @@ window.JP.main.config(['routeProvider', function (routeProvider) {
                     changePath();
                 });
             } else {
-                changePath();
+                if ($rootScope.provisionEnabled) {
+                    Docker.completedHosts().then(function (hosts) {
+                        $rootScope.dockerHostsAvailable = hosts.length > 0;
+                        changePath();
+                    });
+                } else {
+                    changePath();
+                }
             }
         }]
     };
