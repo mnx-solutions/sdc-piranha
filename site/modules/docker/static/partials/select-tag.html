@@ -9,7 +9,7 @@
                     <div class="form-group">
                         <span class="orange-asterix edit-host edit-label">Docker Host</span>
                         <span class="edit-value">
-                            <select data-ng-disabled="!hosts.length" ui-select2="{minimumResultsForSearch: -1, width: '250px'}" id="hostSelect" data-ng-model="hostIp" required >
+                            <select data-select-two data-ng-disabled="!hosts.length" ui-select2="{minimumResultsForSearch: -1, width: '250px'}" id="hostSelect" data-width="250px" data-ng-model="hostIp" required >
                                 <option data-ng-repeat="host in hosts" value="{{host.primaryIp}}">
                                     {{host.name}}
                                 </option>
@@ -20,7 +20,7 @@
                     <div data-ng-hide="hideTags" class="form-group">
                         <span class="orange-asterix edit-image edit-label">Select image tag</span>
                         <span class="edit-value">
-                            <select data-ng-disabled="!tags.length" ui-select2="{minimumResultsForSearch: -1, width: '250px'}" id="tagSelect" data-ng-model="tag" required>
+                            <select data-select-two data-ng-disabled="!tags.length" ui-select2="{minimumResultsForSearch: -1, width: '250px'}" id="tagSelect" data-width="250px" data-ng-model="tag" required>
                                 <option data-ng-repeat="tag in tags" value="{{tag.name}}">
                                     {{tag.name}}
                                 </option>
