@@ -74,6 +74,22 @@
             }
         };
 
+        service.addRegistryUsernameToHost = function (registries) {
+            registries.forEach(function (registry) {
+                registry.userHost = registry.host;
+                if (registry.username && registry.username !== 'none') {
+                    var protocols = ['http://', 'https://'];
+                    protocols.forEach(function (protocol) {
+                        if (registry.host.indexOf(protocol) > -1) {
+                            var hostAddress = registry.host.split(protocol)[1];
+                            registry.userHost = protocol + registry.username + '@' + hostAddress;
+                        }
+                    });
+                }
+            });
+            return registries;
+        };
+
         service.createContainer = function (params) {
             var job = serverTab.call({
                 name: 'DockerCreate',

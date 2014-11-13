@@ -331,6 +331,7 @@
                         Docker.getRegistriesList(true).then(function (result) {
                             $scope.registries = result.short;
                             $scope.fullRegistriesList = result.full;
+                            $scope.registries = Docker.addRegistryUsernameToHost($scope.registries);
                             $scope.loading = false;
                         });
 

@@ -12,7 +12,7 @@
                         <span class="edit-value">
                             <select ui-select2="{minimumResultsForSearch: -1, width: '94%'}" id="registrySelect" data-ng-model="registryId" required >
                                 <option data-ng-repeat="registry in registries" value="{{registry.id}}">
-                                    {{registry.host}}
+                                    {{registry.userHost}}
                                 </option>
                             </select>
                         </span>
