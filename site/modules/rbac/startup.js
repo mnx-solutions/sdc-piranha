@@ -563,8 +563,16 @@ if (!config.features || config.features.rbac !== 'disabled') {
             });
         });
 
+        var handleAdminRole = function (data) {
+            if (data.name === 'administrator' && data.policies && data.policies.length === 0) {
+                delete data.policies;
+            }
+        };
+
         server.onCall('createRole', function (call) {
             var data = filterFields(call.data, roleFields, true);
+
+            handleAdminRole(data);
 
             call.cloud.createRole(data, function (err, roleData) {
                 call.done(err, roleData);
@@ -576,6 +584,8 @@ if (!config.features || config.features.rbac !== 'disabled') {
 
         server.onCall('updateRole', function (call) {
             var data = filterFields(call.data, updatableRoleFields);
+
+            handleAdminRole(data);
 
             call.cloud.updateRole(data, function (err, roleData) {
                 call.done(err, roleData);

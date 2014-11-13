@@ -38,7 +38,8 @@
                                                        name="roleName"
                                                        data-ng-model="role.name"
                                                        data-pattern="^[A-Za-z0-9]+[A-Za-z0-9\.\-\s]*$"
-                                                       data-role-name-verify
+                                                       data-role-name-verify="{{role.id}}"
+                                                       data-ng-disabled="role.name == 'administrator' && role.id"
                                                        required />
                                             </span>
                                             <div data-ng-show="isFormSubmited || roleForm.roleName.$dirty">
