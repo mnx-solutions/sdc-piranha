@@ -7,12 +7,13 @@
                 require: 'ngModel',
                 link: function (scope, element, attrs, ctrl) {
                     var pattern = attrs.pattern ? new RegExp(attrs.pattern) : undefined;
+                    var verifyReserved = !!attrs.roleNameVerify;
 
                     ctrl.$parsers.unshift(function (viewValue) {
                         var validity = {
                             required: !!viewValue,
                             pattern: !pattern || pattern.test(viewValue),
-                            reserved: !viewValue || viewValue.toLowerCase() !== 'administrator'
+                            reserved: !viewValue || viewValue.toLowerCase() !== 'administrator' || !verifyReserved
                         };
                         ctrl.$setValidity('required', validity.required);
                         ctrl.$setValidity('pattern', validity.pattern);
