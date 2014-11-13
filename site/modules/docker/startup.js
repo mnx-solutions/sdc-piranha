@@ -211,7 +211,7 @@ var Docker = function execute(scope) {
                                         return Docker.getRegistries(call, function (error, list) {
                                             var matchingRegistryId;
                                             list = list.filter(function (item) {
-                                                if (item.host.substr(item.host.indexOf('://') + 3) === host) {
+                                                if (url.parse(item.host).hostname === host) {
                                                     var matchingPorts = ports.some(function (port) {
                                                         return port === parseInt(item.port, 10);
                                                     });
@@ -650,11 +650,17 @@ var Docker = function execute(scope) {
                             if (errPing) {
                                 return call.done(new DockerHostUnreachable(host).message, true);
                             }
-                            client.containers({}, function (err, containers) {
+                            client.containers({all: true}, function (err, containers) {
                                 if (err) {
                                     return call.done(err);
                                 }
                                 var matchingContainer = containers.find(function (container) {
+                                    if (container.Status.indexOf('Exited') !== -1) {
+                                        var isPrivateRegistryName = container.Names.some(function (name) {
+                                            return name === '/private-registry';
+                                        });
+                                        return isPrivateRegistryName && container.Image.indexOf('private-registry') !== -1;
+                                    }
                                     return container.Ports.some(function (port) {
                                         return port.PublicPort === parseInt(registry.port, 10);
                                     });
