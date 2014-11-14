@@ -2,15 +2,12 @@
 var config = require('easy-config');
 var vasync = require('vasync');
 var util = require('util');
-var restify = require('restify');
-var tar = require('tar');
 var os = require('os');
 var fs = require('fs');
-var fstream = require('tar/node_modules/fstream');
 var ursa = require('ursa');
 var url = require('url');
 var uuid = require('../../static/vendor/uuid/uuid.js');
-var registryDockerfile = fs.readFileSync(__dirname + '/data/registry-Dockerfile', 'utf-8');
+var registryConfig = fs.readFileSync(__dirname + '/data/registry-config.yml', 'utf-8');
 
 var Docker = function execute(scope) {
     var Docker = scope.api('Docker');
@@ -670,7 +667,6 @@ var Docker = function execute(scope) {
                                         if (error) {
                                             return call.done(error, false);
                                         }
-                                        client.removeImage({id: 'private-registry:latest', force: true}, call.done.bind(call));
                                     });
                                 }
                             });
@@ -1018,7 +1014,6 @@ var Docker = function execute(scope) {
         },
         handler: function (call) {
             var mantaClient = scope.api('MantaClient').createClient(call);
-            var temp = os.tmpDir() + '/' + Math.random().toString(16).substr(2) + '/';
             var pipeline = [];
             var installConfig = config.docker || {};
 
@@ -1040,18 +1035,11 @@ var Docker = function execute(scope) {
                 });
             });
 
-            pipeline.push(function buildPrivateRegistryImage(collector, callback) {
-                collector.client.buildImage({t: 'private-registry', nocache: true, rm: true}, function (err, req) {
+            pipeline.push(function pullRegistryImage(collector, callback) {
+                collector.client.createImage({fromImage: 'registry', tag: (installConfig.registryVersion || 'latest')}, function (err, req) {
                     if (err) {
                         return callback(err);
                     }
-                    var fe = fstream.Reader({path: temp, dirname: '/'});
-                    var tarPack = tar.Pack({ noProprietary: true, fromBase: true });
-                    tarPack.on('end', function () {
-                        req.end();
-                    });
-                    fe.pipe(tarPack).pipe(req);
-
                     req.on('result', function (error, res) {
                         if (error) {
                             return callback(error);
@@ -1063,13 +1051,18 @@ var Docker = function execute(scope) {
                         res.on('error', callback);
                         res.on('end', callback);
                     });
+                    req.end();
                 });
             });
 
             pipeline.push(function createPrivateRegistryContainer(collector, callback) {
+                var startup_script = 'if [ ! -f /.installed ];then apt-get update && apt-get install python-pip python-dev && ' +
+                    'pip install docker-registry docker-registry-driver-joyent_manta' + (installConfig.registryDriverVersion ? '==' + installConfig.registryDriverVersion : '') + ' && ' +
+                    'echo "' + registryConfig.replace(/\n/g, '\n').replace(/ {4}/g, '\t') + '" | sed -e \'s/\t/    /g\'>/config.yml;' +
+                    'touch /.installed;else docker-registry;fi';
                 collector.client.create({
                     name: 'private-registry',
-                    Image: 'private-registry:latest',
+                    Image: 'registry:' + (installConfig.registryVersion || 'latest'),
                     Env: [
                         'MANTA_KEY_ID=' + collector.fingerprint,
                         'MANTA_PRIVATE_KEY=/root/.ssh/user_id_rsa',
@@ -1078,8 +1071,10 @@ var Docker = function execute(scope) {
                         'SETTINGS_FLAVOR=dev',
                         'SEARCH_BACKEND=sqlalchemy',
                         'DOCKER_REGISTRY_CONFIG=/config.yml',
-                        'REGISTRY_PORT=5000'
+                        'REGISTRY_PORT=5000',
+                        'STARTUP_SCRIPT=' + startup_script
                     ],
+                    Cmd: ['/bin/bash', '-c', 'printenv STARTUP_SCRIPT | /bin/bash'],
                     Volumes: {
                         '/root/.ssh': {}
                     },
@@ -1095,7 +1090,7 @@ var Docker = function execute(scope) {
                 });
             });
 
-            pipeline.push(function startPrivateRegistryContainer(collector, callback) {
+            pipeline.push(function installRegistryDriver(collector, callback) {
                 collector.client.start({
                     id: collector.registry.Id,
                     Binds: ['/root/.ssh:/root/.ssh:ro'],
@@ -1105,18 +1100,20 @@ var Docker = function execute(scope) {
                 }, callback);
             });
 
-            fs.mkdirSync(temp);
-            var tempDockerFile = registryDockerfile;
-            tempDockerFile = tempDockerFile.replace('{{REGISTRY_VERSION}}', (installConfig.registryVersion ? ':' + installConfig.registryVersion : ':latest'));
-            tempDockerFile = tempDockerFile.replace('{{REGISTRY_DRIVER_VERSION}}', (installConfig.registryDriverVersion ? '==' + installConfig.registryDriverVersion : ''));
-            fs.writeFileSync(temp + 'Dockerfile', tempDockerFile);
+            pipeline.push(function waitInstalling(collector, callback) {
+                collector.client.logs({id: collector.registry.Id, follow: true}, callback);
+            });
+
+            pipeline.push(function startPrivateRegistryContainer(collector, callback) {
+                collector.client.start({
+                    id: collector.registry.Id
+                }, callback);
+            });
 
             vasync.pipeline({
                 funcs: pipeline,
                 arg: {}
             }, function (error) {
-                fs.unlinkSync(temp + 'Dockerfile');
-                fs.rmdirSync(temp);
                 var host = 'https://' + call.data.host.primaryIp;
                 if (error) {
                     return Docker.deleteRegistry(call, 'host', host, function (err) {
