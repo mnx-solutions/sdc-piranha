@@ -36,10 +36,6 @@
                 PopupDialog.errorObj(err);
             };
 
-            function deleteTimeStamps(str) {
-                return str.replace(str.substr(0, 8), '');
-            }
-
             var updateContainerStats = function (options) {
                 if ($scope.container && $scope.container.state != 'running' && !$scope.actionInProgress) {
                     return;
@@ -115,10 +111,10 @@
                             logs = logs.split(/[\r\n]+/);
                             if (Array.isArray(logs)) {
                                 logs.forEach(function (str) {
-                                    $scope.containerLogs.push(deleteTimeStamps(str));
+                                    $scope.containerLogs.push(str);
                                 });
                             } else {
-                                $scope.containerLogs.push(deleteTimeStamps(logs));
+                                $scope.containerLogs.push(logs);
                             }
                         }
                     }, errorCallback);
