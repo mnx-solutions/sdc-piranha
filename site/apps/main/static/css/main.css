@@ -2287,7 +2287,7 @@ i.glyphicon-question-sign
 
 .select2-drop-mask
 {
-    z-index: 999999;
+    z-index: 9999990;
 }
 
 .select2-results .select2-highlighted
