@@ -252,11 +252,14 @@
                     }
 
                     if ($scope.volumes) {
-                        $scope.binds = $scope.volumes.split(' ');
+                        $scope.binds = [];
                         var volumes = {};
-                        $scope.binds.forEach(function (volume) {
+                        $scope.volumes.split(' ').forEach(function (volume) {
                             var parsed = volume.split(':'); // containerPath || hostPath:containerPath || hostPath:containerPath:permission
                             volumes[parsed[1] || parsed[0]] = {};
+                            if (parsed[1]) {
+                                $scope.binds.push(volume);
+                            }
                         });
                         $scope.container.Volumes = volumes;
                     }
