@@ -24,10 +24,12 @@
             };
 
             $scope.loading = true;
+            $scope.pushDialogOpening = false;
             $scope.actionInProgress = false;
 
             var errorCallback = function (err) {
                 $scope.loading = false;
+                $scope.pushDialogOpening = false;
                 $scope.actionInProgress = false;
                 PopupDialog.errorObj(err);
             };
@@ -186,6 +188,7 @@
             }
 
             $scope.pushImage = function () {
+                $scope.pushDialogOpening = true;
                 PopupDialog.custom({
                     templateUrl: 'docker/static/partials/push-image.html',
                     openCtrl: ['$scope', 'dialog', 'Docker', 'notification', function (scope, dialog, Docker, notification) {
@@ -203,10 +206,12 @@
                         Docker.getRegistriesList(true, image.primaryIp).then(function (result) {
                             scope.registries = result.short;
                             scope.registries = Docker.addRegistryUsernameToHost(scope.registries);
+                            scope.pushDialogOpening = false;
                             scope.loading = false;
                         }, errorCallback);
 
                         scope.close = function () {
+                            $scope.pushDialogOpening = false;
                             window.jQuery('#registrySelect').select2('close');
                             dialog.close();
                         };
