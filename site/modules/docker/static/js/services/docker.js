@@ -458,6 +458,9 @@
                 list.forEach(function (registry) {
                     if (!registry.processing) {
                         if (allowedHost && registry.type === 'local' && !privateRegistry) {
+                            if (forHost && registry.host.indexOf(forHost) === -1) {
+                                return;
+                            }
                             var isRunningRegistryContainer = containers.some(function (container) {
                                 return container.NamesStr === 'private-registry' && registry.host.indexOf(container.primaryIp) !== -1 && container.Status.indexOf('Up') !== -1;
                             });
