@@ -1,0 +1,56 @@
+common: &common
+    loglevel: _env:LOGLEVEL:info
+    debug_versions: _env:DEBUG_VERSIONS:false
+    standalone: _env:STANDALONE:true
+    storage_redirect: _env:STORAGE_REDIRECT
+    disable_token_auth: _env:DISABLE_TOKEN_AUTH:true
+    privileged_key: _env:PRIVILEGED_KEY
+    search_backend: _env:SEARCH_BACKEND
+    sqlalchemy_index_database: _env:SQLALCHEMY_INDEX_DATABASE:sqlite:////tmp/docker-registry.db
+    mirroring:
+        source: _env:MIRROR_SOURCE
+        source_index: _env:MIRROR_SOURCE_INDEX
+        tags_cache_ttl: _env:MIRROR_TAGS_CACHE_TTL:172800
+
+    cache:
+        host: _env:CACHE_REDIS_HOST
+        port: _env:CACHE_REDIS_PORT
+        db: _env:CACHE_REDIS_DB:0
+        password: _env:CACHE_REDIS_PASSWORD
+
+    cache_lru:
+        host: _env:CACHE_LRU_REDIS_HOST
+        port: _env:CACHE_LRU_REDIS_PORT
+        db: _env:CACHE_LRU_REDIS_DB:0
+        password: _env:CACHE_LRU_REDIS_PASSWORD
+
+    email_exceptions:
+        smtp_host: _env:SMTP_HOST
+        smtp_port: _env:SMTP_PORT:25
+        smtp_login: _env:SMTP_LOGIN
+        smtp_password: _env:SMTP_PASSWORD
+        smtp_secure: _env:SMTP_SECURE:false
+        from_addr: _env:SMTP_FROM_ADDR:docker-registry@localdomain.local
+        to_addr: _env:SMTP_TO_ADDR:noise+dockerregistry@localdomain.local
+
+    bugsnag: _env:BUGSNAG
+
+joyent_manta: &joyent_manta
+    <<: *common
+    storage: joyent_manta
+    path: _env:REGISTRY_PATH:"/%s/stor/.joyent/docker/registry"
+    url: _env:MANTA_URL:"https://us-east.manta.joyent.com/"
+    insecure: _env:MANTA_TLS_INSECURE:False
+    key_id: _env:MANTA_KEY_ID
+    private_key: _env:MANTA_PRIVATE_KEY
+    account: _env:MANTA_USER
+    subuser: _env:MANTA_SUBUSER
+
+# This is the default configuration when no flavor is specified
+dev: &dev
+    <<: *joyent_manta
+    loglevel: _env:LOGLEVEL:critical
+    debug_versions: _env:DEBUG_VERSIONS:true
+    storage: joyent_manta
+    search_backend: _env:SEARCH_BACKEND:sqlalchemy
+    

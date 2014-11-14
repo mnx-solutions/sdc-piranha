@@ -149,7 +149,8 @@ module.exports = function execute(scope, register) {
                 stdout     : true,
                 stderr     : true,
                 timestamps : true,
-                tail       : 100
+                tail       : 100,
+                follow     : 0
             }
         },
         top          : {
