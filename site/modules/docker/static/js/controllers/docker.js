@@ -68,15 +68,12 @@
                 });
             };
 
-            $q.all([
-                $q.when(Datacenter.datacenter()),
-                $q.when(Docker.listHosts()),
-                Account.getAccount()
-            ]).then(function (result) {
-                $scope.datacenters = result[0] || [];
+            Datacenter.datacenter().then(function (datacenters) {
+                $scope.datacenters = datacenters || [];
                 $scope.data.datacenter = $scope.datacenters[0].name;
-                $scope.dockerMachines = [];
-                var dockerMachines = result[1] || [];
+            });
+
+            Docker.listHosts().then(function (dockerMachines) {
                 if (dockerMachines.length > 0) {
                     $scope.dockerMachines = dockerMachines.filter(function (machine) {
                         return machine.primaryIp;
@@ -88,8 +85,6 @@
                         getDockerHostAnalytics();
                     });
                 }
-                var account = result[2] || {};
-                $scope.provisionEnabled = account.provisionEnabled;
                 $scope.loading = false;
             }, function (err) {
                 $scope.loading = false;
