@@ -483,6 +483,11 @@
             tasks.push($q.when(Account.getAccount(true)));
 
             $qe.every(tasks).then(function (result) {
+                if (result[6].error || result[0].error) {
+                    $scope.loading = false;
+                    PopupDialog.errorObj({error: 'SDC call timed out. Please refresh the page.'});
+                    return;
+                }
                 $scope.simpleImages = [];
                 $scope.datasetsInfo = [];
                 $scope.keys = [];
