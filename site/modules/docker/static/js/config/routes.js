@@ -6,7 +6,7 @@ window.JP.main.config(['routeProvider', function (routeProvider) {
         return;
     }
     var dockerResolve = {
-        data: ['$rootScope', '$location', '$q', 'Docker', 'Account', function ($rootScope, $location, $q, Docker, Account) {
+        data: function ($rootScope, $location, $q, Docker, Account) {
 
             function changePath() {
                 if ($location.path() !== '/docker' && (!$rootScope.provisionEnabled || !$rootScope.dockerHostsAvailable)) {
@@ -35,8 +35,10 @@ window.JP.main.config(['routeProvider', function (routeProvider) {
                     changePath();
                 }
             }
-        }]
+        }
     };
+    dockerResolve.data.$inject = ['$rootScope', '$location', '$q', 'Docker', 'Account'];
+
     routeProvider
         .when('/docker', {
             title: 'Docker',
@@ -60,10 +62,12 @@ window.JP.main.config(['routeProvider', function (routeProvider) {
             showLatest: true,
             showText: true,
             resolve: {
-                data: ['$route', '$location', function ($route, $location) {
+                data: ['$route', '$rootScope', '$location', '$q', 'Docker', 'Account', function ($route, $rootScope, $location, $q, Docker, Account) {
                     if (!$route.current.params.containerid || !$route.current.params.hostid) {
                         $location.path('/dashboard');
+                        return;
                     }
+                    dockerResolve.data($rootScope, $location, $q, Docker, Account);
                 }]
             }
         }).when('/docker/container/create/:hostid?/:sourceid?', {
@@ -84,10 +88,12 @@ window.JP.main.config(['routeProvider', function (routeProvider) {
             showLatest: true,
             showText: true,
             resolve: {
-                data: ['$route', '$location', function ($route, $location) {
+                data: ['$route', '$rootScope', '$location', '$q', 'Docker', 'Account', function ($route, $rootScope, $location, $q, Docker, Account) {
                     if (!$route.current.params.imageid || !$route.current.params.hostid) {
                         $location.path('/dashboard');
+                        return;
                     }
+                    dockerResolve.data($rootScope, $location, $q, Docker, Account);
                 }]
             }
         }).when('/docker/logs', {
