@@ -190,18 +190,43 @@
                     return portBindings;
                 }
 
+                function removeQuotes(str) {
+                    var firstChar = str.substr(0, 1),
+                        lastChar = str.substr(-1);
+
+                    if ((firstChar === '"' && lastChar === '"') ||
+                        (firstChar === "'" && lastChar === "'")) {
+                        str = str.slice(1, -1);
+                    }
+                    return str;
+                }
+
                 function parseCommands(commands) {
+                    if (!commands) {
+                        return [];
+                    }
                     return commands.match(/(?:[^\s"]+|"[^"]*")+/g).map(function (string) {
-                        var firstChar = string.substr(0, 1),
-                            lastChar = string.substr(-1);
-
-                        if ((firstChar === '"' && lastChar === '"') ||
-                            (firstChar === "'" && lastChar === "'")) {
-                            string = string.slice(1, -1);
-                        }
-
-                        return string;
+                        return removeQuotes(string);
                     });
+                }
+
+                function parseEnvironments(environments) {
+                    if (!environments) {
+                        return [];
+                    }
+                    var parsedEnvironments = [];
+                    environments.match(/(?:[^\s"]+|"[^"]*")+/g).forEach(function (string) {
+
+                        if (string.length > 3 && string.indexOf("=") > 0) {
+                            var envValue = string.split('=');
+                            string = envValue[0] + '=';
+                            if (envValue[1]) {
+                                string += removeQuotes(envValue[1]);
+                            }
+                            parsedEnvironments.push(string);
+                        }
+                    });
+                    return parsedEnvironments;
                 }
 
                 var createContainer = function () {
@@ -241,15 +266,10 @@
                 };
 
                 $scope.create = function () {
-                    if ($scope.commands) {
-                        $scope.container.Cmd = parseCommands($scope.commands);
-                    }
-                    if ($scope.entrypoint) {
-                        $scope.container.Entrypoint = parseCommands($scope.entrypoint);
-                    }
-                    if ($scope.environment) {
-                        $scope.container.Env = $scope.environment.split(' ');
-                    }
+
+                    $scope.container.Cmd = parseCommands($scope.commands);
+                    $scope.container.Entrypoint = parseCommands($scope.entrypoint);
+                    $scope.container.Env = parseEnvironments($scope.environment);
 
                     if ($scope.volumes) {
                         $scope.binds = [];
