@@ -10,6 +10,7 @@
             'localization',
 
             function ($scope, Docker, PopupDialog, Account, localization) {
+                var REMOVED_CONTAINER_STATUS = 'Deleted';
                 $scope.loading = true;
                 $scope.containers = [];
                 var today = new Date();
@@ -37,10 +38,10 @@
                         }
                         $scope.removedContainers.forEach(function (container) {
                             container.ShortId = container.Id.slice(0, 12);
-                            container.logs = 'Deleted';
+                            container.logs = REMOVED_CONTAINER_STATUS;
                         });
                         $scope.containers = $scope.containers.filter(function (container) {
-                            return container.logs !== 'Deleted';
+                            return container.logs !== REMOVED_CONTAINER_STATUS;
                         });
                         $scope.containers = $scope.containers.concat($scope.removedContainers);
                         $scope.loading = false;
@@ -196,7 +197,7 @@
                         type: 'html',
                         _getter: function (container) {
                             var html = '<a href="#!/docker/container/' + container.hostId + '/' + container.ShortId + '" style="min-width: 140px;">' + container.ShortId + '</a>';
-                            if (container.logs === 'deleted') {
+                            if (container.logs === REMOVED_CONTAINER_STATUS) {
                                 html = '<span>' + container.ShortId + '</span>';
                             }
                             return html;
@@ -286,7 +287,7 @@
                 $scope.$on('gridViewChangeTab', function (event, tab) {
                     $scope.tab = tab;
                     $scope.containers.forEach(function (container) {
-                        if (container.logs !== 'Deleted') {
+                        if (container.logs !== REMOVED_CONTAINER_STATUS) {
                             setLogsTab(container);
                         }
                     });

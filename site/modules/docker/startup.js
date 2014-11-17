@@ -158,7 +158,8 @@ var Docker = function execute(scope) {
                             return call.done(error);
                         }
                         client.remove(call.data.options, function (error, result) {
-                            if (error) {
+                            if (typeof(error) === 'string' || error && error.message &&
+                                error.message.indexOf('devicemapper failed to remove root filesystem') === -1) {
                                 return call.done(error);
                             }
                             getRemovedContainersList(call, function (error, removedContainers) {
@@ -506,14 +507,6 @@ var Docker = function execute(scope) {
                                                 return callback(error.message);
                                             }
                                         }
-                                        if (removedContainers.length > 0) {
-                                            removedContainers = removedContainers.map(function (removedContainer) {
-                                                if (call.data.uuid === removedContainer.hostId) {
-                                                    removedContainer.hostState = 'removed';
-                                                }
-                                                return removedContainer;
-                                            });
-                                        }
                                         removedContainerList = removedContainerList.concat(removedContainers);
                                         var hostId = call.data.uuid;
                                         if (Array.isArray(removedContainersCache[hostId])) {
@@ -525,6 +518,14 @@ var Docker = function execute(scope) {
                                         removedContainersCache[hostId] = removedContainersCache[hostId].filter(function (removedContainer) {
                                             return removedContainer.Id in duplicateRemovedContainers ? 0 : duplicateRemovedContainers[removedContainer.Id] = removedContainer.Id;
                                         });
+                                        if (removedContainersCache[hostId].length > 0) {
+                                            removedContainersCache[hostId] = removedContainersCache[hostId].map(function (removedContainer) {
+                                                if (call.data.uuid === removedContainer.hostId) {
+                                                    removedContainer.hostState = 'removed';
+                                                }
+                                                return removedContainer;
+                                            });
+                                        }
                                         saveRemovedContainersList(call, removedContainersCache[hostId], function (error) {
                                             if (error) {
                                                 return callback(error);
