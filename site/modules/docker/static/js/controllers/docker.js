@@ -73,7 +73,12 @@
                 $scope.data.datacenter = $scope.datacenters[0].name;
             });
 
-            Docker.listHosts().then(function (dockerMachines) {
+            $q.all([
+                $q.when(Docker.listHosts()),
+                Account.getAccount()
+            ]).then(function (result) {
+                $scope.dockerMachines = [];
+                var dockerMachines = result[0] || [];
                 if (dockerMachines.length > 0) {
                     $scope.dockerMachines = dockerMachines.filter(function (machine) {
                         return machine.primaryIp;
@@ -85,6 +90,8 @@
                         getDockerHostAnalytics();
                     });
                 }
+                var account = result[1] || {};
+                $scope.provisionEnabled = account.provisionEnabled;
                 $scope.loading = false;
             }, function (err) {
                 $scope.loading = false;
