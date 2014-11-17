@@ -647,7 +647,7 @@ module.exports = function execute(scope, register) {
         ], setupCallback);
     }
 
-    function setupSubAccount(call, keyPair, setupCallback) {
+    function setupSubAccounts(call, keyPair, setupCallback) {
         var dockerUser;
         var dockerRegistryUser;
         vasync.waterfall([
@@ -752,6 +752,21 @@ module.exports = function execute(scope, register) {
             var dockerUser = users.find(function (user) {
                 return user.login === SUBUSER_LOGIN;
             });
+            var dockerRegistryUser = users.find(function (user) {
+                return user.login === SUBUSER_REGISTRY_LOGIN;
+            });
+            var deleteRegUserAndSetup = function () {
+                if (dockerRegistryUser) {
+                    deleteSubAccount(call, dockerRegistryUser.id, function (deleteRegErr) {
+                        if (deleteRegErr) {
+                            return callback(deleteRegErr);
+                        }
+                        setupSubAccounts(call, keyPair, callback);
+                    });
+                } else {
+                    setupSubAccounts(call, keyPair, callback);
+                }
+            };
             if (dockerUser) {
                 call.cloud.listUserKeys(dockerUser.id, function (listErr, keys) {
                     if (listErr) {
@@ -767,12 +782,12 @@ module.exports = function execute(scope, register) {
                             if (deleteErr) {
                                 return callback(deleteErr);
                             }
-                            setupSubAccount(call, keyPair, callback);
+                            deleteRegUserAndSetup();
                         });
                     }
                 });
             } else {
-                setupSubAccount(call, keyPair, callback);
+                deleteRegUserAndSetup();
             }
         });
     }
