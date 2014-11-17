@@ -41,7 +41,8 @@
                     image.primaryIp = primaryIp;
                     $q.all([
                         $q.when(Docker.inspectImage(image)),
-                        $q.when(Docker.historyImage(image))
+                        $q.when(Docker.historyImage(image)),
+                        $q.when(Docker.listContainers({host: {primaryIp: image.primaryIp}, options: {all: true}}))
                     ]).then(function (result) {
                         $scope.images = result[1] || [];
                         $scope.image = result[0] || {};
@@ -57,9 +58,15 @@
                             $scope.imageInfoTags = $scope.image.info.Tags.join(', ');
                         }
                         $scope.imageContainer = $scope.image.Container.slice(0, 12);
-                        Docker.inspectContainer({primaryIp: primaryIp, Id: $scope.imageContainer}).then(function (resp) {
-                            $scope.imageContainer = '<a href="#!/docker/container/' + hostId + '/' + $scope.image.Container + '">' + $scope.imageContainer + '</a>';
+                        var hostContainers = result[2] || [];
+                        var container = hostContainers.find(function (container) {
+                            return container.Id === $scope.image.Container;
                         });
+                        if (container) {
+                            Docker.inspectContainer({primaryIp: primaryIp, Id: $scope.imageContainer}).then(function () {
+                                $scope.imageContainer = '<a href="#!/docker/container/' + hostId + '/' + $scope.image.Container + '">' + $scope.imageContainer + '</a>';
+                            }, errorCallback);
+                        }
                         $scope.loading = false;
                         $scope.actionInProgress = false;
                     }, errorCallback);
