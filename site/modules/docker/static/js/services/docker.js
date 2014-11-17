@@ -462,7 +462,8 @@
                                 return;
                             }
                             var isRunningRegistryContainer = containers.some(function (container) {
-                                return container.NamesStr === 'private-registry' && registry.host.indexOf(container.primaryIp) !== -1 && container.Status.indexOf('Up') !== -1;
+                                return container.NamesStr === 'private-registry' && registry.host === 'https://' + container.primaryIp &&
+                                    container.Status.indexOf('Up') !== -1 && container.Status.indexOf('(Paused)') === -1;
                             });
                             if (isRunningRegistryContainer) {
                                 registries.push({
