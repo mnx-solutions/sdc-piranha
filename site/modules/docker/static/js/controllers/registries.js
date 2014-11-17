@@ -30,7 +30,7 @@
                     Docker.getRegistriesList({cache: true}).then(function (list) {
                         $scope.registries = ng.copy(list);
                         $scope.registries.forEach(function (registry) {
-                            registry.api_version = registry.api;
+                            registry['api_version'] = registry.api;
                             registry.hostname = registry.host;
                             registry.login = registry.username || '';
                         });
@@ -163,6 +163,7 @@
                     var opts = {
                         templateUrl: 'docker/static/partials/new-registry.html',
                         openCtrl: function ($scope, $rootScope, dialog, Docker) {
+                            $scope.version = Docker.version;
                             $scope.hosts = [];
                             $scope.registry = {
                                 host: '',
@@ -170,7 +171,7 @@
                                 password: ''
                             };
                             $scope.loading = true;
-                            $q.all([Docker.completedHosts(), Docker.getRegistriesList()]).then(function (result) {
+                            $q.all([Docker.completedHosts({version: true}), Docker.getRegistriesList()]).then(function (result) {
                                 var hosts = {};
                                 var availableHosts = result[0];
                                 var registries = result[1];
@@ -178,6 +179,9 @@
                                 availableHosts.forEach(function (host) {
                                     if (host.memory >= 1024) {
                                         hosts[host.primaryIp] = host;
+                                    }
+                                    if (Docker.version && host.dockerVersion.Version < Docker.version) {
+                                        host.versionMismatch = true;
                                     }
                                 });
 

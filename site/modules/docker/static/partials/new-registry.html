@@ -19,11 +19,15 @@
                         </select>
                     </div>
                     <div class="form-group clearfix" data-ng-show="!hosts.length">There are no available hosts to create registry.</div>
+                    <div class="form-group clearfix" data-ng-show="registry.host.versionMismatch">
+                        Docker version mismatch. Current Portal version is {{version}}, host version {{registry.host.dockerVersion.Version}}.<br>
+                        For updating, run: <code>sudo apt-get update && sudo apt-get install -y lxc-docker-{{version}}</code></div>
                 </form>
             </div>
             <div class="modal-footer">
                 <button data-ng-click="close()" data-button-focus="false" data-label="Cancel" class="btn grey-new effect-orange-button">Cancel</button>
-                <button data-ng-click="create()" data-button-focus="true" data-label="Create" class="btn orange" data-ng-disabled="loading || !hosts.length">Create</button>
+                <button data-ng-click="create()" data-button-focus="true" data-label="Create" class="btn orange" 
+                        data-ng-disabled="loading || !hosts.length || registry.host.versionMismatch">Create</button>
             </div>
         </div>
     </div>
