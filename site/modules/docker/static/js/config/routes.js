@@ -9,7 +9,7 @@ window.JP.main.config(['routeProvider', function (routeProvider) {
         data: ['$rootScope', '$location', '$q', 'Docker', 'Account', function ($rootScope, $location, $q, Docker, Account) {
 
             function changePath() {
-                if ($location.path() !== '/docker' && (!$rootScope.provisionEnabled || !$rootScope.dockerHostsAvailable)) {
+                if ($location.path().indexOf('/docker') === 0 && $location.path() !== '/docker' && (!$rootScope.provisionEnabled || !$rootScope.dockerHostsAvailable)) {
                     $location.path('/docker');
                 }
             }
