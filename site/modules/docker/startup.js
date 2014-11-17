@@ -774,7 +774,7 @@ var Docker = function execute(scope) {
             var parsedTag = parseTag(name);
             var pipeline = [];
             var registryUrl = url.parse(registry.host).hostname + ':' + registry.port;
-            var taggedName = registry.username + '/' + parsedTag.name;
+            var taggedName = parsedTag.repository + '/' + parsedTag.name;
             if (registryUrl !== 'index.docker.io:443') {
                 registry.type = registry.type || 'local';
                 registryUrl = registry.type === 'local' ? 'localhost:5000' : registryUrl;
