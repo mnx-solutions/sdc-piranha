@@ -864,7 +864,7 @@ module.exports = function execute(scope, register) {
                 inputs: certArr,
                 func: function (input, callback) {
                     var key = getFirstKey(input);
-                    if (call.req.session.dockerCerts[key]) {
+                    if (!noCache && call.req.session.dockerCerts[key]) {
                         certificates[key] = call.req.session.dockerCerts[key];
                         return callback(null);
                     }

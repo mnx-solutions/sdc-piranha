@@ -3,6 +3,8 @@
 if [ -e /var/tmp/.docker-installed ]; then 
     exit 0 
 fi
+exec 3>&1 4>&2 1>/var/log/docker-install.log 2>&1
+set -x
 
 /usr/sbin/mdata-get private-key > /root/.ssh/user_id_rsa
 /usr/sbin/mdata-get public-key > /root/.ssh/user_id_rsa.pub
