@@ -41,7 +41,7 @@
             </div>
             <div class="modal-footer">
                 <button data-ng-click="close()" data-button-focus="false" data-label="Cancel" class="btn grey-new effect-orange-button">Cancel</button>
-                <button data-ng-click="push()" data-button-focus="true" data-label="Push" class="btn orange" data-ng-disabled="loading || !input.name">Push</button>
+                <button data-ng-click="push()" data-button-focus="true" data-label="Push" class="btn orange" data-ng-disabled="loading || !input.name || errorMessage">Push</button>
             </div>
         </div>
     </div>

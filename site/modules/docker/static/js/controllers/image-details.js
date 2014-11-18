@@ -267,9 +267,9 @@
                                 }
                             }, function (error) {
                                 if (error) {
-                                    notification.error(error);
+                                    notification.error(error.message || error);
                                 }
-                            }).then(function (result) {
+                            }).then(function () {
                                 notification.success('Pushing of image "' + scope.input.name + '" is completed.');
                             }, function (error) {
                                 notification.error(error.message || 'InternalServerError');
