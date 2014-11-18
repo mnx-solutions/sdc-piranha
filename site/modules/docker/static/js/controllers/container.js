@@ -29,6 +29,7 @@
             $scope.loading = true;
             $scope.actionInProgress = false;
             $scope.loading = true;
+            $scope.cadvisorUnavailable = false;
 
             var errorCallback = function (err) {
                 $scope.loading = false;
@@ -36,34 +37,43 @@
                 PopupDialog.errorObj(err);
             };
 
-            var updateContainerStats = function (options) {
-                if ($scope.container && $scope.container.state != 'running' && !$scope.actionInProgress) {
+            var updateContainerStats = function (options, callback) {
+                if ($scope.container && $scope.container.state !== 'running' && !$scope.actionInProgress) {
                     return;
                 }
+                callback = callback || angular.noop;
                 $scope.graphs = $scope.graphs || adviserGraph.init();
                 Docker.containerUtilization(options).then(function (containerStats) {
                     if (containerStats.spec && containerStats.stats && containerStats.stats.length) {
                         $scope.graphs = adviserGraph.updateValues($scope.graphs, containerStats);
                     }
+                    callback();
                 }, function (err) {
-                    if (!$scope.actionInProgress && $scope.container.state != 'running' && $scope.container.state != 'stopped') {
+                    if (!$scope.actionInProgress && $scope.container.state !== 'running' && $scope.container.state !== 'stopped') {
                         PopupDialog.errorObj(err);
                     }
+                    callback(err);
                 });
             };
 
             var statsTimerControl = function (start) {
-                if (start) {
-                    timerUpdateStats = setInterval(function () {
-                        if ($scope.machine && $scope.container && $scope.container.infoId && ($location.path() == '/docker/container/' + hostid + '/' + container.Id)) {
-                            updateContainerStats({host: $scope.machine, options: {num_stats: 2, id: $scope.container.infoId}});
-                        } else {
-                            clearInterval(timerUpdateStats);
-                        }
-                    }, 1000);
-                } else {
+                if (!start) {
                     clearInterval(timerUpdateStats);
+                    return;
                 }
+
+                timerUpdateStats = setInterval(function () {
+                    if ($scope.machine && $scope.container && $scope.container.infoId && ($location.path() === '/docker/container/' + hostid + '/' + container.Id)) {
+                        updateContainerStats({host: $scope.machine, options: {num_stats: 2, id: $scope.container.infoId}}, function (error) {
+                            if (error === 'CAdvisor unavailable') {
+                                $scope.cadvisorUnavailable = true;
+                                clearInterval(timerUpdateStats);
+                            }
+                        });
+                    } else {
+                        clearInterval(timerUpdateStats);
+                    }
+                }, 1000);
             };
 
             var getDockerInspectContainer = function () {

@@ -1,5 +1,6 @@
 'use strict';
 var config = require('easy-config');
+var util = require('util');
 var vasync = require('vasync');
 var util = require('util');
 var os = require('os');
@@ -16,12 +17,6 @@ var Docker = function execute(scope) {
     var methods = Docker.getMethods();
     var methodsForAllHosts = ['containers', 'getInfo', 'images'];
     var removedContainersCache = {};
-
-    function DockerHostUnreachable(host) {
-        this.message = 'Docker host "' + host + '" is unreachable.';
-    }
-
-    util.inherits(DockerHostUnreachable, Error);
 
     function capitalize(str) {
         return str[0].toUpperCase() + str.substr(1);
@@ -117,9 +112,15 @@ var Docker = function execute(scope) {
                 }
                 client.ping(function (error) {
                     if (error) {
-                        return callback(new DockerHostUnreachable(call.data.host.primaryIp).message, true);
+                        return callback(new Docker.DockerHostUnreachable(call.data.host.primaryIp).message, true);
                     }
-                    client[method](call.data.options, callback);
+                    client[method](call.data.options, function (error) {
+                        if (error === 'CAdvisor unavailable') {
+                            callback(error, true);
+                            return;
+                        }
+                        callback.apply(this, arguments);
+                    });
                 });
             });
         };
@@ -139,7 +140,7 @@ var Docker = function execute(scope) {
             }
             client.ping(function (error) {
                 if (error) {
-                    return callback(new DockerHostUnreachable(call.data.host.primaryIp).message, true);
+                    return callback(new Docker.DockerHostUnreachable(call.data.host.primaryIp).message, true);
                 }
 
                 return client.logs({id: call.data.container.Id, tail: 'all'}, function (err, response) {
@@ -304,7 +305,7 @@ var Docker = function execute(scope) {
                             } else {
                                 return call.done(vasyncError);
                             }
-                            return call.done(cause, cause instanceof DockerHostUnreachable);
+                            return call.done(cause, cause instanceof Docker.DockerHostUnreachable);
                         }
 
                         var result = [].concat.apply([], operations.successes);
@@ -407,7 +408,7 @@ var Docker = function execute(scope) {
                 data.hasOwnProperty('uuid') && data.hasOwnProperty('datacenter');
         },
 
-        handler: function(call) {
+        handler: function (call) {
             var options = {
                 uuid: call.data.uuid,
                 datacenter: call.data.datacenter
@@ -458,7 +459,7 @@ var Docker = function execute(scope) {
                             });
                         });
                     }
-                }, function (vasyncError, operations) {
+                }, function (vasyncError) {
                     if (vasyncError) {
                         var cause = vasyncError.jse_cause || vasyncError.ase_errors || vasyncError;
                         call.log.warn({error: cause}, 'Error while persisting container logs');
@@ -645,7 +646,7 @@ var Docker = function execute(scope) {
                         }
                         client.ping(function (errPing) {
                             if (errPing) {
-                                return call.done(new DockerHostUnreachable(host).message, true);
+                                return call.done(new Docker.DockerHostUnreachable(host).message, true);
                             }
                             client.containers({all: true}, function (err, containers) {
                                 if (err) {

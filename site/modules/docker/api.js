@@ -2,6 +2,7 @@
 
 var restify = require('restify');
 var url = require('url');
+var util = require('util');
 var qs = require('querystring');
 var vasync = require('vasync');
 var fs = require('fs');
@@ -29,6 +30,16 @@ var registriesCache = {};
 // read sync startup script for Docker
 var startupScript = fs.readFileSync(__dirname + '/data/startup.sh', 'utf8');
 
+function DockerHostUnreachable(host) {
+    this.message = 'Docker host "' + (host.name || host.primaryIp) + '" is unreachable.';
+}
+util.inherits(DockerHostUnreachable, Error);
+
+function CAdvisorUnreachable() {
+    this.message = 'CAdvisor unavailable';
+}
+util.inherits(CAdvisorUnreachable, Error);
+
 function formatUrl(url, params) {
     //noinspection JSLint
     return url.replace(/(?::(\w+))/g, function (part, key) {
@@ -38,9 +49,12 @@ function formatUrl(url, params) {
     });
 }
 
-function createCallback(callback, raw) {
+function createCallback(client, opts, callback, options) {
     //noinspection JSLint
     return function (error, req, res, data) {
+        if (!opts.raw) {
+            client.close();
+        }
         if (error) {
             if (error.statusCode && res.headers['content-type'] === 'text/html') {
                 var httpError = restify.errors.codeToHttpError(error.statusCode);
@@ -49,8 +63,12 @@ function createCallback(callback, raw) {
 
                 }
             }
-            if (error.statusCode === 502 || error.statusCode === 504) {
-                error.message = 'Service unavailable';
+            if (error.statusCode === 502 || error.statusCode === 504 || error.statusCode === 400 || error.name === 'RequestTimeoutError') {
+                if (req.path.indexOf('/utilization') === 0) {
+                    error = new CAdvisorUnreachable();
+                } else {
+                    error = new DockerHostUnreachable({name: req.hostname});
+                }
             }
             if ((error.message && error.message.indexOf('bad certificate') >= 0) ||
                 (error.statusCode === 400)) {
@@ -58,14 +76,14 @@ function createCallback(callback, raw) {
             }
             return callback(error.message || error);
         }
-        if (raw) {
+        if (opts.noParse) {
             data = res.body.toString();
         }
         callback(null, data);
     };
 }
 
-function createMethod(opts) {
+function createMethod(scope, opts) {
     return function (params, callback) {
         if (!callback) {
             callback = params;
@@ -79,11 +97,11 @@ function createMethod(opts) {
         }
 
         var options = {
-            log: this.client.log,
+            log: scope.log,
             path: formatUrl(opts.path, params),
             method: opts.method || 'GET',
             retries: opts.retries || false,
-            connectTimeout: opts.timeout || 3000
+            connectTimeout: opts.timeout
         };
         var query = {};
         var param;
@@ -97,20 +115,26 @@ function createMethod(opts) {
             }
         }
         options.path += qs.stringify(query) ? '?' + qs.stringify(query) : '';
-        var client = opts.raw ? this.rawClient : this.client;
-        if (options.method === 'POST' || options.method === 'PUT') {
-            return client[requestMap[options.method]](options, opts.raw ? callback : params, createCallback(callback, opts.noParse));
+        var client = opts.raw ? restify.createClient(this.options) : restify.createJsonClient(this.options);
+        var args = [options];
+        if ((options.method === 'POST' || options.method === 'PUT') && !opts.raw) {
+            args.push(params);
+        }
+        if (opts.raw) {
+            args.push(callback);
+        } else {
+            args.push(createCallback(client, opts, callback, options));
         }
 
-        client[requestMap[options.method]](options, createCallback(callback, opts.noParse));
+        client[requestMap[options.method]].apply(client, args);
     };
 }
 
-function createApi(map, container) {
+function createApi(scope, map, container) {
     var name;
     for (name in map) {
         if (map.hasOwnProperty(name)) {
-            container[name] = createMethod(map[name]);
+            container[name] = createMethod(scope, map[name]);
         }
     }
 }
@@ -222,6 +246,7 @@ module.exports = function execute(scope, register) {
         containerUtilization: {
             method: 'POST',
             path: '/utilization/docker/:id',
+            timeout: 3000,
             params: {
                 num_stats: 60,
                 num_samples: 0
@@ -230,6 +255,7 @@ module.exports = function execute(scope, register) {
         hostUtilization: {
             method: 'POST',
             path: '/utilization/',
+            timeout: 3000,
             params: {
                 num_stats: 60,
                 num_samples: 0
@@ -311,6 +337,8 @@ module.exports = function execute(scope, register) {
         },
         ping         : {
             method: 'GET',
+            retries: false,
+            timeout: 3000,
             path: '/_ping'
         }
     };
@@ -335,22 +363,20 @@ module.exports = function execute(scope, register) {
         }
     };
 
+    api.DockerHostUnreachable = DockerHostUnreachable;
+    api.CAdvisorUnreachable = CAdvisorUnreachable;
+
     function Docker(options) {
-        this.client = restify.createJsonClient(options);
-        this.rawClient = restify.createClient(options);
+        this.options = options;
     }
 
     function Registry(options) {
         this.client = restify.createJsonClient(options);
     }
 
-    createApi(dockerAPIMethods, Docker.prototype);
+    createApi(scope, dockerAPIMethods, Docker.prototype);
 
-    createApi(registryAPIMethods, Registry.prototype);
-
-    Docker.prototype.getClient = function () {
-        return this.client;
-    };
+    createApi(scope, registryAPIMethods, Registry.prototype);
 
     api.getMethods = function () {
         return Object.keys(dockerAPIMethods);
