@@ -898,6 +898,9 @@ var Docker = function execute(scope) {
                 arg: {}
             }, function (error) {
                 if (error) {
+                    if (error.statusCode === 500 && !error.message) {
+                        error.message = 'Private local registry is corrupted';
+                    }
                     return call.done(error);
                 }
                 call.done(null, 'OK');
