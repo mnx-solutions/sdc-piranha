@@ -51,6 +51,9 @@
 
                 $scope.portChanged = function (port) {
                     $scope.portValid = /^\d+$/.test(port) && port > -1 && port < 65536;
+                    if ($scope.portValid) {
+                        $scope.registry.port = Number($scope.registry.port);
+                    }
                 };
 
                 var addRegistry = function (registry) {
