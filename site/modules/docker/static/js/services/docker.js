@@ -1,23 +1,69 @@
 'use strict';
 
+(function (ng, app) {
+    app.factory('Docker', [
+        'serverTab',
+        'Account',
+        'errorContext',
+        'EventBubble',
+        'Machine',
+        'PopupDialog',
+        'localization',
+        'Storage',
+        '$q',
+        'DockerCacheProvider',
+        function (serverTab, Account, errorContext, EventBubble, Machine, PopupDialog, localization, Storage, $q, DockerCacheProvider) {
 
-(function (ng, app) {app.factory('Docker', [
-    'serverTab',
-    'Account',
-    'errorContext',
-    'EventBubble',
-    'Machine',
-    'PopupDialog',
-    'localization',
-    'Storage',
-    '$q',
-    function (serverTab, Account, errorContext, EventBubble, Machine, PopupDialog, localization, Storage, $q) {
-
-        var service = {};
-        var containerActions = ['start', 'stop', 'pause', 'unpause', 'inspect', 'restart', 'kill', 'logs'];
+        var service = {cache: {}, jobs: {}};
+        var containerActions = ['start', 'stop', 'pause', 'unpause', 'inspect', 'restart', 'kill', 'logs', 'remove'];
         var imageActions = ['remove', 'inspect', 'history'];
         var billingIsActive = false;
         var mantaIsActive;
+        var caches = ['containers', 'images', 'topImages', 'registriesList'];
+        caches.forEach(function (cache) {
+            service.cache[cache] = new DockerCacheProvider(cache === 'registriesList' ? {key: 'id'} : null);
+        });
+
+        var containerDoneHandler = {
+            create: function (cache) {
+                cache.reset();
+            },
+            start: function (cache, id) {
+                var container = cache.get(id);
+                if (container && container.Status) {
+                    container.containers = 'running';
+                    container.Status = 'Up moments ago';
+                    cache.put(container);
+                }
+            },
+            stop: function (cache, id) {
+                var container = cache.get(id);
+                if (container && container.Status) {
+                    container.containers = 'stopped';
+                    container.Status = 'Exist (-1) moments ago';
+                    cache.put(container);
+                }
+            },
+            pause: function (cache, id) {
+                var container = cache.get(id);
+                if (container && container.Status) {
+                    container.Status += ' (Paused)';
+                    cache.put(container);
+                }
+            },
+            unpause: function (cache, id) {
+                var container = cache.get(id);
+                if (container && container.Status) {
+                    container.Status = container.Status.replace(' (Paused)', '');
+                    cache.put(container);
+                }
+            },
+            remove: function (cache, id) {
+                cache.remove(id);
+            }
+        };
+        containerDoneHandler.restart = containerDoneHandler.start;
+        containerDoneHandler.kill = containerDoneHandler.stop;
 
         function capitalize(str) {
             return str[0].toUpperCase() + str.substr(1);
@@ -98,18 +144,18 @@
                     if (err) {
                         return false;
                     }
+                    var cache = service.cache['containers'];
+                    if (cache && containerDoneHandler.create) {
+                        containerDoneHandler.create(cache);
+                    }
                     return data;
                 }
             });
             return job.promise;
         };
 
-        service.cache = {};
-        service.jobs = {};
-
         var doneHandler = {
-            containers: function (err, job) {
-                var data = job.__read();
+            containers: function (err, data) {
                 if (data && data.length) {
                     data.forEach(function (container) {
                         if (container.Names && container.Names.length) {
@@ -119,8 +165,66 @@
                         }
                     });
                 }
+            },
+            createRegistry: function (err, data, options) {
+                if (err) {
+                    return;
+                }
+                var cache = service.cache['registriesList'];
+                service.cache['containers'].reset();
+                if (!cache) {
+                    return;
+                }
+                var registries = cache.list;
+                if (options && cache) {
+                    registries.forEach(function (registry) {
+                        if (registry.id === options.id) {
+                            if (err) {
+                                cache.remove(options.id);
+                            } else {
+                                delete options.processing;
+                                cache.put(options);
+                            }
+                        }
+                    });
+                }
+            },
+            deleteRegistry: function (err, data, options) {
+                if (err) {
+                    return;
+                }
+                var cache = service.cache['registriesList'];
+                var registry = options.registry;
+                if (registry.type === 'local') {
+                    service.cache['containers'].reset();
+                }
+                if (cache) {
+                    cache.remove(registry.id);
+                }
+            },
+            saveRegistry: function (err, registry) {
+                var cache = service.cache['registriesList'];
+                if (!cache || err) {
+                    return;
+                }
+                cache.put(registry);
+            },
+            forceRemoveImage: function (err, data, options) {
+                var cache = service.cache['topImages'];
+                if (!err && cache) {
+                    cache.remove(options.options.id);
+                    service.cache['images'].reset();
+                }
+            },
+            commit: function (err) {
+                if (!err) {
+                    service.cache['topImages'].reset();
+                    service.cache['images'].reset();
+                }
             }
         };
+        doneHandler.removeImage = doneHandler.forceRemoveImage;
+        doneHandler.pull = doneHandler.commit;
 
         /**
          * 
@@ -128,24 +232,24 @@
          * @param options.direct {Boolean} - direct call
          * @param options.cache {Boolean} - return result from cache if exists
          */
-        function createCall(method, options, progressHandler) {
+        function createCall(method, options, progressHandler, cacheKey) {
             var host = 'All';
             if (options && options.host) {
                 host = options.host.primaryIp;
             }
             var jobKey = method + host + JSON.stringify(options || {});
             var job = service.jobs[jobKey];
-            var cache = service.cache[jobKey];
-
-            if (angular.isFunction(options)) {
+            cacheKey = cacheKey || jobKey;
+            var cache = service.cache[cacheKey];
+            if (ng.isFunction(options)) {
                 progressHandler = options;
                 options = null;
             }
-            progressHandler = progressHandler || angular.noop;
-            if (options && !options.direct && options.cache && cache) {
+            progressHandler = progressHandler || ng.noop;
+            if (options && !options.direct && options.cache && cache && cache.initialized) {
                 var defer = $q.defer();
                 setTimeout(function () {
-                    defer.resolve(cache);
+                    defer.resolve(cache.list);
                 }, 1);
                 return defer.promise;
             }
@@ -177,8 +281,8 @@
                     job.$emit('update', error, data);
                 },
                 done: function (err, job) {
+                    var data = job.__read();
                     if (suppressErrors) {
-                        var data = job.__read();
                         for (var i = 0; i < data.length;) {
                             var item = data[i];
                             if (item.hasOwnProperty('suppressErrors')) {
@@ -190,7 +294,10 @@
                         }
                     }
                     if (method in doneHandler) {
-                        doneHandler[method](err, job);
+                         doneHandler[method](err, data, options);
+                    }
+                    if (!err && options.cache && cache) {
+                        cache.replace(data);
                     }
                     delete service.jobs[jobKey];
                 },
@@ -202,9 +309,22 @@
             return job.promise;
         }
 
+        function createCachedCall(method, options, cacheName) {
+            var host = options.host;
+            if (!host || (host && host.toLowerCase() === 'all')) {
+                cacheName = cacheName || method;
+            } else {
+                cacheName = cacheName || method + host;
+            }
+            return createCall(method, options, ng.noop, cacheName);
+        }
+
         service.listContainers = function (options) {
             if (!options.host || options.host === 'All') {
                 options.suppressErrors = options.suppressErrors || true;
+            }
+            if (options.cache) {
+                return createCachedCall('containers', options);
             }
             return createCall('containers', options);
         };
@@ -226,7 +346,7 @@
         };
 
         service.listImages = function (machine, options) {
-            options = angular.extend({
+            options = ng.extend({
                 host: machine,
                 options: {all: false}
             }, options);
@@ -241,24 +361,32 @@
             return createCall('getVersion', options);
         };
 
-        service.removeContainer = function (container) {
-            var data = {
-                direct: true,
-                host: {primaryIp: container.primaryIp},
-                options: container.options || {id: container.Id, force: true},
-                container: container
-            };
-            return createCall('remove', data);
-        };
-
         containerActions.forEach(function (action) {
             service[action + 'Container'] = function (container) {
-                var data = {
+                var options = {
                     direct: true,
                     host: {primaryIp: container.primaryIp},
                     options: container.options || {id: container.Id}
                 };
-                return createCall(action, data);
+                if (action === 'remove') {
+                    options.container = container;
+                    options.options.force = true;
+                }
+                var job = serverTab.call({
+                    name: 'Docker' + capitalize(action),
+                    data: options,
+                    done: function (err, data) {
+                        if (err) {
+                            return false;
+                        }
+                        var cache = service.cache['containers'];
+                        if (containerDoneHandler[action] && cache) {
+                            containerDoneHandler[action](cache, options.options.id);
+                        }
+                        return data;
+                    }
+                });
+                return job.promise;
             };
         });
 
@@ -271,6 +399,9 @@
                 all: false,
                 suppressErrors: true
             };
+            if (params.cache) {
+                return createCachedCall('images', {host: 'All', cache: true, options: ng.extend(defaultParams, params || {})}, params.all ? 'images' : 'topImages');
+            }
             return createCall('images', {host: 'All', options: ng.extend(defaultParams, params || {})});
         };
 
@@ -292,7 +423,7 @@
         };
 
         service.hostUtilization = function (options) {
-            options = angular.extend({options: {num_stats: 2}}, options);
+            options = ng.extend({options: {num_stats: 2}}, options);
             var job = serverTab.call({
                 name: 'DockerHostUtilization',
                 data: options,
@@ -349,17 +480,7 @@
 
         imageActions.forEach(function (action) {
             service[action + 'Image'] = function (image) {
-                var job = serverTab.call({
-                    name: 'Docker' + capitalize(action) + 'Image',
-                    data: {host: {primaryIp: image.primaryIp}, options: image.options || {id: image.Id} },
-                    done: function (err, data) {
-                        if (err) {
-                            return false;
-                        }
-                        return data;
-                    }
-                });
-                return job.promise;
+                return createCall(action + 'Image', {host: {primaryIp: image.primaryIp}, options: image.options || {id: image.Id} });
             };
         });
 
@@ -435,9 +556,16 @@
             });
         };
 
-        service.getRegistriesList = function (aggregate, forHost) {
-            var call = createCall('getRegistriesList', {direct: true});
-            if (!aggregate) {
+        service.getRegistriesList = function (options, forHost) {
+            var call;
+            options = options || {};
+            if (options.cache) {
+                call = createCachedCall('getRegistriesList', {cache: true}, 'registriesList');
+            } else {
+                call = createCall('getRegistriesList', {direct: true});
+            }
+
+            if (!options.aggregate) {
                 return call;
             }
             var q = $q.defer();
@@ -492,11 +620,17 @@
         };
 
         service.deleteRegistry = function (registry) {
+            var cache = service.cache['registriesList'];
+            registry.processing = true;
+            cache.put(registry);
             return createCall('deleteRegistry', {registry: registry, direct: true});
         };
 
-        service.createNewRegistry = function (opts) {
-            return createCall('createRegistry', angular.extend({direct: true, host: opts.host, options: opts}));
+        service.createNewRegistry = function (data) {
+            var cache = service.cache['registriesList'];
+            var registry = data.registry;
+            cache.put(registry);
+            return createCall('createRegistry', ng.extend({direct: true, host: data.host, options: registry}));
         };
 
         service.pushImage = function (opts) {
@@ -542,7 +676,7 @@
         };
 
         service.forceRemoveImage = function (options) {
-            return createCall('forceRemoveImage', angular.extend({}, options, {direct: true}));
+            return createCall('forceRemoveImage', ng.extend({}, options, {direct: true}));
         };
 
         return service;

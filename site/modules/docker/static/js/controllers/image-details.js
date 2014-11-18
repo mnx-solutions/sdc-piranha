@@ -210,7 +210,7 @@
                             name: parsedTag.name || ''
                         };
 
-                        Docker.getRegistriesList(true, image.primaryIp).then(function (result) {
+                        Docker.getRegistriesList({aggregate: true}, image.primaryIp).then(function (result) {
                             scope.registries = result.short;
                             scope.registries = Docker.addRegistryUsernameToHost(scope.registries);
                             scope.pushDialogOpening = false;

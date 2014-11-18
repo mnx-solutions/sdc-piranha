@@ -623,7 +623,13 @@ var Docker = function execute(scope) {
                     list.push(savedRegistry);
                 }
                 Docker.registriesCache[savedRegistry.id] = savedRegistry;
-                Docker.saveRegistries(call, list);
+                saveRegistries(call, list, function (errSave) {
+                    if (errSave) {
+                        return call.done(errSave);
+                    }
+                    savedRegistry.auth = null;
+                    call.done(null, savedRegistry);
+                });
             });
         }
     });

@@ -25,7 +25,7 @@
                 $scope.registries = [];
 
                 Docker.pingManta(function () {
-                    Docker.getRegistriesList().then(function (list) {
+                    Docker.getRegistriesList({cache: true}).then(function (list) {
                         $scope.registries = ng.copy(list);
                         $scope.registries.forEach(function (registry) {
                             registry.api_version = registry.api;
@@ -50,8 +50,10 @@
                         ), function () {
                             var index = $scope.registries.indexOf(registry);
                             if (index !== -1) {
-                                $scope.registries.splice(index, 1);
-                                Docker.deleteRegistry(registry);
+                                registry.processing = true;
+                                Docker.deleteRegistry(registry).then(function () {
+                                    $scope.registries.splice(index, 1);
+                                });
                             }
                         }
                     );
@@ -208,10 +210,9 @@
                                     type: 'local'
                                 };
 
-                                Docker.saveRegistry(registry);
                                 list.push(registry);
                                 $scope.close();
-                                Docker.createNewRegistry(ng.extend({}, $scope.registry)).then(function () {
+                                Docker.createNewRegistry(ng.extend({registry: registry}, $scope.registry)).then(function () {
                                     $rootScope.$broadcast('createdRegistry', registry);
                                 }, function (error) {
                                     $rootScope.$broadcast('failedRegistry', registry);
