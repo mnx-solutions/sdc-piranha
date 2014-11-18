@@ -32,6 +32,9 @@
                 var listRemovedContainers = function () {
                     Docker.getRemovedContainers().then(function (containers) {
                         $scope.removedContainers = containers;
+                        if ($scope.containers.length === 0 && containers.length > 0) {
+                            $scope.tab = $scope.tabFilterUpdate = 'Deleted';
+                        }
                         $scope.removedContainers.forEach(function (container) {
                             container.ShortId = container.Id.slice(0, 12);
                             container.logs = 'Deleted';
