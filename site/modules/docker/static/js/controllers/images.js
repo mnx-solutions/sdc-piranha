@@ -371,6 +371,8 @@
                                         Docker.pullImage({primaryIp: $scope.hostIp}, image, parentScope.registryId).then(function (chunk) {
                                             if (!chunk.length) {
                                                 image.processStatus = 'Download error';
+                                            } else if (chunk.length === 1 && chunk[0].status === 'Pulling repository ' + $scope.name) {
+                                                image.processStatus = 'Repository is empty';
                                             }
                                             if (image.processStatus === 'Download complete') {
                                                 image.processStatus = 'Downloading complete';
