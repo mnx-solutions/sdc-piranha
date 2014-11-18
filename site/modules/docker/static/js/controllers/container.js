@@ -142,6 +142,7 @@
                     container.Names = [$scope.container.name];
                     container.hostId = $scope.machine.id;
                     container.hostName = $scope.machine.name;
+                    container.force = true;
                 }
                 Docker[action + 'Container'](container).then(function () {
                     if (action === 'remove') {
@@ -150,7 +151,7 @@
                         getDockerInspectContainer();
                     }
                 }, errorCallback);
-            }
+            };
         }
     ]);
 }(window.JP.getModule('docker')));
