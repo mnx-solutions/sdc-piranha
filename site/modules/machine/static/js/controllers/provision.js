@@ -37,11 +37,16 @@
             var SSH_STEP_NAME = 'SSH Key';
             var DOCKERHOST_MINIMUM_MEMORY = 2048;
 
+            $scope.preSelectedImageId = (requestContext.getParam('imageid') === 'custom') ? null : requestContext.getParam('imageid');
+            $scope.isDockerHost = $scope.preSelectedImageId && $location.search().specification === 'dockerhost';
+            $scope.preSelectedImage = null;
+
             $scope.setCreateInstancePage = Machine.setCreateInstancePage;
             $scope.provisionSteps = [
                 {
                     name: 'Choose Image',
-                    template: 'machine/static/partials/wizard-choose-image.html'
+                    template: 'machine/static/partials/wizard-choose-image.html',
+                    hide: $scope.isDockerHost
                 },
                 {
                     name: 'Select Package',
@@ -57,10 +62,6 @@
             $scope.sshModel = {isSSHStep: false};
             $scope.provisionStep = true;
             $scope.campaignId = ($cookies.campaignId || 'default');
-
-            $scope.preSelectedImageId = (requestContext.getParam('imageid') === 'custom') ? null : requestContext.getParam('imageid');
-            $scope.preSelectedImage = null;
-
             $scope.preSelectedData = $rootScope.popCommonConfig('preSelectedData');
 
             $scope.instanceType = ($scope.preSelectedImageId || $location.path().indexOf('/custom') > -1) ? 'Saved' : 'Public';
@@ -219,7 +220,7 @@
                         $location.path('/compute/ssh');
                     } else if (!$scope.provisioningInProgress) {
                         //add flag for docker host
-                        if ($scope.preSelectedImageId && $location.search().specification === 'dockerhost') {
+                        if ($scope.isDockerHost) {
                             machineData.specification = 'docker';
                         }
 
@@ -981,7 +982,7 @@
                     }
 
                     if (!changeDataset) {
-                        $scope.setCurrentStep(1);
+                        $scope.setCurrentStep(SELECT_PACKAGE_STEP);
                         $scope.slideCarousel();
                     }
 
@@ -1302,7 +1303,8 @@
                 if (newDatacenter !== $scope.data.datacenter) {
                     return;
                 }
-                if ($scope.preSelectedImageId && $location.search().specification === 'dockerhost' && $scope.features.dockerMemoryLimit === 'enabled') {
+
+                if ($scope.isDockerHost && $scope.features.dockerMemoryLimit === 'enabled') {
                     packages = packages.filter(function (p) {
                         return p.memory >= DOCKERHOST_MINIMUM_MEMORY;
                     });
@@ -1336,6 +1338,7 @@
 
                 if ($scope.preSelectedImageId) {
                     $scope.selectDataset($scope.preSelectedImageId, externalInstanceParams);
+
                     if (externalInstanceParams) {
                         $scope.selectPackage(requestContext.getParam('package'));
                         $scope.reconfigure(REVIEW_STEP);
@@ -1546,7 +1549,7 @@
                     });
                 } else {
                     $scope.slideCarousel();
-                    $scope.setCurrentStep(2);
+                    $scope.setCurrentStep(REVIEW_STEP);
                 }
             };
 
