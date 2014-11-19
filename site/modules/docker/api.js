@@ -49,7 +49,7 @@ function formatUrl(url, params) {
     });
 }
 
-function createCallback(client, opts, callback, options) {
+function createCallback(client, opts, callback) {
     //noinspection JSLint
     return function (error, req, res, data) {
         if (!opts.raw) {
@@ -67,7 +67,7 @@ function createCallback(client, opts, callback, options) {
                 if (req.path.indexOf('/utilization') === 0) {
                     error = new CAdvisorUnreachable();
                 } else {
-                    error = new DockerHostUnreachable({name: req.hostname});
+                    error = new DockerHostUnreachable({name: req.url.hostname});
                 }
             }
             if ((error.message && error.message.indexOf('bad certificate') >= 0) ||

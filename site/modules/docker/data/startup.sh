@@ -118,10 +118,6 @@ function createBalancer {
                ssl_prefer_server_ciphers on;
                ssl_verify_client on;
         
-               proxy_connect_timeout 1;
-               proxy_send_timeout 1;
-               proxy_read_timeout 1;
-               send_timeout 1;
                location / {
                     proxy_pass http://${docker_address};
                }
