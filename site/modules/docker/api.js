@@ -371,7 +371,7 @@ module.exports = function execute(scope, register) {
     }
 
     function Registry(options) {
-        this.client = restify.createJsonClient(options);
+        this.options = options;
     }
 
     createApi(scope, dockerAPIMethods, Docker.prototype);
