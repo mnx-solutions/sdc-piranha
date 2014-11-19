@@ -243,13 +243,6 @@ input
     background-position: -1px 5px;
 }
 
-.create-new-job-btn-pos
-{
-    float: right;
-
-    margin-top: -85px;
-}
-
 .panel-heading .accordion-toggle
 {
     display: block;

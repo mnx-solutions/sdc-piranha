@@ -4,7 +4,7 @@
     </ul>
     <div class="page-header">
         <h3 class="page-title">CDN Configurations</h3>
-        <div class="header-btn-ci" data-ng-show="!loading && provisionEnabled">
+        <div class="page-title-btn" data-ng-show="!loading && provisionEnabled">
             <button type="button" data-ng-click="apiKeyAction('save')" class="btn btn-big orange align-text-btn" data-ng-hide="apiKey || resetApiKey">Set API Key</button>
             <button type="button" data-ng-click="apiKeyAction('update')" data-ng-class="{'grey-new effect-orange-button': apiKey}" class="btn btn-big orange align-text-btn" data-ng-show="apiKey || resetApiKey">Update API Key</button>
             <button type="button" data-ng-click="createConfiguration()" class="btn btn-big orange align-text-btn" data-ng-show="apiKey">Create Configuration</button>

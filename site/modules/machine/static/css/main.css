@@ -364,16 +364,6 @@
     color: #f60;
 }
 
-.header-btn-ci
-{
-    position: relative;
-
-    display: inline-block;
-    float: right;
-
-    margin-top: -73px;
-}
-
 .btn.orange
 {
     color: white;
