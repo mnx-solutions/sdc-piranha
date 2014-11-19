@@ -328,6 +328,9 @@ var Docker = function execute(scope) {
             if (error) {
                 return call.done(error);
             }
+            if (hosts.length === 0) {
+                return call.done(null, []);
+            }
             vasync.forEachParallel({
                 inputs: hosts,
                 func: function (host, callback) {
