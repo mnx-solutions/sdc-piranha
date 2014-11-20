@@ -29,14 +29,16 @@ module.exports = function execute(scope, app) {
         req.userIp = req.userIp || req.ip;
 
         var info = {
-            userName: req.session.userName,
-            userId: req.session.userId,
+            userName: req.session.parentAccount || req.session.userName,
+            userId: req.session.parentAccountId || req.session.userId,
             userIp: req.userIp,
             userAgent: req.headers['user-agent'],
             campaignId: (req.cookies.campaignId || '')
         };
 
         if (req.session.subId) {
+            info.subuserName = req.session.userName;
+            info.subuserId = req.session.userId;
             req.log.info(info, 'Sub user logged in');
         } else if (req.session.userIsNew) {
             req.log.info(info, 'New user logged in');
@@ -94,6 +96,7 @@ module.exports = function execute(scope, app) {
                     req.session.parentAccountError = err;
                     if (!err) {
                         req.session.parentAccount = account.login;
+                        req.session.parentAccountId = account.id;
                     }
                     saveSessionToken(user);
                 });

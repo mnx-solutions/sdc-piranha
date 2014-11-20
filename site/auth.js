@@ -22,9 +22,20 @@ module.exports = function execute(scope) {
 
         // Store user session information in log entries
         if (req.session.userId && req.session.userName) {
+            if (req.session.parentAccount) {
+                req.log = req.log.child({
+                    userName: req.session.parentAccount,
+                    userId: req.session.parentAccountId,
+                    subuserName: req.session.userName,
+                    subuserId: req.session.userId
+                });
+            } else {
+                req.log = req.log.child({
+                    userName: req.session.userName,
+                    userId: req.session.userId
+                });
+            }
             req.log = req.log.child({
-                userName: req.session.userName,
-                userId: req.session.userId,
                 userIp: req.userIp
             });
         }
