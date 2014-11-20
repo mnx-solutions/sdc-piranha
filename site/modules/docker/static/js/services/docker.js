@@ -167,26 +167,17 @@
                 }
             },
             createRegistry: function (err, data, options) {
-                if (err) {
-                    return;
-                }
                 var cache = service.cache['registriesList'];
                 service.cache['containers'].reset();
-                if (!cache) {
+                if (!cache && !cache.initialized && !options && !options.options) {
                     return;
                 }
-                var registries = cache.list;
-                if (options && cache) {
-                    registries.forEach(function (registry) {
-                        if (registry.id === options.id) {
-                            if (err) {
-                                cache.remove(options.id);
-                            } else {
-                                delete options.processing;
-                                cache.put(options);
-                            }
-                        }
-                    });
+                var registry = options.options;
+                if (err) {
+                    cache.remove(registry.id);
+                } else {
+                    delete registry.processing;
+                    cache.put(registry);
                 }
             },
             deleteRegistry: function (err, data, options) {
@@ -301,7 +292,10 @@
                     }
                     delete service.jobs[jobKey];
                 },
-                error: function () {
+                error: function (err) {
+                    if (method in doneHandler) {
+                        doneHandler[method](err, null, options);
+                    }
                     delete service.jobs[jobKey];
                 }
             }).promise;
@@ -627,10 +621,10 @@
         };
 
         service.createNewRegistry = function (data) {
-            var cache = service.cache['registriesList'];
             var registry = data.registry;
-            cache.put(registry);
-            return createCall('createRegistry', ng.extend({direct: true, host: data.host, options: registry}));
+            return createCall('saveRegistry', {registry: registry, direct: true}).then(function () {
+                return createCall('createRegistry', {direct: true, host: data.host, options: registry});
+            });
         };
 
         service.pushImage = function (opts) {
