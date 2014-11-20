@@ -14,7 +14,7 @@ window.JP.main.config(['routeProvider', function (routeProvider) {
                 }
             }
 
-            if (typeof ($rootScope.provisionEnabled) !== 'boolean' || typeof ($rootScope.dockerHostsAvailable) === 'undefined') {
+            if (typeof ($rootScope.provisionEnabled) !== 'boolean') {
                 $q.all([
                     $q.when(Account.getAccount()),
                     $q.when(Docker.completedHosts())
@@ -24,13 +24,13 @@ window.JP.main.config(['routeProvider', function (routeProvider) {
                     $rootScope.provisionEnabled = account.provisionEnabled || false;
                     $rootScope.dockerHostsAvailable = hosts.length > 0;
                     changePath();
-                });
+                }, changePath);
             } else {
                 if ($rootScope.provisionEnabled) {
                     Docker.completedHosts().then(function (hosts) {
                         $rootScope.dockerHostsAvailable = hosts.length > 0;
                         changePath();
-                    });
+                    }, changePath);
                 } else {
                     changePath();
                 }
