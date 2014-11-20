@@ -227,6 +227,8 @@ var Docker = function execute(scope) {
                                                     }
                                                     callback(null, result);
                                                 });
+                                            } else {
+                                                callback(null, result);
                                             }
                                         });
                                     } else {
