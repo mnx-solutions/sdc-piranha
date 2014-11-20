@@ -5,7 +5,7 @@
         <div class="container-min-width">
             <h3 class="page-title no-breadcrumb-line container-min-width" data-translate>Create Instance</h3>
             <div class="wizard-steps">
-                <div data-ng-repeat="provisionStep in provisionSteps" data-ng-class="{'firststep': $first , 'active-step': currentSlidePageIndex == $index}">
+                <div data-ng-repeat="provisionStep in provisionSteps" data-ng-hide="provisionStep.hide" data-ng-class="{'firststep': $first , 'active-step': currentSlidePageIndex == $index}">
                     <p data-ng-show="currentSlidePageIndex >= $index + 1">
                         <span class="breadcrumb current-step"
                               data-target="#provisionCarousel"
