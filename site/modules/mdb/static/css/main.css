@@ -1,19 +1,11 @@
-.new-debbuger-job-btn
+.page-title-btn
 {
     margin-top: -85px;
 }
 
-.new-debbuger-job-btn .btn-big
+.page-title-btn .btn-big
 {
     width: 235px !important;
-}
-
-.header-btn-ci
-{
-    position: relative;
-
-    display: inline-block;
-    float: right;
 }
 
 .debugger-action-btn
