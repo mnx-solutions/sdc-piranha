@@ -431,11 +431,13 @@
         }, true);
 
         $scope.resetFilteredItemsSelection = function () {
-            $scope.items.filter(function (item) {
-                return $scope.pagedItems.indexOf(item) === -1;
-            }).forEach(function (item) {
-                item.checked = false;
-            });
+            if ($scope.items) {
+                $scope.items.filter(function (item) {
+                    return $scope.pagedItems.indexOf(item) === -1;
+                }).forEach(function (item) {
+                    item.checked = false;
+                });
+            }
         };
 
         $scope.selectCheckbox = function (item) {
