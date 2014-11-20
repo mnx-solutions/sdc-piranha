@@ -60,7 +60,7 @@ module.exports = function execute(scope) {
 
     function getArchivedJobFile(call, jobId, path, callback, fallback) {
         var client = Manta.createClient(call);
-        var jobPath = manta.jobPath(jobId, call.req.session.userName) + path;
+        var jobPath = manta.jobPath(jobId, client.user) + path;
         client.getFileContents(jobPath, function (err, body) {
             if (err) {
                 if (fallback) {
