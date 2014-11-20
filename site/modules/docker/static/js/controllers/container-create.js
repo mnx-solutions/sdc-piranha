@@ -75,6 +75,36 @@
                     }
                 };
 
+                var imageHosts = function (imageId) {
+                    $scope.loadingHostDetails = true;
+                    $scope.images = [];
+                    $scope.container.container = 'base';
+                    Docker.listAllImages({all: true, cache: true}).then(function (images) {
+                        $scope.image = images.find(function (image) {
+                            return imageId === image.Id;
+                        });
+                        var hosts = [];
+                        images.forEach(function (image) {
+                            if (hosts.indexOf(image.hostId) === -1 && image.Id === $scope.image.Id) {
+                                hosts.push(image.hostId);
+                            }
+                        });
+                        $scope.hosts = $scope.hosts.filter(function (host) {
+                            return hosts.indexOf(host.id) !== -1;
+                        });
+                        var tag = $scope.image.RepoTags[0];
+                        $scope.image.ShortId = $scope.image.Id.slice(0, 12);
+                        $scope.image.name = tag === '<none>:<none>' ? $scope.image.ShortId : tag;
+                        $scope.images = [$scope.image];
+                        $scope.container.Image = $scope.image.name;
+                        setTimeout(function () {
+                            window.jQuery('#imageSelect').select2('val', $scope.container.Image);
+                            window.jQuery('#imageSelect').select2('disable');
+                        });
+                        $scope.loadingHostDetails = false;
+                    });
+                };
+
                 var hostContainers = function (host) {
                     if (host && host.primaryIp) {
                         $scope.loadingHostDetails = true;
@@ -105,7 +135,11 @@
                     if ($scope.type === 'Images') {
                         hostContainers(host);
                     } else {
-                        hostImages(host);
+                        if (sourceId) {
+                            imageHosts(sourceId);
+                        } else {
+                            hostImages(host);
+                        }
                     }
                 };
 
