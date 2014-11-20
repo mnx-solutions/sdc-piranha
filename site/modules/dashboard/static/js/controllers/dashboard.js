@@ -20,8 +20,9 @@
         'Datacenter',
         'FreeTier',
         '$location',
+        'Docker',
 
-        function ($scope, $q, requestContext, Account, Zendesk, Machine, localization, $http, $cookies, slbService, $rootScope, Support, fileman, Utilization, util, Datacenter, FreeTier, $location) {
+        function ($scope, $q, requestContext, Account, Zendesk, Machine, localization, $http, $cookies, slbService, $rootScope, Support, fileman, Utilization, util, Datacenter, FreeTier, $location, Docker) {
             localization.bind('dashboard', $scope);
             requestContext.setUpRenderContext('dashboard.index', $scope);
             $scope.loading = true;
@@ -31,6 +32,7 @@
             $scope.slbFeatureEnabled = $rootScope.features.slb === 'enabled';
             $scope.usageDataFeatureEnabled = $rootScope.features.usageData === 'enabled';
             $scope.mantaEnabled = $rootScope.features.manta === 'enabled';
+            $scope.dockerEnabled = $rootScope.features.docker === 'enabled';
             $scope.mantaMemory = {};
             $scope.systemStatusTopics = [];
 
@@ -60,7 +62,18 @@
             $q.all([
                 $q.when(Account.getAccount()),
                 $q.when($scope.rssentries),
-                $q.when(Machine.machine())
+                $q.when(Machine.machine()),
+                $q.when(Docker.listHosts()),
+                $q.when(Docker.listContainers({host: 'All', options: {all: true}, suppressErrors: true})),
+                $q.when(Docker.pingManta(function () {
+                    Docker.getRegistriesList().then(function (list) {
+                        $scope.registries = list.filter(function (registry) {
+                            return registry.type === 'local';
+                        });
+                        $scope.registriesLink = $scope.registries.length ? '#!/docker/registries' : '#!/docker';
+                    });
+                }))
+
             ]).then(function (result) {
                 $scope.account = result[0] || {};
                 var tasks = [];
@@ -74,6 +87,13 @@
                         });
                     }
                     $scope.machines = result[2] || [];
+                    $scope.dockerMachines = result[3] || [];
+                    $scope.dockerMachinesLink = $scope.dockerMachines.length ? '#!/compute/dockerHost' : '#!/docker';
+                    var dockerContainers = result[4] || [];
+                    $scope.runningContainers = dockerContainers.filter(function (container) {
+                        return container.containers === 'running';
+                    });
+                    $scope.containersLink = $scope.runningContainers.length ? '#!/docker/containers' : '#!/docker';
                     if ($scope.slbFeatureEnabled) {
                         tasks.push($q.when(slbService.getBalancers()));
                         tasks.push($q.when(slbService.getController()));

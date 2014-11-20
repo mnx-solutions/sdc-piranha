@@ -294,7 +294,8 @@ a.orange
 .manta-bg,
 .usage-bg,
 .support-bg,
-.status-bg
+.status-bg,
+.docker-bg
 {
     background-size: 92px 94px !important;
 }
@@ -302,6 +303,11 @@ a.orange
 .instance-bg
 {
     background: #6a6a6a url('../img/tile-bg/instances.png') no-repeat right 26px;
+}
+
+.docker-bg
+{
+    background: #6a6a6a url('../img/tile-bg/docker.png') no-repeat right 20px;
 }
 
 .elb-bg
