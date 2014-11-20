@@ -524,9 +524,9 @@
                     defer.resolve(host);
                     return defer.promise;
                 }
-                service.listHosts().then(function (hosts) {
+                service.completedHosts().then(function (hosts) {
                     if (!hosts.length) {
-                        defer.reject('You don\'t have Docker hosts');
+                        defer.reject('You don\'t have installed Docker hosts');
                         return;
                     }
                     defer.resolve(hosts[0]);
