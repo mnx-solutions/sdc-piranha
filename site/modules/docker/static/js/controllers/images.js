@@ -44,8 +44,12 @@
                                 if (!grImage.hostNames) {
                                     grImage.hostNames = [grImage.hostName];
                                 }
-                                grImage.hostIds.push(origImage.hostId);
-                                grImage.hostNames.push(origImage.hostName);
+                                if (grImage.hostIds.indexOf(origImage.hostId) === -1) {
+                                    grImage.hostIds.push(origImage.hostId);
+                                }
+                                if (grImage.hostNames.indexOf(origImage.hostName) === -1) {
+                                    grImage.hostNames.push(origImage.hostName);
+                                }
                                 found = true;
                             }
                         });
@@ -129,7 +133,7 @@
                             } else {
                                 var html = [];
                                 image.hostIds.forEach(function (hostId, index) {
-                                    html.push('<a href="#!/docker/image/' + hostId + '/' + image.ShorId + '">' + image.hostNames[index] + '</a>');
+                                    html.push('<a href="#!/docker/image/' + hostId + '/' + image.Id + '">' + image.hostNames[index] + '</a>');
                                 });
                                 html = html.join(', ');
                             }
