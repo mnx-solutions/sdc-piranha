@@ -718,6 +718,16 @@
                 // add networks to data
                 $scope.data.networks = ($scope.selectedNetworks.length > 0) ? $scope.selectedNetworks : '';
 
+                if ($scope.preSelectedImageId && $location.search().specification === 'dockerhost') {
+                    var isPublicNetworkChecked = $scope.networks.find(function (network) {
+                        return network.public;
+                    }).active;
+                    if (!isPublicNetworkChecked) {
+                        PopupDialog.message('Message', 'Cannot create Docker host without Public network. Please select Public network.');
+                        return;
+                    }
+                }
+
                 if (!$scope.data.datacenter) {
                     Datacenter.datacenter().then(function (datacenters) {
                         var datacenterNames = Object.keys(datacenters || {});
