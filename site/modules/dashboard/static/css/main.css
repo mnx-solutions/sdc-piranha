@@ -341,53 +341,34 @@ a.orange
 }
 
 /*end tiles*/
-
-.manta-ad-block
+.promo-ad
 {
-    padding-top: 13px;
-    padding-left: 27px;
-}
-
-.manta-ad-block h4
-{
-    line-height: 9px;
-}
-
-.manta-ad-block2 h5
-{
-    font-size: 14px;
-    font-weight: normal;
-    line-height: 10px;
-}
-
-.manta-ad-block2
-{
-    margin-top: 17px;
-    margin-left: 27px;
-}
-
-.manta-ad-block3 a,
-.manta-ad-block3 a *
-{
-    line-height: 7px;
-
-    text-decoration: none;
-
-    color: #f60 !important;
-}
-
-.manta-ad-block3
-{
-    margin-top: 24px;
-    margin-left: 66px;
-}
-
-.manta-ad
-{
+    padding: 25px 50px;
     width: 490px;
     height: 280px;
+    background: #e9eef2 url('../img/docker-promo.png') no-repeat;
+    background-size: 490px 280px;
+}
+.promo-ad-title
+{
+    padding-top: 10px;
+    font-weight: 500;
+    font-size: 26px;
+    line-height: 19px;
+}
 
-    background: url('../img/manta_start.jpg') no-repeat;
+.promo-ad-text
+{
+    padding-top: 7px;
+    font-weight: 300;
+    font-size: 18px;
+    line-height: 17px;
+}
+.promo-ad-text a
+{
+    color: #f60!important;
+    text-decoration: none;
+    font-weight: 500;
 }
 
 .separation-container span > a,
