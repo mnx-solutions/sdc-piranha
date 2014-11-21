@@ -162,7 +162,7 @@
                     <a id="button-detailed-analytics" href="#!/docker/analytics/{{machine.id}}/{{container.infoId}}" class="btn light pull-right effect-orange-button"><i class="chart-icon"></i>View Detailed Analytics</a>
                 </div>
             </div>
-            <div data-ng-show="cadvisorUnavailable && container.state == 'running'" class="font-size16 margin-top-10">cAdvisor unavailable</div>
+            <div data-ng-show="cadvisorUnavailable && container.state == 'running'" class="container-cadvisor-unavailable">cAdvisor unavailable</div>
         </div>
     </div>
 </div>
