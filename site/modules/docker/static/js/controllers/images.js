@@ -89,16 +89,7 @@
                         name: 'Image ID',
                         sequence: 1,
                         active: true,
-                        type: 'html',
-                        _getter: function (image) {
-                            var html;
-                            if (!image.hostIds) {
-                                html = '<a href="#!/docker/image/' + image.hostId + '/' + image.Id + '" style="min-width: 140px;">' + image.ShorId + '</a>';
-                            } else {
-                                html = '<span>' + image.ShorId + '</span>';
-                            }
-                            return html;
-                        }
+                        type: 'popover'
                     },
                     {
                         id: 'repository',
