@@ -484,11 +484,6 @@
             tasks.push($q.when(Account.getAccount(true)));
 
             $qe.every(tasks).then(function (result) {
-                if (result[6].error || result[0].error) {
-                    $scope.loading = false;
-                    PopupDialog.errorObj({error: 'SDC call timed out. Please refresh the page.'});
-                    return;
-                }
                 $scope.simpleImages = [];
                 $scope.datasetsInfo = [];
                 $scope.keys = [];
@@ -502,6 +497,13 @@
                 var machinesResult = result[3];
                 var limitsResult = result[4];
                 var freeTierOptionsResult = result[5];
+
+                if (($scope.account.error && !datacentersResult.error) || (keysResult.error && !datacentersResult.error)) {
+                    $scope.loading = false;
+                    PopupDialog.errorObj({error: 'SDC call timed out. Please refresh the page.'});
+                    return;
+                }
+
                 if (!keysResult.error) {
                     $scope.keys = keysResult;
                 }
