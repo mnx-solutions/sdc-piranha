@@ -67,7 +67,7 @@ function createCallback(client, opts, callback) {
                 if (req.path.indexOf('/utilization') === 0) {
                     error = new CAdvisorUnreachable();
                 } else {
-                    error = new DockerHostUnreachable({name: req.url.hostname});
+                    error = new DockerHostUnreachable({name: req.getHeader('host')});
                 }
             }
             if ((error.message && error.message.indexOf('bad certificate') >= 0) ||
