@@ -8,7 +8,7 @@
             <form name="configurationForm" class="configurationForm">
                 <div>Note: Docker Hub private images are not included into search results.</div>
                 <div class="form-group">
-                    <span class="orange-asterix edit-host edit-label">Docker Registry</span>
+                    <span class="edit-host edit-label">Docker Registry</span>
                         <span class="edit-value">
                             <select ui-select2="{minimumResultsForSearch: -1, width: '94%'}" id="registrySelect" data-ng-model="registryId" required >
                                 <option data-ng-repeat="registry in registries" value="{{registry.id}}">
@@ -18,7 +18,7 @@
                         </span>
                 </div>
                 <div class="form-group">
-                    <span class="orange-asterix edit-term edit-label">Term</span>
+                    <span class="edit-term edit-label">Term</span>
                         <span class="edit-value">
                             <input type="text"
                                    id="term"
