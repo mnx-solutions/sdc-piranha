@@ -22,10 +22,12 @@
                 var allImages = false;
                 var topImages = [];
                 $scope.loading = true;
+                $scope.pullDialogOpening = false;
 
                 var errorCallback = function (err) {
                     Docker.errorCallback(err, function () {
                         $scope.loading = false;
+                        $scope.pullDialogOpening = false;
                     });
                 };
 
@@ -316,8 +318,13 @@
                     }
                 }
 
+                function pullDialogOpeningStatus(status) {
+                    $scope.pullDialogOpening = status;
+                }
+
                 //search images
                 $scope.searchImages = function () {
+                    $scope.pullDialogOpening = true;
                     var findImagesCtrl = function ($scope, dialog, Docker) {
                         var registry;
                         $scope.term = '';
@@ -327,8 +334,9 @@
                             $scope.registries = result.short;
                             $scope.fullRegistriesList = result.full;
                             $scope.registries = Docker.addRegistryUsernameToHost($scope.registries);
+                            pullDialogOpeningStatus(false);
                             $scope.loading = false;
-                        });
+                        }, errorCallback);
 
                         function allowedIP($currentScope) {
                             return function () {
@@ -546,6 +554,7 @@
                         };
 
                         $scope.close = function () {
+                            pullDialogOpeningStatus(false);
                             window.jQuery('#registrySelect').select2('close');
                             dialog.close();
                         };

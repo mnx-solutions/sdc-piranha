@@ -14,11 +14,13 @@
             function ($scope, $q, Docker, Account, PopupDialog, localization, $location) {
 
                 $scope.loading = true;
+                $scope.newRegistryDialogOpening = false;
                 $scope.registries = [];
 
                 var errorCallback = function (err) {
                     Docker.errorCallback(err, function () {
                         $scope.loading = false;
+                        $scope.newRegistryDialogOpening = false;
                     });
                 };
 
@@ -151,7 +153,12 @@
                     });
                 });
 
+                function newRegistryDialogOpeningStatus(status) {
+                    $scope.newRegistryDialogOpening = status;
+                }
+
                 $scope.createNewRegistry = function () {
+                    $scope.newRegistryDialogOpening = true;
                     var list = $scope.registries;
                     var opts = {
                         templateUrl: 'docker/static/partials/new-registry.html',
@@ -192,10 +199,12 @@
                                 });
 
                                 $scope.registry.host = $scope.hosts[0];
+                                newRegistryDialogOpeningStatus(false);
                                 $scope.loading = false;
                             });
 
                             $scope.close = function () {
+                                newRegistryDialogOpeningStatus(false);
                                 window.jQuery('#hostSelect').select2('close');
                                 dialog.close();
                             };
