@@ -123,7 +123,7 @@
         service.addRegistryUsernameToHost = function (registries) {
             registries.forEach(function (registry) {
                 registry.userHost = registry.host;
-                if (registry.username && registry.username !== 'none') {
+                if (registry.username) {
                     var protocols = ['http://', 'https://'];
                     protocols.forEach(function (protocol) {
                         if (registry.host.indexOf(protocol) > -1) {

@@ -570,7 +570,7 @@ var Docker = function execute(scope) {
             api: 'v1',
             host: 'https://index.docker.io',
             port: '443',
-            username: 'none',
+            username: '',
             type: 'global'
         };
         Docker.getRegistries(call, function (error, list) {
