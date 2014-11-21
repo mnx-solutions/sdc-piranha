@@ -573,6 +573,10 @@ span.btn-success
 }
 .container-cadvisor-unavailable {
     margin-top: 10px;
+    color: red;
+    font-size: 18px;
+}.container-cadvisor-unavailable {
+    margin-top: 10px;
     color: #7d7d7d;
     font-size: 14px;
 }
