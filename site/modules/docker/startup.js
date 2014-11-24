@@ -745,8 +745,21 @@ var Docker = function execute(scope) {
                         return call.done(error);
                     }
 
+                    var layersMap = {};
                     jsonStreamParser(res, function (chunk) {
-                        call.update(null, chunk);
+                        if (chunk.id) {
+                            var oldChunk = layersMap[chunk.id];
+                            if (!oldChunk ||
+                                oldChunk.status !== chunk.status ||
+                                chunk.progressDetail && oldChunk.progressDetail &&
+                                    chunk.progressDetail.current - oldChunk.progressDetail.current > 5000000) {
+
+                                call.update(null, chunk);
+                                layersMap[chunk.id] = chunk;
+                            }
+                        } else {
+                            call.update(null, chunk);
+                        }
                     });
 
                     res.on('end', function () {
@@ -759,6 +772,12 @@ var Docker = function execute(scope) {
                 req.end();
             });
         });
+    };
+
+    var getImageSize = function (call, registryId, image, callback) {
+        var registry = Docker.registriesCache[registryId];
+        var infoOptions = {registry: registry, name: image.name, tag: image.tag};
+        Docker.getImageSize(call, infoOptions, callback);
     };
 
     server.onCall('DockerPull', {
@@ -790,7 +809,13 @@ var Docker = function execute(scope) {
                 registryRecord = registryRecord || {};
                 var auth = registryRecord.auth || new Buffer(JSON.stringify({auth: '', email: ''})).toString('base64');
 
-                pullImage(call, options, auth);
+                getImageSize(call, registryId, {name: call.data.options.fromImage, tag: call.data.options.tag}, function (err, result) {
+                    if (err) {
+                        return call.done(err);
+                    }
+                    call.update(null, {totalSize: result.size});
+                    pullImage(call, options, auth);
+                });
             });
         }
     });
@@ -972,7 +997,9 @@ var Docker = function execute(scope) {
                 },
                 function (client, callback) {
                     dockerClient = client;
-                    client.images(callback);
+                    client.images(function (imagesErr, images) {
+                        callback(imagesErr, images);
+                    });
                 },
                 function (images, callback) {
                     image = images.find(function (img) {
@@ -981,7 +1008,9 @@ var Docker = function execute(scope) {
                     if (!image) {
                         return callback('Image "' + imageShortId + '" not found', true);
                     }
-                    dockerClient.containers({all: true}, callback);
+                    dockerClient.containers({all: true}, function (containersErr, containers) {
+                        callback(containersErr, containers);
+                    });
                 },
                 function (containers, callback) {
                     var usedByContainer = containers.find(function (container) {

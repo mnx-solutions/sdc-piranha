@@ -467,7 +467,7 @@
                                         $scope.pullImage(object);
                                     },
                                     disabled: function (object) {
-                                        return object.processing || $scope.pulling;
+                                        return $scope.processing || $scope.pulling;
                                     }
                                 }
                             },
@@ -522,7 +522,7 @@
                                         }
                                         $scope.close();
                                         image.tag = $scope.tag === 'all' ? '' : $scope.tag;
-                                        image.processing = true;
+                                        parentScope.processing = image.processing = true;
                                         image.processStatus = "Preparing";
 
                                         setRegistryHost(parentScope, image);
@@ -534,7 +534,7 @@
                                             if (image.processStatus === 'Download complete') {
                                                 image.processStatus = 'Downloading complete';
                                             }
-                                            image.processing = false;
+                                            parentScope.processing = image.processing = false;
                                             if (image.progressDetail) {
                                                 delete image.progressDetail;
                                             }

@@ -96,15 +96,27 @@ function createMethod(scope, opts) {
             params = {};
         }
 
+        var raw = params.forceRaw || opts.raw;
+        delete params.forceRaw;
+
         var options = {
             log: scope.log,
             path: formatUrl(opts.path, params),
             method: opts.method || 'GET',
             retries: opts.retries || false,
-            connectTimeout: opts.timeout
+            connectTimeout: opts.timeout,
+            headers: opts.headers || {}
         };
         var query = {};
-        var param;
+        var param, header;
+        if (params.headers) {
+            for (header in params.headers) {
+                if (params.headers.hasOwnProperty(header)) {
+                    options.headers[header] = params.headers[header];
+                }
+            }
+            delete params.headers;
+        }
         for (param in opts.params) {
             if (opts.params.hasOwnProperty(param)) {
                 if (params.hasOwnProperty(param)) {
@@ -115,15 +127,15 @@ function createMethod(scope, opts) {
             }
         }
         options.path += qs.stringify(query) ? '?' + qs.stringify(query) : '';
-        var client = opts.raw ? restify.createClient(this.options) : restify.createJsonClient(this.options);
+        var client = raw ? restify.createClient(this.options) : restify.createJsonClient(this.options);
         var args = [options];
-        if ((options.method === 'POST' || options.method === 'PUT') && !opts.raw) {
+        if ((options.method === 'POST' || options.method === 'PUT') && !raw) {
             args.push(params);
         }
-        if (opts.raw) {
+        if (raw) {
             args.push(callback);
         } else {
-            args.push(createCallback(client, opts, callback, options));
+            args.push(createCallback(client, opts, callback));
         }
 
         client[requestMap[options.method]].apply(client, args);
@@ -355,11 +367,30 @@ module.exports = function execute(scope, register) {
             method: 'GET',
             path: '/v1/repositories/:name/tags'
         },
+        imageTagId: {
+            path: '/v1/repositories/:name/tags/:tag'
+        },
+        ancestry: {
+            path: '/v1/images/:id/ancestry'
+        },
+        inspect: {
+            path: '/v1/images/:id/json'
+        },
         ping: {
             method: 'GET',
             retries: false,
             timeout: 3000,
             path: '/v1/_ping'
+        }
+    };
+
+    var indexAPIMethods = {
+        images: {
+            method: 'GET',
+            headers: {
+                'X-Docker-Token': true
+            },
+            path: '/v1/repositories/:name/images'
         }
     };
 
@@ -374,9 +405,121 @@ module.exports = function execute(scope, register) {
         this.options = options;
     }
 
+    function Index(options) {
+        this.options = options;
+    }
+
     createApi(scope, dockerAPIMethods, Docker.prototype);
 
     createApi(scope, registryAPIMethods, Registry.prototype);
+
+    createApi(scope, indexAPIMethods, Index.prototype);
+    /**
+     * Authorize, and get token
+     * curl -i -H'X-Docker-Token: true' https://index.docker.io/v1/repositories/google/cadvisor/images
+     * >> X-Docker-Token: signature=7c438fd617eb7a8f2ad7476a9a3f2c6f8c1961fa,repository="google/cadvisor",access=read
+     * Get tags
+     * curl -i -H'Authorization: Token signature=7c438fd617eb7a8f2ad7476a9a3f2c6f8c1961fa,repository="google/cadvisor",access=read' https://registry-1.docker.io/v1/repositories/google/cadvisor/tags
+     * Get image ancestry
+     * curl -i -H'Authorization: Token signature=7c438fd617eb7a8f2ad7476a9a3f2c6f8c1961fa,repository="google/cadvisor",access=read' https://registry-1.docker.io/v1/images/cdcf3d027523f5437e2799253334769b5933b9da2c424a23f13b9c7f21079263/ancestry
+     *
+     */
+
+    Index.prototype.getAuthToken = function getAuthToken(name, callback) {
+        this.images({name: name, forceRaw: true}, function (error, req) {
+            if (error) {
+                return callback(error);
+            }
+            req.on('result', function (err, res) {
+                if (err) {
+                    return callback(err);
+                }
+                res.destroy();
+                callback(null, {
+                    token: res.headers['x-docker-token'],
+                    endpoint: res.headers['x-docker-endpoints']
+                });
+            });
+        });
+    };
+
+    api.getImageSize = function getImageSize(call, options, callback) {
+        var pipeline = [];
+        pipeline.push(function getIndexClient(collector, callback) {
+            api.createIndexClient(call, options.registry, options.name, function (indexErr, clients) {
+                if (indexErr) {
+                    return callback(indexErr);
+                }
+                collector.client = clients.registry;
+
+                clients.index.images({name: options.name}, function (imagesError, images) {
+                    if (images && images.length) {
+                        collector.ancestry = images.map(function (image) {
+                            return image.id;
+                        });
+                    }
+                    callback(imagesError);
+                });
+            });
+        });
+        if (options.tag) {
+            pipeline.push(function getImageId(collector, callback) {
+                var opts = {
+                    name: options.name,
+                    tag: options.tag
+                };
+                collector.client.imageTagId(opts, function (error, id) {
+                    collector.imageId = id;
+                    callback(error);
+                });
+            });
+            pipeline.push(function getAncestry(collector, callback) {
+                var opts = {
+                    id: collector.imageId
+                };
+                collector.client.ancestry(opts, function (error, images) {
+                    collector.ancestry = images;
+                    callback(error);
+                });
+            });
+        }
+        pipeline.push(function getImageConfig(collector, callback) {
+            collector.result = {images: []};
+            var queue = vasync.queue(function (imageId, cb) {
+                collector.client.inspect({id: imageId}, function (err, data) {
+                    if (!err) {
+                        collector.result.images.push(data);
+                    }
+                    cb(err);
+                });
+            }, 10);
+            queue.drain = function (error) {
+                callback(error);
+            };
+            collector.ancestry.forEach(function (image) {
+                queue.push(image);
+            });
+        });
+        pipeline.push(function finalize(collector, callback) {
+            collector.count = collector.result.images.length;
+            collector.size = collector.result.images.reduce(function (a, b) {
+                return a + (b.Size || 0);
+            }, 0);
+            callback();
+        });
+        var result = {};
+        vasync.pipeline({
+            funcs: pipeline,
+            arg: result
+        }, function (err) {
+            callback(err, {
+                id: result.imageId,
+                images: result && result.result.images,
+                length: result.count,
+                size: result.size
+            });
+        });
+    };
 
     api.getMethods = function () {
         return Object.keys(dockerAPIMethods);
@@ -899,7 +1042,9 @@ module.exports = function execute(scope, register) {
         }
         function getKeys(callback) {
             if (!noCache && call.req.session.dockerCerts) {
-                return callback(null, call.req.session.dockerCerts);
+                return setImmediate(function () {
+                    callback(null, call.req.session.dockerCerts);
+                });
             }
             call.req.session.dockerCerts = {};
             var certificates = {};
@@ -966,7 +1111,7 @@ module.exports = function execute(scope, register) {
         });
     };
 
-    function createClient(call, Service, url, callback) {
+    function createClient(call, Service, opts, callback) {
         var qrKey = 'create-' + Service.name + '-client-' + call.req.session.userId;
         var clientRequest = queuedRequests[qrKey];
 
@@ -984,22 +1129,34 @@ module.exports = function execute(scope, register) {
                 return callback(error);
             }
             callback(null, new Service({
-                url: url,
+                url: opts.url,
                 requestCert: true,
                 rejectUnauthorized: false,
                 ca: certificates.ca,
                 cert: certificates.cert,
                 key: certificates.key,
-                headers: {
+                headers: util._extend({
                     'Content-type': 'application/json'
-                }
+                }, opts.headers)
             }));
         });
     }
 
     api.createClient = function (call, machine, callback) {
-        createClient(call, Docker, (disableTls ? 'http://' : 'https://') + machine.primaryIp + ':4243', callback);
+        var opts = {
+            url: 'https://' + machine.primaryIp + ':4243',
+            host: machine
+        };
+        createClient(call, Docker, opts, callback);
     };
+
+    function parseAuthData(auth) {
+        try {
+            return JSON.parse(new Buffer(auth, 'base64').toString('utf8'));
+        } catch (e) {
+            return {};
+        }
+    }
 
     api.createRegistryClient = function (call, credentials, callback) {
         var parsedUrl = url.parse(credentials.host);
@@ -1010,10 +1167,47 @@ module.exports = function execute(scope, register) {
         }
 
         if (credentials.auth) {
-            parsedUrl.auth = new Buffer(credentials.auth, 'base64').toString('ascii');
+            var auth = parseAuthData(credentials.auth);
+            if (auth.username && auth.password) {
+                parsedUrl.auth = [auth.username, auth.password].join(':');
+            }
         }
+        var opts = {
+            url: url.format(parsedUrl),
+            headers: credentials.headers
+        };
+        createClient(call, Registry, opts, callback);
+    };
 
-        createClient(call, Registry, url.format(parsedUrl), callback);
+    api.createIndexClient = function (call, credentials, imageName, callback) {
+        var parsedHost = url.parse(credentials.host);
+        parsedHost.port = credentials.port || parsedHost.port;
+        if (credentials.auth) {
+            var auth = parseAuthData(credentials.auth);
+            if (auth.username && auth.password) {
+                parsedHost.auth = [auth.username, auth.password].join(':');
+            }
+        }
+        delete parsedHost.host;
+
+        createClient(call, Index, {url: url.format(parsedHost)}, function (error, indexClient) {
+            indexClient.getAuthToken(imageName, function (authError, authResult) {
+                if (authError) {
+                    return callback(authError);
+                }
+                var registryCredentials = JSON.parse(JSON.stringify(credentials));
+                registryCredentials.headers = {Authorization: 'Token ' + authResult.token};
+                if (authResult.endpoint && registryCredentials.type !== 'local') {
+                    var parsedUrl = url.parse(credentials.host);
+                    registryCredentials.host = parsedUrl.protocol + '//' + authResult.endpoint + '/';
+                    delete registryCredentials.auth;
+                }
+
+                api.createRegistryClient(call, registryCredentials, function (clientErr, client) {
+                    callback(clientErr, {index: indexClient, registry: client});
+                });
+            });
+        });
     };
 
     function pad(measure) {

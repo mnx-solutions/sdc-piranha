@@ -276,13 +276,20 @@
             }
             options = options || {};
             var suppressErrors = options.suppressErrors;
+            var lastIndex = 0;
             job.promise = serverTab.call({
                 name: name,
                 data: options,
                 progress: function (error, data) {
                     if (!error && data) {
                         data = data.__read();
-                        data = Array.isArray(data) && data.slice(-1)[0];
+                        if (Array.isArray(data)) {
+                            var length = data.length;
+                            data = data.slice(lastIndex);
+                            lastIndex = length;
+                        } else {
+                            data = [data];
+                        }
                     }
                     job.$emit('update', error, data);
                 },
@@ -300,7 +307,7 @@
                         }
                     }
                     if (method in doneHandler) {
-                         doneHandler[method](err, data, options);
+                        doneHandler[method](err, data, options);
                     }
                     if (!err && options.cache && cache) {
                         cache.replace(data);
@@ -520,18 +527,42 @@
             };
         });
 
-        service.pullImage = function (host, image, registryId) {
-            return createCall('pull', {host: host, options: {fromImage: image.name, tag: image.tag, registry: image.registry, repo: image.repository, registryId: registryId}}, function (error, chunk) {
-                if (chunk.error) {
-                    image.processStatus = 'Error';
-                    var errorMessage = chunk.errorDetail || chunk;
-                    if (chunk.error === 'HTTP code: 404') {
-                        errorMessage.message = 'Cannot pull image “' + image.name  + '”: not found.';
-                    }
-                    return PopupDialog.errorObj(errorMessage);
+        function getCurrentSize(chunks) {
+            var result = {};
+            var current = 0;
+            chunks.forEach(function (chunk) {
+                var current = chunk.progressDetail && chunk.progressDetail.current;
+                
+                if (result[chunk.id] && !current && chunk.status === 'Download complete') {
+                    result[chunk.id].current = result[chunk.id].total;
+                } else if (current) {
+                    result[chunk.id] = chunk.progressDetail;
                 }
-                image.progressDetail = chunk.hasOwnProperty('progressDetail') ? chunk.progressDetail : null;
-                image.processStatus = chunk.status;
+            });
+            Object.keys(result).forEach(function (id) {
+                current += result[id].current;
+            });
+            return current;
+        }
+        service.pullImage = function (host, image, registryId) {
+            image.progressDetail = image.progressDetail || {};
+            return createCall('pull', {host: host, options: {fromImage: image.name, tag: image.tag, registry: image.registry, repo: image.repository, registryId: registryId}}, function (error, chunks) {
+                chunks.forEach(function (chunk) {
+                    if (chunk.error) {
+                        image.processStatus = 'Error';
+                        var errorMessage = chunk.errorDetail || chunk;
+                        if (chunk.error === 'HTTP code: 404') {
+                            errorMessage.message = 'Cannot pull image “' + image.name  + '”: not found.';
+                        }
+                        return PopupDialog.errorObj(errorMessage);
+                    }
+                    if (chunk.totalSize) {
+                        image.progressDetail.total = chunk.totalSize;
+                    }
+                    image.processStatus = chunk.status || image.processStatus;
+                });
+
+                image.progressDetail.current = getCurrentSize(chunks);
             });
         };
 
