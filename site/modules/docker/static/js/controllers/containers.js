@@ -151,7 +151,6 @@
                         plural: 'Please confirm that you want to create images from selected containers.'
                     }
                 };
-
                 function makeContainerAction(action, messageTitle, messageBody) {
                     if ($scope.checkedItems.length) {
                         if (action === 'createImage' && $scope.checkedItems.length === 1) {
@@ -176,6 +175,7 @@
                                     var deferred = $q.defer();
                                     var command = action;
                                     container.actionInProgress = true;
+                                    container.PreviousStatus = container.Status;
                                     if (action === 'createImage') {
                                         container.container = container.Id;
                                     } else {
@@ -188,7 +188,6 @@
                                         deferred.reject(err);
                                         errorCallback(err);
                                         container.actionInProgress = false;
-                                        container.checked = false;
                                         listAllContainers();
                                     });
                                     promises.push(deferred.promise);
@@ -198,12 +197,18 @@
                                     if (action === 'createImage') {
                                         return $location.path('/docker/images');
                                     }
-                                    $scope.checkedItems.forEach(function (container) {
-                                        container.actionInProgress = false;
-                                        container.checked = false;
+                                    $scope.containers.forEach(function (container) {
+                                        if (container.actionInProgress && container.PreviousStatus && container.Status !== container.PreviousStatus) {
+                                            container.actionInProgress = false;
+                                            container.PreviousStatus = container.Status;
+                                        }
                                     });
-                                    $scope.checkedItems = [];
-                                    listAllContainers(true);
+                                    var hasContainersInProgress = $scope.containers.some(function (container) {
+                                        return container.actionInProgress;
+                                    });
+                                    if (!hasContainersInProgress) {
+                                        listAllContainers(true);
+                                    }
                                 });
                             }
                         );

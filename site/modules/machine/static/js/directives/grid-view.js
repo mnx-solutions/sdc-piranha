@@ -448,7 +448,7 @@
 
             $scope.pagedItems.forEach(function (el) {
                 var itemId = el.id || el.uuid || el.$$hashKey;
-                if (itemId === id && !el.fireWallActionRunning && (!el.job || el.job.finished)) {
+                if (itemId === id && !actionInProgress(el)) {
                     el.checked = !el.checked;
                 }
                 if (el.deleteJob) {
