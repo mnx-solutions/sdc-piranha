@@ -313,7 +313,10 @@
                         if (selectedRegistry.type === 'local') {
                             image.name = 'localhost:5000/' + image.name;
                         } else if (selectedRegistry.type === 'remote') {
-                            image.name = getHostname(selectedRegistry.host) + ':' + selectedRegistry.port + '/' + image.name;
+                            var hostname = getHostname(selectedRegistry.host);
+                            if (hostname !== 'index.docker.io') {
+                                image.name = hostname + ':' + selectedRegistry.port + '/' + image.name;
+                            }
                         }
                     }
                 }
