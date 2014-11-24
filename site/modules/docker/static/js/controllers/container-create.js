@@ -27,6 +27,7 @@
                     $scope.createImage = true;
                     $scope.title = 'Create Image From Container';
                 }
+                $scope.selectOptions = [{value: true, 'text': 'yes'}, {value: false, 'text': 'no'}];
 
                 var errorCallback = function (err) {
                     $scope.loading = false;
@@ -154,6 +155,18 @@
 
                 $scope.portPattern = '(6553[0-5]|655[0-2]\\d|65[0-4]\\d{2}|6[0-4]\\d{3}|[1-5]\\d{4}|[1-9]\\d{0,3})';
                 $scope.exposedPattern = '(((\\d{1,3}\.){3}\\d{1,3}\\:)?' + $scope.portPattern + '?\\:)?' + $scope.portPattern;
+                $scope.checkRangeCpuset = function () {
+                    var isInRangeCpuset = false;
+                    var number = $scope.container.Cpuset;
+                    if (number && number.indexOf(',') !== -1) {
+                        number = number.replace(',', '.');
+                    }
+                    number = Number(number);
+                    if (number >= 0 && number <= 3) {
+                        isInRangeCpuset = true;
+                    }
+                    return $scope.containerCreateForm.cpuset.$setValidity('invalidCpuset', isInRangeCpuset);
+                };
 
                 Docker.listHosts().then(function (hosts) {
                     $scope.hosts = hosts || [];
@@ -263,8 +276,39 @@
                     return parsedEnvironments;
                 }
 
+                function parseContainerLinks(links) {
+                    if (!links) {
+                        return [];
+                    }
+                    return links.match(/(?:[^\s"]+|"[^"]*")+/g).map(function (string) {
+                        if (string && string.indexOf(':') === -1) {
+                            string += ':' + string;
+                        }
+                        return string;
+                    });
+                }
+
+                function parseLxcConf(lxcConf) {
+                    if (!lxcConf) {
+                        return [];
+                    }
+                    var lxcOptions = [];
+                    lxcConf.match(/(?:[^\s"]+|"[^"]*")+/g).forEach(function (string) {
+                        if (string && string.indexOf('=') !== -1) {
+                            var lxcConfParams = string.split('=');
+                            var lxcKey = lxcConfParams[0];
+                            var lxcValue = lxcConfParams[1];
+                            var lxcOption = {"Key":lxcKey,"Value":lxcValue};
+                            lxcOptions.push(lxcOption);
+                        }
+                    });
+                    return lxcOptions;
+                }
+
                 var createContainer = function () {
                     var containerPorts = parsePorts($scope.ports);
+                    var containerLinks = parseContainerLinks($scope.containerLinks);
+                    var lxcConf = parseLxcConf($scope.lxcConf);
 
                     $scope.container.Memory = $scope.memory * 1024 * 1024;
                     $scope.container.MemorySwap = $scope.memorySwap * 1024 * 1024;
@@ -278,7 +322,12 @@
                                 "Dns": $scope.dns ? $scope.dns.split(' ') : null,
                                 "VolumesFrom": $scope.volumesFrom ? $scope.volumesFrom.split(' ') : [],
                                 "PortBindings": containerPorts,
-                                "NetworkMode": $scope.networkMode
+                                "NetworkMode": $scope.networkMode,
+                                "ContainerIDFile": $scope.containerIDFile,
+                                "Links": containerLinks,
+                                "LxcConf": lxcConf,
+                                "PublishAllPorts": $scope.publishAllPorts,
+                                "Privileged": $scope.privileged
                             }
                         };
                         Docker.startContainer(container).then(function () {
