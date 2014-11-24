@@ -987,6 +987,10 @@ var Docker = function execute(scope) {
             return data && data.options && typeof (data.options.name) === 'string' && data.registry;
         },
         handler: function (call) {
+            if (call.data.registry === 'local') {
+                Docker.searchPrivateImageTags(call, call.data.options.name, call.done.bind(call));
+                return;
+            }
             var registry = Docker.registriesCache[call.data.registry];
             if (!registry) {
                 return call.done();
