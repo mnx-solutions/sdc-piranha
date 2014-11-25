@@ -505,9 +505,9 @@
                         delete machines.index[id];
                         return;
                     }
-
                     var result = job.__read();
                     result.datacenter = data.datacenter;
+                    $rootScope.$emit('clearDockerCache', result);
                     handleChunk(result);
                 },
 
@@ -683,6 +683,7 @@
                     if (!err) {
                         handleChunk(machine, 'delete');
                         machines.list.splice(machines.list.indexOf(machine), 1);
+                        $rootScope.$emit('clearDockerCache');
                         delete machines.index[machine.id];
                     } else {
                         machine.state = machineState;

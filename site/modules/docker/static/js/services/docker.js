@@ -3,6 +3,7 @@
 (function (ng, app) {
     app.factory('Docker', [
         'serverTab',
+        '$rootScope',
         'Account',
         'errorContext',
         'EventBubble',
@@ -12,7 +13,7 @@
         'Storage',
         '$q',
         'DockerCacheProvider',
-        function (serverTab, Account, errorContext, EventBubble, Machine, PopupDialog, localization, Storage, $q, DockerCacheProvider) {
+        function (serverTab, $rootScope, Account, errorContext, EventBubble, Machine, PopupDialog, localization, Storage, $q, DockerCacheProvider) {
 
         var service = {cache: {}, jobs: {}};
         var containerActions = ['start', 'stop', 'pause', 'unpause', 'inspect', 'restart', 'kill', 'logs', 'remove'];
@@ -22,6 +23,20 @@
         var caches = ['containers', 'images', 'topImages', 'registriesList'];
         caches.forEach(function (cache) {
             service.cache[cache] = new DockerCacheProvider(cache === 'registriesList' ? {key: 'id'} : null);
+        });
+
+        var resetDockerCaches = function () {
+            caches.forEach(function (cache) {
+                service.cache[cache].reset();
+            });
+        };
+
+        $rootScope.$on('clearDockerCache', function(event, data) {
+            if (data) {
+                service.hostInfo({host: data, wait: true}).then(resetDockerCaches, resetDockerCaches);
+            } else {
+                resetDockerCaches();
+            }
         });
 
         var containerDoneHandler = {
