@@ -26,6 +26,7 @@
             <div class="detailed-analytics-btn">
                 <a id="button-detailed-analytics" data-ng-show="current.container" href="#!/docker/container/{{hostId}}/{{current.container | shortTag}}"  class="btn light pull-right effect-orange-button">Back to Container Details</a>
             </div>
+            <div data-ng-show="cadvisorUnavailable" class="analytics-cadvisor-unavailable">cAdvisor unavailable</div>
         </div>
         <div class="pull-right alert alert-info">
             <h5>Select Docker Host and Container:</h5>

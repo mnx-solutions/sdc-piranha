@@ -20,6 +20,7 @@
             var hostId = requestContext.getParam('hostid');
             var containerAnalysys = null;
             var hostAnalysys = null;
+            $scope.cadvisorUnavailable = false;
 
             $scope.hostId = hostId;
             $scope.current = {
@@ -66,6 +67,7 @@
 
             $scope.changeHost = function () {
                 $scope.changingHost = true;
+                $scope.cadvisorUnavailable = false;
                 $scope.containers = [];
                 $scope.hosts.forEach(function (host) {
                     if ($scope.current.host === host.primaryIp && $scope.hostId !== host.id) {
@@ -157,6 +159,7 @@
                         updateContainerStats({host: {primaryIp: $scope.current.host, state: 'running'}, options: {num_stats: 2}}, $scope.current.container, function (error) {
                             if (error === 'CAdvisor unavailable') {
                                 clearGraphs();
+                                $scope.cadvisorUnavailable = true;
                                 return;
                             }
                         });
@@ -168,6 +171,7 @@
 
 
             $scope.createDefault = function () {
+                $scope.cadvisorUnavailable = false;
                 if (timerUpdateStats && (containerAnalysys !== $scope.current.container || hostAnalysys !== $scope.current.host)) {
                     containerAnalysys = $scope.current.container;
                     hostAnalysys = $scope.current.host;
