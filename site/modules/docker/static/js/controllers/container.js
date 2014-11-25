@@ -135,22 +135,34 @@
             getDockerInspectContainer();
 
             $scope.makeContainerAction = function (action) {
-                $scope.actionInProgress = true;
-                statsTimerControl(false);
-                if (action === 'remove') {
-                    container.Image = $scope.container.image;
-                    container.Names = [$scope.container.name];
-                    container.hostId = $scope.machine.id;
-                    container.hostName = $scope.machine.name;
-                    container.force = true;
-                }
-                Docker[action + 'Container'](container).then(function () {
+                function doAction() {
+                    $scope.actionInProgress = true;
+                    statsTimerControl(false);
                     if (action === 'remove') {
-                        $location.path('/docker/containers');
-                    } else {
-                        getDockerInspectContainer();
+                        container.Image = $scope.container.image;
+                        container.Names = [$scope.container.name];
+                        container.hostId = $scope.machine.id;
+                        container.hostName = $scope.machine.name;
+                        container.force = true;
                     }
-                }, errorCallback);
+                    Docker[action + 'Container'](container).then(function () {
+                        if (action === 'remove') {
+                            $location.path('/docker/containers');
+                        } else {
+                            getDockerInspectContainer();
+                        }
+                    }, errorCallback);
+                }
+
+                if ($scope.container.name === 'cAdvisor' && ['stop', 'pause', 'kill', 'remove'].indexOf(action) !== -1) {
+                    PopupDialog.confirm(
+                        'Please confirm that you want to ' + action + ' this container.',
+                        'Docker analytics will be unavailable. Are you sure you want to ' + action + ' it?',
+                        doAction
+                    );
+                } else {
+                    doAction();
+                }
             };
         }
     ]);

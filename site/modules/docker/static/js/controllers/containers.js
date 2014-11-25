@@ -151,6 +151,68 @@
                         plural: 'Please confirm that you want to create images from selected containers.'
                     }
                 };
+
+                function isCAdvisorAction(container, action) {
+                    return container.NamesStr === 'cAdvisor' && ['stop', 'pause', 'kill', 'remove'].indexOf(action) !== -1;
+                }
+
+                function processContainerAction(action) {
+                    var promises = [];
+                    $scope.checkedItems.forEach(function (container) {
+                        var deferred = $q.defer();
+                        var command = action;
+                        container.actionInProgress = true;
+                        container.PreviousStatus = container.Status;
+                        if (action === 'createImage') {
+                            container.container = container.Id;
+                        } else {
+                            command += 'Container';
+                        }
+                        container.checked = false;
+                        Docker[command](container).then(function (response) {
+                            deferred.resolve(response);
+                        }, function (err) {
+                            deferred.reject(err);
+                            errorCallback(err);
+                            container.actionInProgress = false;
+                            container.checked = false;
+                            listAllContainers();
+                        });
+                        promises.push(deferred.promise);
+                    });
+
+                    $q.all(promises).then(function () {
+                        if (action === 'createImage') {
+                            return $location.path('/docker/images');
+                        }
+                        $scope.containers.forEach(function (container) {
+                            if (container.actionInProgress && container.PreviousStatus && container.Status !== container.PreviousStatus) {
+                                container.actionInProgress = false;
+                                container.PreviousStatus = container.Status;
+                            }
+                        });
+                        var hasContainersInProgress = $scope.containers.some(function (container) {
+                            return container.actionInProgress;
+                        });
+                        if (!hasContainersInProgress) {
+                            listAllContainers(true);
+                        }
+                    });
+                }
+
+                function getMessageBody(messages, containers, action) {
+                    var message = messages[containers.length > 1 ? 'plural' : 'single'];
+                    var cAdvisorMessage = '';
+                    if (containers.length === 1) {
+                        cAdvisorMessage = 'Docker analytics will be unavailable. Are you sure you want to ' + action + ' it?';
+                        message = isCAdvisorAction(containers[0], action) ? cAdvisorMessage : message;
+                    } else {
+                        cAdvisorMessage = 'Some of these containers are cAdvisor and Docker analytics will be unavailable after you ' + action + ' it. Are you sure you want to continue?';
+                        message = containers.some(function (container) { return isCAdvisorAction(container, action); }) ? cAdvisorMessage : message;
+                    }
+                    return message;
+                }
+
                 function makeContainerAction(action, messageTitle, messageBody) {
                     if ($scope.checkedItems.length) {
                         if (action === 'createImage' && $scope.checkedItems.length === 1) {
@@ -158,6 +220,7 @@
                             $location.path('/docker/image/create/' + container.hostId + '/' + container.Id);
                             return;
                         }
+
                         PopupDialog.confirm(
                             localization.translate(
                                 $scope,
@@ -167,49 +230,9 @@
                             localization.translate(
                                 $scope,
                                 null,
-                                messageBody[$scope.checkedItems.length > 1 ? 'plural' : 'single']
+                                getMessageBody(messageBody, $scope.checkedItems, action)
                             ), function () {
-
-                                var promises = [];
-                                $scope.checkedItems.forEach(function (container) {
-                                    var deferred = $q.defer();
-                                    var command = action;
-                                    container.actionInProgress = true;
-                                    container.PreviousStatus = container.Status;
-                                    if (action === 'createImage') {
-                                        container.container = container.Id;
-                                    } else {
-                                        command += 'Container';
-                                    }
-                                    container.checked = false;
-                                    Docker[command](container).then(function (response) {
-                                        deferred.resolve(response);
-                                    }, function (err) {
-                                        deferred.reject(err);
-                                        errorCallback(err);
-                                        container.actionInProgress = false;
-                                        listAllContainers();
-                                    });
-                                    promises.push(deferred.promise);
-                                });
-
-                                $q.all(promises).then(function () {
-                                    if (action === 'createImage') {
-                                        return $location.path('/docker/images');
-                                    }
-                                    $scope.containers.forEach(function (container) {
-                                        if (container.actionInProgress && container.PreviousStatus && container.Status !== container.PreviousStatus) {
-                                            container.actionInProgress = false;
-                                            container.PreviousStatus = container.Status;
-                                        }
-                                    });
-                                    var hasContainersInProgress = $scope.containers.some(function (container) {
-                                        return container.actionInProgress;
-                                    });
-                                    if (!hasContainersInProgress) {
-                                        listAllContainers(true);
-                                    }
-                                });
+                                processContainerAction(action);
                             }
                         );
                     } else {

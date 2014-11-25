@@ -62,6 +62,7 @@
                 $scope.dockerMachines.forEach(function (machine) {
                     Docker.hostUsage({host: machine, wait: true}).then(function (usage) {
                         usage = Array.isArray(usage) ? usage.slice(-1)[0] : usage;
+                        machine.cadvisorUnavailable = false;
                         machine.cpuLoad = usage.cpu + '%';
                         machine.memoryLoad = usage.memory + '%';
                     }, function (error) {
