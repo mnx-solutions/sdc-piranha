@@ -293,6 +293,117 @@
                                     />
                         </span>
                     </div>
+                    <div class="form-group">
+                        <span class="edit-image edit-label">AttachStdin</span>
+                        <span class="edit-value">
+                            <select ui-select2="{minimumResultsForSearch: -1, width: '457px'}" id="attachStdinSelect" data-ng-model="container.AttachStdin">
+                                <option data-ng-repeat="attachStdOption in selectOptions" value="{{attachStdOption.value}}">
+                                    {{attachStdOption.text}}
+                                </option>
+                            </select>
+                        </span>
+                    </div>
+                    <div class="form-group">
+                        <span class="edit-image edit-label">AttachStdout</span>
+                        <span class="edit-value">
+                            <select ui-select2="{minimumResultsForSearch: -1, width: '457px'}" id="attachStdoutSelect" data-ng-model="container.AttachStdout">
+                                <option data-ng-repeat="attachStdOption in selectOptions" value="{{attachStdOption.value}}">
+                                    {{attachStdOption.text}}
+                                </option>
+                            </select>
+                        </span>
+                    </div>
+                    <div class="form-group">
+                        <span class="edit-image edit-label">AttachStderr</span>
+                        <span class="edit-value">
+                            <select ui-select2="{minimumResultsForSearch: -1, width: '457px'}" id="attachStderrSelect" data-ng-model="container.AttachStderr">
+                                <option data-ng-repeat="attachStdOption in selectOptions" value="{{attachStdOption.value}}">
+                                    {{attachStdOption.text}}
+                                </option>
+                            </select>
+                        </span>
+                    </div>
+                    <div class="form-group">
+                        <span class="edit-hostname edit-label">ContainerIDFile</span>
+                        <span class="edit-value">
+                            <input type="text"
+                                   name="containerIDFile"
+                                   data-ng-model="containerIDFile"
+                                    />
+                        </span>
+                    </div>
+                    <div class="form-group">
+                        <span class="edit-hostname edit-label">Cpuset</span>
+                        <span class="edit-value">
+                            <input type="text"
+                                   name="cpuset"
+                                   data-ng-pattern="/^\d+(\,\d+)?$/"
+                                   data-ng-maxlength="3"
+                                   data-ng-change="checkRangeCpuset()"
+                                   data-ng-model="container.Cpuset"
+                                    />
+                        </span>
+                        <div class="notation">Set CPUs in which to allow execution (0-3, 0,1)</div>
+                    </div>
+                    <div class="form-group">
+                        <span class="edit-image edit-label">OpenStdin</span>
+                        <span class="edit-value">
+                            <select ui-select2="{minimumResultsForSearch: -1, width: '457px'}" id="openStdinSelect" data-ng-model="container.OpenStdin">
+                                <option data-ng-repeat="openStdinOption in selectOptions" value="{{openStdinOption.value}}">
+                                    {{openStdinOption.text}}
+                                </option>
+                            </select>
+                        </span>
+                    </div>
+                    <div class="form-group">
+                        <span class="edit-hostname edit-label">Links</span>
+                        <span class="edit-value">
+                            <input type="text"
+                                   name="containerLinks"
+                                   data-ng-model="containerLinks"
+                                    />
+                        </span>
+                        <div class="notation">Add link to another container (name:alias)</div>
+                    </div>
+                    <div class="form-group">
+                        <span class="edit-hostname edit-label">LxcConf</span>
+                        <span class="edit-value">
+                            <input type="text"
+                                   name="lxcConf"
+                                   data-ng-model="lxcConf"
+                                    />
+                        </span>
+                        <div class="notation">Add custom lxc options: lxc.cgroup.cpuset.cpus=0,1</div>
+                    </div>
+                    <div class="form-group">
+                        <span class="edit-image edit-label">PublishAllPorts</span>
+                        <span class="edit-value">
+                            <select ui-select2="{minimumResultsForSearch: -1, width: '457px'}" id="publishAllPortsSelect" data-ng-model="publishAllPorts">
+                                <option data-ng-repeat="publishAllPortsOption in selectOptions" value="{{publishAllPortsOption.value}}">
+                                    {{publishAllPortsOption.text}}
+                                </option>
+                            </select>
+                        </span>
+                    </div>
+                    <div class="form-group">
+                        <span class="edit-image edit-label">Privileged</span>
+                        <span class="edit-value">
+                            <select ui-select2="{minimumResultsForSearch: -1, width: '457px'}" id="privilegedSelect" data-ng-model="privileged">
+                                <option data-ng-repeat="privilegedOption in selectOptions" value="{{privilegedOption.value}}">
+                                    {{privilegedOption.text}}
+                                </option>
+                            </select>
+                        </span>
+                    </div>
+                    <div class="form-group">
+                        <span class="edit-hostname edit-label">User</span>
+                        <span class="edit-value">
+                            <input type="text"
+                                   name="user"
+                                   data-ng-model="container.User"
+                                    />
+                        </span>
+                    </div>
 
                     <hr data-ng-show="!loading" />
                     <div class="row btn-bottom-block" data-ng-show="!loading">
