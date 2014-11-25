@@ -316,6 +316,11 @@
                     $scope.pullDialogOpening = status;
                 }
 
+                function getHosts(scope) {
+                    var selectedRegistry = getSelectedRegistry(scope);
+                    return Docker[selectedRegistry && selectedRegistry.type === 'local' ? 'listRunningPrivateRegistryHosts' : 'listHosts']()
+                }
+
                 //search images
                 $scope.searchImages = function () {
                     $scope.pullDialogOpening = true;
@@ -355,7 +360,7 @@
                                     $scope.name = image.name;
                                     $scope.tag = 'all';
                                     $scope.hideTags = true;
-                                    Docker.listHosts().then(function (hosts) {
+                                    getHosts(parentScope).then(function (hosts) {
                                         $scope.hosts = hosts || [];
                                     });
 
@@ -496,7 +501,7 @@
                                 openCtrl: function ($scope, dialog, Docker) {
                                     $scope.name = image.name;
                                     $q.all([
-                                        $q.when(Docker.listHosts()),
+                                        $q.when(getHosts(parentScope)),
                                         $q.when(Docker.getImageTags(registry, $scope.name))
                                     ]).then(function (result) {
                                         $scope.hosts = result[0] || [];

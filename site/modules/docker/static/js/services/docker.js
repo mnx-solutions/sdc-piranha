@@ -329,6 +329,29 @@
             });
         };
 
+        service.listRunningPrivateRegistryHosts = function () {
+            return $q.all([
+                createCall('containers', {host: 'All', cache: true}),
+                createCall('getRegistriesList', {direct: true})
+            ]).then(function (result) {
+                var containers = result[0] || [];
+                var registries = result[1] || [];
+                var hosts = [];
+
+                containers.forEach(function (container) {
+                    if (container.NamesStr === 'private-registry' && container.Status.indexOf('Up') !== -1 && container.Status.indexOf('(Paused)') === -1) {
+                        var allowedRegistry = registries.some(function (registry) {
+                            return registry.host === 'https://' + container.primaryIp && registry.type === 'local' && !registry.processing;
+                        });
+                        if (allowedRegistry) {
+                            hosts.push({primaryIp: container.primaryIp, name: container.hostName});
+                        }
+                    }
+                });
+                return hosts;
+            });
+        };
+
         service.listHostsFull = function (options) {
             return createCall('hosts', options || {});
         };
