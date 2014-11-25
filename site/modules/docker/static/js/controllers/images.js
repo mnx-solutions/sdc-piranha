@@ -120,13 +120,12 @@
                         _order: 'hostName',
                         type: 'html',
                         _getter: function (image) {
-                            var html;
+                            var html = [];
                             if (!image.hostIds) {
                                 html = '<span>' + image.hostName + '</span>';
                             } else {
-                                var html = [];
                                 image.hostIds.forEach(function (hostId, index) {
-                                    html.push('<a href="#!/docker/image/' + hostId + '/' + image.Id + '">' + image.hostNames[index] + '</a>');
+                                    html.push(image.hostNames[index]);
                                 });
                                 html = html.join(', ');
                             }
