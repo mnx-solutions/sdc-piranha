@@ -1121,12 +1121,16 @@ module.exports = function execute(scope, register) {
                     return registry.type === 'local';
                 }),
                 func: function (registry, callback) {
-
                     api.createRegistryClient(call, registry, function (error, client) {
                         if (error) {
                             return callback(null, []);
                         }
-                        client.searchImage({q: term}, callback);
+                        client.ping(function(err) {
+                            if (err) {
+                                return callback(null, []);
+                            }
+                            client.searchImage({q: term}, callback);
+                        });
                     });
                 }
             }, function (errors, operations) {
@@ -1146,6 +1150,48 @@ module.exports = function execute(scope, register) {
                     query: term,
                     results: results
                 });
+            });
+        });
+    };
+
+    // search tags on all hosts
+    api.searchPrivateImageTags = function searchPrivateImageTags(call, name, callback) {
+        api.getRegistries(call, function (error, registries) {
+            if (error) {
+                return callback(error);
+            }
+            vasync.forEachParallel({
+                inputs: registries.filter(function (registry) {
+                    return registry.type === 'local';
+                }),
+                func: function (registry, callback) {
+                    api.createRegistryClient(call, registry, function (error, client) {
+                        if (error) {
+                            return callback(null);
+                        }
+                        client.ping(function(err) {
+                            if (err) {
+                                return callback(null);
+                            }
+                            client.imageTags({name: name}, callback);
+                        });
+                    });
+                }
+            }, function (errors, operations) {
+                var results = [],
+                    names = {};
+               [].concat.apply([], operations.successes).forEach(function (response) {
+                    if (response) {
+                        for (name in response) {
+                            if (names[name]) {
+                                return;
+                            }
+                            names[name] = true;
+                            results.push({name: name, layer: response[name]});
+                        }
+                    }
+                });
+                callback(null, results);
             });
         });
     };
