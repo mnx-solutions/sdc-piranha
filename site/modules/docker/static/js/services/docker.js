@@ -59,6 +59,7 @@
                 }
             },
             remove: function (cache, id) {
+                service.cache['registriesList'].reset();
                 cache.remove(id);
             }
         };
@@ -181,14 +182,11 @@
                 }
             },
             deleteRegistry: function (err, data, options) {
-                if (err) {
-                    return;
-                }
-                var cache = service.cache['registriesList'];
                 var registry = options.registry;
-                if (registry.type === 'local') {
+                if (registry.type === 'local' && service.cache['containers']) {
                     service.cache['containers'].reset();
                 }
+                var cache = service.cache['registriesList'];
                 if (cache) {
                     cache.remove(registry.id);
                 }

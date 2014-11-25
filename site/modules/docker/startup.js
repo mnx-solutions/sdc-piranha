@@ -133,112 +133,121 @@ var Docker = function execute(scope) {
         });
     }
 
+    function removeContainer(call, client, container, options, callback) {
+        if (typeof (options) === 'function') {
+            callback = options;
+            options = null;
+        }
+        options = options || {id: container.Id, v: true, force: true};
+        return client.logs({id: container.Id, tail: 'all'}, function (err, response) {
+            if (err) {
+                return callback(err);
+            }
+            var logs = '';
+            if (response && response.length) {
+                logs = Docker.parseLogResponse(response);
+            }
+            var tomorrowDate = Docker.dateFormat(new Date(new Date().getTime() + 24 * 60 * 60 * 1000).setHours(0, 0, 0, 0));
+            var logPath = '~~/stor/.joyent/docker/logs/' + container.hostId + '/' + container.Id + '/' + tomorrowDate + '.log';
+            saveLogsToManta(call, logPath, logs, function (error) {
+                if (error) {
+                    return call.done(error);
+                }
+                client.remove(options, function (error) {
+                    if (error && error.indexOf('devicemapper failed to remove root filesystem') === -1) {
+                        return call.done(error);
+                    }
+                    getRemovedContainersList(call, function (error, removedContainers) {
+                        if (error) {
+                            if (error.statusCode === 404) {
+                                removedContainers = [];
+                            } else {
+                                return callback(error.message, true);
+                            }
+                        }
+                        var removedContainer = {
+                            Id: container.Id,
+                            Image: container.Image,
+                            Names: container.Names,
+                            hostId: container.hostId,
+                            hostName: container.hostName
+                        };
+                        var hostId = container.hostId;
+                        removedContainers.push(removedContainer);
+                        if (Array.isArray(removedContainersCache[hostId])) {
+                            removedContainersCache[hostId] = removedContainersCache[hostId].concat(removedContainers);
+                        } else {
+                            removedContainersCache[hostId] = removedContainers;
+                        }
+                        var duplicateRemovedContainers = {};
+                        removedContainersCache[hostId] = removedContainersCache[hostId].filter(function (removedContainer) {
+                            return removedContainer.Id in duplicateRemovedContainers ? 0 : duplicateRemovedContainers[removedContainer.Id] = removedContainer.Id;
+                        });
+                        return saveRemovedContainersList(call, removedContainersCache[hostId], callback);
+                    });
+                });
+            });
+        });
+    }
+
     methodHandlers.remove = function (call, callback) {
-        waitClient(call, call.data.host, function (error, client) {
+        var data = call.data;
+        var hostObj = data.host;
+        waitClient(call, hostObj, function (error, client) {
             if (error) {
                 return callback(error);
             }
             client.ping(function (error) {
+                var host = hostObj.primaryIp;
                 if (error) {
-                    return callback(new Docker.DockerHostUnreachable(call.data.host.primaryIp).message, true);
+                    return callback(new Docker.DockerHostUnreachable(host).message, true);
                 }
-
-                return client.logs({id: call.data.container.Id, tail: 'all'}, function (err, response) {
+                var container = data.container;
+                return removeContainer(call, client, container, data.options, function (err, result) {
                     if (err) {
-                        return callback(err);
+                        return call.log.warn(err.message, true);
                     }
-                    var logs = '';
-                    if (response && response.length) {
-                        logs = Docker.parseLogResponse(response);
-                    }
-                    var tomorrowDate = Docker.dateFormat(new Date(new Date().getTime() + 24 * 60 * 60 * 1000).setHours(0, 0, 0, 0));
-                    var logPath = '~~/stor/.joyent/docker/logs/' + call.data.container.hostId + '/' + call.data.container.Id + '/' + tomorrowDate + '.log';
-                    saveLogsToManta(call, logPath, logs, function (error) {
-                        if (error) {
-                            return call.done(error);
-                        }
-                        client.remove(call.data.options, function (error, result) {
-                            if (typeof(error) === 'string' || error && error.message &&
-                                error.message.indexOf('devicemapper failed to remove root filesystem') === -1) {
-                                return call.done(error);
-                            }
-                            getRemovedContainersList(call, function (error, removedContainers) {
-                                if (error) {
-                                    if (error.statusCode === 404) {
-                                        removedContainers = [];
-                                    } else {
-                                        return callback(error.message, true);
-                                    }
-                                }
-                                var removedContainer = {
-                                    Id: call.data.container.Id,
-                                    Image: call.data.container.Image,
-                                    Names: call.data.container.Names,
-                                    hostId: call.data.container.hostId,
-                                    hostName: call.data.container.hostName
-                                };
-                                var hostId = call.data.container.hostId;
-                                removedContainers.push(removedContainer);
-                                if (Array.isArray(removedContainersCache[hostId])) {
-                                    removedContainersCache[hostId] = removedContainersCache[hostId].concat(removedContainers);
-                                } else {
-                                    removedContainersCache[hostId] = removedContainers;
-                                }
-                                var duplicateRemovedContainers = {};
-                                removedContainersCache[hostId] = removedContainersCache[hostId].filter(function (removedContainer) {
-                                    return removedContainer.Id in duplicateRemovedContainers ? 0 : duplicateRemovedContainers[removedContainer.Id] = removedContainer.Id;
-                                });
-                                saveRemovedContainersList(call, removedContainersCache[hostId], function (error) {
-                                    if (error) {
-                                        return call.log.warn(error.message, true);
-                                    }
-                                    var container = call.data.container;
-                                    var ports = [];
-                                    if (container.Ports && container.Ports.length > 0) {
-                                        ports = container.Ports.map(function (port) {
-                                            return port.PublicPort;
-                                        });
-                                    } else {
-                                        var isPrivateRegistryName = container.Names.some(function (name) {
-                                            return name === '/private-registry';
-                                        });
-                                        ports = isPrivateRegistryName && container.Image.indexOf('private-registry') >= 0 ? [5000] : [];
-                                    }
-                                    var host = call.data.host.primaryIp;
-                                    if (ports.length) {
-                                        // delete registry
-                                        return Docker.getRegistries(call, function (error, list) {
-                                            var matchingRegistryId;
-                                            list = list.filter(function (item) {
-                                                if (url.parse(item.host).hostname === host) {
-                                                    var matchingPorts = ports.some(function (port) {
-                                                        return port === parseInt(item.port, 10);
-                                                    });
-                                                    matchingRegistryId = matchingPorts ? item.id : null;
-                                                    return !matchingPorts;
-                                                } else {
-                                                    return true;
-                                                }
-                                            });
-                                            if (matchingRegistryId) {
-                                                delete Docker.registriesCache[matchingRegistryId];
-                                                return Docker.saveRegistries(call, list, function (errSave) {
-                                                    if (errSave) {
-                                                        call.log.warn(errSave);
-                                                    }
-                                                    callback(null, result);
-                                                });
-                                            } else {
-                                                callback(null, result);
-                                            }
-                                        });
-                                    } else {
-                                        callback(null, result);
-                                    }
-                                });
-                            });
+                    var ports = [];
+                    if (container.Ports && container.Ports.length > 0) {
+                        ports = container.Ports.map(function (port) {
+                            return port.PublicPort;
                         });
-                    });
+                    } else {
+                        var isPrivateRegistryName = container.Names.some(function (name) {
+                            return name === '/private-registry';
+                        });
+                        ports = isPrivateRegistryName && container.Image.indexOf('private-registry') >= 0 ? [5000] : [];
+                    }
+                    if (ports.length) {
+                        // delete registry
+                        return Docker.getRegistries(call, function (error, list) {
+                            var matchingRegistryId;
+                            list = list.filter(function (item) {
+                                if (url.parse(item.host).hostname === host) {
+                                    var matchingPorts = ports.some(function (port) {
+                                        return port === parseInt(item.port, 10);
+                                    });
+                                    matchingRegistryId = matchingPorts ? item.id : null;
+                                    return !matchingPorts;
+                                } else {
+                                    return true;
+                                }
+                            });
+                            if (matchingRegistryId) {
+                                delete Docker.registriesCache[matchingRegistryId];
+                                return Docker.saveRegistries(call, list, function (errSave) {
+                                    if (errSave) {
+                                        call.log.warn(errSave);
+                                    }
+                                    callback(null, result);
+                                });
+                            } else {
+                                callback(null, result);
+                            }
+                        });
+                    } else {
+                        callback(null, result);
+                    }
                 });
             });
         });
@@ -676,9 +685,19 @@ var Docker = function execute(scope) {
                                     });
                                 });
                                 if (matchingContainer) {
-                                    client.remove({id: matchingContainer.Id, v: true, force: true}, function (error) {
+                                    Docker.listHosts(call, function (error, hosts) {
                                         if (error) {
-                                            return call.done(error, false);
+                                            return call.done(error);
+                                        }
+                                        var machine = hosts.find(function (m) {
+                                            return m.primaryIp === host;
+                                        });
+                                        if (machine) {
+                                            matchingContainer.hostId = machine.id;
+                                            matchingContainer.hostName = machine.name;
+                                            return removeContainer(call, client, matchingContainer, call.done.bind(call));
+                                        } else  {
+                                            client.remove({id: matchingContainer.Id, v: true, force: true}, call.done.bind(call));
                                         }
                                     });
                                 }
