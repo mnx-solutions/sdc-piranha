@@ -977,7 +977,6 @@
 
             function setRuleState (action, el){
                 if (action !== 'deleteRule') {
-                    el.job = false;
                     el.job.finished = true;
                     el.checked = false;
                 }
@@ -1009,8 +1008,7 @@
                                 if (((action === 'enableRule') !== el.enabled) || (action === 'deleteRule')) {
                                     var deferred = $q.defer();
                                     promises.push(deferred.promise);
-                                    el.job = true;
-                                    el.job.finished = false;
+                                    el.job = {finished: false};
 
                                     rule[action](el)
                                         .then(
