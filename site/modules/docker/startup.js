@@ -71,7 +71,6 @@ var Docker = function execute(scope) {
         });
     }
 
-
     var REMOVED_LOGS_PATH = '~~/stor/.joyent/docker/removed-logs.json';
 
     var getRemovedContainersList = function (call, callback) {
@@ -149,13 +148,15 @@ var Docker = function execute(scope) {
             }
             var tomorrowDate = Docker.dateFormat(new Date(new Date().getTime() + 24 * 60 * 60 * 1000).setHours(0, 0, 0, 0));
             var logPath = '~~/stor/.joyent/docker/logs/' + container.hostId + '/' + container.Id + '/' + tomorrowDate + '.log';
+
             saveLogsToManta(call, logPath, logs, function (error) {
                 if (error) {
-                    return call.done(error);
+                    return callback(error);
                 }
+
                 client.remove(options, function (error) {
                     if (error && error.indexOf('devicemapper failed to remove root filesystem') === -1) {
-                        return call.done(error);
+                        return callback(error);
                     }
                     getRemovedContainersList(call, function (error, removedContainers) {
                         if (error) {
@@ -312,7 +313,7 @@ var Docker = function execute(scope) {
                         }
                     }, function (vasyncError, operations) {
                         if (vasyncError) {
-                            var cause = vasyncError.jse_cause || vasyncError.ase_errors;
+                            var cause = vasyncError['jse_cause'] || vasyncError['ase_errors'];
                             if (Array.isArray(cause)) {
                                 cause = cause[0];
                             } else {
@@ -491,7 +492,7 @@ var Docker = function execute(scope) {
                     }
                 }, function (vasyncError) {
                     if (vasyncError) {
-                        var cause = vasyncError.jse_cause || vasyncError.ase_errors || vasyncError;
+                        var cause = vasyncError['jse_cause'] || vasyncError['ase_errors'] || vasyncError;
                         call.log.warn({error: cause}, 'Error while persisting container logs');
                     }
                     machine.Delete(call, options, function (error) {
