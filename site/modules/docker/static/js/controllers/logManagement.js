@@ -225,9 +225,16 @@
                         active: true
                     },
                     {
+                        id: 'Deleted',
+                        name: 'Deleted',
+                        type: 'date',
+                        sequence: 6,
+                        active: false
+                    },
+                    {
                         id: 'Status',
                         name: 'Status',
-                        sequence: 6,
+                        sequence: 7,
                         type: 'progress',
                         _inProgress: function (object) {
                             return object.actionInProgress;
@@ -237,19 +244,19 @@
                     {
                         id: 'NamesStr',
                         name: 'Names',
-                        sequence: 7,
+                        sequence: 8,
                         active: true
                     },
                     {
                         id: 'PortsStr',
                         name: 'Ports',
-                        sequence: 8,
+                        sequence: 9,
                         active: false
                     },
                     {
                         id: '',
                         name: 'Action',
-                        sequence: 9,
+                        sequence: 10,
                         active: true,
                         type: 'buttons',
                         buttons: [
@@ -288,10 +295,16 @@
 
                 $scope.$on('gridViewChangeTab', function (event, tab) {
                     $scope.tab = tab;
+                    if ($scope.tab === REMOVED_CONTAINER_STATUS) {
+                        $scope.gridOrder = ['-' + REMOVED_CONTAINER_STATUS];
+                    }
                     var hideColumns = ['Command', 'Created', 'Status'];
                     $scope.gridProps.forEach(function (el) {
                         if (hideColumns.indexOf(el.id) !== -1) {
                             el.active = $scope.tab !== REMOVED_CONTAINER_STATUS;
+                        }
+                        if (el.id === REMOVED_CONTAINER_STATUS) {
+                            el.active = $scope.tab === REMOVED_CONTAINER_STATUS;
                         }
                     });
                     $scope.containers.forEach(function (container) {
