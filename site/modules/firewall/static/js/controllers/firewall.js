@@ -375,7 +375,8 @@
             $scope.refreshSelects = function () {
                 // update select2's
                 $('#actionSelect').select2('val', $scope.data.parsed.action);
-                $('#stateSelect').select2('val', $scope.data.enabled.toString());
+                $scope.selected.status = $scope.data.enabled.toString();
+                $('#stateSelect').select2('val', $scope.selected.status);
                 $('#protocolSelect').select2('val', $scope.data.parsed.protocol.name);
                 $('#dcSelect').select2('enable').select2('val', $scope.selected.datacenter);
             };
