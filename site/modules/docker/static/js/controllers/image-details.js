@@ -42,7 +42,7 @@
                     $q.all([
                         $q.when(Docker.inspectImage(image)),
                         $q.when(Docker.historyImage(image)),
-                        $q.when(Docker.listContainers({host: {primaryIp: image.primaryIp}, options: {all: true}}))
+                        $q.when(Docker.listContainers({host: 'All', cache: false, options: {all: true}}))
                     ]).then(function (result) {
                         $scope.images = result[1] || [];
                         $scope.image = result[0] || {};
@@ -57,9 +57,9 @@
                         if ($scope.image.info && $scope.image.info.Tags) {
                             $scope.imageInfoTags = $scope.image.info.Tags.join(', ');
                         }
+                        var hostsContainers = result[2] || [];
                         $scope.imageContainer = $scope.image.Container.slice(0, 12);
-                        var hostContainers = result[2] || [];
-                        var container = hostContainers.find(function (container) {
+                        var container = hostsContainers.find(function (container) {
                             return container.Id === $scope.image.Container;
                         });
                         if (container) {
@@ -67,6 +67,14 @@
                                 $scope.imageContainer = '<a href="#!/docker/container/' + hostId + '/' + $scope.image.Container + '">' + $scope.imageContainer + '</a>';
                             }, errorCallback);
                         }
+                        $scope.usedIn = hostsContainers.filter(function (container) {
+                            return $scope.image.info.Tags.some(function (tag) {
+                                return container.Image === tag;
+                            });
+                        });
+                        $scope.usedIn.forEach(function (container) {
+                            container.ShortId = container.Id.slice(0, 12);
+                        });
                         $scope.loading = false;
                         $scope.actionInProgress = false;
                     }, errorCallback);

@@ -49,8 +49,16 @@
                                     <td>{{image.info.CreatedBy}}</td>
                                 </tr>
                                 <tr>
-                                    <td>Container</td>
+                                    <td>Container from</td>
                                     <td data-ng-bind-html="imageContainer"></td>
+                                </tr>
+                                <tr data-ng-show="usedIn.length">
+                                    <td>Used in container</td>
+                                    <td>
+                                        <span data-ng-repeat="container in usedIn">
+                                           <a data-ng-href="#!/docker/container/{{container.hostId}}{{'/' + container.Id}}">{{container.ShortId}}</a>
+                                        </span>
+                                    </td>
                                 </tr>
                                 <tr data-ng-show="image.Author">
                                     <td>Author</td>
