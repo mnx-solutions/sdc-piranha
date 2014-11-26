@@ -170,12 +170,13 @@ var Docker = function execute(scope) {
                             Image: container.Image,
                             Names: container.Names,
                             hostId: container.hostId,
-                            hostName: container.hostName
+                            hostName: container.hostName,
+                            Deleted: new Date()
                         };
                         var hostId = container.hostId;
                         removedContainers.push(removedContainer);
                         if (Array.isArray(removedContainersCache[hostId])) {
-                            removedContainersCache[hostId] = removedContainersCache[hostId].concat(removedContainers);
+                            removedContainersCache[hostId] = removedContainers.concat(removedContainersCache[hostId]);
                         } else {
                             removedContainersCache[hostId] = removedContainers;
                         }
@@ -456,6 +457,7 @@ var Docker = function execute(scope) {
                             Names: hostContainer.Names,
                             hostId: call.data.uuid,
                             hostName: call.data.host.hostName,
+                            Deleted: new Date(),
                             hostState: 'removed'
                         };
                         removedContainerList.push(removedContainer);
@@ -519,7 +521,7 @@ var Docker = function execute(scope) {
                                         removedContainerList = removedContainerList.concat(removedContainers);
                                         var hostId = call.data.uuid;
                                         if (Array.isArray(removedContainersCache[hostId])) {
-                                            removedContainersCache[hostId] = removedContainersCache[hostId].concat(removedContainerList);
+                                            removedContainersCache[hostId] = removedContainerList.concat(removedContainersCache[hostId]);
                                         } else {
                                             removedContainersCache[hostId] = removedContainerList;
                                         }
