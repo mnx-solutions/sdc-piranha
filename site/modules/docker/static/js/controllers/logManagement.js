@@ -31,19 +31,21 @@
                 };
 
                 var listRemovedContainers = function () {
-                    Docker.getRemovedContainers().then(function (containers) {
-                        $scope.removedContainers = containers;
-                        if ($scope.containers.length === 0 && containers.length > 0) {
+                    Docker.getRemovedContainers().then(function (removedContainers) {
+                        if ($scope.containers.length === 0 && removedContainers.length > 0) {
                             $scope.tab = $scope.tabFilterUpdate = 'Deleted';
                         }
-                        $scope.removedContainers.forEach(function (container) {
+                        removedContainers.forEach(function (container) {
+                            container.NamesStr = container.Names.map(function (name) {
+                                return name.substring(1);
+                            }).join(', ');
                             container.ShortId = container.Id.slice(0, 12);
                             container.logs = REMOVED_CONTAINER_STATUS;
                         });
                         $scope.containers = $scope.containers.filter(function (container) {
                             return container.logs !== REMOVED_CONTAINER_STATUS;
                         });
-                        $scope.containers = $scope.containers.concat($scope.removedContainers);
+                        $scope.containers = $scope.containers.concat(removedContainers);
                         $scope.loading = false;
                     }, errorCallback);
                 };
@@ -286,6 +288,12 @@
 
                 $scope.$on('gridViewChangeTab', function (event, tab) {
                     $scope.tab = tab;
+                    var hideColumns = ['Command', 'Created', 'Status'];
+                    $scope.gridProps.forEach(function (el) {
+                        if (hideColumns.indexOf(el.id) !== -1) {
+                            el.active = $scope.tab !== REMOVED_CONTAINER_STATUS;
+                        }
+                    });
                     $scope.containers.forEach(function (container) {
                         if (container.logs !== REMOVED_CONTAINER_STATUS) {
                             setLogsTab(container);
