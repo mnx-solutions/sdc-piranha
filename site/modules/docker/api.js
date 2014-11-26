@@ -586,7 +586,7 @@ module.exports = function execute(scope, register) {
         };
     }
 
-    function deleteSubAccount(call, subId, deleteCallback) {
+    function deleteSubAccount(call, subId, name, deleteCallback) {
         vasync.waterfall([
             function (callback) {
                 call.cloud.listUserKeys(subId, function (listErr, keys) {
@@ -607,7 +607,7 @@ module.exports = function execute(scope, register) {
                 });
             },
             function (roles, callback) {
-                var dockerRole = roles.find(function (role) { return role.name === SUBUSER_OBJ_NAME; });
+                var dockerRole = roles.find(function (role) { return role.name === name; });
                 if (dockerRole) {
                     call.cloud.deleteRole(dockerRole.id, callback);
                 } else {
@@ -620,7 +620,7 @@ module.exports = function execute(scope, register) {
                 });
             },
             function (policies, callback) {
-                var dockerPolicy = policies.find(function (policy) { return policy.name === SUBUSER_OBJ_NAME; });
+                var dockerPolicy = policies.find(function (policy) { return policy.name === name; });
                 if (dockerPolicy) {
                     call.cloud.deletePolicy(dockerPolicy.id, callback);
                 } else {
@@ -783,7 +783,7 @@ module.exports = function execute(scope, register) {
             });
             var deleteRegUserAndSetup = function () {
                 if (dockerRegistryUser) {
-                    deleteSubAccount(call, dockerRegistryUser.id, function (deleteRegErr) {
+                    deleteSubAccount(call, dockerRegistryUser.id, SUBUSER_OBJ_NAME_REGISTRY, function (deleteRegErr) {
                         if (deleteRegErr) {
                             return callback(deleteRegErr);
                         }
@@ -794,24 +794,33 @@ module.exports = function execute(scope, register) {
                 }
             };
             if (dockerUser) {
-                call.cloud.listUserKeys(dockerUser.id, function (listErr, keys) {
-                    if (listErr) {
-                        return callback(listErr);
-                    }
-                    var dockerKey = keys.find(function (key) {
-                        return key.name === SUBUSER_OBJ_NAME;
-                    });
-                    if (dockerKey) {
-                        setupManta(call, callback);
-                    } else {
-                        deleteSubAccount(call, dockerUser.id, function (deleteErr) {
-                            if (deleteErr) {
-                                return callback(deleteErr);
-                            }
-                            deleteRegUserAndSetup();
+                var isFirstCheck = true;
+                var checkDockerKey = function () {
+                    call.cloud.listUserKeys(dockerUser.id, function (listErr, keys) {
+                        if (listErr) {
+                            return callback(listErr);
+                        }
+                        var dockerKey = keys.find(function (key) {
+                            return key.name === SUBUSER_OBJ_NAME;
                         });
-                    }
-                });
+                        if (dockerKey) {
+                            setupManta(call, callback);
+                        } else {
+                            if (isFirstCheck) {
+                                isFirstCheck = false;
+                                setTimeout(checkDockerKey, 10000);
+                                return;
+                            }
+                            deleteSubAccount(call, dockerUser.id, SUBUSER_OBJ_NAME, function (deleteErr) {
+                                if (deleteErr) {
+                                    return callback(deleteErr);
+                                }
+                                deleteRegUserAndSetup();
+                            });
+                        }
+                    });
+                };
+                checkDockerKey();
             } else {
                 deleteRegUserAndSetup();
             }
