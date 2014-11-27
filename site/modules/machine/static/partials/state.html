@@ -2,9 +2,9 @@
     <span class="status label label-info pull-left"
           data-ng-class="labelForState(object.state)"
           data-ng-show="object.state.length">
-        <span class="loading-small pull-left" data-ng-show="object.job && !object.job.finished"></span>
-        <i class="glyphicon glyphicon-ok pull-left" data-ng-show="(object.state == 'running' && !object.job) || (object.state == 'running' && object.job.finished)"></i>
-        <i class="warn_icon" data-ng-show="(object.state == 'stopped' && !object.job) || (object.state == 'stopped' && object.job.finished)"></i>
+        <span class="loading-small pull-left" data-ng-show="(object.job && !object.job.finished) || object.actionInProgress"></span>
+        <i class="glyphicon glyphicon-ok pull-left" data-ng-show="(object.state == 'running' && !object.job && !object.actionInProgress) || (object.state == 'running' && object.job.finished)"></i>
+        <i class="warn_icon" data-ng-show="(object.state == 'stopped' && !object.job && !object.actionInProgress) || (object.state == 'stopped' && object.job.finished) || (object.state == 'paused' && !object.actionInProgress)"></i>
         <span data-translate>{{object.state}}</span>
     </span>
 

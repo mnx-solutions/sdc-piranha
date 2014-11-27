@@ -35,6 +35,18 @@
                             default:
                                 return 'btn-danger';
                         }
+                    } else if (scope.type === 'container') {
+                        switch (state) {
+                            case 'stopped':
+                            case 'paused':
+                                return 'btn-warning';
+
+                            case 'running':
+                                return 'btn-success';
+
+                            default:
+                                return 'btn-danger';
+                        }
                     } else {
                         switch (state) {
                             case 'active':
