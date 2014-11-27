@@ -36,34 +36,23 @@
                 <a data-ng-href="{{'#!/docker'}}">
                     <div class="tile-body">
                         <div class="title">Docker</div>
-                        <div class="left-column" data-ng-class="{small: registries.length > 0}">
+                        <div class="left-column">
                             <a data-ng-href="{{dockerMachinesLink}}">
-                                <div class="number"  data-ng-class="{medium: registries.length > 0}">
+                                <div class="number">
                                     {{dockerMachines.length || '0'}}
                                 </div>
                                 <div class="info">
-                                    Host<span data-ng-show="dockerMachines.length != 1">s</span>
+                                    host<span data-ng-show="dockerMachines.length != 1">s</span>
                                 </div>
                             </a>
                         </div>
-                        <div class="right-column" data-ng-class="{small: registries.length > 0}">
+                        <div class="right-column">
                             <a data-ng-href="{{containersLink}}">
-                                <div class="number" data-ng-class="{medium: registries.length > 0}">
+                                <div class="number">
                                     {{runningContainers.length || '0'}}
                                 </div>
                                 <div class="info">
-                                    Running container<span data-ng-show="runningContainers.length != 1">s</span>
-                                </div>
-                            </a>
-                            <a data-ng-href="{{registriesLink}}">
-                                <div data-ng-show="registries.length > 0">
-                                    <div class="number medium">
-                                        {{registries.length}}
-                                    </div>
-                                    <div class="info">
-                                        <span data-ng-show="registries.length != 1">Local registries</span>
-                                        <span data-ng-show="registries.length == 1">Local registry</span>
-                                    </div>
+                                    running container<span data-ng-show="runningContainers.length != 1">s</span>
                                 </div>
                             </a>
                         </div>
@@ -116,26 +105,36 @@
                 <a data-ng-href="{{utilization.url}}">
                     <div class="tile-body">
                         <div class="title">Current Usage</div>
-                        <div class="left-column small" data-ng-show="utilization">
-                            <div class="number medium">
+                        <div class="single-column" data-ng-show="utilization">
+                            <div class="number medium dpl-inline">
                                 ${{currentspend}}
                             </div>
-                            <div class="info">
-                                spent
+                            <div class="info dpl-inline">
+                                Spent
                             </div>
                         </div>
-                        <div class="right-column small" data-ng-show="utilization">
-                            <div class="number medium dpl-inline">
-                                {{dram}}
+                        <div class="second-row">
+                            <div class="left-column small" data-ng-show="utilization">
+                                <div class="number medium">
+                                    {{dram}}
+                                </div>
+                                <div class="info">
+                                    DRAM
+                                </div>
+                                <div class="info">
+                                    GB&nbsp;hours
+                                </div>
                             </div>
-                            <div class="info dpl-inline">
-                                DRAM GB&nbsp;hours
-                            </div>
-                            <div class="number medium">
-                                {{bandwidth.value}}
-                            </div>
-                            <div class="info">
-                                {{bandwidth.measure}} bandwidth
+                            <div class="right-column small" data-ng-show="utilization">
+                                <div class="number medium">
+                                    {{bandwidth.value}}
+                                </div>
+                                <div class="info">
+                                    {{bandwidth.measure}}
+                                </div>
+                                <div class="info">
+                                    bandwidth
+                                </div>
                             </div>
                         </div>
                     </div>
