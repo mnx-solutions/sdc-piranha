@@ -42,7 +42,7 @@
                     $q.all([
                         $q.when(Docker.inspectImage(image)),
                         $q.when(Docker.historyImage(image)),
-                        $q.when(Docker.listContainers({host: 'All', cache: false, options: {all: true}}))
+                        $q.when(Docker.listContainers({host: 'All', options: {all: true}}))
                     ]).then(function (result) {
                         $scope.images = result[1] || [];
                         $scope.image = result[0] || {};
