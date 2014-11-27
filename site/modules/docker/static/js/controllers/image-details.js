@@ -63,9 +63,7 @@
                             return container.Id === $scope.image.Container;
                         });
                         if (container) {
-                            Docker.inspectContainer({primaryIp: primaryIp, Id: $scope.imageContainer}).then(function () {
-                                $scope.imageContainer = '<a href="#!/docker/container/' + hostId + '/' + $scope.image.Container + '">' + $scope.imageContainer + '</a>';
-                            }, errorCallback);
+                            $scope.imageContainer = '<a href="#!/docker/container/' + hostId + '/' + $scope.image.Container + '">' + $scope.imageContainer + '</a>';
                         }
                         $scope.usedIn = hostsContainers.filter(function (container) {
                             return $scope.image.info.Tags.some(function (tag) {

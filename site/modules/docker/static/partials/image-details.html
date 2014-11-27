@@ -53,7 +53,7 @@
                                     <td data-ng-bind-html="imageContainer"></td>
                                 </tr>
                                 <tr data-ng-show="usedIn.length">
-                                    <td>Used in container</td>
+                                    <td>Used in container<span data-ng-show="usedIn.length != 1">s</span></td>
                                     <td>
                                         <span data-ng-repeat="container in usedIn">
                                            <a data-ng-href="#!/docker/container/{{container.hostId}}{{'/' + container.Id}}">{{container.ShortId}}</a>
