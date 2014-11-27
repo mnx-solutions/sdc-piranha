@@ -204,7 +204,7 @@ var Docker = function execute(scope) {
                     return callback(new Docker.DockerHostUnreachable(host).message, true);
                 }
                 var container = data.container;
-                return removeContainer(call, client, container, data.options, function (err, result) {
+                return removeContainer(call, client, container, data.options, function (err) {
                     if (err) {
                         return call.log.warn(err.message, true);
                     }
@@ -240,14 +240,14 @@ var Docker = function execute(scope) {
                                     if (errSave) {
                                         call.log.warn(errSave);
                                     }
-                                    callback(null, result);
+                                    callback(null, {});
                                 });
                             } else {
-                                callback(null, result);
+                                callback(null, {});
                             }
                         });
                     } else {
-                        callback(null, result);
+                        callback(null, {});
                     }
                 });
             });

@@ -162,7 +162,6 @@
                         var deferred = $q.defer();
                         var command = action;
                         container.actionInProgress = true;
-                        container.PreviousStatus = container.Status;
                         if (action === 'createImage') {
                             container.container = container.Id;
                         } else {
@@ -170,13 +169,18 @@
                         }
                         container.checked = false;
                         Docker[command](container).then(function (response) {
+                            $scope.containers.some(function (container) {
+                                if (container.Id === response.containerId) {
+                                    container.actionInProgress = false;
+                                }
+                            });
                             deferred.resolve(response);
                         }, function (err) {
                             deferred.reject(err);
                             errorCallback(err);
                             container.actionInProgress = false;
                             container.checked = false;
-                            listAllContainers();
+                            listAllContainers(false);
                         });
                         promises.push(deferred.promise);
                     });
@@ -185,12 +189,6 @@
                         if (action === 'createImage') {
                             return $location.path('/docker/images');
                         }
-                        $scope.containers.forEach(function (container) {
-                            if (container.actionInProgress && container.PreviousStatus && container.Status !== container.PreviousStatus) {
-                                container.actionInProgress = false;
-                                container.PreviousStatus = container.Status;
-                            }
-                        });
                         var hasContainersInProgress = $scope.containers.some(function (container) {
                             return container.actionInProgress;
                         });
