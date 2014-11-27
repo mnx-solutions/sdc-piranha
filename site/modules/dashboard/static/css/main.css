@@ -446,3 +446,25 @@ a.orange
 {
     text-align: center;
 }
+
+.second-row {
+    clear: left;
+}
+
+.tile .second-row .left-column {
+    padding-top: 0;
+}
+
+.tile .second-row .left-column,
+.tile .second-row .right-column {
+    margin-top: 2px;
+}
+
+.tile .second-row .number {
+    padding: 0;
+    font-size: 20px;
+}
+
+.tile .second-row .info {
+    padding-bottom: 2px;
+}
