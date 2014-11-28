@@ -405,7 +405,7 @@
                 var job = serverTab.call({
                     name: 'Docker' + capitalize(action),
                     data: options,
-                    done: function (err, data) {
+                    done: function (err, job) {
                         if (err) {
                             return false;
                         }
@@ -413,6 +413,8 @@
                         if (containerDoneHandler[action] && cache) {
                             containerDoneHandler[action](cache, options.options.id);
                         }
+                        var data = job.__read();
+                        data.containerId = options.options.id;
                         return data;
                     }
                 });
