@@ -30,6 +30,13 @@
                     Docker.listContainers({host: 'All', cache: cache, options: {all: true}, suppressErrors: true}).then(function (containers) {
                         $scope.containers = containers.map(function (container) {
                             container.ShortId = container.Id.slice(0, 12);
+                            container.state = 'stopped';
+                            var statuses = [{label: 'Up', state: 'running'}, {label: 'Paused', state: 'paused'}];
+                            statuses.forEach(function (status) {
+                                if (container.Status.indexOf(status.label) !== -1) {
+                                    container.state = status.state;
+                                }
+                            });
                             var ports = [];
                             container.Ports.forEach(function (port) {
                                 if (port.IP && port.PublicPort) {
@@ -96,7 +103,7 @@
                         }
                     },
                     {
-                        id: 'Status',
+                        id: 'state',
                         name: 'Status',
                         sequence: 7,
                         type: 'progress',
@@ -106,14 +113,20 @@
                         active: true
                     },
                     {
+                        id: 'Status',
+                        name: 'Duration',
+                        sequence: 8,
+                        active: true
+                    },
+                    {
                         id: 'PortsStr',
                         name: 'Ports',
-                        sequence: 8
+                        sequence: 9
                     },
                     {
                         id: 'hostId',
                         name: 'Host Id',
-                        sequence: 9,
+                        sequence: 10,
                         active: true
                     }
                 ];
