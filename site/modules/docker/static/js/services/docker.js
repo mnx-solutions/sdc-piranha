@@ -216,8 +216,8 @@
             forceRemoveImage: function (err, data, options) {
                 var cache = service.cache['topImages'];
                 if (!err && cache) {
-                    cache.remove(options.options.id);
                     service.cache['images'].reset();
+                    cache.reset();
                 }
             },
             commit: function (err) {
