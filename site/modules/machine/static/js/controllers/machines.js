@@ -29,6 +29,9 @@
             $scope.machines = Machine.machine();
             $scope.packages = Package.package();
             $scope.gotoCreatePage = Machine.gotoCreatePage;
+            if (currentLocation === '/compute/dockerHost') {
+                $scope.forceTabActive = 'all';
+            }
 
             if ($scope.features.freetier === 'enabled') {
                 FreeTier.freetier().then(function (data) {
@@ -566,7 +569,7 @@
             $scope.tabFilterField = 'datacenter';
             $scope.tabFilterDefault = $rootScope.commonConfig($scope.tabFilterField);
             $scope.$on('gridViewChangeTab', function (event, tab) {
-                if (tab === 'all') {
+                if (tab === 'all' || $scope.forceTabActive) {
                     $rootScope.clearCommonConfig($scope.tabFilterField);
                 } else {
                     $rootScope.commonConfig($scope.tabFilterField, tab);

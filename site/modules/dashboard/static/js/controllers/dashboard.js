@@ -93,7 +93,7 @@
                     $scope.runningContainers = dockerContainers.filter(function (container) {
                         return container.containers === 'running';
                     });
-                    $scope.containersLink = $scope.runningContainers.length ? '#!/docker/containers' : '#!/docker';
+                    $scope.containersLink = $scope.runningContainers.length ? '#!/docker/containers/running' : '#!/docker';
                     if ($scope.slbFeatureEnabled) {
                         tasks.push($q.when(slbService.getBalancers()));
                         tasks.push($q.when(slbService.getController()));

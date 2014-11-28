@@ -1,7 +1,7 @@
 'use strict';
 
 (function (ng, app) {
-    app.controller('GridViewController', ['$scope', '$filter', '$http', '$location', 'Account', '$rootScope', 'Datacenter', '$qe', '$sce', 'ErrorService', function ($scope, $filter, $http, $location, Account, $rootScope, Datacenter, $qe, $sce, ErrorService) {
+    app.controller('GridViewController', ['$scope', '$filter', '$http', '$location', 'Account', '$rootScope', 'Datacenter', '$qe', '$sce', 'ErrorService', '$timeout', function ($scope, $filter, $http, $location, Account, $rootScope, Datacenter, $qe, $sce, ErrorService, $timeout) {
         $scope.location = $location;
         $scope.checkedItems = [];
 
@@ -76,7 +76,9 @@
             var loadCurrentTabFilter = function () {
                 if (tabFilterUserConfig) {
                     tabFilterUserConfig.$load(function (error, config) {
-                        $scope.tabFilter = config.value;
+                        $timeout(function () {
+                            $scope.tabFilter = $scope.forceTabActive || config.value;
+                        });
                         setCurrentTabFilter();
 
                         $scope.$watch('tabFilter', function (filter) {
@@ -516,6 +518,7 @@
                 actionsButton: '=',
                 specialWidth: '=',
                 forceActive: '=?',
+                forceTabActive: '=?',
                 //TODO: What are these forms?
                 searchForm: '=',
                 instForm: '=',
