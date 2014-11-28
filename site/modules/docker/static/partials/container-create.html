@@ -337,9 +337,7 @@
                         <span class="edit-value">
                             <input type="text"
                                    name="cpuset"
-                                   data-ng-pattern="/^\d+(\,\d+)?$/"
-                                   data-ng-maxlength="3"
-                                   data-ng-change="checkRangeCpuset()"
+                                   data-ng-pattern="/^\d+(\,\d+)*$/"
                                    data-ng-model="container.Cpuset"
                                     />
                         </span>
