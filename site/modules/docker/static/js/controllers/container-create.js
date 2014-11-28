@@ -252,7 +252,7 @@
                     if (!commands) {
                         return [];
                     }
-                    return commands.match(/(?:[^\s"]+|"[^"]*")+/g).map(function (string) {
+                    return commands.match(/(?:[^\s"']+|"([^"]*)"|'([^']*)')+/g).map(function (string) {
                         return removeQuotes(string);
                     });
                 }
