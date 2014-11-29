@@ -13,9 +13,11 @@
         'Storage',
         '$q',
         'DockerCacheProvider',
-        function (serverTab, $rootScope, Account, errorContext, EventBubble, Machine, PopupDialog, localization, Storage, $q, DockerCacheProvider) {
+        function (serverTab, $rootScope, Account, errorContext, EventBubble, Machine, PopupDialog,
+                  localization, Storage, $q, DockerCacheProvider) {
 
-        var service = {cache: {}, jobs: {}};
+        var dockerVersions = window.JP.get('dockerVersions');
+        var service = {cache: {}, jobs: {}, version: dockerVersions.dockerVersion};
         var containerActions = ['start', 'stop', 'pause', 'unpause', 'inspect', 'restart', 'kill', 'logs', 'remove'];
         var imageActions = ['remove', 'inspect', 'history'];
         var billingIsActive = false;

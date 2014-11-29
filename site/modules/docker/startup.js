@@ -337,6 +337,7 @@ var Docker = function execute(scope) {
     });
 
     server.onCall('DockerCompletedHosts', function (call) {
+        var getVersion = call.data && call.data.version;
         Docker.listHosts(call, function (error, hosts) {
             if (error) {
                 return call.done(error);
@@ -352,6 +353,18 @@ var Docker = function execute(scope) {
                             callback(null, []);
                         }
                         if (status === 'completed') {
+                            if (getVersion) {
+                                Docker.createClient(call, host, function (error, client) {
+                                    if (error) {
+                                        return callback(null, []);
+                                    }
+                                    client.getVersion(function (error, version) {
+                                        host.dockerVersion = version;
+                                        callback(error, [host]);
+                                    });
+                                });
+                                return;
+                            }
                             callback(null, [host]);
                         }
                     });
@@ -1126,7 +1139,8 @@ var Docker = function execute(scope) {
                     AttachStdout: true,
                     OpenStdin: true,
                     StdinOnce: true,
-                    Tty: true
+                    Tty: true,
+                    RestartPolicy: {"Name": "always", "MaximumRetryCount": 0}
                 }, function (error, registry) {
                     collector.registry = registry;
                     callback(error);
@@ -1139,18 +1153,13 @@ var Docker = function execute(scope) {
                     Binds: ['/root/.ssh:/root/.ssh:ro'],
                     "PortBindings": {
                         "5000/tcp": [{ "HostIp": "127.0.0.1", "HostPort": "5000" }]
-                    }
+                    },
+                    RestartPolicy: {"Name": "always", "MaximumRetryCount": 0}
                 }, callback);
             });
 
             pipeline.push(function waitInstalling(collector, callback) {
                 collector.client.logs({id: collector.registry.Id, follow: true}, callback);
-            });
-
-            pipeline.push(function startPrivateRegistryContainer(collector, callback) {
-                collector.client.start({
-                    id: collector.registry.Id
-                }, callback);
             });
 
             vasync.pipeline({
