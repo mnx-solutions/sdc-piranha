@@ -56,6 +56,10 @@ window.JP.main.config(['routeProvider', function (routeProvider) {
             title: 'Containers',
             action: 'docker.containers',
             resolve: dockerResolve
+        }).when('/docker/containers/running', {
+            title: 'Containers',
+            action: 'docker.containers',
+            resolve: dockerResolve
         }).when('/docker/container/:hostid/:containerid', {
             title: 'Container Details',
             action: 'docker.details',

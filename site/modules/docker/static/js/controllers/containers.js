@@ -19,6 +19,9 @@
                 });
 
                 $scope.loading = true;
+                if ($location.path() === '/docker/containers/running') {
+                    $scope.forceTabActive = 'running';
+                }
 
                 var errorCallback = function (err) {
                     Docker.errorCallback(err, function () {
