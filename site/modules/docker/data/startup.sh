@@ -86,7 +86,7 @@ function installDocker {
     mount -a
     mkdir ${DOCKER_DIR}
     service docker stop
-    echo "DOCKER_OPTS=\"-g /mnt/docker --api-enable-cors=true --insecure-registry 127.0.0.1:5000 --insecure-registry localhost:5000\"" >> /etc/default/docker
+    echo "DOCKER_OPTS=\"-g /mnt/docker --api-enable-cors=true\"" >> /etc/default/docker
     service docker start
 }
 

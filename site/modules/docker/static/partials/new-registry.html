@@ -20,8 +20,14 @@
                     </div>
                     <div class="form-group clearfix" data-ng-show="!hosts.length">There are no available hosts to create registry.</div>
                     <div class="form-group clearfix" data-ng-show="registry.host.versionMismatch">
-                        Docker version mismatch. Current Portal version is {{version}}, host version {{registry.host.dockerVersion.Version}}.<br>
-                        For updating, run: <code>sudo apt-get update && sudo apt-get install -y lxc-docker-{{version}}</code></div>
+                        <p>
+                            This Docker host has version {{registry.host.dockerVersion.Version}}, which is not supported.
+                            To upgrade to current version of {{version}}, please ssh to the host and run:
+                        </p>
+                        <p>
+                            <code>sudo apt-get update && sudo apt-get install -y lxc-docker-{{version}}</code>
+                        </p>
+                    </div>
                 </form>
             </div>
             <div class="modal-footer">
