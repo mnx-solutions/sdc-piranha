@@ -65,8 +65,12 @@
                         if (container) {
                             $scope.imageContainer = '<a href="#!/docker/container/' + hostId + '/' + $scope.image.Container + '">' + $scope.imageContainer + '</a>';
                         }
+                        var imageTags = $scope.image.info.Tags;
                         $scope.usedIn = hostsContainers.filter(function (container) {
-                            return $scope.image.info.Tags.some(function (tag) {
+                            if (!imageTags || (imageTags && imageTags.length === 0)) {
+                                return container.Image === $scope.image.Id.slice(0, 12);
+                            }
+                            return imageTags.some(function (tag) {
                                 return container.Image === tag;
                             });
                         });
