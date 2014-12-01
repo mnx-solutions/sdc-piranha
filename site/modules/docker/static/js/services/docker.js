@@ -416,7 +416,9 @@
                             containerDoneHandler[action](cache, options.options.id);
                         }
                         var data = job.__read();
-                        data.containerId = options.options.id;
+                        if (action !== 'logs' && !data.containerId) {
+                            data.containerId = options.options.id;
+                        }
                         return data;
                     }
                 });
