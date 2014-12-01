@@ -80,9 +80,9 @@
                     $scope.loadingHostDetails = true;
                     $scope.images = [];
                     $scope.container.container = 'base';
-                    Docker.listAllImages({all: true, cache: true}).then(function (images) {
+                    Docker.listAllImages({cache: true}).then(function (images) {
                         $scope.image = images.find(function (image) {
-                            return imageId === image.Id;
+                            return imageId === image.Id && $scope.ip === image.primaryIp;
                         });
                         var hosts = [];
                         images.forEach(function (image) {
