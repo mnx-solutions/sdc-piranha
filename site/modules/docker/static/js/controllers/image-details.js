@@ -38,14 +38,18 @@
                 var machine = $q.when(Machine.machine(hostId));
                 machine.then(function (machine) {
                     var primaryIp = machine.primaryIp;
+                    var hostId = machine.id;
                     image.primaryIp = primaryIp;
+                    image.hostId = machine.id;
                     $q.all([
                         $q.when(Docker.inspectImage(image)),
                         $q.when(Docker.historyImage(image)),
-                        $q.when(Docker.listContainers({host: 'All', options: {all: true}}))
+                        $q.when(Docker.listContainers({host: 'All', options: {all: true}})),
+                        $q.when(Docker.getAuditInfo({event: {type: 'image', host: hostId, entry: imageId}, params: true}))
                     ]).then(function (result) {
                         $scope.images = result[1] || [];
                         $scope.image = result[0] || {};
+                        $scope.audit = result[3] || [];
                         $scope.images.forEach(function (image) {
                             if ($scope.image.Id === image.Id) {
                                 $scope.image.info = image;
@@ -156,10 +160,10 @@
 
             $scope.removeImage = function () {
                 $scope.actionInProgress = true;
-                Docker.listContainers({host: {primaryIp: image.primaryIp}, options: {all: true}}).then(function (containers) {
+                Docker.listContainers({host: {primaryIp: image.primaryIp, id: image.hostId}, options: {all: true}}).then(function (containers) {
                     var container = containers.find(function (container) {
-                        return (Array.isArray($scope.image.info.Tags) && $scope.image.info.Tags.indexOf(container.Image) !== -1)
-                            || container.Image.substr(0, 12) === $scope.image.Id.substr(0, 12);
+                        return (Array.isArray($scope.image.info.Tags) && $scope.image.info.Tags.indexOf(container.Image) !== -1) ||
+                            container.Image.substr(0, 12) === $scope.image.Id.substr(0, 12);
                     });
 
                     if (container) {
@@ -172,7 +176,7 @@
                             localization.translate($scope, null, 'Confirm: Remove image'),
                             localization.translate($scope, null, 'This image has more than one tag.  Are you sure you want to remove it?'),
                             function () {
-                                Docker.forceRemoveImage({host: {primaryIp: image.primaryIp}, options: {id: image.Id}}).then(function () {
+                                Docker.forceRemoveImage({host: {primaryIp: image.primaryIp, id: image.hostId}, options: {id: image.Id}}).then(function () {
                                     $location.path('/docker/images');
                                 }, errorCallback);
                             },
@@ -268,7 +272,7 @@
                             }
                             PopupDialog.message(null, 'Pushing images takes some time. You can continue your work and get notification once push is completed.');
                             Docker.pushImage({
-                                host: {primaryIp: image.primaryIp},
+                                host: {primaryIp: image.primaryIp, id: image.hostId},
                                 options: {
                                     image: angular.copy($scope.image),
                                     registry: registry,

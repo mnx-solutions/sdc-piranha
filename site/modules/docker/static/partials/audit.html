@@ -1,0 +1,36 @@
+<div data-ng-controller="Docker.AuditController" class="container-fluid container-position container-min-width">
+    <div class="row">
+        <ul class="breadcrumb">
+            <li><a href="#!/docker">Docker</a></li>
+        </ul>
+        <h3 class="page-title">Audit</h3>
+        <div class="beta-sticker">beta</div>
+        <div class="loading-large col-md-12" data-ng-show="!audit.length && loading"></div>
+
+        <div data-ng-if="audit.length">
+            <div data-grid-view
+                 data-user-config="gridUserConfig"
+                 data-props="gridProps"
+                 data-detail-props="gridDetailProps"
+                 data-action-buttons="gridActionButtons"
+                 data-items="audit"
+                 data-order="gridOrder"
+                 data-multisort="false"
+                 data-export-fields="exportFields"
+                 data-place-Holder-Text="placeHolderText"
+                 data-search-form="searchForm"
+                 data-filter-all="{{query}}"
+                 data-enabled-checkboxes="enabledCheckboxes"
+                 data-items-type="audit"
+                 data-tab-filter-field="tabFilterField"
+                 data-tab-filter-default="tabFilterDefault"
+                 data-no-entries-message-error-type="dcUnreachable"
+                 data-checked-items="checkedItems"
+                 data-force-active="forceActive">
+            </div>
+        </div>
+        <div data-ng-show="!audit.length && !loading">
+            <div class="font-size16 margin-top-10">You don't have Audit Docker commands</div>
+        </div>
+    </div>
+</div>

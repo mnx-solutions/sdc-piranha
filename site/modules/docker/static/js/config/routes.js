@@ -124,5 +124,9 @@ window.JP.main.config(['routeProvider', function (routeProvider) {
             title: 'Analytics',
             action: 'docker.analytics',
             resolve: dockerResolve
+        }).when('/docker/audit', {
+            title: 'Audit',
+            action: 'docker.audit',
+            resolve: dockerResolve
         });
 }]);

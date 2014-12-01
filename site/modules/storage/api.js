@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 var config = require('easy-config');
 var manta = require('manta');
@@ -7,6 +7,66 @@ var MemoryStream = require('memorystream');
 var vasync = require('vasync');
 
 module.exports = function execute(scope, register) {
+    function safeMkdirp(directory, opts, callback) {
+        var self = this;
+        var parts = directory.split('/');
+        var root = parts.slice(0, 2).join('/');
+        var pipeline = [];
+        parts = parts.splice(2);
+        if (!parts.slice(-1)) {
+            parts.splice(-1, 1);
+        }
+        var parentRoles = '';
+        function waitForCreating(directory, callback, retries) {
+            retries = retries !== undefined ? retries : 10;
+            self.client.head(directory, function (err, req, res) {
+                if (err) {
+                    if (!retries) {
+                        return callback(new Error('Directory ' + directory + ' not exist.'));
+                    }
+                    setTimeout(function () {
+                        waitForCreating(directory, callback, --retries);
+                    }, 500);
+                    return;
+                }
+                callback();
+            });
+        }
+        function createDirectoryIfNotExist(directory, callback) {
+            self.info(directory, function (error, info) {
+                if (error) {
+                    if (error.statusCode === 404) {
+                        var options = {
+                            headers: opts.headers || {}
+                        };
+                        options.headers['role-tag'] = parentRoles;
+                        self.mkdir(directory, options, function (error) {
+                            if (error) {
+                                return callback(error);
+                            }
+                            waitForCreating(directory, callback);
+                        });
+                        return;
+                    }
+                    return callback(error);
+                }
+                if (opts.copyRoles) {
+                    parentRoles = info.headers['role-tag'] || '';
+                }
+                callback();
+            });
+        }
+        directory = root;
+        vasync.pipeline({
+            funcs: parts.map(function (nextDirectory) {
+                return function (input, callback) {
+                    directory = directory + '/' + nextDirectory;
+                    createDirectoryIfNotExist(directory, callback);
+                };
+            })
+        }, callback);
+    }
+
     function getFileContents(filepath, encoding, callback) {
         if (!callback) {
             callback = encoding;
@@ -39,7 +99,7 @@ module.exports = function execute(scope, register) {
     function setRoleTags(path, roles, recursive, callback) {
         roles = roles || [];
         var chattrOpts = {
-            headers: {'role-tag': roles.join(',') }
+            headers: {'role-tag': roles.join(',')}
         };
         var chunkSize = 50;
         var self = this;
@@ -130,6 +190,7 @@ module.exports = function execute(scope, register) {
         var client = manta.createClient(options);
         client.getFileContents = getFileContents;
         client.putFileContents = putFileContents;
+        client.safeMkdirp = safeMkdirp;
         client.setRoleTags = setRoleTags;
         client.getRoleTags = getRoleTags;
         return client;

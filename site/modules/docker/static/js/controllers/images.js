@@ -78,7 +78,7 @@
                         imagesWithoutGrouping = angular.copy(images);
                         $scope.images = getGroupedImages(images);
                         $scope.loading = false;
-                        }, errorCallback);
+                    }, errorCallback);
                 };
 
                 $scope.query = requestContext.getParam('host') || '';
@@ -276,7 +276,6 @@
                     $scope.forceActive = 'hostId';
                 }
 
-
                 Docker.pingManta(function () {
                     listAllImages();
                 });
@@ -368,9 +367,10 @@
                                         findedImages.push(image);
                                         $scope.close();
                                         image.processing = true;
-                                        image.processStatus = "Preparing";
+                                        image.processStatus = 'Preparing';
                                         setRegistryHost(parentScope, image);
-                                        Docker.pullImage({primaryIp: $scope.hostIp}, image, parentScope.registryId).then(function (chunk) {
+                                        var host = Docker.getHost($scope.hosts, $scope.hostIp);
+                                        Docker.pullImage(host, image, parentScope.registryId).then(function (chunk) {
                                             if (!chunk.length) {
                                                 image.processStatus = 'Download error';
                                             } else if (chunk.length === 1 && chunk[0].status === 'Pulling repository ' + $scope.name) {
@@ -526,8 +526,8 @@
                                         image.processStatus = "Preparing";
 
                                         setRegistryHost(parentScope, image);
-
-                                        Docker.pullImage({primaryIp: $scope.hostIp}, image, parentScope.registryId).then(function (chunk) {
+                                        var host = Docker.getHost($scope.hosts, $scope.hostIp);
+                                        Docker.pullImage(host, image, parentScope.registryId).then(function (chunk) {
                                             if (!chunk.length) {
                                                 image.processStatus = 'Download error';
                                             }
@@ -563,7 +563,6 @@
                         openCtrl: findImagesCtrl
                     });
                 };
-
 
                 $scope.$on('gridViewChangeTab', function (event, tab) {
                     $scope.tab = tab;
