@@ -321,8 +321,12 @@
                         Docker.startContainer(container).then(function () {
                             $location.path('/docker/containers');
                         }, function (err) {
-                            if (typeof(err) === 'string' && err.indexOf('cpuset.cpus: invalid') !== -1) {
-                                err = 'Cannot start container, invalid argument: Cpuset.';
+                            if (typeof(err) === 'string') {
+                                if (err.indexOf('cpuset.cpus: invalid') !== -1) {
+                                    err = 'Cannot start container. Invalid argument: Cpuset.';
+                                } else if (err.indexOf('cpuset.cpus: numerical result') !== -1) {
+                                    err = 'Cannot start container. CPUset value is out of numerical range.';
+                                }
                             }
                             errorCallback(err);
                         });
