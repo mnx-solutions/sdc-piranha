@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 var restify = require('restify');
 var url = require('url');
@@ -181,7 +181,7 @@ module.exports = function execute(scope, register) {
             method: 'GET',
             path: '/containers/:id/top',
             params: {
-                ps_args: '='
+                'ps_args': '='
             }
         },
         create       : {
@@ -248,8 +248,8 @@ module.exports = function execute(scope, register) {
             path: '/utilization/docker/:id',
             timeout: 3000,
             params: {
-                num_stats: 60,
-                num_samples: 0
+                'num_stats': 60,
+                'num_samples': 0
             }
         },
         hostUtilization: {
@@ -257,8 +257,8 @@ module.exports = function execute(scope, register) {
             path: '/utilization/',
             timeout: 3000,
             params: {
-                num_stats: 60,
-                num_samples: 0
+                'num_stats': 60,
+                'num_samples': 0
             }
         },
         images       : {
@@ -386,7 +386,7 @@ module.exports = function execute(scope, register) {
         vasync.forEachParallel({
             inputs: Object.keys(call.cloud.listDatacenters()),
             func: function (dcName, callback) {
-                call.cloud.separate(dcName).listMachines({}, {JPC_tag: 'DockerHost'}, function (error, machines) {
+                call.cloud.separate(dcName).listMachines({}, {'JPC_tag': 'DockerHost'}, function (error, machines) {
                     if (error) {
                         return callback(error);
                     }
@@ -721,7 +721,7 @@ module.exports = function execute(scope, register) {
                     name: SUBUSER_OBJ_NAME,
                     policies: [SUBUSER_OBJ_NAME],
                     members: [dockerUser.login],
-                    default_members: [dockerUser.login]
+                    'default_members': [dockerUser.login]
                 }, function () {
                     callback();
                 });
@@ -739,7 +739,7 @@ module.exports = function execute(scope, register) {
                     name: SUBUSER_OBJ_NAME_REGISTRY,
                     policies: [SUBUSER_OBJ_NAME_REGISTRY],
                     members: [dockerRegistryUser.login],
-                    default_members: [dockerRegistryUser.login]
+                    'default_members': [dockerRegistryUser.login]
                 }, function () {
                     callback();
                 });
@@ -851,7 +851,7 @@ module.exports = function execute(scope, register) {
         options.metadata['user-script'] = startupScript;
 
         options.tags = options.tags || {};
-        options.tags.JPC_tag = 'DockerHost';
+        options.tags['JPC_tag'] = 'DockerHost';
 
         if (disableTls) {
             options.metadata['disable-tls'] = disableTls;
@@ -954,7 +954,7 @@ module.exports = function execute(scope, register) {
     api.getHostStatus = function (call, machineId, callback) {
         var client = scope.api('MantaClient').createClient(call);
         client.getFileContents('~~/stor/.joyent/docker/.status-' + machineId, function (error, result) {
-            var status = "initializing";
+            var status = 'initializing';
             if (!error) {
                 try {
                     status = JSON.parse(result).status;
@@ -1155,7 +1155,7 @@ module.exports = function execute(scope, register) {
                     });
                 });
                 callback(null, {
-                    num_results: results.length,
+                    'num_results': results.length,
                     query: term,
                     results: results
                 });
@@ -1189,7 +1189,7 @@ module.exports = function execute(scope, register) {
             }, function (errors, operations) {
                 var results = [],
                     names = {};
-               [].concat.apply([], operations.successes).forEach(function (response) {
+                [].concat.apply([], operations.successes).forEach(function (response) {
                     if (response) {
                         for (name in response) {
                             if (names[name]) {

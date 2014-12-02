@@ -14,10 +14,10 @@
                 $scope.loading = true;
                 $scope.containers = [];
                 var today = new Date();
-                var oneWeekAgo = new Date(today.getTime() - (60*60*24*7*1000));
+                var oneWeekAgo = new Date(today.getTime() - (60 * 60 * 24 * 7 * 1000));
                 $scope.date = {
                     start: oneWeekAgo,
-                    end: today
+                    end: today + 86400
                 };
 
                 var errorCallback = function (err) {
@@ -83,17 +83,28 @@
                     }, errorCallback);
                 });
 
+                function unixtimeToDate(seconds) {
+                    var customDate = new Date(seconds * 1000);
+                    var year = customDate.getFullYear();
+                    var month = customDate.getMonth() + 1 < 10 ? '0' + (customDate.getMonth() + 1) : customDate.getMonth() + 1;
+                    var date = customDate.getDate() < 10 ? '0' + customDate.getDate() : customDate.getDate();
+                    customDate = year + '-' + month + '-' + date;
+                    return customDate.toString();
+                }
+
                 $scope.viewLog = function (container, action) {
                     var date = {
-                        start: Math.floor($scope.date.start.getTime()/1000),
-                        end: Math.floor($scope.date.end.getTime()/1000)
+                        start: Math.floor($scope.date.start.getTime() / 1000),
+                        end: Math.floor($scope.date.end.getTime() / 1000)
                     };
                     if (action === 'show') {
                         container.primaryIp = container.primaryIp || '';
-                        window.open('docker/show?host=' + container.hostId + '&container=' + container.Id + '&ip=' + container.primaryIp + '&start=' + date.start + '&end=' + date.end, '_blank');
+                        window.open('docker/show?host=' + container.hostId + '&container=' + container.Id + '&ip=' + container.primaryIp +
+                                '&start=' + unixtimeToDate(date.start) + '&end=' + unixtimeToDate(date.end), '_blank');
                     } else {
                         container.primaryIp = container.primaryIp || '';
-                        window.location.href = 'docker/download?host=' + container.hostId + '&container=' + container.Id + '&ip=' + container.primaryIp + '&start=' + date.start + '&end=' + date.end;
+                        window.location.href = 'docker/download?host=' + container.hostId + '&container=' + container.Id + '&ip=' + container.primaryIp +
+                                '&start=' + unixtimeToDate(date.start) + '&end=' + unixtimeToDate(date.end);
                     }
                 };
 

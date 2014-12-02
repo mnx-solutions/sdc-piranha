@@ -1,5 +1,6 @@
 "use strict";
 
+var path = require('path');
 var manta = require('manta');
 var vasync = require('vasync');
 
@@ -24,14 +25,15 @@ module.exports = function (scope, app) {
         var client = Manta.createClient({req: req});
         var host = req.query.host;
         var container = req.query.container;
-        var path = '~~/stor/.joyent/docker/logs/' + host + '/' + container;
+        var logPath = '~~/stor/.joyent/docker/logs/' + host + '/' + container;
         var filesInDateRange = [];
-        var startDate = req.query.start;
-        var endDate = req.query.end;
+        var startDate = new Date(req.query.start).getTime() / 1000;
+        var endDate = new Date(req.query.end).getTime() / 1000 + 86400;
         var ip = req.query.ip;
-        var startCurrentDay = Math.ceil(new Date().setHours(0, 0, 0, 0) / 1000);
-        function getfilesInDateRange(path, action, callback) {
-            client.ftw(path, function (err, entriesStream) {
+        var startCurrentDay = Math.ceil(new Date().setUTCHours(0, 0, 0, 0) / 1000);
+
+        function getfilesInDateRange(logPath, action, callback) {
+            client.ftw(logPath, function (err, entriesStream) {
                 if (err) {
                     if (err.statusCode === 404) {
                         return callback(null, []);
@@ -40,9 +42,10 @@ module.exports = function (scope, app) {
                 }
 
                 entriesStream.on('entry', function (obj) {
-                    var fileDate = Math.floor(new Date(obj.name.split('.log')[0]).getTime() / 1000);
+                    var fileDate = Math.floor(new Date(path.basename(obj.name, '.log')).getTime() / 1000);
+
                     if (startDate <= fileDate && endDate >= fileDate) {
-                        filesInDateRange.push(path + '/' + obj.name);
+                        filesInDateRange.push(logPath + '/' + obj.name);
                     }
                 });
 
@@ -56,7 +59,7 @@ module.exports = function (scope, app) {
             });
         }
 
-        function secondsToDate(seconds) {
+        function unixtimeToDate(seconds) {
             var customDate = new Date(seconds * 1000);
             var year = customDate.getFullYear();
             var month = customDate.getMonth() + 1 < 10 ? '0' + (customDate.getMonth() + 1) : customDate.getMonth() + 1;
@@ -117,10 +120,10 @@ module.exports = function (scope, app) {
             };
         }
 
-        getfilesInDateRange(path, action, function (error, filesInDateRange) {
+        getfilesInDateRange(logPath, action, function (error, filesInDateRange) {
             res.setHeader('Content-Type', headerType);
             if (action === 'download') {
-                var filename = req.query.container.substr(0, 12) + '-' + secondsToDate(startDate) + '-' + secondsToDate(endDate) + '.log';
+                var filename = req.query.container.substr(0, 12) + '-' + unixtimeToDate(startDate) + '-' + unixtimeToDate(endDate) + '.log';
                 res.setHeader('Content-Disposition', 'attachment; filename=\"' + filename + '\";"');
             }
             if (error) {
