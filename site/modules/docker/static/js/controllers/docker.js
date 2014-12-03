@@ -45,8 +45,12 @@
 
             var getDockerHostInfo = function (machine) {
                 $scope.states[machine.id] = 'initializing';
-                Docker.hostInfo({host: machine, wait: true}, function (error, state) {
-                    $scope.states[state.hostId] = state.status;
+                Docker.hostInfo({host: machine, wait: true}, function (error, states) {
+                    states.forEach(function (state) {
+                        if (state.status) {
+                            $scope.states[state.hostId] = state.status;
+                        }
+                    });
                 }).then(function (info) {
                     info = Array.isArray(info) ? info.slice(-1)[0] : info;
                     $scope.states[machine.id] = 'completed';
