@@ -65,18 +65,60 @@
             </div>
         </div>
     </div>
-    <div class="empty-docker-hosts" data-ng-show="dockerMachines.length < 1 && !loading">
-        <p>Welcome to Docker on the Joyent Public Cloud. Here you can easily:</p>
-        <ul>
-            <li>Create a Docker host from a certified Ubuntu 14.04 image from Canonical</li>
-            <li>Manage existing images, or download Docker images that other people have already created</li>
-            <li>Start Docker containers from any Docker image, including your own</li>
-            <li>Access and use the Docker Public Registry or deploy your own private registry using Joyent's object store, Manta, as the backend</li>
-            <li>View the logs from any Docker Container which are also persisted in Manta</li>
-        </ul>
-        <p>All communication between components is encrypted and secured by private X.509 certificates</p>
-        <p data-ng-hide="provisionEnabled">Please <a data-ng-click="completeAccount()">Complete your Account Information</a> in order to begin using Docker on the Joyent Public Cloud</p>
-        <p data-ng-show="provisionEnabled">You don't have Docker hosts. Create one now.</p>
+    <div data-ng-show="dockerMachines.length < 1 && !loading">
+        <p class="docker-title">Welcome to Docker on the Joyent Public Cloud</p>
+        <div data-ng-hide="provisionEnabled">
+            <span class="docker-subtitle btn-link" data-ng-click="completeAccount()">Complete your Account Information</span><span class="docker-subtitle"> in order to begin using Docker on the Joyent Public Cloud</span>
+        </div>
+        <div data-ng-show="provisionEnabled">
+            <span class="docker-subtitle btn-link" data-ng-disabled="!data.imageId" data-ng-click="createDocker()">Create Docker Host</span><span class="docker-subtitle"> and begin using Docker on the Joyent Public Cloud</span>
+        </div>
+        <table class="docker-info">
+            <tr>
+                <td class="docker-icon-01"></td>
+                <td>
+                    <p class="list-title">Manage Docker Hosts</p>
+                    <p class="list-description">Docker Hosts are based on certified Ubuntu images from Canonical</p>
+                </td>
+            </tr>
+            <tr>
+                <td class="docker-icon-02"></td>
+                <td>
+                    <p class="list-title">Manage Docker Images</p>
+                    <p class="list-description">Full integration with Docker Hub, local and third party registries</p>
+                </td>
+            </tr>
+            <tr>
+                <td class="docker-icon-03"></td>
+                <td>
+                    <p class="list-title">Manage Docker Containers</p>
+                    <p class="list-description">Manage the Docker container’s lifecycle</p>
+                </td>
+            </tr>
+            <tr>
+                <td class="docker-icon-04"></td>
+                <td>
+                    <p class="list-title">Integrated Log Management</p>
+                    <p class="list-description">All container logs are persisted in <a class="btn-link" href="https://www.joyent.com/products/manta">Manta</a> object store</p>
+                </td>
+            </tr>
+            <tr>
+                <td class="docker-icon-05"></td>
+                <td>
+                    <p class="list-title">Container level resource monitoring</p>
+                    <p class="list-description">View resource utilization of each of your containers</p>
+                </td>
+            </tr>
+            <tr>
+                <td class="docker-icon-06"></td>
+                <td>
+                    <p class="list-title">Highly secure</p>
+                    <p class="list-description">All communication between the Docker Hosts and the portal is encrypted</p>
+                    <p class="list-description">and authenticated using private X.509 certificates </p>
+                </td>
+            </tr>
+        </table>
+
     </div>
 
     <a href="#!/compute/dockerHost" class="orange-link" data-ng-show="dockerMachines.length && !loading">Docker compute instances</a>
