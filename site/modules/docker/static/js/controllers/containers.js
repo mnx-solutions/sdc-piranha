@@ -29,17 +29,24 @@
                     });
                 };
 
+                var getContainerState = function (container) {
+                    if (container.Status.indexOf('Up') > -1) {
+                        if (container.Status.indexOf('Paused') > -1) {
+                            container.state = 'paused';
+                        } else {
+                            container.state = 'running';
+                        }
+                    } else {
+                        container.state = 'stopped';
+                    }
+                    return container.state;
+                };
+
                 var listAllContainers = function (cache) {
                     Docker.listContainers({host: 'All', cache: cache, options: {all: true}, suppressErrors: true}).then(function (containers) {
                         $scope.containers = containers.map(function (container) {
                             container.ShortId = container.Id.slice(0, 12);
-                            container.state = 'stopped';
-                            var statuses = [{label: 'Up', state: 'running'}, {label: 'Paused', state: 'paused'}];
-                            statuses.forEach(function (status) {
-                                if (container.Status.indexOf(status.label) !== -1) {
-                                    container.state = status.state;
-                                }
-                            });
+                            container.state = getContainerState(container);
                             var ports = [];
                             container.Ports.forEach(function (port) {
                                 if (port.IP && port.PublicPort) {
@@ -172,6 +179,11 @@
                     return container.NamesStr === 'cAdvisor' && ['stop', 'pause', 'kill', 'remove'].indexOf(action) !== -1;
                 }
 
+                var processContainerComplete = function (container) {
+                    container.actionInProgress = false;
+                    container.state = getContainerState(container);
+                };
+
                 function processContainerAction(action) {
                     var promises = [];
                     $scope.checkedItems.forEach(function (container) {
@@ -187,15 +199,14 @@
                         Docker[command](container).then(function (response) {
                             $scope.containers.some(function (container) {
                                 if (container.Id === response.containerId) {
-                                    container.actionInProgress = false;
+                                    processContainerComplete(container);
                                 }
                             });
                             deferred.resolve(response);
                         }, function (err) {
                             deferred.reject(err);
                             errorCallback(err);
-                            container.actionInProgress = false;
-                            container.checked = false;
+                            processContainerComplete(container);
                             listAllContainers(false);
                         });
                         promises.push(deferred.promise);
