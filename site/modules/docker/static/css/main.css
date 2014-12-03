@@ -477,8 +477,8 @@ span.btn-success
 .loading-medium {
     min-height: 35px;
 }
-.registry-form .api-version,
-.empty-docker-hosts {
+.registry-form .api-version
+{
     font-size: 16px;
 }
 .registry-form {
@@ -581,4 +581,82 @@ span.btn-success
     color: #666;
     font-weight: 300;
     font-size: 15px;
+}
+.docker-icon-01,
+.docker-icon-02,
+.docker-icon-03,
+.docker-icon-04,
+.docker-icon-05,
+.docker-icon-06
+{
+    min-width: 80px;
+    min-height: 90px;
+    max-width: 80px;
+    max-height: 90px;
+    background: no-repeat center center;
+    background-size: 80px 80px;
+}
+.docker-icon-01
+{
+    background-image: url("../img/docker-icon-01.png");
+}
+.docker-icon-02
+{
+    background-image: url("../img/docker-icon-02.png");
+}
+.docker-icon-03
+{
+    background-image: url("../img/docker-icon-03.png");
+}
+.docker-icon-04
+{
+    background-image: url("../img/docker-icon-04.png");
+}
+.docker-icon-05
+{
+    background-image: url("../img/docker-icon-05.png");
+}
+.docker-icon-06
+{
+    background-image: url("../img/docker-icon-06.png");
+}
+.docker-title
+{
+    font-size: 30px;
+}
+.docker-subtitle
+{
+    font-size: 16px;
+}
+.docker-subtitle,
+.docker-title
+{
+    font-weight: 300;
+}
+.docker-info
+{
+    margin: 35px 0 25px 10%;
+}
+.docker-info td
+{
+    padding-left: 15px;
+    height: 92px;
+}
+.list-title
+{
+    font-weight: bold;
+}
+.list-description,
+.list-title
+{
+    margin-bottom: 0;
+    font-size: 14px;
+    line-height: 20px;
+}
+.btn-link
+{
+    color: #f60;
+    text-decoration: none;
+    font-weight: 500;
+    cursor: pointer;
 }
