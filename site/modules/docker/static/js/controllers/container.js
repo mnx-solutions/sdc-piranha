@@ -134,6 +134,10 @@
             };
             getDockerInspectContainer();
 
+            function capitalize(string) {
+                return string.charAt(0).toUpperCase() + string.slice(1);
+            }
+
             $scope.makeContainerAction = function (action) {
                 function doAction() {
                     $scope.actionInProgress = true;
@@ -161,7 +165,19 @@
                         doAction
                     );
                 } else {
-                    doAction();
+                    PopupDialog.confirm(
+                        localization.translate(
+                            $scope,
+                            null,
+                            'Confirm: ' + capitalize(action) + ' container'
+                        ),
+                        localization.translate(
+                            $scope,
+                            null,
+                            'Please confirm that you want to ' + action + ' this container.'
+                        ),
+                        doAction
+                    );
                 }
             };
         }
