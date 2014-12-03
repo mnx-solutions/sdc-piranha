@@ -352,6 +352,13 @@ span.btn-success
     width: 150px;
     text-align: right;
 }
+.form-group .edit-lxc-conf {
+    vertical-align: top;
+}
+.form-group .edit-value textarea {
+    min-width: 457px;
+    max-width: 457px;
+}
 .digit-input {
     width: 255px;
 }
