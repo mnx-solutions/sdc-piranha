@@ -114,7 +114,7 @@
                 <button class="btn light effect-orange-button" data-ng-click="cancel()">Cancel</button>
                 <button class="btn light effect-orange-button" data-ng-click="deleteUser()">Delete</button>
                 <button class="btn light effect-orange-button" data-ng-click="changeUserPassword()">Change Password</button>
-                <button class="btn orange" data-ng-click="updateUser()">Save</button>
+                <button class="btn orange" data-ng-disabled="isInvalid()" data-ng-click="updateUser()">Save</button>
             </div>
             <div class="pull-right" data-ng-show="user.isNew">
                 <button class="btn light effect-orange-button" data-ng-click="cancel()">Cancel</button>

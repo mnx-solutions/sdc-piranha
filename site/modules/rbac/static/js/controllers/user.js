@@ -181,14 +181,14 @@
                 return updates;
             };
 
-            var isFieldsInvalid = function () {
-                return $scope.subAccountForm.$invalid;
+            $scope.isInvalid = function () {
+                return $scope.subAccountForm && $scope.subAccountForm.$invalid;
 
             };
 
             $scope.createUser = function () {
                 $scope.isFormSubmited = true;
-                if (isFieldsInvalid()) {
+                if ($scope.isInvalid()) {
                     return;
                 }
                 $scope.loading = true;
@@ -203,7 +203,7 @@
 
             $scope.updateUser = function () {
                 $scope.isFormSubmited = true;
-                if (isFieldsInvalid()) {
+                if ($scope.isInvalid()) {
                     return;
                 }
                 $scope.loading = true;
