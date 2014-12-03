@@ -155,18 +155,6 @@
 
                 $scope.portPattern = '(6553[0-5]|655[0-2]\\d|65[0-4]\\d{2}|6[0-4]\\d{3}|[1-5]\\d{4}|[1-9]\\d{0,3})';
                 $scope.exposedPattern = '(((\\d{1,3}\.){3}\\d{1,3}\\:)?' + $scope.portPattern + '?\\:)?' + $scope.portPattern;
-                $scope.checkRangeCpuset = function () {
-                    var isInRangeCpuset = false;
-                    var number = $scope.container.Cpuset;
-                    if (number && number.indexOf(',') !== -1) {
-                        number = number.replace(',', '.');
-                    }
-                    number = Number(number);
-                    if (number >= 0 && number <= 3) {
-                        isInRangeCpuset = true;
-                    }
-                    return $scope.containerCreateForm.cpuset.$setValidity('invalidCpuset', isInRangeCpuset);
-                };
 
                 Docker.listHosts().then(function (hosts) {
                     $scope.hosts = hosts || [];
@@ -332,7 +320,16 @@
                         };
                         Docker.startContainer(container).then(function () {
                             $location.path('/docker/containers');
-                        }, errorCallback);
+                        }, function (err) {
+                            if (typeof(err) === 'string') {
+                                if (err.indexOf('cpuset.cpus: invalid') !== -1) {
+                                    err = 'Cannot start container. Invalid argument: Cpuset.';
+                                } else if (err.indexOf('cpuset.cpus: numerical result') !== -1) {
+                                    err = 'Cannot start container. CPUset value is out of numerical range.';
+                                }
+                            }
+                            errorCallback(err);
+                        });
                     }, errorCallback);
                 };
 
