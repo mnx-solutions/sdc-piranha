@@ -944,7 +944,7 @@ module.exports = function execute(scope, register) {
                             return callback(listErr);
                         }
                         var dockerKey = keys.find(function (key) {
-                            return key.name === SUBUSER_OBJ_NAME;
+                            return key.name === SUBUSER_OBJ_NAME && keyPair.fingerprint === key.fingerprint;
                         });
                         if (dockerKey) {
                             setupManta(call, callback);
