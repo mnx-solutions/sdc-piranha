@@ -47,7 +47,10 @@
             },
             start: function (cache, id) {
                 var container = cache.get(id);
-                if (container && container.Status) {
+                if (container && container.Status && container.Status.indexOf('Paused') !== -1) {
+                    PopupDialog.errorObj('Cannot start container ' + id + '. Container ' + id + '  is paused. Unpause the container.');
+                }
+                if (container && container.Status && container.Status.indexOf('Paused') === -1) {
                     container.containers = 'running';
                     container.Status = 'Up moments ago';
                     cache.put(container);
