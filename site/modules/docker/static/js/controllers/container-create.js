@@ -281,12 +281,12 @@
                         return [];
                     }
                     var lxcOptions = [];
-                    lxcConf.match(/(?:[^\s"]+|"[^"]*")+/g).forEach(function (string) {
-                        if (string && string.indexOf('=') !== -1) {
-                            var lxcConfParams = string.split('=');
+                    lxcConf.split('\n').forEach(function (line) {
+                        if (line && line.indexOf('=') !== -1) {
+                            var lxcConfParams = line.split('=');
                             var lxcKey = lxcConfParams[0];
                             var lxcValue = lxcConfParams[1];
-                            var lxcOption = {"Key":lxcKey,"Value":lxcValue};
+                            var lxcOption = {"Key":lxcKey.trim(),"Value":lxcValue.trim()};
                             lxcOptions.push(lxcOption);
                         }
                     });

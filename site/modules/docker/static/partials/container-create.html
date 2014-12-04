@@ -70,7 +70,7 @@
                                    data-ng-model="environment"
                                     />
                         </span>
-                        <div class="notation">Format: "VAR=value". Use space as delimeter.</div>
+                        <div class="notation">Format: "VAR=value". Use space as delimiter.</div>
                     </div>
                     <div data-ng-hide="createImage" class="form-group">
                         <span class="edit-ports edit-label">Container Ports</span>
@@ -88,7 +88,7 @@
                                 Must contain numbers and signs like '.', ':' and ' '. Max value for port is 65535.
                             </div>
                         </div>
-                        <div class="notation">Use space as delimeter. Publish a container's port to the host
+                        <div class="notation">Use space as delimiter. Publish a container's port to the host
                             format: ip:hostPort:containerPort | ip::containerPort | hostPort:containerPort | containerPort
                         </div>
                     </div>
@@ -108,7 +108,7 @@
                                 Must contain only numbers and ' '. Max value for port is 65535.
                             </div>
                         </div>
-                        <div class="notation">Use space as delimeter.</div>
+                        <div class="notation">Use space as delimiter.</div>
                     </div>
                     <div data-ng-hide="createImage" class="form-group">
                         <span class="edit-dns edit-label">DNS</span>
@@ -126,7 +126,7 @@
                                 Must contain numbers and signs like '.' and ' '.
                             </div>
                         </div>
-                        <div class="notation">Set custom DNS servers. Use space as delimeter.</div>
+                        <div class="notation">Set custom DNS servers. Use space as delimiter.</div>
                     </div>
                     <div data-ng-show="createImage" class="form-group">
                         <span class="edit-tag edit-label">Tag</span>
@@ -172,7 +172,7 @@
                                    data-ng-model="entrypoint"
                                    />
                         </span>
-                        <div class="notation">Overwrite the default ENTRYPOINT of the image. Use space as delimeter.</div>
+                        <div class="notation">Overwrite the default ENTRYPOINT of the image. Use space as delimiter.</div>
                     </div>
                     <div class="form-group">
                         <span class="edit-commands edit-label">Command</span>
@@ -254,7 +254,7 @@
                                    data-ng-model="volumes"
                                     />
                         </span>
-                        <div class="notation">Use space as delimeter. Mountpoint paths (strings) inside the container<br />
+                        <div class="notation">Use space as delimiter. Mountpoint paths (strings) inside the container<br />
                             <strong>container_path</strong>: to create a new volume for the container,<br />
                             <strong>host_path:container_path</strong>: to bind-mount a host path into the container,<br />
                             <strong>host_path:container_path:&#60ro|rw&#62</strong>: to make the bind-mount &#60read-only|read-write&#62 inside the container.</div>
@@ -294,7 +294,7 @@
                         </span>
                     </div>
                     <div class="form-group">
-                        <span class="edit-image edit-label">AttachStdin</span>
+                        <span class="edit-label">AttachStdin</span>
                         <span class="edit-value">
                             <select ui-select2="{minimumResultsForSearch: -1, width: '457px'}" id="attachStdinSelect" data-ng-model="container.AttachStdin">
                                 <option data-ng-repeat="attachStdOption in selectOptions" value="{{attachStdOption.value}}">
@@ -304,7 +304,7 @@
                         </span>
                     </div>
                     <div class="form-group">
-                        <span class="edit-image edit-label">AttachStdout</span>
+                        <span class="edit-label">AttachStdout</span>
                         <span class="edit-value">
                             <select ui-select2="{minimumResultsForSearch: -1, width: '457px'}" id="attachStdoutSelect" data-ng-model="container.AttachStdout">
                                 <option data-ng-repeat="attachStdOption in selectOptions" value="{{attachStdOption.value}}">
@@ -314,7 +314,7 @@
                         </span>
                     </div>
                     <div class="form-group">
-                        <span class="edit-image edit-label">AttachStderr</span>
+                        <span class="edit-label">AttachStderr</span>
                         <span class="edit-value">
                             <select ui-select2="{minimumResultsForSearch: -1, width: '457px'}" id="attachStderrSelect" data-ng-model="container.AttachStderr">
                                 <option data-ng-repeat="attachStdOption in selectOptions" value="{{attachStdOption.value}}">
@@ -324,7 +324,7 @@
                         </span>
                     </div>
                     <div class="form-group">
-                        <span class="edit-hostname edit-label">ContainerIDFile</span>
+                        <span class="edit-label">ContainerIDFile</span>
                         <span class="edit-value">
                             <input type="text"
                                    name="containerIDFile"
@@ -333,7 +333,7 @@
                         </span>
                     </div>
                     <div class="form-group">
-                        <span class="edit-hostname edit-label">Cpuset</span>
+                        <span class="edit-label">Cpuset</span>
                         <span class="edit-value">
                             <input type="text"
                                    name="cpuset"
@@ -344,7 +344,7 @@
                         <div class="notation">Set CPUs in which to allow execution (0-3, 0,1)</div>
                     </div>
                     <div class="form-group">
-                        <span class="edit-image edit-label">OpenStdin</span>
+                        <span class="edit-label">OpenStdin</span>
                         <span class="edit-value">
                             <select ui-select2="{minimumResultsForSearch: -1, width: '457px'}" id="openStdinSelect" data-ng-model="container.OpenStdin">
                                 <option data-ng-repeat="openStdinOption in selectOptions" value="{{openStdinOption.value}}">
@@ -354,7 +354,7 @@
                         </span>
                     </div>
                     <div class="form-group">
-                        <span class="edit-hostname edit-label">Links</span>
+                        <span class="edit-label">Links</span>
                         <span class="edit-value">
                             <input type="text"
                                    name="containerLinks"
@@ -364,17 +364,17 @@
                         <div class="notation">Add link to another container (name:alias)</div>
                     </div>
                     <div class="form-group">
-                        <span class="edit-hostname edit-label">LxcConf</span>
+                        <span class="edit-lxc-conf edit-label">LxcConf</span>
                         <span class="edit-value">
-                            <input type="text"
-                                   name="lxcConf"
-                                   data-ng-model="lxcConf"
-                                    />
+                             <textarea type="text"
+                                       data-ng-model="lxcConf"
+                                       class="value-width"
+                                       rows="4"></textarea>
                         </span>
-                        <div class="notation">Add custom lxc options: lxc.cgroup.cpuset.cpus=0,1</div>
+                        <div class="notation">Add custom lxc options: lxc.network.type = veth. Use new line as delimiter.</div>
                     </div>
                     <div class="form-group">
-                        <span class="edit-image edit-label">PublishAllPorts</span>
+                        <span class="edit-label">PublishAllPorts</span>
                         <span class="edit-value">
                             <select ui-select2="{minimumResultsForSearch: -1, width: '457px'}" id="publishAllPortsSelect" data-ng-model="publishAllPorts">
                                 <option data-ng-repeat="publishAllPortsOption in selectOptions" value="{{publishAllPortsOption.value}}">
@@ -384,7 +384,7 @@
                         </span>
                     </div>
                     <div class="form-group">
-                        <span class="edit-image edit-label">Privileged</span>
+                        <span class="edit-label">Privileged</span>
                         <span class="edit-value">
                             <select ui-select2="{minimumResultsForSearch: -1, width: '457px'}" id="privilegedSelect" data-ng-model="privileged">
                                 <option data-ng-repeat="privilegedOption in selectOptions" value="{{privilegedOption.value}}">
@@ -394,7 +394,7 @@
                         </span>
                     </div>
                     <div class="form-group">
-                        <span class="edit-hostname edit-label">User</span>
+                        <span class="edit-label">User</span>
                         <span class="edit-value">
                             <input type="text"
                                    name="user"
