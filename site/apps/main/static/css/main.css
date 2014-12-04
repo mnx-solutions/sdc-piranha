@@ -5113,13 +5113,17 @@ progress {
     margin-top: 20px;
 }
 
-.modal-select-tag .edit-value {
+.modal-select-tag .edit-value,
+.modal-select-tag .edit-value input {
     width: 300px;
 }
 .modal-select-tag .edit-label {
     margin: 0 20px 0 40px;
     display: inline-block;
     width: 120px;
+}
+.modal-select-tag .form-group .error {
+    margin-left: 185px;
 }
 
 .modal-dialog-new-registry {

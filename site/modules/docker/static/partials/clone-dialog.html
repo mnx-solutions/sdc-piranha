@@ -1,0 +1,45 @@
+<div class="modal-dialog modal-select-tag">
+    <div class="modal-content">
+        <div tabindex="-1" data-backdrop="static" data-focus-on="button">
+            <div class="modal-header message">
+                <h5><i class="glyphicon glyphicon-info-sign"></i><b>Clone Action</b></h5>
+            </div>
+            <div class="modal-body">
+                <form name="cloneForm" class="cloneForm">
+                    <div class="form-group">
+                        <span class="edit-host edit-label">Docker Host</span>
+                        <span class="edit-value">
+                            <select data-select-two data-ng-disabled="!hosts.length" ui-select2="{minimumResultsForSearch: -1, width: '312px'}" id="hostSelect" data-ng-change="changeHost()" data-width="250px" data-ng-model="hostIp" required >
+                                <option data-ng-repeat="host in hosts" value="{{host.primaryIp}}">
+                                    {{host.name}}
+                                </option>
+                            </select>
+                        </span>
+                    </div>
+                    <div class="form-group"><div class="error" data-ng-show="hosts.length && !isAllowed">{{warning}}</div></div>
+                    <div class="form-group" data-ng-show="hasNameField">
+                        <span class="edit-containername edit-label">Container Name</span>
+                        <span class="edit-value">
+                            <input type="text"
+                                   name="name"
+                                   data-ng-model="containerName"
+                                   data-ng-pattern="/^[a-zA-Z0-9\.\_\-]*$/"
+                                    />
+                        </span>
+                        <div class="form-group" data-ng-show="isFormSubmited || cloneForm.name.$dirty">
+                            <div class="error"
+                                 data-translate
+                                 data-ng-show="cloneForm.name.$error.pattern">
+                                Name error: only [a-zA-Z0-9_.-] are allowed
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button data-ng-click="close()" data-button-focus="false" data-label="Cancel" class="btn grey-new effect-orange-button">Cancel</button>
+                <button data-ng-click="clone()" data-button-focus="true" data-ng-disabled="!hostIp || !isAllowed || cloneForm.$invalid" class="btn orange">Clone</button>
+            </div>
+        </div>
+    </div>
+</div>

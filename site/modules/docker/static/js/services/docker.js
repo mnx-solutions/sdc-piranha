@@ -97,7 +97,7 @@
                     errorContext.emit(new Error(localization.translate(null,
                     'docker',
                     'Our operations team is investigating.'
-                )));
+                    )));
             } else {
                 PopupDialog.errorObj(err);
             }
@@ -157,14 +157,11 @@
             return registries;
         };
 
-        service.createContainer = function (params) {
+        service.run = function (host, options) {
             var job = serverTab.call({
-                name: 'DockerCreate',
-                data: {host: params.host, options: params.container},
+                name: 'DockerRun',
+                data: {host: host, options: options},
                 done: function (err, data) {
-                    if (err) {
-                        return false;
-                    }
                     var cache = service.cache['containers'];
                     if (cache && containerDoneHandler.create) {
                         containerDoneHandler.create(cache);
@@ -351,7 +348,7 @@
         service.listHosts = function () {
             return Machine.listAllMachines().then(function (machines) {
                 return machines.filter(function (machine) {
-                    return machine.tags && machine.tags.JPC_tag === 'DockerHost';
+                    return machine.tags && machine.tags['JPC_tag'] === 'DockerHost';
                 });
             });
         };
@@ -371,7 +368,7 @@
                             return registry.host === 'https://' + container.primaryIp && registry.type === 'local' && !registry.processing;
                         });
                         if (allowedRegistry) {
-                            hosts.push({primaryIp: container.primaryIp, name: container.hostName});
+                            hosts.push({primaryIp: container.primaryIp, name: container.hostName, id: container.hostId});
                         }
                     }
                 });
@@ -407,7 +404,7 @@
             service[action + 'Container'] = function (container) {
                 var options = {
                     direct: true,
-                    host: {primaryIp: container.primaryIp},
+                    host: {primaryIp: container.primaryIp, id: container.hostId},
                     options: container.options || {id: container.Id}
                 };
                 if (action === 'remove') {
@@ -437,7 +434,7 @@
         });
 
         service.createImage = function (container) {
-            return createCall('commit', {host: {primaryIp: container.primaryIp}, options: container});
+            return createCall('commit', {host: {primaryIp: container.primaryIp, id: container.hostId}, options: container});
         };
 
         service.listAllImages = function (params) {
@@ -469,7 +466,7 @@
         };
 
         service.hostUtilization = function (options) {
-            options = ng.extend({options: {num_stats: 2}}, options);
+            options = ng.extend({options: {'num_stats': 2}}, options);
             var job = serverTab.call({
                 name: 'DockerHostUtilization',
                 data: options,
@@ -488,7 +485,7 @@
 
             var cpuUsage = 0;
             var machineCores = machineInfo.cores || 1;
-            if (hostStats.spec.has_cpu && hostStats.stats.length >= 2) {
+            if (hostStats.spec['has_cpu'] && hostStats.stats.length >= 2) {
                 var prev = hostStats.stats[hostStats.stats.length - 2];
                 var rawUsage = cur.cpu.usage.total - prev.cpu.usage.total;
                 var intervalInNs = (new Date(cur.timestamp).getTime() - new Date(prev.timestamp).getTime()) * 1000000;
@@ -501,7 +498,7 @@
 
             var memoryUsage = 0;
             var machineMemory = machineInfo.memory * 1024 * 1024;
-            if (hostStats.spec.has_memory) {
+            if (hostStats.spec['has_memory']) {
                 // Saturate to the machine size.
                 var limit = hostStats.spec.memory.limit;
                 if (limit > machineMemory) {
@@ -526,7 +523,7 @@
 
         imageActions.forEach(function (action) {
             service[action + 'Image'] = function (image) {
-                return createCall(action + 'Image', {host: {primaryIp: image.primaryIp}, options: image.options || {id: image.Id} });
+                return createCall(action + 'Image', {host: {primaryIp: image.primaryIp, id: image.hostId}, options: image.options || {id: image.Id}});
             };
         });
 
@@ -747,6 +744,35 @@
 
         service.forceRemoveImage = function (options) {
             return createCall('forceRemoveImage', ng.extend({}, options, {direct: true}));
+        };
+
+        service.getHost = function(hosts, ip) {
+            var host = hosts.find(function (host) { return host.primaryIp === ip});
+            return host ? host : {primaryIp: ip};
+        };
+
+        service.clone = function(name, host, params) {
+            var action = {
+                createImage: function (host, params) {
+                    return createCall('pull', {host: host, options: params});
+                },
+                run: function (host, params) {
+                    return service.run(host, params);
+                }
+            };
+            return action[name](host, params);
+        };
+
+        /**
+         *  Audit methods
+         */
+
+        service.getAuditInfo = function (options) {
+            return createCall('getAudit', ng.extend({}, options, {direct: true}));
+        };
+
+        service.getAuditDetails = function (options) {
+            return createCall('getAuditDetails', ng.extend({}, options, {direct: true}));
         };
 
         return service;

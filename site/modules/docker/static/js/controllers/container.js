@@ -19,7 +19,7 @@
             });
 
             var containerId = requestContext.getParam('containerid');
-            var hostid = requestContext.getParam('hostid');
+            var hostId = requestContext.getParam('hostid');
             var container = {
                 Id: containerId
             };
@@ -63,7 +63,7 @@
                 }
 
                 timerUpdateStats = setInterval(function () {
-                    if ($scope.machine && $scope.container && $scope.container.infoId && ($location.path() === '/docker/container/' + hostid + '/' + container.Id)) {
+                    if ($scope.machine && $scope.container && $scope.container.infoId && ($location.path() === '/docker/container/' + hostId + '/' + container.Id)) {
                         updateContainerStats({host: $scope.machine, options: {num_stats: 2, id: $scope.container.infoId}}, function (error) {
                             if (error === 'CAdvisor unavailable') {
                                 $scope.cadvisorUnavailable = true;
@@ -77,9 +77,10 @@
             };
 
             var getDockerInspectContainer = function () {
-                var machine = $q.when(Machine.machine(hostid));
+                var machine = $q.when(Machine.machine(hostId));
                 machine.then(function (machine) {
                     container.primaryIp = machine.primaryIp;
+                    container.hostId = machine.id;
                     $scope.machine = machine;
                     Docker.inspectContainer(container).then(function (info) {
                         var containerCmd = info.Config.Cmd;
@@ -127,6 +128,9 @@
                                 $scope.containerLogs.push(logs);
                             }
                         }
+                    }, errorCallback);
+                    Docker.getAuditInfo({event: {type: 'container', host: hostId, entry: containerId}, params: true}).then(function(info) {
+                        $scope.audit = info || [];
                     }, errorCallback);
                 }, function () {
                     $location.path('/docker/containers');

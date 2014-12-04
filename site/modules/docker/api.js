@@ -11,6 +11,7 @@ var ursa = require('ursa');
 var exec = require('child_process').exec;
 var os = require('os');
 var EventEmitter = require('events').EventEmitter;
+var Auditor = require('./libs/auditor.js');
 
 var SUBUSER_LOGIN = 'docker';
 var SUBUSER_REGISTRY_LOGIN = SUBUSER_LOGIN + '_registry';
@@ -83,7 +84,7 @@ function createCallback(client, opts, callback) {
     };
 }
 
-function createMethod(scope, opts) {
+function createMethod(scope, opts, selfName) {
     return function (params, callback) {
         if (!callback) {
             callback = params;
@@ -99,6 +100,8 @@ function createMethod(scope, opts) {
         var raw = params.forceRaw || opts.raw;
         delete params.forceRaw;
 
+        var self = this;
+        var auditParams = JSON.parse(JSON.stringify(params));
         var options = {
             log: scope.log,
             path: formatUrl(opts.path, params),
@@ -138,6 +141,21 @@ function createMethod(scope, opts) {
             args.push(createCallback(client, opts, callback));
         }
 
+        if (this.auditor && (opts.auditType === 'docker' || (opts.auditType && opts.auditType !== 'docker' && (auditParams.id || auditParams.Id)))) {
+            if (!(this.options.host && this.options.host.id)) {
+                scope.log.warn({opts: opts, dockerOpts: this.options}, 'Host not defined');
+            } else {
+                setImmediate(function () {
+                    self.auditor.put({
+                        host: self.options.host.id,
+                        entry: auditParams.Id || auditParams.id,
+                        type: opts.auditType,
+                        name: selfName
+                    }, auditParams);
+                });
+            }
+        }
+
         client[requestMap[options.method]].apply(client, args);
     };
 }
@@ -146,7 +164,7 @@ function createApi(scope, map, container) {
     var name;
     for (name in map) {
         if (map.hasOwnProperty(name)) {
-            container[name] = createMethod(scope, map[name]);
+            container[name] = createMethod(scope, map[name], name);
         }
     }
 }
@@ -159,7 +177,7 @@ module.exports = function execute(scope, register) {
     // http://docs.docker.com/reference/api/docker_remote_api_v1.14/
     var dockerAPIMethods = {
         containers   : {
-            method: 'GET',
+            auditType: 'docker',
             path: '/containers/json',
             params: {
                 size   : '=',
@@ -167,18 +185,18 @@ module.exports = function execute(scope, register) {
             }
         },
         list         : {
-            method: 'GET',
+            auditType: 'docker',
             path: '/containers/json',
             params: {
                 all    : true
             }
         },
         inspect      : {
-            method: 'GET',
+            auditType: 'container',
             path: '/containers/:id/json'
         },
         logs         : {
-            method: 'GET',
+            auditType: 'container',
             path: '/containers/:id/logs',
             noParse: true,
             params: {
@@ -190,7 +208,7 @@ module.exports = function execute(scope, register) {
             }
         },
         top          : {
-            method: 'GET',
+            auditType: 'container',
             path: '/containers/:id/top',
             params: {
                 'ps_args': '='
@@ -203,35 +221,46 @@ module.exports = function execute(scope, register) {
                 name   : '='
             }
         },
+        startImmediate : {
+            method: 'POST',
+            path: '/containers/:id/start'
+        },
         changes      : {
-            method: 'GET',
+            auditType: 'container',
             path: '/containers/:id/changes'
         },
         start        : {
+            auditType: 'container',
             method: 'POST',
             path: '/containers/:id/start'
         },
         stop         : {
+            auditType: 'container',
             method: 'POST',
             path: '/containers/:id/stop'
         },
         pause        : {
+            auditType: 'container',
             method: 'POST',
             path: '/containers/:id/pause'
         },
         unpause         : {
+            auditType: 'container',
             method: 'POST',
             path: '/containers/:id/unpause'
         },
         restart      : {
+            auditType: 'container',
             method: 'POST',
             path: '/containers/:id/restart'
         },
         kill         : {
+            auditType: 'container',
             method: 'POST',
             path: '/containers/:id/kill'
         },
         remove     : {
+            auditType: 'container',
             method: 'DELETE',
             path: '/containers/:id',
             params: {
@@ -240,6 +269,7 @@ module.exports = function execute(scope, register) {
             }
         },
         commit      : {
+            auditType: 'docker',
             method: 'POST',
             path: '/commit',
             params: {
@@ -252,6 +282,7 @@ module.exports = function execute(scope, register) {
             }
         },
         export       : {
+            auditType: 'container',
             method: 'GET',
             path: '/containers/:id/export'
         },
@@ -274,17 +305,18 @@ module.exports = function execute(scope, register) {
             }
         },
         images       : {
-            method: 'GET',
+            auditType: 'docker',
             path: '/images/json',
             params: {
                 all    : '='
             }
         },
         inspectImage : {
-            method: 'GET',
+            auditType: 'image',
             path: '/images/:id/json'
         },
         tagImage: {
+            auditType: 'image',
             method: 'POST',
             path: '/images/:name/tag',
             params: {
@@ -294,6 +326,7 @@ module.exports = function execute(scope, register) {
             }
         },
         pushImage : {
+            auditType: 'image',
             raw: true,
             method: 'POST',
             path: '/images/:name/push',
@@ -302,6 +335,7 @@ module.exports = function execute(scope, register) {
             }
         },
         createImage : {
+            auditType: 'docker',
             raw: true,
             method: 'POST',
             path: '/images/create',
@@ -312,7 +346,18 @@ module.exports = function execute(scope, register) {
                 repo: '='
             }
         },
+        pullImage : {
+            method: 'POST',
+            path: '/images/create',
+            params: {
+                fromImage: '=',
+                tag: '=',
+                registry: '=',
+                repo: '='
+            }
+        },
         buildImage: {
+            auditType: 'docker',
             method: 'POST',
             path: '/build',
             raw: true,
@@ -324,10 +369,12 @@ module.exports = function execute(scope, register) {
             }
         },
         historyImage : {
+            auditType: 'image',
             method: 'GET',
             path: '/images/:id/history'
         },
         removeImage  : {
+            auditType: 'image',
             method: 'DELETE',
             path: '/images/:id',
             params: {
@@ -336,19 +383,21 @@ module.exports = function execute(scope, register) {
             }
         },
         getInfo         : {
+            auditType: 'docker',
             method: 'GET',
             path: '/info'
         },
         getVersion      : {
+            auditType: 'docker',
             method: 'GET',
             path: '/version'
         },
         auth         : {
+            auditType: 'docker',
             method: 'POST',
             path: '/auth'
         },
         ping         : {
-            method: 'GET',
             retries: false,
             timeout: 3000,
             path: '/_ping'
@@ -397,8 +446,10 @@ module.exports = function execute(scope, register) {
     api.DockerHostUnreachable = DockerHostUnreachable;
     api.CAdvisorUnreachable = CAdvisorUnreachable;
 
-    function Docker(options) {
+    function Docker(options, call) {
         this.options = options;
+        var mantaClient = scope.api('MantaClient').createClient(call);
+        this.auditor = new Auditor(call, mantaClient);
     }
 
     function Registry(options) {
@@ -782,7 +833,7 @@ module.exports = function execute(scope, register) {
         var registryPath = dockerPath + '/registry';
         vasync.waterfall([
             function (callback) {
-                client.mkdirp(registryPath, function (mkdirErr) {
+                client.safeMkdirp(registryPath, {}, function (mkdirErr) {
                     callback(mkdirErr);
                 });
             },
@@ -1135,16 +1186,17 @@ module.exports = function execute(scope, register) {
                 ca: certificates.ca,
                 cert: certificates.cert,
                 key: certificates.key,
+                host: opts.host,
                 headers: util._extend({
                     'Content-type': 'application/json'
                 }, opts.headers)
-            }));
+            }, call));
         });
     }
 
     api.createClient = function (call, machine, callback) {
         var opts = {
-            url: 'https://' + machine.primaryIp + ':4243',
+            url: (disableTls ? 'http://' : 'https://') + machine.primaryIp + ':4243',
             host: machine
         };
         createClient(call, Docker, opts, callback);

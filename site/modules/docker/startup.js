@@ -1,6 +1,5 @@
 'use strict';
 var config = require('easy-config');
-var util = require('util');
 var vasync = require('vasync');
 var util = require('util');
 var os = require('os');
@@ -9,6 +8,7 @@ var ursa = require('ursa');
 var url = require('url');
 var uuid = require('../../static/vendor/uuid/uuid.js');
 var registryConfig = fs.readFileSync(__dirname + '/data/registry-config.yml', 'utf-8');
+var Auditor = require(__dirname + '/libs/auditor.js');
 
 var Docker = function execute(scope) {
     var Docker = scope.api('Docker');
@@ -20,6 +20,21 @@ var Docker = function execute(scope) {
 
     function capitalize(str) {
         return str[0].toUpperCase() + str.substr(1);
+    }
+
+    function parseTag(tag) {
+        var parts = /(?:([^:]+:\d+)\/)?((?:([^\/]+)\/)?([^:]+))(?::(.+$))?/.exec(tag);
+        if (!parts) {
+            return {};
+        }
+
+        return {
+            tag: parts[5],
+            name: parts[4],
+            repository: parts[3] || '',
+            fullname: parts[2],
+            registry: parts[1]
+        };
     }
 
     function jsonStreamParser(res, eachCallback) {
@@ -378,6 +393,93 @@ var Docker = function execute(scope) {
                 call.done(null, result);
             });
         });
+    });
+
+    server.onCall('DockerRun', {
+        verify: function (data) {
+            return data && data.host && data.options && data.options.create && data.options.create.Image && data.options.start;
+        },
+        handler: function (call) {
+            var host = call.data.host;
+            var options = call.data.options;
+            var createOptions = options.create;
+            var startOptions = options.start;
+            var pipeline = [];
+
+            pipeline.push(function createClient(collector, callback) {
+                Docker.createClient(call, host, function (error, client) {
+                    collector.client = client;
+                    callback(error);
+                });
+            });
+
+            pipeline.push(function ping(collector, callback) {
+                collector.client.ping(function (error) {
+                    if (error) {
+                        return callback(new Docker.DockerHostUnreachable(call.data.host.primaryIp).message, true);
+                    }
+                    callback();
+                });
+            });
+
+            pipeline.push(function listImages(collector, callback) {
+                collector.client.images({}, function(error, images) {
+                    collector.hostImages = images || [];
+                    callback(error);
+                });
+            });
+
+            pipeline.push(function necessaryPullImage(collector, callback) {
+                var isExistImage = collector.hostImages.some(function(image) {
+                    return image.RepoTags.some(function(tag) {
+                        return createOptions.Image === tag;
+                    });
+                });
+                if (isExistImage) {
+                    return callback();
+                }
+                var image = parseTag(options.create.Image);
+                collector.client.pullImage({fromImage: image.name, tag: image.tag, registry: image.registry, repo: image.repository}, function(error) {
+                    callback(error);
+                });
+            });
+
+            pipeline.push(function createContainer(collector, callback) {
+                collector.client.create(createOptions, function(error, response) {
+                    if (response && response.Id) {
+                        startOptions.id = response.Id;
+                    }
+                    callback(error);
+                });
+            });
+
+            pipeline.push(function startContainer(collector, callback) {
+                collector.client.startImmediate( util._extend({}, startOptions), function (error) {
+                    callback(error);
+                });
+            });
+
+            pipeline.push(function setAudit(collector, callback) {
+                var mantaClient = scope.api('MantaClient').createClient(call);
+                var auditor = new Auditor(call, mantaClient);
+                var entry = startOptions.id;
+                delete startOptions.id;
+                auditor.put({
+                    host: host.id,
+                    entry: entry,
+                    type: 'container',
+                    name: 'run'
+                }, options);
+                callback();
+            });
+
+            vasync.pipeline({
+                funcs: pipeline,
+                arg: {}
+            }, function (error) {
+                call.done(error);
+            });
+        }
     });
 
     server.onCall('GetRemovedContainers', function (call) {
@@ -833,21 +935,6 @@ var Docker = function execute(scope) {
         }
     });
 
-    function parseTag(tag) {
-        var parts = /(?:([^:]+:\d+)\/)?((?:([^\/]+)\/)?([^:]+))(?::(.+$))?/.exec(tag);
-        if (!parts) {
-            return {};
-        }
-
-        return {
-            tag: parts[5],
-            name: parts[4],
-            repository: parts[3] || '',
-            fullname: parts[2],
-            registry: parts[1]
-        };
-    }
-
     server.onCall('DockerUploadImage', {
         verify: function (data) {
             return data && data.host && data.host.primaryIp
@@ -1237,6 +1324,78 @@ var Docker = function execute(scope) {
                     Docker.registriesCache[registry.id] = registry;
                     Docker.saveRegistries(call, list, mantaClient);
                 });
+            });
+        }
+    });
+
+    server.onCall('DockerGetAudit', {
+        verify: function (data) {
+            return data;
+        },
+        handler: function (call) {
+
+            var event = call.data.event || {type: 'docker'};
+            var mantaClient = scope.api('MantaClient').createClient(call);
+            var auditor = new Auditor(call, mantaClient);
+            auditor.search(event.type, event.host, event.entry, function (err, data) {
+                if (!data || err) {
+                    if (err.statusCode === 404) {
+                        return call.done(null, []);
+                    }
+                    return call.done(err, []);
+                }
+                if (!call.data.params) {
+                    return call.done(null, data);
+                }
+                var suppressErrors = [];
+                vasync.forEachParallel({
+                    inputs: data,
+                    func: function (item, callback) {
+                        auditor.get(item, function (err, response) {
+                            if (err || !response) {
+                                if (err.statusCode !== 404) {
+                                    suppressErrors.push(err);
+                                }
+                                return callback(null, item);
+                            }
+                            item.Params = response;
+                            callback(null, item);
+                        });
+                    }
+                }, function (vasyncError, operations) {
+                    if (vasyncError) {
+                        var cause = vasyncError.jse_cause || vasyncError.ase_errors;
+                        if (Array.isArray(cause)) {
+                            cause = cause[0];
+                        } else {
+                            return call.done(vasyncError);
+                        }
+                        return call.done(cause);
+                    }
+                    var result = [].concat.apply([], operations.successes);
+                    if (suppressErrors.length) {
+                        result.push({suppressErrors: suppressErrors});
+                    }
+                    call.done(null, result);
+                });
+            });
+        }
+    });
+
+    server.onCall('DockerGetAuditDetails', {
+        verify: function (data) {
+            return data && data.event;
+        },
+        handler: function (call) {
+            var event = call.data.event;
+            var mantaClient = scope.api('MantaClient').createClient(call);
+            var auditor = new Auditor(call, mantaClient);
+            event.date = new Date(event.npDate);
+            auditor.get(event, function (err, data) {
+                if (err && err.statusCode !== 404) {
+                    return call.done(err);
+                }
+                call.done(null, data);
             });
         }
     });

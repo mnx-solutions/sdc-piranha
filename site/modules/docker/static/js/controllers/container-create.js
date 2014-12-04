@@ -132,7 +132,8 @@
                 };
 
                 $scope.changeHost = function (host) {
-                    host = host || {primaryIp: $scope.ip};
+                    host = host || Docker.getHost($scope.hosts, $scope.ip);
+                    $scope.hostId = host.id;
                     if ($scope.type === 'Images') {
                         hostContainers(host);
                     } else {
@@ -188,7 +189,8 @@
                         $scope.hosts.forEach(function (host) {
                             if (hostId === host.id) {
                                 $scope.ip = host.primaryIp;
-                                $scope.changeHost();
+                                $scope.hostId = host.id;
+                                $scope.changeHost(host);
                             }
                         });
                     }
@@ -300,37 +302,36 @@
 
                     $scope.container.Memory = $scope.memory * 1024 * 1024;
                     $scope.container.MemorySwap = $scope.memorySwap * 1024 * 1024;
+                    var host = {
+                        primaryIp: $scope.ip,
+                        id: $scope.hostId
+                    };
 
-                    Docker.createContainer({host: {primaryIp: $scope.ip}, container: $scope.container}).then(function (response) {
-                        var container = {
-                            primaryIp: $scope.ip,
-                            options: {
-                                id: response.Id,
-                                "Binds": $scope.binds || [],
-                                "Dns": $scope.dns ? $scope.dns.split(' ') : null,
-                                "VolumesFrom": $scope.volumesFrom ? $scope.volumesFrom.split(' ') : [],
-                                "PortBindings": containerPorts,
-                                "NetworkMode": $scope.networkMode,
-                                "ContainerIDFile": $scope.containerIDFile,
-                                "Links": containerLinks,
-                                "LxcConf": lxcConf,
-                                "PublishAllPorts": $scope.publishAllPorts,
-                                "Privileged": $scope.privileged
+                    var startOptions = {
+                        "Binds": $scope.binds || [],
+                        "Dns": $scope.dns ? $scope.dns.split(' ') : null,
+                        "VolumesFrom": $scope.volumesFrom ? $scope.volumesFrom.split(' ') : [],
+                        "PortBindings": containerPorts,
+                        "NetworkMode": $scope.networkMode,
+                        "ContainerIDFile": $scope.containerIDFile,
+                        "Links": containerLinks,
+                        "LxcConf": lxcConf,
+                        "PublishAllPorts": $scope.publishAllPorts,
+                        "Privileged": $scope.privileged
+                    };
+
+                    Docker.run(host, {create: $scope.container, start: startOptions}).then(function () {
+                        $location.path('/docker/containers');
+                    }, function (err) {
+                        if (typeof(err) === 'string') {
+                            if (err.indexOf('cpuset.cpus: invalid') !== -1) {
+                                err = 'Cannot start container. Invalid argument: Cpuset.';
+                            } else if (err.indexOf('cpuset.cpus: numerical result') !== -1) {
+                                err = 'Cannot start container. CPUset value is out of numerical range.';
                             }
-                        };
-                        Docker.startContainer(container).then(function () {
-                            $location.path('/docker/containers');
-                        }, function (err) {
-                            if (typeof(err) === 'string') {
-                                if (err.indexOf('cpuset.cpus: invalid') !== -1) {
-                                    err = 'Cannot start container. Invalid argument: Cpuset.';
-                                } else if (err.indexOf('cpuset.cpus: numerical result') !== -1) {
-                                    err = 'Cannot start container. CPUset value is out of numerical range.';
-                                }
-                            }
-                            errorCallback(err);
-                        });
-                    }, errorCallback);
+                        }
+                        errorCallback(err);
+                    });
                 };
 
                 var createImage = function () {
@@ -339,7 +340,7 @@
                             $scope.container.ExposedPorts[port + '/tcp'] = {};
                         });
                     }
-
+                    $scope.container.hostId = $scope.hostId;
                     Docker.createImage($scope.container).then(function () {
                         $location.path('/docker/images');
                     }, errorCallback);

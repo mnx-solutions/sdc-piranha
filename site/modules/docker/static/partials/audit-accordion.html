@@ -1,0 +1,34 @@
+<div class="panel-heading">
+    <a class="accordion-toggle toggle-icon" data-toggle="collapse" data-target="#collapse_audit">
+        Audit
+    </a>
+</div>
+<div id="collapse_audit" class="panel-collapse collapse in">
+    <div class="panel-body panel-body-log">
+        <div class="container-audit">
+            <div data-ng-if="items.length">
+                <div data-grid-view
+                     data-user-config="gridUserConfig"
+                     data-props="gridProps"
+                     data-detail-props="gridDetailProps"
+                     data-action-buttons="gridActionButtons"
+                     data-items="items"
+                     data-order="gridOrder"
+                     data-multisort="false"
+                     data-export-fields="exportFields"
+                     data-place-Holder-Text="placeHolderText"
+                     data-search-form="searchForm"
+                     data-filter-all="{{query}}"
+                     data-enabled-checkboxes="enabledCheckboxes"
+                     data-items-type="audit"
+                     data-tab-filter-field="tabFilterField"
+                     data-tab-filter-default="tabFilterDefault"
+                     data-no-entries-message-error-type="dcUnreachable"
+                     data-checked-items="checkedItems"
+                     data-force-active="forceActive">
+                </div>
+            </div>
+            <p data-ng-hide="items.length">You don't have audit Docker commands for this {{type}}</p>
+        </div>
+    </div>
+</div>

@@ -670,9 +670,9 @@
             handleChunk(machine);
             var job = serverTab.call({
                 name: 'DockerDeleteMachine',
-                data: { uuid: machine.id,
+                data: {uuid: machine.id,
                     datacenter: machine.datacenter,
-                    host: {primaryIp: machine.primaryIp, hostName: machine.name} },
+                    host: {primaryIp: machine.primaryIp, hostName: machine.name, id: machine.id}},
                 progress: function (err, job) {
                     var data = job.__read();
                     if (data && data.length) {
