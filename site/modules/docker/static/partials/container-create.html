@@ -128,6 +128,24 @@
                         </div>
                         <div class="notation">Set custom DNS servers. Use space as delimiter.</div>
                     </div>
+                     <div data-ng-hide="createImage" class="form-group">
+                        <span class="edit-dns-search edit-label">DNS Search</span>
+                        <span class="edit-value">
+                            <input type="text"
+                                   name="dnsSearch"
+                                   data-ng-model="dnsSearch"
+                                   data-ng-pattern="/^((\d{1,3}\.){3}(\d{1,3})(\s{1})?)*$/"
+                                    />
+                        </span>
+                        <div class="edit-error" data-ng-show="isFormSubmited || containerCreateForm.dnsSearch.$dirty">
+                            <div class="error"
+                                 data-translate
+                                 data-ng-show="containerCreateForm.dnsSearch.$error.pattern">
+                                Must contain numbers and signs like '.' and ' '.
+                            </div>
+                        </div>
+                        <div class="notation">Set custom DNS search domains. Use space as delimiter.</div>
+                    </div>
                     <div data-ng-show="createImage" class="form-group">
                         <span class="edit-tag edit-label">Tag</span>
                         <span class="edit-value">
@@ -372,6 +390,36 @@
                                        rows="4"></textarea>
                         </span>
                         <div class="notation">Add custom lxc options: lxc.network.type = veth. Use new line as delimiter.</div>
+                    </div>
+                    <div class="form-group">
+                        <span class="edit-capadd edit-label">CapAdd</span>
+                        <span class="edit-value">
+                            <input type="text"
+                                   name="capadd"
+                                   data-ng-model="capAdd"
+                                    />
+                        </span>
+                        <div class="notation">Add Linux capabilities. Use space as delimiter.</div>
+                    </div>
+                    <div class="form-group">
+                        <span class="edit-capdrop edit-label">CapDrop</span>
+                        <span class="edit-value">
+                            <input type="text"
+                                   name="capdrop"
+                                   data-ng-model="capDrop"
+                                    />
+                        </span>
+                        <div class="notation">Drop Linux capabilities. Use space as delimiter.</div>
+                    </div>
+                    <div class="form-group">
+                        <span class="edit-restartpolicy edit-label">Restart Policy</span>
+                        <span class="edit-value">
+                            <input type="text"
+                                   name="restartpolicy"
+                                   data-ng-model="restartPolicy"
+                                    />
+                        </span>
+                        <div class="notation">Restart policy to apply when a container exits (no, on-failure[:max-retry], always)</div>
                     </div>
                     <div class="form-group">
                         <span class="edit-label">PublishAllPorts</span>

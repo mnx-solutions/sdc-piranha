@@ -295,10 +295,28 @@
                     return lxcOptions;
                 }
 
+                function parseRestartPolicy(restartpPolicy) {
+                    var policy = {"Name": "", "MaximumRetryCount": 0};
+                    if (!restartpPolicy) {
+                        return policy;
+                    }
+
+                    if (restartpPolicy.indexOf('no') !== -1) {
+                        policy["Name"] = "no";
+                    } else if (restartpPolicy.indexOf('always') !== -1) {
+                        policy["Name"] = "always";
+                    } else if (restartpPolicy.indexOf('failure') !== -1) {
+                        policy["Name"] = "on-failure";
+                        policy["MaximumRetryCount"] = parseInt(restartpPolicy.split(':')[1], 10) || 0;
+                    }
+                    return policy;
+                }
+
                 var createContainer = function () {
                     var containerPorts = parsePorts($scope.ports);
                     var containerLinks = parseContainerLinks($scope.containerLinks);
                     var lxcConf = parseLxcConf($scope.lxcConf);
+                    var restartPolicy = parseRestartPolicy($scope.restartPolicy);
 
                     $scope.container.Memory = $scope.memory * 1024 * 1024;
                     $scope.container.MemorySwap = $scope.memorySwap * 1024 * 1024;
@@ -309,13 +327,17 @@
 
                     var startOptions = {
                         "Binds": $scope.binds || [],
-                        "Dns": $scope.dns ? $scope.dns.split(' ') : null,
+                        "Dns": $scope.dns ? $scope.dns.split(' ') : [],
+                        "DnsSearch": $scope.dnsSearch ? $scope.dnsSearch.split(' ') : [],
                         "VolumesFrom": $scope.volumesFrom ? $scope.volumesFrom.split(' ') : [],
                         "PortBindings": containerPorts,
                         "NetworkMode": $scope.networkMode,
                         "ContainerIDFile": $scope.containerIDFile,
                         "Links": containerLinks,
                         "LxcConf": lxcConf,
+                        "CapAdd": $scope.capAdd ? $scope.capAdd.split(' ') : [],
+                        "CapDrop": $scope.capDrop ? $scope.capDrop.split(' ') : [],
+                        "RestartPolicy": restartPolicy,
                         "PublishAllPorts": $scope.publishAllPorts,
                         "Privileged": $scope.privileged
                     };
