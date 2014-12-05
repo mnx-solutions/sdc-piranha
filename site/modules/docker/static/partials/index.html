@@ -68,10 +68,10 @@
     <div data-ng-show="dockerMachines.length < 1 && !loading">
         <p class="docker-title">Welcome to Docker on the Joyent Public Cloud</p>
         <div data-ng-hide="provisionEnabled">
-            <span class="docker-subtitle btn-link" data-ng-click="completeAccount()">Complete your Account Information</span><span class="docker-subtitle"> in order to begin using Docker on the Joyent Public Cloud</span>
+            <span class="docker-subtitle active-link" data-ng-click="completeAccount()">Complete your Account Information</span><span class="docker-subtitle"> in order to begin using Docker on the Joyent Public Cloud</span>
         </div>
         <div data-ng-show="provisionEnabled">
-            <span class="docker-subtitle btn-link" data-ng-disabled="!data.imageId" data-ng-click="createDocker()">Create Docker Host</span><span class="docker-subtitle"> and begin using Docker on the Joyent Public Cloud</span>
+            <span class="docker-subtitle active-link" data-ng-disabled="!data.imageId" data-ng-click="createDocker()">Create Docker Host</span><span class="docker-subtitle"> and begin using Docker on the Joyent Public Cloud</span>
         </div>
         <table class="docker-info">
             <tr>
@@ -99,7 +99,7 @@
                 <td class="docker-icon-04"></td>
                 <td>
                     <p class="list-title">Integrated Log Management</p>
-                    <p class="list-description">All container logs are persisted in <a class="btn-link" href="https://www.joyent.com/products/manta">Manta</a> object store</p>
+                    <p class="list-description">All container logs are persisted in <a class="active-link" href="https://www.joyent.com/products/manta" target="_blank">Manta</a> object store</p>
                 </td>
             </tr>
             <tr>
@@ -123,6 +123,6 @@
 
     <a href="#!/compute/dockerHost" class="orange-link" data-ng-show="dockerMachines.length && !loading">Docker compute instances</a>
 
-    <div mantadisclaimer class="manta-disclaimer manta-disclaimer-dashboard"></div>
+    <div data-ng-hide="loading" mantadisclaimer class="manta-disclaimer manta-disclaimer-dashboard"></div>
 </div>
 

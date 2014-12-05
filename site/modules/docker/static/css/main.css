@@ -660,10 +660,3 @@ span.btn-success
     font-size: 14px;
     line-height: 20px;
 }
-.btn-link
-{
-    color: #f60;
-    text-decoration: none;
-    font-weight: 500;
-    cursor: pointer;
-}
