@@ -262,25 +262,12 @@ module.exports = function execute(scope) {
 
     var ls = function (call, client) {
         client = client || Manta.createClient(call);
-        client.ls(call.data.path, function (err, res) {
+        client.listDirectory(call.data.path, function(err, list) {
             if (err) {
                 sendError(call, err);
                 return;
             }
-            var files = [];
-            function onEntry(e) {
-                files.push(e);
-            }
-
-            res.on('directory', onEntry);
-            res.on('object', onEntry);
-            res.once('error', sendError(call));
-            res.once('end', function () {
-                files.forEach(function (file) {
-                    file.path = file.name;
-                });
-                call.done(null, files);
-            });
+            call.done(null, list);
         });
     };
 
@@ -364,22 +351,6 @@ module.exports = function execute(scope) {
             call.done(null, roles);
         });
     });
-
-    var listDirectory = function (client, path, callback) {
-        client.ls(path, function (err, res) {
-            if (!err) {
-                var entries = [];
-                var onEntry = function (e) {
-                    entries.push(e);
-                };
-                res.on('directory', onEntry);
-                res.on('object', onEntry);
-                res.on('end', function () {
-                    callback(null, entries);
-                });
-            }
-        });
-    };
 
     server.onCall('FileManSetRoles', function (call) {
         var client = Manta.createClient(call);

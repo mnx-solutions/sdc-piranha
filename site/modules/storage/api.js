@@ -154,6 +154,28 @@ module.exports = function execute(scope, register) {
         });
     }
 
+    function listDirectory(path, callback) {
+        this.ls(path, function (err, res) {
+            if (err) {
+                return callback(err);
+            }
+            var files = [];
+            function onEntry(e) {
+                files.push(e);
+            }
+
+            res.on('directory', onEntry);
+            res.on('object', onEntry);
+            res.once('error', callback);
+            res.once('end', function () {
+                files.forEach(function (file) {
+                    file.path = file.name;
+                });
+                callback(null, files);
+            });
+        });
+    }
+
     function createClient(call) {
 
         var options = {
@@ -193,6 +215,7 @@ module.exports = function execute(scope, register) {
         client.safeMkdirp = safeMkdirp;
         client.setRoleTags = setRoleTags;
         client.getRoleTags = getRoleTags;
+        client.listDirectory = listDirectory;
         return client;
     }
 

@@ -775,6 +775,10 @@
             return createCall('getAuditDetails', ng.extend({}, options, {direct: true}));
         };
 
+        service.auditPing = function () {
+            return createCall('auditPing', {direct: true});
+        };
+
         return service;
     }]);
 }(window.angular, window.JP.getModule('docker')));
