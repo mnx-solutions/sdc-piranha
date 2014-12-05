@@ -37,7 +37,7 @@
                         }
                         removedContainers.forEach(function (container) {
                             container.NamesStr = container.Names.map(function (name) {
-                                return name.substring(1);
+                                return name[0] === '/' ? name.substring(1) : name;
                             }).join(', ');
                             container.ShortId = container.Id.slice(0, 12);
                             container.logs = REMOVED_CONTAINER_STATUS;
