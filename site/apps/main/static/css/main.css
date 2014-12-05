@@ -5213,15 +5213,29 @@ progress {
 }
 
 .hotlinks a,
+.hotlinks a:hover,
+.hotlinks a:visited,
+.hotlinks a:focus,
+.active-link,
+.active-link:hover,
+.active-link:visited,
+.active-link:focus,
+a.orange-link,
+a.orange-link:hover,
+a.orange-link:visited,
+a.orange-link:focus
+{
+    color: #f60;
+    text-decoration: none;
+    font-weight: 500 !important;
+    cursor: pointer;
+}
+
+.hotlinks a,
 .hotlinks span.active-link,
 a.orange-link
 {
-    font-weight: 500;
-
     vertical-align: middle;
-    text-decoration: none;
-
-    color: #f60;
 }
 
 .hotlinks span.active-link
