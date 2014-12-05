@@ -1,7 +1,7 @@
 'use strict';
 
 (function (app) {
-    app.directive('auditAccordion',  ['dockerClone', function (dockerClone) {
+    app.directive('auditAccordion',  ['Account', 'dockerClone', function (Account, dockerClone) {
         return {
             templateUrl: 'docker/static/partials/audit-accordion.html',
             restrict: 'EA',
@@ -10,13 +10,14 @@
                 items: '='
             },
             link: function ($scope) {
+                $scope.gridUserConfig = Account.getUserConfig().$child('docker-audit-' + $scope.type);
                 $scope.query = '';
                 $scope.gridOrder = ['-npDate'];
 
                 $scope.gridProps = [
                     {
                         id: 'name',
-                        name: 'Name',
+                        name: 'Action',
                         sequence: 1,
                         active: true
                     },
@@ -34,15 +35,14 @@
                     },
                     {
                         id: 'host',
-                        name: 'Host Id',
+                        name: 'Host ID',
                         sequence: 4,
                         active: false
                     },
                     {
                         id: 'edit',
-                        name: 'Action',
+                        name: 'Clone',
                         type: 'button',
-                        hideSorter: true,
                         btn: {
                             label: 'Clone',
                             getClass: function () {

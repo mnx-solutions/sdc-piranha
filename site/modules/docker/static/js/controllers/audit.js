@@ -9,7 +9,8 @@
         'requestContext',
         'localization',
         'dockerClone',
-        function ($scope, Docker, PopupDialog, $q, requestContext, localization, dockerClone) {
+        'Account',
+        function ($scope, Docker, PopupDialog, $q, requestContext, localization, dockerClone, Account) {
             localization.bind('docker', $scope);
             requestContext.setUpRenderContext('docker.audit', $scope, {
                 title: localization.translate(null, 'docker', 'Docker Audit')
@@ -29,6 +30,9 @@
                 return event.params;
             };
 
+            if ($scope.features.manta === 'enabled') {
+                $scope.gridUserConfig = Account.getUserConfig().$child('docker-audit');
+            }
 
             $scope.query = '';
             $scope.gridOrder = ['-npDate'];
@@ -42,15 +46,15 @@
                 },
                 {
                     id: 'name',
-                    name: 'Name',
+                    name: 'Action',
                     sequence: 2,
                     active: true
                 },
                 {
                     id: 'host',
-                    name: 'Host Id',
+                    name: 'Host ID',
                     sequence: 3,
-                    active: true
+                    active: false
                 },
                 {
                     id: 'npDate',
@@ -73,9 +77,8 @@
                 },
                 {
                     id: 'edit',
-                    name: 'Action',
+                    name: 'Clone',
                     type: 'button',
-                    hideSorter: true,
                     btn: {
                         label: 'Clone',
                         getClass: function () {
