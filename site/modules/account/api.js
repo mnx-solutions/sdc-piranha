@@ -144,7 +144,8 @@ module.exports = function execute(scope, register) {
             });
         }
         if(req.session.userId) {
-            getMetadata(req.session.userId);
+            var userId =  req.session.parentAccountId || req.session.userId;
+            getMetadata(userId);
             return;
         }
 
