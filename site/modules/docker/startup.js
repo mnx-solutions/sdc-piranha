@@ -112,6 +112,7 @@ var Docker = function execute(scope) {
             if (error && error.statusCode !== 404) {
                 return callback(error.message, true);
             }
+            removedContainersCache = {};
             return callback(null);
         });
     };
