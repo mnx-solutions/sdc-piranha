@@ -1598,11 +1598,15 @@ span.btn-success
     border: 1px solid #dadcdd;
     border-top: 0;
 }
+.accordion-package-select .package-info .price,
+.accordion-package-select .package-info .price p span
+{
+    height: 38px;
+}
 
 .accordion-package-select .package-info
 {
     line-height: 40px;
-    margin-top: -1px;
     cursor: pointer;
     vertical-align: middle;
 }

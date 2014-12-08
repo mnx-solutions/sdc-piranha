@@ -1170,6 +1170,12 @@
                 }
             }
 
+            var setDefaultAccordionBehavior = function (accordion) {
+                accordion.find('.panel-collapse').addClass('collapse').end()
+                    .find('a').addClass('collapsed').end()
+                    .find('.collapse.in').removeClass('in');
+            };
+
             $scope.onFilterChange = function (newVal, packageType) {
                 if (newVal) {
                     $scope.filterModel.value = $scope.filterValues[newVal][0];
@@ -1180,9 +1186,7 @@
                         var accordion = ng.element('#packagesAccordion');
                         var accordionBody = ng.element('.panel-collapse');
                         if ($scope.filterModel.key === 'No filter') {
-                            accordion.find('.panel-collapse').addClass('collapse').end()
-                                .find('a').addClass('collapsed').end()
-                                .find('.collapse.in').removeClass('in');
+                            setDefaultAccordionBehavior(accordion);
                             accordionBody.has('div.active').parent().has('a.collapsed').find('a').click();
                         } else {
                             $scope.collapsedPackageTypes = [];
@@ -1208,6 +1212,13 @@
                 }
             };
             $scope.changeSelectedPackage = function (event, packageType) {
+                $timeout(function () {
+                    var accordion = ng.element('#packagesAccordion');
+                    var elementsLength = accordion.find('.collapse.in').length;
+                    if (elementsLength >= 1) {
+                        setDefaultAccordionBehavior(accordion);
+                    }
+                });
                 if ($scope.packageType) {
                     return;
                 }
