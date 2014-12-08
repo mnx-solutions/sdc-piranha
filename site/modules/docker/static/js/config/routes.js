@@ -127,6 +127,22 @@ window.JP.main.config(['routeProvider', function (routeProvider) {
         }).when('/docker/audit', {
             title: 'Audit',
             action: 'docker.audit',
-            resolve: dockerResolve
+            resolve: {
+                data: ['$rootScope', '$location', '$q', 'Docker', 'Account', function ($rootScope, $location, $q, Docker, Account) {
+                    $q.all([
+                        $q.when(Account.getAccount()),
+                        $q.when(Docker.auditPing())
+                    ]).then(function (result) {
+                        var account = result[0] || {};
+                        var audit = result[1] || [];
+                        $rootScope.provisionEnabled = account.provisionEnabled || false;
+                        if (!audit.length) {
+                            dockerResolve.data($rootScope, $location, $q, Docker, Account);
+                        }
+                    }, function () {
+                        dockerResolve.data($rootScope, $location, $q, Docker, Account);
+                    });
+                }]
+            }
         });
 }]);

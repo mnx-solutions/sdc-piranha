@@ -1400,6 +1400,17 @@ var Docker = function execute(scope) {
             });
         }
     });
+
+    server.onCall('DockerAuditPing', function (call) {
+        var mantaClient = scope.api('MantaClient').createClient(call);
+        var auditor = new Auditor(call, mantaClient);
+        auditor.ping(function (err, data) {
+            if (err && err.statusCode !== 404) {
+                return call.done(err);
+            }
+            call.done(null, data || []);
+        });
+    });
 };
 
 if (!config.features || config.features.docker !== 'disabled') {

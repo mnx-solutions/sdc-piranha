@@ -176,4 +176,8 @@ Auditor.prototype.del = function (event, callback) {
     }, callback);
 };
 
+Auditor.prototype.ping = function (callback) {
+    this.client.listDirectory(AUDITPATH, callback);
+};
+
 module.exports = Auditor;
