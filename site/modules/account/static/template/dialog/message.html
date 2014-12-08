@@ -23,9 +23,9 @@
                 </div>
             </div>
             <div class="modal-footer modal-footer-ssh">
-                <button data-button-focus="false" data-ng-click="close('cancel')" class="btn orange effect-orange-button grey-new">Cancel</button>
+                <button data-button-focus="false" data-ng-disabled="loadingKeys" data-ng-click="close('cancel')" class="btn orange effect-orange-button grey-new">Cancel</button>
             <span data-ng-show="isUploadSshEnabled">
-                <label type="button" class="btn orange effect-orange-button grey-new upload-key-label" for="uploadInput">upload</label>
+                <label type="button" data-ng-disabled="loadingKeys" class="btn orange effect-orange-button grey-new upload-key-label" for="uploadInput">upload</label>
                 <input type="file"
                        id="uploadInput"
                        name="uploadInput"
@@ -33,7 +33,7 @@
                        data-ng-model="filePath"
                        onchange="angular.element(this).scope().uploadFile(uploadInput)">
             </span>
-                <button data-button-focus="true" data-ng-click="close('add')" class="btn orange effect-orange-button">Add</button>
+                <button data-button-focus="true" data-ng-disabled="loadingKeys" data-ng-click="close('add')" class="btn orange effect-orange-button">Add</button>
                 <div class="loading-medium-tr" data-ng-show="loadingKeys"></div>
             </div>
         </div>
