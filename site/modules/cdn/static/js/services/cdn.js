@@ -6,59 +6,52 @@
         function (serverTab) {
             var service = {};
 
-            service.getApiKey = function (callback) {
+            service.getApiKey = function () {
                 return serverTab.call({
                     name: 'GetApiKey',
-                    data: {},
-                    done: callback
+                    data: {}
                 }).promise;
             };
 
-            service.addApiKey = function (data, callback) {
+            service.addApiKey = function (data) {
                 return serverTab.call({
                     name: 'AddApiKey',
-                    data: data,
-                    done: callback
+                    data: data
                 }).promise;
             };
 
-            service.updateApiKey = function (data, callback) {
+            service.updateApiKey = function (data) {
                 return serverTab.call({
                     name: 'UpdateApiKey',
-                    data: data,
-                    done: callback
+                    data: data
                 }).promise;
             };
 
-            service.createConfiguration = function (data, callback) {
+            service.createConfiguration = function (data) {
                 return serverTab.call({
                     name: 'CreateConfiguration',
-                    data: data,
-                    done: callback
+                    data: data
                 }).promise;
             };
 
-            service.listConfigurations = function (data, callback) {
+            service.listConfigurations = function (data) {
                 return serverTab.call({
                     name: 'ListServices',
-                    data: data,
-                    done: callback
+                    data: data
                 }).promise;
             };
 
-            service.deleteConfiguration = function (data, callback) {
+            service.deleteConfiguration = function (data) {
                 return serverTab.call({
                     name: 'DeleteConfiguration',
-                    data: data,
-                    done: callback
+                    data: data
                 }).promise;
             };
 
-            service.domainStatus = function (data, callback) {
+            service.domainStatus = function (data) {
                 return serverTab.call({
                     name: 'DomainStatus',
-                    data: data,
-                    done: callback
+                    data: data
                 }).promise;
             };
 

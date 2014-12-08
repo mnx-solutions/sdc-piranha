@@ -16,7 +16,9 @@
             localization.bind('cdn', scope);
             requestContext.setUpRenderContext('cdn.index', scope);
 
-            scope.gridUserConfig = Account.getUserConfig().$child('CdnConfigurations');
+            if (scope.features.manta === 'enabled') {
+                scope.gridUserConfig = Account.getUserConfig().$child('CdnConfigurations');
+            }
 
             scope.mantaUnavailable = false;
             scope.loading = true;
@@ -41,6 +43,10 @@
                 );
             };
             var loadConfigurations = function () {
+                if (!scope.apiKey.length) {
+                    scope.loading = false;
+                    return scope.apiKey = '';
+                }
                 cdn.listConfigurations({key: scope.apiKey}).then(function (configurations) {
                     if (configurations) {
                         scope.configurations = configurations;
@@ -65,8 +71,8 @@
                         }
                         loadConfigurations();
                     }, function (err) {
-                        if (err && err.name === 'ConnectTimeoutError') {
-                            showError(err.message, function () {
+                        if (err) {
+                            showError(err.message || err, function () {
                                 $location.url('/manta/intro');
                                 $location.replace();
                             });
