@@ -8,10 +8,6 @@ module.exports = function (scope, app) {
     var Manta = scope.api('MantaClient');
     var Docker = scope.api('Docker');
 
-    function DockerHostUnreachable(host) {
-        this.message = 'Docker host "' + host + '" is unreachable.';
-    }
-
     var getFile = function (req, res, action) {
         var messageError;
         var headerType;
@@ -89,7 +85,7 @@ module.exports = function (scope, app) {
                         }
                         client.ping(function (error) {
                             if (error) {
-                                return callback(new DockerHostUnreachable(ip));
+                                return callback(new Docker.DockerHostUnreachable({primaryIp: ip}));
                             }
                             client.logs({id: container, tail: 'all'}, function (err, response) {
                                 if (err) {

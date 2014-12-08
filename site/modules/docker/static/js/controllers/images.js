@@ -66,6 +66,9 @@
                     topImages = all ? topImages : [];
                     Docker.listAllImages(all ? {all: true, cache: true} : {cache: true}).then(function (images) {
                         images.forEach(function (image) {
+                            if (image.suppressErrors) {
+                                return;
+                            }
                             image.ShorId = image.Id.slice(0, 12);
                             if (all) {
                                 image.images = topImages.indexOf(image.ShorId) === -1 ? 'all' : 'top';
