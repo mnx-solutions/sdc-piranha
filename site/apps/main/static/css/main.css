@@ -1998,6 +1998,10 @@ textarea.ssharea
     margin-left: 5px;
 }
 
+.modal-footer-ssh .loading-medium-tr {
+    margin: -32px 0 0 20px;
+}
+
 .loading-large
 {
     height: 100px;

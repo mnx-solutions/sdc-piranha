@@ -86,7 +86,10 @@
 
                             $scope.buttons = [{result: 'cancel', label: 'Cancel', cssClass: 'pull-left', setFocus: false}, {result: 'add', label: 'Add', cssClass: 'btn-joyent-blue', setFocus: true}];
 
+                            $scope.loadingKeys = false;
+
                             $scope.uploadFile = function (elem) {
+                                $scope.loadingKeys = true;
                                 $scope.$apply(function () {
                                     $rootScope.$broadcast('sshProgress', true);
                                 });
@@ -106,6 +109,7 @@
                                         path = 'account/upload?userId=' +  subUserId;
                                     }
                                     return http.uploadFiles(path, elem.value, files, function (error) {
+                                        $scope.loadingKeys = false;
                                         $rootScope.$broadcast('sshProgress', false);
 
                                         if (error) {
