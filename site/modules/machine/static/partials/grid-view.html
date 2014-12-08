@@ -133,7 +133,7 @@
                             </span>
                             <span data-ng-switch-default data-ng-switch="prop.type">
                                 <span data-ng-switch-when="button">
-                                    <div class="grid-small-font" data-action-button data-label-fn="prop.btn.getLabel" data-action-fn="prop.btn.action" data-class-fn="prop.btn.getClass" data-show-fn="prop.btn.show" data-disabled-fn="prop.btn.disabled" data-label="prop.btn.label" data-tooltip-text="prop.btn.tooltip" data-object="object"></div>
+                                    <div class="grid-small-font" data-action-button data-label-fn="prop.btn.getLabel" data-action-fn="prop.btn.action" data-class-fn="prop.btn.getClass" data-show-fn="prop.btn.show" data-disabled-fn="prop.btn.disabled" data-label="prop.btn.label" data-tooltip-text="prop.btn.tooltip" data-object="object" data-tooltip-fn="prop.btn.getTooltip"></div>
                                 </span>
                                 <span data-ng-switch-when="buttons">
                                     <span class="grid-small-font" data-ng-repeat="btn in prop.buttons | orderBy:sequence">

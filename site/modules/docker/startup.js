@@ -86,6 +86,19 @@ var Docker = function execute(scope) {
         });
     }
 
+    function putToAudit(call, entry, params, error, finish) {
+        var mantaClient = scope.api('MantaClient').createClient(call);
+        var auditor = new Auditor(call, mantaClient);
+        if (error) {
+            params.error = true;
+            params.errorMessage = error.message || error;
+        }
+        auditor.put(entry, params);
+        if (finish) {
+            call.done(error);
+        }
+    }
+
     var REMOVED_LOGS_PATH = '~~/stor/.joyent/docker/removed-logs.json';
 
     var getRemovedContainersList = function (call, callback) {
@@ -407,6 +420,9 @@ var Docker = function execute(scope) {
             var startOptions = options.start;
             var pipeline = [];
 
+            var mantaClient = scope.api('MantaClient').createClient(call);
+            var auditor = new Auditor(call, mantaClient);
+
             pipeline.push(function createClient(collector, callback) {
                 Docker.createClient(call, host, function (error, client) {
                     collector.client = client;
@@ -461,8 +477,6 @@ var Docker = function execute(scope) {
             });
 
             pipeline.push(function setAudit(collector, callback) {
-                var mantaClient = scope.api('MantaClient').createClient(call);
-                var auditor = new Auditor(call, mantaClient);
                 var entry = startOptions.id;
                 delete startOptions.id;
                 auditor.put({
@@ -478,6 +492,14 @@ var Docker = function execute(scope) {
                 funcs: pipeline,
                 arg: {}
             }, function (error) {
+                if (error) {
+                    auditor.put({
+                        host: host.id,
+                        entry: startOptions.id,
+                        type: startOptions.id ? 'container' : 'docker',
+                        name: 'run'
+                    }, util._extend(options, {error: true, errorMessage: error.message || error}));
+                }
                 call.done(error);
             });
         }
@@ -844,13 +866,19 @@ var Docker = function execute(scope) {
     });
 
     var pullImage = function (call, options, auth) {
+        var entry = {
+            host: call.data.host.id,
+            entry: options.id,
+            type: options.id ? 'image' : 'docker',
+            name: 'pull'
+        };
         Docker.createClient(call, call.data.host, function (error, client) {
             if (error) {
-                return call.done(error);
+                return putToAudit(call, entry, options, error, true);
             }
             client.createImage(options, function (err, req) {
                 if (err) {
-                    return call.done(err);
+                    return putToAudit(call, entry, options, err, true);
                 }
                 if (auth) {
                     req.setHeader('X-Registry-Auth', auth);
@@ -858,7 +886,7 @@ var Docker = function execute(scope) {
 
                 req.on('result', function (error, res) {
                     if (error) {
-                        return call.done(error);
+                        return putToAudit(call, entry, options, error, true);
                     }
 
                     var layersMap = {};
@@ -879,10 +907,10 @@ var Docker = function execute(scope) {
                     });
 
                     res.on('end', function () {
-                        call.done(null);
+                        putToAudit(call, entry, options, null, true);
                     });
                     res.on('error', function (error) {
-                        call.done(error);
+                        putToAudit(call, entry, options, error, true);
                     });
                 });
                 req.end();
@@ -904,6 +932,12 @@ var Docker = function execute(scope) {
         handler: function (call) {
             var options = call.data.options;
             var registryId = options.registryId;
+            var entry = {
+                host: call.data.host.id,
+                entry: options.id,
+                type: options.id ? 'image' : 'docker',
+                name: 'pull'
+            };
             if (!registryId || registryId === 'local') {
                 return pullImage(call, options);
             }
@@ -912,7 +946,7 @@ var Docker = function execute(scope) {
                     if (error.statusCode !== 404) {
                         return call.done(error.message || error);
                     }
-                    return call.done('Please fill authentication information for the registry.');
+                    return putToAudit(call, entry, options, 'Please fill authentication information for the registry.', true);
                 }
 
                 var registryRecord = list.find(function (item) {
@@ -927,7 +961,7 @@ var Docker = function execute(scope) {
 
                 getImageSize(call, registryId, {name: call.data.options.fromImage, tag: call.data.options.tag}, function (err, result) {
                     if (err) {
-                        return call.done(err);
+                        return putToAudit(call, entry, options, err, true);
                     }
                     call.update(null, {totalSize: result.size});
                     pullImage(call, options, auth);
@@ -942,13 +976,20 @@ var Docker = function execute(scope) {
                 && data.options && data.options.image && data.options.image.Id && data.options.registry && data.options.name;
         },
         handler: function (call) {
-            var image = call.data.options.image;
-            var registry = call.data.options.registry;
-            var name = call.data.options.name;
+            var options = call.data.options;
+            var image = options.image;
+            var registry = options.registry;
+            var name = options.name;
             var parsedTag = parseTag(name);
             var pipeline = [];
             var registryUrl = url.parse(registry.host).hostname + ':' + registry.port;
             var taggedName = parsedTag.repository + '/' + parsedTag.name;
+            var entry = {
+                host: call.data.host.id,
+                entry: options.id,
+                type: options.id ? 'image' : 'docker',
+                name: 'pull'
+            };
             if ((registryUrl === 'index.docker.io:443' || registry.type === 'global') && !parsedTag.repository) {
                 taggedName = registry.username + '/' + parsedTag.name;
             } else if (registryUrl !== 'index.docker.io:443') {
@@ -1077,9 +1118,9 @@ var Docker = function execute(scope) {
                     if (error.statusCode === 500 && !error.message) {
                         error.message = 'Private local registry is corrupted';
                     }
-                    return call.done(error);
+                    return putToAudit(call, entry, options, error, true);
                 }
-                call.done(null, 'OK');
+                putToAudit(call, entry, options, null, true);
             });
         }
     });
@@ -1360,6 +1401,7 @@ var Docker = function execute(scope) {
                                 return callback(null, item);
                             }
                             item.Params = response;
+                            item.parsedParams = JSON.parse(response) || {};
                             callback(null, item);
                         });
                     }

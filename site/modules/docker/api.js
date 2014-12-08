@@ -50,7 +50,7 @@ function formatUrl(url, params) {
     });
 }
 
-function createCallback(client, opts, callback) {
+function createCallback(client, dockerInstance, opts, auditParams, callback) {
     //noinspection JSLint
     return function (error, req, res, data) {
         if (!opts.raw) {
@@ -75,12 +75,27 @@ function createCallback(client, opts, callback) {
                 (error.statusCode === 400)) {
                 error.message = 'Manta service is not available.';
             }
-            return callback(error.message || error);
+            auditParams.error = true;
+            auditParams.errorMessage = error.message || error;
+        }
+        if (dockerInstance.auditor && (opts.auditType === 'docker' || (opts.auditType && opts.auditType !== 'docker' && (auditParams.id || auditParams.Id)))) {
+           if (!(dockerInstance.options.host && dockerInstance.options.host.id)) {
+                scope.log.warn({opts: opts, dockerOpts: dockerInstance.options}, 'Host not defined');
+            } else {
+                setImmediate(function () {
+                    dockerInstance.auditor.put({
+                        host: dockerInstance.options.host.id,
+                        entry: auditParams.Id || auditParams.id,
+                        type: opts.auditType,
+                        name: dockerInstance.options.methodName
+                    }, auditParams);
+                });
+            }
         }
         if (opts.noParse) {
             data = res.body.toString();
         }
-        callback(null, data);
+        callback(auditParams.errorMessage, data);
     };
 }
 
@@ -135,25 +150,11 @@ function createMethod(scope, opts, selfName) {
         if ((options.method === 'POST' || options.method === 'PUT') && !raw) {
             args.push(params);
         }
+        self.options.methodName = selfName;
         if (raw) {
             args.push(callback);
         } else {
-            args.push(createCallback(client, opts, callback));
-        }
-
-        if (this.auditor && (opts.auditType === 'docker' || (opts.auditType && opts.auditType !== 'docker' && (auditParams.id || auditParams.Id)))) {
-            if (!(this.options.host && this.options.host.id)) {
-                scope.log.warn({opts: opts, dockerOpts: this.options}, 'Host not defined');
-            } else {
-                setImmediate(function () {
-                    self.auditor.put({
-                        host: self.options.host.id,
-                        entry: auditParams.Id || auditParams.id,
-                        type: opts.auditType,
-                        name: selfName
-                    }, auditParams);
-                });
-            }
+            args.push(createCallback(client, self, opts, auditParams, callback));
         }
 
         client[requestMap[options.method]].apply(client, args);

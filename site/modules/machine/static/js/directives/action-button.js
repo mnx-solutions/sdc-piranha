@@ -13,6 +13,7 @@
 	            getLabel: '=labelFn',
                 label: '=',
                 tooltip: '=tooltipText',
+                getTooltip: '=tooltipFn',
                 object: '='
             },
 

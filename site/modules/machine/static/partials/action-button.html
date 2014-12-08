@@ -4,9 +4,9 @@
         data-ng-class="getClass(object) || 'pull-left'"
         data-ng-show="show(object)"
         data-toggle="tooltip"
-        data-placement="right"
+        data-placement="top"
         data-html="true"
-        data-original-title="{{tooltip}}"
+        data-original-title="{{getTooltip(object) || tooltip}}"
         data-translate-attributes="data-original-title"
         data-translate-value>
     {{getLabel(object) || label}}
