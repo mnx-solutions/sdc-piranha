@@ -120,7 +120,11 @@ module.exports = function execute(scope, register) {
         function getMetadata(userId) {
             metadata.get(userId, metadata.SIGNUP_STEP, function (err, storedStep) {
                 if (err) {
-                    req.log.error({error: err}, 'Cannot get signup step from metadata');
+                    if (!req.session.parentAccountError) {
+                        req.log.error({error: err}, 'Cannot get signup step from metadata');
+                    } else {
+                        req.log.error(req.session.parentAccountError);
+                    }
                 } else if (storedStep) {
                     req.log.debug('Got signupStep from metadata: %s; User landing in step: %s',
                         storedStep, _nextStep(storedStep));
