@@ -131,6 +131,9 @@
                     }, errorCallback);
                     Docker.getAuditInfo({event: {type: 'container', host: hostId, entry: containerId}, params: true}).then(function(info) {
                         $scope.audit = info || [];
+                        $scope.audit.forEach(function (event) {
+                            event.hostName = machine.name || machine.id;
+                        });
                     }, errorCallback);
                 }, function () {
                     $location.path('/docker/containers');

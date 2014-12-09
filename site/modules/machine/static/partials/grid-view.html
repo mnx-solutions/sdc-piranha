@@ -142,8 +142,8 @@
                                 </span>
                                 <span data-ng-switch-when="html" data-ng-bind-html="prop._getter(object)"></span>
                                 <span data-ng-switch-when="tooltip">
-                                    <span data-ng-show="!!prop._getter(object)['tooltip']" class="tooltip-hover" data-toggle="tooltip" data-html="true" data-original-title="{{prop._getter(object)['tooltip']}}">{{prop._getter(object)['image']}} <span class="glyphicon glyphicon-question-sign"></span></span>
-                                    <span data-ng-show="!prop._getter(object)['tooltip']" data-ng-bind-html="prop._getter(object)['image']"></span>
+                                    <span data-ng-show="!!prop._getter(object)['tooltip']" class="tooltip-hover" data-toggle="tooltip" data-html="true" data-original-title="{{prop._getter(object)['tooltip']}}">{{prop._getter(object)['data']}} <span class="glyphicon glyphicon-question-sign"></span></span>
+                                    <span data-ng-show="!prop._getter(object)['tooltip']" data-ng-bind-html="prop._getter(object)['data']"></span>
                                 </span>
                                 <span data-ng-switch-when="popover">
                                     <span data-image-id-popover data-object="object"></span>
