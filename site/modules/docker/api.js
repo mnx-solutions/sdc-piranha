@@ -64,7 +64,8 @@ function createCallback(client, dockerInstance, opts, auditParams, callback) {
 
                 }
             }
-            if (error.statusCode === 502 || error.statusCode === 504 || error.statusCode === 400 || error.name === 'RequestTimeoutError') {
+            if (error.statusCode === 502 || error.statusCode === 504 || error.statusCode === 400 ||
+                error.name === 'RequestTimeoutError' || error.name === 'ConnectTimeoutError') {
                 if (req.path.indexOf('/utilization') === 0) {
                     error = new CAdvisorUnreachable();
                 } else {

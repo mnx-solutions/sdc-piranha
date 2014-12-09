@@ -140,7 +140,7 @@ var Docker = function execute(scope) {
                 }
                 client.ping(function (error) {
                     if (error) {
-                        return callback(new Docker.DockerHostUnreachable(call.data.host.primaryIp).message, true);
+                        return callback(new Docker.DockerHostUnreachable(call.data.host).message, true);
                     }
                     client[method](call.data.options, function (error) {
                         if (error === 'CAdvisor unavailable') {
@@ -433,7 +433,7 @@ var Docker = function execute(scope) {
             pipeline.push(function ping(collector, callback) {
                 collector.client.ping(function (error) {
                     if (error) {
-                        return callback(new Docker.DockerHostUnreachable(call.data.host.primaryIp).message, true);
+                        return callback(new Docker.DockerHostUnreachable(call.data.host).message, true);
                     }
                     callback();
                 });
