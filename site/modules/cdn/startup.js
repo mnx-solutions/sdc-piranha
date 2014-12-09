@@ -12,10 +12,22 @@ if (!config.features || config.features.cdn !== 'disabled') {
         var CDN_CONFIG_PATH = '~~/stor/.joyent/portal/cdn/Fastly/config.json';
 
         var getCdnConfig = function (call, callback) {
+            var message = 'Manta service is not available.';
+            if (!config.manta || !config.manta.url) {
+                callback(message);
+                return;
+            }
             var client = Manta.createClient(call);
             client.getFileContents(CDN_CONFIG_PATH, 'utf8', function (err, config) {
                 if (err) {
-                    callback(err, config);
+                    if (err.statusCode === 404) {
+                        callback(null);
+                        return;
+                    }
+                    if (err.message.indexOf('getaddrinfo ENOTFOUND') !== -1) {
+                        err.message = message;
+                    }
+                    callback(err.message || err, config);
                     return;
                 }
                 callback(null, JSON.parse(config));
