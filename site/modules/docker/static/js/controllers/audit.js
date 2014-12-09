@@ -71,24 +71,30 @@
                     hideSorter: true,
                     _getter: function (event) {
                         return getEntryAuditDetails(event).then(function (details) {
+                            event.parsedParams = JSON.parse(details) || {};
                             return details;
                         });
                     }
                 },
                 {
                     id: 'edit',
-                    name: 'Clone',
+                    name: 'Result',
                     type: 'button',
                     btn: {
-                        label: 'Clone',
-                        getClass: function () {
-                            return 'btn-edit ci effect-orange-button';
+                        getLabel: function (event) {
+                            return event.parsedParams && event.parsedParams.error ? 'Error' : 'Ok, clone';
+                        },
+                        getClass: function (event) {
+                            return event.parsedParams && event.parsedParams.error ? 'btn-edit ci effect-orange-button show-on-click' : 'btn-edit ci btn btn-original-text orange';
                         },
                         show: function (event) {
-                            return (event.name === 'createImage' || event.name === 'run') && event.Params;
+                            return event.parsedParams && (event.name === 'pull' || event.name === 'run' || event.parsedParams.error);
                         },
                         action: function (event) {
-                            return dockerClone(event);
+                            return event.parsedParams && event.parsedParams.error ? false : dockerClone(event);
+                        },
+                        getTooltip: function (event) {
+                            return event.parsedParams && event.parsedParams.errorMessage ? event.parsedParams.errorMessage : '';
                         }
                     },
                     sequence: 5,

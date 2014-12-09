@@ -3847,7 +3847,6 @@ label.checkbox
 
 .tooltip
 {
-    position: fixed;
     z-index: 99999;
 }
 
