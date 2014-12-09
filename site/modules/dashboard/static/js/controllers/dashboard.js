@@ -58,23 +58,27 @@
             };
             $http.jsonp('//ajax.googleapis.com/ajax/services/feed/load?v=1.0&num=7&callback=dashboard_rss_feed_callback&q=' + encodeURIComponent('http://www.joyent.com/blog/feed'));
 
-            // when all datasources are loaded, disable loader
-            $q.all([
+            var dashboardOperations = [
                 $q.when(Account.getAccount()),
                 $q.when($scope.rssentries),
-                $q.when(Machine.machine()),
-                $q.when(Docker.listHosts()),
-                $q.when(Docker.listContainers({host: 'All', options: {all: true}, suppressErrors: true})),
-                $q.when(Docker.pingManta(function () {
-                    Docker.getRegistriesList().then(function (list) {
-                        $scope.registries = list.filter(function (registry) {
-                            return registry.type === 'local';
+                $q.when(Machine.machine())
+            ];
+            if ($rootScope.features.docker === 'enabled') {
+                dashboardOperations = dashboardOperations.concat([
+                    $q.when(Docker.listHosts()),
+                    $q.when(Docker.listContainers({host: 'All', options: {all: true}, suppressErrors: true})),
+                    $q.when(Docker.pingManta(function () {
+                        Docker.getRegistriesList().then(function (list) {
+                            $scope.registries = list.filter(function (registry) {
+                                return registry.type === 'local';
+                            });
+                            $scope.registriesLink = $scope.registries.length ? '#!/docker/registries' : '#!/docker';
                         });
-                        $scope.registriesLink = $scope.registries.length ? '#!/docker/registries' : '#!/docker';
-                    });
-                }))
-
-            ]).then(function (result) {
+                    }))
+                ]);
+            }
+            // when all datasources are loaded, disable loader
+            $q.all(dashboardOperations).then(function (result) {
                 $scope.account = result[0] || {};
                 var tasks = [];
                 if ($scope.account.provisionEnabled) {
