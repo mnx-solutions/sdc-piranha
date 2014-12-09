@@ -72,7 +72,16 @@
                             data-translate>
                             Machine name can contain only letters, digits and signs like '.' and '-'.
                         </div>
-
+                        <div class="error"
+                             data-ng-show="provisionForm.machineName.$error.nameFirstLastChar"
+                             data-translate>
+                            The instance name cannot start or end with '.' or '-'.
+                        </div>
+                        <div class="error"
+                             data-ng-show="provisionForm.machineName.$error.nameContainDotDash"
+                             data-translate>
+                            Instance name should not contain '..' and '.-' or '-.'
+                        </div>
                         <div class="error"
                              data-ng-show="provisionForm.machineName.$error.machineUnique"
                              data-translate>
