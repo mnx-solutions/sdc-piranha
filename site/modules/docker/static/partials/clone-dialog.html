@@ -5,11 +5,11 @@
                 <h5><i class="glyphicon glyphicon-info-sign"></i><b>Clone Action</b></h5>
             </div>
             <div class="modal-body">
-                <form name="cloneForm" class="cloneForm">
+                <form name="cloneForm" class="cloneForm" data-ng-show="hosts.length">
                     <div class="form-group">
                         <span class="edit-host edit-label">Docker Host</span>
                         <span class="edit-value">
-                            <select data-select-two data-ng-disabled="!hosts.length" ui-select2="{minimumResultsForSearch: -1, width: '312px'}" id="hostSelect" data-ng-change="changeHost()" data-width="250px" data-ng-model="hostIp" required >
+                            <select data-select-two ui-select2="{minimumResultsForSearch: -1, width: '312px'}" id="hostSelect" data-ng-change="changeHost()" data-width="250px" data-ng-model="hostIp" required >
                                 <option data-ng-repeat="host in hosts" value="{{host.primaryIp}}">
                                     {{host.name}}
                                 </option>
@@ -35,6 +35,7 @@
                         </div>
                     </div>
                 </form>
+                <div class="form-group" data-ng-show="!hosts.length">There are no available hosts for clone action.</div>
             </div>
             <div class="modal-footer">
                 <button data-ng-click="close()" data-button-focus="false" data-label="Cancel" class="btn grey-new effect-orange-button">Cancel</button>
