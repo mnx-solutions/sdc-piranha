@@ -300,6 +300,14 @@
                 $('#decSecondarySelect').select2('val', '-- None --');
             };
 
+            $scope.expandMetric = function () {
+                $scope.croppedMetric = !$scope.croppedMetric;
+            };
+
+            $scope.expandModule = function () {
+                $scope.croppedModule = !$scope.croppedModule;
+            };
+
             $scope.changeDecomposition = function () {
                 $scope.croppedMetric = true;
                 $scope.croppedModule = true;
