@@ -513,7 +513,7 @@
                         $$track.event('machine', 'delete');
 
                         // Redirect if complete
-                        var resolvedDeleteAction = function (machineid) {
+                        var resolvedDeleteAction = function (machineid, isDeletedDockerMachine) {
                             PopupDialog.message(
                                 localization.translate(
                                     $scope,
@@ -536,10 +536,11 @@
                             if (!$scope.machines.length && ($location.path() === '/compute' || $location.path() === currentLocation)) {
                                 Machine.gotoCreatePage();
                             }
+                            Machine.gotoDockerDashboard($scope.machines, isDeletedDockerMachine);
                         };
                         if ($scope.machine.tags && $scope.machine.tags.JPC_tag === 'DockerHost') {
                             Machine.deleteDockerMachine($scope.machine).then(function () {
-                                resolvedDeleteAction(machineid);
+                                resolvedDeleteAction(machineid, true);
                             });
                         } else {
                             Machine.deleteMachine(machineid).then(function () {

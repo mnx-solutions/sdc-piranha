@@ -35,7 +35,10 @@
 
         $rootScope.$on('clearDockerCache', function(event, data) {
             if (data) {
-                service.hostInfo({host: data, wait: true}).then(resetDockerCaches, resetDockerCaches);
+                service.hostInfo({host: data, wait: true}).then(function () {
+                    $rootScope.dockerHostsAvailable = true;
+                    resetDockerCaches();
+                }, resetDockerCaches);
             } else {
                 resetDockerCaches();
             }

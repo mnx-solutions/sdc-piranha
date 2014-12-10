@@ -14,7 +14,7 @@ window.JP.main.config(['routeProvider', function (routeProvider) {
                 }
             }
 
-            if (typeof ($rootScope.provisionEnabled) !== 'boolean') {
+            if (typeof ($rootScope.provisionEnabled) !== 'boolean' && typeof ($rootScope.dockerHostsAvailable) !== 'boolean') {
                 $q.all([
                     $q.when(Account.getAccount()),
                     $q.when(Docker.completedHosts())
@@ -26,7 +26,7 @@ window.JP.main.config(['routeProvider', function (routeProvider) {
                     changePath();
                 }, changePath);
             } else {
-                if ($rootScope.provisionEnabled) {
+                if ($rootScope.provisionEnabled && !$rootScope.dockerHostsAvailable) {
                     Docker.completedHosts().then(function (hosts) {
                         $rootScope.dockerHostsAvailable = hosts.length > 0;
                         changePath();
