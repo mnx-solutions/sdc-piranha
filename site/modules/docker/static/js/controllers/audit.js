@@ -24,7 +24,7 @@
             ]).then(function (result) {
                 $scope.audit = result[0] || [];
                 $scope.audit.forEach(function (audit) {
-                    audit.action = (audit.name === 'run' || audit.name === 'pull') ? 'Key actions' : 'All';
+                    audit.action = (audit.name === 'run' || audit.name === 'pull') ? 'Key actions' : null;
                 });
                 $scope.hosts = result[1] || [];
                 $scope.loading = false;

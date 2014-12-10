@@ -115,7 +115,8 @@
                     setCurrentTabFilter();
                 } else if ($scope.tabFilterField === 'action') {
                     $scope.tabFilters = ['Key actions', 'All'];
-                    loadCurrentTabFilter();
+                    $scope.tabFilter = 'Key actions';
+                    setCurrentTabFilter();
                 } else {
                     $scope.tabFilters = ['top', 'all'];
                     $scope.tabFilter = 'top';
@@ -418,7 +419,7 @@
         });
 
         $scope.propertyFilter = function (item) {
-            if ($scope.tabFilter === 'all' || !$scope.tabFilter) {
+            if ($scope.tabFilter && $scope.tabFilter.toLowerCase() === 'all' || !$scope.tabFilter) {
                 return true;
             }
             return item[$scope.tabFilterField] === $scope.tabFilter;

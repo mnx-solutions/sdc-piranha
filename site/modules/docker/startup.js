@@ -1394,7 +1394,7 @@ var Docker = function execute(scope) {
                     inputs: data,
                     func: function (item, callback) {
                         auditor.get(item, function (err, response) {
-                            item.action = (item.name === 'run' || item.name === 'pull') ? 'Key actions' : 'All';
+                            item.action = (item.name === 'run' || item.name === 'pull') ? 'Key actions' : null;
                             if (err || !response) {
                                 if (err.statusCode !== 404) {
                                     suppressErrors.push(err);
