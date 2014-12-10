@@ -385,10 +385,19 @@
                         <span class="edit-lxc-conf edit-label">LxcConf</span>
                         <span class="edit-value">
                              <textarea type="text"
+                                       name="lxcConf"
                                        data-ng-model="lxcConf"
                                        class="value-width"
+                                       data-ng-pattern="/^(\w+(\.\w+)+\=\w+)(\n\w+(\.\w+)+\=\w+)*$/"
                                        rows="4"></textarea>
                         </span>
+                        <div class="edit-error" data-ng-show="isFormSubmited || containerCreateForm.lxcConf.$dirty">
+                            <div class="error"
+                                 data-translate
+                                 data-ng-show="containerCreateForm.lxcConf.$error.pattern">
+                                Must contain '.' and '=', generally starts with 'lxc.'
+                            </div>
+                        </div>
                         <div class="notation">Add custom lxc options: lxc.network.type = veth. Use new line as delimiter.</div>
                     </div>
                     <div class="form-group">

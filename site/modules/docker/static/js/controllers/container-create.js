@@ -278,7 +278,7 @@
                     });
                 }
 
-                function parseLxcConf(lxcConf) {
+               function parseLxcConf(lxcConf) {
                     if (!lxcConf) {
                         return [];
                     }
@@ -288,7 +288,7 @@
                             var lxcConfParams = line.split('=');
                             var lxcKey = lxcConfParams[0];
                             var lxcValue = lxcConfParams[1];
-                            var lxcOption = {"Key":lxcKey.trim(),"Value":lxcValue.trim()};
+                            var lxcOption = {"Key": lxcKey.trim(), "Value": lxcValue.trim()};
                             lxcOptions.push(lxcOption);
                         }
                     });
@@ -350,6 +350,8 @@
                                 err = 'Cannot start container. Invalid argument: Cpuset.';
                             } else if (err.indexOf('cpuset.cpus: numerical result') !== -1) {
                                 err = 'Cannot start container. CPUset value is out of numerical range.';
+                            }else if (err === 'Docker host "' + $scope.ip + ':4243" is unreachable.' && lxcConf.length) {
+                                err = 'Unable to start created container as invalid LxcConf parameters provided.';
                             }
                         }
                         errorCallback(err);
