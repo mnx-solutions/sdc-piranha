@@ -524,6 +524,10 @@
             return createCall('searchImage', {registry: registryId, options: {q: term}});
         };
 
+        service.registryImages = function (registryId, onProgress) {
+            return createCall('RegistryImages', {registryId: registryId}, onProgress);
+        };
+
         imageActions.forEach(function (action) {
             service[action + 'Image'] = function (image) {
                 return createCall(action + 'Image', {host: {primaryIp: image.primaryIp, id: image.hostId}, options: image.options || {id: image.Id}});
@@ -782,6 +786,9 @@
             return createCall('auditPing', {direct: true});
         };
 
+        service.registryRemoveImage = function (options) {
+            return createCall('registryRemoveImage', ng.extend({}, options, {direct: true}));
+        };
         return service;
     }]);
 }(window.angular, window.JP.getModule('docker')));

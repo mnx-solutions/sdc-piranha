@@ -38,29 +38,6 @@
                     }, errorCallback);
                 });
 
-                var deleteFromRegistries = function (registry) {
-                    PopupDialog.confirm(
-                        localization.translate(
-                            $scope,
-                            null,
-                            'Confirm: Delete registry'
-                        ),
-                        localization.translate(
-                            $scope,
-                            null,
-                            'Please confirm that you want to delete this registry.'
-                        ), function () {
-                            var index = $scope.registries.indexOf(registry);
-                            if (index !== -1) {
-                                registry.processing = true;
-                                Docker.deleteRegistry(registry).then(function () {
-                                    $scope.registries.splice(index, 1);
-                                });
-                            }
-                        }
-                    );
-                };
-
                 $scope.gridUserConfig = Account.getUserConfig().$child('docker-registries');
 
                 $scope.gridOrder = [];
@@ -68,71 +45,96 @@
                     {
                         id: 'api',
                         name: 'API Version',
-                        sequence: 1,
-                        active: true
+                        sequence: 4,
+                        active: false
                     },
                     {
                         id: 'host',
                         name: 'Hostname',
-                        sequence: 2,
+                        sequence: 1,
                         type: 'progress',
                         _inProgress: function (object) {
-                            return object.processing;
+                            return object.actionInProgress;
+                        },
+                        _getter: function (object) {
+                            return '<a href="#!/docker/registry/' + object.id + '">' + object.host + '</a>';
                         },
                         active: true
                     },
                     {
                         id: 'port',
                         name: 'Port',
-                        sequence: 3,
+                        sequence: 2,
                         active: true
                     },
                     {
                         id: 'username',
                         name: 'Username',
-                        sequence: 4,
+                        sequence: 3,
                         active: true
-                    },
-                    {
-                        id: '',
-                        name: 'Action',
-                        sequence: 5,
-                        active: true,
-                        type: 'buttons',
-                        buttons: [
-                            {
-                                label: 'Edit',
-                                getClass: function () {
-                                    return 'btn grid-mini-btn view effect-orange-button';
-                                },
-                                disabled: function (object) {
-                                    return !object.id || object.processing;
-                                },
-                                action: function (object) {
-                                    $scope.connectNewRegistry(object.id);
-                                }
-                            },
-                            {
-                                label: 'Delete',
-                                getClass: function () {
-                                    return 'btn grid-mini-btn download effect-orange-button';
-                                },
-                                disabled: function (object) {
-                                    return !object.id || object.processing;
-                                },
-                                action: function (object) {
-                                    deleteFromRegistries(object);
-                                }
-                            }
-                        ]
                     }
                 ];
-                $scope.gridActionButtons = [];
+
+                $scope.noCheckBoxChecked = function () {
+                    PopupDialog.error(
+                        localization.translate(
+                            $scope,
+                            null,
+                            'Error'
+                        ),
+                        localization.translate(
+                            $scope,
+                            null,
+                            'No registries selected for the action.'
+                        )
+                    );
+                };
+                var gridMessages = {
+                    delete: {
+                        single: 'Please confirm that you want to delete this registry.',
+                        plural: 'Please confirm that you want to delete selected registries.'
+                    }
+                };
+                $scope.gridActionButtons = [
+                    {
+                        label: 'Delete',
+                        action: function () {
+                            if (!$scope.checkedItems.length) {
+                                return $scope.noCheckBoxChecked();
+                            }
+                            PopupDialog.confirm(
+                                localization.translate(
+                                    $scope,
+                                    null,
+                                    'Confirm: Delete registry'
+                                ),
+                                localization.translate(
+                                    $scope,
+                                    null,
+                                    gridMessages.delete[$scope.checkedItems.length > 1 ? 'plural' : 'single']
+                                ),
+                                function () {
+                                    $scope.checkedItems.forEach(function (registry) {
+                                        var index = $scope.registries.indexOf(registry);
+                                        if (index !== -1) {
+                                            registry.actionInProgress = true;
+                                            registry.checked = false;
+                                            Docker.deleteRegistry(registry).then(function () {
+                                                $scope.registries.splice(index, 1);
+                                            }, errorCallback);
+                                        }
+                                    });
+                                }
+                            );
+                        },
+                        sequence: 1
+                    }
+                ];
                 $scope.exportFields = {
                     ignore: ['password', 'auth', 'api', 'host']
                 };
                 $scope.searchForm = true;
-                $scope.enabledCheckboxes = false;
+                $scope.enabledCheckboxes = true;
                 $scope.placeHolderText = 'filter registries';
 
                 $scope.connectNewRegistry = function (registry) {
@@ -142,7 +144,7 @@
                 $scope.$on('createdRegistry', function (event, data) {
                     $scope.registries.forEach(function (registry) {
                         if (registry.id === data.id) {
-                            delete registry.processing;
+                            delete registry.actionInProgress;
                         }
                     });
                 });
@@ -219,7 +221,7 @@
                                     api: 'v1',
                                     host: 'https://' + $scope.registry.host.primaryIp,
                                     port: '5000',
-                                    processing: true,
+                                    actionInProgress: true,
                                     type: 'local'
                                 };
 

@@ -1,0 +1,36 @@
+<div class="modal-dialog">
+    <div class="modal-content">
+        <div tabindex="-1" data-backdrop="static" data-focus-on="button">
+            <div class="modal-header message">
+                <h5><i class="glyphicon glyphicon-info-sign"></i><b>Image Tags</b></h5>
+            </div>
+            <div class="modal-body">
+                <div class="tag-list-wrapper">
+                    <table class="form-add-tag" data-ng-repeat="tag in tags">
+                        <tr data-ng-show="!tag.edit" class="tag-row">
+                            <td>Tag {{$index + 1}}</td>
+                            <td data-ng-click="editTag(tag)">{{tag.tag}}</td>
+                            <td data-ng-click="removeTag(tag)" data-ng-show="!saving"><span class="remove-icon delete pull-right"></span></td>
+                        </tr>
+                        <tr data-ng-show="tag.edit" class="tag-row">
+                            <td>Tag {{$index + 1}}</td>
+                            <td><input type="text" data-ng-model="tag.tag"/></td>
+                            <td><button class="btn orange" data-ng-click="saveTag(tag, $index)" data-ng-disabled="tag.tag.length == 0">Save</button></td>
+                        </tr>
+                    </table>
+                </div>
+
+                <table class="form-add-tag new-tag">
+                    <tr data-ng-click="focusOut()">
+                        <td>Tag {{tags.length + 1}}</td>
+                        <td><input type="text" data-ng-model="newTag"/></td>
+                        <td><button class="btn orange" data-ng-click="addTag()" data-ng-disabled="newTag.length == 0">Add</button></td>
+                    </tr>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button data-ng-click="close()" data-button-focus="false" data-label="Close" class="btn grey-new effect-orange-button">Close</button>
+            </div>
+        </div>
+    </div>
+</div>

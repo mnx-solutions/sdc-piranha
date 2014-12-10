@@ -1,0 +1,23 @@
+<div class="modal-dialog">
+    <div class="modal-content">
+        <div tabindex="-1" data-backdrop="static" data-focus-on="button">
+            <div class="modal-header message">
+                <h5><i class="glyphicon glyphicon-info-sign"></i><b>Rename Image {{name}}</b></h5>
+            </div>
+            <div class="modal-body">
+                <form name="renameImageForm" class="modal-rename-image">
+                    <div class="form-group">
+                        <span class="edit-label">New Name</span>
+                        <span class="edit-value">
+                            <input type="text" name="newName" data-ng-model="newName" data-ng-pattern="/^[a-zA-Z0-9\.\_\-\/]*$/">
+                        </span>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button data-ng-click="close()" data-button-focus="false" data-label="Cancel" class="btn grey-new effect-orange-button">Cancel</button>
+                <button data-ng-click="renameImage()" data-button-focus="true" data-ng-disabled="renameImageForm.$invalid || newName.length < 1" class="btn orange">Rename</button>
+            </div>
+        </div>
+    </div>
+</div>
