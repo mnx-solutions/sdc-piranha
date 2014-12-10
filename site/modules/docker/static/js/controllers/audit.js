@@ -23,6 +23,9 @@
                 Docker.listHosts()
             ]).then(function (result) {
                 $scope.audit = result[0] || [];
+                $scope.audit.forEach(function (audit) {
+                    audit.action = (audit.name === 'run' || audit.name === 'pull') ? 'Key actions' : 'All';
+                });
                 $scope.hosts = result[1] || [];
                 $scope.loading = false;
             });
@@ -129,7 +132,8 @@
             };
             $scope.searchForm = true;
             $scope.enabledCheckboxes = false;
-            $scope.placeHolderText = 'filter containers';
+            $scope.placeHolderText = 'filter audit';
+            $scope.tabFilterField = 'action';
         }
     ]);
 }(window.angular, window.JP.getModule('docker')));

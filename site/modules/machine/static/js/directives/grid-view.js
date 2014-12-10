@@ -113,6 +113,9 @@
                     $scope.tabFilters = ['Running', 'All existing', 'Deleted'];
                     $scope.tabFilter = 'Running';
                     setCurrentTabFilter();
+                } else if ($scope.tabFilterField === 'action') {
+                    $scope.tabFilters = ['Key actions', 'All'];
+                    loadCurrentTabFilter();
                 } else {
                     $scope.tabFilters = ['top', 'all'];
                     $scope.tabFilter = 'top';
