@@ -34,9 +34,19 @@
                         active: true
                     },
                     {
+                        id: 'hostName',
+                        name: 'Host',
+                        sequence: 4,
+                        active: true,
+                        type: 'html',
+                        _getter: function (event) {
+                            return '<a href="#!/compute/instance/' + event.host + '" style="min-width: 140px;">' + event.hostName + '</a>';
+                        }
+                    },
+                    {
                         id: 'host',
                         name: 'Host ID',
-                        sequence: 4,
+                        sequence: 5,
                         active: false
                     },
                     {
@@ -60,7 +70,7 @@
                                 return event.parsedParams && event.parsedParams.errorMessage ? event.parsedParams.errorMessage : '';
                             }
                         },
-                        sequence: 5,
+                        sequence: 6,
                         active: true
                     }
                 ];

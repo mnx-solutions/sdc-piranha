@@ -18,8 +18,12 @@
 
             $scope.loading = true;
 
-            Docker.getAuditInfo().then(function(info) {
-                $scope.audit = info || [];
+            $q.all([
+                Docker.getAuditInfo(),
+                Docker.listHosts()
+            ]).then(function (result) {
+                $scope.audit = result[0] || [];
+                $scope.hosts = result[1] || [];
                 $scope.loading = false;
             });
 
@@ -51,21 +55,38 @@
                     active: true
                 },
                 {
+                    id: 'hostName',
+                    name: 'Host',
+                    sequence: 3,
+                    active: true,
+                    type: 'tooltip',
+                    _getter: function (event) {
+                        var eventHost = $scope.hosts.find(function(host) { return event.host === host.id; });
+                        if (eventHost) {
+                            return {data: '<a href="#!/compute/instance/' + eventHost.id + '" style="min-width: 140px;">' + eventHost.name || eventHost.id + '</a>'};
+                        }
+                        return {
+                            data: 'Host gone',
+                            tooltip: 'The host is no longer accessible because the host has been deleted or access privileges have been removed.'
+                        };
+                    }
+                },
+                {
                     id: 'host',
                     name: 'Host ID',
-                    sequence: 3,
+                    sequence: 4,
                     active: false
                 },
                 {
                     id: 'npDate',
                     name: 'Date',
-                    sequence: 4,
+                    sequence: 5,
                     active: true
                 },
                 {
                     id: 'params',
                     name: 'Params',
-                    sequence: 4,
+                    sequence: 6,
                     active: false,
                     type: 'async',
                     hideSorter: true,
@@ -97,7 +118,7 @@
                             return event.parsedParams && event.parsedParams.errorMessage ? event.parsedParams.errorMessage : '';
                         }
                     },
-                    sequence: 5,
+                    sequence: 7,
                     active: true
                 }
             ];

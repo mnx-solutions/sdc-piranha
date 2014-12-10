@@ -50,6 +50,9 @@
                         $scope.images = result[1] || [];
                         $scope.image = result[0] || {};
                         $scope.audit = result[3] || [];
+                        $scope.audit.forEach(function (event) {
+                            event.hostName = machine.name || machine.id;
+                        });
                         $scope.images.forEach(function (image) {
                             if ($scope.image.Id === image.Id) {
                                 $scope.image.info = image;
