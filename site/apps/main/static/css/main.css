@@ -3585,6 +3585,11 @@ label.checkbox
 {
     margin-left: 135px;
 }
+.btn-audit
+{
+    width: 100px;
+    height: 20px;
+}
 
 .add-rule-btn:hover,
 .add-rule-btn:focus
