@@ -78,7 +78,7 @@
                 });
                 $scope.metrics = hostMetrics;
                 $scope.defaultMetrics = ['cpuTotal', 'memory'];
-                Docker.listContainers({host: {primaryIp: $scope.current.host}}).then(function (containers) {
+                Docker.listContainers({host: {primaryIp: $scope.current.host, id: $scope.hostId}}).then(function (containers) {
                     var isRunningCAdvisor = containers.filter(function (container) {
                        return container.name === '/cAdvisor' && container.Status.indexOf('Paused') === -1;
                     });
