@@ -9,70 +9,121 @@
         <div class="beta-sticker">beta</div>
     </div>
     <div class="loading-large col-md-12" data-ng-show="loading"></div>
-    <div class="registry-form" data-ng-hide="loading">
-        <form name="registryForm" id="registryForm">
-            <table>
-                <tr>
-                    <td class="orange-asterix">API Version</td>
-                    <td>
-                        <div class="btn-group">
-                            <select data-select-two
-                                    id="registryApi"
-                                    name="registryApi"
-                                    class="api-version"
-                                    data-ng-model="registry.api"
-                                    data-select="registry.api"
-                                    data-ng-options="registryApi for registryApi in registryApiVersions">
-                            </select>
+
+    <div class="panel-group" data-ng-hide="loading">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <a class="accordion-toggle toggle-icon" data-toggle="collapse" data-target="#collapse_information">
+                    Connection information
+                </a>
+            </div>
+            <div id="collapse_information" class="panel-collapse collapse in">
+                <div class="panel-body">
+                    <div class="registry-form" data-ng-hide="loading">
+                        <form name="registryForm" id="registryForm">
+                            <table>
+                                <tr>
+                                    <td class="orange-asterix">API Version</td>
+                                    <td>
+                                        <div class="btn-group">
+                                            <select data-select-two
+                                                    id="registryApi"
+                                                    name="registryApi"
+                                                    class="api-version"
+                                                    data-ng-model="registry.api"
+                                                    data-select="registry.api"
+                                                    data-ng-options="registryApi for registryApi in registryApiVersions">
+                                            </select>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="orange-asterix">Hostname</td>
+                                    <td class="registry-host">
+                                        <div><input name="host"
+                                                    type="text"
+                                                    data-ng-model="registry.host"
+                                                    data-ng-pattern="/^(http|https)\://[a-zA-Z0-9\-\.]+((\.[a-zA-Z]{2,3})|(\.[0-9]{1,3}){3})(:[a-zA-Z0-9]*)?/?([a-zA-Z0-9\-\._\?\,\'/\\\+&amp;%\$#\=~])*$/"
+                                                    required/></div>
+                                        <div class="edit-error" data-ng-show="registryForm.host.$dirty">
+                                            <div class="error"
+                                                 data-translate
+                                                 data-ng-show="registryForm.host.$error.pattern">
+                                                Hostname should start with 'http://' or 'https://' followed by IP-address or domain name.
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="orange-asterix">Port</td>
+                                    <td><input name="port" type="text" class="ng-dirty" data-ng-class="{'ng-invalid': !portValid, 'ng-valid': portValid}" data-ng-change="portChanged(registry.port)" data-ng-model="registry.port"/></td>
+                                </tr>
+                                <tr>
+                                    <td>Username</td>
+                                    <td><input name="username" type="text" data-ng-model="registry.username"/></td>
+                                </tr>
+                                <tr>
+                                    <td data-ng-class="{'orange-asterix': registry.username.length > 0 && registry.password.length > 0}">Email</td>
+                                    <td><input name="email" type="email"
+                                               data-ng-model="registry.email"
+                                               data-ng-disabled="loadingRegistry"
+                                               data-ng-pattern="/^[a-z0-9!#$%&'*+/=?^_`{|}~.-]+@[a-z0-9-]+(\.[a-z0-9-]+)+$/i"
+                                               data-ng-required="registry.username.length && registry.password.length"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Password</td>
+                                    <td><input name="password" type="password" data-ng-model="registry.password"/></td>
+                                </tr>
+                            </table>
+                        </form>
+                        <hr>
+                        <span class="orange-asterix-left">required fields</span>
+                        <div class="pull-right">
+                            <a href="#!/docker/registries" class="btn grey-new effect-orange-button">Cancel</a>
+                            <button data-ng-click="connectRegistry()" class="btn orange" data-ng-disabled="registryForm.$invalid || !portValid">Connect</button>
                         </div>
-                    </td>
-                </tr>
-                <tr>
-                    <td class="orange-asterix">Hostname</td>
-                    <td class="registry-host">
-                        <div><input name="host"
-                               type="text"
-                               data-ng-model="registry.host"
-                               data-ng-pattern="/^(http|https)\://[a-zA-Z0-9\-\.]+((\.[a-zA-Z]{2,3})|(\.[0-9]{1,3}){3})(:[a-zA-Z0-9]*)?/?([a-zA-Z0-9\-\._\?\,\'/\\\+&amp;%\$#\=~])*$/"
-                               required/></div>
-                        <div class="edit-error" data-ng-show="registryForm.host.$dirty">
-                            <div class="error"
-                                 data-translate
-                                 data-ng-show="registryForm.host.$error.pattern">
-                                Hostname should start with 'http://' or 'https://' followed by IP-address or domain name.
-                            </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <div class="panel panel-default" data-ng-show="registryId">
+            <div class="panel-heading">
+                <a class="accordion-toggle toggle-icon" data-toggle="collapse" data-target="#collapse_local_images">
+                    Local images
+                </a>
+            </div>
+            <div id="collapse_local_images" class="panel-collapse collapse in">
+                <div class="loading-large col-md-12" data-ng-show="imagesLoading"></div>
+                <div class="panel-body">
+                    <div data-ng-show="images.length">
+                        <div data-grid-view
+                             data-user-config="gridUserConfig"
+                             data-props="gridProps"
+                             data-detail-props="gridDetailProps"
+                             data-action-buttons="gridActionButtons"
+                             data-items="images"
+                             data-order="gridOrder"
+                             data-multisort="false"
+                             data-export-fields="exportFields"
+                             data-place-Holder-Text="'filter images'"
+                             data-search-form="'true'"
+                             data-filter-all="{{query}}"
+                             data-enabled-checkboxes="'true'"
+                             data-items-type="images"
+                             data-tab-filter-field="''"
+                             data-tab-filter-default="tabFilterDefault"
+                             data-no-entries-message-error-type="dcUnreachable"
+                             data-force-active="forceActive">
                         </div>
-                    </td>
-                </tr>
-                <tr>
-                    <td class="orange-asterix">Port</td>
-                    <td><input name="port" type="text" class="ng-dirty" data-ng-class="{'ng-invalid': !portValid, 'ng-valid': portValid}" data-ng-change="portChanged(registry.port)" data-ng-model="registry.port"/></td>
-                </tr>
-                <tr>
-                    <td>Username</td>
-                    <td><input name="username" type="text" data-ng-model="registry.username"/></td>
-                </tr>
-                <tr>
-                    <td data-ng-class="{'orange-asterix': registry.username.length > 0 && registry.password.length > 0}">Email</td>
-                    <td><input name="email" type="email"
-                               data-ng-model="registry.email"
-                               data-ng-disabled="loadingRegistry"
-                               data-ng-pattern="/^[a-z0-9!#$%&'*+/=?^_`{|}~.-]+@[a-z0-9-]+(\.[a-z0-9-]+)+$/i"
-                               data-ng-required="registry.username.length && registry.password.length"/>
-                    </td>
-                </tr>
-                <tr>
-                    <td>Password</td>
-                    <td><input name="password" type="password" data-ng-model="registry.password"/></td>
-                </tr>
-            </table>
-        </form>
-        <hr>
-        <span class="orange-asterix-left">required fields</span>
-        <div class="pull-right">
-            <a href="#!/docker/registries" class="btn grey-new effect-orange-button">Cancel</a>
-            <button data-ng-click="connectRegistry()" class="btn orange" data-ng-disabled="registryForm.$invalid || !portValid">Connect</button>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
+
+
 </div>
 

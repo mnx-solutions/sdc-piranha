@@ -918,10 +918,10 @@ var Docker = function execute(scope) {
         });
     };
 
-    var getImageSize = function (call, registryId, image, callback) {
+    var getImageInfo = function (call, registryId, image, callback) {
         var registry = Docker.registriesCache[registryId];
         var infoOptions = {registry: registry, name: image.name, tag: image.tag};
-        Docker.getImageSize(call, infoOptions, callback);
+        Docker.getImageInfo(call, infoOptions, callback);
     };
 
     server.onCall('DockerPull', {
@@ -941,30 +941,112 @@ var Docker = function execute(scope) {
             if (!registryId || registryId === 'local') {
                 return pullImage(call, options);
             }
-            Docker.getRegistries(call, function (error, list) {
-                if (error && registryId !== 'default') {
+            Docker.getRegistry(call, registryId, function (error, registryRecord) {
+                if (error) {
                     if (error.statusCode !== 404) {
-                        return call.done(error.message || error);
+                        return call.done(error.message);
                     }
+                }
+                if (!registryRecord && registryId === 'default') {
                     return putToAudit(call, entry, options, 'Please fill authentication information for the registry.', true);
                 }
 
-                var registryRecord = list.find(function (item) {
-                    return item.id === registryId;
-                });
-
-                if (!registryRecord  && registryId !== 'default') {
-                    return call.done('Registry not found.');
-                }
                 registryRecord = registryRecord || {};
                 var auth = registryRecord.auth || new Buffer(JSON.stringify({auth: '', email: ''})).toString('base64');
 
-                getImageSize(call, registryId, {name: call.data.options.fromImage, tag: call.data.options.tag}, function (err, result) {
+                getImageInfo(call, registryId, {name: call.data.options.fromImage, tag: call.data.options.tag}, function (err, result) {
                     if (err) {
                         return putToAudit(call, entry, options, err, true);
                     }
                     call.update(null, {totalSize: result.size});
                     pullImage(call, options, auth);
+                });
+            });
+        }
+    });
+
+    server.onCall('DockerRegistryImages', {
+        verify: function (data) {
+            return data && data.registryId;
+        },
+        handler: function (call) {
+            var registryId = call.data.registryId;
+            var searchQuery = {};
+            Docker.getRegistry(call, registryId, function (error, registryRecord) {
+                if (error || !registryRecord  && registryId !== 'default') {
+                    return call.done('Registry not found.');
+                }
+                registryRecord = registryRecord || {};
+                if (registryRecord.type === 'global' || registryId === 'default') {
+                    if (!registryRecord.username) {
+                        return call.done(null, {images: []});
+                    }
+                    searchQuery.q = registryRecord.username;
+                }
+
+                Docker.createRegistryClient(call, registryRecord, function (error, registryClient) {
+                    registryClient.searchImage(searchQuery, function (error, response) {
+                        if (error || !(response && response.results)) {
+                            return call.done(error, {images: []});
+                        }
+                        var results = response.results;
+                        if (registryRecord.type === 'global') {
+                            results = results.filter(function (image) {
+                                return image.name.indexOf(registryRecord.username) === 0;
+                            });
+                        }
+                        call.update(null, {images: results});
+                        vasync.forEachParallel({
+                            inputs: results,
+                            func: function (image, callback) {
+                                getImageInfo(call, registryId, {name: image.name}, function (err, result) {
+                                    image.info = result;
+                                    call.update(null, image);
+                                    callback();
+                                });
+                            }
+                        }, function (vasyncError) {
+                            if (vasyncError) {
+                                var cause = vasyncError['jse_cause'] || vasyncError['ase_errors'];
+                                if (Array.isArray(cause)) {
+                                    cause = cause[0];
+                                } else {
+                                    return call.done(vasyncError);
+                                }
+                                return call.done(cause, cause instanceof Docker.DockerHostUnreachable);
+                            }
+
+                            call.done(null);
+                        });
+                    });
+                });
+            });
+        }
+    });
+
+    server.onCall('DockerRegistryRemoveImage', {
+        verify: function (data) {
+            return data && data.registryId && data.name;
+        },
+        handler: function (call) {
+            var registryId = call.data.registryId;
+            Docker.getRegistry(call, registryId, function (error, registryRecord) {
+                if (error) {
+                    return call.done(error.message || error);
+                }
+
+                registryRecord = registryRecord || {};
+                var opts = {registry: registryRecord, image: call.data.name, access: 'DELETE'};
+                if (registryRecord.type === 'local') {
+                    opts.access = 'GET';
+                }
+                Docker.createIndexClient(call, opts, function (error, clients) {
+                    if (error) {
+                        return call.done(error.message || error, true);
+                    }
+                    clients.registry.removeImage({name: call.data.name}, function (error) {
+                        call.done(error && error !== '""' && error || null);
+                    });
                 });
             });
         }
@@ -1010,22 +1092,8 @@ var Docker = function execute(scope) {
                     collector.registryAuth = new Buffer(JSON.stringify({auth: '', email: ''})).toString('base64');
                     return callback();
                 }
-
-                Docker.getRegistries(call, function (error, list) {
-                    if (error) {
-                        if (error.statusCode !== 404) {
-                            return callback(error.message || error);
-                        }
-                        return callback('Please fill authentication information for the registry.');
-                    }
-
-                    var registryRecord = list.find(function (item) {
-                        return item.id === registry.id;
-                    });
-                    if (!registryRecord) {
-                        if (registry.type === 'global') {
-                            return callback('Please fill authentication information for the registry.');
-                        }
+                Docker.getRegistry(call, registry.id, function (error, registryRecord) {
+                    if (error || !registryRecord) {
                         return callback('Registry not found!');
                     }
                     if (registryRecord.auth) {
@@ -1348,7 +1416,7 @@ var Docker = function execute(scope) {
                     var registry;
                     list = list.map(function (item) {
                         if (item.host === host) {
-                            delete item.processing;
+                            delete item.actionInProgress;
                             registry = item;
                         }
                         return item;

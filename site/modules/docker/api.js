@@ -128,6 +128,10 @@ function createMethod(scope, opts, selfName) {
         };
         var query = {};
         var param, header;
+        if (params.forceMethod) {
+            options.method = params.forceMethod;
+            delete params.forceMethod;
+        }
         if (params.headers) {
             for (header in params.headers) {
                 if (params.headers.hasOwnProperty(header)) {
@@ -414,6 +418,10 @@ module.exports = function execute(scope, register) {
                 q   : '='
             }
         },
+        removeImage: {
+            method: 'DELETE',
+            path: '/v1/repositories/:name/'
+        },
         imageTags  : {
             method: 'GET',
             path: '/v1/repositories/:name/tags'
@@ -438,10 +446,14 @@ module.exports = function execute(scope, register) {
     var indexAPIMethods = {
         images: {
             method: 'GET',
+            path: '/v1/repositories/:name/images'
+        },
+        tokenRequest: {
+            method: 'GET',
             headers: {
                 'X-Docker-Token': true
             },
-            path: '/v1/repositories/:name/images'
+            path: '/v1/repositories/:name/:type'
         }
     };
 
@@ -478,8 +490,21 @@ module.exports = function execute(scope, register) {
      *
      */
 
-    Index.prototype.getAuthToken = function getAuthToken(name, callback) {
-        this.images({name: name, forceRaw: true}, function (error, req) {
+    Index.prototype.getAuthToken = function getAuthToken(name, access, callback) {
+        var opts = {name: name, forceRaw: true, type: ''};
+        if (!callback && typeof (access) === 'function') {
+            callback = access;
+            access = undefined;
+        }
+
+        if (access) {
+            opts.forceMethod = access;
+        }
+        if (!access || access === 'GET') {
+            opts.type = 'images'
+        }
+
+        this.tokenRequest(opts, function (error, req) {
             if (error) {
                 return callback(error);
             }
@@ -496,10 +521,10 @@ module.exports = function execute(scope, register) {
         });
     };
 
-    api.getImageSize = function getImageSize(call, options, callback) {
+    api.getImageInfo = function getImageInfo(call, options, callback) {
         var pipeline = [];
         pipeline.push(function getIndexClient(collector, callback) {
-            api.createIndexClient(call, options.registry, options.name, function (indexErr, clients) {
+            api.createIndexClient(call, {registry: options.registry, image: options.name}, function (indexErr, clients) {
                 if (indexErr) {
                     return callback(indexErr);
                 }
@@ -545,7 +570,7 @@ module.exports = function execute(scope, register) {
                     }
                     cb(err);
                 });
-            }, 10);
+            }, 2);
             queue.drain = function (error) {
                 callback(error);
             };
@@ -1233,7 +1258,10 @@ module.exports = function execute(scope, register) {
         createClient(call, Registry, opts, callback);
     };
 
-    api.createIndexClient = function (call, credentials, imageName, callback) {
+    api.createIndexClient = function (call, options, callback) {
+        var credentials = options.registry;
+        var imageName = options.image;
+        var access = options.access;
         var parsedHost = url.parse(credentials.host);
         parsedHost.port = credentials.port || parsedHost.port;
         if (credentials.auth) {
@@ -1245,7 +1273,7 @@ module.exports = function execute(scope, register) {
         delete parsedHost.host;
 
         createClient(call, Index, {url: url.format(parsedHost)}, function (error, indexClient) {
-            indexClient.getAuthToken(imageName, function (authError, authResult) {
+            indexClient.getAuthToken(imageName, access || 'GET', function (authError, authResult) {
                 if (authError) {
                     return callback(authError);
                 }
@@ -1253,7 +1281,11 @@ module.exports = function execute(scope, register) {
                 registryCredentials.headers = {Authorization: 'Token ' + authResult.token};
                 if (authResult.endpoint && registryCredentials.type !== 'local') {
                     var parsedUrl = url.parse(credentials.host);
-                    registryCredentials.host = parsedUrl.protocol + '//' + authResult.endpoint + '/';
+                    if (authResult.endpoint.indexOf('http') !== 0) {
+                        registryCredentials.host = parsedUrl.protocol + '//' + authResult.endpoint + '/';
+                    } else {
+                        registryCredentials.host = authResult.endpoint;
+                    }
                     delete registryCredentials.auth;
                 }
 
@@ -1325,7 +1357,7 @@ module.exports = function execute(scope, register) {
 
         client.getFileContents('~~/stor/.joyent/docker/registries.json', function (error, list) {
             if (error && error.statusCode !== 404) {
-                return call.done(error.message, true);
+                return callback(error, true);
             }
 
             try {
@@ -1334,10 +1366,29 @@ module.exports = function execute(scope, register) {
                 call.log.warn('Registries list is corrupted');
                 list = [];
             }
-            callback(error, list);
+            callback(null, list);
         });
     };
 
+    api.getRegistry = function (call, registryId, callback) {
+        api.getRegistries(call, function (error, list) {
+            if (error && error.statusCode !== 404) {
+                return callback(error);
+            }
+            var registry = list.find(function (registry) {
+                return registry.id === registryId;
+            });
+            if (!registry) {
+                if (registryId === 'default') {
+                    return callback(null, {});
+                }
+                error = new Error('Registry "' + registryId + '" not found');
+                error.statusCode = 404;
+                return callback(new Error('Registry "' + registryId + '" not found'));
+            }
+            callback(null, registry);
+        });
+    };
     api.saveRegistries = function (call, data, client, callback) {
         if (typeof (client) === 'function') {
             callback = client;
