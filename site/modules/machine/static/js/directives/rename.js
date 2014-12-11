@@ -1,7 +1,7 @@
 'use strict';
 
 (function (app) {
-    app.directive('rename', [ 'localization', 'PopupDialog', '$timeout', 'Image', 'Machine', '$$track', function (localization, PopupDialog, $timeout, Image, Machine, $$track) {
+    app.directive('rename', [ 'localization', 'PopupDialog', '$timeout', 'Machine', '$$track', function (localization, PopupDialog, $timeout, Machine, $$track) {
         return {
             restrict: 'EA',
             scope: {
@@ -65,9 +65,7 @@
                             scope.renaming = true;
 
                             scope.object.name = scope.newName;
-                            if (scope.type && scope.type === 'image') {
-                                Image.renameImage(scope.object, renameFinished);
-                            } else {
+                            if (scope.type && scope.type === 'machine') {
                                 $$track.event('machine', 'rename');
                                 Machine.renameMachine(scope.object.id, scope.newName).then(function () {
                                     renameFinished();
