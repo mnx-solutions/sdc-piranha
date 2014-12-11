@@ -45,7 +45,6 @@ var firewall = function execute (scope) {
             cloud.listMachineRules(machineId, function (err, rules) {
                 if (err) {
                     call.log.debug('Unable to list firewall rules for machine %s', machineId);
-                    call.log.error(err);
                     call.done(err);
                 } else {
                     // Serialize rules

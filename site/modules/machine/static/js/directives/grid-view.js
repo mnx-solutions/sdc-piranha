@@ -423,7 +423,7 @@
         });
 
         $scope.propertyFilter = function (item) {
-            if ($scope.tabFilter && $scope.tabFilter.toLowerCase() === 'all' || !$scope.tabFilter) {
+            if (ng.isString($scope.tabFilter) && $scope.tabFilter.toLowerCase() === 'all' || !$scope.tabFilter) {
                 return true;
             }
             return item[$scope.tabFilterField] === $scope.tabFilter;

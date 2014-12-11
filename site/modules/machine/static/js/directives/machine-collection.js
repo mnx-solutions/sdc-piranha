@@ -45,6 +45,8 @@
                         Machine[scope.collectionName].read(scope.machineId).then(function (collection) {
                             scope.collection = collection;
                             convertCollection();
+                        }, function (error) {
+                            PopupDialog.errorObj(error);
                         });
                     } else {
                         convertCollection();
@@ -66,7 +68,7 @@
                     var duplicate = scope.internalCollection.find(function (el) {
                         return el && el.key === item.dirtyKey;
                     });
-                    
+
                     return duplicate !== item && duplicate;
                 }
 

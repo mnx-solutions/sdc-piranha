@@ -99,13 +99,6 @@
             });
 
             $rootScope.$on(
-                'forceUpdate',
-                function () {
-                    $scope.$broadcast('event:forceUpdate');
-                }
-            );
-
-            $rootScope.$on(
                 'lostConnection',
                 function () {
                     errorContext.emit(new Error(localization.translate(null,

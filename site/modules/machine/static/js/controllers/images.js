@@ -32,8 +32,6 @@
 
             loadListImages();
 
-            $scope.$on('event:forceUpdate', loadListImages.bind($scope, true));
-
             $scope.clickDelete = function (image) {
                 PopupDialog.confirm(
                     localization.translate(
