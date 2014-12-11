@@ -81,7 +81,7 @@
                 };
                 $scope.searchForm = true;
                 $scope.enabledCheckboxes = false;
-
+                $scope.tabFilterField = 'action';
             }
         };
     }]);
