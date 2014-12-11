@@ -80,8 +80,8 @@ function createCallback(client, dockerInstance, opts, auditParams, callback) {
             auditParams.errorMessage = error.message || error;
         }
         if (dockerInstance.auditor && (opts.auditType === 'docker' || (opts.auditType && opts.auditType !== 'docker' && (auditParams.id || auditParams.Id)))) {
-           if (!(dockerInstance.options.host && dockerInstance.options.host.id)) {
-                scope.log.warn({opts: opts, dockerOpts: dockerInstance.options}, 'Host not defined');
+            if (!(dockerInstance.options.host && dockerInstance.options.host.id)) {
+                req.log.warn({opts: opts, dockerOpts: dockerInstance.options}, 'Host not defined');
             } else {
                 setImmediate(function () {
                     dockerInstance.auditor.put({

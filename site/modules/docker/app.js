@@ -79,7 +79,7 @@ module.exports = function (scope, app) {
                         callback();
                     });
                 } else {
-                    Docker.createClient({req: req}, {primaryIp: ip}, function (error, client) {
+                    Docker.createClient({req: req}, {primaryIp: ip, id: host}, function (error, client) {
                         if (error) {
                             return callback(error);
                         }
