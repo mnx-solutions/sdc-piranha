@@ -515,7 +515,7 @@
                 if ($scope.tabFilterDefault) {
                     $scope.tabFilterUpdate = $scope.tabFilterDefault;
                 } else if ($scope.datacenters.length > 0) {
-                    $scope.tabFilterUpdate = $scope.datacenters[0];
+                    $scope.tabFilterUpdate = $scope.datacenters[0].name;
                 }
                 $scope.$watch('datacenter', function(dc){
                     if(dc) {
