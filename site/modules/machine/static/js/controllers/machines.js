@@ -184,15 +184,16 @@
                             checkedMachines.forEach(function (el) {
                                 if (action === 'delete') {
                                     $$track.event('machine', 'delete');
-                                    var resolvedDeleteAction = function (el) {
+                                    var resolvedDeleteAction = function (el, isDeletedDockerMachine) {
                                         if (!$scope.machines.length && currentLocation === $location.path()) {
                                             Machine.gotoCreatePage();
                                         }
+                                        Machine.gotoDockerDashboard($scope.machines, isDeletedDockerMachine);
                                         el.checked = false;
                                     };
                                     if (el.tags && el.tags.JPC_tag === 'DockerHost') {
                                         Machine.deleteDockerMachine(el).then(function () {
-                                            resolvedDeleteAction(el);
+                                            resolvedDeleteAction(el, true);
                                         }, function (err) {
                                             PopupDialog.errorObj(err);
                                         });

@@ -45,6 +45,19 @@
             var page = createInstancePageConfig.page ? '/' + createInstancePageConfig.page : '';
             $location.path('/compute/create' + page);
         };
+        service.gotoDockerDashboard = function (machines, isDeletedDockerMachine) {
+            machines = machines || [];
+            isDeletedDockerMachine = isDeletedDockerMachine || false;
+            var dockerMachine = machines.find(function (machine) {
+                return machine.tags.hasOwnProperty('JPC_tag') && machine.tags.JPC_tag === 'DockerHost';
+            });
+            if (isDeletedDockerMachine && !dockerMachine) {
+                $rootScope.dockerHostsAvailable = false;
+                if ($location.path().indexOf('/docker') !== -1) {
+                    $location.path('/docker');
+                }
+            }
+        };
 
         function wrapMachine (machine) {
             var p = null;
