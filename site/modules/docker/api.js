@@ -567,7 +567,7 @@ module.exports = function execute(scope, register) {
         }, function (err) {
             callback(err, {
                 id: result.imageId,
-                images: result && result.result.images,
+                images: result && result.result && result.result.images,
                 length: result.count,
                 size: result.size
             });
