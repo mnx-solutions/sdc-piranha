@@ -115,9 +115,8 @@ module.exports = function execute(scope) {
         call.log.info('Handling list datacenters event');
         call.cloud.listDatacenters(function (err, datacenters) {
             if (err) {
-                call.log.debug('Unable to list datacenters');
-                call.log.error(err);
-                call.done(err);
+                call.log.debug('Unable to list datacenters', err);
+                call.done(err, true);
                 return;
             }
             // Serialize datacenters
