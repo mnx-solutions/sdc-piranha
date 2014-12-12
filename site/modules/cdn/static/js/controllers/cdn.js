@@ -20,6 +20,8 @@
                 scope.gridUserConfig = Account.getUserConfig().$child('CdnConfigurations');
             }
 
+            var MESSAGE_NOT_AUTHORIZED = 'You are not authorized, please set you API key.';
+            var ERROR_MESSAGE_NOT_AUTHORIZED = 'You are not authorized to perform this action';
             scope.mantaUnavailable = false;
             scope.loading = true;
             scope.apiKey = '';
@@ -54,10 +56,10 @@
                     scope.checkedItems = [];
                     scope.loading = false;
                 }, function (err) {
-                    if (/You are not authorized to perform this action/g.test(err)) {
+                    if (err.indexOf(ERROR_MESSAGE_NOT_AUTHORIZED) !== -1) {
                         scope.apiKey = '';
                         scope.resetApiKey = true;
-                        err = 'You are not authorized, please set you API key.';
+                        err = MESSAGE_NOT_AUTHORIZED;
                     }
                     showError(err);
                 });
@@ -130,6 +132,9 @@
                                 loadConfigurations();
                             };
                             var errorCallback = function (error) {
+                                if (error.indexOf(ERROR_MESSAGE_NOT_AUTHORIZED) !== -1) {
+                                    error = MESSAGE_NOT_AUTHORIZED;
+                                }
                                 showError(error);
                                 scope.loading = false;
                             };
@@ -142,6 +147,14 @@
                         }
                     }
                 );
+            };
+
+            scope.apiKeyActionText = function () {
+                var actionText = 'Set API Key';
+                if (scope.apiKey || scope.resetApiKey) {
+                    actionText = 'Update API Key';
+                }
+                return actionText;
             };
 
             scope.createConfiguration = function () {

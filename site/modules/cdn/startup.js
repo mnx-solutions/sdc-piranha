@@ -63,23 +63,29 @@ if (!config.features || config.features.cdn !== 'disabled') {
 
         server.onCall('AddApiKey', {
             handler: function (call) {
-                var client = Manta.createClient(call);
-                var putConfig = function (callObj, mantaClient) {
-                    return mantaClient.putFileContents(CDN_CONFIG_PATH, JSON.stringify(callObj.data), function (error) {
-                        if (error && error.statusCode === 404) {
-                            mantaClient.mkdirp(CDN_CONFIG_PATH.substring(0, CDN_CONFIG_PATH.lastIndexOf('/')), function (err) {
-                                if (err) {
-                                    call.done(err);
-                                } else {
-                                    putConfig(callObj, mantaClient);
-                                }
-                            });
-                        } else {
-                            call.done(error);
-                        }
-                    });
-                };
-                putConfig(call, client);
+                cdn.listServices(call, function (error) {
+                    if (error) {
+                        call.done(error, null);
+                        return;
+                    }
+                    var client = Manta.createClient(call);
+                    var putConfig = function (callObj, mantaClient) {
+                        return mantaClient.putFileContents(CDN_CONFIG_PATH, JSON.stringify(callObj.data), function (error) {
+                            if (error && error.statusCode === 404) {
+                                mantaClient.mkdirp(CDN_CONFIG_PATH.substring(0, CDN_CONFIG_PATH.lastIndexOf('/')), function (err) {
+                                    if (err) {
+                                        call.done(err);
+                                    } else {
+                                        putConfig(callObj, mantaClient);
+                                    }
+                                });
+                            } else {
+                                call.done(error);
+                            }
+                        });
+                    };
+                    putConfig(call, client);
+                });
             }
         });
 
