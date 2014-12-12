@@ -19,6 +19,16 @@
             {{type | capitalize}} name&nbsp;can contain only letters, digits and signs like '.' and '-'.
         </div>
         <div class="pull-left error"
+             data-ng-show="renameForm.renameObject.$error.nameFirstLastChar && changingName && newName != object.name"
+             data-translate>
+            The instance name cannot start or end with '.' or '-'.
+        </div>
+        <div class="pull-left error"
+             data-ng-show="renameForm.renameObject.$error.nameContainDotDash && changingName && newName != object.name"
+             data-translate>
+            Instance name should not contain '..' and '.-' or '-.'
+        </div>
+        <div class="pull-left error"
              data-ng-show="renameForm.renameObject.$error[type + 'Unique'] && changingName && newName != object.name"
              data-translate>
             {{type | capitalize}} name&nbsp;is already in use
