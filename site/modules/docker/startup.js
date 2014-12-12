@@ -725,10 +725,15 @@ var Docker = function execute(scope) {
         };
         Docker.getRegistries(call, function (error, list) {
             Docker.registriesCache['default'] = defaultRegistry;
-            if (error && error.statusCode === 404) {
-                return call.done(null, [defaultRegistry]);
+            if (error) {
+                if (error.statusCode === 404) {
+                    return call.done(null, [defaultRegistry]);
+                }
+                if (error.code === 'AuthorizationFailed') {
+                    error.message = 'Manta service is not available.';
+                }
+                return call.done(error, [defaultRegistry]);
             }
-
             var checkDefaultRegistry = false;
             list.forEach(function (registry) {
                 Docker.registriesCache[registry.id] = util._extend({}, registry);
