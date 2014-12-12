@@ -77,7 +77,7 @@ function createCallback(client, dockerInstance, opts, auditParams, callback) {
                 error.message = 'Manta service is not available.';
             }
             auditParams.error = true;
-            auditParams.errorMessage = error.message || error;
+            auditParams.errorMessage = error.body && error.body.error || error.message || error;
         }
         if (dockerInstance.auditor && (opts.auditType === 'docker' || (opts.auditType && opts.auditType !== 'docker' && (auditParams.id || auditParams.Id)))) {
             if (!(dockerInstance.options.host && dockerInstance.options.host.id)) {
