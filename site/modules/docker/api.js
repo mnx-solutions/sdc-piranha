@@ -574,6 +574,9 @@ module.exports = function execute(scope, register) {
             queue.drain = function (error) {
                 callback(error);
             };
+            if (!collector.ancestry || !collector.ancestry.length) {
+                return callback('Unable to pull empty repository');
+            }
             collector.ancestry.forEach(function (image) {
                 queue.push(image);
             });
