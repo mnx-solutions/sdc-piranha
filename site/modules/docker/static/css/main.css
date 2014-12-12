@@ -182,6 +182,9 @@
     font-size: 14px;
     line-height: 28px;
 }
+.panel-body #insTable td {
+    line-height: 16px;
+}
 #collapse_summary .panel-body table td:first-child
 {
     color: #5d80a7;
