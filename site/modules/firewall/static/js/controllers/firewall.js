@@ -551,9 +551,7 @@
 
             $scope.getData = function() {
 	            var data = rule.cleanRule($scope.data);
-	            if(!data.datacenter) {
-		            data.datacenter = $scope.datacenter;
-	            }
+                data.datacenter = $scope.selected.datacenter || $scope.datacenter;
 	            return data;
             };
 
