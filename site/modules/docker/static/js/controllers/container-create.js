@@ -31,6 +31,7 @@
 
                 var errorCallback = function (err) {
                     $scope.loading = false;
+                    $scope.loadingHostDetails = false;
                     $scope.creating = false;
                     PopupDialog.errorObj(err);
                 };
@@ -72,7 +73,7 @@
                                 errorCallback('This docker host does not have images available for new container.');
                             }
                             $scope.loadingHostDetails = false;
-                        });
+                        }, errorCallback);
                     }
                 };
 
@@ -103,7 +104,7 @@
                             window.jQuery('#imageSelect').select2('disable');
                         });
                         $scope.loadingHostDetails = false;
-                    });
+                    }, errorCallback);
                 };
 
                 var hostContainers = function (host) {
@@ -127,7 +128,7 @@
                                 errorCallback('This docker host does not have containers for new image.');
                             }
                             $scope.loadingHostDetails = false;
-                        });
+                        }, errorCallback);
                     }
                 };
 
@@ -157,7 +158,7 @@
                 $scope.portPattern = '(6553[0-5]|655[0-2]\\d|65[0-4]\\d{2}|6[0-4]\\d{3}|[1-5]\\d{4}|[1-9]\\d{0,3})';
                 $scope.exposedPattern = '(((\\d{1,3}\.){3}\\d{1,3}\\:)?' + $scope.portPattern + '?\\:)?' + $scope.portPattern;
 
-                Docker.listHosts().then(function (hosts) {
+                Docker.completedHosts().then(function (hosts) {
                     $scope.hosts = hosts || [];
                     $scope.loading = false;
                     $scope.memory = 0;
