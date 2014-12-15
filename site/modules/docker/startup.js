@@ -1120,6 +1120,52 @@ var Docker = function execute(scope, app) {
         }
     });
 
+    server.onCall('DockerRegistryImageTag', {
+        verify: function (data) {
+            return data && data.registryId && data.action && data.options.name && data.options.tagName && data.options.layoutId;
+        },
+        handler: function (call) {
+            Docker.getRegistry(call, call.data.registryId, function (error, registryRecord) {
+                if (error) {
+                    return call.done(error.message || error);
+                }
+
+                registryRecord = registryRecord || {};
+                var opts = {registry: registryRecord, image: call.data.options.name, access: 'POST'};
+                if (registryRecord.type === 'local') {
+                    opts.access = 'GET';
+                }
+                Docker.createIndexClient(call, opts, function (error, clients) {
+                    if (error) {
+                        return call.done(error.message || error, true);
+                    }
+
+                    clients.registry[call.data.action]({name: call.data.options.name, tag: call.data.options.tagName, forceRaw: true}, function (error, req) {
+                        if (error) {
+                            return call.done(error.message || error, true);
+                        }
+                        if (call.data.action === 'addImageTag') {
+                            req.useChunkedEncodingByDefault = false;
+                            req.setSocketKeepAlive(false);
+                            req.setHeader('Content-type', 'text/plain');
+                            req.setHeader('Content-length', call.data.options.layoutId.length);
+                        }
+                        req.write(call.data.options.layoutId);
+                        req.on('result', function (err, res) {
+                            if (err) {
+                                return call.done(err.message || err.body.code || err);
+                            }
+                            res.on('data', function () {});
+                            res.on('error', call.done.bind(call));
+                            res.on('end', call.done.bind(call));
+                        });
+                        req.end();
+                    });
+                });
+            });
+        }
+    });
+
     server.onCall('DockerUploadImage', {
         verify: function (data) {
             return data && data.host && data.host.primaryIp

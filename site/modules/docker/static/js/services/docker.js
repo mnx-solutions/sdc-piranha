@@ -591,7 +591,20 @@
         };
 
         service.getImageTags = function (registryId, name) {
-            return createCall('imageTags', {registry: registryId, options: {name: name}, direct: true});
+            return createCall('imageTags', {registry: registryId, options: {name: name}, direct: true}).then(function (tags) {
+                if (!Array.isArray(tags)) {
+                    var tagsArr = [];
+                    for (var tagKey in tags) {
+                        tagsArr.push({name: tagKey, id: tags[tagKey]});
+                    }
+                    tags = tagsArr;
+                }
+                return tags;
+            });
+        };
+
+        service.registryImageTag = function (action, registryId, name, tag, layoutId) {
+            return createCall('registryImageTag', {action: action, registryId: registryId, options: {name: name, tagName: tag, layoutId: layoutId}, direct: true});
         };
 
         service.registryPing = function (registry) {

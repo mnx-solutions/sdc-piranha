@@ -435,6 +435,15 @@ module.exports = function execute(scope, register) {
             method: 'GET',
             path: '/v1/repositories/:name/tags'
         },
+        removeImageTag  : {
+            method: 'DELETE',
+            path: '/v1/repositories/:name/tags/:tag'
+        },
+        addImageTag  : {
+            method: 'PUT',
+            raw: true,
+            path: '/v1/repositories/:name/tags/:tag'
+        },
         imageTagId: {
             path: '/v1/repositories/:name/tags/:tag'
         },

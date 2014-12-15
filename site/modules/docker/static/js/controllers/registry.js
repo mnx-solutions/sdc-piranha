@@ -46,6 +46,15 @@
                     $scope.gridUserConfig = Account.getUserConfig().$child('docker-local-registry-images');
                 }
 
+                var registryImageTag = function (action, imageName, tagName, layoutId, callback) {
+                    Docker.registryImageTag(action, $scope.registry.id, imageName, tagName, layoutId).then(function () {
+                        callback();
+                    }, function (err) {
+                        callback(err);
+                        return errorCallback(err);
+                    });
+                };
+
                 Docker.getRegistriesList().then(function (list) {
                     $scope.registries = list;
                     $scope.loading = false;
@@ -70,6 +79,11 @@
                                             chunk.images.forEach(function (image) {
                                                 image.info = image.info || {};
                                                 imagesByName[image.name] = image;
+                                                Docker.getImageTags($scope.registry.id, image.name).then(function (tags) {
+                                                    image.tags = tags || [];
+                                                }, function (err) {
+                                                    return errorCallback(err.error || err);
+                                                });
                                                 image.loading = true;
                                             });
                                             $scope.images = chunk.images;
@@ -77,6 +91,7 @@
                                             var image = imagesByName[chunk.name];
                                             image.loading = false;
                                             image.size = chunk.info.size;
+                                            image.layoutId = chunk.info.images[0].id;
                                             if (chunk.info.images && chunk.info.images[0]) {
                                                 image.created = new Date(chunk.info.images[0].created);
                                             }
@@ -89,6 +104,29 @@
                         });
                     }
                 });
+                var checkImageTagDuplicate = function (tags, name, index) {
+                    if (!tags.length) {
+                        return false;
+                    }
+                    var hasDuplicates = tags.some(function (t, i) {
+                        return t.name.toLowerCase() === name.toLowerCase() && i !== index;
+                    });
+                    if (hasDuplicates) {
+                        PopupDialog.error(
+                            localization.translate(
+                                $scope,
+                                null,
+                                'Error'
+                            ),
+                            localization.translate(
+                                $scope,
+                                null,
+                                'Duplicate tag.'
+                            )
+                        );
+                    }
+                    return hasDuplicates;
+                };
 
                 $scope.gridOrder = [];
                 $scope.gridProps = [
@@ -105,7 +143,7 @@
                     {
                         id: 'created',
                         name: 'Created',
-                        sequence: 4,
+                        sequence: 2,
                         active: true,
                         reverseSort: true,
                         _order: 'created',
@@ -120,7 +158,7 @@
                     {
                         id: 'info.size',
                         name: 'Size',
-                        sequence: 5,
+                        sequence: 3,
                         active: true,
                         _order: 'info.size',
                         type: 'progress',
@@ -130,6 +168,106 @@
                         _getter: function (image) {
                             return image.size ? util.getReadableFileSizeString(image.size) : '';
                         }
+                    },
+                    {
+                        id: '',
+                        name: 'Action',
+                        sequence: 6,
+                        active: true,
+                        type: 'buttons',
+                        buttons: [
+                            {
+                                label: 'Tag',
+                                getClass: function () {
+                                    return 'btn grid-mini-btn download effect-orange-button';
+                                },
+                                disabled: function (object) {
+                                    return object.loading || object.processing || $scope.registry.type !== 'local';
+                                },
+                                action: function (object) {
+                                    PopupDialog.custom({
+                                        templateUrl: 'docker/static/partials/image-add-tag.html',
+                                        openCtrl: function ($scope, dialog) {
+                                            $scope.newTag = '';
+                                            $scope.tags = angular.copy(object.tags) || [];
+                                            var storeTags = function () {
+                                                $scope.lastSavedTags = angular.copy(object.tags);
+                                            };
+                                            $scope.focusOut = function () {
+                                                if (!$scope.lastSavedTags) {
+                                                    return;
+                                                }
+                                                $scope.lastSavedTags.forEach(function (lastTag, index) {
+                                                    if ($scope.tags[index].name !== lastTag.name) {
+                                                        $scope.tags[index].name = lastTag.name;
+                                                    }
+                                                    $scope.tags[index].edit = false;
+                                                });
+                                            };
+                                            $scope.editTag = function (tag) {
+                                                storeTags();
+                                                $scope.focusOut();
+                                                tag.edit = true;
+                                            };
+                                            $scope.removeTag = function (tag) {
+                                                tag.actionInProgress = true;
+                                                registryImageTag('removeImageTag', object.name, tag.name, tag.id, function (error) {
+                                                    if (error) {
+                                                        return;
+                                                    }
+                                                    $scope.tags = $scope.tags.filter(function (item) {
+                                                        return item.name !== tag.name;
+                                                    });
+                                                    object.tags = $scope.tags;
+                                                    storeTags();
+                                                });
+
+                                            };
+                                            $scope.addTag = function () {
+                                                if (!checkImageTagDuplicate($scope.tags, $scope.newTag)) {
+                                                    $scope.newTagInProgress = true;
+                                                    registryImageTag('addImageTag', object.name, $scope.newTag, JSON.stringify(object.layoutId), function (error) {
+                                                        if (error) {
+                                                            $scope.newTagInProgress = false;
+                                                            return;
+                                                        }
+                                                        $scope.tags.push({name: $scope.newTag, edit: false, id: object.layoutId});
+                                                        object.tags = $scope.tags;
+                                                        storeTags();
+                                                        $scope.newTag = '';
+                                                        $scope.newTagInProgress = false;
+                                                    });
+                                                }
+                                            };
+                                            $scope.saveTag = function (tag, index) {
+                                                if (!checkImageTagDuplicate($scope.tags, tag.name, index)) {
+                                                    var oldTag = angular.copy($scope.lastSavedTags[index]);
+                                                    tag.actionInProgress = true;
+                                                    tag.edit = false;
+                                                    registryImageTag('addImageTag', object.name, tag.name, JSON.stringify(tag.id), function (error) {
+                                                        if (error) {
+                                                            tag.actionInProgress = false;
+                                                            return;
+                                                        }
+                                                        $scope.tags[index].name = tag.name;
+                                                        object.tags = $scope.tags;
+                                                        $scope.removeTag(oldTag);
+                                                        tag.actionInProgress = false;
+                                                    });
+
+                                                }
+                                            };
+                                            $scope.close = function () {
+                                                if ($scope.tags.length) {
+                                                    $scope.focusOut();
+                                                }
+                                                dialog.close();
+                                            };
+                                        }
+                                    });
+                                }
+                            }
+                        ]
                     }
                 ];
 
