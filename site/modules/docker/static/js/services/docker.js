@@ -102,13 +102,6 @@
                     'Our operations team is investigating.'
                     )));
             } else {
-                if (!err.message) {
-                    if (err.statusCode === 404) {
-                        err.message = 'Image not found';
-                    } else if (err.statusCode === 400) {
-                        err.message = 'Wrong image name';
-                    }
-                }
                 PopupDialog.errorObj(err);
             }
             return callback();
