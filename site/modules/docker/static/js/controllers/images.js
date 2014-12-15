@@ -320,7 +320,11 @@
 
                 function getHosts(scope) {
                     var selectedRegistry = getSelectedRegistry(scope);
-                    return Docker[selectedRegistry && selectedRegistry.type === 'local' ? 'listRunningPrivateRegistryHosts' : 'listHosts']()
+                    return Docker[selectedRegistry && selectedRegistry.type === 'local' ? 'listRunningPrivateRegistryHosts' : 'completedHosts']()
+                }
+
+                function getImages() {
+                    return $scope.images;
                 }
 
                 //search images
@@ -363,6 +367,16 @@
                                     $scope.tag = 'all';
                                     $scope.hideTags = true;
                                     getHosts(parentScope).then(function (hosts) {
+                                        var unreachableHost = getImages().find(function (image) {
+                                            return image && image.hasOwnProperty('suppressErrors');
+                                        });
+                                        if (unreachableHost) {
+                                            hosts = hosts.filter(function (host) {
+                                                return unreachableHost.suppressErrors.every(function (error) {
+                                                    return error.indexOf(host.primaryIp) === -1;
+                                                });
+                                            });
+                                        }
                                         $scope.hosts = hosts || [];
                                     });
 
@@ -395,8 +409,12 @@
                                                     err.message = 'Image not found';
                                                 } else if (err.statusCode === 400 || err.statusCode === 500) {
                                                     err.message = 'Wrong image name';
+                                                } else if (err.code === 'EHOSTUNREACH' || err.code === 'ETIMEDOUT') {
+                                                    err.message = 'Docker host "' + (host.name || host.primaryIp) + '" is unreachable.';
                                                 }
                                             }
+                                            image.processing = false;
+                                            image.processStatus = '';
                                             errorCallback(err);
                                         });
                                     };
