@@ -722,9 +722,9 @@
                 $scope.data.networks = ($scope.selectedNetworks.length > 0) ? $scope.selectedNetworks : '';
 
                 if ($scope.preSelectedImageId && $location.search().specification === 'dockerhost') {
-                    var isPublicNetworkChecked = $scope.networks.find(function (network) {
-                        return network.public;
-                    }).active;
+                    var isPublicNetworkChecked = $scope.networks.some(function (network) {
+                        return network.public && network.active;
+                    });
                     if (!isPublicNetworkChecked) {
                         PopupDialog.message('Message', 'Cannot create Docker host without Public network. Please select Public network.');
                         return;
