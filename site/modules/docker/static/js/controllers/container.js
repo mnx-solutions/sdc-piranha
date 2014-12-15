@@ -41,6 +41,9 @@
                 if ($scope.container && $scope.container.state !== 'running' && !$scope.actionInProgress) {
                     return;
                 }
+                if ($scope.machine && $scope.machine.state !== 'running') {
+                    return;
+                }
                 callback = callback || angular.noop;
                 $scope.graphs = $scope.graphs || adviserGraph.init();
                 Docker.containerUtilization(options).then(function (containerStats) {
