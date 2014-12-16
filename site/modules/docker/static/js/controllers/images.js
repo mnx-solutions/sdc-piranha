@@ -23,6 +23,7 @@
                 var topImages = [];
                 $scope.loading = true;
                 $scope.pullDialogOpening = false;
+                $scope.showGraph = false;
 
                 var errorCallback = function (err) {
                     Docker.errorCallback(err, function () {
@@ -576,11 +577,18 @@
 
                 $scope.$on('gridViewChangeTab', function (event, tab) {
                     $scope.tab = tab;
-                    if (tab === 'all' && !allImages) {
+                    if (tab !== 'top' && !allImages) {
                         allImages = true;
                         $scope.loading = true;
                         $scope.images = [];
                         listAllImages(true);
+                    }
+                    if (tab === 'graph') {
+                        $scope.showGraph = true;
+                        window.jQuery('.grid-view-table, .grid-no-entries').hide();
+                    } else {
+                        $scope.showGraph = false;
+                        window.jQuery('.grid-view-table, .grid-no-entries').show();
                     }
                 });
 

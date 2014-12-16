@@ -660,3 +660,74 @@ span.btn-success
     font-size: 14px;
     line-height: 20px;
 }
+.graph-title
+{
+    font-size: 28px;
+    font-weight: 200;
+    text-align: center;
+}
+#images-graph
+{
+    display: inline-block;
+    width: 800px;
+}
+.node circle
+{
+    fill: #fff;
+    stroke: #f60;
+    stroke-width: 3px;
+}
+.node circle.active
+{
+    fill: #f60 !important;
+}
+.node text
+{
+    font: 12px sans-serif;
+}
+.link
+{
+    fill: none;
+    stroke: #ccc;
+    stroke-width: 2px;
+}
+.image-detail
+{
+    display: inline-block;
+    width: 350px;
+    height: auto;
+    min-height: 400px;
+    margin-bottom: 50px;
+    vertical-align: top;
+    border: 2px solid #ccc;
+}
+.image-detail .loading-medium
+{
+    height: 400px;
+}
+.image-detail .title,
+.image-detail .image-info
+{
+    padding: 5px 10px;
+}
+.image-detail .title
+{
+    background: #ccc;
+}
+.image-info dd
+{
+    margin: 5px 0 10px 0;
+}
+.image-info dd a,
+.image-info dd a:hover
+{
+    text-decoration: none;
+}
+.image-info .image-command
+{
+    width: 300px;
+    height: auto;
+    min-height: 22px;
+    padding: 1px 5px;
+    border: 1px solid #ccc;
+}

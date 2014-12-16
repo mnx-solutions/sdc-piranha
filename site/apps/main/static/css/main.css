@@ -928,6 +928,7 @@ legend + .form-group
 
 .item-list-container
 {
+    min-height: 40px;
     overflow: auto;
 }
 
