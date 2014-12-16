@@ -352,7 +352,7 @@
                         }
                         $scope.pull = function () {
                             var image = Docker.parseTag($scope.term);
-                            var findedImages =  $scope.findedImages = [];
+                            var foundImages =  $scope.foundImages = [];
                             var parentScope = $scope;
                             $scope.pulling = true;
                             PopupDialog.custom({
@@ -367,7 +367,7 @@
 
                                     $scope.allowedIP = allowedIP($scope);
                                     $scope.pullImage = function () {
-                                        findedImages.push(image);
+                                        foundImages.push(image);
                                         $scope.close();
                                         image.processing = true;
                                         image.processStatus = 'Preparing';
@@ -388,7 +388,14 @@
                                             }
                                             listAllImages(allImages);
                                         }, function (err) {
-                                            findedImages.splice(0, 1);
+                                            foundImages.splice(0, 1);
+                                            if (!err.message) {
+                                                if (err.statusCode === 404) {
+                                                    err.message = 'Image not found';
+                                                } else if (err.statusCode === 400 || err.statusCode === 500) {
+                                                    err.message = 'Wrong image name';
+                                                }
+                                            }
                                             errorCallback(err);
                                         });
                                     };
@@ -415,7 +422,7 @@
                             }
 
                             var updateImages = function (err, images) {
-                                $scope.findedImages = (images && images.results) || [];
+                                $scope.foundImages = (images && images.results) || [];
                                 $scope.searching = false;
                                 $scope.showResult = true;
                             };
