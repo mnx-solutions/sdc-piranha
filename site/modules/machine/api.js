@@ -330,7 +330,6 @@ module.exports = function execute(scope, register) {
         var count = keys.length;
         if (count === 0) {
             callback(null, []);
-            call.done(null, []);
             return;
         }
 
