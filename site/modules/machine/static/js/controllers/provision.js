@@ -1526,7 +1526,7 @@
                     if ($scope.reConfigurable) {
                         $timeout(function () {
                             $scope.showReConfigure = true;
-                        }, 600);
+                        }, 1500);
                     }
                 }
             });
@@ -1554,7 +1554,7 @@
                         $timeout(function () {
                             $scope.onFilterChange('', el.group);
                             $scope.selectPackage(el.id);
-                        }, 600);
+                        });
                         $scope.zenboxDialog({
                             dropboxID: $rootScope.zenboxParams.dropboxOrderPackageId || $rootScope.zenboxParams.dropboxID,
                             request_subject: 'I want to order ' + el.description + ' compute instance',
