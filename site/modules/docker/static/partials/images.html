@@ -32,6 +32,9 @@
                  data-checked-items="checkedItems"
                  data-force-active="forceActive">
             </div>
+            <div data-ng-if="showGraph">
+                <div data-images-graph data-items="images"></div>
+            </div>
         </div>
         <div data-ng-show="!images.length && !loading">
             <div class="font-size16 margin-top-10">You don't have any images</div>

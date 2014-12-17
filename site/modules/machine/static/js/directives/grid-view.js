@@ -118,7 +118,7 @@
                     $scope.tabFilter = 'Key actions';
                     setCurrentTabFilter();
                 } else {
-                    $scope.tabFilters = ['top', 'all'];
+                    $scope.tabFilters = ['top', 'all', 'graph'];
                     $scope.tabFilter = 'top';
                     setCurrentTabFilter();
                 }
