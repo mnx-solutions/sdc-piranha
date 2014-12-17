@@ -55,7 +55,7 @@
                         type: 'button',
                         btn: {
                             getLabel: function (event) {
-                                return event.parsedParams && event.parsedParams.error ? 'Error' : 'Ok, clone';
+                                return event.parsedParams && event.parsedParams.error ? 'Error' : 'Clone';
                             },
                             getClass: function (event) {
                                 return event.parsedParams && event.parsedParams.error ? 'btn-edit ci effect-orange-button show-on-click' : 'btn-edit ci btn orange';
