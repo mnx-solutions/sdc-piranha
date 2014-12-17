@@ -36,7 +36,7 @@
                     }
 
                     var operationChecks = {
-                        createImage: function () {
+                        pull: function () {
                             if (params.registryId === 'default') {
                                 return scope.isAllowed = true;
                             }
