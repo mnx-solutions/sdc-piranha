@@ -71,7 +71,7 @@
                                 }
                                 if (currentLocation === '/compute/dockerHost') {
                                     $scope.forceActive = 'tags';
-                                    $scope.query = '{"JPC_tag":"DockerHost"}';
+                                    $scope.query = '"JPC_tag":"DockerHost"';
                                     $scope.gridProps.forEach(function (prop) {
                                         if (prop.id === 'tags') {
                                             prop.active = true;
