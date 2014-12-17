@@ -760,7 +760,7 @@
 
         service.clone = function(name, host, params) {
             var action = {
-                createImage: function (host, params) {
+                pull: function (host, params) {
                     return createCall('pull', {host: host, options: params});
                 },
                 run: function (host, params) {
