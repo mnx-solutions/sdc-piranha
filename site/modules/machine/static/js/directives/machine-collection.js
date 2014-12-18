@@ -77,13 +77,25 @@
                     }
                 }
 
+                function fail(item, error) {
+                    if (error) {
+                        PopupDialog.error(null, error.message || error);
+                    }
+                    if (!item.isNew) {
+                        item.key = item.dirtyKey = item.prevKey;
+                        item.val = item.dirtyVal = item.prevVal;
+                    }
+                    item.saving = scope.saving = false;
+                    scope.loadCollection();
+                }
+
                 scope.addItem = function (item) {
                     if (scope.saving) {
                         return;
                     }
 
-                    var prevKey = item.key;
-                    var prevVal = item.val;
+                    item.prevKey = item.key;
+                    item.prevVal = item.val;
                     var keyToUpdate = item.key;
                     var data = {};
                     scope.saving = item.saving = true;
@@ -99,24 +111,12 @@
                         scope.loadCollection();
                     }
 
-                    function fail(error) {
-                        if (error) {
-                            PopupDialog.error(null, error);
-                        }
-                        if (!item.isNew) {
-                            item.key = item.dirtyKey = prevKey;
-                            item.val = item.dirtyVal = prevVal;
-                        }
-                        item.saving = scope.saving = false;
-                        scope.loadCollection();
-                    }
-                    
                     function doCreate() {
-                        Machine[scope.collectionName].create(scope.machineId, data).then(done, fail);
+                        Machine[scope.collectionName].create(scope.machineId, data).then(done, fail.bind(this, item));
                     }
 
                     function doUpdate() {
-                        Machine[scope.collectionName].update(scope.machineId, keyToUpdate, data).then(done, fail);
+                        Machine[scope.collectionName].update(scope.machineId, keyToUpdate, data).then(done, fail.bind(this, item));
                     }
 
                     function createOrUpdate() {
@@ -153,7 +153,7 @@
                                 }
                             ),
                             createOrUpdate,
-                            fail
+                            fail.bind(this, item)
                         );
                     } else {
                         createOrUpdate();
@@ -183,7 +183,7 @@
                             scope.saving = false;
                             removeItem(item);
                             scope.loadCollection();
-                        });
+                        }, fail.bind(this, item));
                     } else {
                         removeItem(item);
                         updateCollection();
