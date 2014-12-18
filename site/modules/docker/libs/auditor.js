@@ -138,6 +138,12 @@ Auditor.prototype.put = function (event, body, callback) {
     event.date = event.date || new Date();
     var self = this;
     var paths = self.createPaths(event);
+    callback = callback || function (error) {
+        if (error) {
+            return self.log.error({error: error}, 'Failed to write event');
+        }
+    };
+
     self.client.safeMkdirp(path.dirname(paths.head), {copyRoles: true}, function (error) {
         if (error) {
             return callback(error);
@@ -157,9 +163,8 @@ Auditor.prototype.put = function (event, body, callback) {
                 if (errors) {
                     self.log.error({errors: errors}, 'Failed to write event');
                 }
-                if (callback) {
-                    callback.apply(this, arguments);
-                }
+
+                callback.apply(this, arguments);
             });
         });
     });

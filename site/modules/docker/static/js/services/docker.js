@@ -789,6 +789,11 @@
         service.registryRemoveImage = function (options) {
             return createCall('registryRemoveImage', ng.extend({}, options, {direct: true}));
         };
+
+        service.pingManta(function () {
+            service.getRegistriesList({cache: true});
+        });
+
         return service;
     }]);
 }(window.angular, window.JP.getModule('docker')));
