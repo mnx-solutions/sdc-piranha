@@ -39,7 +39,10 @@
                     $scope.loading = false;
                 }, function (err) {
                     PopupDialog.errorObj(err);
-                    $scope.loading = false;
+                    $scope.currentImage = ng.copy($scope.oldImageData);
+                    Image.resetImage($scope.oldImageData, function () {
+                        $scope.loading = false;
+                    });
                 });
             };
 
