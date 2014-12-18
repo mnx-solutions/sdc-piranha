@@ -348,7 +348,7 @@ module.exports = function execute(scope, register) {
                 };
 
                 if (err) {
-                    call.log.error('List machines failed for datacenter %s, url %s; err.message: %s', datacenterName, datacenters[datacenterName], err.message, err);
+                    call.log.info('List machines failed for datacenter %s, url %s; err.message: %s', datacenterName, datacenters[datacenterName], err.message, err);
                     response.status = 'error';
                     response.error = err;
                 } else {
