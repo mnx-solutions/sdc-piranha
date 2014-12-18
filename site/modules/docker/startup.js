@@ -888,7 +888,7 @@ var Docker = function execute(scope) {
                 if (auth) {
                     req.setHeader('X-Registry-Auth', auth);
                 }
-
+                var error;
                 req.on('result', function (error, res) {
                     if (error) {
                         return putToAudit(call, entry, options, error, true);
@@ -907,12 +907,15 @@ var Docker = function execute(scope) {
                                 layersMap[chunk.id] = chunk;
                             }
                         } else {
+                            if (chunk.error) {
+                                error = chunk.errorDetail;
+                            }
                             call.update(null, chunk);
                         }
                     });
 
                     res.on('end', function () {
-                        putToAudit(call, entry, options, null, true);
+                        putToAudit(call, entry, options, error, true);
                     });
                     res.on('error', function (error) {
                         putToAudit(call, entry, options, error, true);
