@@ -70,8 +70,8 @@
         <div data-ng-hide="provisionEnabled">
             <span class="docker-subtitle active-link" data-ng-click="completeAccount()">Complete your Account Information</span><span class="docker-subtitle"> in order to begin using Docker on the Joyent Public Cloud</span>
         </div>
-        <div data-ng-show="provisionEnabled">
-            <span class="docker-subtitle active-link" data-ng-disabled="!data.imageId" data-ng-click="createDocker()">Create Docker Host</span><span class="docker-subtitle"> and begin using Docker on the Joyent Public Cloud</span>
+        <div data-ng-show="provisionEnabled && data.imageId">
+            <span class="docker-subtitle active-link" data-ng-click="createDocker()">Create Docker Host</span><span class="docker-subtitle"> and begin using Docker on the Joyent Public Cloud</span>
         </div>
         <table class="docker-info">
             <tr>
