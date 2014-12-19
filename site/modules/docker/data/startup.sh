@@ -15,6 +15,14 @@ MANTA_USER=$(/usr/sbin/mdata-get manta-account)
 MANTA_SUBUSER=$(/usr/sbin/mdata-get manta-subuser)
 DOCKER_VERSION=$(/usr/sbin/mdata-get docker-version)
 CADVISOR_VERSION=$(/usr/sbin/mdata-get cadvisor-version)
+
+DOCKER_INTERNAL_PORT=54243
+CADVISOR_INTERNAL_PORT=54242
+REGISTRY_INTERNAL_PORT=54241
+DOCKER_PORT=4243
+DOCKER_TCP_PORT=4240
+REGISTRY_PORT=5000
+
 if [ ! -z "${DOCKER_VERSION}" ];then
     DOCKER_VERSION="-${DOCKER_VERSION}"
 fi
@@ -86,72 +94,53 @@ function installDocker {
     mount -a
     mkdir ${DOCKER_DIR}
     service docker stop
-    echo "DOCKER_OPTS=\"-g /mnt/docker --api-enable-cors=true\"" >> /etc/default/docker
+    echo "DOCKER_OPTS=\"-g /mnt/docker -H tcp://127.0.0.1:${DOCKER_INTERNAL_PORT} -H unix:///var/run/docker.sock --api-enable-cors=true\"" >> /etc/default/docker
     service docker start
 }
 
 function createBalancer {
-    local name=$1
-    local port=$2    
-    local docker_address=$3
-    local cadviser_address=$4
-    local registry_address=$5
-    apt-get install -y nginx
-    /etc/init.d/nginx stop
-    rm /etc/nginx/sites-available/default
-    usermod -a -G docker www-data
+    cat ${KEYS_PATH}/server-cert.pem ${KEYS_PATH}/server-key.pem >${KEYS_PATH}/server.pem
+    add-apt-repository -y ppa:vbernat/haproxy-1.5
+    apt-get update
+    apt-get install -y haproxy
+    cat <<END >>/etc/haproxy/haproxy.cfg
 
-    cat <<END > /etc/nginx/sites-enabled/${name}
-        server {
-               listen ${port} ssl;
-               server_name localhost;
-        
-               ssl on;
-               ssl_certificate /root/.docker/server-cert.pem;
-               ssl_certificate_key /root/.docker/server-key.pem;
-               ssl_client_certificate /root/.docker/ca.pem;
-               ssl_session_timeout 5m;
-        
-               ssl_protocols TLSv1 TLSv1.1 TLSv1.2;
-               ssl_ciphers "HIGH:!aNULL:!MD5 or HIGH:!aNULL:!MD5:!3DES";
-               ssl_prefer_server_ciphers on;
-               ssl_verify_client on;
-        
-               location / {
-                    proxy_pass http://${docker_address};
-               }
-               location /utilization/ {
-                    proxy_pass http://${cadviser_address}/api/v1.1/containers/;
-               }
-        }
+frontend registry
+    bind 0.0.0.0:${REGISTRY_PORT} ssl crt /root/.docker/server.pem ca-file /root/.docker/ca.pem verify required
+    default_backend registry_back
+
+frontend docker
+    bind 0.0.0.0:${DOCKER_PORT} ssl crt /root/.docker/server.pem ca-file /root/.docker/ca.pem verify required
+    acl is_cadvisor url_beg /utilization/
+    use_backend cadvisor_back if is_cadvisor
+    default_backend docker_back
+
+frontend docker_tcp
+    bind 0.0.0.0:${DOCKER_TCP_PORT} ssl crt /root/.docker/server.pem ca-file /root/.docker/ca.pem verify required
+    mode tcp
+    option tcplog
+    default_backend docker_back_tcp
+
+backend registry_back
+    mode http
+    server r 127.0.0.1:${REGISTRY_INTERNAL_PORT}
+
+backend docker_back_tcp
+    mode tcp
+    option tcplog
+    server d 127.0.0.1:${DOCKER_INTERNAL_PORT}
+
+backend docker_back
+    mode http
+    server d 127.0.0.1:${DOCKER_INTERNAL_PORT}
+
+backend cadvisor_back
+    mode http
+    reqrep ^([^\ :]*)\ /utilization/(.*) \1\ /api/v1.1/containers/\2
+    server c 127.0.0.1:${CADVISOR_INTERNAL_PORT}
+
 END
-    local ADDRESSES=""
-    for addr in ${IP_ADDRESSES};do
-        ADDRESSES="${ADDRESSES}\n\t\tlisten ${addr}:5000 ssl;"
-    done
-    ADDRESSES=$(echo -e ${ADDRESSES})
-    cat <<END > /etc/nginx/sites-enabled/${name}-registry
-        server {
-               ${ADDRESSES}
-               server_name localhost;
-        
-               ssl on;
-               ssl_certificate /root/.docker/server-cert.pem;
-               ssl_certificate_key /root/.docker/server-key.pem;
-               ssl_client_certificate /root/.docker/ca.pem;
-               ssl_session_timeout 5m;
-        
-               ssl_protocols TLSv1 TLSv1.1 TLSv1.2;
-               ssl_ciphers "HIGH:!aNULL:!MD5 or HIGH:!aNULL:!MD5:!3DES";
-               ssl_prefer_server_ciphers on;
-               ssl_verify_client on;
-        
-               location / {
-                    proxy_pass http://${registry_address};
-               }
-        }
-END
-    /etc/init.d/nginx start
+    /etc/init.d/haproxy restart
 }
 
 function installLogRotator {
@@ -196,7 +185,7 @@ writeStage "installing docker"
 installDocker
 
 writeStage "setting up API"
-createBalancer docker 4243 unix:/var/run/docker.sock 127.0.0.1:14242 127.0.0.1:5000
+createBalancer
 
 writeStage "installing log rotator"
 installLogRotator
@@ -209,7 +198,7 @@ docker run \
     -v /var/run/docker.sock:/var/run/docker.sock:rw \
     -v /sys:/sys:ro \
     -v ${DOCKER_DIR}/:/var/lib/docker:ro \
-    -p 127.0.0.1:14242:8080 \
+    -p 127.0.0.1:${CADVISOR_INTERNAL_PORT}:8080 \
     --restart=always \
     -d --name=cAdvisor google/cadvisor${CADVISOR_VERSION}
 

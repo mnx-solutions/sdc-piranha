@@ -10,10 +10,14 @@ var uuid = require('../../static/vendor/uuid/uuid.js');
 var registryConfig = fs.readFileSync(__dirname + '/data/registry-config.yml', 'utf-8');
 var Auditor = require(__dirname + '/libs/auditor.js');
 
+var DOCKER_TCP_PORT = 4240;
+
 var Docker = function execute(scope) {
     var Docker = scope.api('Docker');
     var server = scope.api('Server');
     var machine = scope.api('Machine');
+    var socketIO = scope.get('socket.io');
+
     var methods = Docker.getMethods();
     var methodsForAllHosts = ['containers', 'getInfo', 'images'];
     var removedContainersCache = {};
@@ -471,7 +475,7 @@ var Docker = function execute(scope) {
             });
 
             pipeline.push(function startContainer(collector, callback) {
-                collector.client.startImmediate( util._extend({}, startOptions), function (error) {
+                collector.client.startImmediate(util._extend({}, startOptions), function (error) {
                     callback(error);
                 });
             });
@@ -687,7 +691,7 @@ var Docker = function execute(scope) {
                             ]
                         }, function (err) {
                             if (err) {
-                                var cause = err.jse_cause || err.ase_errors || err;
+                                var cause = err['jse_cause'] || err['ase_errors'] || err;
                                 call.log.warn({error: cause}, 'Error while updating registries list');
                             }
                             call.done();
@@ -843,7 +847,7 @@ var Docker = function execute(scope) {
                                                 matchingContainer.hostId = machine.id;
                                                 matchingContainer.hostName = machine.name;
                                                 return removeContainer(call, client, matchingContainer, call.done.bind(call));
-                                            } else  {
+                                            } else {
                                                 client.remove({id: matchingContainer.Id, v: true, force: true}, call.done.bind(call));
                                             }
                                         };
@@ -1360,7 +1364,7 @@ var Docker = function execute(scope) {
             });
 
             pipeline.push(function createPrivateRegistryContainer(collector, callback) {
-                var startup_script = 'if [ ! -f /.installed ];then apt-get update && apt-get install python-pip python-dev && ' +
+                var startupScript = 'if [ ! -f /.installed ];then apt-get update && apt-get install python-pip python-dev && ' +
                     'pip install docker-registry docker-registry-driver-joyent_manta' + (installConfig.registryDriverVersion ? '==' + installConfig.registryDriverVersion : '') + ' && ' +
                     'echo "' + registryConfig.replace(/\n/g, '\n').replace(/ {4}/g, '\t') + '" | sed -e \'s/\t/    /g\'>/config.yml;' +
                     'touch /.installed;else docker-registry;fi';
@@ -1376,7 +1380,7 @@ var Docker = function execute(scope) {
                         'SEARCH_BACKEND=sqlalchemy',
                         'DOCKER_REGISTRY_CONFIG=/config.yml',
                         'REGISTRY_PORT=5000',
-                        'STARTUP_SCRIPT=' + startup_script
+                        'STARTUP_SCRIPT=' + startupScript
                     ],
                     Cmd: ['/bin/bash', '-c', 'printenv STARTUP_SCRIPT | /bin/bash'],
                     Volumes: {
@@ -1388,7 +1392,7 @@ var Docker = function execute(scope) {
                     OpenStdin: true,
                     StdinOnce: true,
                     Tty: true,
-                    RestartPolicy: {"Name": "always", "MaximumRetryCount": 0}
+                    RestartPolicy: {Name: 'always', MaximumRetryCount: 0}
                 }, function (error, registry) {
                     collector.registry = registry;
                     callback(error);
@@ -1399,10 +1403,10 @@ var Docker = function execute(scope) {
                 collector.client.start({
                     id: collector.registry.Id,
                     Binds: ['/root/.ssh:/root/.ssh:ro'],
-                    "PortBindings": {
-                        "5000/tcp": [{ "HostIp": "127.0.0.1", "HostPort": "5000" }]
+                    PortBindings: {
+                        '5000/tcp': [{HostIp: '127.0.0.1', HostPort: 54241}]
                     },
-                    RestartPolicy: {"Name": "always", "MaximumRetryCount": 0}
+                    RestartPolicy: {Name: 'always', MaximumRetryCount: 0}
                 }, callback);
             });
 
@@ -1484,7 +1488,7 @@ var Docker = function execute(scope) {
                     }
                 }, function (vasyncError, operations) {
                     if (vasyncError) {
-                        var cause = vasyncError.jse_cause || vasyncError.ase_errors;
+                        var cause = vasyncError['jse_cause'] || vasyncError['ase_errors'];
                         if (Array.isArray(cause)) {
                             cause = cause[0];
                         } else {
@@ -1529,6 +1533,81 @@ var Docker = function execute(scope) {
             }
             call.done(null, data || []);
         });
+    });
+
+    server.onCall('DockerExecute', {
+        verify: function (data) {
+            return data && data.host && data.host.primaryIp && data.options && data.options.Cmd && data.options.id;
+        },
+        handler: function (call) {
+            var data = call.data;
+            var execOpts = {
+                User: '',
+                Privileged: false,
+                Container: data.options.id,
+                Detach: false,
+                AttachStdin: true,
+                AttachStdout: true,
+                AttachStderr: true,
+                Tty: true,
+                Cmd: data.options.Cmd
+            };
+            Docker.createClient(call, data.host, function (error, client) {
+                if (error) {
+                    return call.done(error);
+                }
+                client.exec(util._extend({id: data.options.id}, execOpts), function (error, result) {
+                    if (error) {
+                        return call.done(error);
+                    }
+                    call.done(null, '/main/docker/exec/' + result.Id);
+                    var connected = false;
+                    socketIO.of('/main/docker/exec/' + result.Id)
+                        .on('connection', function (socket) {
+                            if (connected) {
+                                return call.log.warn('Someone trying to use active socket connection, rejected');
+                            }
+                            connected = true;
+                            var dockerUrl = client.options.url;
+                            var parsedUrl = url.parse(dockerUrl);
+                            parsedUrl.port = DOCKER_TCP_PORT;
+                            delete parsedUrl.host;
+                            client.options.url = url.format(parsedUrl);
+                            client.execStart(util._extend({id: result.Id}, execOpts), function (error, req) {
+                                client.options.url = dockerUrl;
+                                if (error) {
+                                    return socket.emit('data', error.message);
+                                }
+                                req.on('result', function (err, execRes) {
+                                    if (err) {
+                                        return socket.emit('data', error.message);
+                                    }
+                                    socket.on('terminal', function (data) {
+                                        req.connection.write(data.toString('ascii'));
+                                    });
+                                    execRes.on('data', function (data) {
+                                        socket.emit('data', data.toString());
+                                    });
+                                    execRes.on('error', function (error) {
+                                        socket.emit('data', error.message);
+                                    });
+                                });
+                                req.write(JSON.stringify({
+                                    User: '',
+                                    Privileged: false,
+                                    Container: data.options.id,
+                                    Detach: false,
+                                    AttachStdin: true,
+                                    AttachStdout: true,
+                                    AttachStderr: true,
+                                    Tty: true,
+                                    Cmd: data.options.Cmd
+                                }));
+                            });
+                        });
+                });
+            });
+        }
     });
 };
 

@@ -11,7 +11,9 @@ var redirect = require('./lib/redirect');
 var SmartCloud = require('./lib/smartcloud');
 var version = require('./lib/version');
 var RedisStore = require('connect-redis')(express);
+var http = require('http');
 var app = express(); // main app
+var httpServer = http.createServer(app);
 
 var features = {};
 
@@ -34,9 +36,9 @@ app.use(express.session({
         port: config.redis.port,
         db: config.redis.db,
         pass: config.redis.password,
-        retry_max_delay: 1000,
-        connect_timeout: 1000,
-        debug_mode: true,
+        'retry_max_delay': 1000,
+        'connect_timeout': 1000,
+        'debug_mode': true,
         ttl: lifespan * 60
     }),
     secret: 'secret'
@@ -106,7 +108,7 @@ config.log.serializers = {
     },
     obj: function (obj) {
         var cloneNode = function (node) {
-            if (!node || typeof(node) !== 'object') {
+            if (!node || typeof (node) !== 'object') {
                 return node;
             }
 
@@ -131,15 +133,13 @@ var opts = {
     main: app,
     extensions: config.extensions,
     assets: config.assets,
-    apps: ['main','landing','signup']
+    apps: ['main', 'landing', 'signup']
 };
-
 
 var m = new Modulizer(opts);
 m.set('utils', utils);
 
-
-if(!config.cloudapi || !config.cloudapi.keyPath || typeof config.cloudapi.keyPath !== 'string') {
+if (!config.cloudapi || !config.cloudapi.keyPath || typeof config.cloudapi.keyPath !== 'string') {
     throw new TypeError('cloudapi configuration (.keyPath) must be defined');
 }
 
@@ -150,10 +150,15 @@ var smartCloud = new SmartCloud({
 });
 m.set('smartCloud', smartCloud);
 
+if (config.features.docker === 'enabled') {
+    var io = require('socket.io');
+    m.set('socket.io', io.listen(httpServer, {log: logger}));
+}
+
 var libErr = require('./lib/error');
 
 function error(err, req, res, next) {
-    if(err.statusCode === 404) {
+    if (err.statusCode === 404) {
         logger.warn('Requested path not found @' + req.originalUrl);
     } else {
         logger.error('Request ended with error', err);
@@ -163,10 +168,10 @@ function error(err, req, res, next) {
 }
 
 m.init(opts, function (err) {
-	if(err) {
-		logger.fatal('Failed to initialize modulizer -> %s', err.message);
-		process.exit();
-	}
+    if (err) {
+        logger.fatal('Failed to initialize modulizer -> %s', err.message);
+        process.exit();
+    }
     app.use(function (res, req, next) {
         var err = new Error('Page not found');
         err.statusCode = 404;
@@ -178,7 +183,9 @@ m.init(opts, function (err) {
 
     app.all('*', error);
 
-    m.run(config.server.port);
+    httpServer.listen(config.server.port, function() {
+        logger.info('Server listening on ' + config.server.port);
+    });
 });
 
 // this code should discover all unhandled error events

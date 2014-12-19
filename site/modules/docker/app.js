@@ -1,8 +1,9 @@
-"use strict";
+'use strict';
 
 var path = require('path');
 var manta = require('manta');
 var vasync = require('vasync');
+var util = require('util');
 
 module.exports = function (scope, app) {
     var Manta = scope.api('MantaClient');
@@ -146,4 +147,5 @@ module.exports = function (scope, app) {
     app.get('/show', function (req, res) {
         getFile(req, res, 'show');
     });
+    app.use(require('term.js').middleware());
 };

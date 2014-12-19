@@ -165,26 +165,26 @@
                     $scope.memorySwap = 0;
                     $scope.networkMode = 'bridge';
                     $scope.container = {
-                        "Hostname": "",
-                        "Domainname": "",
-                        "User": "",
-                        "Memory": 0,
-                        "MemorySwap": 0,
-                        "CpuShares": 0,
-                        "Cpuset": "",
-                        "AttachStdin": true,
-                        "AttachStdout": true,
-                        "AttachStderr": true,
-                        "PortSpecs": [],
-                        "Tty": true,
-                        "OpenStdin": true,
-                        "StdinOnce": false,
-                        "Env": null,
-                        "Cmd": [],
-                        "ExposedPorts": {},
-                        "WorkingDir": "",
-                        "NetworkDisabled": false,
-                        "name": ""
+                        Hostname: '',
+                        Domainname: '',
+                        User: '',
+                        Memory: 0,
+                        MemorySwap: 0,
+                        CpuShares: 0,
+                        Cpuset: '',
+                        AttachStdin: true,
+                        AttachStdout: true,
+                        AttachStderr: true,
+                        PortSpecs: [],
+                        Tty: true,
+                        OpenStdin: true,
+                        StdinOnce: false,
+                        Env: null,
+                        Cmd: [],
+                        ExposedPorts: {},
+                        WorkingDir: '',
+                        NetworkDisabled: false,
+                        name: ''
                     };
                     if (hostId) {
                         $scope.hosts.forEach(function (host) {
@@ -219,33 +219,13 @@
                                 if (!Array.isArray(portBindings[exposedPort])) {
                                     portBindings[exposedPort] = [];
                                 }
-                                portBindings[exposedPort].push({"HostPort": hostPort, "HostIp": hostIp});
+                                portBindings[exposedPort].push({HostPort: hostPort, HostIp: hostIp});
                             } else {
                                 $scope.container.ExposedPorts[port + '/tcp'] = {};
                             }
                         });
                     }
                     return portBindings;
-                }
-
-                function removeQuotes(str) {
-                    var firstChar = str.substr(0, 1),
-                        lastChar = str.substr(-1);
-
-                    if ((firstChar === '"' && lastChar === '"') ||
-                        (firstChar === "'" && lastChar === "'")) {
-                        str = str.slice(1, -1);
-                    }
-                    return str;
-                }
-
-                function parseCommands(commands) {
-                    if (!commands) {
-                        return [];
-                    }
-                    return commands.match(/(?:[^\s"']+|"([^"]*)"|'([^']*)')+/g).map(function (string) {
-                        return removeQuotes(string);
-                    });
                 }
 
                 function parseEnvironments(environments) {
@@ -255,7 +235,7 @@
                     var parsedEnvironments = [];
                     environments.match(/(?:[^\s"]+|"[^"]*")+/g).forEach(function (string) {
 
-                        if (string.length > 3 && string.indexOf("=") > 0) {
+                        if (string.length > 3 && string.indexOf('=') > 0) {
                             var envValue = string.split('=');
                             string = envValue[0] + '=';
                             if (envValue[1]) {
@@ -279,7 +259,7 @@
                     });
                 }
 
-               function parseLxcConf(lxcConf) {
+                function parseLxcConf(lxcConf) {
                     if (!lxcConf) {
                         return [];
                     }
@@ -289,7 +269,7 @@
                             var lxcConfParams = line.split('=');
                             var lxcKey = lxcConfParams[0];
                             var lxcValue = lxcConfParams[1];
-                            var lxcOption = {"Key": lxcKey.trim(), "Value": lxcValue.trim()};
+                            var lxcOption = {Key: lxcKey.trim(), Value: lxcValue.trim()};
                             lxcOptions.push(lxcOption);
                         }
                     });
@@ -297,18 +277,18 @@
                 }
 
                 function parseRestartPolicy(restartpPolicy) {
-                    var policy = {"Name": "", "MaximumRetryCount": 0};
+                    var policy = {Name: '', MaximumRetryCount: 0};
                     if (!restartpPolicy) {
                         return policy;
                     }
 
                     if (restartpPolicy.indexOf('no') !== -1) {
-                        policy["Name"] = "no";
+                        policy.Name = 'no';
                     } else if (restartpPolicy.indexOf('always') !== -1) {
-                        policy["Name"] = "always";
+                        policy.Name = 'always';
                     } else if (restartpPolicy.indexOf('failure') !== -1) {
-                        policy["Name"] = "on-failure";
-                        policy["MaximumRetryCount"] = parseInt(restartpPolicy.split(':')[1], 10) || 0;
+                        policy.Name = 'on-failure';
+                        policy.MaximumRetryCount = parseInt(restartpPolicy.split(':')[1], 10) || 0;
                     }
                     return policy;
                 }
@@ -327,26 +307,26 @@
                     };
 
                     var startOptions = {
-                        "Binds": $scope.binds || [],
-                        "Dns": $scope.dns ? $scope.dns.split(' ') : [],
-                        "DnsSearch": $scope.dnsSearch ? $scope.dnsSearch.split(' ') : [],
-                        "VolumesFrom": $scope.volumesFrom ? $scope.volumesFrom.split(' ') : [],
-                        "PortBindings": containerPorts,
-                        "NetworkMode": $scope.networkMode,
-                        "ContainerIDFile": $scope.containerIDFile,
-                        "Links": containerLinks,
-                        "LxcConf": lxcConf,
-                        "CapAdd": $scope.capAdd ? $scope.capAdd.split(' ') : [],
-                        "CapDrop": $scope.capDrop ? $scope.capDrop.split(' ') : [],
-                        "RestartPolicy": restartPolicy,
-                        "PublishAllPorts": $scope.publishAllPorts,
-                        "Privileged": $scope.privileged
+                        Binds: $scope.binds || [],
+                        Dns: $scope.dns ? $scope.dns.split(' ') : [],
+                        DnsSearch: $scope.dnsSearch ? $scope.dnsSearch.split(' ') : [],
+                        VolumesFrom: $scope.volumesFrom ? $scope.volumesFrom.split(' ') : [],
+                        PortBindings: containerPorts,
+                        NetworkMode: $scope.networkMode,
+                        ContainerIDFile: $scope.containerIDFile,
+                        Links: containerLinks,
+                        LxcConf: lxcConf,
+                        CapAdd: $scope.capAdd ? $scope.capAdd.split(' ') : [],
+                        CapDrop: $scope.capDrop ? $scope.capDrop.split(' ') : [],
+                        RestartPolicy: restartPolicy,
+                        PublishAllPorts: $scope.publishAllPorts,
+                        Privileged: $scope.privileged
                     };
 
                     Docker.run(host, {create: $scope.container, start: startOptions}).then(function () {
                         $location.path('/docker/containers');
                     }, function (err) {
-                        if (typeof(err) === 'string') {
+                        if (typeof (err) === 'string') {
                             if (err.indexOf('cpuset.cpus: invalid') !== -1) {
                                 err = 'Cannot start container. Invalid argument: Cpuset.';
                             } else if (err.indexOf('cpuset.cpus: numerical result') !== -1) {
@@ -373,8 +353,8 @@
 
                 $scope.create = function () {
 
-                    $scope.container.Cmd = parseCommands($scope.commands);
-                    $scope.container.Entrypoint = parseCommands($scope.entrypoint);
+                    $scope.container.Cmd = Docker.parseCmd($scope.commands);
+                    $scope.container.Entrypoint = Docker.parseCmd($scope.entrypoint);
                     $scope.container.Env = parseEnvironments($scope.environment);
 
                     if ($scope.volumes) {
