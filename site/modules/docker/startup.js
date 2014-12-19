@@ -985,7 +985,7 @@ var Docker = function execute(scope) {
                     return call.done('Registry not found.');
                 }
                 registryRecord = registryRecord || {};
-                if (registryRecord.type === 'global' || registryId === 'default') {
+                if (registryRecord.type === 'remote' || registryRecord.type === 'global' || registryId === 'default') {
                     if (!registryRecord.username) {
                         return call.done(null, {images: []});
                     }
