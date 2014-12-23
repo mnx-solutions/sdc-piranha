@@ -892,8 +892,10 @@
             }
 
             $scope.setCurrentStep = function (index) {
-                $scope.currentStep = ng.element('.active-step').find('.current-step').eq(0).text();
                 $scope.currentSlidePageIndex = index;
+                $timeout(function () {
+                    $scope.currentStep = ng.element('.active-step').find('.current-step').eq(0).text();
+                });
             };
 
             $scope.processPackages = function () {
@@ -1526,7 +1528,7 @@
                     if ($scope.reConfigurable) {
                         $timeout(function () {
                             $scope.showReConfigure = true;
-                        }, 1500);
+                        });
                     }
                 }
             });
