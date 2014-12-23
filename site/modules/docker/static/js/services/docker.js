@@ -551,7 +551,8 @@
             return current;
         }
         service.pullImage = function (host, image, registryId) {
-            image.progressDetail = image.progressDetail || {};
+            image.pullProcesses[host.id] = image.pullProcesses[host.id] || {};
+            image.pullProcesses[host.id].progressDetail = image.pullProcesses[host.id].progressDetail || {};
             return createCall('pull', {host: host,
                 options: {
                     fromImage: image.name,
@@ -561,9 +562,14 @@
                     registryId: registryId
                 }
             }, function (error, chunks) {
+                var hostId = host.id;
+                if (!hostId) {
+                    var errorMessage = {message: 'Cannot pull image: internal error'};
+                    return PopupDialog.errorObj(errorMessage);
+                }
                 chunks.forEach(function (chunk) {
                     if (chunk.error) {
-                        image.processStatus = 'Error';
+                        image.pullProcesses[hostId].processStatus = 'Error';
                         var errorMessage = chunk.errorDetail || chunk;
                         if (chunk.error === 'HTTP code: 404') {
                             errorMessage.message = 'Cannot pull image “' + image.name + '”: not found.';
@@ -571,12 +577,12 @@
                         return PopupDialog.errorObj(errorMessage);
                     }
                     if (chunk.totalSize) {
-                        image.progressDetail.total = chunk.totalSize;
+                        image.pullProcesses[hostId].progressDetail.total = chunk.totalSize;
                     }
-                    image.processStatus = chunk.status || image.processStatus;
+                    image.pullProcesses[hostId].processStatus = chunk.status || image.pullProcesses[hostId].processStatus;
                 });
 
-                image.progressDetail.current = getCurrentSize(chunks);
+                image.pullProcesses[hostId].progressDetail.current = getCurrentSize(chunks);
             });
         };
 

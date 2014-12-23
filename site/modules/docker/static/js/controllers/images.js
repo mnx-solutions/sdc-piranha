@@ -380,43 +380,50 @@
                                     getHosts(parentScope).then(function (hosts) {
                                         $scope.hosts = hosts && hosts.length ? removeUnreachableHosts(hosts) : [];
                                     });
-
+                                    $scope.selectedHosts = [];
                                     $scope.allowedIP = allowedIP($scope);
                                     $scope.pullImage = function () {
                                         foundImages.push(image);
+                                        image.pullProcesses = {};
                                         $scope.close();
-                                        image.processing = true;
-                                        image.processStatus = 'Preparing';
+
                                         setRegistryHost(parentScope, image);
-                                        var host = Docker.getHost($scope.hosts, $scope.hostIp);
-                                        Docker.pullImage(host, image, parentScope.registryId).then(function (chunk) {
-                                            if (!chunk.length) {
-                                                image.processStatus = 'Download error';
-                                            } else if (chunk.length === 1 && chunk[0].status === 'Pulling repository ' + $scope.name) {
-                                                image.processStatus = 'Repository is empty';
-                                            }
-                                            if (image.processStatus === 'Download complete') {
-                                                image.processStatus = 'Downloading complete';
-                                            }
-                                            image.processing = false;
-                                            if (image.progressDetail) {
-                                                delete image.progressDetail;
-                                            }
-                                            listAllImages(allImages);
-                                        }, function (err) {
-                                            foundImages.splice(0, 1);
-                                            if (!err.message) {
-                                                if (err.statusCode === 404) {
-                                                    err.message = 'Image not found';
-                                                } else if (err.statusCode === 400 || err.statusCode === 500) {
-                                                    err.message = 'Wrong image name';
-                                                } else if (err.code === 'EHOSTUNREACH' || err.code === 'ETIMEDOUT') {
-                                                    err.message = 'Docker host "' + (host.name || host.primaryIp) + '" is unreachable.';
+                                        $scope.selectedHosts.forEach(function (selectedHost) {
+                                            var host = Docker.getHost($scope.hosts, selectedHost.primaryIp);
+                                            image.pullProcesses[host.id] = {
+                                                host: host,
+                                                processing: true,
+                                                processStatus: 'Preparing'
+                                            };
+                                            Docker.pullImage(host, image, parentScope.registryId).then(function (chunk) {
+                                                if (!chunk.length || !host.id) {
+                                                    image.pullProcesses[host.id].processStatus = 'Download error';
+                                                } else if (chunk.length === 1 && chunk[0].status === 'Pulling repository ' + $scope.name) {
+                                                    image.pullProcesses[host.id].processStatus = 'Repository is empty';
                                                 }
-                                            }
-                                            image.processing = false;
-                                            image.processStatus = '';
-                                            errorCallback(err);
+                                                if (image.pullProcesses[host.id].processStatus === 'Download complete') {
+                                                    image.pullProcesses[host.id].processStatus = 'Downloading complete';
+                                                }
+                                                image.pullProcesses[host.id].processing = false;
+                                                if (image.pullProcesses[host.id].progressDetail) {
+                                                    delete image.pullProcesses[host.id].progressDetail;
+                                                }
+                                                listAllImages(allImages);
+                                            }, function (err) {
+                                                foundImages.splice(0, 1);
+                                                if (!err.message) {
+                                                    if (err.statusCode === 404) {
+                                                        err.message = 'Image not found';
+                                                    } else if (err.statusCode === 400 || err.statusCode === 500) {
+                                                        err.message = 'Wrong image name';
+                                                    } else if (err.code === 'EHOSTUNREACH' || err.code === 'ETIMEDOUT') {
+                                                        err.message = 'Docker host "' + (host.name || host.primaryIp) + '" is unreachable.';
+                                                    }
+                                                }
+                                                image.processing = false;
+                                                image.processStatus = '';
+                                                errorCallback(err);
+                                            });
                                         });
                                     };
 
@@ -497,7 +504,18 @@
                                         $scope.pullImage(object);
                                     },
                                     disabled: function (object) {
-                                        return $scope.processing || $scope.pulling;
+                                        if (object.pullProcesses) {
+                                            var processing = false;
+                                            for (var key in object.pullProcesses) {
+                                                if (object.pullProcesses[key].processing) {
+                                                    processing = object.pullProcesses[key].processing;
+                                                }
+                                            }
+                                            if (processing) {
+                                                return processing;
+                                            }
+                                        }
+                                        return $scope.pulling;
                                     }
                                 }
                             },
@@ -506,7 +524,7 @@
                                 name: 'Process',
                                 sequence: 7,
                                 active: true,
-                                type: 'progress',
+                                type: 'multipleProgress',
                                 _inProgress: function (object) {
                                     return object.processing;
                                 },
@@ -528,6 +546,7 @@
                             PopupDialog.custom({
                                 templateUrl: 'docker/static/partials/select-tag.html',
                                 openCtrl: function ($scope, dialog, Docker) {
+                                    $scope.loading = true;
                                     $scope.name = image.name;
                                     $q.all([
                                         $q.when(getHosts(parentScope)),
@@ -543,6 +562,7 @@
                                             $scope.tags = tagsArr;
                                         }
                                         $scope.tags.push({name: 'all'});
+                                        $scope.loading = false;
                                     });
 
                                     $scope.allowedIP = allowedIP($scope);
@@ -552,24 +572,32 @@
                                         }
                                         $scope.close();
                                         image.tag = $scope.tag === 'all' ? '' : $scope.tag;
-                                        parentScope.processing = image.processing = true;
-                                        image.processStatus = "Preparing";
 
                                         setRegistryHost(parentScope, image);
-                                        var host = Docker.getHost($scope.hosts, $scope.hostIp);
-                                        Docker.pullImage(host, image, parentScope.registryId).then(function (chunk) {
-                                            if (!chunk.length) {
-                                                image.processStatus = 'Download error';
-                                            }
-                                            if (image.processStatus === 'Download complete') {
-                                                image.processStatus = 'Downloading complete';
-                                            }
-                                            parentScope.processing = image.processing = false;
-                                            if (image.progressDetail) {
-                                                delete image.progressDetail;
-                                            }
-                                            listAllImages(allImages);
-                                        }, errorCallback);
+                                        image.pullProcesses = {};
+                                        $scope.selectedHosts.forEach(function (selectedHost) {
+                                            var host = Docker.getHost($scope.hosts, selectedHost.primaryIp);
+                                            image.pullProcesses[host.id] = {
+                                                host: host,
+                                                processing: true,
+                                                processStatus: 'Preparing'
+                                            };
+                                            parentScope.processing = true;
+
+                                            Docker.pullImage(host, image, parentScope.registryId).then(function (chunk) {
+                                                if (!chunk.length) {
+                                                    image.pullProcesses[host.id].processStatus = 'Download error';
+                                                }
+                                                if (image.pullProcesses[host.id].processStatus === 'Download complete') {
+                                                    image.pullProcesses[host.id].processStatus = 'Downloading complete';
+                                                }
+                                                parentScope.processing = image.pullProcesses[host.id].processing = false;
+                                                if (image.pullProcesses[host.id].progressDetail) {
+                                                    delete image.pullProcesses[host.id].progressDetail;
+                                                }
+                                                listAllImages(allImages);
+                                            }, errorCallback);
+                                        });
                                     };
 
                                     $scope.close = function () {

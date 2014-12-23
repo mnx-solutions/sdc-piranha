@@ -906,7 +906,6 @@ var Docker = function execute(scope) {
                                 oldChunk.status !== chunk.status ||
                                 chunk.progressDetail && oldChunk.progressDetail &&
                                     chunk.progressDetail.current - oldChunk.progressDetail.current > 5000000) {
-
                                 call.update(null, chunk);
                                 layersMap[chunk.id] = chunk;
                             }
