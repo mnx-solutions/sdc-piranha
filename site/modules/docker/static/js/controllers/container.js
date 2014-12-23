@@ -30,6 +30,7 @@
             $scope.actionInProgress = false;
             $scope.loading = true;
             $scope.cadvisorUnavailable = false;
+            $scope.execCmd = '';
 
             var errorCallback = function (err) {
                 $scope.loading = false;
@@ -67,7 +68,7 @@
 
                 timerUpdateStats = setInterval(function () {
                     if ($scope.machine && $scope.container && $scope.container.infoId && ($location.path() === '/docker/container/' + hostId + '/' + container.Id)) {
-                        updateContainerStats({host: $scope.machine, options: {num_stats: 2, id: $scope.container.infoId}}, function (error) {
+                        updateContainerStats({host: $scope.machine, options: {'num_stats': 2, id: $scope.container.infoId}}, function (error) {
                             if (error === 'CAdvisor unavailable') {
                                 $scope.cadvisorUnavailable = true;
                                 clearInterval(timerUpdateStats);
@@ -85,6 +86,11 @@
                     container.primaryIp = machine.primaryIp;
                     container.hostId = machine.id;
                     $scope.machine = machine;
+                    $scope.termOpts = {
+                        machine: $scope.machine,
+                        containerId: containerId
+                    };
+
                     Docker.inspectContainer(container).then(function (info) {
                         var containerCmd = info.Config.Cmd;
                         var containerState = 'stopped';

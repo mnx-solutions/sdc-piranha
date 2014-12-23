@@ -125,15 +125,16 @@
 
                 var data = new FormData();
                 var metadata = {path: path, files: {}};
+                var fileIndex;
 
-                for (var fileIndex = 0; fileIndex < files.length; fileIndex += 1) {
+                for (fileIndex = 0; fileIndex < files.length; fileIndex += 1) {
                     var file = files[fileIndex];
                     metadata.files[file.name] = file.size;
                 }
 
                 data.append('metadata', JSON.stringify(metadata));
 
-                for (var fileIndex = 0; fileIndex < files.length; fileIndex += 1) {
+                for (fileIndex = 0; fileIndex < files.length; fileIndex += 1) {
                     data.append('uploadInput', files[fileIndex]);
                 }
 
@@ -163,4 +164,3 @@
         }
     ]);
 })(window.angular, window.JP.main);
-

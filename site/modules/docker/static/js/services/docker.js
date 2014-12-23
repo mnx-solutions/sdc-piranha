@@ -96,8 +96,8 @@
         service.errorCallback = function (err, callback) {
             var messageMantaUnavailable = 'Manta service is not available.';
             if ((err.message && err.message.indexOf(messageMantaUnavailable) >= 0) ||
-                (err && typeof(err) === 'string' && err.indexOf(messageMantaUnavailable) >= 0)) {
-                    errorContext.emit(new Error(localization.translate(null,
+                (err && typeof (err) === 'string' && err.indexOf(messageMantaUnavailable) >= 0)) {
+                errorContext.emit(new Error(localization.translate(null,
                     'docker',
                     'Our operations team is investigating.'
                     )));
@@ -236,7 +236,6 @@
         doneHandler.pull = doneHandler.commit;
 
         /**
-         * 
          * @param options.host {Object} - machine object
          * @param options.direct {Boolean} - direct call
          * @param options.cache {Boolean} - return result from cache if exists
@@ -539,7 +538,7 @@
             var current = 0;
             chunks.forEach(function (chunk) {
                 var current = chunk.progressDetail && chunk.progressDetail.current;
-                
+
                 if (result[chunk.id] && !current && chunk.status === 'Download complete') {
                     result[chunk.id].current = result[chunk.id].total;
                 } else if (current) {
@@ -553,13 +552,21 @@
         }
         service.pullImage = function (host, image, registryId) {
             image.progressDetail = image.progressDetail || {};
-            return createCall('pull', {host: host, options: {fromImage: image.name, tag: image.tag, registry: image.registry, repo: image.repository, registryId: registryId}}, function (error, chunks) {
+            return createCall('pull', {host: host,
+                options: {
+                    fromImage: image.name,
+                    tag: image.tag,
+                    registry: image.registry,
+                    repo: image.repository,
+                    registryId: registryId
+                }
+            }, function (error, chunks) {
                 chunks.forEach(function (chunk) {
                     if (chunk.error) {
                         image.processStatus = 'Error';
                         var errorMessage = chunk.errorDetail || chunk;
                         if (chunk.error === 'HTTP code: 404') {
-                            errorMessage.message = 'Cannot pull image “' + image.name  + '”: not found.';
+                            errorMessage.message = 'Cannot pull image “' + image.name + '”: not found.';
                         }
                         return PopupDialog.errorObj(errorMessage);
                     }
@@ -788,6 +795,26 @@
 
         service.registryRemoveImage = function (options) {
             return createCall('registryRemoveImage', ng.extend({}, options, {direct: true}));
+        };
+
+        service.execute = function (opts, handler) {
+            return createCall('execute', opts);
+        };
+
+        service.parseCmd = function (command) {
+            if (!command) {
+                return [];
+            }
+            return command.match(/(?:[^\s"']+|"([^"]*)"|'([^']*)')+/g).map(function (string) {
+                var firstChar = string.substr(0, 1),
+                    lastChar = string.substr(-1);
+
+                if ((firstChar === '"' && lastChar === '"') ||
+                    (firstChar === '\'' && lastChar === '\'')) {
+                    string = string.slice(1, -1);
+                }
+                return string;
+            });
         };
 
         service.pingManta(function () {

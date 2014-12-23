@@ -64,7 +64,7 @@ function createCallback(client, dockerInstance, opts, auditParams, callback) {
 
                 }
             }
-            if (error.statusCode === 502 || error.statusCode === 504 || error.statusCode === 400 ||
+            if (error.statusCode > 500 || error.statusCode === 400 ||
                 error.name === 'RequestTimeoutError' || error.name === 'ConnectTimeoutError') {
                 if (req.path.indexOf('/utilization') === 0) {
                     error = new CAdvisorUnreachable();
@@ -259,6 +259,15 @@ module.exports = function execute(scope, register) {
             auditType: 'container',
             method: 'POST',
             path: '/containers/:id/restart'
+        },
+        exec: {
+            path: '/containers/:id/exec',
+            method: 'POST'
+        },
+        execStart: {
+            method: 'POST',
+            path: '/exec/:id/start',
+            raw: true
         },
         kill         : {
             auditType: 'container',
