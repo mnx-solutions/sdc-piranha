@@ -7,9 +7,11 @@
             'Docker',
             'PopupDialog',
             'Account',
+            '$rootScope',
+            '$location',
             'localization',
 
-            function ($scope, Docker, PopupDialog, Account, localization) {
+            function ($scope, Docker, PopupDialog, Account, $rootScope, $location, localization) {
                 var REMOVED_CONTAINER_STATUS = 'Deleted';
                 $scope.loading = true;
                 $scope.containers = [];
@@ -119,6 +121,18 @@
                     }
                 };
 
+                var checkedLogs = function (checked) {
+                    var logs = [];
+                    $scope.checkedItems.forEach(function (log) {
+                        if (checked) {
+                            logs.push(log);
+                        }
+                        log.actionInProgress = checked;
+                        log.checked = checked;
+                    });
+                    return logs;
+                };
+
                 function removeContainerLogs(messageTitle, messageBody) {
                     if ($scope.checkedItems.length) {
                         PopupDialog.confirm(
@@ -132,17 +146,7 @@
                                 null,
                                 messageBody[$scope.checkedItems.length > 1 ? 'plural' : 'single']
                             ), function () {
-                                var logs = [];
-                                var checkedLogs = function (checked) {
-                                    $scope.checkedItems.forEach(function (log) {
-                                        if (checked) {
-                                            logs.push(log);
-                                        }
-                                        log.actionInProgress = checked;
-                                        log.checked = checked;
-                                    });
-                                };
-                                checkedLogs(true);
+                                var logs = checkedLogs(true);
                                 Docker.removeDeletedContainerLogs(logs).then(function () {
                                     $scope.checkedItems = [];
                                     listRemovedContainers();
@@ -152,6 +156,35 @@
                                 });
                             }
                         );
+                    } else {
+                        $scope.noCheckBoxChecked();
+                    }
+                }
+
+                function analyzeContainerLogs() {
+                    var selectedContainers = $scope.checkedItems.length;
+                    if (selectedContainers) {
+                        var logs = checkedLogs(true);
+                        var dates = {
+                            start: Math.floor($scope.date.start.getTime() / 1000),
+                            end: Math.floor($scope.date.end.getTime() / 1000)
+                        };
+                        Docker.analyzeLogs({logs: logs, dates: dates}).then(function (logFiles) {
+                            if (logFiles.length > 0) {
+                                $scope.checkedItems = [];
+                                var job = {
+                                    inputs: logFiles
+                                };
+                                $rootScope.commonConfig('analyzeLogsJob', job);
+                                $location.path('/manta/builder');
+                            } else {
+                                checkedLogs(false);
+                                PopupDialog.message('Message', 'The log files for selected containers have not been uploaded to manta just yet.');
+                            }
+                        }, function (err) {
+                            checkedLogs(false);
+                            errorCallback(err);
+                        });
                     } else {
                         $scope.noCheckBoxChecked();
                     }
@@ -184,6 +217,16 @@
                             return $scope.tab !== 'Running' && $scope.tab !== 'All existing';
                         },
                         sequence: 1
+                    },
+                    {
+                        label: 'Analyze logs',
+                        action: function () {
+                            analyzeContainerLogs();
+                        },
+                        show: function () {
+                            return $scope.tab !== REMOVED_CONTAINER_STATUS;
+                        },
+                        sequence: 2
                     }
                 ];
                 $scope.gridProps = [

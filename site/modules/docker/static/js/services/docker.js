@@ -770,6 +770,14 @@
             return job.promise;
         };
 
+        service.analyzeLogs = function (data) {
+            var job = serverTab.call({
+                name: 'DockerAnalyzeLogs',
+                data: {logs: data.logs, dates: data.dates}
+            });
+            return job.promise;
+        };
+
         service.forceRemoveImage = function (options) {
             return createCall('forceRemoveImage', ng.extend({}, options, {direct: true}));
         };

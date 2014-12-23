@@ -1,5 +1,6 @@
 'use strict';
 var config = require('easy-config');
+var path = require('path');
 var vasync = require('vasync');
 var util = require('util');
 var os = require('os');
@@ -558,6 +559,61 @@ var Docker = function execute(scope) {
             });
         } else {
             call.done();
+        }
+    });
+
+    server.onCall('DockerAnalyzeLogs', {
+        verify: function (data) {
+            return typeof data === 'object' &&
+                data.hasOwnProperty('logs') && data.hasOwnProperty('dates');
+        },
+        handler: function (call) {
+            var client = scope.api('MantaClient').createClient(call);
+            var logs = call.data.logs;
+            var startDate = call.data.dates.start;
+            var endDate = call.data.dates.end + 86400;
+
+            function getFilesInDateRange(logs, startDate, endDate) {
+                vasync.forEachParallel({
+                    inputs: logs,
+                    func: function (log, callback) {
+                        var analyzeLogFiles = [];
+                        var logPath = '~~/stor/.joyent/docker/logs/' + log.hostId + '/' + log.Id;
+                        client.ftw(logPath, function (err, entriesStream) {
+                            if (err) {
+                                if (err.statusCode === 404) {
+                                    return callback(null, []);
+                                }
+                                return callback(err);
+                            }
+
+                            entriesStream.on('entry', function (obj) {
+                                var fileDate = Math.floor(new Date(path.basename(obj.name, '.log')).getTime() / 1000);
+
+                                if (startDate <= fileDate && endDate >= fileDate) {
+                                    analyzeLogFiles.push(logPath + '/' + obj.name);
+                                }
+                            });
+
+                            entriesStream.on('end', function () {
+                                callback(null, analyzeLogFiles);
+                            });
+
+                            entriesStream.on('error', function (error) {
+                                callback(error);
+                            });
+                        });
+                    }
+                }, function (vasyncErrors, analyzeLogFiles) {
+                    if (vasyncErrors) {
+                        return call.done(vasyncErrors);
+                    }
+                    analyzeLogFiles = [].concat.apply([], analyzeLogFiles.successes);
+                    call.done(null, analyzeLogFiles);
+                });
+            }
+
+            getFilesInDateRange(logs, startDate, endDate);
         }
     });
 
