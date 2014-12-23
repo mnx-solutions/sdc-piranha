@@ -736,7 +736,7 @@
                 tag: parts[5],
                 onlyname: parts[4],
                 repository: parts[3] || '',
-                name: parts[2],
+                name: parts[2] || '',
                 registry: parts[1]
             };
         };
