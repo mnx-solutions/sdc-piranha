@@ -1,20 +1,23 @@
 'use strict';
 
 (function (app) {
-    app.factory('dockerClone', ['Docker', 'PopupDialog', 'dockerPushImage',  function (Docker, PopupDialog, dockerPushImage) {
+    app.factory('dockerClone', ['$rootScope', 'Docker', 'PopupDialog', 'dockerPushImage', '$location',  function ($rootScope, Docker, PopupDialog, dockerPushImage, $location) {
         return function(event) {
-
             var name = event.name;
             var params = event.parsedParams || JSON.parse(event.Params);
             if (name === 'push') {
                 return dockerPushImage(params.image);
+            } else if (name === 'run') {
+                params.create.name = '';
+                $rootScope.commonConfig('cloneDockerParams', params);
+                $location.path('/docker/container/create');
+                return;
             }
             PopupDialog.custom({
                 templateUrl: 'docker/static/partials/clone-dialog.html',
                 openCtrl: ['$scope', 'dialog', 'Docker', 'notification', function (scope, dialog, Docker, notification) {
 
                     scope.event = event;
-
                     scope.hasNameField = name === 'run';
                     scope.containerName = '';
                     scope.params = params;
