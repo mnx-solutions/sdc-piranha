@@ -1067,7 +1067,7 @@ var Docker = function execute(scope) {
         },
         handler: function (call) {
             var options = call.data.options;
-            var image = options.image;
+            var imageId = options.image.Id;
             var registry = options.registry;
             var name = options.name;
             var parsedTag = parseTag(name);
@@ -1076,9 +1076,9 @@ var Docker = function execute(scope) {
             var taggedName = parsedTag.repository + '/' + parsedTag.name;
             var entry = {
                 host: call.data.host.id,
-                entry: options.id,
-                type: options.id ? 'image' : 'docker',
-                name: 'pull'
+                entry: imageId,
+                type: 'image',
+                name: 'push'
             };
             if ((registryUrl === 'index.docker.io:443' || registry.type === 'global') && !parsedTag.repository) {
                 taggedName = registry.username + '/' + parsedTag.name;
@@ -1114,14 +1114,14 @@ var Docker = function execute(scope) {
 
             pipeline.push(function addTag(collector, callback) {
                 collector.client.tagImage({
-                    name: image.Id,
+                    name: imageId,
                     repo: taggedName,
                     tag: (parsedTag.tag || 'latest')
                 }, callback);
             });
 
             pipeline.push(function getImageSlices(collector, callback) {
-                collector.client.historyImage({id: image.Id}, function (error, slices) {
+                collector.client.historyImage({id: imageId}, function (error, slices) {
                     collector.slices = slices;
                     callback(error);
                 });
@@ -1470,7 +1470,7 @@ var Docker = function execute(scope) {
                     inputs: data,
                     func: function (item, callback) {
                         auditor.get(item, function (err, response) {
-                            item.action = (item.name === 'run' || item.name === 'pull') ? 'Key actions' : null;
+                            item.action = (item.name === 'run' || item.name === 'pull' || item.name === 'push') ? 'Key actions' : null;
                             if (err || !response) {
                                 if (err.statusCode !== 404) {
                                     suppressErrors.push(err);
@@ -1478,7 +1478,11 @@ var Docker = function execute(scope) {
                                 return callback(null, item);
                             }
                             item.Params = response;
-                            item.parsedParams = JSON.parse(response) || {};
+                            try {
+                                item.parsedParams = JSON.parse(data);
+                            } catch (e) {
+                                item.parsedParams = {};
+                            }
                             callback(null, item);
                         });
                     }

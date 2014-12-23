@@ -61,7 +61,7 @@
                                 return event.parsedParams && event.parsedParams.error ? 'btn-edit ci effect-orange-button show-on-click' : 'btn-edit ci btn orange';
                             },
                             show: function (event) {
-                                return event.parsedParams && (event.name === 'pull' || event.name === 'run' || event.parsedParams.error);
+                                return event.parsedParams && (event.action || event.parsedParams.error);
                             },
                             action: function (event) {
                                 return event.parsedParams && event.parsedParams.error ? false : dockerClone(event);

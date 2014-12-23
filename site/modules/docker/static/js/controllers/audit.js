@@ -24,7 +24,7 @@
             ]).then(function (result) {
                 $scope.audit = result[0] || [];
                 $scope.audit.forEach(function (audit) {
-                    audit.action = (audit.name === 'run' || audit.name === 'pull') ? 'Key actions' : null;
+                    audit.action = (audit.name === 'run' || audit.name === 'pull' || audit.name === 'push') ? 'Key actions' : null;
                 });
                 $scope.hosts = result[1] || [];
                 $scope.loading = false;
@@ -112,7 +112,7 @@
                             return event.parsedParams && event.parsedParams.error ? 'btn-edit ci effect-orange-button show-on-click' : 'btn-edit ci btn btn-original-text orange';
                         },
                         show: function (event) {
-                            return event.parsedParams && (event.name === 'pull' || event.name === 'run' || event.parsedParams.error);
+                            return event.parsedParams && (event.action || event.parsedParams.error);
                         },
                         action: function (event) {
                             return event.parsedParams && event.parsedParams.error ? false : dockerClone(event);
