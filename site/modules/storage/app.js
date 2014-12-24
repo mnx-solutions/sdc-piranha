@@ -97,14 +97,15 @@ module.exports = function (scope, app) {
             headerType = 'text/plain';
         }
         var client = Manta.createClient({req: req});
-        client.get(req.query.path, function (err, stream) {
+        var filePath = new Buffer(req.query.path, 'base64').toString('utf8');
+        client.get(filePath, function (err, stream) {
             if (err) {
                 req.log.error({error: err}, messageError);
                 return;
             }
             res.setHeader('Content-Type', headerType);
             if (action === 'download') {
-                var filename = path.basename(req.query.path);
+                var filename = path.basename(filePath);
                 res.setHeader('Content-Disposition', 'attachment; filename=\"' + filename + '\";"');
             }
             stream.pipe(res);
