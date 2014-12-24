@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 (function (app) {
 
@@ -42,11 +42,11 @@
             fileman.lsAbsolute = createMethod('FileManList', true);
 
             fileman.get = function (path, show) {
-                    if (show) {
-                        window.open('storage/show?path=' + path, '_blank');
-                    } else {
-                        window.location.href = 'storage/download?path=' + '~~/' + path;
-                    }
+                if (show) {
+                    window.open('storage/show?path=' + window.btoa(path), '_blank');
+                } else {
+                    window.location.href = 'storage/download?path=' + window.btoa('~~/' + path);
+                }
             };
 
             fileman.rmr = createMethod('FileManDeleteTree');
