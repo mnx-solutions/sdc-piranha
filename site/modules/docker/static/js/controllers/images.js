@@ -323,8 +323,18 @@
                     return Docker[selectedRegistry && selectedRegistry.type === 'local' ? 'listRunningPrivateRegistryHosts' : 'completedHosts']()
                 }
 
-                function getImages() {
-                    return $scope.images;
+                function removeUnreachableHosts(hosts) {
+                    var unreachableHost = $scope.images.find(function (image) {
+                        return image && image.hasOwnProperty('suppressErrors');
+                    });
+                    if (unreachableHost) {
+                        hosts = hosts.filter(function (host) {
+                            return unreachableHost.suppressErrors.every(function (error) {
+                                return error.indexOf(host.primaryIp) === -1;
+                            });
+                        });
+                    }
+                    return hosts;
                 }
 
                 //search images
@@ -367,17 +377,7 @@
                                     $scope.tag = 'all';
                                     $scope.hideTags = true;
                                     getHosts(parentScope).then(function (hosts) {
-                                        var unreachableHost = getImages().find(function (image) {
-                                            return image && image.hasOwnProperty('suppressErrors');
-                                        });
-                                        if (unreachableHost) {
-                                            hosts = hosts.filter(function (host) {
-                                                return unreachableHost.suppressErrors.every(function (error) {
-                                                    return error.indexOf(host.primaryIp) === -1;
-                                                });
-                                            });
-                                        }
-                                        $scope.hosts = hosts || [];
+                                        $scope.hosts = hosts && hosts.length ? removeUnreachableHosts(hosts) : [];
                                     });
 
                                     $scope.allowedIP = allowedIP($scope);
@@ -532,7 +532,7 @@
                                         $q.when(getHosts(parentScope)),
                                         $q.when(Docker.getImageTags(registry, $scope.name))
                                     ]).then(function (result) {
-                                        $scope.hosts = result[0] || [];
+                                        $scope.hosts = result[0] && result[0].length ? removeUnreachableHosts(result[0]) : [];
                                         $scope.tags = result[1] || [];
                                         if (!Array.isArray($scope.tags)) {
                                             var tagsArr = [];
