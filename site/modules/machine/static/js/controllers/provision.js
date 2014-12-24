@@ -893,9 +893,7 @@
 
             $scope.setCurrentStep = function (index) {
                 $scope.currentSlidePageIndex = index;
-                $timeout(function () {
-                    $scope.currentStep = ng.element('.active-step').find('.current-step').eq(0).text();
-                });
+                $scope.currentStep = ng.element('.active-step').find('.current-step').eq(0).text();
             };
 
             $scope.processPackages = function () {
@@ -1186,10 +1184,9 @@
                     selectMinimalPackage(packageType || '');
                     $timeout(function () {
                         var accordion = ng.element('#packagesAccordion');
-                        var accordionBody = ng.element('.panel-collapse');
                         if ($scope.filterModel.key === 'No filter') {
                             setDefaultAccordionBehavior(accordion);
-                            accordionBody.has('div.active').parent().has('a.collapsed').find('a').click();
+                            accordion.find('.panel-collapse.collapse').has('div.active').addClass('in').parent().find('a.collapsed').removeClass('collapsed');
                         } else {
                             $scope.collapsedPackageTypes = [];
                             accordion.find('.collapse').addClass('in').end()
