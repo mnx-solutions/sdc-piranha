@@ -1483,7 +1483,7 @@ var Docker = function execute(scope) {
                             }
                             item.Params = response;
                             try {
-                                item.parsedParams = JSON.parse(data);
+                                item.parsedParams = JSON.parse(response);
                             } catch (e) {
                                 item.parsedParams = {};
                             }
