@@ -18,7 +18,7 @@ CADVISOR_VERSION=$(/usr/sbin/mdata-get cadvisor-version)
 
 DOCKER_INTERNAL_PORT=54243
 CADVISOR_INTERNAL_PORT=54242
-REGISTRY_INTERNAL_PORT=54241
+REGISTRY_INTERNAL_PORT=5000
 DOCKER_PORT=4243
 DOCKER_TCP_PORT=4240
 REGISTRY_PORT=5000
@@ -106,7 +106,7 @@ function createBalancer {
     cat <<END >>/etc/haproxy/haproxy.cfg
 
 frontend registry
-    bind 0.0.0.0:${REGISTRY_PORT} ssl crt /root/.docker/server.pem ca-file /root/.docker/ca.pem verify required
+$(for ip in ${IP_ADDRESSES};do echo "    bind ${ip}:${REGISTRY_PORT} ssl crt /root/.docker/server.pem ca-file /root/.docker/ca.pem verify required";done)
     default_backend registry_back
 
 frontend docker

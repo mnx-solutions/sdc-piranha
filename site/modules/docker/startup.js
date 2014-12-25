@@ -1324,6 +1324,14 @@ var Docker = function execute(scope) {
             var mantaClient = scope.api('MantaClient').createClient(call);
             var pipeline = [];
             var installConfig = config.docker || {};
+            var hostConfig = {
+                ExposedPorts: {'5000/tcp': {}},
+                Binds: ['/root/.ssh:/root/.ssh:ro'],
+                PortBindings: {
+                    '5000/tcp': [{HostIp: '127.0.0.1', HostPort: '5000'}]
+                },
+                RestartPolicy: {Name: 'always', MaximumRetryCount: 0}
+            };
 
             pipeline.push(function getFingerprint(collector, callback) {
                 mantaClient.getFileContents('~~/stor/.joyent/docker/private.key', function (error, privateKey) {
@@ -1392,7 +1400,7 @@ var Docker = function execute(scope) {
                     OpenStdin: true,
                     StdinOnce: true,
                     Tty: true,
-                    RestartPolicy: {Name: 'always', MaximumRetryCount: 0}
+                    HostConfig: hostConfig
                 }, function (error, registry) {
                     collector.registry = registry;
                     callback(error);
@@ -1400,14 +1408,7 @@ var Docker = function execute(scope) {
             });
 
             pipeline.push(function installRegistryDriver(collector, callback) {
-                collector.client.start({
-                    id: collector.registry.Id,
-                    Binds: ['/root/.ssh:/root/.ssh:ro'],
-                    PortBindings: {
-                        '5000/tcp': [{HostIp: '127.0.0.1', HostPort: 54241}]
-                    },
-                    RestartPolicy: {Name: 'always', MaximumRetryCount: 0}
-                }, callback);
+                collector.client.start(util._extend({id: collector.registry.Id}, hostConfig), callback);
             });
 
             pipeline.push(function waitInstalling(collector, callback) {
