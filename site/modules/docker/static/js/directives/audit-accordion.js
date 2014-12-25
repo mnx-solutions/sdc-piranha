@@ -58,7 +58,7 @@
                                 return event.parsedParams && event.parsedParams.error ? 'Error' : 'Clone';
                             },
                             getClass: function (event) {
-                                return event.parsedParams && event.parsedParams.error ? 'btn-edit ci effect-orange-button show-on-click' : 'btn-edit ci btn orange';
+                                return 'btn-edit ci btn-audit ' + (event.parsedParams && event.parsedParams.error ? 'effect-orange-button show-on-click' : 'btn btn-original-text orange');
                             },
                             show: function (event) {
                                 return event.parsedParams && (event.action || event.parsedParams.error);
