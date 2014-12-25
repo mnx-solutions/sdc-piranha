@@ -489,10 +489,10 @@ span.btn-success
     font-size: 16px;
 }
 .registry-form {
-    padding-bottom: 65px;
+    padding-bottom: 25px;
 }
 .registry-form tr {
-    border-bottom: solid white 20px;
+    border-bottom: solid white 10px;
 }
 .registry-form td:first-child {
     padding-right: 20px;

@@ -10,10 +10,10 @@
     </div>
     <div class="loading-large col-md-12" data-ng-show="loading"></div>
 
-    <div class="panel-group" data-ng-hide="loading">
+    <div class="panel-group" id="registry-accordion" data-ng-hide="loading">
         <div class="panel panel-default">
             <div class="panel-heading">
-                <a class="accordion-toggle toggle-icon" data-toggle="collapse" data-target="#collapse_information">
+                <a class="accordion-toggle toggle-icon" data-toggle="collapse" data-parent="#registry-accordion" data-target="#collapse_information">
                     Connection information
                 </a>
             </div>
@@ -91,11 +91,11 @@
 
         <div class="panel panel-default" data-ng-show="registryId">
             <div class="panel-heading">
-                <a class="accordion-toggle toggle-icon" data-toggle="collapse" data-target="#collapse_local_images">
+                <a class="accordion-toggle collapsed toggle-icon" data-toggle="collapse" data-parent="#registry-accordion" data-target="#collapse_local_images">
                     Images in this registry
                 </a>
             </div>
-            <div id="collapse_local_images" class="panel-collapse collapse in">
+            <div id="collapse_local_images" class="panel-collapse collapse">
                 <div class="loading-large col-md-12" data-ng-show="imagesLoading"></div>
                 <div class="panel-body">
                     <div data-ng-show="images.length">
