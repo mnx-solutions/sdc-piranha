@@ -3,8 +3,8 @@
 (function (ng, app) {
     app.directive('terminal', ['Docker', function (Docker) {
         return {
-            template: '<span class="edit-value"><input type="text" class="input-value" data-ng-model="execCmd"/></span>' +
-                '<button data-ng-click="execute()" class="btn">Exec</button>' +
+            template: '<span class="edit-value"><input type="text" class="input-value" data-ng-model="execCmd" data-ng-keypress="pressEnter($event)" /></span>' +
+                '<button data-ng-click="execute()" class="btn light effect-orange-button">Exec</button>' +
                 '<div id="terminal"></div>',
             restrict: 'E',
             scope: {
@@ -48,6 +48,11 @@
                             socket.disconnect();
                         });
                     });
+                };
+                $scope.pressEnter = function (keyEvent) {
+                    if (keyEvent.which === 13) {
+                        $scope.execute();
+                    }
                 };
             }
         };

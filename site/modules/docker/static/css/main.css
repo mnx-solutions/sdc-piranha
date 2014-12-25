@@ -731,3 +731,13 @@ span.btn-success
     padding: 1px 5px;
     border: 1px solid #ccc;
 }
+#collapse_exec .edit-value {
+    width: 514px;
+}
+#collapse_exec .edit-value input {
+    width: 495px;
+}
+#collapse_exec .terminal {
+    margin-top: 5px;
+    width: 578px;
+}
