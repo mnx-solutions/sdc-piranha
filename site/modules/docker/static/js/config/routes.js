@@ -21,7 +21,6 @@ window.JP.main.config(['routeProvider', function (routeProvider) {
                 ]).then(function (result) {
                     var account = result[0] || {};
                     var hosts = result[1] || [];
-                    $rootScope.provisionEnabled = account.provisionEnabled || false;
                     $rootScope.dockerHostsAvailable = hosts.length > 0;
                     changePath();
                 }, changePath);

@@ -102,6 +102,7 @@
                             }
                             account = job.__read();
                             service.setCurrentUserId(account.id);
+                            $rootScope.provisionEnabled = account.provisionEnabled || false;
                             deferred.resolve(account);
                             $$track.marketing_lead(account);
                         }
