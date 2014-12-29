@@ -126,7 +126,20 @@ Auditor.prototype.search = function (type, host, entry, callback) {
 };
 
 Auditor.prototype.get = function (event, callback) {
-    this.client.getFileContents(this.createHeadPath(event), callback);
+    var self = this;
+    var filePath = self.createHeadPath(event);
+    self.client.getFileContents(filePath, function (error, data) {
+        if (error && error.statusCode !== 404) {
+            return callback(error);
+        }
+        try {
+            data = JSON.parse(data);
+        } catch (e) {
+            self.log.error({error: e.message}, 'Docker audit record is corrupted at path ' + filePath);
+            data = {};
+        }
+        callback(null, data);
+    });
 };
 
 Auditor.prototype.getDockerDir = function (event, type) {

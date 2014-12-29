@@ -95,7 +95,7 @@
                     hideSorter: true,
                     _getter: function (event) {
                         return getEntryAuditDetails(event).then(function (details) {
-                            event.parsedParams = JSON.parse(details) || {};
+                            event.parsedParams = details;
                             return details;
                         });
                     }
