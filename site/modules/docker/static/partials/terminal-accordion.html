@@ -1,0 +1,11 @@
+<div data-ng-show="isHostAccessible && isContainerRunning">
+    <span class="edit-value"><input type="text" class="input-value" data-ng-model="execCmd" data-ng-keypress="pressEnter($event)" /></span>
+    <button data-ng-click="execute()" class="btn light effect-orange-button">Exec</button>
+    <div id="terminal"></div>
+</div>
+<p data-ng-show="!isHostAccessible">
+    This Docker host does not support executing commands in portal. Please create new Docker host with containers to try again.
+</p>
+<p data-ng-show="isHostAccessible && !isContainerRunning">
+    Run this container before executing commands.
+</p>

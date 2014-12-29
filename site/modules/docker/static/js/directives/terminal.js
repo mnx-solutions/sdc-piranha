@@ -3,14 +3,14 @@
 (function (ng, app) {
     app.directive('terminal', ['Docker', function (Docker) {
         return {
-            template: '<span class="edit-value"><input type="text" class="input-value" data-ng-model="execCmd" data-ng-keypress="pressEnter($event)" /></span>' +
-                '<button data-ng-click="execute()" class="btn light effect-orange-button">Exec</button>' +
-                '<div id="terminal"></div>',
+            templateUrl: 'docker/static/partials/terminal-accordion.html',
             restrict: 'E',
             scope: {
                 options: '='
             },
             link: function ($scope, el) {
+                $scope.isHostAccessible = false;
+                $scope.isContainerRunning = false;
                 $scope.execute = function () {
                     var opts = {
                         host: $scope.options.machine,
@@ -54,6 +54,21 @@
                         $scope.execute();
                     }
                 };
+                $scope.$watch('options', function (opts) {
+                    if (opts) {
+                        Docker.terminalPing(opts).then(function () {
+                            $scope.isHostAccessible = true;
+                        }, function () {
+                            $scope.isHostAccessible = false;
+                        });
+                    }
+                });
+                $scope.$watch('options.containerState', function (containerState) {
+                    $scope.isContainerRunning = false;
+                    if (containerState === 'running') {
+                        $scope.isContainerRunning = true;
+                    }
+                });
             }
         };
     }]);
