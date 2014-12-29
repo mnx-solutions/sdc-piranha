@@ -21,6 +21,7 @@
 
                 var allImages = false;
                 var topImages = [];
+                $scope.unreachableHosts = [];
                 $scope.loading = true;
                 $scope.pullDialogOpening = false;
                 $scope.showGraph = false;
@@ -66,7 +67,12 @@
                 var listAllImages = function (all) {
                     topImages = all ? topImages : [];
                     Docker.listAllImages(all ? {all: true, cache: true} : {cache: true}).then(function (images) {
-                        images = images.filter(function (image) { return !image.suppressErrors; });
+                        images = images.filter(function (image) {
+                            if (image.suppressErrors) {
+                                $scope.unreachableHosts = image.suppressErrors;
+                            }
+                            return !image.suppressErrors;
+                        });
                         images.forEach(function (image) {
                             image.ShorId = image.Id.slice(0, 12);
                             if (all) {
@@ -322,12 +328,9 @@
                 }
 
                 function removeUnreachableHosts(hosts) {
-                    var unreachableHost = $scope.images.find(function (image) {
-                        return image && image.hasOwnProperty('suppressErrors');
-                    });
-                    if (unreachableHost) {
+                    if ($scope.unreachableHosts.length > 0) {
                         hosts = hosts.filter(function (host) {
-                            return unreachableHost.suppressErrors.every(function (error) {
+                            return $scope.unreachableHosts.every(function (error) {
                                 return error.indexOf(host.primaryIp) === -1;
                             });
                         });
