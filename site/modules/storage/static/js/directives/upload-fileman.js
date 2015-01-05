@@ -14,23 +14,16 @@
 
                 function uploadFiles(files) {
                     http.uploadFiles('storage/upload', scope.filemanUpload, files, function (error, data) {
-                        var isError = false;
-                        var message;
-                        if (error || data.status === 'error') {
-                            isError = true;
-                            message = data.message || (error.message || error);
-                        } else {
-                            var uploadedFiles = files.map(function (file) {
-                                return '"' + file.name + '"';
-                            }).join(', ');
-                            message = 'File ' + uploadedFiles + ' was';
-                            if (files.length > 1) {
-                                message = 'Files ' + uploadedFiles + ' were';
+                        scope.$apply(function () {
+                            if (error || data.status === 'error') {
+                                PopupDialog.error(null, data && data.message || error);
+                                scope.$parent.$emit('uploadReady', data.id, true, scope.filemanUpload);
+                            } else if (data.status === 'progress') {
+                                scope.$parent.$emit('uploadProgress', data.progress, scope.filemanUpload);
+                            } else if (data.status === 'success') {
+                                scope.$parent.$emit('uploadReady', data.id, true, scope.filemanUpload);
                             }
-                            message += ' successfully uploaded';
-                        }
-                        notification.popup(isError, isError, FILE_MANAGER_PATH, null, message);
-                        scope.$parent.$emit('uploadReady', true, scope.filemanUpload);
+                        });
                     });
                 }
 
@@ -64,24 +57,26 @@
                             'Folder named ' + existingFolders.join(', ') + ' already exists.'
                         );
                     }
-                    if (existingFiles.length > 0) {
-                        var message = 'Are you sure you want to overwrite ' + existingFiles.join(', ') + '?';
-                        return PopupDialog.confirm(
-                            'Confirm: Add files',
-                            message,
-                            function () {
-                                finalUpload();
-                            },
-                            function () {
-                                if (noExistingFiles.length) {
-                                    finalUpload(noExistingFiles);
-                                } else {
-                                    e.target.value = '';
-                                }
-                            });
-                    } else {
-                        return finalUpload();
-                    }
+                    scope.$apply(function () {
+                        if (existingFiles.length > 0) {
+                            var message = 'Are you sure you want to overwrite ' + existingFiles.join(', ') + '?';
+                            return PopupDialog.confirm(
+                                'Confirm: Add files',
+                                message,
+                                function () {
+                                    finalUpload();
+                                },
+                                function () {
+                                    if (noExistingFiles.length) {
+                                        finalUpload(noExistingFiles);
+                                    } else {
+                                        e.target.value = '';
+                                    }
+                                });
+                        } else {
+                            return finalUpload();
+                        }
+                    });
                 });
                 scope.upload = function () {
                     element.click();

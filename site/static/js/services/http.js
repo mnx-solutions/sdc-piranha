@@ -123,31 +123,44 @@
                 var metadata = {path: path, files: {}};
                 var fileIndex;
 
-                for (fileIndex = 0; fileIndex < files.length; fileIndex += 1) {
-                    var file = files[fileIndex];
+                files.forEach(function (file) {
                     metadata.files[file.name] = file.size;
-                }
-
+                });
                 data.append('metadata', JSON.stringify(metadata));
-
-                for (fileIndex = 0; fileIndex < files.length; fileIndex += 1) {
-                    data.append('uploadInput', files[fileIndex]);
-                }
-
-                var service = createService({
-                    uploadFile: {
-                        method: 'POST',
-                        url: url,
-                        data: data,
-                        transformRequest: angular.identity,
-                        headers: {
-                            'Content-Type': undefined
-                        },
-                        params: {}
-                    }
+                // we have two cycles going over files cause metadata must go first (before files payload)
+                files.forEach(function (file) {
+                    data.append('uploadInput', file);
                 });
 
-                service.uploadFile({}, data, cb);
+                var shortNames = files.map(function (file) { return file.name; }).join(', ');
+                if (shortNames.length > 100) {
+                    shortNames = shortNames.substr(0, 100) + '...';
+                }
+
+                var chunkId = Math.random();
+
+                var xhr = new XMLHttpRequest();
+                xhr.upload.addEventListener('progress', function (e) {
+                    if (e.lengthComputable) {
+                        var progress = {
+                            loaded: e.loaded,
+                            total: e.total,
+                            id: chunkId,
+                            name: shortNames
+                        };
+                        cb(null, {status: 'progress', progress: progress, id: chunkId});
+                    }
+                }, false);
+                xhr.addEventListener('load', function () {
+                    if (xhr.status === 200) {
+                        cb(null, {status: 'success', id: chunkId});
+                    } else {
+                        var message = 'Failed to upload ' + shortNames + ': ' + xhr.responseText || xhr.statusText;
+                        cb(null, {status: 'error', message: message, id: chunkId});
+                    }
+                }, false);
+                xhr.open('post', url, true);
+                xhr.send(data);
             }
 
             return {

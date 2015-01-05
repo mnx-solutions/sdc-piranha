@@ -520,12 +520,25 @@
                     showPopupDialog('message', 'Message', 'Construction works.');
                 };
 
-                scope.$on('uploadReady', function ($scope, userAction, path) {
-                    scope.createFilesTree(userAction, path);
+                scope.uploads = {};
+
+                scope.$on('uploadReady', function ($scope, id, userAction, path) {
+                    delete scope.uploads[id];
+                    if (Object.keys(scope.uploads).length === 0) {
+                        scope.refreshingProgress = false;
+                        scope.createFilesTree(userAction, path);
+                    }
                 });
 
                 scope.$on('uploadStart', function () {
                     scope.refreshingFolder = true;
+                    scope.refreshingProgress = true;
+                });
+
+                scope.$on('uploadProgress', function (event, progress) {
+                    scope.uploads[progress.id] = progress;
+                    progress.loadedStr = util.getReadableFileSizeString(progress.loaded);
+                    progress.totalStr = util.getReadableFileSizeString(progress.total);
                 });
             }
         };

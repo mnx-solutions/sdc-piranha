@@ -4528,6 +4528,21 @@ label.checkbox
     height: 390px;
 }
 
+.uploading-progress
+{
+    position: absolute;
+    text-align: center;
+    width: 225px;
+    height: 390px;
+    overflow-x: hidden;
+    overflow-y: scroll;
+    padding-top: 50px;
+}
+
+.uploading-progress progress {
+    width: 165px;
+}
+
 .blue-manta
 {
     margin-bottom: 60px;
