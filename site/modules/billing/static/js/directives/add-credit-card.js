@@ -341,13 +341,12 @@
                     };
 
                     $scope.submitForm = function () {
-                        $scope.loading = true;
-                        $scope.formSubmitted = true;
                         if ($scope.paymentForm.$invalid || !isCCNumberValid()) {
                             $scope.validateCCNumber();
-                            $scope.loading = false;
                             return;
                         }
+                        $scope.loading = true;
+                        $scope.formSubmitted = true;
 
                         $scope.invalidCCNumber = $scope.missingCCNumber = false;
 
@@ -394,7 +393,6 @@
                                     $scope.errs = null;
                                     $q.when(BillingService.getDefaultCreditCard(), function (credit) {
                                         $scope.prev = credit;
-                                        $scope.loading = false;
                                         $rootScope.$broadcast('creditCardUpdate', credit);
                                     });
                                 }, function () {
