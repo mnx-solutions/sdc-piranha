@@ -107,7 +107,7 @@
             };
 
             var noRulesProvided = function () {
-                var isEmpty = $scope.policy.rules.length === 0;
+                var isEmpty = $scope.policy.rules.length === 0 || $scope.rules[0].rule.length === 0;
                 if (isEmpty) {
                     PopupDialog.error("Error", "Policy must have at least one rule.");
                 }
