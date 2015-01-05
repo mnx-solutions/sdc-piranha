@@ -22,7 +22,7 @@
                         active: true
                     },
                     {
-                        id: 'Params',
+                        id: 'parsedParams',
                         name: 'Params',
                         sequence: 2,
                         active: true

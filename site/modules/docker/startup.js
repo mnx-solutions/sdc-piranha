@@ -1482,12 +1482,7 @@ var Docker = function execute(scope) {
                                 }
                                 return callback(null, item);
                             }
-                            item.Params = response;
-                            try {
-                                item.parsedParams = JSON.parse(response);
-                            } catch (e) {
-                                item.parsedParams = {};
-                            }
+                            item.parsedParams = response;
                             callback(null, item);
                         });
                     }

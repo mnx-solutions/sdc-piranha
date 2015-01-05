@@ -4,7 +4,7 @@
     app.factory('dockerClone', ['$rootScope', 'Docker', 'PopupDialog', 'dockerPushImage', '$location',  function ($rootScope, Docker, PopupDialog, dockerPushImage, $location) {
         return function(event) {
             var name = event.name;
-            var params = event.parsedParams || JSON.parse(event.Params);
+            var params = event.parsedParams || {};
             if (name === 'push') {
                 return dockerPushImage(params.image);
             } else if (name === 'run') {
