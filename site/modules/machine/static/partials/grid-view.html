@@ -153,6 +153,14 @@
                                     <span data-ng-bind-html="prop._getter(object) || object[prop.id]" class="grid-status-text"></span>&nbsp;
                                     <progress data-ng-show="prop._progressBar(object) && prop._progressBar(object).current" value="{{prop._progressBar(object).current}}" max="{{prop._progressBar(object).total}}"></progress>
                                 </span>
+                                <span data-ng-switch-when="multipleProgress">
+                                    <div data-ng-repeat="process in object.pullProcesses">
+                                        <span data-ng-show="process.host.name">{{process.host.name}}:</span>
+                                        <span data-ng-show="prop._inProgress(process)" class="loading-small progres loading-small-firewall pull-left"></span>&nbsp;
+                                        <span data-ng-bind-html="prop._getter(process)" class="grid-status-text"></span>&nbsp;
+                                        <progress data-ng-show="prop._progressBar(process) && prop._progressBar(process).current" value="{{prop._progressBar(process).current}}" max="{{prop._progressBar(process).total}}"></progress><br/>
+                                    </div>
+                                </span>
                                 <span data-ng-switch-when="date">{{object[prop.id] | date: prop.format || 'yyyy-MM-dd HH:mm'}}</span>
                                 <span data-ng-switch-when="array">
                                     <span data-ng-repeat="item in object[prop.id]">{{item}}{{{true: '', false: ', '}[$last]}}</span>

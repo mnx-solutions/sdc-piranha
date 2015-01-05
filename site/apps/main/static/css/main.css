@@ -3037,7 +3037,7 @@ label.checkbox
 {
     display: inline-block;
 
-    padding: 2px 0 0 3px;
+    padding-top: 2px;
 }
 
 .grid-enabled-text
@@ -5116,10 +5116,15 @@ progress {
     vertical-align: middle;
 }
 .loading-small.progres {
-    height: 20px;
+    margin-right: 12px;
+    height: 19px;
 }
 .result-content {
     margin-top: 20px;
+}
+.modal-select-tag {
+    min-width: 530px !important;
+    overflow: auto;
 }
 
 .modal-select-tag .edit-value,
@@ -5130,6 +5135,9 @@ progress {
     margin: 0 20px 0 40px;
     display: inline-block;
     width: 120px;
+}
+.modal-select-tag .edit-label.left {
+    margin: 0;
 }
 .modal-select-tag .form-group .error {
     margin-left: 185px;

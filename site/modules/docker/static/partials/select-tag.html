@@ -4,23 +4,25 @@
             <div class="modal-header message">
                 <h5><i class="glyphicon glyphicon-info-sign"></i><b>Pull Image {{name}}</b></h5>
             </div>
-            <div class="modal-body">
+            <div class="modal-body loading-medium" data-ng-show="loading"></div>
+            <div data-ng-hide="loading" class="modal-body multi-select">
                 <form name="selectTagForm" class="selectTagForm">
                     <div class="form-group">
-                        <span class="edit-host edit-label">Docker Host</span>
-                        <span class="edit-value">
-                            <select data-select-two data-ng-disabled="!hosts.length" ui-select2="{minimumResultsForSearch: -1, width: '250px'}" id="hostSelect" data-width="250px" data-ng-model="hostIp" required >
-                                <option data-ng-repeat="host in hosts" value="{{host.primaryIp}}">
-                                    {{host.name}}
-                                </option>
-                            </select>
+                        <span data-ng-show="hosts.length">
+                            <multi-select id="hostsSelect"
+                                          data-items="hosts"
+                                          data-option-label="'name'"
+                                          data-selected-items="selectedHosts"
+                                          data-selectable-header="AVAILABLE DOCKER HOSTS"
+                                          data-selection-header="ASSIGNED DOCKER HOSTS">
+                            </multi-select>
                         </span>
                     </div>
                     <div class="form-group error" data-ng-show="hosts.length && !allowedIP()">You must have local registry created on this host in order to pull</div>
                     <div data-ng-hide="hideTags" class="form-group">
-                        <span class="edit-image edit-label">Select image tag</span>
+                        <span class="edit-image edit-label left">Select image tag</span>
                         <span class="edit-value">
-                            <select data-select-two data-ng-disabled="!tags.length" ui-select2="{minimumResultsForSearch: -1, width: '250px'}" id="tagSelect" data-width="250px" data-ng-model="tag" required>
+                            <select data-select-two data-ng-disabled="!tags.length" ui-select2="{minimumResultsForSearch: -1, width: '362px'}" id="tagSelect" data-width="250px" data-ng-model="tag" required>
                                 <option data-ng-repeat="tag in tags" value="{{tag.name}}">
                                     {{tag.name}}
                                 </option>
@@ -31,7 +33,7 @@
             </div>
             <div class="modal-footer">
                 <button data-ng-click="close()" data-button-focus="false" data-label="Cancel" class="btn grey-new effect-orange-button">Cancel</button>
-                <button data-ng-click="pullImage()" data-button-focus="true" data-ng-disabled="selectTagForm.$invalid || !allowedIP()" class="btn orange">Pull</button>
+                <button data-ng-click="pullImage()" data-button-focus="true" data-ng-disabled="selectTagForm.$invalid || !selectedHosts.length" class="btn orange">Pull</button>
             </div>
         </div>
     </div>
