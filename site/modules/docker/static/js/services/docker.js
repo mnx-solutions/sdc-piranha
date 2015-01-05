@@ -598,6 +598,14 @@
             return job.promise;
         };
 
+        service.terminalPing = function (options) {
+            var job = serverTab.call({
+                name: 'DockerTerminalPing',
+                data: options
+            });
+            return job.promise;
+        };
+
         service.auth = function (options, dockerHost) {
             function getHost (host) {
                 var defer = $q.defer();

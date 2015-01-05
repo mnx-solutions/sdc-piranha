@@ -1540,6 +1540,28 @@ var Docker = function execute(scope) {
         });
     });
 
+    server.onCall('DockerTerminalPing', {
+        verify: function (data) {
+            return data && data.machine && data.machine.primaryIp && data.containerId;
+        },
+        handler: function (call) {
+            var data = call.data;
+            Docker.createClient(call, data.machine, function (error, client) {
+                if (error) {
+                    return call.done(error);
+                }
+                var dockerUrl = client.options.url;
+                var parsedUrl = url.parse(dockerUrl);
+                parsedUrl.port = DOCKER_TCP_PORT;
+                delete parsedUrl.host;
+                client.options.url = url.format(parsedUrl);
+                client.ping(function (err, result) {
+                    call.done(err, result);
+                });
+            });
+        }
+    });
+
     server.onCall('DockerExecute', {
         verify: function (data) {
             return data && data.host && data.host.primaryIp && data.options && data.options.Cmd && data.options.id;

@@ -104,6 +104,7 @@
                         } else if (info.State.Running) {
                             containerState = 'running';
                         }
+                        $scope.termOpts.containerState = containerState;
                         $scope.container = {
                             name: info.Name.substring(1),
                             cmd: containerCmd,
