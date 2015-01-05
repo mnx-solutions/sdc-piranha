@@ -1024,6 +1024,11 @@ span.btn-success
     padding: 30px 0 0 20px;
 }
 
+.simple-image .recent-btn
+{
+    padding-top: 25px;
+}
+
 .simple-image .freetier-btn-block
 {
     padding-top: 5px;
@@ -1243,6 +1248,13 @@ span.btn-success
 
     text-overflow: ellipsis;
     word-wrap: break-word;
+}
+
+.simple-image .recent-description
+{
+    margin-top: -6px;
+    padding: 0 12px;
+    height: 65px;
 }
 
 .advanced-instance-description p,
