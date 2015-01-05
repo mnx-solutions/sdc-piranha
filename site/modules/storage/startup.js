@@ -122,13 +122,9 @@ module.exports = function execute(scope) {
 
         client.job(jobId, function (jobsErr, res) {
             if (jobsErr) {
-                if (jobsErr.statusCode !== 404) {
-                    sendError(call, jobsErr);
-                    return;
-                }
                 getArchivedJobFile(call, jobId, '/job.json', function (error, result) {
                     if (error) {
-                        sendError(call, error);
+                        sendError(call, error, true);
                         return;
                     }
                     call.done(null, result);
