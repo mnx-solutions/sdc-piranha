@@ -10,6 +10,7 @@
 
                 $scope.loading = true;
                 $scope.placeHolderText = 'filter jobs';
+                $scope.suppressErrors = false;
 
                 if ($scope.features.manta === 'enabled') {
                     $scope.gridUserConfig = Account.getUserConfig().$child('job_history');
@@ -50,7 +51,14 @@
 
                 var getJobDetails = function (object) {
                     if (!object.details) {
-                        object.details = Storage.getJob(object.id);
+                        object.details = Storage.getJob(object.id, true);
+                        object.details.then(angular.noop, function (error) {
+                            if (!$scope.suppressErrors) {
+                                PopupDialog.error(null, error, function () {
+                                    $scope.suppressErrors = true;
+                                });
+                            }
+                        })
                     }
                     return object.details;
                 };
