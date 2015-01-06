@@ -1150,9 +1150,13 @@
 
             function selectMinimalPackage(packageType, isPackageCollapsed) {
                 $scope.selectPackageType(packageType);
-                if ($scope.preSelectedData && $scope.preSelectedData.selectedPackageInfo && $scope.selectedPackage && $scope.selectedPackage !== $scope.preSelectedData.selectedPackageInfo.id) {
+                if ($scope.preSelectedData && $scope.preSelectedData.selectedPackageInfo && $scope.selectedPackage !== $scope.preSelectedData.selectedPackageInfo.id) {
                     $scope.selectedPackageInfo = $scope.preSelectedData.selectedPackageInfo;
-                    $scope.selectPackage($scope.preSelectedData.selectedPackageInfo.id);
+                    if (!$scope.selectedPackage) {
+                        $scope.selectPackage($scope.preSelectedData.selectedPackageInfo.id);
+                    } else {
+                        $scope.selectPackage($scope.selectedPackage);
+                    }
                     $scope.reviewPage();
                 } else if (!$scope.preSelectedData) {
                     var minimalPackage;
@@ -1550,10 +1554,6 @@
                     var returnUrl = $location.path();
                     Account.checkProvisioning({btnTitle: 'Submit and Create Instance'}, function () {
                         var el = $scope.selectedPackageInfo;
-                        $timeout(function () {
-                            $scope.onFilterChange('', el.group);
-                            $scope.selectPackage(el.id);
-                        });
                         $scope.zenboxDialog({
                             dropboxID: $rootScope.zenboxParams.dropboxOrderPackageId || $rootScope.zenboxParams.dropboxID,
                             request_subject: 'I want to order ' + el.description + ' compute instance',
