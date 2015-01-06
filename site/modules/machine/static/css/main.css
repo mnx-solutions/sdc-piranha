@@ -2032,15 +2032,19 @@ span.btn-success
 .small-icon.freebsd,
 .small-icon.hadoop,
 .small-icon.java,
+.small-icon.magento,
 .small-icon.manta,
 .small-icon.mysql,
+.small-icon.neo4j,
 .small-icon.node,
 .small-icon.percona,
 .small-icon.rails,
+.small-icon.redis,
 .small-icon.riak,
 .small-icon.smart,
 .small-icon.smartmachine,
 .small-icon.stingray,
+.small-icon.wordpress,
 .small-icon.ubuntu,
 .small-icon.windows,
 .small-icon.mongodb,
@@ -2066,15 +2070,19 @@ span.btn-success
 .advanced-instance-title .freebsd,
 .advanced-instance-title .hadoop,
 .advanced-instance-title .java,
+.advanced-instance-title .magento,
 .advanced-instance-title .manta,
 .advanced-instance-title .mysql,
+.advanced-instance-title .neo4j,
 .advanced-instance-title .node,
 .advanced-instance-title .percona,
 .advanced-instance-title .rails,
+.advanced-instance-title .redis,
 .advanced-instance-title .riak,
 .advanced-instance-title .smart,
 .advanced-instance-title .smartmachine,
 .advanced-instance-title .stingray,
+.advanced-instance-title .wordpress,
 .advanced-instance-title .ubuntu,
 .advanced-instance-title .windows,
 .advanced-instance-title .mongodb,
@@ -2154,6 +2162,11 @@ span.btn-success
     background-image: url(../img/icons/java.png);
 }
 
+.small-icon.magento
+{
+    background-image: url(../img/icons/magento.png);
+}
+
 .small-icon.manta
 {
     background-image: url(../img/icons/manta.png);
@@ -2162,6 +2175,11 @@ span.btn-success
 .small-icon.mysql
 {
     background-image: url(../img/icons/mysql.png);
+}
+
+.small-icon.neo4j
+{
+    background-image: url(../img/icons/neo4j.png);
 }
 
 .small-icon.node,
@@ -2178,6 +2196,11 @@ span.btn-success
 .small-icon.rails
 {
     background-image: url(../img/icons/rails.png);
+}
+
+.small-icon.redis
+{
+    background-image: url(../img/icons/redis.png);
 }
 
 .small-icon.riak
@@ -2200,6 +2223,11 @@ span.btn-success
 .small-icon.stingray
 {
     background-image: url(../img/icons/stingray.png);
+}
+
+.small-icon.wordpress
+{
+    background-image: url(../img/icons/wordpress.png);
 }
 
 .small-icon.ubuntu,
