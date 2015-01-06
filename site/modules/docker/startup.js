@@ -811,61 +811,61 @@ var Docker = function execute(scope) {
                 }
                 var host = url.parse(registry.host).hostname;
                 if (registry.type === 'local') {
-                    waitClient(call, {primaryIp: host}, function (error, client) {
+                    Docker.listHosts(call, function (error, hosts) {
                         if (error) {
                             return call.done(error);
                         }
-                        client.ping(function (errPing) {
-                            if (errPing) {
-                                return call.done(new Docker.DockerHostUnreachable(host).message, true);
-                            }
-                            client.containers({all: true}, function (err, containers) {
-                                if (err) {
-                                    return call.done(err);
+                        var machine = hosts.find(function (m) {
+                            return m.primaryIp === host;
+                        });
+                        if (machine) {
+                            waitClient(call, {primaryIp: host, id: machine.id}, function (error, client) {
+                                if (error) {
+                                    return call.done(error);
                                 }
-                                var matchingContainer = containers.find(function (container) {
-                                    if (container.Status.indexOf('Exited') !== -1) {
-                                        var isPrivateRegistryName = container.Names.some(function (name) {
-                                            return name === '/private-registry';
-                                        });
-                                        return isPrivateRegistryName && container.Image.indexOf('registry') !== -1;
+                                client.ping(function (errPing) {
+                                    if (errPing) {
+                                        return call.done(new Docker.DockerHostUnreachable(host).message, true);
                                     }
-                                    return container.Ports.some(function (port) {
-                                        return port.PublicPort === parseInt(registry.port, 10);
-                                    });
-                                });
-                                if (matchingContainer) {
-                                    Docker.listHosts(call, function (error, hosts) {
-                                        if (error) {
-                                            return call.done(error);
+                                    client.containers({all: true}, function (err, containers) {
+                                        if (err) {
+                                            return call.done(err);
                                         }
-                                        var machine = hosts.find(function (m) {
-                                            return m.primaryIp === host;
+                                        var matchingContainer = containers.find(function (container) {
+                                            if (container.Status.indexOf('Exited') !== -1) {
+                                                var isPrivateRegistryName = container.Names.some(function (name) {
+                                                    return name === '/private-registry';
+                                                });
+                                                return isPrivateRegistryName && container.Image.indexOf('registry') !== -1;
+                                            }
+                                            return container.Ports.some(function (port) {
+                                                return port.PublicPort === parseInt(registry.port, 10);
+                                            });
                                         });
-                                        var remove = function() {
-                                            if (machine) {
+                                        if (matchingContainer) {
+                                            var remove = function() {
                                                 matchingContainer.hostId = machine.id;
                                                 matchingContainer.hostName = machine.name;
                                                 return removeContainer(call, client, matchingContainer, call.done.bind(call));
-                                            } else {
-                                                client.remove({id: matchingContainer.Id, v: true, force: true}, call.done.bind(call));
+                                            };
+                                            if (matchingContainer.Status.indexOf('Paused') === -1) {
+                                                return remove();
                                             }
-                                        };
-                                        if (matchingContainer.Status.indexOf('Paused') === -1) {
-                                            return remove();
+                                            client.unpause({id: matchingContainer.Id}, function (err) {
+                                                if (err) {
+                                                    return call.done(err);
+                                                }
+                                                remove();
+                                            });
+                                        } else {
+                                            call.done();
                                         }
-                                        client.unpause({id: matchingContainer.Id}, function (err) {
-                                            if (err) {
-                                                return call.done(err);
-                                            }
-                                            remove();
-                                        });
                                     });
-                                } else {
-                                    call.done();
-                                }
+                                });
                             });
-                        });
+                        } else {
+                            call.done();
+                        }
                     });
                 } else {
                     call.done(null, 'OK');
