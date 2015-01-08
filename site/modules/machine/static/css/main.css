@@ -1257,6 +1257,11 @@ span.btn-success
     height: 65px;
 }
 
+.simple-image .recent-description .tooltip
+{
+    min-width: 240px;
+}
+
 .advanced-instance-description p,
 .description p
 {
