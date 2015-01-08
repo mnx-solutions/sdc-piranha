@@ -494,10 +494,17 @@ span.btn-success
 .registry-form tr {
     border-bottom: solid white 10px;
 }
+.registry-form tr.has-error {
+    border-bottom: none;
+}
 .registry-form td:first-child {
     padding-right: 20px;
     text-align: right;
     white-space: nowrap;
+}
+.registry-form tr.has-error td:first-child {
+    padding-top: 5px;
+    vertical-align: baseline;
 }
 .registry-form .btn-group,
 .registry-form .api-version,
@@ -573,7 +580,8 @@ span.btn-success
     margin-bottom: 5px;
 }
 .registry-host .edit-error {
-    margin: -5px 0 0 -17px;
+    position: relative;
+    margin: -3px 0 0 -17px;
 }
 .progress-wrapper .cadvisor-unavailable {
     margin-top: 20px;
