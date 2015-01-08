@@ -61,6 +61,10 @@
             }
         };
 
+        angular.element(window).resize(function () {
+            angular.element('.select-datacenter').select2('close');
+        });
+
         $scope.tabFilter = '';
 
         if ($scope.tabFilterField) {
