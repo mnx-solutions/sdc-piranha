@@ -449,6 +449,9 @@
                             }
 
                             var updateImages = function (err, images) {
+                                if (err) {
+                                    errorCallback(err);
+                                }
                                 $scope.foundImages = (images && images.results) || [];
                                 $scope.searching = false;
                                 $scope.showResult = true;
