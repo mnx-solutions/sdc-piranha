@@ -136,7 +136,7 @@ Auditor.prototype.get = function (event, callback) {
             data = JSON.parse(data);
         } catch (e) {
             self.log.error({error: e.message}, 'Docker audit record is corrupted at path ' + filePath);
-            data = {};
+            data = {error: true, errorMessage: 'Audit record is corrupted.'};
         }
         callback(null, data);
     });
