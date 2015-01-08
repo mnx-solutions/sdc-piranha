@@ -151,6 +151,13 @@
             }
         };
 
+        service.pingHosts = function () {
+            var job = serverTab.call({
+                name: 'DockerPingHosts'
+            });
+            return job.promise;
+        };
+
         service.addRegistryUsernameToHost = function (registries) {
             registries.forEach(function (registry) {
                 registry.userHost = registry.host;
@@ -250,7 +257,7 @@
         function createCall(method, options, progressHandler, cacheKey) {
             var host = 'All';
             if (options && options.host) {
-                host = options.host.primaryIp;
+                host = options.host.primaryIp || 'All';
             }
             var jobKey = method + host + JSON.stringify(options || {});
             var job = service.jobs[jobKey];
@@ -262,11 +269,17 @@
             }
             progressHandler = progressHandler || ng.noop;
             if (options && !options.direct && options.cache && cache && cache.initialized) {
-                var defer = $q.defer();
-                setTimeout(function () {
-                    defer.resolve(cache.list);
-                }, 1);
-                return defer.promise;
+                return service.pingHosts().then(function () {
+                    var defer = $q.defer();
+                    setTimeout(function () {
+                        defer.resolve(cache.list);
+                    });
+                    return defer.promise;
+                }, function () {
+                    resetDockerCaches();
+                    options.cache = false;
+                    return createCall(method, options, progressHandler);
+                });
             }
 
             if (options && !options.direct && job) {
@@ -310,6 +323,7 @@
                             if (item.hasOwnProperty('suppressErrors')) {
                                 PopupDialog.errorObj(item.suppressErrors);
                                 data.splice(i, 1);
+                                options.cache = false;
                             } else {
                                 i++;
                             }
