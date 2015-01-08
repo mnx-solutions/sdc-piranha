@@ -377,8 +377,10 @@
                                     $scope.name = image.name;
                                     $scope.tag = 'all';
                                     $scope.hideTags = true;
+                                    $scope.loading = true;
                                     getHosts(parentScope).then(function (hosts) {
                                         $scope.hosts = hosts && hosts.length ? removeUnreachableHosts(hosts) : [];
+                                        $scope.loading = false;
                                     });
                                     $scope.selectedHosts = [];
                                     $scope.allowedIP = allowedIP($scope);
