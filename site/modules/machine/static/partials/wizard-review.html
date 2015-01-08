@@ -91,7 +91,7 @@
                             <h2>Networks</h2>
                         </div>
                         <div class="networks-box-3">
-                            <label class="clearfix" data-ng-repeat="network in networks track by $index">
+                            <div class="clearfix" data-ng-repeat="network in networks track by $index">
                                 <div class="checker pull-left" data-ng-class="{hover:show}" data-ng-mouseenter="show = true" data-ng-mouseleave="show = false">
                                     <span data-ng-class="{checked: network.active}">
                                          <input data-ng-click="selectNetworkCheckbox(network.id)" type="checkbox"
@@ -100,8 +100,8 @@
                                                 data-ng-model="selectedNetworkId"/>
                                     </span>
                                 </div>
-                                <span class="network-name">{{network.name}}</span>
-                            </label>
+                                <span class="network-name" data-ng-click="selectNetworkCheckbox(network.id)">{{network.name}}</span>
+                            </div>
                          </div>
                         <div>
                             <h2>Tags</h2>
