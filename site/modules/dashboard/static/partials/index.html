@@ -37,7 +37,7 @@
                     <div class="tile-body">
                         <div class="title">Docker</div>
                         <div class="left-column">
-                            <a data-ng-href="{{dockerMachinesLink}}">
+                            <a data-ng-href="{{dockerMachinesLink}}" data-ng-disabled="!dockerMachines.length">
                                 <div class="number">
                                     {{dockerMachines.length || '0'}}
                                 </div>
@@ -47,7 +47,7 @@
                             </a>
                         </div>
                         <div class="right-column">
-                            <a data-ng-href="{{containersLink}}">
+                            <a data-ng-href="{{containersLink}}" data-ng-disabled="!runningContainers.length">
                                 <div class="number">
                                     {{runningContainers.length || '0'}}
                                 </div>

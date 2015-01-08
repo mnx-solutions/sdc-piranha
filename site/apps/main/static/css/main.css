@@ -2807,7 +2807,8 @@ div.checker span[disabled]
 }
 
 div.checker span[disabled] input,
-div.checker[disabled]
+div.checker[disabled],
+a[disabled]
 {
     cursor: default !important;
 }
