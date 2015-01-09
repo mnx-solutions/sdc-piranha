@@ -121,7 +121,11 @@ label
     min-height: 30px !important;
 }
 
-
+.modal-dialog
+{
+    width: 600px;
+    margin: 30px auto;
+}
 
 .nav-tabs > li:hover,
 .nav-tabs > li a:hover
