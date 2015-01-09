@@ -263,6 +263,14 @@
                                 }
 
                                 var newMachine = job.__read();
+                                if (newMachine.id && machineData.freetier) {
+                                    var freeTierMachine = $scope.machines.find(function (machine) {
+                                        return machine.id === newMachine.id;
+                                    });
+                                    if (freeTierMachine) {
+                                        freeTierMachine.freetier = true;
+                                    }
+                                }
                                 $q.when(Machine.machine(), function (listMachines) {
                                     if (newMachine.id) {
                                         $q.when(Machine.checkFirstInstanceCreated(newMachine.id), function (uuid) {
