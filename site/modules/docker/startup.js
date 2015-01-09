@@ -9,14 +9,15 @@ var url = require('url');
 var uuid = require('../../static/vendor/uuid/uuid.js');
 var registryConfig = fs.readFileSync(__dirname + '/data/registry-config.yml', 'utf-8');
 var Auditor = require(__dirname + '/libs/auditor.js');
+var WebSocket = require('ws');
 
 var DOCKER_TCP_PORT = 4240;
 
-var Docker = function execute(scope) {
+var Docker = function execute(scope, app) {
     var Docker = scope.api('Docker');
     var server = scope.api('Server');
     var machine = scope.api('Machine');
-    var socketIO = scope.get('socket.io');
+    var httpServer = scope.get('httpServer');
 
     var methods = Docker.getMethods();
     var methodsForAllHosts = ['containers', 'getInfo', 'images'];
@@ -1582,50 +1583,59 @@ var Docker = function execute(scope) {
                         return call.done(error);
                     }
                     call.done(null, '/main/docker/exec/' + result.Id);
-                    var connected = false;
-                    socketIO.of('/main/docker/exec/' + result.Id)
-                        .on('connection', function (socket) {
-                            if (connected) {
-                                return call.log.warn('Someone trying to use active socket connection, rejected');
+                    var wss = new WebSocket.Server({
+                        server: httpServer,
+                        path: '/main/docker/exec/' + result.Id
+                    });
+                    wss.once('connection', function (socket) {
+                        function closeSocket() {
+                            socket.close();
+                            wss.close();
+                        }
+                        var dockerUrl = client.options.url;
+                        var parsedUrl = url.parse(dockerUrl);
+                        parsedUrl.port = DOCKER_TCP_PORT;
+                        delete parsedUrl.host;
+                        client.options.url = url.format(parsedUrl);
+                        client.execStart(util._extend({id: result.Id}, execOpts), function (error, req) {
+                            client.options.url = dockerUrl;
+                            if (error) {
+                                socket.send(error.message);
+                                closeSocket();
+                                return;
                             }
-                            connected = true;
-                            var dockerUrl = client.options.url;
-                            var parsedUrl = url.parse(dockerUrl);
-                            parsedUrl.port = DOCKER_TCP_PORT;
-                            delete parsedUrl.host;
-                            client.options.url = url.format(parsedUrl);
-                            client.execStart(util._extend({id: result.Id}, execOpts), function (error, req) {
-                                client.options.url = dockerUrl;
-                                if (error) {
-                                    return socket.emit('data', error.message);
+                            req.on('result', function (err, execRes) {
+                                if (err) {
+                                    socket.send(error.message);
+                                    closeSocket();
+                                    return;
                                 }
-                                req.on('result', function (err, execRes) {
-                                    if (err) {
-                                        return socket.emit('data', error.message);
-                                    }
-                                    socket.on('terminal', function (data) {
-                                        req.connection.write(data.toString('ascii'));
-                                    });
-                                    execRes.on('data', function (data) {
-                                        socket.emit('data', data.toString());
-                                    });
-                                    execRes.on('error', function (error) {
-                                        socket.emit('data', error.message);
-                                    });
+                                socket.on('message', function (message) {
+                                    req.connection.write(message.toString('ascii'));
                                 });
-                                req.write(JSON.stringify({
-                                    User: '',
-                                    Privileged: false,
-                                    Container: data.options.id,
-                                    Detach: false,
-                                    AttachStdin: true,
-                                    AttachStdout: true,
-                                    AttachStderr: true,
-                                    Tty: true,
-                                    Cmd: data.options.Cmd
-                                }));
+                                socket.on('error', closeSocket);
+                                execRes.on('data', function (data) {
+                                    socket.send(data.toString());
+                                });
+                                execRes.on('error', function (error) {
+                                    socket.send(error.message);
+                                    closeSocket();
+                                });
+                                execRes.on('end', closeSocket);
                             });
+                            req.write(JSON.stringify({
+                                User: '',
+                                Privileged: false,
+                                Container: data.options.id,
+                                Detach: false,
+                                AttachStdin: true,
+                                AttachStdout: true,
+                                AttachStderr: true,
+                                Tty: true,
+                                Cmd: data.options.Cmd
+                            }));
                         });
+                    });
                 });
             });
         }

@@ -10,7 +10,6 @@ module.exports = function execute() {
                 res.locals.jss.push('window.JP.set("dockerVersions", ' + JSON.stringify(dockerCfg || {}) + ')');
 
                 res.locals.js.push({_url: '/main/docker/term.js'});
-                res.locals.js.push({_url: '/socket.io/socket.io.js'});
                 return next();
             }
         ]
