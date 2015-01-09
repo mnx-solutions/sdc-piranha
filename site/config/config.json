@@ -243,6 +243,6 @@
   , "cdn": "yes"
   , "docker": "yes"
   , "dockerMemoryLimit": "yes"
-  , "dockerExec": "no"
+  , "dockerExec": "yes"
   }
 }
