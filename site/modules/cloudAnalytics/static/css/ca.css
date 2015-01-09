@@ -246,20 +246,16 @@
 
 .heatmap-pos
 {
-    padding-left: 10px;
-
+    padding-left: 35px;
     vertical-align: top;
 }
 
 .graf-radio-group
 {
     position: relative;
-
     float: right;
-
     margin-top: -44px;
-    padding-right: 75px;
-    padding-bottom: 44px;
+    padding: 0 45px 44px 0;
 }
 
 .chart-padding
