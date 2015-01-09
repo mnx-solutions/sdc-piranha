@@ -434,7 +434,7 @@
                         <span class="edit-label">PublishAllPorts</span>
                         <span class="edit-value">
                             <select ui-select2="{minimumResultsForSearch: -1, width: '457px'}" id="publishAllPortsSelect" data-ng-model="publishAllPorts">
-                                <option data-ng-repeat="publishAllPortsOption in selectOptions" value="{{publishAllPortsOption.value}}">
+                                <option data-ng-repeat="publishAllPortsOption in selectReverseOptions" value="{{publishAllPortsOption.value}}">
                                     {{publishAllPortsOption.text}}
                                 </option>
                             </select>
@@ -444,7 +444,7 @@
                         <span class="edit-label">Privileged</span>
                         <span class="edit-value">
                             <select ui-select2="{minimumResultsForSearch: -1, width: '457px'}" id="privilegedSelect" data-ng-model="privileged">
-                                <option data-ng-repeat="privilegedOption in selectOptions" value="{{privilegedOption.value}}">
+                                <option data-ng-repeat="privilegedOption in selectReverseOptions" value="{{privilegedOption.value}}">
                                     {{privilegedOption.text}}
                                 </option>
                             </select>

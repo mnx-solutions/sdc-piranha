@@ -218,6 +218,7 @@
                     $scope.title = 'Create Image From Container';
                 }
                 $scope.selectOptions = [{value: true, 'text': 'yes'}, {value: false, 'text': 'no'}];
+                $scope.selectReverseOptions = [{value: false, 'text': 'no'}, {value: true, 'text': 'yes'}];
 
                 $scope.memory = 0;
                 $scope.memorySwap = 0;
