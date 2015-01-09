@@ -1,5 +1,5 @@
 'use strict';
-var toggle = require('./TFAToggle');
+var metadata = require('../../modules/account/lib/metadata');
 var tfaProvider = require('./TFAProvider');
 var util = require('util');
 
@@ -20,7 +20,7 @@ var updateMoreSecurity = function (req, res, next) {
         req.session.tfaEnabled = false;
         req.session.visibleSecretKey = false;
         req.session.save();
-        toggle.set(req.session.uuid, false);
+        metadata.setSecurity(req.session.uuid, false);
         next();
     }
     if (enableTFA) {
@@ -61,7 +61,7 @@ var checkExampleCode = function (req, res, next) {
     tfaProvider.generateOTP(secretkey, function(err, onetimepass) {
         if (testpass === onetimepass) {
             req.flash('info', 'Two-factor authentication enabled');
-            toggle.set(req.session.uuid, secretkey, function(err, secretkey) {
+            metadata.setSecurity(req.session.uuid, secretkey, function(err, secretkey) {
                 // tfaEnabled will be enabled for their next login
                 delete req.session.visibleSecretKey;
                 req.session.tfaEnabled = secretkey;
@@ -129,7 +129,7 @@ var verifyChallenge = function (req, res, next) {
 
 var generateOTP =  tfaProvider.generateOTP;
 var getQRcode =    tfaProvider.getQRcode;
-var getSecretKey = toggle.get;
+var getSecretKey = metadata.getSecurity;
 
 module.exports = {
     isTwoFactorEnabled:  isTwoFactorEnabled,

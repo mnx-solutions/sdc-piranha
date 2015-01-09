@@ -168,7 +168,7 @@ window.JP.main.provider('route', [
                     registerNavigation: provider.registerNavigation,
                     resolveNavigation: function () {
                         return provider.resolveNavigation(
-                            this.$route.current.$$route.action,
+                            this.$route.current.$$route && this.$route.current.$$route.action,
                             this.$route.current.pathParams
                         );
                     },

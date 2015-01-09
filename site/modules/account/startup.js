@@ -33,6 +33,20 @@ module.exports = function execute(scope) {
         });
     });
 
+    var updateMarketo = function (call, id, data, callback) {
+        if (config.features.marketo === 'enabled') {
+            Marketo.update(id, data, function (err) {
+                if (err) {
+                    call.log.error({error: err, data: marketoData}, 'Failed to update marketo account');
+                }
+                call.log.debug(data, 'Associate Marketo lead with SOAP API');
+                callback();
+            });
+        } else {
+            setImmediate(callback);
+        }
+    };
+
     server.onCall('getAccount', function (call) {
         var subUserId = call.req.session.subId;
         var response = { isSubuser: !!subUserId};
@@ -67,12 +81,8 @@ module.exports = function execute(scope) {
                     Phone: response.phone
                 };
 
-                Marketo.update(response.id, marketoData, function (err) {
-                    if (err) {
-                        call.log.error({error: err, data: marketoData}, 'Failed to update marketo account');
-                    }
-                    call.log.debug(marketoData, 'Associate Marketo lead with SOAP API');
-                    TFA.get(response.id, function (tfaGetError, secret) {
+                updateMarketo(call, response.id, marketoData, function () {
+                    TFA.getSecurity(response.id, function (tfaGetError, secret) {
                         if (tfaGetError) {
                             call.done(tfaGetError);
                             return;
@@ -149,11 +159,7 @@ module.exports = function execute(scope) {
                     return;
                 }
 
-                Marketo.update(account.id, marketoData, function (updateError) {
-                    if (updateError) {
-                        call.log.error({error: updateError, data: marketoData}, 'Failed to update marketo account');
-                    }
-                    call.log.debug(marketoData, 'Associate Marketo lead with SOAP API');
+                updateMarketo(call, account.id, marketoData, function () {
                     call.log.debug('Updating account with', data);
                     call.cloud.updateAccount(data, function (updateAccountError, result) {
                         if (updateAccountError) {

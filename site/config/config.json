@@ -209,7 +209,8 @@
     , "docker"
 ]
 , "features": {
-    "fullVersion": "enabled"
+    "localSdc": "disabled"
+  , "fullVersion": "enabled"
   , "instanceRename": "enabled"
   , "instanceTagging": "enabled"
   , "instanceMetadata": "enabled"
@@ -244,5 +245,12 @@
   , "docker": "yes"
   , "dockerMemoryLimit": "yes"
   , "dockerExec": "yes"
+  , "zendesk": "yes"
+  , "feedback": "yes"
+  , "blogEntries": "yes"
+  , "marketo": "yes"
+  , "twitter": "yes"
+  , "googleAnalytics": "yes"
+  , "billing": "yes"
   }
 }

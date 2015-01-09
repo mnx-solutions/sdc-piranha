@@ -53,8 +53,10 @@
                     </div>
 
                     <div class="btn-block recent-btn">
-                        <span class="price">${{ instance.price }}</span>
-                        <span class="hour">per hour</span>
+                        <span data-ng-show="features.billing == 'enabled'">
+                            <span class="price">${{ instance.price }}</span>
+                            <span class="hour">per hour</span>
+                        </span>
                         <button type="button"
                                 class="btn select-btn small">
                             <b>Launch</b>

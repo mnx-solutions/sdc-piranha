@@ -24,34 +24,36 @@
             requestContext.setUpRenderContext('account.invoices', $scope);
 
             $scope.loading = true;
-            $scope.isInvocesEnabled = true;
+            $scope.isInvocesEnabled = $scope.features.invoices === 'enabled';
             $scope.invoices = [];
 
-            Account.getAccount().then(function(account) {
-                if (account.provisionEnabled && !account.isSubuser) {
-                    $q.all([
-                        $q.when(BillingService.getInvoices())
-                    ]).then(function (results) {
-                        var invoices = results[0];
+            if ($scope.isInvocesEnabled) {
+                Account.getAccount().then(function(account) {
+                    if (account.provisionEnabled && !account.isSubuser) {
+                        $q.all([
+                            $q.when(BillingService.getInvoices())
+                        ]).then(function (results) {
+                            var invoices = results[0];
 
-                        if (invoices.length) {
-                            $scope.invoices = invoices.filter(function (invoice) {
-                                return invoice.status === 'Posted';
-                            });
-                        }
+                            if (invoices.length) {
+                                $scope.invoices = invoices.filter(function (invoice) {
+                                    return invoice.status === 'Posted';
+                                });
+                            }
 
+                            $scope.loading = false;
+                        }, function (err) {
+                            $scope.loading = false;
+                            $scope.error = err;
+                            if (err === "Not Implemented") {
+                                $scope.isInvocesEnabled = false;
+                            }
+                        });
+                    } else {
                         $scope.loading = false;
-                    }, function (err) {
-                        $scope.loading = false;
-                        $scope.error = err;
-                        if (err === "Not Implemented") {
-                            $scope.isInvocesEnabled = false;
-                        }
-                    });
-                } else {
-                    $scope.loading = false;
-                }
-            });
+                    }
+                });
+            }
 
             $scope.gridOrder = ['-invoiceDate'];
             $scope.exportFields = {

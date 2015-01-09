@@ -35,7 +35,6 @@ var set = function (customerUuid, key, value, callback) {
             }
         });
     }
-
 };
 
 var get = function (customerUuid, key, val, callback) {
@@ -100,7 +99,22 @@ var safeSet = function (customerUuid, key, val, callback) {
     trySet();
 };
 
+var SECURITY_KEY = 'useMoreSecurity';
+
+var setSecurity = function (customerUuid, value, callback) {
+    value = value && {secretkey: value};
+    set(customerUuid, SECURITY_KEY, value, callback);
+};
+
+var getSecurity = function (customerUuid, callback) {
+    get(customerUuid, SECURITY_KEY, 'secretkey', function (err, result) {
+        callback(null, !err && result);
+    });
+};
+
 module.exports = {
     set: safeSet,
-    get: get
+    get: get,
+    getSecurity: getSecurity,
+    setSecurity: setSecurity
 };

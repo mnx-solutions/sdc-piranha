@@ -11,6 +11,9 @@
             var headLink = '/support';
 
             var supportTracking = function (supportPackage, comment) {
+                if ($rootScope.features.marketo !== 'enabled') {
+                    return;
+                }
                 var type = scope.package.type;
                 Account.getAccount().then(function (account) {
                     var data = {

@@ -3,7 +3,7 @@
 Production: <https://my.joyentcloud.com/>  
 Repository: <https://github.com/joyent/piranha>  
 Browsing: <https://github.com/joyent/piranha>  
-Contacts: Lloyd Dewolf, Jens Schutt   
+Contacts: Lloyd Dewolf, Jens Schutt, Tyson Hom   
 Docs: <https://hub.joyent.com/wiki/display/PIRANHA/Home> (out of date)  
 Tickets/bugs: <https://sdcportal.atlassian.net/browse/PIRANHA>
 
@@ -229,6 +229,62 @@ You can also define configuration options using command line. ex: `$ node index.
 - `zuora.api.validation.countries.name` Which field rule uses
 - `zuora.api.validation.countries.list` Rule values
 - `zuora.soap` GuartTime TBD
+
+## Features
+
+- `localSdc` Cumulative feature to adapt PIRANHA to local SDC usage
+- `fullVersion` Show full revision in /version
+- `instanceRename` Ability to rename machines
+- `instanceTagging` Ability to tag machines
+- `instanceMetadata` Ability to manage machine metadata
+- `promocode` Promocodes support on signup
+- `invoices` Display user invoices
+- `imageUse` Allow to use private images
+- `imageCreate` Allow to create private images
+- `firewall` Cloud Firewall
+- `skinChange` Allow to go from new design to old one and vice versa
+- `useBrandingOrange` Use new design
+- `promoBillingConfirmation` Confirm billing for support plan on signup
+- `phoneVerification` Verify user phone on signup
+- `freetier` Allow free machines for 1 year
+- `manta` Joyent Manta
+- `usageData` Display usage statistics
+- `support` Allow to subscribe for Joyent Support packages
+- `slb` Simple Load Balancer
+- `createdBySupportPackages` Display and allow to signup for larger packages
+- `uploadSshKey` Allow to upload user key
+- `systemStatusTile` Display tile on dashboard
+- `devCenterNewsTile` Display tile on dashboard
+- `allowSkipBilling` User will skip lengthy signup and will be able to fill billing later
+- `mantaJobs` Manage Manta jobs
+- `recentInstances` Display recent images on provision
+- `provisioningLimits` Respect and show provisioning limits set for user
+- `mdb` Node.js debugger
+- `rbac` Role Based Access Control
+- `cloudAnalytics` Display analytics
+- `downloadSdc` Page with links and description for local SDC
+- `limitedSlb` Allow SLB for fixed customers list
+- `cdn` Allow Fastly CDN
+- `docker` Allow Docker integration
+- `dockerMemoryLimit` Set minimum amout of RAM used to Docker mahcines
+- `zendesk` Allow Zendesk/Zenbox integration
+- `feedback` Show Feedback badge
+- `blogEntries` Show recent Joyent Blog entries
+- `marketo` Integrate with Marketo
+- `twitter` Integrate with Twitter
+- `googleAnalytics` Integrate with GA
+- `billing` Allow user to enter/update his billing info
+
+## Feature dependencies
+
+Enabling `localSdc` feature will disable the following: `promocode`, `invoices`, `promoBillingConfirmation`,
+`phoneVerification`, `freetier`, `slb`, `createdBySupportPackages`, `systemStatusTile`, `devCenterNewsTile`,
+`downloadSdc`, `usageData`, `limitedSlb`, `support`, `skinChange`, `provisioningLimits`, `zendesk`, `feedback`,
+`blogEntries`, `marketo`, `twitter`, `googleAnalytics`, `billing`. It will enable `allowSkipBilling`.
+
+Disabling `zendesk` feature will disable `createdBySupportPackages`.
+
+Disabling `billing` feature will disable `support`, `invoices`, `usageData`. It will enable `allowSkipBilling`.
 
 ## Common errors:
 

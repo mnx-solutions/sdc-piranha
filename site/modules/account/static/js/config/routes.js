@@ -2,9 +2,9 @@
 
 window.JP.main.config(['routeProvider', function (routeProvider) {
     var masterUserResolve = {
-        data: ['Account', '$location', function (Account, $location) {
+        data: ['Account', '$location', '$rootScope', function (Account, $location, $rootScope) {
             Account.getAccount().then(function (account) {
-                if (account.isSubuser) {
+                if (account.isSubuser || $rootScope.features.billing === 'disabled') {
                     $location.path('/dashboard');
                 }
             });

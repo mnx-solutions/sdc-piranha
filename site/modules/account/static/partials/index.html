@@ -41,7 +41,7 @@
                         </div>
                     </div>
                 </fieldset>
-                <fieldset data-ng-hide="account.isSubuser">
+                <fieldset data-ng-hide="account.isSubuser || features.billing == 'disabled'">
                     <legend>
                         <span>Billing Information</span>
                         <a href="#!/account/payment/" class="edit-btn effect-orange-button">Edit</a>

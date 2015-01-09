@@ -53,10 +53,12 @@
             // get campaign id from the cookie
             $scope.campaignId = ($cookies.campaignId || 'default');
 
-            window.dashboard_rss_feed_callback = function (data) {
-                $scope.rssentries = data.responseData.feed.entries;
-            };
-            $http.jsonp('//ajax.googleapis.com/ajax/services/feed/load?v=1.0&num=7&callback=dashboard_rss_feed_callback&q=' + encodeURIComponent('http://www.joyent.com/blog/feed'));
+            if ($rootScope.features.blogEntries === 'enabled') {
+                window.dashboard_rss_feed_callback = function (data) {
+                    $scope.rssentries = data.responseData.feed.entries;
+                };
+                $http.jsonp('//ajax.googleapis.com/ajax/services/feed/load?v=1.0&num=7&callback=dashboard_rss_feed_callback&q=' + encodeURIComponent('http://www.joyent.com/blog/feed'));
+            }
 
             var dashboardOperations = [
                 $q.when(Account.getAccount()),
@@ -206,12 +208,6 @@
                 freeTierTileStatus();
             }
 
-            var updateSystemStatusTopics = setInterval(function () {
-                $scope.$apply(function() {
-                    getSystemStatusTopics();
-                });
-            }, 60000);
-
             function getSystemStatusTopics () {
                 Zendesk.getSystemStatusTopics().then(function (topics) {
                     if ($scope.features.systemStatusTile === 'enabled') {
@@ -228,14 +224,20 @@
                 });
             }
 
-            $scope.loadedSystemStatusTopics = false;
-            getSystemStatusTopics();
+            if ($scope.features.zendesk === 'enabled') {
+                var updateSystemStatusTopics = setInterval(function () {
+                    $scope.$apply(function() {
+                        getSystemStatusTopics();
+                    });
+                }, 60000);
 
-            $scope.$on('$destroy', function() {
-                clearInterval(updateSystemStatusTopics);
-            });
+                $scope.loadedSystemStatusTopics = false;
+                getSystemStatusTopics();
+
+                $scope.$on('$destroy', function() {
+                    clearInterval(updateSystemStatusTopics);
+                });
+            }
         }
-
-
     ]);
 }(window.angular, window.JP.getModule('Dashboard')));

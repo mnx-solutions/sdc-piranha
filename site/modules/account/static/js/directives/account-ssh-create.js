@@ -32,7 +32,7 @@
                         $rootScope.$broadcast('sshProgress', true);
                         var sshKeyModalCtrl = function ($scope, dialog) {
                             if (subUserId) {
-                                $scope.message = 'User\'s private key will begin downloading when you click "Create Key". The public half of the key will be added to user\'s Joyent Cloud account.';
+                                $scope.message = 'User\'s private key will begin downloading when you click "Create Key". The public half of the key will be added to user\'s account.';
                             }
                             $scope.keyName = '';
 

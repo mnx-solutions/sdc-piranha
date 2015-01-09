@@ -7,6 +7,14 @@ var restify = require('restify');
 module.exports = function execute(scope) {
     var server = scope.api('Server');
 
+    server.onCall('ListFreeTierOptions', function (call) {
+        call.done(null, config.ns['free-tier']);
+    });
+
+    if (config.features.zendesk !== 'enabled') {
+        return;
+    }
+
     var cacheTTL = config.zendesk.cacheTTL || 1000 * 60 * 60;
     var cache = {};
 
@@ -49,9 +57,5 @@ module.exports = function execute(scope) {
 
     server.onCall('ZendeskPackagesUpdateTopics', function (call) {
         zendDeskCall(call, config.zendesk.packageUpdatePath, 'topics');
-    });
-
-    server.onCall('ListFreeTierOptions', function (call) {
-        call.done(null, config.ns['free-tier']);
     });
 };

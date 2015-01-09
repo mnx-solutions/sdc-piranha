@@ -164,11 +164,12 @@
                             $scope,
                             null,
                             (function () {
+                                var showFreeMessage = checkedFreeMachines || $scope.features.billing === 'disabled';
                                 var result = messageBody.single;
                                 if ($scope.checkedInstances.length > 1) {
-                                    result = checkedFreeMachines && messageBody.freetier_plural ?
+                                    result = showFreeMessage && messageBody.freetier_plural ?
                                         messageBody.freetier_plural : messageBody.plural;
-                                } else if (checkedFreeMachines && messageBody.freetier_single) {
+                                } else if (showFreeMessage && messageBody.freetier_single) {
                                     result = messageBody.freetier_single;
                                 }
                                 return result;

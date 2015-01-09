@@ -4,7 +4,7 @@
     <div class="" data-ng-hide="loading">
         <div class="container-min-width">
             <h3 class="page-title no-breadcrumb-line container-min-width" data-translate>Quick Start: Create Instance</h3>
-            <div class="ci-desc">Get started with Joyent by selecting an instance below and start computing.</div>
+            <div class="ci-desc">Get started <span data-ng-hide="features.localSdc == 'enabled'">with Joyent</span> by selecting an instance below and start computing.</div>
             <div class="wizard-first-step row">
                 <span class="select-name">Data Center:</span>
                 <div class="btn-group">
@@ -57,8 +57,10 @@
 
                     <div class="btn-block" data-ng-class="{'freetier-btn-block': image.imageData.freetier || image.limit}">
                         <div data-ng-hide="image.limit">
-                            <span class="price">{{ image.imageData.freetier && 'FREE' || '$' + image.description.price }}</span>
-                            <span class="hour">{{ image.imageData.freetier && 'dev tier' || 'per hour' }}</span>
+                            <span data-ng-show="features.billing == 'enabled'">
+                                <span class="price">{{ image.imageData.freetier && 'FREE' || '$' + image.description.price }}</span>
+                                <span class="hour">{{ image.imageData.freetier && 'dev tier' || 'per hour' }}</span>
+                            </span>
                             <button type="button"
                                     class="btn select-btn small">
                                     <b>Launch</b>

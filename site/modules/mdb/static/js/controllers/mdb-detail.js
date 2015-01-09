@@ -262,7 +262,9 @@
                     $scope.inputFile.splice(0, filesQuantity - 1);
                 }
             };
-            getSupportStatus();
+            if ($scope.features.support === 'enabled') {
+                getSupportStatus();
+            }
         }
     ]);
 }(window.JP.getModule('mdb')));

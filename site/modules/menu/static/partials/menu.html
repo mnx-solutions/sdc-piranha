@@ -10,7 +10,7 @@
             <li class="dropdown" data-ng-show="features.skinChange == 'enabled'">
                 <button data-ng-click="skinChange()" class="old-portal">Return to the old portal</button>
             </li>
-            <li class="dropdown">
+            <li class="dropdown" data-ng-show="features.zendesk == 'enabled'">
                 <a href="https://help.joyent.com/home" target="_blank" class="dropdown-toggle">
                     <i class="header_icon support_icon"></i>
                     <span class="username">Support</span>
@@ -33,7 +33,7 @@
                     <li data-ng-show="features.provisioningLimits == 'enabled'"><a href="#!/limits"><span class="glyphicon glyphicon-tasks"></span> Provisioning Limits</a></li>
                     <li><a data-ng-click="changePassword()"><span class="glyphicon glyphicon-lock"></span> Change Password</a></li>
                     <li data-ng-hide="account.isSubuser"><a data-ng-click="changeTfa()"><span class="two-keys"></span> Two Factor Authentication</a></li>
-                    <li data-ng-show="trackingSuccess"><a href="/landing/forgetToken"><span class="icon-signout"></span> Log Out</a></li>
+                    <li data-ng-show="trackingSuccess || features.marketo == 'disabled'"><a href="/landing/forgetToken"><span class="icon-signout"></span> Log Out</a></li>
                 </ul>
             </li>
         </ul>

@@ -403,6 +403,10 @@ module.exports = function execute(scope) {
         });
     });
 
+    server.onCall('StorageMantaUrl', function (call) {
+        call.done(null, config.manta.url);
+    });
+
     server.onCall('FileManMfind', {
         verify: function (data) {
             return data &&

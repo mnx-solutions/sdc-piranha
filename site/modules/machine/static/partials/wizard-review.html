@@ -43,7 +43,7 @@
                         <div class="name">DataCenter</div>
                         <div class="value">{{data.datacenter}} </div>
                     </div>
-                    <div class="cost">
+                    <div class="cost" data-ng-show="features.billing == 'enabled'">
                         <p>COST:</p>
                         <div class="dataset-cost">
                             <h3>${{selectedPackageInfo.full_price || selectedPackageInfo.price}}</h3>

@@ -235,7 +235,7 @@
     <div class="left-side-menu-body"></div>
 
     <div class="left-side-menu-footer" data-ng-class="{'sidebar-toggler-closed': sideBarMin}">
-        <ul class="page-sidebar-menu" data-ng-class="{'sidebar-min': sideBarMin}" data-ng-hide="sideBarMin">
+        <ul class="page-sidebar-menu" data-ng-class="{'sidebar-min': sideBarMin}" data-ng-hide="sideBarMin || features.localSdc == 'enabled'">
             <li class="small-menu">
                 <a href="http://www.joyent.com/tos" target="_blank">Terms of Service</a>
             </li>

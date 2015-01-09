@@ -272,13 +272,14 @@
                                     }
                                 }
                                 $q.when(Machine.machine(), function (listMachines) {
-                                    if (newMachine.id) {
+                                    if (newMachine.id && $scope.features.marketo === 'enabled') {
                                         $q.when(Machine.checkFirstInstanceCreated(newMachine.id), function (uuid) {
                                             if (!uuid || typeof (uuid) === 'object') {
                                                 $$track.marketo_machine_provision($scope.account);
                                             }
                                         });
-                                    } else if (err && listMachines.length === 0) {
+                                    }
+                                    if (err && listMachines.length === 0) {
                                         $location.path('/compute/create/simple');
                                     }
                                 });
@@ -343,7 +344,9 @@
                     var billingStartMessage = localization.translate(
                             $scope,
                             'machine',
-                            'Billing will start once this instance is created'
+                            $scope.features.billing === 'enabled' ?
+                                'Billing will start once this instance is created' :
+                                'Instance will be created and started'
                     );
                     var title = 'Confirm: Create Instance';
                     var popupContent = billingStartMessage;
