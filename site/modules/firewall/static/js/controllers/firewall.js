@@ -86,10 +86,10 @@
                     }
                 } else {
                     var vms = $scope.vms.filter(function(vm){
-                        return ((vm.id.indexOf(options.term) !== -1) || (vm.text.indexOf(options.term) !== -1)) && vm.datacenter === $scope.tabFilterUpdate || $scope.selected.datacenter;
+                        return ((vm.id.indexOf(options.term) !== -1) || (vm.text.indexOf(options.term) !== -1)) && vm.datacenter === ($scope.data.uuid ? $scope.tabFilterUpdate : $scope.datacenter);
                     });
                     var tags = $scope.tags.filter(function(tag){
-                        return ((tag.id.indexOf(options.term) !== -1) || (tag.text.indexOf(options.term) !== -1)) && tag.datacenter === $scope.tabFilterUpdate || $scope.selected.datacenter;
+                        return ((tag.id.indexOf(options.term) !== -1) || (tag.text.indexOf(options.term) !== -1)) && tag.datacenter === ($scope.data.uuid ? $scope.tabFilterUpdate : $scope.datacenter);
                     });
 
                     results = [{
@@ -174,7 +174,7 @@
                             text: 'Instance'
                         });
                     } else {
-                    $scope.$apply(function(){
+                        $scope.$apply(function () {
                             if (e.currentTarget.id === 'fromSelect') {
                                 $scope.fromForm.$pristine = true;
                             } else if (e.currentTarget.id === 'toSelect') {
