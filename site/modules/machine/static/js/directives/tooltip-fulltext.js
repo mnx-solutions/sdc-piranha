@@ -27,7 +27,7 @@
                                 setLabel();
                             }
                         }
-                        if (elm.offsetWidth < elm.scrollWidth && elm.offsetHeight >= scrollHeight) {
+                        if (elm.offsetWidth < elm.scrollWidth - 1 && elm.offsetHeight >= scrollHeight) {
                             if (type === 'dotdotdot') {
                                 element
                                     .addClass('tooltip-hover')
