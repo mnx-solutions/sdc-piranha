@@ -138,6 +138,7 @@ var opts = {
 
 var m = new Modulizer(opts);
 m.set('utils', utils);
+m.set('httpServer', httpServer);
 
 if (!config.cloudapi || !config.cloudapi.keyPath || typeof config.cloudapi.keyPath !== 'string') {
     throw new TypeError('cloudapi configuration (.keyPath) must be defined');
@@ -149,11 +150,6 @@ var smartCloud = new SmartCloud({
     api: config.cloudapi
 });
 m.set('smartCloud', smartCloud);
-
-if (config.features.docker === 'enabled') {
-    var io = require('socket.io');
-    m.set('socket.io', io.listen(httpServer, {log: logger}));
-}
 
 var libErr = require('./lib/error');
 

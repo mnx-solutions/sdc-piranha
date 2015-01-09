@@ -32,21 +32,19 @@
                         var a = document.createElement('a');
                         a.href = wsPath;
                         a.protocol = a.protocol === 'http:' ? 'ws:' : 'wss:';
-                        var socket = io.connect(a.href);
-                        socket.on('data', function (data) {
-                            if (data) {
-                                terminal.write(data);
+                        var socket = new WebSocket(a.href);
+                        socket.onmessage = function (event) {
+                            terminal.write(event.data);
+                        };
+                        terminal.on('data', function (data) {
+                            if (socket.readyState === 1) {
+                                socket.send(data);
                             }
                         });
-                        terminal.on('data', function (data) {
-                            socket.emit('terminal', data);
-                        });
-                        socket.on('disconnect', function () {
-                            terminal.write('\nConnection closed');
-                        });
-                        $scope.$on('$destroy', function () {
-                            socket.disconnect();
-                        });
+                        socket.onclose = function () {
+                            terminal.write('\r\nConnection closed');
+                            socket.close();
+                        };
                     });
                 };
                 $scope.pressEnter = function (keyEvent) {
