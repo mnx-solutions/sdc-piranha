@@ -204,8 +204,10 @@ module.exports = function execute(scope, register) {
             options.sign = manta.privateKeySigner({
                 key: fs.readFileSync(config.manta.privateKey, 'utf8'),
                 keyId: config.manta.keyId,
-                user: config.manta.user
+                user: config.manta.user,
+                subuser: config.manta.subuser
             });
+            options.subuser = config.manta.subuser;
         } else {
             options.headers['X-Auth-Token'] = call.req.session.token || call.req.cloud._token;
         }

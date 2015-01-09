@@ -33,8 +33,8 @@ window.fn = [];
                 return jobRequest('JobList');
             };
 
-            service.getJob = function (path) {
-                return jobRequest('JobGet', {path: path});
+            service.getJob = function (path, suppressError) {
+                return jobRequest('JobGet', {path: path}, suppressError);
             };
 
             service.getErrors = function (jobId) {
