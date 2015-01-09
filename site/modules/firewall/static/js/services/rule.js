@@ -136,6 +136,10 @@
                 return function (rule) {
                     rule = cleanRule(rule);
                     function showError(err) {
+                        var errorMessage = err.message;
+                        if (errorMessage.indexOf('permission') < 0) {
+                            errorMessage = 'Unable to update rule' + (errorMessage ? ': ' + errorMessage : '');
+                        }
                         PopupDialog.error(
                             localization.translate(
                                 null,
@@ -145,10 +149,7 @@
                             localization.translate(
                                 null,
                                 'firewall',
-                                'Unable to update rule{{error}}.',
-                                {
-                                    error: (err.message) ? ': ' + err.message : ''
-                                }
+                                errorMessage + '.'
                             ),
                             function () {}
                         );
