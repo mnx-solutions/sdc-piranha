@@ -21,6 +21,7 @@
                 $scope.amountOfDiskSpaceOptions = ['', 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024];
                 $scope.amountOfDiskSpace = $scope.amountOfDiskSpaceOptions[0];
                 var cloneJob = $rootScope.popCommonConfig('cloneJob');
+                var analyzeLogsJob = $rootScope.popCommonConfig('analyzeLogsJob');
                 Account.getAccount().then(function (account) {
                     $scope.loading = false;
                     $scope.account = account;
@@ -66,6 +67,13 @@
                     if (disk) {
                         $scope.amountOfDiskSpace = disk;
                     }
+                }
+
+                if (analyzeLogsJob && analyzeLogsJob.inputs) {
+                    $scope.dataInputs = analyzeLogsJob.inputs.map(function (input) {
+                        input = input.replace('~~', '/' + $scope.account.login);
+                        return {filePath: input};
+                    });
                 }
 
                 $scope.completeAccount = function () {
