@@ -1361,10 +1361,16 @@ module.exports = function execute(scope, register) {
     };
 
     api.registriesCache = registriesCache;
-    api.getRegistries = function (call, client, callback) {
+    api.getRegistries = function (call, client, callback, fromCache) {
+
         if (typeof (client) === 'function') {
+            fromCache = callback;
             callback = client;
             client = scope.api('MantaClient').createClient(call);
+        }
+
+        if (typeof (fromCache) === 'boolean' && fromCache && Object.keys(api.registriesCache).length) {
+            return callback(null, Object.keys(api.registriesCache).map(function (key) {return api.registriesCache[key]}));
         }
 
         client.getFileContents('~~/stor/.joyent/docker/registries.json', function (error, list) {
@@ -1413,6 +1419,21 @@ module.exports = function execute(scope, register) {
         });
     };
 
+    var timeout = api.timeout;
+    function updateRegistriesList (call, data, callback) {
+            callback(null);
+
+            var later = function () {
+                timeout = null;
+                data = data.filter(function (item) {
+                    return api.registriesCache.hasOwnProperty(item.id);
+                });
+                return api.saveRegistries(call, data, function() {});
+            };
+            clearTimeout(timeout);
+            timeout = setTimeout(later, 500);
+    }
+
     api.deleteRegistry = function (call, key, value, callback) {
         api.getRegistries(call, function (error, list) {
             var id;
@@ -1424,10 +1445,12 @@ module.exports = function execute(scope, register) {
                 return !condition;
             });
             if (id) {
-                delete registriesCache[id];
-                return api.saveRegistries(call, list, callback);
+                delete api.registriesCache[id];
+                return updateRegistriesList(call, list, callback);
+            } else {
+                callback(null);
             }
-        });
+        }, true);
     };
 
     // search on all hosts

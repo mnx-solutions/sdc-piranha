@@ -115,14 +115,11 @@
                                 ),
                                 function () {
                                     $scope.checkedItems.forEach(function (registry) {
-                                        var index = $scope.registries.indexOf(registry);
-                                        if (index !== -1) {
-                                            registry.actionInProgress = true;
-                                            registry.checked = false;
-                                            Docker.deleteRegistry(registry).then(function () {
-                                                $scope.registries.splice(index, 1);
-                                            }, errorCallback);
-                                        }
+                                        registry.actionInProgress = true;
+                                        registry.checked = false;
+                                        Docker.deleteRegistry(registry).then(function () {
+                                            $scope.registries.splice($scope.registries.indexOf(registry), 1);
+                                        }, errorCallback);
                                     });
                                 }
                             );
