@@ -26,15 +26,11 @@
                         $scope.loading = false;
                     }, function (err) {
                         $scope.loading = false;
-                        if (!err.message) {
+                        $scope.mantaUnavailable = true;
+                        if (typeof (err) !== 'string' && !err.message) {
                             err.message = err.code || err.errno || 'Internal error';
                         }
-                        if (typeof (err) === 'string') {
-                            PopupDialog.error(null, err);
-                            return;
-                        }
-                        $scope.mantaUnavailable = true;
-                        PopupDialog.error(null, err.message);
+                        PopupDialog.error(null, err.message || err);
                     });
                 } else {
                     $scope.loading = false;
@@ -233,7 +229,7 @@
             $scope.addNewJob = function () {
                 if ($scope.provisionEnabled) {
                     if ($scope.mantaUnavailable) {
-                        PopupDialog.error(null, 'Manta is unavailable.');
+                        PopupDialog.error(null, 'Manta service is not available.');
                     } else {
                         $location.path('/mdb/create');
                     }

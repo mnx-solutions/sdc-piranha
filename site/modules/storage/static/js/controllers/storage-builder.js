@@ -23,10 +23,11 @@
                 var cloneJob = $rootScope.popCommonConfig('cloneJob');
                 var analyzeLogsJob = $rootScope.popCommonConfig('analyzeLogsJob');
                 Account.getAccount().then(function (account) {
-                    $scope.loading = false;
                     $scope.account = account;
                     if ($scope.account.provisionEnabled) {
-                        Storage.ping().then(angular.noop, function () {
+                        Storage.ping().then(function () {
+                            $scope.loading = false;
+                        }, function () {
                             $location.url('/manta/intro');
                             $location.replace();
                         });
