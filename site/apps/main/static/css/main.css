@@ -1431,10 +1431,11 @@ p.margin-mini
 
 .carousel-inner
 {
-    overflow-y: auto;
+    overflow: visible !important;
 
     min-height: 560px;
     max-height: 560px;
+    margin-bottom: 30px;
 }
 
 .selector-container
@@ -3854,7 +3855,7 @@ label.checkbox
 
 .tooltip
 {
-    z-index: 999999;
+    z-index: 9999990;
 }
 
 .tooltip.left
