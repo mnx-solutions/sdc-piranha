@@ -13,6 +13,7 @@ var Auditor = require(__dirname + '/libs/auditor.js');
 var WebSocket = require('ws');
 
 var DOCKER_TCP_PORT = 4240;
+var DOCKER_HUB_HOST = 'https://index.docker.io';
 
 var Docker = function execute(scope, app) {
     var Docker = scope.api('Docker');
@@ -779,7 +780,7 @@ var Docker = function execute(scope, app) {
         var defaultRegistry = {
             id: 'default',
             api: 'v1',
-            host: 'https://index.docker.io',
+            host: DOCKER_HUB_HOST,
             port: '443',
             username: '',
             type: 'global'
@@ -1058,7 +1059,7 @@ var Docker = function execute(scope, app) {
                             return call.done(error, {images: []});
                         }
                         var results = response.results;
-                        if (registryRecord.type === 'global') {
+                        if (registryRecord.host === DOCKER_HUB_HOST) {
                             results = results.filter(function (image) {
                                 return image.name.indexOf(registryRecord.username) === 0;
                             });
