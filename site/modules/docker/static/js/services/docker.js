@@ -16,6 +16,10 @@
         function (serverTab, $rootScope, Account, errorContext, EventBubble, Machine, PopupDialog,
                   localization, Storage, $q, DockerCacheProvider) {
 
+        if ($rootScope.features.docker !== 'enabled') {
+            return;
+        }
+
         var dockerVersions = window.JP.get('dockerVersions');
         var service = {cache: {}, jobs: {}, version: dockerVersions.dockerVersion};
         var containerActions = ['start', 'stop', 'pause', 'unpause', 'inspect', 'restart', 'kill', 'logs', 'remove'];

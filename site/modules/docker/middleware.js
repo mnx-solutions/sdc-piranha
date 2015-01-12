@@ -1,5 +1,8 @@
 'use strict';
 var config = require('easy-config');
+if (!config.features || config.features.docker !== 'enabled') {
+    return;
+}
 
 module.exports = function execute() {
     return {
