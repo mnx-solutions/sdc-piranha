@@ -190,7 +190,8 @@
 
             var waitForCreatingMachinesToFinish = function (callback) {
                 Machine.listAllMachines().then(function (machines) {
-                    var hasCreating = machines.some(function (machine) {
+                    $scope.machines = machines;
+                    var hasCreating = $scope.machines.some(function (machine) {
                         return machine.state === 'creating';
                     });
                     if (hasCreating) {
