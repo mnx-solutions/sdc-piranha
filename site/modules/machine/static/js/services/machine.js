@@ -551,7 +551,7 @@
             machine.job = jobCall.getTracker();
             return jobCall;
         };
-            
+
             function bindCollectionCRUD(collectionName) {
                 var upperCollectionName = collectionName.charAt(0).toUpperCase() + collectionName.slice(1);
 
@@ -581,12 +581,12 @@
                         }
                     }
                 }
-                
+
                 function getMachine(id, callback) {
                     var machine = service.machine(id);
                     $q.when(machine).then(callback);
                 }
-                
+
                 function create(machineId, items) {
                     var d = $q.defer();
                     getMachine(machineId, function (machine) {
@@ -600,7 +600,8 @@
                         serverTab.call({
                             name: 'Machine' + upperCollectionName + 'Create',
                             data: createData(machine, newItems),
-                            done: done(machine, d)
+                            done: done(machine, d),
+                            error: done(machine, d)
                         })
                     });
                     return d.promise;
@@ -615,7 +616,8 @@
                         serverTab.call({
                             name: 'Machine' + upperCollectionName + 'List',
                             data: createData(machine),
-                            done: done(machine, d)
+                            done: done(machine, d),
+                            error: done(machine, d)
                         });
                     });
                     return d.promise;
@@ -628,7 +630,8 @@
                         serverTab.call({
                             name: 'Machine' + upperCollectionName + 'Update',
                             data: data,
-                            done: done(machine, d)
+                            done: done(machine, d),
+                            error: done(machine, d)
                         })
                     });
                     return d.promise;
@@ -639,7 +642,8 @@
                         serverTab.call({
                             name: 'Machine' + upperCollectionName + 'Delete',
                             data: createData(machine, item),
-                            done: done(machine, d)
+                            done: done(machine, d),
+                            error: done(machine, d)
                         })
                     });
                     return d.promise;
@@ -651,9 +655,9 @@
                     delete: remove
                 };
             }
-            
-            bindCollectionCRUD('tags');
-            bindCollectionCRUD('metadata');
+
+        bindCollectionCRUD('tags');
+        bindCollectionCRUD('metadata');
 
         service.checkFirstInstanceCreated = function (id) {
             var job = serverTab.call({

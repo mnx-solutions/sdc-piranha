@@ -87,6 +87,8 @@
                     } else if ($scope.package.createdBySupport && !maxPackages.createdBySupport) {
                         $scope.package.selectedMaxPackage = true;
                     }
+                }, function (error) {
+                    PopupDialog.errorObj(error);
                 });
             };
 
@@ -182,26 +184,6 @@
             );
 
             $scope.$on(
-                'event:forceUpdate',
-                function () {
-                    Machine.updateMachines();
-                    Machine.machine(machineid).then(function (m) {
-                        $scope.machine = m;
-                        if ($scope.features.firewall === 'enabled') {
-                            Machine.listFirewallRules(m).then(function (rules) {
-                                $scope.firewallRules = rules;
-                            });
-                        }
-                        if ($scope.features.docker === 'enabled') {
-                            getHostContainers(m);
-                        }
-                    }, function () {
-                        locationReplace();
-                    });
-                }
-            );
-
-            $scope.$on(
                 'event:pollComplete',
                 function () {
                     $q.when(Machine.machine(machineid)).then(function (machine) {
@@ -216,24 +198,6 @@
 
             $scope.firewallRules = [];
 
-            $scope.$watch('machines', function () {
-                $q.when(Machine.machine(machineid)).then(
-                    function (machine) {
-                        $scope.machine = machine;
-
-                        if ($scope.features.firewall === 'enabled') {
-                            Machine.listFirewallRules(machine).then(function (rules) {
-                                $scope.firewallRules = rules;
-                            });
-                        }
-
-                        if ($scope.features.docker === 'enabled') {
-                            getHostContainers(machine);
-                        }
-                    }
-                );
-            }, true);
-
             $q.when($scope.machine, function (m) {
                 $scope.machine = m;
                 $scope.loading = false;
@@ -246,6 +210,8 @@
                 if ($scope.features.firewall === 'enabled') {
                     Machine.listFirewallRules(m).then(function (rules) {
                         $scope.firewallRules = rules;
+                    }, function (error) {
+                        PopupDialog.errorObj(error);
                     });
                 }
                 if ($scope.features.docker === 'enabled') {
@@ -264,6 +230,8 @@
                             if (dataset.tags && dataset.tags.default_user) {
                                 $scope.defaultSshUser = dataset.tags.default_user;
                             }
+                        }, function (error) {
+                            PopupDialog.errorObj(error);
                         });
                     }
 
@@ -541,10 +509,14 @@
                         if ($scope.machine.tags && $scope.machine.tags.JPC_tag === 'DockerHost') {
                             Machine.deleteDockerMachine($scope.machine).then(function () {
                                 resolvedDeleteAction(machineid, true);
+                            }, function (error) {
+                                PopupDialog.errorObj(error);
                             });
                         } else {
                             Machine.deleteMachine(machineid).then(function () {
                                 resolvedDeleteAction(machineid);
+                            }, function (error) {
+                                PopupDialog.errorObj(error);
                             });
                         }
                     });

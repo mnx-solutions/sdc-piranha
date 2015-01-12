@@ -44,13 +44,6 @@
                 });
             }
 
-            $scope.$on(
-                'event:forceUpdate',
-                function () {
-                    $scope.machines = Machine.machine();
-                }
-            );
-
             $scope.$watch('machines', function (machines) {
                 machines.forEach(function (machine) {
                     machine.label = machine.name || machine.id;
