@@ -4373,14 +4373,11 @@ label.checkbox
 .path-name
 {
     overflow: hidden;
-
-    max-width: 170px;
-
-    vertical-align: middle;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-
+    max-width: 162px;
     color: #969696;
+    vertical-align: middle;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 .general-column .finder-elements .path-name
@@ -4622,8 +4619,8 @@ label.checkbox
 .file-manager .modal-body
 {
     overflow-y: hidden;
-
     max-height: 509px;
+    word-wrap: normal;
 }
 
 .modal .folder-container
@@ -4775,6 +4772,18 @@ label.checkbox
 .select2-results ul.select2-result-sub
 {
     padding-left: 0;
+}
+
+.mfind-checkbox-title
+{
+    margin-left: 5px;
+    line-height: 18px;
+}
+
+.mfind-checkbox-title code
+{
+    font-size: 100%;
+    font-family: monospace;
 }
 
 .file-path
