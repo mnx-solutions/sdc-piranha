@@ -157,12 +157,7 @@ th.protocol
     padding-left: 20px;
 }
 
-.loading-small-firewall
-{
-    display: inline-block;
-
-    width: 16px;
-    height: 20px;
+.progress-small {
     padding-right: 8px;
 }
 
