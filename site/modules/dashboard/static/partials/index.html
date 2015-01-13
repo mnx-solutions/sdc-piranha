@@ -246,7 +246,7 @@
                 </div>
             </div>
             <div class="pull-left second-column">
-                <div class="span" data-ng-show="features.systemStatusTile != 'enabled'">
+                <div class="span" data-ng-show="features.systemStatusTile != 'enabled' && features.localSdc != 'enabled'">
                     <h5>SYSTEM STATUS</h5>
                     <div class="separation-container separation-container-top">
                         <div class="row" data-ng-repeat="topic in systemStatusTopics | limitTo:7">
@@ -255,7 +255,7 @@
                     </div>
                     <a class="orange" href="https://help.joyent.com/forums/20715782-current-system-status#recent" target="_blank">View all System Updates</a>
                 </div>
-                <div class="span">
+                <div class="span" data-ng-show="features.blogEntries == 'enabled'">
                     <h5>JOYENT BLOG</h5>
                     <div class="separation-container separation-container-top">
                         <div class="row" data-ng-repeat="entry in rssentries">

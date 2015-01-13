@@ -14,15 +14,7 @@ var RedisStore = require('connect-redis')(express);
 var http = require('http');
 var app = express(); // main app
 var httpServer = http.createServer(app);
-
-var features = {};
-
-//Modify features to allow 'yes' and 'no'
-Object.keys(config.features).forEach(function (feature) {
-    var tmp = config.features[feature];
-    features[feature] = (tmp === 'yes' || tmp === 'enabled' ? 'enabled' : 'disabled');
-});
-config.modify({features: features});
+var features = require('./lib/features');
 
 app.use(app.router);
 app.use(express.urlencoded());

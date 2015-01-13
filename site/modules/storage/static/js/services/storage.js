@@ -90,6 +90,12 @@ window.fn = [];
                 };
             };
 
+            service.getMantaUrl = function () {
+                return serverTab.call({
+                    name: 'StorageMantaUrl'
+                }).promise;
+            };
+
             return service;
         }
     ]);

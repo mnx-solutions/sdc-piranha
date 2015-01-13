@@ -16,7 +16,7 @@
                         </select>
                     </div>
                 </div>
-                <div class="dataset-cost cost">
+                <div class="dataset-cost cost" data-ng-show="features.billing == 'enabled'">
                     <p>EST. MONTHLY COST:</p>
                     <h3>${{selectedPackageInfo.full_price_month || selectedPackageInfo.price_month}}</h3>
                 </div>
@@ -46,7 +46,7 @@
         <div class="accordion-package-title">
             <span class="span-name">NAME</span>
             <span class="span-specification">SPECIFICATION</span>
-            <span class="span-price">PRICE</span>
+            <span class="span-price" data-ng-show="features.billing == 'enabled'">PRICE</span>
         </div>
         <div class="panel-group accordion-package-select" id="packagesAccordion">
             <div class="panel panel-default" data-ng-repeat="packageType in packageTypes | filter:filterPackageTypes(datasetType)">
@@ -67,7 +67,7 @@
                             <div class="memory"><p data-ng-show="package.memory < 1024">Micro </p> {{package.memory | sizeFormat}} RAM</div>
                             <div class="cpu">{{package.vcpus}} vCPUs</div>
                             <div class="disk">{{package.disk | sizeFormat}} Disk</div>
-                            <div class="price">${{package.full_price || package.price}} <p data-translate>per hour</p></div>
+                            <div class="price" data-ng-show="features.billing == 'eanbled'">${{package.full_price || package.price}} <p data-translate>per hour</p></div>
                         </div>
                     </div>
                 </div>

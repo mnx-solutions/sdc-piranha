@@ -28,6 +28,8 @@
             var parentAccountPromise = null;
             var keys = null;
 
+            var features = window.JP.get('features');
+
             /**
              * @ngdoc
              * @name account.service:account#setTfaCache
@@ -104,7 +106,9 @@
                             service.setCurrentUserId(account.id);
                             $rootScope.provisionEnabled = account.provisionEnabled || false;
                             deferred.resolve(account);
-                            $$track.marketing_lead(account);
+                            if (features.marketo === 'enabled') {
+                                $$track.marketing_lead(account);
+                            }
                         }
                     });
                 } else {
@@ -153,28 +157,31 @@
                 return deferred.promise;
             };
 
-            var zenboxInit = function (name) {
-                if (typeof(window.Zenbox) !== "undefined" && $rootScope.zenboxParams.dropboxID) {
-                    $rootScope.zenboxParams.requester_name = name;
-                    window.Zenbox.init($rootScope.zenboxParams);
-                    window.angular.element("#zenbox_tab").click(function () {
-                        if (typeof(window._gaq) !== "undefined") {
-                            window._gaq.push(["_trackEvent", "Window Open", "Zenbox Support"]);
-                        }
-                    });
-                }
-            };
 
-            service.getAccount().then(function (account) {
-                $rootScope.zenboxParams.requester_email = account.email;
-                if (account.isSubuser) {
-                    service.getParentAccount().then(function (parentAccount) {
-                        zenboxInit(parentAccount.login + '/' + account.login);
-                    });
-                } else {
-                    zenboxInit(account.login);
-                }
-            });
+            if (features.zendesk === 'enabled') {
+                var zenboxInit = function (name) {
+                    if (typeof(window.Zenbox) !== "undefined" && $rootScope.zenboxParams.dropboxID) {
+                        $rootScope.zenboxParams.requester_name = name;
+                        window.Zenbox.init($rootScope.zenboxParams);
+                        window.angular.element("#zenbox_tab").click(function () {
+                            if (typeof(window._gaq) !== "undefined") {
+                                window._gaq.push(["_trackEvent", "Window Open", "Zenbox Support"]);
+                            }
+                        });
+                    }
+                };
+
+                service.getAccount().then(function (account) {
+                    $rootScope.zenboxParams.requester_email = account.email;
+                    if (account.isSubuser) {
+                        service.getParentAccount().then(function (parentAccount) {
+                            zenboxInit(parentAccount.login + '/' + account.login);
+                        });
+                    } else {
+                        zenboxInit(account.login);
+                    }
+                });
+            }
 
             service.checkProvisioning = function (submitBillingInfo, cbEnabled, cbDisabled, locationCb, showPopUp) {
                 var defaultCb = angular.noop;
@@ -213,7 +220,9 @@
                         var resolver = job.__read();
                         account = resolver;
                         deferred.resolve(resolver);
-                        $$track.marketing_lead(account);
+                        if (features.marketo === 'enabled') {
+                            $$track.marketing_lead(account);
+                        }
                     }
                 });
 

@@ -108,7 +108,7 @@ module.exports = function execute(scope, app) {
                 next(err);
                 return;
             }
-            TFA.get(user.id, function (tfaErr, secret) {
+            TFA.getSecurity(user.id, function (tfaErr, secret) {
                 if (tfaErr) {
                     next(tfaErr);
                     return;
@@ -153,7 +153,7 @@ module.exports = function execute(scope, app) {
             return;
         }
 
-        TFA.set(req.session.userId, false, function(err, secretkey) {
+        TFA.setSecurity(req.session.userId, false, function(err, secretkey) {
             if (err) {
                 req.log.error(err, 'TFA removal failed');
                 res.json(500, {status: 'error', err: err});
@@ -190,7 +190,7 @@ module.exports = function execute(scope, app) {
         }
 
         if (isOneTimePasswordCorrect(req, res)) {
-            TFA.set(req.session.userId, req.session._tfaSecret, function(err, secretkey) {
+            TFA.setSecurity(req.session.userId, req.session._tfaSecret, function(err, secretkey) {
                 if (err) {
                     req.log.error(err, 'Failed to enable TFA');
                     res.json({status:'error', message: 'Internal error'});

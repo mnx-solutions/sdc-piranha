@@ -1,5 +1,5 @@
 'use strict';
 
 module.exports = function execute(scope, register) {
-    register('TFA', require('./lib/TFAToggle'));
+    register('TFA', require('../../modules/account/lib/metadata'));
 };

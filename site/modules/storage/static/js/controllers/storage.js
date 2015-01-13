@@ -3,7 +3,8 @@
 (function (app) {
     app.controller(
         'StorageController',
-        ['$scope', 'Account', 'requestContext', 'localization', '$dialog', 'rbac.Service', 'PopupDialog', function ($scope, Account, requestContext, localization, $dialog, RBAC, PopupDialog) {
+        ['$scope', 'Account', 'requestContext', 'localization', '$dialog', 'rbac.Service', 'PopupDialog', 'Storage',
+            function ($scope, Account, requestContext, localization, $dialog, RBAC, PopupDialog, Storage) {
             localization.bind('storage', $scope);
             requestContext.setUpRenderContext('storage.index', $scope);
             $scope.loading = true;
@@ -44,6 +45,11 @@
                         createSshList(keys);
                     });
                 }
+            });
+
+            $scope.mantaUrl = 'https://us-east.manta.joyent.com';
+            Storage.getMantaUrl().then(function (url) {
+                $scope.mantaUrl = url;
             });
 
             $scope.openVideo = function () {

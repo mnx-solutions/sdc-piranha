@@ -286,10 +286,12 @@
             };
 
             $q.when($scope.freetier, function () {
-                if ($scope.machine.freetier) {
-                    machineMessages.resizeMessage = 'Resize this instance will start billing.';
+                if ($scope.machine.freetier || $scope.features.billing === 'disabled') {
                     machineMessages.stopMessage = 'Your instance can be started after it is stopped.';
                     machineMessages.deleteMessage = 'Destroy this instance?';
+                }
+                if ($scope.machine.freetier) {
+                    machineMessages.resizeMessage = 'Resize this instance will start billing.';
                 }
             });
 
@@ -525,14 +527,14 @@
             $scope.buttonTooltipText = {
                 delete: function () {
                     var result = 'You will lose all information on this instance if you delete it.';
-                    if (!$scope.machine.freetier) {
+                    if (!$scope.machine.freetier && $scope.features.billing === 'enabled') {
                         result = result + ' Deleting an instance also stops billing.';
                     }
                     return result;
                 },
                 stop: function () {
                     var result = '';
-                    if (!$scope.machine.freetier) {
+                    if (!$scope.machine.freetier && $scope.features.billing === 'enabled') {
                         result = 'Stopping an instance does not stop billing. Once stopped, you can delete the instance in order to halt billing.';
                     }
                     return result;
