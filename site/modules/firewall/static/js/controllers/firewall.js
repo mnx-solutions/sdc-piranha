@@ -941,6 +941,8 @@
 					        return $scope.loading;
 				        },
 				        action: function (object) {
+                            $scope.resetCurrent('from');
+                            $scope.resetCurrent('to');
 					        $scope.data = rule.cleanRule(object);
 
                             $scope.refreshSelects();
