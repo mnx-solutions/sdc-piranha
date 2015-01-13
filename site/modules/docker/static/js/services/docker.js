@@ -12,9 +12,10 @@
         'localization',
         'Storage',
         '$q',
+        '$location',
         'DockerCacheProvider',
         function (serverTab, $rootScope, Account, errorContext, EventBubble, Machine, PopupDialog,
-                  localization, Storage, $q, DockerCacheProvider) {
+                  localization, Storage, $q, $location, DockerCacheProvider) {
 
         if ($rootScope.features.docker !== 'enabled') {
             return;
@@ -113,10 +114,12 @@
 
         service.pingManta = function (callback) {
             function errorPingManta() {
-                errorContext.emit(new Error(localization.translate(null,
-                    'docker',
-                    'Our operations team is investigating.'
-                )));
+                if ($location.path().indexOf('/dashboard') !== 0) {
+                    errorContext.emit(new Error(localization.translate(null,
+                        'docker',
+                        'Our operations team is investigating.'
+                    )));
+                }
             }
             function storagePing(billingEnabled) {
                 Storage.ping(billingEnabled, true).then(function () {

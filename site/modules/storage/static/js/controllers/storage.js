@@ -48,9 +48,11 @@
             });
 
             $scope.mantaUrl = 'https://us-east.manta.joyent.com';
-            Storage.getMantaUrl().then(function (url) {
-                $scope.mantaUrl = url;
-            });
+            if ($scope.features.manta === 'enabled') {
+                Storage.getMantaUrl().then(function (url) {
+                    $scope.mantaUrl = url;
+                });
+            }
 
             $scope.openVideo = function () {
                 var d = $dialog.dialog({

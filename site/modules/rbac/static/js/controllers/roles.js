@@ -44,8 +44,9 @@
                 );
             };
 
-
-            $scope.gridUserConfig = Account.getUserConfig().$child('rbac-roles') || {};
+            if ($scope.features.manta === 'enabled') {
+                $scope.gridUserConfig = Account.getUserConfig().$child('rbac-roles') || {};
+            }
 
             $scope.gridOrder = ['name'];
             $scope.gridProps = [
