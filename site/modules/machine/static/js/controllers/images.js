@@ -62,6 +62,7 @@
                 {
                     id: 'name',
                     name: 'Name',
+                    _order: 'name',
                     sequence: 1,
                     active: true,
                     type: 'html',
