@@ -197,16 +197,19 @@ function composeZuoraAccount(call, cb) {
                     Category__c: 'Credit Card',
                     billCycleDay: 1,
                     name: accountData.companyName || ((accountData.firstName || call.data.firstName) + ' ' + (accountData.lastName || call.data.lastName)),
-                    subscription: {
+                    invoiceCollect: false,
+                    creditCard: {}
+                };
+
+                if (ratePlanId) {
+                    obj.subscription = {
                         termType: 'EVERGREEN',
                         contractEffectiveDate: moment().utc().subtract('hours', 8).format('YYYY-MM-DD'), // PST date
                         subscribeToRatePlans: [{
                             productRatePlanId: ratePlanId
                         }]
-                    },
-                    invoiceCollect: false,
-                    creditCard: {}
-                };
+                    };
+                }
 
                 Object.keys(cc).forEach(function (k) {
                     if (noCopyFields.indexOf(k) !== -1) {
@@ -266,8 +269,7 @@ function composeZuoraAccount(call, cb) {
                     createObjects(ratePlans[ratePlanName]);
                     return;
                 }
-
-                createObjects(ratePlans['Free Trial']);
+                createObjects();
             }
 
             // make all the queries and build up ratePlans object
