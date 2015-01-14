@@ -4,6 +4,7 @@ var restify = require('restify');
 var vasync = require('vasync');
 var path = require('path');
 var generalErrorMessage = 'Something went wrong, please try again.';
+var mantaNotAvailable = 'Manta service is not available.';
 var mdbJobsListPath = '/stor/.joyent/portal/MdbJobs.json';
 var delimiter = '-delimiter-';
 
@@ -182,6 +183,9 @@ var mdbApi = function execute(scope) {
     }
 
     function sendError(call, error) {
+        if (error.code === 'ENOTFOUND') {
+            error.message = mantaNotAvailable;
+        }
         call.done(error.message || error);
     }
 
