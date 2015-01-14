@@ -64,8 +64,8 @@
                     $scope.users = users;
                     $scope.loading = false;
 
-                }, function (err) {
-                    PopupDialog.errorObj(err);
+                }, function () {
+                    $scope.loading = false;
                 });
 
             } else {
@@ -107,9 +107,8 @@
                 });
             }
 
-            var errorCallback = function (err) {
+            var errorCallback = function () {
                 $scope.loading = false;
-                PopupDialog.errorObj(err);
             };
 
             var roleAction = function (action) {
@@ -135,7 +134,6 @@
                     $location.path('/accounts/roles');
                 }, function (err) {
                     $scope.loading = false;
-                    PopupDialog.errorObj(err);
                 });
 
             };

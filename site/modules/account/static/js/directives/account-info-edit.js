@@ -133,8 +133,7 @@
                                     $scope,
                                     'account',
                                     message
-                                ),
-                                function () {}
+                                )
                             );
                         });
                     };

@@ -1065,19 +1065,7 @@
                 });
             };
             $scope.noCheckBoxChecked = function () {
-                PopupDialog.error(
-                    localization.translate(
-                        $scope,
-                        null,
-                        'Error'
-                    ),
-                    localization.translate(
-                        $scope,
-                        null,
-                        'No rule selected for the action.'
-                    ), function() {
-                    }
-                );
+                PopupDialog.noItemsSelectedError('rule');
             };
 
             $scope.changeTab = '';

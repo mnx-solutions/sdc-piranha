@@ -2,7 +2,7 @@
 
 (function (ng, app) {
 
-    app.factory('PopupDialog', ["$dialog", "$location", "$rootScope", function ($dialog, $location, $rootScope) {
+    app.factory('PopupDialog', ["$dialog", "$location", "$rootScope", "localization", function ($dialog, $location, $rootScope, localization) {
 
         var factory = {};
         var dialog;
@@ -116,6 +116,13 @@
         factory.errorObj = function (error, callback, customMessage) {
             var message = customMessage || error.message || error;
             return factory.error('Error', message, callback);
+        };
+
+        factory.noItemsSelectedError = function (itemName) {
+            return factory.error(
+                localization.translate(null, null, 'Error'),
+                localization.translate(null, null, 'No ' + itemName + ' selected for the action.')
+            );
         };
 
         factory.message = function (title, question, callback) {

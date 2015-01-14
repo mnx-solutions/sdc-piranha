@@ -32,7 +32,6 @@
                 $scope.loading = false;
                 $scope.pushDialogOpening = false;
                 $scope.actionInProgress = false;
-                PopupDialog.errorObj(err);
             };
 
             var getDockerInspectImage = function () {

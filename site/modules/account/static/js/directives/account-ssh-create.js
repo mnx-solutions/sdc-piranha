@@ -133,9 +133,7 @@
                                                         {
                                                             message: data.err.message
                                                         }
-                                                    ),
-                                                    function () {
-                                                    }
+                                                    )
                                                 );
                                             }
                                         });

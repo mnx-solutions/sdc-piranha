@@ -59,8 +59,7 @@
                                     null,
                                     'slb',
                                     data.message
-                                ),
-                                function () {}
+                                )
                             );
                         }
                     });

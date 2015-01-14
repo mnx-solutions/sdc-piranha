@@ -76,18 +76,7 @@
                 ];
 
                 $scope.noCheckBoxChecked = function () {
-                    PopupDialog.error(
-                        localization.translate(
-                            $scope,
-                            null,
-                            'Error'
-                        ),
-                        localization.translate(
-                            $scope,
-                            null,
-                            'No registries selected for the action.'
-                        )
-                    );
+                    PopupDialog.noItemsSelectedError('registries');
                 };
                 var gridMessages = {
                     delete: {

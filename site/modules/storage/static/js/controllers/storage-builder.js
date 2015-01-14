@@ -126,40 +126,24 @@
                         memory: Number($scope.amountOfDram),
                         disk: Number($scope.amountOfDiskSpace)
                     };
-                    $q.when(Storage.createJob(job, true)).then(
-                        function (res) {
-                            PopupDialog.message(
-                                localization.translate(
-                                    $scope,
-                                    null,
-                                    'Message'
-                                ),
-                                localization.translate(
-                                    $scope,
-                                    null,
-                                    res.message
-                                ),
-                                function () {
-                                    $location.url('/manta/jobs/' + res.id);
-                                    $location.replace();
-                                }
-                            );
-                        },
-                        function (err) {
-                            PopupDialog.error(
-                                localization.translate(
-                                    $scope,
-                                    null,
-                                    'Error'
-                                ),
-                                localization.translate(
-                                    $scope,
-                                    null,
-                                    err
-                                )
-                            );
-                        }
-                    );
+                    $q.when(Storage.createJob(job, true)).then(function (res) {
+                        PopupDialog.message(
+                            localization.translate(
+                                $scope,
+                                null,
+                                'Message'
+                            ),
+                            localization.translate(
+                                $scope,
+                                null,
+                                res.message
+                            ),
+                            function () {
+                                $location.url('/manta/jobs/' + res.id);
+                                $location.replace();
+                            }
+                        );
+                    });
                     return job;
                 };
             }]

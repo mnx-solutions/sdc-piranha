@@ -173,18 +173,7 @@
             };
 
             $scope.noCheckBoxChecked = function () {
-                PopupDialog.error(
-                    localization.translate(
-                        $scope,
-                        null,
-                        'Error'
-                    ),
-                    localization.translate(
-                        $scope,
-                        null,
-                        'No job selected for the action.'
-                    )
-                );
+                PopupDialog.noItemsSelectedError('job');
             };
 
             function makeJobAction(messageTitle, messageBody) {

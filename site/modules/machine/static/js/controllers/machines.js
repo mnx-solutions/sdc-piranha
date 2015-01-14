@@ -85,20 +85,8 @@
                 }
             });
 
-            $scope.noCheckBoxChecked = function(){
-                PopupDialog.error(
-                    localization.translate(
-                        $scope,
-                        null,
-                        'Error'
-                    ),
-                    localization.translate(
-                        $scope,
-                        null,
-                        'No instance selected for the action.'
-                    ), function () {
-                    }
-                );
+            $scope.noCheckBoxChecked = function() {
+                PopupDialog.noItemsSelectedError('instance');
             };
 
             $scope.notSupportedFirewallMessage = function () {

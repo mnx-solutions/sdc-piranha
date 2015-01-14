@@ -32,8 +32,6 @@
                     });
                     $scope.loading = false;
 
-                }, function (err) {
-                    PopupDialog.errorObj(err);
                 });
             } else {
                 Account.getAccount(true).then(function (account) {

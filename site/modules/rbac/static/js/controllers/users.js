@@ -20,30 +20,12 @@
                     $scope.users = angular.copy(result[0]) || [];
                     $scope.roles = result[1] || [];
                     $scope.loading = false;
-                }, function (err) {
-                    PopupDialog.errorObj(err);
                 });
             };
             getUsersList();
 
-            var errorCallback = function (err) {
-                $scope.loading = false;
-                PopupDialog.errorObj(err);
-            };
-
             $scope.noCheckBoxChecked = function () {
-                PopupDialog.error(
-                    localization.translate(
-                        $scope,
-                        null,
-                        'Error'
-                    ),
-                    localization.translate(
-                        $scope,
-                        null,
-                        'No user selected for the action.'
-                    ), function () {}
-                );
+                PopupDialog.noItemsSelectedError('user');
             };
 
             if ($scope.features.manta === 'enabled') {

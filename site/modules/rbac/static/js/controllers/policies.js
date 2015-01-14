@@ -16,24 +16,12 @@
                 $scope.loading = false;
             });
 
-            var errorCallback = function (err) {
+            var errorCallback = function () {
                 $scope.loading = false;
-                PopupDialog.errorObj(err);
             };
 
             $scope.noCheckBoxChecked = function () {
-                PopupDialog.error(
-                    localization.translate(
-                        $scope,
-                        null,
-                        'Error'
-                    ),
-                    localization.translate(
-                        $scope,
-                        null,
-                        'No policy selected for the action.'
-                    ), function () {}
-                );
+                PopupDialog.noItemsSelectedError('policy');
             };
 
             if ($scope.features.manta === 'enabled') {
