@@ -127,12 +127,13 @@
             };
 
             var deleteProvisionStep = function (stepName) {
-                if (stepName === SSH_STEP_NAME) {
-                    $scope.reviewModel.createInstanceTitle = $scope.keys.length > 0 ? 'Create Instance' : 'Next';
-                }
                 $scope.provisionSteps = $scope.provisionSteps.filter(function (item) {
                     return item.name !== stepName;
                 });
+            };
+
+            $scope.getCreateTitle = function () {
+                return $scope.currentSlidePageIndex === $scope.provisionSteps.length - 1 ? 'Create Instance' : 'Next';
             };
 
             var addProvisionStep = function (step) {
@@ -140,9 +141,6 @@
                     return item.name === step.name;
                 });
 
-                if (step.name === SSH_STEP_NAME) {
-                    $scope.reviewModel.createInstanceTitle = $scope.keys.length > 0 ? 'Create Instance' : 'Next';
-                }
                 if (!isExists) {
                     $scope.provisionSteps.push(step);
                 }
@@ -373,7 +371,6 @@
                                 deleteProvisionStep(ACCOUNT_STEP_NAME);
                                 if (stepsSize !== $scope.provisionSteps.length) {
                                     $scope.reconfigure($scope.currentSlidePageIndex - 1);
-                                    $scope.reviewModel.createInstanceTitle = null;
                                 }
                             }
                     );
@@ -889,9 +886,6 @@
                 if ($scope.keys.length > 0) {
                     deleteProvisionStep(SSH_STEP_NAME);
                 }
-                if ($scope.currentSlidePageIndex === $scope.provisionSteps.length - 1) {
-                    $scope.reviewModel.createInstanceTitle = null;
-                }
                 $scope.preSelectedData = null;
             };
 
@@ -1102,9 +1096,6 @@
 
                     $scope.data.package = pkg.id;
                 });
-                if (!$scope.account.provisionEnabled || $scope.keys.length <= 0) {
-                    $scope.reviewModel.createInstanceTitle = 'Next';
-                }
             };
 
             $scope.filterPackages = function (packageType, isPackageTypeCollapsed) {

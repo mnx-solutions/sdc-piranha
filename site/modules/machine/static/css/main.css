@@ -1,10 +1,3 @@
-.first-block
-{
-    display: inline-block;
-
-    width: 725px;
-}
-
 #finish-configuration .error
 {
     margin: 10px 0 10px 0;
@@ -1157,11 +1150,6 @@ span.btn-success
     margin-top: 10px;
     margin-left: 20px;
     padding-bottom: 20px;
-}
-
-.container-min-width
-{
-    width: 1050px !important;
 }
 
 .advanced-instance-box
