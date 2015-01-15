@@ -48,7 +48,7 @@
                     });
                 };
                 $scope.pressEnter = function (keyEvent) {
-                    if (keyEvent.which === 13) {
+                    if (keyEvent.which === 13 && $scope.execCmd) {
                         $scope.execute();
                     }
                 };

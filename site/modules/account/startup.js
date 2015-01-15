@@ -37,7 +37,7 @@ module.exports = function execute(scope) {
         if (config.features.marketo === 'enabled') {
             Marketo.update(id, data, function (err) {
                 if (err) {
-                    call.log.error({error: err, data: marketoData}, 'Failed to update marketo account');
+                    call.log.error({error: err, data: data}, 'Failed to update marketo account');
                 }
                 call.log.debug(data, 'Associate Marketo lead with SOAP API');
                 callback();
