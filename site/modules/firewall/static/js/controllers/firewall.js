@@ -86,10 +86,10 @@
                     }
                 } else {
                     var vms = $scope.vms.filter(function(vm){
-                        return ((vm.id.indexOf(options.term) !== -1) || (vm.text.indexOf(options.term) !== -1)) && vm.datacenter === ($scope.data.uuid ? $scope.tabFilterUpdate : $scope.datacenter);
+                        return ((vm.id.indexOf(options.term) !== -1) || (vm.text.indexOf(options.term) !== -1)) && vm.datacenter === ($scope.data.uuid ? $scope.data.datacenter : $scope.selected.datacenter);
                     });
                     var tags = $scope.tags.filter(function(tag){
-                        return ((tag.id.indexOf(options.term) !== -1) || (tag.text.indexOf(options.term) !== -1)) && tag.datacenter === ($scope.data.uuid ? $scope.tabFilterUpdate : $scope.datacenter);
+                        return ((tag.id.indexOf(options.term) !== -1) || (tag.text.indexOf(options.term) !== -1)) && tag.datacenter === ($scope.data.uuid ? $scope.data.datacenter : $scope.selected.datacenter);
                     });
 
                     results = [{
