@@ -56,7 +56,7 @@
                         new Rickshaw.Graph.Axis.Y({
                             element: $element.find('#y_axis_' + $scope.$id)[0],
                             orientation: 'left',
-                            width: 95,
+                            width: 100,
                             tickFormat: function (num) {
                                 return $scope.format(num);
                             },
