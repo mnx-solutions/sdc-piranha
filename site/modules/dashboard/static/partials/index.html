@@ -227,7 +227,7 @@
         </div>
 
         <div class="dpl-inline">
-            <div class="pull-left first-column">
+            <div class="pull-left first-column" data-ng-show="features.privateSdc != 'enabled'">
                 <div class="portlet-body promo-ad">
                     <div class="promo-ad-title">
                         <p>Introducing</p>
@@ -246,7 +246,7 @@
                 </div>
             </div>
             <div class="pull-left second-column">
-                <div class="span" data-ng-show="features.systemStatusTile != 'enabled' && features.localSdc != 'enabled'">
+                <div class="span" data-ng-show="features.systemStatusTile != 'enabled' && features.privateSdc != 'enabled'">
                     <h5>SYSTEM STATUS</h5>
                     <div class="separation-container separation-container-top">
                         <div class="row" data-ng-repeat="topic in systemStatusTopics | limitTo:7">
@@ -265,7 +265,7 @@
                     </div>
                     <a class="orange" href="http://www.joyent.com/blog" target="_blank">More News</a>
                 </div>
-                <div class="span">
+                <div class="span" data-ng-show="features.privateSdc != 'enabled'">
                     <h5>SUPPORT FAQ</h5>
                     <div class="separation-container separation-container-top">
                         <div class="row" data-ng-repeat="(name, url) in forums">
