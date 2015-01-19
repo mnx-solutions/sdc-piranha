@@ -17,6 +17,7 @@
                 java: "java",
                 magento: "magento",
                 manta: "manta",
+                memcached: "memcached",
                 mongodb: "mongodb",
                 "mysql-cluster": "mysql",
                 neo4j: "neo4j",
