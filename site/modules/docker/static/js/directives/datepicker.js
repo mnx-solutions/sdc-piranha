@@ -1,16 +1,22 @@
 'use strict';
 
 (function (ng, app) {
-    app.directive('datepicker', ['$rootScope', function ($rootScope) {
+    app.directive('datepicker', ['$rootScope', '$filter', function ($rootScope, $filter) {
         return {
             scope: {
                 date: '='
             },
             link: function (scope, el) {
+                function setDatepickerDate() {
+                    var shortDate = $filter('date')(scope.date, 'yyyy/MM/dd');
+                    $(el).datepicker("setDate", shortDate);
+                }
                 $(el).datepicker({
-                    autoclose: true
+                    autoclose: true,
+                    format: 'yyyy/MM/dd'
                 }).on('changeDate', function(ev){
                     if (!ev.date || scope.date === new Date(ev.date)) {
+                        setDatepickerDate();
                         return;
                     }
                     if(!$rootScope.$$phase) {
@@ -29,7 +35,7 @@
                 }).on('hide', function (ev) {
                     $(el).attr('toggled', 'close');
                 });
-                $(el).datepicker("setDate", scope.date);
+                setDatepickerDate();
             }
         };
     }]);
