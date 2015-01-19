@@ -719,14 +719,6 @@
                                 } else {
                                     el.active = propKeys[el.id].active;
                                 }
-                                if (!el.id2) {
-                                    if (propKeys[el.id].order) {
-                                        el.order = propKeys[el.id].order;
-                                    }
-                                    if (propKeys[el.id].reorder) {
-                                        el.reorder = propKeys[el.id].reorder;
-                                    }
-                                }
                             } else {
                                 propKeys[el.id] = el;
                                 config.props.push(el);

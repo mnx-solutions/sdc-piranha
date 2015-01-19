@@ -330,6 +330,9 @@
                 {
                     id: 'tags',
                     name: 'Tags',
+                    _order: function (machine) {
+                        return JSON.stringify(machine.tags);
+                    },
                     sequence: 13,
                     active: false
                 },
