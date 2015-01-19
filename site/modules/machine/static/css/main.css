@@ -2027,6 +2027,7 @@ span.btn-success
 .small-icon.java,
 .small-icon.magento,
 .small-icon.manta,
+.small-icon.memcached,
 .small-icon.mysql,
 .small-icon.neo4j,
 .small-icon.node,
@@ -2065,6 +2066,7 @@ span.btn-success
 .advanced-instance-title .java,
 .advanced-instance-title .magento,
 .advanced-instance-title .manta,
+.advanced-instance-title .memcached,
 .advanced-instance-title .mysql,
 .advanced-instance-title .neo4j,
 .advanced-instance-title .node,
@@ -2163,6 +2165,11 @@ span.btn-success
 .small-icon.manta
 {
     background-image: url(../img/icons/manta.png);
+}
+
+.small-icon.memcached
+{
+    background-image: url(../img/icons/memcached.png);
 }
 
 .small-icon.mysql
