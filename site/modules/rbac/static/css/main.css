@@ -162,12 +162,6 @@ label.name
 
 .edit-error
 {
-    display: block;
-
-    width: 481px;
-    margin-top: 2px;
-
-    text-align: right;
     letter-spacing: -.1px;
 }
 
@@ -301,11 +295,6 @@ input
 .col-md-6.rbac-column
 {
     width: 495px;
-}
-
-.rbac-column .form-group
-{
-    margin-bottom: 20px;
 }
 
 .btn-bottom-block .rbac-doc

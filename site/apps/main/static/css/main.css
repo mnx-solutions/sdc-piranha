@@ -826,13 +826,15 @@ select.date-year
 {
     line-height: 14px;
     text-align: right;
-    width: 600px;
-    position: absolute;
 }
 
-.edit-error .error span
+.edit-error .error,
+.edit-error.error
 {
-    vertical-align: middle;
+    display: block;
+    margin-top: 5px;
+    padding-right: 5px;
+    vertical-align: sub;
 }
 
 .edit-phone
