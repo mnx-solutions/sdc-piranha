@@ -1665,11 +1665,10 @@ a
 
 .accordion-ssh-package-title
 {
-    min-width: 681px;
-    height: 40px;
     margin-left: 1px;
     padding-left: 40px;
-
+    min-width: 610px;
+    height: 40px;
     border: 1px solid #dadcdd;
     border-bottom: none;
 }
@@ -1686,8 +1685,8 @@ a
 
 #accordion-ssh-keys
 {
-    min-width: 732px;
     margin-left: -8px;
+    min-width: 619px;
 }
 
 .panel-group .panel
