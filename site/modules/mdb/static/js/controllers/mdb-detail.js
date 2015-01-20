@@ -25,7 +25,7 @@
             if ($scope.features.manta === 'enabled') {
                 $scope.gridUserConfig = Account.getUserConfig().$child('mdb');
             }
-            $scope.gridOrder = [objectsToNumber];
+            $scope.gridOrder = ['objects'];
             $scope.gridProps = [
                 {
                     id: 'object',
@@ -36,13 +36,14 @@
                 {
                     id: 'objects',
                     name: '# Objects',
-                    _order: objectsToNumber,
+                    entryType: Number,
                     sequence: 1,
                     active: true
                 },
                 {
                     id: 'props',
                     name: '# Properties',
+                    entryType: Number,
                     sequence: 2,
                     active: true
                 },

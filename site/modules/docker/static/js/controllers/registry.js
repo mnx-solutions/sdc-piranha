@@ -161,6 +161,7 @@
                         sequence: 3,
                         active: true,
                         _order: 'info.size',
+                        entryType: Number,
                         type: 'progress',
                         _inProgress: function (object) {
                             return object.loading;

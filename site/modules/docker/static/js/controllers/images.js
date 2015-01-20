@@ -155,6 +155,7 @@
                         name: 'VirtualSize',
                         sequence: 6,
                         active: true,
+                        entryType: Number,
                         _order: 'VirtualSize',
                         _getter: function (image) {
                             return util.getReadableFileSizeString(image.VirtualSize);

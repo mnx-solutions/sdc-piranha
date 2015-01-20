@@ -40,6 +40,7 @@
                     id: 'cost',
                     name: 'Cost',
                     _order: 'cost',
+                    entryType: Number,
                     _getter: function (object) {
                         return '$' + util.getReadableCurrencyString(object.cost);
                     },
@@ -73,6 +74,7 @@
                                 id: 'in',
                                 name: 'In',
                                 _order: 'in',
+                                entryType: Number,
                                 _getter: function (object) {
                                     return $scope.chartData.format(object.in);
                                 },
@@ -83,6 +85,7 @@
                                 id: 'out',
                                 name: 'Out',
                                 _order: 'out',
+                                entryType: Number,
                                 _getter: function (object) {
                                     return $scope.chartData.format(object.out);
                                 },
@@ -96,6 +99,7 @@
                         {
                             id: 'ram',
                             name: 'RAM',
+                            entryType: Number,
                             sequence: 6,
                             active: true
                         },
@@ -103,6 +107,7 @@
                             id: 'hours',
                             name: 'Hours',
                             _order: 'hours',
+                            entryType: Number,
                             sequence: 7,
                             active: true
                         },
@@ -110,6 +115,7 @@
                             id: 'gb_hours',
                             name: 'GB Hours',
                             _order: 'gb_hours',
+                            entryType: Number,
                             sequence: 8,
                             active: true
                         }
@@ -128,6 +134,7 @@
                             id: 'cost',
                             name: 'Cost',
                             _order: 'cost',
+                            entryType: Number,
                             _getter: function (object) {
                                 return $scope.chartData.format(object.cost);
                             },
@@ -140,18 +147,21 @@
                         {
                             id: 'requests',
                             name: 'Requests',
+                            entryType: Number,
                             sequence: 1,
                             active: true
                         },
                         {
                             id: 'bandwidthIn',
                             name: 'In',
+                            entryType: Number,
                             sequence: 2,
                             active: true
                         },
                         {
                             id: 'bandwidthOut',
                             name: 'Out',
+                            entryType: Number,
                             sequence: 3,
                             active: true
                         },
@@ -159,6 +169,7 @@
                             id: 'cost',
                             name: 'Cost',
                             _order: 'cost',
+                            entryType: Number,
                             _getter: function (object) {
                                 return $scope.chartData.format(object.cost);
                             },
