@@ -835,6 +835,12 @@ select.date-year
     vertical-align: middle;
 }
 
+.error-push-image
+{
+    margin-top: 3px;
+    width: 530px;
+}
+
 .edit-phone
 {
     width: 242px !important;
