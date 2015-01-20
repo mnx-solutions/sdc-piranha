@@ -209,7 +209,7 @@
     , "docker"
 ]
 , "features": {
-    "localSdc": "disabled"
+    "privateSdc": "disabled"
   , "fullVersion": "enabled"
   , "instanceRename": "enabled"
   , "instanceTagging": "enabled"

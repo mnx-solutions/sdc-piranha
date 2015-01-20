@@ -1,6 +1,6 @@
 # Joyent Public Cloud Portal (piranha)
 
-Production: <https://my.joyentcloud.com/>  
+Production: <https://my.joyent.com/>  
 Repository: <https://github.com/joyent/piranha>  
 Browsing: <https://github.com/joyent/piranha>  
 Contacts: Lloyd Dewolf, Jens Schutt, Tyson Hom   
@@ -277,7 +277,7 @@ You can also define configuration options using command line. ex: `$ node index.
 
 ## Feature dependencies
 
-Enabling `localSdc` feature will disable the following: `promocode`, `invoices`, `promoBillingConfirmation`,
+Enabling `privateSdc` feature will disable the following: `promocode`, `invoices`, `promoBillingConfirmation`,
 `phoneVerification`, `freetier`, `slb`, `createdBySupportPackages`, `systemStatusTile`, `devCenterNewsTile`,
 `downloadSdc`, `usageData`, `limitedSlb`, `support`, `skinChange`, `provisioningLimits`, `zendesk`, `feedback`,
 `blogEntries`, `marketo`, `twitter`, `googleAnalytics`, `billing`. It will enable `allowSkipBilling`.

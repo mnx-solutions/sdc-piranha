@@ -66,12 +66,12 @@
         </div>
     </div>
     <div data-ng-show="dockerMachines.length < 1 && !loading">
-        <p class="docker-title">Welcome to Docker<span data-ng-hide="features.localSdc == 'enabled'"> on the Joyent Public Cloud</span></p>
+        <p class="docker-title">Welcome to Docker<span data-ng-hide="features.privateSdc == 'enabled'"> on the Joyent Public Cloud</span></p>
         <div data-ng-hide="provisionEnabled">
             <span class="docker-subtitle active-link" data-ng-click="completeAccount()">Complete your Account Information</span><span class="docker-subtitle"> in order to begin using Docker on the Joyent Public Cloud</span>
         </div>
         <div data-ng-show="provisionEnabled && data.imageId">
-            <span class="docker-subtitle active-link" data-ng-click="createDocker()">Create Docker Host</span><span class="docker-subtitle" data-ng-hide="features.localSdc == 'enabled'"> and begin using Docker on the Joyent Public Cloud</span>
+            <span class="docker-subtitle active-link" data-ng-click="createDocker()">Create Docker Host</span><span class="docker-subtitle" data-ng-hide="features.privateSdc == 'enabled'"> and begin using Docker on the Joyent Public Cloud</span>
         </div>
         <table class="docker-info">
             <tr>
