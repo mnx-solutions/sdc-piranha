@@ -155,8 +155,8 @@
                                 </span>
                                 <span data-ng-switch-when="multipleProgress">
                                     <div data-ng-repeat="process in object.pullProcesses">
+                                        <span data-ng-show="prop._inProgress(process)" class="loading-small progress-small pull-left"></span>&nbsp;
                                         <span data-ng-show="process.host.name">{{process.host.name}}:</span>
-                                        <span data-ng-show="prop._inProgress(process)" class="loading-small progres loading-small-firewall pull-left"></span>&nbsp;
                                         <span data-ng-bind-html="prop._getter(process)" class="grid-status-text"></span>&nbsp;
                                         <progress data-ng-show="prop._progressBar(process) && prop._progressBar(process).current" value="{{prop._progressBar(process).current}}" max="{{prop._progressBar(process).total}}"></progress><br/>
                                     </div>
