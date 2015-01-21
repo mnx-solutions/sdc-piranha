@@ -56,7 +56,7 @@
                         data = params = {};
                     }
                     params = createParams(angular.extend({}, config.params), params);
-                    var url = createUrl(Config.url, params),
+                    var url = createUrl(config.url || Config.url, params),
                         options = {
                             method: config.method,
                             url: url,
@@ -119,10 +119,6 @@
             }
 
             function uploadFiles(url, path, files, cb) {
-                angular.extend(Config, {
-                    url: url
-                });
-
                 var data = new FormData();
                 var metadata = {path: path, files: {}};
                 var fileIndex;
@@ -141,6 +137,7 @@
                 var service = createService({
                     uploadFile: {
                         method: 'POST',
+                        url: url,
                         data: data,
                         transformRequest: angular.identity,
                         headers: {

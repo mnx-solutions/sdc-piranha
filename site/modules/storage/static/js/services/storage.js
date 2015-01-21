@@ -59,7 +59,7 @@ window.fn = [];
 
             service.createJob = function (data, suppressError) {
                 return jobRequest('JobCreate', data, suppressError, function (jobId) {
-                    return {message: 'Job ' + jobId + ' was successfully created', id: jobId};
+                    return {message: 'Job "' + jobId + '" was successfully created', id: jobId};
                 });
             };
 

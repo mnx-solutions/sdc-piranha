@@ -1,7 +1,7 @@
 'use strict';
 
 (function (app) {
-    app.directive('filemanUpload', ['PopupDialog', 'http', function (PopupDialog, http) {
+    app.directive('filemanUpload', ['PopupDialog', 'http', 'notification', function (PopupDialog, http, notification) {
         return {
             restrict: 'EA',
             scope: {
@@ -10,11 +10,26 @@
                 existingFiles: '='
             },
             link: function (scope, element) {
+                var FILE_MANAGER_PATH = '/manta/files';
+
                 function uploadFiles(files) {
                     http.uploadFiles('storage/upload', scope.filemanUpload, files, function (error, data) {
+                        var isError = false;
+                        var message;
                         if (error || data.status === 'error') {
-                            PopupDialog.error(null, data.message || error);
+                            isError = true;
+                            message = data.message || (error.message || error);
+                        } else {
+                            var uploadedFiles = files.map(function (file) {
+                                return '"' + file.name + '"';
+                            }).join(', ');
+                            message = 'File ' + uploadedFiles + ' was';
+                            if (files.length > 1) {
+                                message = 'Files ' + uploadedFiles + ' were';
+                            }
+                            message += ' successfully uploaded';
                         }
+                        notification.popup(isError, isError, FILE_MANAGER_PATH, null, message);
                         scope.$parent.$emit('uploadReady', true, scope.filemanUpload);
                     });
                 }

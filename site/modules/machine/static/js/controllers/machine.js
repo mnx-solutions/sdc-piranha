@@ -484,23 +484,22 @@
 
                         // Redirect if complete
                         var resolvedDeleteAction = function (machineid, isDeletedDockerMachine) {
-                            PopupDialog.message(
-                                localization.translate(
-                                    $scope,
-                                    null,
-                                    'Message'
-                                ),
-                                localization.translate(
-                                    $scope,
-                                    null,
-                                    'Your instance "{{name}}" has been successfully deleted.',
-                                    {
-                                        name: $scope.machine.name
-                                    }
-                                )
-                            );
-
                             if ($location.url() === '/compute/instance/' + machineid) {
+                                PopupDialog.message(
+                                    localization.translate(
+                                        $scope,
+                                        null,
+                                        'Message'
+                                    ),
+                                    localization.translate(
+                                        $scope,
+                                        null,
+                                        'Your instance "{{name}}" has been successfully deleted.',
+                                        {
+                                            name: $scope.machine.name
+                                        }
+                                    )
+                                );
                                 locationReplace();
                             }
                             if (!$scope.machines.length && ($location.path() === '/compute' || $location.path() === currentLocation)) {

@@ -3,11 +3,12 @@
 (function (app) {
     app.controller(
         'Storage.JobBuilderController',
-        ['$rootScope', '$scope', 'Account', 'requestContext', 'localization', '$q', 'Storage', 'PopupDialog', '$location',
-            function ($rootScope, $scope, Account, requestContext, localization, $q, Storage, PopupDialog, $location) {
+        ['$rootScope', '$scope', 'Account', 'requestContext', 'localization', '$q', 'Storage', 'PopupDialog', '$location', 'notification',
+            function ($rootScope, $scope, Account, requestContext, localization, $q, Storage, PopupDialog, $location, notification) {
                 localization.bind('storage', $scope);
                 requestContext.setUpRenderContext('storage.builder', $scope);
 
+                var JOB_BUILDER_PATH = '/manta/builder';
                 $scope.jobName = '';
                 $scope.dataInputs = [];
                 $scope.dataAssets = [];
@@ -127,22 +128,12 @@
                         disk: Number($scope.amountOfDiskSpace)
                     };
                     $q.when(Storage.createJob(job, true)).then(function (res) {
-                        PopupDialog.message(
-                            localization.translate(
-                                $scope,
-                                null,
-                                'Message'
-                            ),
-                            localization.translate(
-                                $scope,
-                                null,
-                                res.message
-                            ),
-                            function () {
-                                $location.url('/manta/jobs/' + res.id);
-                                $location.replace();
-                            }
-                        );
+                        notification.popup(true, false, JOB_BUILDER_PATH, null, res.message, function () {
+                            $location.url('/manta/jobs/' + res.id);
+                            $location.replace();
+                        });
+                    }, function (err) {
+                        notification.popup(true, err, JOB_BUILDER_PATH, null, err.message || err);
                     });
                     return job;
                 };
