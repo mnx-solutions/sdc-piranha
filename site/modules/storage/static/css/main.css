@@ -530,8 +530,9 @@ input
 
 .advanced-option .edit-error
 {
-    margin: 37px 0 0 -348px;
-    min-width: 340px;
+    position: absolute;
+    margin: 34px 0 0 -340px;
+    min-width: 348px;
     text-align: right;
     letter-spacing: -0.1px;
     font-size: 14px;
@@ -541,7 +542,7 @@ input
 {
     .advanced-option .edit-error
     {
-        margin-top: 10px !important;
+        margin-top: 7px !important;
         min-width: 348px !important;
     }
 }
@@ -550,7 +551,7 @@ input
 {
     .advanced-option .edit-error
     {
-        margin-top: 10px !important;
+        margin-top: 7px !important;
         min-width: 348px !important;
     }
     .advanced-option .reducers-field input

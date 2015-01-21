@@ -9,7 +9,6 @@
 }
 .error {
     margin-left: 20px;
-    line-height: 28px;
 }
 .manta-disclaimer-dashboard {
     padding-top: 10px;
@@ -346,9 +345,6 @@ span.btn-success
 .grid-mini-btn.download {
     background-color: #E0E0E0;
 }
-.form-group {
-    margin: 10px 0;
-}
 .form-group span.edit-label {
     display: inline-block;
     margin-right: 10px;
@@ -581,6 +577,10 @@ span.btn-success
 }
 .beta-sticker {
     margin-bottom: 5px;
+}
+.edit-error
+{
+    width: 621px;
 }
 .registry-host .edit-error {
     position: relative;
