@@ -70,7 +70,7 @@
                                 return event.parsedParams && event.parsedParams.errorMessage ? event.parsedParams.errorMessage : '';
                             }
                         },
-                        sequence: 6,
+                        sequence: 0,
                         active: true
                     }
                 ];
