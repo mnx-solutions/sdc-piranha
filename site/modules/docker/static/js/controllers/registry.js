@@ -185,6 +185,7 @@
                                     return object.loading || object.processing || $scope.registry.type !== 'local';
                                 },
                                 action: function (object) {
+                                    object.processing = true;
                                     PopupDialog.custom({
                                         templateUrl: 'docker/static/partials/image-add-tag.html',
                                         openCtrl: function ($scope, dialog) {
@@ -241,7 +242,7 @@
                                             };
                                             $scope.saveTag = function (tag, index) {
                                                 if (!checkImageTagDuplicate($scope.tags, tag.name, index)) {
-                                                    var oldTag = angular.copy($scope.lastSavedTags[index]);
+                                                    var oldTag = angular.copy($scope.lastSavedTags ? $scope.lastSavedTags[index] : $scope.tags[index]);
                                                     tag.actionInProgress = true;
                                                     tag.edit = false;
                                                     registryImageTag('addImageTag', object.name, tag.name, JSON.stringify(tag.id), function (error) {
@@ -261,6 +262,7 @@
                                                 if ($scope.tags.length) {
                                                     $scope.focusOut();
                                                 }
+                                                object.processing = false;
                                                 dialog.close();
                                             };
                                         }

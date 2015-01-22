@@ -21,7 +21,7 @@
                                 <td><input type="text" data-ng-model="tag.name" 
                                            data-ng-pattern="/^[A-Za-z0-9_\.\-]+$/" data-ng-minlength="2" data-ng-maxlength="30"/></td>
                                 <td>
-                                    <button class="btn orange" data-ng-click="saveTag(tag, $index)" data-ng-disabled="tag.name.length == 0 || editTags.$invalid" data-ng-hide="tag.actionInProgress">Save</button>
+                                    <div class="btn orange" data-ng-click="saveTag(tag, $index)" data-ng-disabled="tag.name.length == 0 || editTags.$invalid" data-ng-hide="tag.actionInProgress">Save</div>
                                     <div class="loading-medium-tr loading-medium-tags" data-ng-show="tag.actionInProgress"></div>
                                 </td>
                             </tr>
@@ -38,14 +38,14 @@
                                 </span>
                             </td>
                             <td>
-                                <button class="btn orange" data-ng-hide="newTagInProgress" data-ng-click="addTag()" data-ng-disabled="newTag.length == 0 || editTags.$invalid">Add</button>
+                                <div class="btn orange" data-ng-hide="newTagInProgress" data-ng-click="addTag()" data-ng-disabled="newTag.length == 0 || editTags.$invalid">Add</div>
                                 <div class="loading-medium-tr loading-medium-tags" data-ng-show="newTagInProgress"></div>
                             </td>
                         </tr>
                     </table>
                 </div>
                 <div class="modal-footer">
-                    <button data-ng-click="close()" data-button-focus="false" data-label="Close" class="btn grey-new effect-orange-button">Close</button>
+                    <div data-ng-click="close()" data-button-focus="false" data-label="Close" class="btn grey-new effect-orange-button">Close</div>
                 </div>
             </div>
         </form>
