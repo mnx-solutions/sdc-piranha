@@ -44,8 +44,7 @@
                                     null,
                                     'billing',
                                     'Unable to retrieve defaultCreditCard.'
-                                ),
-                                function(){}
+                                )
                             );
                         }
                     }
@@ -76,8 +75,7 @@
                         null,
                         'billing',
                         errMessage
-                    ),
-                    function(){}
+                    )
                 );
             }
         };
@@ -176,8 +174,7 @@
                                 null,
                                 'billing',
                                 'Unable to retrieve latest invoice.'
-                            ),
-                            function(){}
+                            )
                         );
                     }
                 }

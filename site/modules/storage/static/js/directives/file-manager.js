@@ -141,7 +141,7 @@
                                     fileman.mkdir(getCurrentDirectory() + '/' + data.folderName, function (error) {
                                         if (error) {
                                             scope.refreshingFolder = false;
-                                            return PopupDialog.errorObj(error);
+                                            return;
                                         }
                                         return scope.createFilesTree(true, parentPath);
                                     });

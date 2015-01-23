@@ -274,18 +274,7 @@
                 ];
 
                 $scope.noCheckBoxChecked = function () {
-                    PopupDialog.error(
-                        localization.translate(
-                            $scope,
-                            null,
-                            'Error'
-                        ),
-                        localization.translate(
-                            $scope,
-                            null,
-                            'No images selected for the action.'
-                        )
-                    );
+                    PopupDialog.noItemsSelectedError('images');
                 };
 
                 $scope.gridActionButtons = [

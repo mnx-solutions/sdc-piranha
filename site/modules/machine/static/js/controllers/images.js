@@ -191,18 +191,7 @@
                                 }
                             );
                         } else {
-                            PopupDialog.error(
-                                localization.translate(
-                                    $scope,
-                                    null,
-                                    'Error'
-                                ),
-                                localization.translate(
-                                    $scope,
-                                    null,
-                                    'No image selected for the action.'
-                                )
-                            );
+                            PopupDialog.noItemsSelectedError('image');
                         }
                     },
                     sequence: 1

@@ -6,7 +6,42 @@
         '$rootScope',
         'EventBubble',
         '$q',
-        function ($http, $rootScope, EventBubble, $q) {
+        'PopupDialog',
+        '$location',
+        function ($http, $rootScope, EventBubble, $q, PopupDialog, $location) {
+            var commonErrorCalls = [
+                'MachineList',
+                'ImagesList',
+                'ImageUpdate',
+                'MachineDelete',
+                'listUsers',
+                'getUser',
+                'deleteUser',
+                'listRoles',
+                'getRole',
+                'createRole',
+                'updateRole',
+                'deleteRole',
+                'listPolicies',
+                'getPolicy',
+                'deletePolicy',
+                'DockerInspect',
+                'DockerLogs',
+                'DockerGetAudit',
+                'DockerInspectImage',
+                'DockerHistoryImage',
+                'DockerGetInfo',
+                'DockerGetVersion',
+                'DockerDeleteMachine',
+                'SupportListPackages',
+                'JobList',
+                'JobCreate',
+                'FileManList',
+                'FileManCreateFolder',
+                'FileManDeleteTree',
+                'FileManInfo',
+                'FileManGet'
+            ];
             function Call(opts) {
                 if (!(this instanceof Call)) {
                     return new Call(opts);
@@ -126,7 +161,9 @@
                                         $rootScope.$emit('crashRequest', message);
                                     }
                                 }
-
+                                if (commonErrorCalls.indexOf(self.name) !== -1 && $location.url() !== '/dashboard') {
+                                    PopupDialog.errorObj(err);
+                                }
                             }
                         }
                     },

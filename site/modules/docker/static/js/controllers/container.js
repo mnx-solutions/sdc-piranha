@@ -32,10 +32,9 @@
             $scope.cadvisorUnavailable = false;
             $scope.execCmd = '';
 
-            var errorCallback = function (err) {
+            var errorCallback = function () {
                 $scope.loading = false;
                 $scope.actionInProgress = false;
-                PopupDialog.errorObj(err);
             };
 
             var updateContainerStats = function (options, callback) {

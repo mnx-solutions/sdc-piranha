@@ -250,7 +250,7 @@
                         }
                     );
                 } else {
-                    showError('No configuration selected for the action.');
+                    PopupDialog.noItemsSelectedError('configuration');
                 }
             }
             scope.gridProps = [

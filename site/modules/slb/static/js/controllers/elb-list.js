@@ -55,8 +55,7 @@
                                     null,
                                     'slb',
                                     err.message || err
-                                ),
-                                function () {}
+                                )
                             );
                         }
                         $scope.listLoaded = true;

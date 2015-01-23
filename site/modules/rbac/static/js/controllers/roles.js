@@ -25,23 +25,10 @@
 
             var errorCallback = function (err) {
                 $scope.loading = false;
-                PopupDialog.errorObj(err);
             };
 
             $scope.noCheckBoxChecked = function () {
-                PopupDialog.error(
-                    localization.translate(
-                        $scope,
-                        null,
-                        'Error'
-                    ),
-                    localization.translate(
-                        $scope,
-                        null,
-                        'No role selected for the action.'
-                    ), function () {
-                    }
-                );
+                PopupDialog.noItemsSelectedError('role');
             };
 
             if ($scope.features.manta === 'enabled') {
