@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="24px"
+	 height="24px" viewBox="0 0 24 24" enable-background="new 0 0 24 24" xml:space="preserve">
+<g id="Layer_2_1_">
+	<g>
+		<rect x="0.5" y="10.492" fill="#FFFFFF" width="12" height="12"/>
+		<path d="M12,10.992v11H1v-11H12 M13,9.992H0v13h13V9.992L13,9.992z"/>
+	</g>
+</g>
+<g id="Layer_1">
+	<g id="Layer_1_1_" display="none">
+		<polyline display="inline" fill="none" stroke="#000000" points="6.508,13 6.508,13.83 6.508,20 		"/>
+		<g display="inline">
+			<g>
+				<path d="M12,10.992v11H1v-11H12 M13,9.992H0v13h13V9.992L13,9.992z"/>
+			</g>
+			<polyline fill="none" stroke="#000000" points="10.008,16.5 9.178,16.5 3.008,16.5 			"/>
+			<g>
+				<g>
+					<rect x="6.013" width="1" height="1"/>
+				</g>
+				<g>
+					<rect x="6.013" y="2" width="1" height="1"/>
+				</g>
+				<g>
+					<rect x="6.013" y="4" width="1" height="1"/>
+				</g>
+				<g>
+					<rect x="6.013" y="6" width="1" height="1"/>
+				</g>
+				<g>
+					<rect x="6.013" y="8" width="1" height="1"/>
+				</g>
+				<g>
+					<rect x="14.014" y="16" width="1" height="1"/>
+				</g>
+				<g>
+					<rect x="16.014" y="16" width="1" height="1"/>
+				</g>
+				<g>
+					<rect x="18.014" y="16" width="1" height="1"/>
+				</g>
+				<g>
+					<rect x="20.014" y="16" width="1" height="1"/>
+				</g>
+			</g>
+		</g>
+	</g>
+	<g id="Layer_2" display="none">
+		<g display="inline">
+			<rect x="6" y="10" width="1" height="1"/>
+		</g>
+		<g display="inline">
+			<rect x="6" y="12" width="1" height="1"/>
+		</g>
+		<g display="inline">
+			<rect x="6" y="14" width="1" height="1"/>
+		</g>
+		<g display="inline">
+			<rect x="6" y="16" width="1" height="1"/>
+		</g>
+		<g display="inline">
+			<rect x="8" y="16" width="1" height="1"/>
+		</g>
+		<g display="inline">
+			<rect x="10" y="16" width="1" height="1"/>
+		</g>
+		<g display="inline">
+			<rect x="12" y="16" width="1" height="1"/>
+		</g>
+		<g display="inline">
+			<g>
+				<rect x="6" width="1" height="1"/>
+			</g>
+			<g>
+				<rect x="6" y="2" width="1" height="1"/>
+			</g>
+			<g>
+				<rect x="6" y="4" width="1" height="1"/>
+			</g>
+			<g>
+				<rect x="6" y="6" width="1" height="1"/>
+			</g>
+			<g>
+				<rect x="6" y="8" width="1" height="1"/>
+			</g>
+			<g>
+				<rect x="14" y="16" width="1" height="1"/>
+			</g>
+			<g>
+				<rect x="16" y="16" width="1" height="1"/>
+			</g>
+			<g>
+				<rect x="18" y="16" width="1" height="1"/>
+			</g>
+			<g>
+				<rect x="20" y="16" width="1" height="1"/>
+			</g>
+		</g>
+	</g>
+	<g id="Layer_3">
+		<g>
+			<polyline fill="none" stroke="#000000" points="10.008,16.5 9.178,16.5 3.008,16.5 			"/>
+			<g>
+				<g>
+					<rect x="6.013" width="1" height="1"/>
+				</g>
+				<g>
+					<rect x="6.013" y="2" width="1" height="1"/>
+				</g>
+				<g>
+					<rect x="6.013" y="4" width="1" height="1"/>
+				</g>
+				<g>
+					<rect x="6.013" y="6" width="1" height="1"/>
+				</g>
+				<g>
+					<rect x="6.013" y="8" width="1" height="1"/>
+				</g>
+				<g>
+					<rect x="14.014" y="16" width="1" height="1"/>
+				</g>
+				<g>
+					<rect x="16.014" y="16" width="1" height="1"/>
+				</g>
+				<g>
+					<rect x="18.014" y="16" width="1" height="1"/>
+				</g>
+				<g>
+					<rect x="20.014" y="16" width="1" height="1"/>
+				</g>
+			</g>
+		</g>
+	</g>
+</g>
+</svg>
