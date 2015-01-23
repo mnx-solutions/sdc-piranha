@@ -1492,7 +1492,7 @@ p.margin-mini
 
 div .disabled
 {
-    cursor: default;
+    cursor: default !important;
 
     opacity: .65;
     background-image: none;
