@@ -324,6 +324,11 @@
                     delete service.jobs[jobKey];
                 },
                 error: function (err) {
+                    if (typeof (err) === 'object' && !err.error) {
+                        err.error = err.syscall ? err.syscall + ' ' : '';
+                        err.error += err.errno || '';
+                    }
+                    PopupDialog.errorObj(err);
                     if (method in doneHandler) {
                         doneHandler[method](err, null, options);
                     }
