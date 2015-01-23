@@ -373,6 +373,29 @@ var Docker = function execute(scope, app) {
         Docker.listHosts(call, call.done.bind(call));
     });
 
+    server.onCall('DockerPingHosts', function (call) {
+        Docker.listHosts(call, function (error, hosts) {
+            if (error) {
+                return call.done(error);
+            }
+            vasync.forEachParallel({
+                inputs: hosts,
+                func: function (host, callback) {
+                    Docker.createClient(call, host, function (error, client) {
+                        if (error) {
+                            return callback(error);
+                        }
+                        client.ping(function (err) {
+                            callback(err);
+                        });
+                    });
+                }
+            }, function (vasyncError) {
+                call.done(vasyncError);
+            });
+        });
+    });
+
     server.onCall('DockerCompletedHosts', function (call) {
         var getVersion = call.data && call.data.version;
         Docker.listHosts(call, function (error, hosts) {
