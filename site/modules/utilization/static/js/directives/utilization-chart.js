@@ -118,7 +118,7 @@
                     });
 
                     $scope.navigateDetails = function () {
-                        if ($scope.name) {
+                        if ($scope.name && $scope.month) {
                             $location.path('/usage/' + $scope.name + '/' + $scope.year + '/' + $scope.month);
                         }
                     };
