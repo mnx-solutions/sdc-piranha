@@ -509,7 +509,7 @@
 
                 if (($scope.account.error && !datacentersResult.error) || (keysResult.error && !datacentersResult.error)) {
                     $scope.loading = false;
-                    PopupDialog.errorObj({error: 'SDC call timed out. Please refresh the page.'});
+                    PopupDialog.errorObj(keysResult.error ? keysResult.error : {error: 'SDC call timed out. Please refresh the page.'});
                     return;
                 }
 
