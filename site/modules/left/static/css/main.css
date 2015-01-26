@@ -287,6 +287,15 @@ li.active a.docker-icon
 {
     background-image: url('../img/docker-orange.png') !important;
 }
+.dtrace-icon
+{
+    background-image: url('../img/dtrace-white.png');
+}
+
+li.active a.dtrace-icon
+{
+    background-image: url('../img/dtrace-orange.png') !important;
+}
 
 .dashboard-icon,
 .compute-icon,
@@ -296,7 +305,8 @@ li.active a.docker-icon
 .accounts-icon,
 .debug-icon,
 .sdc-download-icon,
-.docker-icon
+.docker-icon,
+.dtrace-icon
 {
     height: 22px;
 

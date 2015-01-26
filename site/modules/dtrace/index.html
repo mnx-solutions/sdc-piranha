@@ -1,0 +1,11 @@
+<div data-ng-switch="subview">
+    <div data-ng-switch-when="heatmap">
+        <div data-ng-include="'dtrace/static/partials/heatmap.html'"></div>
+    </div>
+    <div data-ng-switch-when="flamegraph">
+        <div data-ng-include="'dtrace/static/partials/flamegraph.html'"></div>
+    </div>
+    <div data-ng-switch-when="scripts">
+        <div data-ng-include="'dtrace/static/partials/scripts.html'"></div>
+    </div>
+</div>

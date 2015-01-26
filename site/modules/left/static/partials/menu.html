@@ -178,6 +178,32 @@
                     </li>
                 </ul>
             </li>
+            <li class="nested" data-ng-show="features.dtrace == 'enabled'" data-ng-class="{active: location.path().search('dtrace') == 1, open: location.path().search('/heatmap') > 1 || location.path().search('/flamegraph') > 1 || location.path().search('/scripts') > 1}">
+                <a href="#!/dtrace" class="dtrace-icon">
+                    <span class="title">DTrace</span>
+                    <span class="selected"></span>
+                </a>
+                <ul class="sub-menu" data-ng-show="features.dtrace == 'enabled'">
+                    <li left-list-item class="sub" data-ng-class="{active: location.path().search('dtrace/heatmap') == 1}">
+                        <a href="#!/dtrace/heatmap">
+                            <span class="titles" data-translate>Heatmap</span>
+                            <span class="selected-sub"></span>
+                        </a>
+                    </li>
+                    <li left-list-item class="sub" data-ng-class="{active: location.path().search('dtrace/flamegraph') == 1}">
+                        <a href="#!/dtrace/flamegraph">
+                            <span class="titles" data-translate>Flamegraph</span>
+                            <span class="selected-sub"></span>
+                        </a>
+                    </li>
+                    <li left-list-item class="sub" data-ng-class="{active: location.path().search('dtrace/scripts') == 1}">
+                        <a href="#!/dtrace/scripts">
+                            <span class="titles" data-translate>Scripts</span>
+                            <span class="selected-sub"></span>
+                        </a>
+                    </li>
+                </ul>
+            </li>
             <li class="nested" data-ng-show="features.support == 'enabled'" data-ng-class="{'active open': location.path().search('support') == 1 || location.path().search('support.cloud') == 1}">
                 <a data-ng-click="clickSupportMenu('')" class="support-icon">
                     <span class="title glyph-icon">Support Plans</span>
