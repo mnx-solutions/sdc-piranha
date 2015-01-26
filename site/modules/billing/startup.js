@@ -14,7 +14,7 @@ module.exports = function execute(scope, callback) {
         user: config.zuora.user
     });
 
-    var zuora = require('zuora').create(options);
+    var zuora = require('zuora-rest').create(options);
 
     var server = scope.api('Server');
     var SignupProgress = scope.api('SignupProgress');

@@ -1,6 +1,6 @@
 'use strict';
 
-var zuora = require('zuora');
+var zuora = require('zuora-rest');
 var config = require('easy-config');
 var zuoraHelpers = require('./lib/zuora-helpers');
 
