@@ -9,7 +9,7 @@ options.url = options.endpoint;
 options.password = config.zuora.password;
 options.user = config.zuora.user;
 
-var zuora = require('zuora').create(options);
+var zuora = require('zuora-rest').create(options);
 var zuoraSoap = require('./zuora');
 var moment = require('moment');
 var noCopyFields = ['lastName','firstName', 'workPhone', 'promoCode'];
@@ -155,7 +155,7 @@ function composeBillToContact(call, acc, cb) {
 
 module.exports.composeBillToContact = composeBillToContact;
 
-var countries = require('zuora').countries.array;
+var countries = require('zuora-rest').countries.array;
 var indexedCountries = {};
 countries.forEach(function (el) {
     indexedCountries[el.iso3] = el.name;

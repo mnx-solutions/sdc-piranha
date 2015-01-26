@@ -24,7 +24,7 @@
     "file-pointer": "0.0.11",
     "foldermap": "0.3.12",
     "redis": "0.9.0",
-    "zuora": "git+ssh://git@github.com:joyent/node-zuora-rest.git",
+    "zuora-rest": "0.1.7",
     "moment": "2.3.1",
     "xml2js": "0.2.8",
     "mustache": "0.7.2",
