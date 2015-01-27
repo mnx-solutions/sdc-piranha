@@ -1,7 +1,7 @@
 'use strict';
 
 (function (ng, app) {
-    app.controller('GridViewController', ['$scope', '$filter', '$http', '$location', 'Account', '$rootScope', 'Datacenter', '$qe', '$sce', 'ErrorService', '$timeout', function ($scope, $filter, $http, $location, Account, $rootScope, Datacenter, $qe, $sce, ErrorService, $timeout) {
+    app.controller('GridViewController', ['$scope', '$filter', '$http', '$location', 'Account', '$rootScope', 'Datacenter', 'PopupDialog', '$qe', '$sce', 'ErrorService', '$timeout', function ($scope, $filter, $http, $location, Account, $rootScope, Datacenter, PopupDialog, $qe, $sce, ErrorService, $timeout) {
         $scope.location = $location;
         $scope.checkedItems = [];
 
@@ -473,9 +473,19 @@
         };
 
         $scope.selectColumnsCheckbox = function (id) {
+            function oneCheckboxSelected(checkbox) {
+                var noCheckboxSelected = $scope.props.filter(function (el) {
+                    return el.active;
+                }).length < 1;
+                if (noCheckboxSelected) {
+                    checkbox.active = true;
+                    PopupDialog.message(null, 'At least one column should be selected.');
+                }
+            }
             $scope.props.forEach(function (el) {
                 if (el.id === id) {
                     el.active = (el.active) ? false : true;
+                    oneCheckboxSelected(el);
                     if ($scope.userConfig.loaded()) {
                         $scope.gridUserConfig.propKeys[id].active = el.active;
                         $scope.gridUserConfig.config.dirty(true);
