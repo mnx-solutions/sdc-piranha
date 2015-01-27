@@ -1383,8 +1383,8 @@ module.exports = function execute(scope, register) {
         }
 
         client.getFileContents('~~/stor/.joyent/docker/registries.json', function (error, list) {
-            if (error && error.statusCode !== 404) {
-                return callback(error, []);
+            if (error) {
+                return callback(error.statusCode === 404 ? null : error, []);
             }
 
             try {
