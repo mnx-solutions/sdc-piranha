@@ -1877,9 +1877,9 @@ span.btn-success
 .network-name
 {
     display: inline-block;
-
     margin-left: 5px;
     padding-top: 5px;
+    cursor: pointer;
 }
 
 .package .value
