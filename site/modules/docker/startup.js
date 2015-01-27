@@ -128,7 +128,7 @@ var Docker = function execute(scope, app) {
     var saveRemovedContainersList = function (call, data, callback) {
         callback = callback || call.done;
         var client = scope.api('MantaClient').createClient(call);
-        client.putFileContents(REMOVED_LOGS_PATH, JSON.stringify(data), function (error) {
+        client.safePutFileContents(REMOVED_LOGS_PATH, JSON.stringify(data), function (error) {
             if (error && error.statusCode !== 404) {
                 return callback(error.message, true);
             }
@@ -163,7 +163,7 @@ var Docker = function execute(scope, app) {
 
     function saveLogsToManta(call, logPath, logs, callback) {
         var mantaclient = scope.api('MantaClient').createClient(call);
-        mantaclient.putFileContents(logPath, JSON.stringify(logs), function (error) {
+        mantaclient.safePutFileContents(logPath, JSON.stringify(logs), function (error) {
             return callback(error && error.message, true);
         });
     }

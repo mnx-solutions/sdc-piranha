@@ -96,6 +96,19 @@ module.exports = function execute(scope, register) {
         this.put(filepath, fileStream, {size: data.length, mkdirs: true}, callback);
     }
 
+    function safePutFileContents(filepath, data, callback) {
+        var directory = filepath.substr(0, filepath.lastIndexOf('/'));
+        var self = this;
+        this.safeMkdirp(directory, {}, function (err) {
+            if (err) {
+                return callback(err);
+            }
+            data = typeof data === 'string' ? data : JSON.stringify(data);
+            var fileStream = new MemoryStream(data);
+            self.put(filepath, fileStream, {size: data.length}, callback);
+        });
+    }
+
     function setRoleTags(path, roles, recursive, callback) {
         roles = roles || [];
         var chattrOpts = {
@@ -215,6 +228,7 @@ module.exports = function execute(scope, register) {
         client.getFileContents = getFileContents;
         client.putFileContents = putFileContents;
         client.safeMkdirp = safeMkdirp;
+        client.safePutFileContents = safePutFileContents;
         client.setRoleTags = setRoleTags;
         client.getRoleTags = getRoleTags;
         client.listDirectory = listDirectory;
