@@ -667,10 +667,9 @@ select.date-year
 .account .line,
 .account.line
 {
-    width: 610px;
     margin-left: -2px;
     padding-bottom: 2px;
-
+    width: 725px;
     border-bottom: 1px solid #ccc;
 }
 
@@ -921,8 +920,7 @@ legend + .form-group
 .first-block
 {
     display: inline-block;
-
-    width: 610px;
+    width: 725px;
 }
 
 #phone
