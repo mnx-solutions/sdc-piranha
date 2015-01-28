@@ -10,27 +10,45 @@
         'Account',
         'PopupDialog',
         '$location',
-        'util',
-        function ($q, $scope, requestContext, localization, mdb, Account, PopupDialog, $location, util) {
+        'Storage',
+        function ($q, $scope, requestContext, localization, mdb, Account, PopupDialog, $location, Storage) {
             localization.bind('mdb', $scope);
             requestContext.setUpRenderContext('mdb.index', $scope);
             $scope.mantaUnavailable = true;
+            $scope.gridNoEntriesMessage = 'You don\'t have any Node.js debugger jobs.';
 
             $scope.gridUserConfig = Account.getUserConfig().$child('MdbJobs');
             Account.getAccount(true).then(function (account) {
                 $scope.provisionEnabled = account.provisionEnabled;
                 if ($scope.provisionEnabled) {
-                    mdb.getDebugJobsList().then(function (list) {
+                    Storage.ping().then(function () {
                         $scope.mantaUnavailable = false;
-                        $scope.objects = list;
-                        $scope.loading = false;
-                    }, function (err) {
+                        mdb.getDebugJobsList().then(function (list) {
+                            $scope.objects = list;
+                            $scope.loading = false;
+                        }, function (err) {
+                            $scope.loading = false;
+                            var subUserPermissionError = false;
+                            var subUserPermissionErrorMessage = 'None of your active roles are present on the resource.';
+
+                            if (typeof(err) === 'string') {
+                                subUserPermissionError = err.indexOf(subUserPermissionErrorMessage) !== -1;
+                            } else if (!err.message) {
+                                err.message = err.code || err.errno || 'Internal error';
+                            }
+
+                            if (err.code === 'ForbiddenError') {
+                                $scope.gridNoEntriesMessage = subUserPermissionErrorMessage;
+                            } else if (subUserPermissionError) {
+                                $scope.gridNoEntriesMessage = err;
+                            } else {
+                                PopupDialog.error(null, err.message || err);
+                            }
+                        });
+                    }, function () {
+                        $scope.gridNoEntriesMessage = 'Manta service is not available.';
                         $scope.loading = false;
                         $scope.mantaUnavailable = true;
-                        if (typeof (err) !== 'string' && !err.message) {
-                            err.message = err.code || err.errno || 'Internal error';
-                        }
-                        PopupDialog.error(null, err.message || err);
                     });
                 } else {
                     $scope.loading = false;
