@@ -143,7 +143,7 @@ var Docker = function execute(scope, app) {
 
             waitClient(call, call.data.host, function (error, client) {
                 if (error) {
-                    return callback(error);
+                    return callback(error, call.data.suppressErrors);
                 }
                 client.ping(function (error) {
                     if (error) {
