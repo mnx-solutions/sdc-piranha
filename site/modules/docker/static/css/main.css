@@ -585,6 +585,7 @@ span.btn-success
 .registry-host .edit-error {
     position: relative;
     margin: -3px 0 0 -17px;
+    width: auto;
 }
 .progress-wrapper .cadvisor-unavailable {
     margin-top: 20px;
