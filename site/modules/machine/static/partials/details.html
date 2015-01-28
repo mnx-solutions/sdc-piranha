@@ -279,16 +279,6 @@
                 <div class="clearfix"></div>
                 <div>
                     <form name="imageForm">
-                        <div class="error"
-                             data-ng-show="imageForm.imageName.$error.imageName"
-                             data-translate>
-                            Image name&nbsp;can contain only letters, digits and signs like '.' and '-'.
-                        </div>
-                        <div class="error"
-                             data-ng-show="imageForm.imageVersion.$error.imageName"
-                             data-translate>
-                            Image version&nbsp;can contain only letters, digits and signs like '.' and '-'.
-                        </div>
                         <div>
                             <div class="form-fields" data-ng-hide="imageCreateNotSupported">
                                 <div class="dbl-inline">
@@ -301,6 +291,11 @@
                                            value=""
                                            class="key-width"/>
                                 </div>
+                                <div class="error"
+                                     data-ng-show="imageForm.imageName.$error.imageName"
+                                     data-translate>
+                                    Image name&nbsp;can contain only letters, digits and signs like '.' and '-'.
+                                </div>
                                 <div>
                                     <input type="text"
                                            placeholder="Image version"
@@ -312,8 +307,13 @@
                                            class="key-width image-version"/>
 
                                 </div>
+                                <div class="error"
+                                     data-ng-show="imageForm.imageVersion.$error.imageName"
+                                     data-translate>
+                                    Image version&nbsp;can contain only letters, digits and signs like '.' and '-'.
+                                </div>
                                 <div>
-                                <textarea type="text"
+                                    <textarea type="text"
                                           placeholder="Description (optional)"
                                           name="imageDescription"
                                           data-ng-model="imageDescription"

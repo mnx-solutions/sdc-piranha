@@ -867,6 +867,11 @@ span.btn-success
     vertical-align: top;
 }
 
+.create-images .form-fields .error
+{
+    margin-top: -10px;
+}
+
 .controls
 {
     line-height: 20px;
@@ -1923,6 +1928,11 @@ span.btn-success
     font-size: 14px;
 }
 
+.review .right .instance-name-optional
+{
+    padding-right: 6px;
+}
+
 .networks-box-3 span
 {
     font-size: 14px;
@@ -2689,13 +2699,9 @@ span.btn-success
 #imageDetails .edit-error
 {
     position: static;
-
     float: right;
-
+    margin: -3px 63px 0 0;
     width: auto;
-    margin-top: 2px;
-    margin-right: 63px;
-
     text-align: right;
     letter-spacing: -.1px;
 }
