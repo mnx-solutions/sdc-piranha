@@ -109,6 +109,20 @@ module.exports = function execute(scope, register) {
         });
     }
 
+    function jobInfo(jobId, opts, callback) {
+        if (typeof (opts) === 'function') {
+            callback = opts;
+            opts = {};
+        }
+        var self = this;
+        self.job(jobId, opts, function (error) {
+            if (!error || error.statusCode !== 404) {
+                return callback.apply(this, arguments);
+            }
+            self.getFileContents('~~/jobs/' + jobId + '/job.json', callback);
+        });
+    }
+
     function setRoleTags(path, roles, recursive, callback) {
         roles = roles || [];
         var chattrOpts = {
@@ -247,6 +261,7 @@ module.exports = function execute(scope, register) {
         client.getRoleTags = getRoleTags;
         client.listDirectory = listDirectory;
         client.getFileJson = getFileJson;
+        client.jobInfo = jobInfo;
         return client;
     }
 
