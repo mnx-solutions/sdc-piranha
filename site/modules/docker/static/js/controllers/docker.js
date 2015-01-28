@@ -64,7 +64,7 @@
 
             var getDockerHostAnalytics = function () {
                 $scope.dockerMachines.forEach(function (machine) {
-                    Docker.hostUsage({host: machine, wait: true}).then(function (usage) {
+                    Docker.hostUsage({host: machine, wait: true, suppressErrors: true}).then(function (usage) {
                         usage = Array.isArray(usage) ? usage.slice(-1)[0] : usage;
                         machine.cadvisorUnavailable = false;
                         machine.cpuLoad = usage.cpu + '%';
