@@ -141,6 +141,7 @@ module.exports = function execute(scope, register) {
 
                     call.log.debug('%s %s %s is %s as expected, returing call', type, objectId, prop, expect);
                     if (type === 'Machine') {
+                        object.metadata = object.metadata || {};
                         object.metadata.credentials = handleCredentials(object);
                         object = filterFields(object);
                     }
