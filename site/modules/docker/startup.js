@@ -110,16 +110,10 @@ var Docker = function execute(scope, app) {
 
     var getRemovedContainersList = function (call, callback) {
         var client = scope.api('MantaClient').createClient(call);
-        client.getFileContents(REMOVED_LOGS_PATH, function (error, list) {
-            if (error && error.statusCode !== 404) {
-                return callback(error, true);
-            }
-
-            try {
-                list = JSON.parse(list);
-            } catch (e) {
+        client.getFileJson(REMOVED_LOGS_PATH, function (error, list) {
+            if (error) {
                 call.log.warn('Removed docker containers list is corrupted');
-                list = [];
+                return callback(error, list);
             }
             callback(null, list);
         });

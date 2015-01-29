@@ -26,5 +26,8 @@ window.JP.main.config(['routeProvider', function (routeProvider) {
         }).when('/dtrace/scripts', {
             title: 'Scripts',
             action: 'dtrace.scripts'
+        }).when('/dtrace/script/:id', {
+            title: 'Script Details',
+            action: 'dtrace.script'
         });
 }]);

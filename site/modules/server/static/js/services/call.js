@@ -40,7 +40,10 @@
                 'FileManCreateFolder',
                 'FileManDeleteTree',
                 'FileManInfo',
-                'FileManGet'
+                'FileManGet',
+                'SaveScript',
+                'DeleteScripts',
+                'GetScripts'
             ];
             function Call(opts) {
                 if (!(this instanceof Call)) {

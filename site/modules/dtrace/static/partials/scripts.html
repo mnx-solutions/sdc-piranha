@@ -1,0 +1,32 @@
+<div data-ng-controller="DTrace.ScriptsController" class="container-fluid container-position">
+    <div class="row">
+        <ul class="breadcrumb">
+            <li><a href="#!/dtrace">DTrace</a></li>
+        </ul>
+        <h3 class="page-title white-line">Scripts</h3>
+        <div class="page-title-btn">
+            <button data-ng-click="createScript()" type="button" class="btn btn-big orange text-to-left"><i class="plus-btn-icon"></i>Create Custom Script</button>
+        </div>
+        <div class="beta-sticker">beta</div>
+        <div class="loading-large col-md-12" data-ng-show="loading"></div>
+
+        <div data-grid-view
+             data-user-config="gridUserConfig"
+             data-props="gridProps"
+             data-detail-props="gridDetailProps"
+             data-action-buttons="gridActionButtons"
+             data-items="scripts"
+             data-order="gridOrder"
+             data-multisort="false"
+             data-export-fields="exportFields"
+             data-place-Holder-Text="placeHolderText"
+             data-search-form="searchForm"
+             data-filter-all="{{query}}"
+             data-enabled-checkboxes="enabledCheckboxes"
+             data-checked-items="checkedItems"
+             data-items-type="script"
+             data-ng-hide="loading">
+        </div>
+
+    </div>
+</div>
