@@ -72,3 +72,8 @@
 .form-group {
     margin-bottom: 17px;
 }
+.form-group .edit-error
+{
+    display: block;
+    margin-right: 115px;
+}
