@@ -26,10 +26,10 @@
                  data-tab-filter-default="tabFilterDefault"
                  data-enabled-checkboxes="enabledCheckboxes"
                  data-action-buttons="gridActionButtons"
-                 data-no-entries-message="You don't have any Node.js debugger jobs."
+                 data-no-entries-message="{{gridNoEntriesMessage}}"
                  data-checked-items="checkedItems">
             </div>
         </div>
     </div>
-    <div data-ng-show="mantaUnavailable && !loading" class="grid-no-entries">Manta service is not available.</div>
+    <div data-ng-show="mantaUnavailable && !loading" class="grid-no-entries">{{gridNoEntriesMessage}}</div>
 </div>
