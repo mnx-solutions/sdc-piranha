@@ -383,8 +383,10 @@ module.exports = function execute(scope) {
             pingManta();
         } else {
             Billing.isActive(call.req.session.userId, function (err, isActive) {
-                if (err || !isActive) {
+                if (err) {
                     sendError(call, {message: PING_ERROR_MESSAGE});
+                    return;
+                } else if (!isActive) {
                     return;
                 }
                 pingManta();
