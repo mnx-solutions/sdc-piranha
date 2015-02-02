@@ -520,7 +520,9 @@
                     }
                     var result = job.__read();
                     result.datacenter = data.datacenter;
-                    $rootScope.$emit('clearDockerCache', result);
+                    if (result.tags.JPC_tag === 'DockerHost') {
+                        $rootScope.$emit('clearDockerCache', result);
+                    }
                     handleChunk(result);
                 },
 
