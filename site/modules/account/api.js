@@ -119,7 +119,7 @@ module.exports = function execute(scope, register) {
         }
         function getMetadata(userId) {
             metadata.get(userId, metadata.SIGNUP_STEP, function (err, storedStep) {
-                if (err) {
+                if (err && config.features.allowSkipBilling !== 'enabled') {
                     if (!req.session.parentAccountError) {
                         req.log.error({error: err}, 'Cannot get signup step from metadata');
                     } else {
