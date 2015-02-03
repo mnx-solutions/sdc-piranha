@@ -35,7 +35,7 @@
             var REVIEW_STEP_NAME = 'Review';
             var ACCOUNT_STEP_NAME = 'Account Information';
             var SSH_STEP_NAME = 'SSH Key';
-            var DOCKERHOST_MINIMUM_MEMORY = 1024;
+            var DOCKERHOST_MINIMUM_MEMORY = 512;
 
             $scope.preSelectedImageId = (requestContext.getParam('imageid') === 'custom') ? null : requestContext.getParam('imageid');
             $scope.isDockerHost = $scope.preSelectedImageId && $location.search().specification === 'dockerhost';
