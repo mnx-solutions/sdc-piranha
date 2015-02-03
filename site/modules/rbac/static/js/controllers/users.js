@@ -167,10 +167,12 @@
                                 ),
                                 function () {
                                     $scope.loading = true;
+                                    var deleteUsernames = {};
                                     var deleteIds = $scope.checkedItems.map(function (item) {
+                                        deleteUsernames[item.id] = item.login;
                                         return item.id;
                                     });
-                                    service.deleteUser(deleteIds).then(function () {
+                                    service.deleteUser(deleteIds, deleteUsernames).then(function () {
                                         getUsersList();
                                         $scope.checkedItems = [];
                                     }, function (err) {
