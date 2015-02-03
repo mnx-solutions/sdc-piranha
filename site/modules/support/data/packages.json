@@ -142,31 +142,6 @@
         "sku": "SKU-00000016",
         "packageHolders": [
             {
-                "title" : "Production",
-                "shortName": "Pro",
-                "services" : [
-                    "Production time debugging",
-                    "General design/deploy questions",
-                    "Available for Linux and SunOS operating systems in virtually any environment"
-                ],
-                "description" : "Business hours access to node.js core engineering team at Joyent",
-                "timePeriod": "Monthly",
-                "cost": "990",
-                "costText": "",
-                "fees": "",
-                "costSign": "$",
-                "info": "true",
-                "url": "http://www.joyent.com/products/support-nodejs",
-                "ratePlanName": "Node.js Core Support",
-                "billingTag": "sup-nodejs-core",
-                "phone": false,
-                "levelSupport": "0",
-                "active": false,
-                "popUpTitle": "Joyent Node.js Production Support",
-                "popUpQuestion": "Are you sure you want to sign up for Production Support",
-                "invoiceCollect": true
-            },
-            {
                 "title" : "Business Critical",
                 "shortName": "BC",
                 "services" : [
