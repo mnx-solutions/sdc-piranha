@@ -1,5 +1,20 @@
 'use strict';
 
+var AREACODE_NORMALIZE_MAP = {
+    '1': {iso2: 'US', name: 'USA & Canada'},
+    '7': {iso2: 'RU', name: 'Russia'},
+    '39': {iso2: 'IT', name: 'Italy'},
+    '44': {iso2: 'GB', name: 'United Kingdom'},
+    '47': {iso2: 'NO', name: 'Norway'},
+    '57': {iso2: 'CO', name: 'Colombia'},
+    '61': {iso2: 'AU', name: 'Australia'},
+    '64': {iso2: 'NZ', name: 'New Zealand'},
+    '358': {iso2: 'FI', name: 'Finland'},
+    '212': {iso2: 'MA', name: 'Morocco'},
+    '262': {iso2: 'YT', name: 'Mayotte & Reunion'},
+    '500': {iso2: 'FK', name: 'Falkland Islands (Malvinas)'}
+};
+
 (function (ng, app) {
     app.directive('phoneNumber', [
         'localization',
@@ -107,7 +122,18 @@
                     };
 
                     $http.get('account/countryCodes').then(function(data) {
-                        $scope.countryCodes = data.data;
+                        // consolidate zone 1 (North America) to "USA & Canada"
+                        $scope.countryCodes = data.data.filter(function(country) {
+                            var normalized = AREACODE_NORMALIZE_MAP[country.areaCode];
+                            if (normalized) {
+                                if (country.iso2 !== normalized.iso2) {
+                                    return false;
+                                } else {
+                                    country.name = normalized.name;
+                                }
+                            }
+                            return true;
+                        });
                         createAreaCodeMap();
                         if(typeof $scope.country === 'string') {
                             $scope.country = isoToObj($scope.country);
