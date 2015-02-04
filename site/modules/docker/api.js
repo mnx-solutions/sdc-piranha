@@ -1381,17 +1381,10 @@ module.exports = function execute(scope, register) {
         if (typeof (fromCache) === 'boolean' && fromCache && Object.keys(api.registriesCache).length) {
             return callback(null, Object.keys(api.registriesCache).map(function (key) {return api.registriesCache[key]}));
         }
-
-        client.getFileContents('~~/stor/.joyent/docker/registries.json', function (error, list) {
+        client.getFileJson('~~/stor/.joyent/docker/registries.json', function (error, list) {
             if (error) {
-                return callback(error.statusCode === 404 ? null : error, []);
-            }
-
-            try {
-                list = JSON.parse(list);
-            } catch (e) {
                 call.log.warn('Registries list is corrupted');
-                list = [];
+                return callback(error, list);
             }
             callback(null, list);
         });

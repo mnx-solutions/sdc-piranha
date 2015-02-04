@@ -32,7 +32,8 @@
             "mdb",
             "rbac",
             "downloadSdc",
-            "cdn"
+            "cdn",
+            "dtrace"
         ],
         "auth": true,
         "error": true,

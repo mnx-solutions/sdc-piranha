@@ -189,6 +189,20 @@ module.exports = function execute(scope, register) {
         });
     }
 
+    function getFileJson(filePath, callback) {
+        this.getFileContents(filePath, function (error, file) {
+            if (error && error.statusCode !== 404) {
+                return callback(error, []);
+            }
+            try {
+                file = JSON.parse(file);
+            } catch (e) {
+                file = [];
+            }
+            callback(null, file);
+        });
+    }
+
     function createClient(call) {
 
         var options = {
@@ -232,6 +246,7 @@ module.exports = function execute(scope, register) {
         client.setRoleTags = setRoleTags;
         client.getRoleTags = getRoleTags;
         client.listDirectory = listDirectory;
+        client.getFileJson = getFileJson;
         return client;
     }
 

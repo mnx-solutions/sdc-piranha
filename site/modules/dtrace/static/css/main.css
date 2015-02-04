@@ -1,0 +1,35 @@
+.full-width-form
+{
+    font-size: 16px;
+    padding-bottom: 25px;
+
+}
+
+.full-width-form tr {
+    border-bottom: solid white 15px;
+}
+.full-width-form tr.has-error {
+    border-bottom: none;
+}
+.full-width-form td:first-child {
+    padding-top: 5px;
+    padding-right: 20px;
+    text-align: right;
+    white-space: nowrap;
+    vertical-align: top;
+}
+.full-width-form tr.has-error td:first-child {
+    padding-top: 5px;
+    vertical-align: baseline;
+}
+.full-width-form .btn-group,
+.full-width-form tr,
+.full-width-form td:last-child,
+.full-width-form td:last-child input {
+    width: 100%;
+}
+.full-width-form input {
+    height: 30px;
+    padding: 0 10px;
+    background-color: #fafcfd;
+}

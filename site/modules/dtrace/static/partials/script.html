@@ -1,0 +1,45 @@
+<div data-ng-controller="DTrace.ScriptController" class="container-fluid container-position">
+    <ul class="breadcrumb">
+        <li><a href="#!/dtrace">DTrace</a></li><!--
+        --><li><a href="#!/dtrace/scripts">Scripts</a></li>
+    </ul>
+    <div class="row" data-ng-hide="loading">
+        <h3 class="page-title" data-ng-hide="scriptId">Add Script</h3>
+        <h3 class="page-title" data-ng-show="scriptId">Script Details</h3>
+        <div class="beta-sticker">beta</div>
+    </div>
+    <div class="loading-large col-md-12" data-ng-show="loading"></div>
+
+    <div class="full-width-form" data-ng-hide="loading">
+        <form name="scriptForm" id="scriptForm">
+            <table>
+                <tr>
+                    <td class="orange-asterix">Name</td>
+                    <td class="">
+                        <div><input name="scriptName"
+                                    type="text"
+                                    data-ng-model="script.name"
+                                    data-ng-pattern="/^[A-Za-z0-9]+[A-Za-z0-9\.\-\s]*$/"
+                                    required/></div>
+                        <div class="edit-error" data-ng-show="scriptForm.scriptName.$error.pattern">
+                            <div class="error" data-translate>
+                                Name can contain only letters, digits, spaces and signs like "." and "-"
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="orange-asterix">Body</td>
+                    <td><input name="scriptBody" type="text" class="ng-dirty" data-ng-model="script.body"/></td>
+                </tr>
+            </table>
+        </form>
+        <hr>
+        <span class="orange-asterix-left">required fields</span>
+        <div class="pull-right">
+            <a href="#!/dtrace/scripts" class="btn grey-new effect-orange-button">Cancel</a>
+            <button data-ng-click="saveScript()" class="btn orange" data-ng-disabled="!script.body.length || !script.name.length">Save</button>
+        </div>
+    </div>
+</div>
+
