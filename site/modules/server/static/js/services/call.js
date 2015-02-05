@@ -36,7 +36,6 @@
                 'SupportListPackages',
                 'JobList',
                 'JobCreate',
-                'FileManList',
                 'FileManCreateFolder',
                 'FileManDeleteTree',
                 'FileManInfo',
