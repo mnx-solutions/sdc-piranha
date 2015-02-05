@@ -2706,6 +2706,12 @@ span.btn-success
     letter-spacing: -.1px;
 }
 
+#paymentForm .edit-error {
+    margin-right: 115px;
+    display: block;
+}
+
+
 .left-part
 {
     min-width: 600px;
