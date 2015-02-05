@@ -51,8 +51,16 @@
                             <input type="text"
                                    name="tag"
                                    data-ng-model="container.tag"
+                                   data-ng-pattern="/^[A-Za-z0-9_\.\-]{2,30}$/"
                                     />
                         </span>
+                        <div class="edit-error" data-ng-show="isFormSubmited || containerCreateForm.tag.$dirty">
+                            <div class="error"
+                                 data-translate
+                                 data-ng-show="containerCreateForm.tag.$error.pattern">
+                                Tag error: only [A-Za-z0-9_.-] are allowed, minimum 2, maximum 30 in length
+                            </div>
+                        </div>
                     </div>
                     <div data-ng-show="createImage" class="form-group">
                         <span class="edit-repo edit-label">Repository</span>
@@ -60,8 +68,16 @@
                             <input type="text"
                                    name="repo"
                                    data-ng-model="container.repo"
+                                   data-ng-pattern="/^[a-z0-9_]{4,30}$/"
                                     />
                         </span>
+                        <div class="edit-error" data-ng-show="isFormSubmited || containerCreateForm.repo.$dirty">
+                            <div class="error"
+                                 data-translate
+                                 data-ng-show="containerCreateForm.repo.$error.pattern">
+                                Namespace error: only [a-z0-9_] are allowed, size between 4 and 30
+                            </div>
+                        </div>
                     </div>
                     <div data-ng-hide="createImage" class="form-group">
                         <span class="edit-containername edit-label">Container Name</span>
