@@ -117,7 +117,7 @@ module.exports = function execute(scope) {
         } else {
             // get metadata
             metadata.get(call.req.session.userId, metadata.ACCOUNT_HISTORY, function (err, accountHistory) {
-                if (err) {
+                if (err && config.features.allowSkipBilling !== 'enabled') {
                     call.log.error({error: err}, 'Failed to get account history from metadata');
                 }
 
