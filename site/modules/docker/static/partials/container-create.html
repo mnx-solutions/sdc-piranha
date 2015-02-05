@@ -45,6 +45,24 @@
                             </select>
                         </span>
                     </div>
+                    <div data-ng-show="createImage" class="form-group">
+                        <span class="edit-tag edit-label">Tag</span>
+                        <span class="edit-value">
+                            <input type="text"
+                                   name="tag"
+                                   data-ng-model="container.tag"
+                                    />
+                        </span>
+                    </div>
+                    <div data-ng-show="createImage" class="form-group">
+                        <span class="edit-repo edit-label">Repository</span>
+                        <span class="edit-value">
+                            <input type="text"
+                                   name="repo"
+                                   data-ng-model="container.repo"
+                                    />
+                        </span>
+                    </div>
                     <div data-ng-hide="createImage" class="form-group">
                         <span class="edit-containername edit-label">Container Name</span>
                         <span class="edit-value">
@@ -145,24 +163,6 @@
                             </div>
                         </div>
                         <div class="notation">Set custom DNS search domains. Use space as delimiter.</div>
-                    </div>
-                    <div data-ng-show="createImage" class="form-group">
-                        <span class="edit-tag edit-label">Tag</span>
-                        <span class="edit-value">
-                            <input type="text"
-                                   name="tag"
-                                   data-ng-model="container.tag"
-                                    />
-                        </span>
-                    </div>
-                    <div data-ng-show="createImage" class="form-group">
-                        <span class="edit-repo edit-label">Repository</span>
-                        <span class="edit-value">
-                            <input type="text"
-                                   name="repo"
-                                   data-ng-model="container.repo"
-                                    />
-                        </span>
                     </div>
                     <div data-ng-show="createImage" class="form-group">
                         <span class="edit-message edit-label">Message</span>
