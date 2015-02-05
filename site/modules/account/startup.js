@@ -210,7 +210,9 @@ module.exports = function execute(scope) {
                 var fingerprintHex = pubKey.toPublicSshFingerprint('hex');
                 call.data.name = fingerprintHex.slice(-10);
             } catch (e) {
-                call.done({message: 'key is invalid'});
+                var message = 'key is invalid';
+                call.log.info(message);
+                call.done({message: message}, true);
                 return;
             }
         }
