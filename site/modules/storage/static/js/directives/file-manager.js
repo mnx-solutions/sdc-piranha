@@ -435,14 +435,18 @@
                             scope.errorRolesResource = false;
                             if (error) {
                                 checkErrorRolesResource(error);
+                                if (!scope.errorRolesResource) {
+                                    return showPopupDialog('error', 'Error', error);
+                                }
+                                return;
+                            }
+                            if (rootPath !== scope.currentPath && userAction && scope.userConfig.loaded()) {
+                                var config = scope.userConfig.$child('fileman');
+                                config.path = scope.currentPath;
+                                config.dirty(true);
+                                config.$save();
                             }
                         });
-                        if (rootPath !== scope.currentPath && userAction && scope.userConfig.loaded()) {
-                            var config = scope.userConfig.$child('fileman');
-                            config.path = scope.currentPath;
-                            config.dirty(true);
-                            config.$save();
-                        }
                     }
                 };
 

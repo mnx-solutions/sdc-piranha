@@ -38,7 +38,6 @@
                 'JobCreate',
                 'FileManCreateFolder',
                 'FileManDeleteTree',
-                'FileManInfo',
                 'FileManGet',
                 'SaveScript',
                 'DeleteScripts',
