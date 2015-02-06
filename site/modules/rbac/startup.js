@@ -493,30 +493,48 @@ if (!config.features || config.features.rbac !== 'disabled') {
             },
             handler: function (call) {
                 var ids = call.data.ids || [call.data.id];
+                var logins = call.data.logins || {};
                 vasync.forEachParallel({
                     inputs: ids,
                     func: function (id, callback) {
-                        call.cloud.deleteUser(id, function (err) {
-                            callback(err);
-                            removeUserConfig(call, id, function (error) {
-                                if (error && error.statusCode !== 404) {
-                                    call.req.log.error({error: error}, 'Failed remove user config');
-                                }
+                        call.cloud.listUserKeys(id, function (errKeys, data) {
+                            if (errKeys) {
+                                return callback(errKeys);
+                            }
+                            if (data.length !== 0) {
+                                var userInfo = logins[id] || id;
+                                call.req.log.info('Cannot delete user ' + userInfo +  ' with SSH keys.');
+                                return callback(userInfo);
+                            }
+                            call.cloud.deleteUser(id, function (err) {
+                                callback(err);
+                                removeUserConfig(call, id, function (error) {
+                                    if (error && error.statusCode !== 404) {
+                                        call.req.log.error({error: error}, 'Failed to remove user config');
+                                    }
+                                });
                             });
-                        });
+                        }, !!call.data.noCache);
                     }
                 }, function (errors) {
-                    var result = null;
+                    var result = false;
+                    var err = null;
                     if (errors) {
-                        result = errors;
-                        if (Array.isArray(errors.ase_errors) && errors.ase_errors.length === 1) {
-                            result.message = errors.ase_errors[0].message;
+                        err = errors;
+                        if (errors.message && errors.message.indexOf(' ') === -1) {
+                            result = true;
+                            err.message = 'User' + (errors.ase_errors.length > 1 ? 's' : '') +
+                                ' with SSH keys cannot be deleted: ' + errors.ase_errors.join(', ') +
+                                '. Please delete SSH keys first.';
                         }
-                        if (result && result.message) {
-                            result.message = capitalize(result.message);
+                        if (Array.isArray(errors.ase_errors) && errors.ase_errors.length === 1 && !result) {
+                            err.message = errors.ase_errors[0].message;
+                        }
+                        if (err && err.message) {
+                            err.message = capitalize(err.message);
                         }
                     }
-                    call.done(result);
+                    call.done(err, result);
                 });
             }
         });

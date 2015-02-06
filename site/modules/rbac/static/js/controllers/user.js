@@ -5,6 +5,7 @@
         '$q',
         '$scope',
         '$http',
+        'loggingService',
         'localization',
         '$location',
         'requestContext',
@@ -14,7 +15,7 @@
         'rbac.User',
         'Account',
         'util',
-        function ($q, $scope, $http, localization, $location, requestContext, BillingService, PopupDialog, service, RbacUser, Account, util) {
+        function ($q, $scope, $http, loggingService, localization, $location, requestContext, BillingService, PopupDialog, service, RbacUser, Account, util) {
             $scope.loading = true;
             $scope.user = {};
             $scope.initial = {};
@@ -229,6 +230,12 @@
                         'Are you sure you want to delete the selected user?'
                     ),
                     function () {
+                        if ($scope.listUserKeys.length !== 0) {
+                            var message = 'Cannot delete user with SSH keys. Please delete SSH keys first.';
+                            loggingService.log('info', message);
+                            errorCallback({message: message});
+                            return;
+                        }
                         $scope.loading = true;
                         service.deleteUser($scope.user.id).then(function () {
                             $scope.loading = false;

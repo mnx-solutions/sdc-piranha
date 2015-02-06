@@ -119,8 +119,8 @@
                 return action('createUser', ops, ENTITY_TYPE.USER, ACCESS.WRITE);
             };
 
-            service.deleteUser = function (userId) {
-                var userData = typeof (userId) === 'string' ? {id: userId} : {ids: userId};
+            service.deleteUser = function (userId, login) {
+                var userData = typeof (userId) === 'string' ? {id: userId} : {ids: userId, logins: login};
                 return action('deleteUser', userData, ENTITY_TYPE.USER, ACCESS.WRITE);
             };
 
