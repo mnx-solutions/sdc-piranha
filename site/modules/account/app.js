@@ -151,7 +151,9 @@ module.exports = function execute(scope, app) {
                     var name = fingerprintHex.slice(-10);
                     perform(req, name, data, function (err) {
                         if (err) {
-                            req.log.error(err);
+                            if (err.statusCode !== 409) {
+                                req.log.error(err);
+                            }
                             res.json({
                                 error: err.message,
                                 status: err.statusCode
