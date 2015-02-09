@@ -341,12 +341,12 @@
                     };
 
                     $scope.submitForm = function () {
+                        $scope.formSubmitted = true;
                         if ($scope.paymentForm.$invalid || !isCCNumberValid()) {
                             $scope.validateCCNumber();
                             return;
                         }
                         $scope.loading = true;
-                        $scope.formSubmitted = true;
 
                         $scope.invalidCCNumber = $scope.missingCCNumber = false;
 
