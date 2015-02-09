@@ -342,7 +342,7 @@ var mdbApi = function execute(scope) {
                 });
                 if (job) {
                     var client = Manta.createClient(call);
-                    client.job(job.jobId, function (getJobError, jobInfo) {
+                    client.jobInfo(job.jobId, function (getJobError, jobInfo) {
                         var status;
                         if (getJobError || jobInfo.state === 'failed') {
                             status = 'Failed';
