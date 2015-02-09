@@ -219,7 +219,7 @@ module.exports = function execute(scope) {
                         }, []);
                     };
                     overallResult.compute.usage = groupByMachineAndSumFields(overallResult.compute.usage, ['hours', 'gb_hours', 'cost']);
-                    overallResult.bandwidth.usage = groupByMachineAndSumFields(overallResult.bandwidth.usage, ['in', 'out']);
+                    overallResult.bandwidth.usage = groupByMachineAndSumFields(overallResult.bandwidth.usage, ['in', 'out', 'cost']);
                 });
                 call.done(null, overallResult);
             });
