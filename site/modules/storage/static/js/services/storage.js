@@ -10,6 +10,7 @@ window.fn = [];
         function (serverTab, $q, PopupDialog, $location) {
 
             var service = {};
+            var resourceErrors = [];
             function jobRequest(callName, data, suppressError, resultWrapper) {
                 var deferred = $q.defer();
                 serverTab.call({
@@ -17,6 +18,18 @@ window.fn = [];
                     data: data,
                     done: function (error, job) {
                         if (error) {
+                            if (error.indexOf('None of your active roles are present on the resource') !== -1 &&
+                                error.indexOf('~~/jobs') === -1) {
+                                var jobPath = job.data.path;
+                                if (resourceErrors.indexOf(jobPath) !== -1) {
+                                    resourceErrors = [];
+                                }
+                                resourceErrors.push(jobPath);
+                                error = 'None of your active roles are present on the resources ~~/jobs/: <br>' + jobPath;
+                                if (resourceErrors.length > 1) {
+                                    error = jobPath;
+                                }
+                            }
                             deferred.reject(error);
                             if (!suppressError) {
                                 PopupDialog.error(null, error);

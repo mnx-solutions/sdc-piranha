@@ -182,7 +182,10 @@ var mdbApi = function execute(scope) {
         });
     }
 
-    function sendError(call, error) {
+    function sendError(call, error, errorPath) {
+        if (error.restCode === 'NoMatchingRoleTag' && errorPath) {
+            error.message = error.message.replace('resource.', 'resource') + ' \'~~' + errorPath + '\'';
+        }
         if (error.code === 'ENOTFOUND') {
             error.message = mantaNotAvailable;
         }
@@ -453,7 +456,7 @@ var mdbApi = function execute(scope) {
                 }]
             }, function (error, jobId) {
                 if (error) {
-                    sendError(call, error);
+                    sendError(call, error, '/jobs');
                     return;
                 }
                 call.update(null, {jobId: jobId});

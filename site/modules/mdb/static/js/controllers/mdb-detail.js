@@ -181,7 +181,7 @@
                     notification.popup(false, false, DEBUGGER_JOB_PATH, null, 'Debugger job "' + $scope.jobId + '" was successfully created');
                     processResult(result);
                 }, function (error) {
-                    notification.popup(true, true, DEBUGGER_JOB_PATH, null, error, error.message || err, flushAll('Failed'));
+                    notification.popup(true, true, DEBUGGER_JOB_PATH, null, error, error.message || error, flushAll('Failed'));
                 });
             };
 
