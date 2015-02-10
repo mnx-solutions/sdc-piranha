@@ -69,7 +69,7 @@
                             return {data: '<a href="#!/compute/instance/' + eventHost.id + '" style="min-width: 140px;">' + eventHost.name || eventHost.id + '</a>'};
                         }
                         return {
-                            data: 'Host gone',
+                            data: 'Host deleted',
                             tooltip: 'The host is no longer accessible because the host has been deleted or access privileges have been removed.'
                         };
                     }
