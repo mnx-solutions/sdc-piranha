@@ -2,6 +2,7 @@
 var config = require('easy-config');
 
 var dtrace = function execute(scope) {
+    var Dtrace = scope.api('Dtrace');
     var mantaClient = scope.api('MantaClient');
     var server = scope.api('Server');
 
@@ -67,6 +68,55 @@ var dtrace = function execute(scope) {
 
     server.onCall('GetScripts', function (call) {
         getScriptsList(call, mantaClient.createClient(call), call.done.bind(call));
+    });
+
+    server.onCall('DtraceHostStatus', {
+        verify: function (data) {
+            return data.host && data.host.length;
+        },
+        handler: function (call) {
+            var host = call.data.host;
+            var retries = 5;
+            Dtrace.createClient(call, host, function (error, client) {
+                if (error) {
+                    return call.done(error);
+                }
+                var pingHost = function () {
+                    client.ping(function (err) {
+                        if (err) {
+                            if (retries > 0) {
+                                retries -= 1;
+                                setTimeout(pingHost, 5000);
+                                return;
+                            }
+                            return call.done(err);
+                        }
+                        call.done(null, 'completed');
+                    });
+                };
+                pingHost();
+            });
+        }
+    });
+
+    server.onCall('DtraceListProcesses', {
+        verify: function (data) {
+            return data.host && data.host.length;
+        },
+        handler: function (call) {
+            var host = call.data.host;
+            Dtrace.createClient(call, host, function (error, client) {
+                if (error) {
+                    return call.done(error);
+                }
+                client.listProcesses(function (err, list) {
+                    if (err) {
+                        return call.done(err);
+                    }
+                    call.done(null, list);
+                });
+            });
+        }
     });
 
 };

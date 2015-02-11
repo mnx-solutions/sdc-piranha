@@ -38,7 +38,7 @@
             var DOCKERHOST_MINIMUM_MEMORY = 512;
 
             $scope.preSelectedImageId = (requestContext.getParam('imageid') === 'custom') ? null : requestContext.getParam('imageid');
-            $scope.isDockerHost = $scope.preSelectedImageId && $location.search().specification === 'dockerhost';
+            $scope.hostSpecification = $scope.preSelectedImageId && $location.search().specification;
             $scope.preSelectedImage = null;
 
             $scope.setCreateInstancePage = Machine.setCreateInstancePage;
@@ -46,7 +46,7 @@
                 {
                     name: 'Choose Image',
                     template: 'machine/static/partials/wizard-choose-image.html',
-                    hide: $scope.isDockerHost
+                    hide: $scope.hostSpecification
                 },
                 {
                     name: 'Select Package',
@@ -219,8 +219,8 @@
                         $location.path('/compute/ssh');
                     } else if (!$scope.provisioningInProgress) {
                         //add flag for docker host
-                        if ($scope.isDockerHost) {
-                            machineData.specification = 'docker';
+                        if ($scope.hostSpecification) {
+                            machineData.specification = $scope.hostSpecification;
                         }
 
                         $scope.provisioningInProgress = true;
@@ -1333,7 +1333,7 @@
                     return;
                 }
 
-                if ($scope.isDockerHost && $scope.features.dockerMemoryLimit === 'enabled') {
+                if ($scope.hostSpecification && $scope.hostSpecification === 'dockerhost' && $scope.features.dockerMemoryLimit === 'enabled') {
                     packages = packages.filter(function (p) {
                         return p.memory >= DOCKERHOST_MINIMUM_MEMORY;
                     });

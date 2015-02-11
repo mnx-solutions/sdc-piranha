@@ -1,4 +1,7 @@
 <div data-ng-switch="subview">
+    <div data-ng-switch-when="index">
+        <div data-ng-include="'dtrace/static/partials/index.html'"></div>
+    </div>
     <div data-ng-switch-when="heatmap">
         <div data-ng-include="'dtrace/static/partials/heatmap.html'"></div>
     </div>
