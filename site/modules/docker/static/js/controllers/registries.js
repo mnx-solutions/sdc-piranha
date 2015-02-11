@@ -167,6 +167,8 @@
                                 availableHosts.forEach(function (host) {
                                     if (host.memory >= 1024) {
                                         hosts[host.primaryIp] = host;
+                                    } else {
+                                        $scope.hasDockerHost = true;
                                     }
                                     if (Docker.version && host.dockerVersion.Version < Docker.version) {
                                         host.versionMismatch = true;
