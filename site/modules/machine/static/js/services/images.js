@@ -16,6 +16,7 @@
             var service = {};
             var list = [];
             var images = {index: {}, job: null, list: {private: [], all: []}, error: null, search: {}};
+            var IMAGES_PATH = '/images';
 
             function handleChunk(image, action) {
                 var old = null;
@@ -265,6 +266,21 @@
                 );
             }
 
+            function getErrorMessage(image, err, isPopupMessage, action) {
+                action = action || 'create';
+                var errorMessage = 'Unable to ' + action + ' image ' + (image.name || '') + '.';
+                if (isPopupMessage) {
+                    errorMessage += ' ' + (err.message || err);
+                }
+                if (err.restCode === 'NotAuthorized') {
+                    errorMessage = err.message;
+                }
+                return errorMessage;
+            }
+
+            function getSuccessMessage(imageName, action) {
+                return 'Image "' + imageName + '" has successfully ' + action + '.';
+            }
 
             service.createImage = function (machineId, datacenter, name, description, version, locationCallback) {
                 var id = window.uuid.v4();
@@ -282,15 +298,10 @@
                 handleChunk(image);
 
                 var handleImageCreationError = function (imageError, image) {
-                    var isOnImagesPage = $location.path() === '/images';
                     var notificationMessage = 'New image "' + image.name + '" of version "' + image.version + '" ';
                     handleChunk(image, 'remove');
                     $rootScope.$emit('createdImage', machineId);
-                    if (isOnImagesPage) {
-                        showError(image, 'Unable to create image "{{name}}": ', imageError);
-                    } else {
-                        notification.error(notificationMessage + 'creation has failed.');
-                    }
+                    notification.popup(true, true, IMAGES_PATH, null, getErrorMessage(image, imageError, true), notificationMessage + 'creation has failed.');
                 };
 
                 var jobCall = serverTab.call({
@@ -322,7 +333,6 @@
                         images.list['private'][indexPrivate] = image;
                     },
                     done: function (err, job) {
-                        var isOnImagesPage = $location.path() === '/images';
                         var notificationMessage = 'New image "' + image.name + '" of version "' + image.version + '" ';
                         if (err) {
                             handleImageCreationError(err, image);
@@ -331,9 +341,7 @@
 
                         var result = job.__read();
                         result.datacenter = datacenter;
-                        if (!isOnImagesPage) {
-                            notification.success(notificationMessage + 'has been successfully created.');
-                        }
+                        notification.popup(false, false, IMAGES_PATH, null, notificationMessage + 'has been successfully created.');
 
                         $rootScope.$emit('createdImage', machineId);
 
@@ -367,10 +375,11 @@
                     data: { imageId: image.id, datacenter: image.datacenter },
                     done: function (err) {
                         if (!err) {
+                            notification.popup(false, false, IMAGES_PATH, null, getSuccessMessage(image.name, 'deleted'));
                             handleChunk(image, 'remove');
                         } else {
                             image.state = 'active';
-                            showError(image, 'Unable to delete image "{{name}}": ', err);
+                            notification.popup(true, true, IMAGES_PATH, null, getErrorMessage(image, err, true, 'delete'), getErrorMessage(image, err, false, 'delete'));
                         }
                     }
                 });
@@ -396,10 +405,11 @@
                     done: function (err) {
                         image.state = oldState;
                         if (!err) {
+                            notification.popup(false, false, IMAGES_PATH, null, getSuccessMessage(image.name, 'updated'));
                             handleChunk(image, 'active');
                             callback();
                         } else {
-                            showError(image, 'Unable to update image "{{name}}": ', err);
+                            notification.popup(true, true, IMAGES_PATH, null, getErrorMessage(image, err, true, 'update'), getErrorMessage(image, err, false, 'update'));
                         }
                     }
                 });

@@ -15,11 +15,13 @@
         'Account',
         '$location',
         'ErrorService',
-        function (serverTab, $rootScope, $q, $timeout, localization, Package, Dataset, util, PopupDialog, Account, $location, ErrorService) {
+        'notification',
+        function (serverTab, $rootScope, $q, $timeout, localization, Package, Dataset, util, PopupDialog, Account, $location, ErrorService, notification) {
 
         var service = {};
         var machines = {job: null, index: {}, list: [], search: {}};
         var createInstancePageConfig = null;
+        var INSTANCES_PATH = '/compute';
         if ($rootScope.features.manta === 'enabled') {
             Account.getUserConfig().$child('createInstancePage').$load(function (error, config) {
                 createInstancePageConfig = config;
@@ -337,6 +339,11 @@
                                 }
                             };
                         }
+                        if (!opts.done) {
+                            opts.done = function (err, job) {
+                                showNotification(err, job);
+                            }
+                        }
                         var job = serverTab.call(ng.copy(opts));
                         job.machine = machine;
                         machine.job = job.getTracker();
@@ -393,6 +400,47 @@
             };
         }
 
+        function showNotification(err, job, isTagsMetadataAction) {
+            var instancesPath = INSTANCES_PATH;
+            var notificationMessage;
+            if (!isTagsMetadataAction) {
+                var machine = job.machine || job.initial.machine;
+                notificationMessage = 'Instance "' + machine.name + '" ';
+                if (err) {
+                    notificationMessage += machine.state + ' has failed.';
+                } else {
+                    var machineState = machine.state.replace('ing', 'ed');
+                    if (machineState === 'provisioned') {
+                        machineState = 'created';
+                    }
+                    notificationMessage += 'has successfully ' + machineState + '.';
+                }
+            } else if (job.data && (job.data.tags || job.data.metadata)) {
+                instancesPath += '/instance';
+                if (err) {
+                    notificationMessage = err.message || err;
+                } else {
+                    var collection = job.data.tags;
+                    var item = 'Tag "';
+                    if (!collection) {
+                        collection = job.data.metadata;
+                        item = 'Metadata "';
+                    }
+                    if (typeof(collection) === 'string') {
+                        collection = item + collection;
+                    } else {
+                        var collectionKeys = Object.keys(collection);
+                        collection = item + collectionKeys[collectionKeys.length - 1];
+                    }
+                    var action = ['Create', 'Update', 'Delete'].filter(function (action) {
+                        return job.name.indexOf(action) !== -1;
+                    })[0].toLowerCase();
+                    notificationMessage = collection + '" has successfully ' + action + 'd.';
+                }
+            }
+            notification.popup(false, err, instancesPath, null, notificationMessage);
+        }
+
         service.startMachine = changeState({ name: 'MachineStart' });
 
         service.stopMachine = changeState({ name: 'MachineStop' });
@@ -403,30 +451,18 @@
             name: 'MachineDelete',
             done: function(err, job) {
                 if (err) {
-                    PopupDialog.error(
-                        localization.translate(
-                            null,
-                            null,
-                            'Error'
-                        ), err.restCode === 'NotAuthorized' ? err.message :
-                        localization.translate(
-                            null,
-                            'machine',
-                            'Unable to execute command "{{command}}" for instance {{uuid}}.',
-                            {
-                                command: job.name,
-                                uuid: job.machine.id
-                            }
-                        )
-                    );
+                    var errorMessage = getMessage(job.machine, err, 'execute command "' + job.name + '" for');
                     if (err.restCode === 'NotAuthorized') {
+                        errorMessage = err.message;
                         job.machine.state = job.machine.prevState;
                     }
+                    notification.popup(true, true, INSTANCES_PATH, null, errorMessage, err.message || err);
                     return;
                 }
 
                 machines.list.splice(machines.list.indexOf(job.machine), 1);
                 delete machines.index[job.machine.id];
+                showNotification(err, job);
             }
         });
 
@@ -479,6 +515,11 @@
             ) + ' ' + (err.message || err));
         }
 
+        function getMessage(instance, err, action) {
+            action = action || 'create';
+            return 'Unable to ' + action + ' instance ' + (instance.name || '') + '. ' + (err.message || err);
+        }
+
         service.provisionMachine = function (data) {
             var id = window.uuid.v4();
             var machine = {
@@ -512,14 +553,14 @@
 
                 done: function (err, job) {
                     if (err) {
-                        showError(machine, err);
-
+                        notification.popup(true, true, INSTANCES_PATH, null, getMessage(machine, err), err.message || err);
                         machines.list.splice(machines.list.indexOf(machine), 1);
                         delete machines.index[id];
                         return;
                     }
                     var result = job.__read();
                     result.datacenter = data.datacenter;
+                    showNotification(err, job);
                     if (result.tags.JPC_tag === 'DockerHost') {
                         $rootScope.$emit('clearDockerCache', result);
                     }
@@ -539,9 +580,9 @@
                     var isGetMachineError = err && err.restCode === 'NotAuthorized' && err.message.indexOf('getmachine') !== -1;
                     if (isGetMachineError) {
                         err.message = 'Can not get machine status. ' + err.message;
-                        return PopupDialog.errorObj(err);
+                        return notification.popup(true, true, INSTANCES_PATH, null, err.message);
                     } else if (err.message && err.message.indexOf('QuotaExceeded:') !== 0 || typeof (err) === 'string') {
-                        showError(machine, err);
+                        notification.popup(true, true, INSTANCES_PATH, null, getMessage(machine, err), err.message || err);
                     }
                     if (!isGetMachineError) {
                         machines.list.splice(machines.list.indexOf(machine), 1);
@@ -568,6 +609,7 @@
                 function done(machine, d, deleteReadJob) {
                     return function (error, job) {
                         if (error) {
+                            showNotification(error, job, true);
                             return d.reject(error);
                         }
 
@@ -576,6 +618,9 @@
                         machine[collectionName] = data;
                         if (oldCredentials) {
                             data.credentials = oldCredentials;
+                        }
+                        if (job.name.indexOf('List') === -1) {
+                            showNotification(error, job, true);
                         }
                         d.resolve(data);
                         if (deleteReadJob) {
@@ -704,9 +749,10 @@
                         machines.list.splice(machines.list.indexOf(machine), 1);
                         $rootScope.$emit('clearDockerCache');
                         delete machines.index[machine.id];
+                        showNotification(err, {machine: machine});
                     } else {
                         machine.state = machineState;
-                        showError(machine, 'Unable to delete machine "{{name}}": ', err);
+                        notification.popup(true, true, INSTANCES_PATH, null, getMessage(machine, err, 'delete'), err.message || err);
                     }
                 }
             });

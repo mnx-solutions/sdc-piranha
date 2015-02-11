@@ -9,14 +9,16 @@
         'localization',
         'requestContext',
         '$location',
+        'notification',
         'Support',
-        function ($scope, mdb, PopupDialog, Account, localization, requestContext, $location, Support) {
+        function ($scope, mdb, PopupDialog, Account, localization, requestContext, $location, notification, Support) {
             localization.bind('mdb', $scope);
             requestContext.setUpRenderContext('mdb.index', $scope);
             var jobId = requestContext.getParam('jobId');
             var objectsToNumber = function (object) {
                 return Number(object.objects);
             };
+            var DEBUGGER_JOB_PATH = '/mdb/';
             $scope.inputFile = [];
             $scope.objects = [];
             $scope.modules = [];
@@ -175,9 +177,10 @@
                         return;
                     }
                     result = result.slice(-1)[0];
+                    notification.popup(false, false, DEBUGGER_JOB_PATH, null, 'Debugger job "' + $scope.jobId + '" was successfully created');
                     processResult(result);
                 }, function (error) {
-                    PopupDialog.error(null, error, flushAll('Failed'));
+                    notification.popup(true, true, DEBUGGER_JOB_PATH, null, error, error.message || err, flushAll('Failed'));
                 });
             };
 

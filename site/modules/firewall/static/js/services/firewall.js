@@ -9,13 +9,25 @@
         'Machine',
         'localization',
         'notification',
-        'PopupDialog',
 
-        function (serverTab, $rootScope, $q, Machine, localization, notification, PopupDialog) {
+        function (serverTab, $rootScope, $q, Machine, localization, notification) {
 
             var service = {};
             var jobs = {};
+            var INSTANCES_PATH = '/compute';
 
+            function showMessage(error, machineName, action) {
+                var message = 'Firewall for instance "' + machineName + '" has successfully ' + action + 'd.';
+                var isError = false;
+                if (error) {
+                    message = 'Failed to ' + action + ' firewall for instance "' + machineName + '".';
+                    if (error.restCode === 'NotAuthorized') {
+                        message = error.message;
+                    }
+                    isError = true;
+                }
+                notification.popup(isError, isError, INSTANCES_PATH, null, message);
+            }
             service.enable = function (id, cb) {
                 if (!jobs[id] || jobs[id].finished) {
 	                cb = cb || ng.noop;
@@ -28,22 +40,8 @@
                             },
                             done: function(err, job) {
                                 var data = job.__read();
-
                                 var error = err || data.err;
-                                if(error) {
-                                    PopupDialog.error(
-                                        localization.translate(
-                                            $rootScope,
-                                            null,
-                                            'Error'
-                                        ), err.restCode === 'NotAuthorized' ? err.message :
-                                        localization.translate(
-                                            $rootScope,
-                                            null,
-                                            'Failed to enable firewall for instance ' + id + '.'
-                                        ), function () {
-                                    });
-                                }
+                                showMessage(error, machine.name, 'enable');
 	                            cb(error);
                             }
                         });
@@ -65,20 +63,8 @@
                             },
                             done: function(err, job) {
                                 var data = job.__read();
-                                var error = err || data.err;if(error) {
-                                    PopupDialog.error(
-                                        localization.translate(
-                                            $rootScope,
-                                            null,
-                                            'Error'
-                                        ),
-                                        localization.translate(
-                                            $rootScope,
-                                            null,
-                                            err.restCode === 'NotAuthorized' ? err.message : 'Failed to disable firewall for instance ' + id
-                                        ), function () {
-                                    });
-                                }
+                                var error = err || data.err;
+                                showMessage(error, machine.name, 'disable');
                                 cb(error);
                             }
                         });
