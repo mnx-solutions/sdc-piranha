@@ -60,7 +60,7 @@
                                 });
                                 var imageExists = datasets.some(function (image) { return image.id === machine.image; });
                                 if (!imageExists && !$scope.datasetsInfo[machine.image]) {
-                                    $scope.datasetsInfo[machine.image] = 'Image gone';
+                                    $scope.datasetsInfo[machine.image] = 'Image deleted';
                                 }
                                 if (currentLocation === '/compute/dockerHost') {
                                     $scope.forceActive = 'tags';
@@ -254,7 +254,7 @@
                     _getter: function (machine) {
                         if (machine.image && $scope.datasetsInfo) {
                             var machineImage = {data: $scope.datasetsInfo[machine.image]};
-                            if (machineImage.data === 'Image gone') {
+                            if (machineImage.data === 'Image deleted') {
                                 machineImage.tooltip = 'The image is no longer accessible because the image has been deleted, is inactive, or access privileges have been removed.';
                             }
                             return machineImage;
