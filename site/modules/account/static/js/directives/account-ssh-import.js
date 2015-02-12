@@ -9,8 +9,9 @@
         '$rootScope',
         'PopupDialog',
         'requestContext',
+        'loggingService',
         'rbac.Service',
-        function (Account, localization, http, $rootScope, PopupDialog, requestContext, RBAC) {
+        function (Account, localization, http, $rootScope, PopupDialog, requestContext, loggingService, RBAC) {
             return {
                 restrict: 'EA',
                 replace: true,
@@ -116,6 +117,7 @@
                                             var message = error.error;
 
                                             if (error.status && error.status === 409) {
+                                                loggingService.log('info', error.error);
                                                 message = 'This key already exists.';
                                             }
 
