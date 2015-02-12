@@ -220,6 +220,9 @@ module.exports = function execute(scope) {
         call.cloud.createKey({name: call.data.name, key: call.data.key}, function (error, resp) {
             if (error) {
                 resp = error.statusCode === 409;
+                if (resp) {
+                    call.log.info(error.message);
+                }
                 call.done(error, resp);
                 return;
             }
