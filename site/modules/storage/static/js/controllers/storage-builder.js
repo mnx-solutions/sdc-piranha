@@ -16,6 +16,7 @@
                 $scope.mapStep = '';
                 $scope.reduceStep = '';
                 $scope.loading = true;
+                $scope.jobCreating = false;
                 $scope.numberOfReducers = '';
                 $scope.amountOfDramOptions = ['', 256, 512, 1024, 2048, 4096, 8192];
                 $scope.amountOfDram = $scope.amountOfDramOptions[0];
@@ -87,6 +88,7 @@
                 };
 
                 $scope.createJob = function () {
+                    $scope.jobCreating = true;
                     var dataAssets = $scope.dataAssets.map(function (dataAsset) {
                         return dataAsset.filePath;
                     });
@@ -114,7 +116,9 @@
                                 $scope,
                                 null,
                                 errorMessage
-                            )
+                            ), function () {
+                                $scope.jobCreating = false;
+                            }
                         );
                     }
                     var job = {
@@ -128,11 +132,13 @@
                         disk: Number($scope.amountOfDiskSpace)
                     };
                     $q.when(Storage.createJob(job, true)).then(function (res) {
+                        $scope.jobCreating = false;
                         notification.popup(true, false, JOB_BUILDER_PATH, null, res.message, function () {
                             $location.url('/manta/jobs/' + res.id);
                             $location.replace();
                         });
                     }, function (err) {
+                        $scope.jobCreating = false;
                         notification.popup(true, err, JOB_BUILDER_PATH, null, err.message || err);
                     });
                     return job;
