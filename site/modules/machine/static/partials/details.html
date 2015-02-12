@@ -387,10 +387,10 @@
                                             <div data-translate>You have no firewall rules that would apply to this machine</div>
                                         </div>
                                         <div class="pull-right">
-                                            <div class="loading-medium loading-30 margin-top-10" data-ng-show="fireWallActionRunning"></div>
+                                            <div class="loading-medium loading-30 margin-top-10" data-ng-show="machine.fireWallActionRunning"></div>
                                             <a class="btn light margin-top-10 effect-orange-button" href="#!/firewall">Edit</a>
                                             <button class="btn orange margin-top-10"
-                                                    data-ng-disabled="fireWallActionRunning || machine.state == 'provisioning'"
+                                                    data-ng-disabled="machine.fireWallActionRunning || machine.state == 'provisioning'"
                                                     data-ng-show="firewallChangeable()"
                                                     data-ng-click="toggleFirewallEnabled()"
                                                     data-translate-value>{{machine.firewall_enabled && 'Disable' || 'Enable'}}</button>
