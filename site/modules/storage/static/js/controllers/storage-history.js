@@ -3,11 +3,12 @@
 (function (app) {
     app.controller(
         'Storage.HistoryController',
-        ['$rootScope', '$scope', 'requestContext', 'localization', 'Storage', 'PopupDialog', 'Account', 'fileman', '$location', '$q',
-            function ($rootScope, $scope, requestContext, localization, Storage, PopupDialog, Account, fileman, $location, $q) {
+        ['$rootScope', '$scope', 'requestContext', 'localization', 'Storage', 'PopupDialog', 'Account', 'fileman', 'notification', '$location', '$q',
+            function ($rootScope, $scope, requestContext, localization, Storage, PopupDialog, Account, fileman, notification, $location, $q) {
                 localization.bind('storage', $scope);
                 requestContext.setUpRenderContext('storage.history', $scope);
 
+                var JOB_HISTORY_PATH = '/manta/jobs';
                 $scope.loading = true;
                 $scope.placeHolderText = 'filter jobs';
                 $scope.suppressErrors = false;
@@ -303,7 +304,22 @@
                                     deleteJobFolder(job);
                                 });
 
+                                function showNotification(deletedJobs, removed) {
+                                    var message = deletedJobs.length + ' jobs have';
+                                    message += removed ? ' been successfully deleted.' : 'n\'t been deleted.';
+                                    if (deletedJobs.length > 3) {
+                                        notification.popup(false, false, JOB_HISTORY_PATH, null, message);
+                                    } else {
+                                        deletedJobs.forEach(function (job) {
+                                            message = 'Job "' + (job.id || job) + '" was ';
+                                            message += removed ? 'successfully deleted.' : 'not deleted.';
+                                            notification.popup(false, false, JOB_HISTORY_PATH, null, message);
+                                        });
+                                    }
+                                }
+
                                 $q.all(promises).then(function (deletedJobIds) {
+                                    showNotification(deletedJobIds, true);
                                     $scope.jobs = $scope.jobs.filter(function (el) {
                                         return !el.deleteJob;
                                     });
@@ -317,6 +333,8 @@
                                             }
                                         });
                                     }
+                                }, function () {
+                                    showNotification($scope.checkedItems, false);
                                 });
                             }
                         );
