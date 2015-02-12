@@ -24,6 +24,40 @@ input.ng-pristine
             box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075), 0 0 6px #9ecaed;
 }
 
+.fw-description.ng-valid
+{
+    border: 1px solid #ccc;
+    -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075);
+    -moz-box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075);
+    box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075);
+    color: #555;
+}
+
+.fw-description:focus
+{
+    outline: 0;
+    border-color: rgba(82,168,236,0.8);
+    box-shadow: inset 0 1px 1px rgba(0,0,0,0.075),0 0 8px rgba(82,168,236,0.6);
+}
+
+.fw-description
+{
+    width: 100%;
+    height: 30px;
+    text-indent: 6px;
+    font-size: 14px;
+}
+
+.value-field.fw-description-field
+{
+    width: 65%;
+}
+
+.controls-wrapper.fw-description-field
+{
+    width: 40%;
+}
+
 select.port
 {
     width: 100%;
@@ -196,10 +230,14 @@ th.protocol
 
 .firewall-table
 {
+    min-width: 725px;
     width: 100%;
-    min-width: 700px;
-
     background-color: #fef1d2;
+}
+
+.container-fluid-firewall
+{
+    min-width: 725px;
 }
 
 .firewall-table thead
@@ -448,8 +486,7 @@ code.plain
 .controls-wrapper
 {
     float: left;
-
-    padding: 10px 50px 10px 10px;
+    padding: 10px;
 }
 
 .padding-ten

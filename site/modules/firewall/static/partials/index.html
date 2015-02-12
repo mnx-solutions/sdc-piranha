@@ -1,4 +1,4 @@
-<div class="container-fluid container-position" data-ng-controller="Firewall.IndexController">
+<div class="container-fluid container-position container-fluid-firewall" data-ng-controller="Firewall.IndexController">
     <div data-breadcrumbs></div>
     <div class="page-header row">
         <h3 class="page-title">{{ pageTitle }}</h3>
@@ -62,7 +62,7 @@
                         </div>
                     </td>
                     <td class="controls-wrapper">
-                        <label class="fw-control-label name-field">Datacenter:</label>
+                        <label class="fw-control-label name-field">Datacenter</label>
                         <div class="value-field">
                             <select ui-select2="{minimumResultsForSearch: -1, width: '115px'}" id="dcSelect" data-ng-model="selected.datacenter">
                                 <option data-ng-repeat="datacenter in selectData.datacenters" value="{{datacenter.text}}">
@@ -71,6 +71,12 @@
                             </select>
                         </div>
                         <div class="loading-medium loading-medium-inline" data-ng-show="datasetsLoading"></div>
+                    </td>
+                    <td class="controls-wrapper fw-description-field">
+                        <label class="fw-control-label name-field">Description</label>
+                        <div class="value-field fw-description-field">
+                            <input id="description" class="fw-description" name="firewallDescription" type="text" data-ng-model="data.description" placeholder="(Optional)" />
+                        </div>
                     </td>
                 </tr>
                 </thead>
