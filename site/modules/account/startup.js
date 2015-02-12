@@ -321,7 +321,7 @@ module.exports = function execute(scope) {
                         readOldOrNewFile(call, client, callback);
                     }, 2000);
                     return;
-                } else {
+                } else if (err.name !== 'NoMatchingRoleTagError') {
                     call.req.log.error({error: err}, 'Cannot read user config');
                 }
                 call.done(null, {});
@@ -343,7 +343,7 @@ module.exports = function execute(scope) {
         var configPath = getConfigPath(call);
 
         function checkResponse(callObj, error) {
-            if (error) {
+            if (error && error.name !== 'NoMatchingRoleTagError') {
                 callObj.req.log.error({error: error}, 'Cannot write user config');
             }
             callObj.done(null, !!error);
