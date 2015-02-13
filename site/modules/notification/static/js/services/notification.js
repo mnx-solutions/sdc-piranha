@@ -11,7 +11,8 @@
             },
             popup: function (isPopup, isError, path, title, message, notificationMessage, callback) {
                 var isOnRequiredPage = $location.path().indexOf(path) !== -1 &&
-                    $location.path().indexOf('/compute/create') === -1;
+                    $location.path().indexOf('/compute/create') === -1 &&
+                    $location.path().indexOf('/manta/jobs/') === -1;
                 if (typeof (notificationMessage) === 'function') {
                     callback = notificationMessage;
                     notificationMessage = null;
