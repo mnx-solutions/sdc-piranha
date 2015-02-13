@@ -159,7 +159,8 @@
         };
 
         service.addRegistryUsernameToHost = function (registries) {
-            registries.forEach(function (registry) {
+            for (var i = registries.length - 1; i >= 0; i--) {
+                var registry = registries[i];
                 registry.userHost = registry.host;
                 if (registry.username) {
                     var protocols = ['http://', 'https://'];
@@ -169,8 +170,10 @@
                             registry.userHost = protocol + registry.username + '@' + hostAddress;
                         }
                     });
+                } else if (!registry.username && registry.host.indexOf('index.docker.io') !== -1) {
+                    registries.splice(i, 1);
                 }
-            });
+            }
             return registries;
         };
 
