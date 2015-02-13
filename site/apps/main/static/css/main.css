@@ -631,8 +631,14 @@ select.date-year
     padding: 10px;
 }
 
+#paymentForm .edit-error {
+    margin-right: 115px;
+    display: block;
+}
+
 #paymentForm .error
 {
+    font-size: 14px;
     color: #f60;
 }
 
