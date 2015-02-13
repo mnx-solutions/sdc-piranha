@@ -48,6 +48,12 @@
             $scope.creatingImage = creatingImages[machineid];
             $scope.imageName = $scope.creatingImage || '';
 
+            $scope.$watch('machine.job.finished', function (state) {
+                if (state) {
+                    $scope.machine = Machine.machine(machineid);
+                }
+            });
+
             var locationReplace = function (path) {
                 path = path || '/compute';
                 $location.url(path);
@@ -93,7 +99,7 @@
             };
 
             var getHostContainers = function (machine) {
-                if (!machine.tags || machine.tags.JPC_tag !== 'DockerHost' || !machine.ips.length) {
+                if (!machine.tags || machine.tags['JPC_tag'] !== 'DockerHost' || !machine.ips.length) {
                     return;
                 }
                 Docker.completedHosts().then(function (availableHosts) {
