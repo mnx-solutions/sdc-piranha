@@ -17,6 +17,14 @@
             var list = [];
             var images = {index: {}, job: null, list: {private: [], all: []}, error: null, search: {}};
             var IMAGES_PATH = '/images';
+            var findImageIndexById = function (list, image) {
+                for (var i = 0; i < list.length; i++) {
+                    if (list[i].id === image.id) {
+                        return i;
+                    }
+                }
+                return -1;
+            };
 
             function handleChunk(image, action) {
                 var old = null;
@@ -28,9 +36,12 @@
                 var allList = imagesList['all'];
                 var privateList = imagesList['private'];
                 if (indexImage) {
-                    old = (datacenterList.indexOf(image) === -1) ? (datacenterList.length - 1) : datacenterList.indexOf(image);
-                    oldAll = (allList.indexOf(image) === -1) ? (allList.length - 1) : allList.indexOf(image);
-                    oldPrivate = (privateList.indexOf(image) === -1) ? (privateList.length - 1) : privateList.indexOf(image);
+                    old = findImageIndexById(datacenterList, image);
+                    old = (old === -1) ? (datacenterList.length - 1) : old;
+                    oldAll = findImageIndexById(allList, image);
+                    oldAll = (oldAll === -1) ? (allList.length - 1) : oldAll;
+                    oldPrivate = findImageIndexById(privateList, image);
+                    oldPrivate = (oldPrivate === -1) ? (privateList.length - 1) : oldPrivate;
                     if (action && action === 'remove') {
                         datacenterList.splice(old, 1);
                         allList.splice(oldAll, 1);

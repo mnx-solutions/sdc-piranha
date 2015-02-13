@@ -23,8 +23,8 @@
             var loadImage = function () {
                 Image.image({id: currentImageId}).then(function (data) {
                     $scope.loading = false;
-                    $scope.oldImageData = ng.copy(data);
-                    $scope.currentImage = data;
+                    $scope.oldImageData = data;
+                    $scope.currentImage = ng.copy(data);
                 }, function (err) {
                     PopupDialog.errorObj(err);
                     $scope.currentImage = {};
@@ -37,6 +37,7 @@
                 $scope.loading = true;
                 Image.updateImage($scope.currentImage, function () {}).promise.then(function () {
                     $scope.loading = false;
+                    $scope.oldImageData = ng.copy($scope.currentImage);
                 }, function (err) {
                     PopupDialog.errorObj(err);
                     $scope.currentImage = ng.copy($scope.oldImageData);

@@ -37,11 +37,12 @@
                                                value=""
                                                name="imageName"
                                                data-machine-name="'image'"
-                                               data-ng-model="currentImage.name"/>
+                                               data-ng-model="currentImage.name"
+                                               required/>
                                     </span>
                                     <span class="edit-error">
                                         <div class="error"
-                                             data-ng-show="imageForm.imageName.$error.imageName"
+                                             data-ng-show="imageForm.imageName.$error.required || imageForm.imageName.$error.imageName"
                                              data-translate>
                                             Image name&nbsp;can contain only letters, digits and signs like '.' and '-'.
                                         </div>
@@ -55,11 +56,12 @@
                                                value=""
                                                name="imageVersion"
                                                data-machine-name="'image'"
-                                               data-ng-model="currentImage.version"/>
+                                               data-ng-model="currentImage.version"
+                                               required/>
                                     </span>
                                     <span class="edit-error">
                                         <div class="error"
-                                             data-ng-show="imageForm.imageVersion.$error.imageName"
+                                             data-ng-show="imageForm.imageVersion.$error.required || imageForm.imageVersion.$error.imageName"
                                              data-translate>
                                             Image version&nbsp;can contain only letters, digits and signs like '.' and '-'.
                                         </div>
@@ -114,7 +116,7 @@
                                     <div class="loading-medium loading-medium-inline" data-ng-show="currentImage.state == 'deleting' || loading"></div>
                                     <button class="btn light effect-orange-button" data-ng-click="cancel()" data-ng-disabled="loading">Cancel</button>
                                     <button class="btn light effect-orange-button" data-ng-click="deleteImage()" data-ng-disabled="currentImage.state !== 'active' || loading">Delete</button>
-                                    <button class="btn orange" data-ng-click="updateImage()" data-ng-disabled="loading || imageForm.imageName.$error.imageName || imageForm.imageVersion.$error.imageName || currentImage.state !== 'active'">Save</button>
+                                    <button class="btn orange" data-ng-click="updateImage()" data-ng-disabled="loading || imageForm.imageName.$error.required || imageForm.imageName.$error.imageName || imageForm.imageVersion.$error.required || imageForm.imageVersion.$error.imageName || currentImage.state !== 'active'">Save</button>
                                 </div>
                             </form>
                         </div>
