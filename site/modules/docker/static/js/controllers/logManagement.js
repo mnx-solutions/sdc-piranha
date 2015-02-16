@@ -15,6 +15,7 @@
                 var REMOVED_CONTAINER_STATUS = 'Deleted';
                 $scope.loading = true;
                 $scope.containers = [];
+                var initialGridProps = null;
                 var today = new Date();
                 var oneWeekAgo = new Date(today.getTime() - (60 * 60 * 24 * 7 * 1000));
                 $scope.date = {
@@ -112,6 +113,11 @@
 
                 if ($scope.features.manta === 'enabled') {
                     $scope.gridUserConfig = Account.getUserConfig().$child('dockerLogs');
+                    $scope.$watch('gridUserConfig', function () {
+                        if ($scope.gridUserConfig.loaded()) {
+                            initialGridProps = angular.copy($scope.gridProps);
+                        }
+                    });
                 }
 
                 var gridMessages = {
@@ -271,7 +277,7 @@
                         name: 'Deleted',
                         type: 'date',
                         sequence: 6,
-                        active: false
+                        active: true
                     },
                     {
                         id: 'Status',
@@ -334,20 +340,30 @@
                 $scope.placeHolderText = 'filter containers';
                 $scope.tabFilterField = 'logs';
                 $scope.exportFields = [];
+                initialGridProps = angular.copy($scope.gridProps);
 
                 $scope.$on('gridViewChangeTab', function (event, tab) {
+                    if ($scope.tab && $scope.tab === tab ||
+                        $scope.gridUserConfig && !$scope.gridUserConfig.loaded()) {
+                        return;
+                    }
                     $scope.tab = tab;
-                    if ($scope.tab === REMOVED_CONTAINER_STATUS) {
+                    var isDeletedTab = $scope.tab === REMOVED_CONTAINER_STATUS;
+                    if (isDeletedTab) {
                         $scope.gridOrder = ['-' + REMOVED_CONTAINER_STATUS];
                     }
-                    var hideColumns = ['Command', 'Created', 'Status'];
                     $scope.gridProps.forEach(function (el) {
-                        if (hideColumns.indexOf(el.id) !== -1) {
-                            el.active = $scope.tab !== REMOVED_CONTAINER_STATUS;
+                        for (var i = 0; i < initialGridProps.length; i++) {
+                            if (initialGridProps[i].id === el.id) {
+                                return initialGridProps[i] = angular.copy(el);
+                            }
                         }
-                        if (el.id === REMOVED_CONTAINER_STATUS) {
-                            el.active = $scope.tab === REMOVED_CONTAINER_STATUS;
-                        }
+                    });
+                    var hiddenColumns = ['Command', 'Created', 'Status'];
+                    $scope.gridProps = angular.copy(initialGridProps);
+                    $scope.gridProps = $scope.gridProps.filter(function (el) {
+                        return hiddenColumns.indexOf(el.id) === -1 && isDeletedTab ||
+                            el.id !== REMOVED_CONTAINER_STATUS && !isDeletedTab;
                     });
                     $scope.containers.forEach(function (container) {
                         if (container.logs !== REMOVED_CONTAINER_STATUS) {
