@@ -98,6 +98,7 @@ var firewall = function execute (scope) {
         handler: function (call) {
             call.log.info('Create firewall rule');
             var cloud = call.cloud.separate(call.data.datacenter);
+            var description = call.data.description;
             var newRule;
             try {
                 newRule = fwrule.create(call.data);
@@ -108,7 +109,8 @@ var firewall = function execute (scope) {
             newRule = newRule.text();
             cloud.createFwRule({
                 enabled: call.data.enabled,
-                rule: newRule
+                rule: newRule,
+                description: description
             }, function (err, rule) {
                 if (err) {
                     call.done(err);
@@ -132,6 +134,7 @@ var firewall = function execute (scope) {
             call.log.info('Update firewall rule ' + call.data.uuid);
             var cloud = call.cloud.separate(call.data.datacenter);
             var uuid = call.data.uuid;
+            var description = call.data.description;
             var newRule;
             try {
                 newRule = fwrule.create(call.data);
@@ -142,7 +145,8 @@ var firewall = function execute (scope) {
             newRule = newRule.text();
             cloud.updateFwRule(uuid, {
                 enabled: call.data.enabled,
-                rule: newRule
+                rule: newRule,
+                description: description
             }, function (err, rule) {
                 if (err) {
                     call.done(err);

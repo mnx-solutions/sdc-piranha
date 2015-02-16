@@ -535,6 +535,7 @@
             $scope.resetData = function () {
                 $scope.data.id = null;
                 $scope.data.uuid = null;
+                $scope.data.description = null;
                 $scope.data.datacenter = $scope.datacenter;
                 $scope.data.parsed = {};
                 $scope.data.parsed.from = [];
@@ -552,6 +553,7 @@
             $scope.getData = function() {
 	            var data = rule.cleanRule($scope.data);
                 data.datacenter = $scope.selected.datacenter || $scope.datacenter;
+                data.description = $scope.data.description || '';
 	            return data;
             };
 
@@ -853,6 +855,7 @@
                     $scope.loading = false;
                     $scope.openRuleForm = false;
                     $scope.data.uuid = '';
+                    $scope.data.description = '';
                 }, $scope.disableLoading);
             };
 
@@ -973,6 +976,13 @@
                     },
                     sequence: 1,
                     active: true
+                },
+                {
+                    id: 'description',
+                    name: 'Description',
+                    sequence: 8,
+                    active: true,
+                    columnClass: 'description-column'
                 }
 	        ];
 
