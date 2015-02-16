@@ -306,12 +306,14 @@
                 {
                     id: 'memory',
                     name: 'Memory',
+                    entryType: Number,
                     sequence: 11,
                     active: false
                 },
                 {
                     id: 'disk',
                     name: 'Disk',
+                    entryType: Number,
                     sequence: 12,
                     active: false
                 },

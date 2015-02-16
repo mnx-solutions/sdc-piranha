@@ -1,14 +1,38 @@
 'use strict';
 
-(function (ng, app) {
-    app.controller('GridViewController', ['$scope', '$filter', '$http', '$location', 'Account', '$rootScope', 'Datacenter', 'PopupDialog', '$qe', '$sce', 'ErrorService', '$timeout', function ($scope, $filter, $http, $location, Account, $rootScope, Datacenter, PopupDialog, $qe, $sce, ErrorService, $timeout) {
+(function (ng, app) {app.controller('GridViewController',
+    ['$scope', '$parse', '$filter', '$http', '$location', 'Account', '$rootScope', 'Datacenter', 'PopupDialog', '$qe', '$sce', 'ErrorService', '$timeout',
+    function ($scope, $parse, $filter, $http, $location, Account, $rootScope, Datacenter, PopupDialog, $qe, $sce, ErrorService, $timeout) {
         $scope.location = $location;
         $scope.checkedItems = [];
+        var types = {};
+
+        $scope.props.forEach(function (prop) {
+            var entryType = prop.entryType;
+            if (entryType) {
+                types[prop.id] = entryType;
+            }
+        });
 
         function refreshGrid() {
             $scope.refreshPager();
             var filteredItems = $filter('filter')($scope.items, $scope.matchesFilter);
-            var orderedItems = $filter('orderBy')(filteredItems, $scope.order);
+            var reverse;
+            var order = (Array.isArray($scope.order) ? $scope.order : [$scope.order]).map(function (order) {
+                if (ng.isFunction(order)) {
+                    return order;
+                }
+                var prop = order[0] === '+' || order[0] === '-' ? order.substr(1) : order;
+                if (!types[prop]) {
+                    return order;
+                }
+                reverse = order[0] === '-';
+                return function (entry) {
+                    return types[prop]($parse(prop)(entry));
+                };
+            });
+
+            var orderedItems = $filter('orderBy')(filteredItems, order, reverse);
             $scope.pagedItems = orderedItems && orderedItems.filter(function (item, index) {
                 return $scope.isOnPage(index);
             });
@@ -261,7 +285,7 @@
 
                         var subject = (el._getter && el._getter(item)) || item[el.id] || (el.id2 && item[el.id][el.id2]) || '';
 
-                        if (ng.isNumber(subject) || typeof subject === "boolean") {
+                        if (ng.isNumber(subject) || typeof subject === 'boolean') {
                             subject = subject.toString();
                         }
 
@@ -529,7 +553,7 @@
                 detailProps: '=',
                 items: '=',
                 actionButtons:'=',
-                imageButtonShow:"=",
+                imageButtonShow: '=',
                 filterAll: '@',
                 exportFields: '=',
                 columnsButton: '=',
@@ -778,4 +802,3 @@
     });
 
 }(window.angular, window.JP.getModule('Machine')));
-

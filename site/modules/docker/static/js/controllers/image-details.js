@@ -137,6 +137,7 @@
                     sequence: 5,
                     active: true,
                     _order: 'Size',
+                    entryType: Number,
                     _getter: function (image) {
                         return util.getReadableFileSizeString(image.Size);
                     }

@@ -104,6 +104,7 @@
                 {
                     id: 'postalCode',
                     name: 'Zip code',
+                    entryType: Number,
                     sequence: 9,
                     active: false
                 },
@@ -128,6 +129,7 @@
                 {
                     id: 'phone',
                     name: 'Phone',
+                    entryType: Number,
                     sequence: 13,
                     active: false
                 },
