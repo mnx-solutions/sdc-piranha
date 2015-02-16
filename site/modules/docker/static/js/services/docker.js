@@ -68,7 +68,7 @@
                 var container = cache.get(id);
                 if (container && container.Status) {
                     container.containers = 'stopped';
-                    container.Status = 'Exist (-1) moments ago';
+                    container.Status = 'Exit (-1) moments ago';
                     cache.put(container);
                 }
             },
