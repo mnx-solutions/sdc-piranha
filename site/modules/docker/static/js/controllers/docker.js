@@ -140,7 +140,9 @@
             });
 
             $scope.navigateMachine = function (machine) {
-                $location.url('/compute/instance/' + machine.id);
+                if (!machine.isSdc) {
+                    $location.url('/compute/instance/' + machine.id);
+                }
             };
 
             $scope.navigateContainersImages = function (route, host) {
@@ -156,6 +158,10 @@
                 Account.checkProvisioning({btnTitle: 'Submit and Access Docker'}, null, null, function () {
                     $location.path('/docker');
                 }, false);
+            };
+
+            $scope.createContainer = function () {
+                $location.path('/docker/container/create');
             };
         }
     ]);

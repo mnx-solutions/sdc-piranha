@@ -390,6 +390,12 @@ var Docker = function execute(scope, app) {
         });
     });
 
+    server.onCall('DockerListHosts', function (call) {
+        Docker.listHosts(call, function (error, hosts) {
+            call.done(error, hosts);
+        });
+    });
+
     server.onCall('DockerCompletedHosts', function (call) {
         var getVersion = call.data && call.data.version;
         Docker.listHosts(call, function (error, hosts) {

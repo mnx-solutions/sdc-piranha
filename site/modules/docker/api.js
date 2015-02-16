@@ -17,6 +17,7 @@ var SUBUSER_LOGIN = 'docker';
 var SUBUSER_REGISTRY_LOGIN = SUBUSER_LOGIN + '_registry';
 var SUBUSER_OBJ_NAME = 'docker';
 var SUBUSER_OBJ_NAME_REGISTRY = SUBUSER_OBJ_NAME + '-registry';
+var SDC_DOCKER_ID = '00000000-0000-0000-0000-000000000000';
 
 var requestMap = {
     'GET': 'get',
@@ -118,9 +119,13 @@ function createMethod(scope, opts, selfName) {
 
         var self = this;
         var auditParams = JSON.parse(JSON.stringify(params));
+        var path = opts.path;
+        if (this.options.isSdc && path !== '/_ping') {
+            path = '/v2' + path;
+        }
         var options = {
             log: scope.log,
-            path: formatUrl(opts.path, params),
+            path: formatUrl(path, params),
             method: opts.method || 'GET',
             retries: opts.retries || false,
             connectTimeout: opts.timeout,
@@ -646,8 +651,15 @@ module.exports = function execute(scope, register) {
                 return callback(errors);
             }
 
-            var hosts = [].concat.apply([], operations.successes);
-
+            var predefined = config.features.sdcDocker === 'enabled' ?
+                [{
+                    id: SDC_DOCKER_ID,
+                    name: config.sdcDocker.name,
+                    datacenter: config.sdcDocker.datacenter,
+                    primaryIp: config.sdcDocker.ip,
+                    isSdc: true
+                }] : [];
+            var hosts = [].concat.apply(predefined, operations.successes);
             callback(null, hosts);
         });
     };
@@ -1196,6 +1208,12 @@ module.exports = function execute(scope, register) {
     };
 
     api.getHostStatus = function (call, machineId, callback) {
+        if (machineId === SDC_DOCKER_ID) {
+            setImmediate(function () {
+                callback(null, 'completed');
+            });
+            return;
+        }
         var client = scope.api('MantaClient').createClient(call);
         client.getFileContents('~~/stor/.joyent/docker/.status-' + machineId, function (error, result) {
             var status = 'initializing';
@@ -1227,25 +1245,30 @@ module.exports = function execute(scope, register) {
             if (error) {
                 return callback(error);
             }
-            callback(null, new Service({
+            var serviceConfig = {
+                isSdc: opts.isSdc,
                 url: opts.url,
-                requestCert: true,
                 rejectUnauthorized: false,
-                ca: certificates.ca,
-                cert: certificates.cert,
-                key: certificates.key,
                 host: opts.host,
                 headers: util._extend({
                     'Content-type': 'application/json'
                 }, opts.headers)
-            }, call));
+            };
+            if (!serviceConfig.isSdc) {
+                serviceConfig.requestCert = true;
+                serviceConfig.ca = certificates.ca;
+                serviceConfig.cert = certificates.cert;
+                serviceConfig.key = certificates.key;
+            }
+            callback(null, new Service(serviceConfig, call));
         });
     }
 
     api.createClient = function (call, machine, callback) {
         var opts = {
-            url: (disableTls ? 'http://' : 'https://') + machine.primaryIp + ':4243',
-            host: machine
+            url: (disableTls || machine.isSdc ? 'http://' : 'https://') + machine.primaryIp + (machine.isSdc ? ':2375' : ':4243'),
+            host: machine,
+            isSdc: machine.isSdc
         };
         createClient(call, Docker, opts, callback);
     };
