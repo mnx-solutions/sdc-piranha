@@ -6,7 +6,8 @@
         'PopupDialog',
         '$q',
         '$rootScope',
-        function (serverTab, PopupDialog, $q, $rootScope) {
+        'Machine',
+        function (serverTab, PopupDialog, $q, $rootScope, Machine) {
 
             if ($rootScope.features.dtrace !== 'enabled') {
                 return;
@@ -31,6 +32,28 @@
             service.getScriptsList = function () {
                 return serverTab.call({
                     name: 'GetScripts'
+                }).promise;
+            };
+
+            service.listHosts = function () {
+                return Machine.listAllMachines().then(function (machines) {
+                    return machines.filter(function (machine) {
+                        return machine.tags && machine.tags['JPC_tag'] === 'DTraceHost';
+                    });
+                });
+            };
+
+            service.hostStatus = function (machine) {
+                return serverTab.call({
+                    name: 'DtraceHostStatus',
+                    data: {host: machine.primaryIp}
+                }).promise;
+            };
+
+            service.listProcesses = function (machine) {
+                return serverTab.call({
+                    name: 'DtraceListProcesses',
+                    data: {host: machine.primaryIp}
                 }).promise;
             };
 

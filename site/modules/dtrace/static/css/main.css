@@ -1,3 +1,33 @@
+.page-title-btn .control-panel {
+    display: inline-block;
+    padding: 8px 10px 0;
+}
+.dtrace-wrapper {
+    position: relative;
+    float: left;
+    margin: 5px 10px 10px 0;
+    padding: 10px 15px;
+    width: 240px;
+    height: 130px;
+    border-radius: 3px;
+    background-color: #eef0f2;
+    cursor: pointer;
+}
+.dtrace-wrapper .name {
+    overflow: hidden;
+    box-sizing: content-box;
+    height: 35px;
+    font-weight: bold;
+    font-size: 16px;
+}
+.dtrace-wrapper .info-status {
+    line-height: 30px;
+}
+.dtrace-wrapper .loading-medium-tr {
+    margin-left: 10px;
+    display: inline-block;
+    vertical-align: bottom;
+}
 .full-width-form
 {
     font-size: 16px;

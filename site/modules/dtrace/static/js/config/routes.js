@@ -9,14 +9,7 @@ window.JP.main.config(['routeProvider', function (routeProvider) {
     routeProvider
         .when('/dtrace', {
             title: 'DTrace',
-            action: 'dtrace',
-            showLatest: true,
-            showText: true,
-            resolve: {
-                data: ['$location', function ($location) {
-                    $location.path('/dtrace/heatmap');
-                }]
-            }
+            action: 'dtrace.index'
         }).when('/dtrace/heatmap', {
             title: 'Heatmap',
             action: 'dtrace.heatmap'

@@ -162,9 +162,9 @@ module.exports = function execute(scope, register) {
             call.getImmediate();
         }
 
-        if (options.specification === 'docker') {
+        if (options.specification) {
             // not declared in header, because both modules depend on each other
-            scope.api('Docker').createHost(call, options, callback);
+            scope.api(options.specification === 'dockerhost' ? 'Docker' : 'Dtrace').createHost(call, options, callback);
             return;
         }
 
