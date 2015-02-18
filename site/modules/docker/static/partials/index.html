@@ -49,7 +49,7 @@
                 <div class="progress-wrapper" data-ng-show="machine.cadvisorUnavailable">
                     <p class="cadvisor-unavailable">cAdvisor is unavailable</p>
                 </div>
-                <div class="progress-wrapper" data-ng-hide="machine.cadvisorUnavailable">
+                <div data-ng-hide="machine.isSdc" class="progress-wrapper" data-ng-hide="machine.cadvisorUnavailable">
                     <p class="title">CPU</p>
                     <div class="progress" title="{{machine.cpuLoad}}">
                         <div class="progress-bar" ng-style="{width: machine.cpuLoad}"></div>
@@ -59,7 +59,10 @@
                         <div class="progress-bar" ng-style="{width: machine.memoryLoad}"></div>
                     </div>
                 </div>
-                <div class="os-based ubuntu-logo">
+                <div data-ng-show="machine.isSdc" class="progress-wrapper">
+                    <button data-ng-click="createContainer()" type="button" class="btn btn-big orange text-to-left"><i class="plus-btn-icon"></i>Start new container</button>
+                </div>
+                <div data-ng-hide="machine.isSdc" class="os-based ubuntu-logo">
                     <p class="title">Ubuntu</p>
                 </div>
             </div>

@@ -376,12 +376,8 @@
             return createCall('containers', options);
         };
 
-        service.listHosts = function () {
-            return Machine.listAllMachines().then(function (machines) {
-                return machines.filter(function (machine) {
-                    return machine.tags && machine.tags['JPC_tag'] === 'DockerHost';
-                });
-            });
+        service.listHosts = function (options) {
+            return createCall('listHosts', options || {});
         };
 
         service.listRunningPrivateRegistryHosts = function () {
