@@ -7,6 +7,7 @@
             var Config = {
                 url: ''
             };
+            var xhRequests = {};
             function createUrl(map, params) {
                 return map.replace(/(\/:[^\/]+)/g, function (a, s) {
                     var key = s.substr(2);
@@ -140,27 +141,40 @@
                 var chunkId = Math.random();
 
                 var xhr = new XMLHttpRequest();
+                xhRequests[chunkId] = xhr;
                 xhr.upload.addEventListener('progress', function (e) {
                     if (e.lengthComputable) {
                         var progress = {
                             loaded: e.loaded,
                             total: e.total,
                             id: chunkId,
-                            name: shortNames
+                            name: shortNames,
+                            path: path
                         };
                         cb(null, {status: 'progress', progress: progress, id: chunkId});
                     }
                 }, false);
                 xhr.addEventListener('load', function () {
                     if (xhr.status === 200) {
-                        cb(null, {status: 'success', id: chunkId});
+                        cb(null, {status: 'success', id: chunkId, path: path});
                     } else {
                         var message = 'Failed to upload ' + shortNames + ': ' + xhr.responseText || xhr.statusText;
-                        cb(null, {status: 'error', message: message, id: chunkId});
+                        cb(null, {status: 'error', message: message, id: chunkId, path: path});
                     }
+                }, false);
+                xhr.addEventListener('abort', function () {
+                    cb(null, {status: 'success', id: chunkId, path: path});
                 }, false);
                 xhr.open('post', url, true);
                 xhr.send(data);
+            }
+
+            function abortUploadFiles(id) {
+                var xhr = xhRequests[id];
+                setTimeout(function () {
+                    xhr.abort();
+                    delete xhRequests[id];
+                });
             }
 
             return {
@@ -169,7 +183,8 @@
                     angular.extend(Config, config);
                 },
                 createService: createService,
-                uploadFiles: uploadFiles
+                uploadFiles: uploadFiles,
+                abortUploadFiles: abortUploadFiles
             };
         }
     ]);
