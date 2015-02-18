@@ -19,6 +19,15 @@ var SUBUSER_OBJ_NAME = 'docker';
 var SUBUSER_OBJ_NAME_REGISTRY = SUBUSER_OBJ_NAME + '-registry';
 var SDC_DOCKER_ID = '00000000-0000-0000-0000-000000000000';
 
+var SDC_DOCKER = config.features.sdcDocker === 'enabled' ?
+    {
+        id: SDC_DOCKER_ID,
+        name: config.sdcDocker.name,
+        datacenter: config.sdcDocker.datacenter,
+        primaryIp: config.sdcDocker.ip,
+        isSdc: true
+    } : null;
+
 var requestMap = {
     'GET': 'get',
     'PUT': 'put',
@@ -630,6 +639,10 @@ module.exports = function execute(scope, register) {
     };
 
     api.listHosts = function (call, callback) {
+        var hostId = call.data && call.data.id;
+        if (hostId === SDC_DOCKER_ID) {
+            return callback(null, SDC_DOCKER);
+        }
         vasync.forEachParallel({
             inputs: Object.keys(call.cloud.listDatacenters()),
             func: function (dcName, callback) {
@@ -650,16 +663,13 @@ module.exports = function execute(scope, register) {
             if (errors) {
                 return callback(errors);
             }
-
-            var predefined = config.features.sdcDocker === 'enabled' ?
-                [{
-                    id: SDC_DOCKER_ID,
-                    name: config.sdcDocker.name,
-                    datacenter: config.sdcDocker.datacenter,
-                    primaryIp: config.sdcDocker.ip,
-                    isSdc: true
-                }] : [];
-            var hosts = [].concat.apply(predefined, operations.successes);
+            var hosts = [].concat.apply(SDC_DOCKER ? [SDC_DOCKER] : [], operations.successes);
+            if (hostId) {
+                var host = hosts.find(function(host) {
+                    return hostId === host.id;
+                });
+                return callback(host ? null : 'Docker host not found', host);
+            }
             callback(null, hosts);
         });
     };
@@ -1265,10 +1275,11 @@ module.exports = function execute(scope, register) {
     }
 
     api.createClient = function (call, machine, callback) {
+        var isSdc = machine.isSdc || machine.id === SDC_DOCKER_ID;
         var opts = {
-            url: (disableTls || machine.isSdc ? 'http://' : 'https://') + machine.primaryIp + (machine.isSdc ? ':2375' : ':4243'),
+            url: (disableTls || isSdc ? 'http://' : 'https://') + machine.primaryIp + (isSdc ? ':2375' : ':4243'),
             host: machine,
-            isSdc: machine.isSdc
+            isSdc: isSdc
         };
         createClient(call, Docker, opts, callback);
     };

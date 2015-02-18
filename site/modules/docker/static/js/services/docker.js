@@ -377,7 +377,7 @@
         };
 
         service.listHosts = function (options) {
-            return createCall('listHosts', options || {});
+            return createCall('hosts', options || {});
         };
 
         service.listRunningPrivateRegistryHosts = function () {
@@ -401,10 +401,6 @@
                 });
                 return hosts;
             });
-        };
-
-        service.listHostsFull = function (options) {
-            return createCall('hosts', options || {});
         };
 
         service.completedHosts = function (options) {

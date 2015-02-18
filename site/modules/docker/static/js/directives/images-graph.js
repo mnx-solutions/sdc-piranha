@@ -9,7 +9,6 @@
             },
             templateUrl: 'docker/static/partials/graph-image-detail.html',
             replace: true,
-
             link: function (scope) {
                 scope.showDetails = false;
                 function getDetails(image) {
@@ -95,7 +94,7 @@
                     function click(d) {
                         var event = d3.event;
                         event.preventDefault();
-                        if (scope.detailsLoading) {
+                        if (scope.detailsLoading || d.fakeRoot) {
                             return;
                         }
                         var target = event.target;
@@ -122,7 +121,6 @@
                         items.forEach(function (item, index) {
                             indexes[item.Id] = index;
                         });
-
                         var getTree = function (items, indexes) {
                             var tree = [];
                             var nodes = ng.copy(items);
@@ -136,6 +134,12 @@
                                     tree.push(node);
                                 }
                             });
+
+                            if (tree.length > 1) {
+                                // adding fake root for tree
+                                tree = [{children: tree, fakeRoot: true}];
+                            }
+
                             return tree;
                         };
                         makeGraph(getTree(items, indexes));

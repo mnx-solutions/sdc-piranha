@@ -4,7 +4,7 @@
     <div data-ng-show="showDetails" class="image-detail" data-ng-style="{'margin-top' : marginTop}">
         <div class="title">Image Details</div>
         <div class="loading-medium" data-ng-show="detailsLoading"></div>
-        <dl data-ng-hide="detailsLoading" class="image-info">
+        <dl data-ng-if="!detailsLoading" class="image-info">
             <dt class="info-label">ID</dt>
             <dd data-ng-if="image.info">
                 <span data-image-id-popover data-object="image.info"></span>
