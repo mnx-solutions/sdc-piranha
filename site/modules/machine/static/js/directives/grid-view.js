@@ -284,6 +284,9 @@
                         }
 
                         var subject = (el._getter && el._getter(item)) || item[el.id] || (el.id2 && item[el.id][el.id2]) || '';
+                        if (el.id === 'hostId' && item.hostIds && item.hostIds.length > 0) {
+                            subject = item.hostIds;
+                        }
 
                         if (ng.isNumber(subject) || typeof subject === 'boolean') {
                             subject = subject.toString();
