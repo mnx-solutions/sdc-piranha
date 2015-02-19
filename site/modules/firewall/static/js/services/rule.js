@@ -136,7 +136,7 @@
                 return function (rule) {
                     rule = cleanRule(rule);
                     function showError(err) {
-                        var errorMessage = err.message;
+                        var errorMessage = err.message || err;
                         if (errorMessage.indexOf('permission') < 0) {
                             errorMessage = 'Unable to update rule' + (errorMessage ? ': ' + errorMessage : '');
                         }

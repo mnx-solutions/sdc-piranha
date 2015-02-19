@@ -80,6 +80,10 @@ var firewall = function execute (scope) {
                 } else if (new Date().getTime() - start < timeout) {
                     setTimeout(getRule, config.polling.firewallRuleCheckingDelay);
                 } else {
+                    var message = error.message || error;
+                    if (message.indexOf('permission') !== -1) {
+                        errorMessage = 'Can\'t get status for rule. ' + message;
+                    }
                     call.done(error && errorMessage, !error && result);
                 }
             }, null, true);
