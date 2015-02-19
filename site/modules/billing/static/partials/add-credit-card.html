@@ -236,7 +236,7 @@
                                 class="edit-country"
                                 data-ng-model="form.cardHolderInfo.country"
                                 data-ng-change="form.cardHolderInfo.country"
-                                data-select="this.prev.cardHolderInfo.country"
+                                data-select="selectedCountry"
                                 data-ng-options="country.iso3 as country.name group by country.group for country in countries.data | orderBy: ['-group','name']"
                                 data-ng-required="true"
                                 data-search-box="true">
