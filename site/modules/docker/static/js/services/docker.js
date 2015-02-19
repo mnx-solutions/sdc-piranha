@@ -431,7 +431,7 @@
             service[action + 'Container'] = function (container) {
                 var options = {
                     direct: true,
-                    host: {primaryIp: container.primaryIp, id: container.hostId},
+                    host: {primaryIp: container.primaryIp, id: container.hostId, isSdc: container.isSdc},
                     options: container.options || {id: container.Id}
                 };
                 if (action === 'remove') {

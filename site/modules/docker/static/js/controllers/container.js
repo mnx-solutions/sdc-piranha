@@ -80,10 +80,18 @@
             };
 
             var getDockerInspectContainer = function () {
-                var machine = $q.when(Machine.machine(hostId));
-                machine.then(function (machine) {
+                Docker.listHosts().then(function (hosts) {
+                    var machine = hosts.find(function (host) {
+                        return host.id === hostId;
+                    });
+
+                    if (!machine) {
+                        $location.path('/docker/containers');
+                        return;
+                    }
                     container.primaryIp = machine.primaryIp;
                     container.hostId = machine.id;
+                    container.isSdc = machine.isSdc;
                     $scope.machine = machine;
                     $scope.termOpts = {
                         machine: $scope.machine,
