@@ -1,21 +1,9 @@
 'use strict';
 
-(function (ng, app) {
-    app.factory('Docker', [
-        'serverTab',
-        '$rootScope',
-        'Account',
-        'errorContext',
-        'EventBubble',
-        'Machine',
-        'PopupDialog',
-        'localization',
-        'Storage',
-        '$q',
-        '$location',
-        'DockerCacheProvider',
-        function (serverTab, $rootScope, Account, errorContext, EventBubble, Machine, PopupDialog,
-                  localization, Storage, $q, $location, DockerCacheProvider) {
+(function (ng, app) {app.factory('Docker', ['serverTab', '$rootScope', 'Account', 'errorContext', 'EventBubble', 'Machine',
+    'PopupDialog', 'localization', 'Storage', '$q', '$location', 'DockerCacheProvider',
+    function (serverTab, $rootScope, Account, errorContext, EventBubble, Machine, PopupDialog,
+              localization, Storage, $q, $location, DockerCacheProvider) {
 
         if ($rootScope.features.docker !== 'enabled') {
             return;
@@ -882,6 +870,13 @@
             service.getRegistriesList({cache: true});
         });
 
+        service.idToUuid = function (dockerId) {
+            return dockerId.substr(0, 8) + '-'
+                + dockerId.substr(8, 4) + '-'
+                + dockerId.substr(12, 4) + '-'
+                + dockerId.substr(16, 4) + '-'
+                + dockerId.substr(20, 12);
+        };
         return service;
     }]);
 }(window.angular, window.JP.getModule('docker')));

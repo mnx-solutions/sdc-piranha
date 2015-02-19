@@ -5,7 +5,7 @@
         'CloudAnalytics',
         function ($scope, PopupDialog, $routeParams, Machine, $timeout, $location, $q, localization, CloudAnalytics) {
             $scope.machineExists = true;
-            $scope.selectedInstance = $scope.machineid = $scope.machineid || $routeParams.machineid;
+            $scope.selectedInstance = $scope.machineid = ($scope.container && $scope.container.Uuid) || $scope.machineid || $routeParams.machineid;
 
             $scope.machine = Machine.machine($scope.machineid);
 
@@ -101,7 +101,7 @@
                 }
 
                 var mod = $scope.current.metric.module;
-                var predicate = (mod === 'zfs' && {}) || { "eq": ["zonename", $scope.machineid ]};
+                var predicate = (mod === 'zfs' && {}) || {eq: ['zonename', $scope.machineid]};
 
                 return {
                     module: mod,
@@ -127,31 +127,31 @@
                         module: 'cpu',
                         stat: 'usage',
                         decomposition: [],
-                        predicate: { 'eq': ['zonename', $scope.machineid] },
+                        predicate: {eq: ['zonename', $scope.machineid]},
                         datacenter: $scope.datacenter
                     }, {
                         module: 'cpu',
                         stat: 'waittime',
                         decomposition: [],
-                        predicate: { 'eq': ['zonename', $scope.machineid] },
+                        predicate: {eq: ['zonename', $scope.machineid]},
                         datacenter: $scope.datacenter
                     }], [{
                         module: 'memory',
                         stat: 'rss',
                         decomposition: [],
-                        predicate: { 'eq': ['zonename', $scope.machineid] },
+                        predicate: {eq: ['zonename', $scope.machineid]},
                         datacenter: $scope.datacenter
                     }, {
                         module: 'memory',
                         stat: 'rss_limit',
                         decomposition: [],
-                        predicate: { 'eq': ['zonename', $scope.machineid] },
+                        predicate: {eq: ['zonename', $scope.machineid]},
                         datacenter: $scope.datacenter
                     }], [{
                         module: 'memory',
                         stat: 'reclaimed_bytes',
                         decomposition: [],
-                        predicate: { 'eq': ['zonename', $scope.machineid] },
+                        predicate: {eq: ['zonename', $scope.machineid]},
                         datacenter: $scope.datacenter
                     }], [{
                         module: 'zfs',
@@ -169,7 +169,7 @@
                         module: 'nic',
                         stat: 'vnic_bytes',
                         decomposition: ['zonename'],
-                        predicate: { "eq": ["zonename", $scope.machineid] },
+                        predicate: {eq: ['zonename', $scope.machineid]},
                         datacenter: $scope.datacenter
                     }]
                 ];
