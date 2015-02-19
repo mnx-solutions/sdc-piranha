@@ -339,7 +339,7 @@
                         Docker.getRegistriesList({aggregate: true}).then(function (result) {
                             $scope.registries = result.short;
                             $scope.fullRegistriesList = result.full;
-                            $scope.registries = Docker.addRegistryUsernameToHost($scope.registries);
+                            $scope.registries = Docker.addRegistryUsernames($scope.registries);
                             pullDialogOpeningStatus(false);
                             $scope.loading = false;
                         }, errorCallback);
