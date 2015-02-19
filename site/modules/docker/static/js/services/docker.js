@@ -158,7 +158,7 @@
             return job.promise;
         };
 
-        service.addRegistryUsernameToHost = function (registries) {
+        service.addRegistryUsernames = function (registries, excludeUnauthorizedDefaultRegistry) {
             for (var i = registries.length - 1; i >= 0; i--) {
                 var registry = registries[i];
                 registry.userHost = registry.host;
@@ -170,7 +170,7 @@
                             registry.userHost = protocol + registry.username + '@' + hostAddress;
                         }
                     });
-                } else if (!registry.username && registry.host.indexOf('index.docker.io') !== -1) {
+                } else if (excludeUnauthorizedDefaultRegistry && registry.host.indexOf('index.docker.io') !== -1) {
                     registries.splice(i, 1);
                 }
             }

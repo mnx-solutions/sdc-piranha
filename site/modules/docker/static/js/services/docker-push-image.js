@@ -18,7 +18,7 @@
 
                     Docker.getRegistriesList({aggregate: true}, image.primaryIp).then(function (result) {
                         scope.registries = result.short;
-                        scope.registries = Docker.addRegistryUsernameToHost(scope.registries);
+                        scope.registries = Docker.addRegistryUsernames(scope.registries, true);
                         scope.loading = false;
                     });
 
