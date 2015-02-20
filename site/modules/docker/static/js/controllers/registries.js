@@ -57,7 +57,7 @@
                             return object.actionInProgress;
                         },
                         _getter: function (object) {
-                            return '<a href="#!/docker/registry/' + object.id + '">' + object.host + '</a>';
+                            return object.actionInProgress ? object.host : '<a href="#!/docker/registry/' + object.id + '">' + object.host + '</a>';
                         },
                         active: true
                     },
