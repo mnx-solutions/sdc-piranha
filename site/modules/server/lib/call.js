@@ -180,7 +180,11 @@ function Call(opts) {
                 if (err) {
                     self.err = err;
 	                if(!noLog) {
-		                self.log.error(err);
+                        if (err.name === 'NotAuthorizedError') {
+                            self.log.info(err);
+                        } else {
+                            self.log.error(err);
+                        }
 	                }
                     self.status('error');
                 }
