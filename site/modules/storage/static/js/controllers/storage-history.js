@@ -3,8 +3,8 @@
 (function (app) {
     app.controller(
         'Storage.HistoryController',
-        ['$rootScope', '$scope', 'requestContext', 'localization', 'Storage', 'PopupDialog', 'Account', 'fileman', 'notification', '$location', '$q',
-            function ($rootScope, $scope, requestContext, localization, Storage, PopupDialog, Account, fileman, notification, $location, $q) {
+        ['$rootScope', '$scope', 'requestContext', 'localization', 'Storage', 'PopupDialog', 'Account', 'fileman', 'notification', '$location', '$q', '$qe',
+            function ($rootScope, $scope, requestContext, localization, Storage, PopupDialog, Account, fileman, notification, $location, $q, $qe) {
                 localization.bind('storage', $scope);
                 requestContext.setUpRenderContext('storage.history', $scope);
 
@@ -286,8 +286,7 @@
                                     fileman.rmr(path, function (error) {
                                         if (error) {
                                             job.deleteJob = false;
-                                            showPopupDialog('error', 'Error', error.message);
-                                            deferred.reject(error);
+                                            deferred.reject({jobId: job.id, error: error});
                                         }
                                         deferred.resolve(job.id);
                                     });
@@ -304,22 +303,32 @@
                                     deleteJobFolder(job);
                                 });
 
-                                function showNotification(deletedJobs, removed) {
-                                    var message = deletedJobs.length + ' jobs have';
-                                    message += removed ? ' been successfully deleted.' : 'n\'t been deleted.';
-                                    if (deletedJobs.length > 3) {
-                                        notification.popup(false, false, JOB_HISTORY_PATH, null, message);
-                                    } else {
-                                        deletedJobs.forEach(function (job) {
-                                            message = 'Job "' + (job.id || job) + '" was ';
-                                            message += removed ? 'successfully deleted.' : 'not deleted.';
-                                            notification.popup(false, false, JOB_HISTORY_PATH, null, message);
-                                        });
+                                function showNotification(jobIds, removed) {
+                                    if (jobIds.length > 0) {
+                                        var message = jobIds.length + ' jobs have';
+                                        message += removed ? ' been successfully deleted.' : 'n\'t been deleted.';
+                                        if (jobIds.length > 3) {
+                                            notification.popup(false, !removed, JOB_HISTORY_PATH, null, message);
+                                        } else {
+                                            jobIds.forEach(function (jobId) {
+                                                message = 'Job "' + jobId + '" was ';
+                                                message += removed ? 'successfully deleted.' : 'not deleted.';
+                                                notification.popup(false, !removed, JOB_HISTORY_PATH, null, message);
+                                            });
+                                        }
                                     }
                                 }
 
-                                $q.all(promises).then(function (deletedJobIds) {
+                                $qe.every(promises).then(function (deletedJobIds) {
+                                    var undeletedJobIds = [];
+                                    deletedJobIds = deletedJobIds.filter(function (deletedJobId) {
+                                        if (deletedJobId.error) {
+                                            undeletedJobIds.push(deletedJobId.error.jobId);
+                                        }
+                                        return !deletedJobId.error;
+                                    });
                                     showNotification(deletedJobIds, true);
+                                    showNotification(undeletedJobIds, false);
                                     $scope.jobs = $scope.jobs.filter(function (el) {
                                         return !el.deleteJob;
                                     });
@@ -333,8 +342,6 @@
                                             }
                                         });
                                     }
-                                }, function () {
-                                    showNotification($scope.checkedItems, false);
                                 });
                             }
                         );
