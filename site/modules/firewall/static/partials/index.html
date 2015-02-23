@@ -174,7 +174,7 @@
                                                 <div class="fw-controls">
                                                     <input type="text" data-ng-model="current.from.text" required/>
                                                 </div>
-                                                <div data-ng-show="current.from.text" class="row margin-top-10">
+                                                <div data-ng-show="current.from.text.length" class="row margin-top-10">
                                                     <label class="fw-control-label">Value</label>
                                                     <div class="fw-controls">
                                                         <input type="text" data-ng-model="current.from.value" />
@@ -189,7 +189,7 @@
                                                         <div class="fw-controls">
                                                             <input  type="text" name="fromValue" data-ng-model="fromSubnet.address" data-ip required/>
                                                         </div>
-                                                        <div data-ng-show="current.from.text" class="row margin-top-10">
+                                                        <div data-ng-show="current.from.text.length" class="row margin-top-10">
                                                             <label class="fw-control-label">CIDR</label>
                                                             <div class="fw-controls">
                                                                 <select data-ng-options="c for c in CIDRs" data-ng-model="fromSubnet.CIDR"> </select>
@@ -282,7 +282,7 @@
                                             <div class="fw-controls">
                                                 <input type="text" data-ng-model="current.to.text" required />
                                             </div>
-                                            <div data-ng-show="current.to.text" class="row margin-top-10">
+                                            <div data-ng-show="current.to.text.length" class="row margin-top-10">
                                                 <label class="fw-control-label">Value</label>
                                                 <div class="fw-controls">
                                                     <input type="text" data-ng-model="current.to.value" />
@@ -297,7 +297,7 @@
                                                     <div class="fw-controls">
                                                         <input type="text" name="toValue" data-ng-model="toSubnet.address" data-ip required />
                                                     </div>
-                                                    <div data-ng-show="current.to.text" class="row margin-top-10">
+                                                    <div data-ng-show="current.to.text.length" class="row margin-top-10">
                                                         <label class="fw-control-label">CIDR</label>
                                                         <div class="fw-controls">
                                                             <select data-ng-options="c for c in CIDRs" data-ng-model="toSubnet.CIDR"> </select>
