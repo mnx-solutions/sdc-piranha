@@ -112,6 +112,11 @@
             return callback();
         };
 
+        service.getAuditButtonLabel = function (event) {
+            var isAction = event.parsedParams && (event.action || event.parsedParams.error);
+            return isAction ? (event.parsedParams.error ? 'Error' : 'Clone') : '';
+        };
+
         service.pingManta = function (callback) {
             function errorPingManta() {
                 if ($location.path().indexOf('/dashboard') !== 0) {
