@@ -9,7 +9,7 @@
                 <p data-ng-show="manyVersions[selectedDataset.visibility][selectedDataset.nam]">INSTANCE VERSION:</p>
                 <div class="text-small image-container" data-ng-show="manyVersions[selectedDataset.visibility][selectedDataset.name]">
                     <div class="btn-group pull-left">
-                        <select data-select-two id="selectVersion" data-item="version" data-select="selectedDataset.version" data-fn="selectVersion" data-ng-show="selectedDataset || selectedVersions[selectedDataset.name]">
+                        <select data-select-two id="selectVersion" data-item="version" data-select="selectedDataset.version" data-width="200px" data-fn="selectVersion" data-ng-show="selectedDataset || selectedVersions[selectedDataset.name]">
                             <option data-ng-repeat="version in filteredVersions" value="{{version}}">
                                 {{version.version}}
                             </option>
