@@ -44,12 +44,10 @@
                     var tasks = [
                         $qe.when(Docker.inspectImage(image)),
                         $qe.when(Docker.listContainers({host: 'All', options: {all: true}})),
-                        $qe.when(Docker.getAuditInfo({event: {type: 'image', host: hostId, entry: imageId}, params: true}))
+                        $qe.when(Docker.getAuditInfo({event: {type: 'image', host: hostId, entry: imageId}, params: true})),
+                        $qe.when(Docker.historyImage(image))
                     ];
 
-                    if (!machine.isSdc) {
-                        tasks.push($qe.when(Docker.historyImage(image)));
-                    }
                     $qe.every(tasks).then(function (result) {
                         $scope.images = result[3] && Array.isArray(result[3]) ? result[3] : [];
                         $scope.image = result[0] || {};
