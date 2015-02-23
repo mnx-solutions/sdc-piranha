@@ -82,10 +82,11 @@ var firewall = function execute (scope) {
                     setTimeout(getRule, config.polling.firewallRuleCheckingDelay);
                 } else {
                     var message = error.message || error;
-                    if (message.indexOf('permission') !== -1) {
+                    var isPermissionRelated = message.indexOf('permission') !== -1;
+                    if (isPermissionRelated) {
                         errorMessage = 'Can\'t get status for rule. ' + message;
                     }
-                    call.done(error && errorMessage, !error && result);
+                    call.done(error && errorMessage, !error && result || isPermissionRelated);
                 }
             }, null, true);
         }
@@ -243,7 +244,9 @@ var firewall = function execute (scope) {
                         };
 
                         if (err) {
-                            call.log.error('List rules failed for datacenter %s, url %s; err.message: %s', name, datacenters[name], err.message, err);
+                            if (err.statusCode !== 403 || err.name !== 'NotAuthorizedError') {
+                                call.log.error('List rules failed for datacenter %s, url %s; err.message: %s', name, datacenters[name], err.message, err);
+                            }
                             response.status = 'error';
                             response.error = err;
                             if (err.restCode === 'NotAuthorized') {

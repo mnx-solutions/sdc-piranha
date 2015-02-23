@@ -148,6 +148,8 @@ var libErr = require('./lib/error');
 function error(err, req, res, next) {
     if (err.statusCode === 404) {
         logger.warn('Requested path not found @' + req.originalUrl);
+    } else if (err.statusCode === 403 && err.message && err.message.indexOf('getuser') !== -1) {
+        logger.info('Not authorized to access this path', err);
     } else {
         logger.error('Request ended with error', err);
         console.log(err.stack);

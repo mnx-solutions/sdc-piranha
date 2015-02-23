@@ -123,7 +123,11 @@ module.exports = function execute(scope, register) {
                         return;
                     }
 
-                    call.log.error({error: err}, 'Cloud polling failed');
+                    if (err.name === 'NotAuthorizedError') {
+                        call.log.info({error: err}, 'Cloud polling failed, no access');
+                    } else {
+                        call.log.error({error: err}, 'Cloud polling failed');
+                    }
                     clearPoller(err, true);
                     return;
                 }
