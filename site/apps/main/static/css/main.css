@@ -2299,12 +2299,12 @@ i.glyphicon-question-sign
 
 .select2-drop
 {
-    z-index: 99999;
+    z-index: 9999999;
 }
 
 .select2-drop-mask
 {
-    z-index: 99990;
+    z-index: 9999990;
 }
 
 .select2-results .select2-highlighted
@@ -3691,6 +3691,11 @@ label.checkbox
 .select2-offscreen
 {
     height: 0;
+}
+.select2-search-hidden
+{
+    display: none;
+    left: 0;
 }
 
 .grid-tabs-container .select-datacenter

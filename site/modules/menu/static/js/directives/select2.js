@@ -1,8 +1,8 @@
 'use strict';
 
 (function (ng, app) {
-    app.directive('selectTwo', [
-        function () {
+    app.directive('selectTwo', ['Select2overlay',
+        function (Select2overlay) {
             return {
                 link: function ($scope, $element, $attrs) {
                     var conf = {minimumResultsForSearch: -1};
@@ -32,7 +32,8 @@
                                 $scope[$attrs.fn](e.val);
                             }
                         });
-                    });
+                    }).on('open', Select2overlay.openHandler).on('close', Select2overlay.closeHandler);
+
                     if ($attrs.select) {
                         $scope.$watch($attrs.select, function (val) {
                             if (!val) {

@@ -10,7 +10,7 @@
 
     <div class="loading-large" data-ng-show="loading"></div>
     <div class="row">
-        <div data-ng-show="!loading && !mantaUnavailable">
+        <div data-ng-if="!loading && !mantaUnavailable">
             <div data-grid-view
                  data-user-config="gridUserConfig"
                  data-props="gridProps"

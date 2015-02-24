@@ -7,7 +7,7 @@
         <div data-ng-hide="loading || limits.length">
             You can currently provision two instances per data center. Please contact support to have your provisioning increased.
         </div>
-        <div data-ng-show="limits.length">
+        <div data-ng-if="limits.length">
             <div data-grid-view
                  data-user-config="gridUserConfig"
                  data-props="gridProps"

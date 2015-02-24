@@ -22,7 +22,7 @@
                     <div data-ng-hide="hideTags" class="form-group">
                         <span class="edit-image edit-label left">Select image tag</span>
                         <span class="edit-value">
-                            <select data-select-two data-ng-disabled="!tags.length" ui-select2="{minimumResultsForSearch: -1, width: '362px'}" id="tagSelect" data-width="250px" data-ng-model="tag" required>
+                            <select data-ng-disabled="!tags.length" ui-select2="{minimumResultsForSearch: -1, width: '362px'}" id="tagSelect" data-width="250px" data-ng-model="tag" required>
                                 <option data-ng-repeat="tag in tags" value="{{tag.name}}">
                                     {{tag.name}}
                                 </option>
