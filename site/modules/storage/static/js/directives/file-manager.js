@@ -2,9 +2,9 @@
 
 (function (app, ng) {
     app.directive('fileManager', ['Account', 'localization', 'PopupDialog', 'fileman', '$timeout', '$qe', 'util',
-            'Storage', '$location', 'rbac.Service', 'notification', '$rootScope',
+            'Storage', '$location', 'rbac.Service', 'notification', '$rootScope', 'http',
         function (Account, localization, PopupDialog, fileman, $timeout, $qe, util,
-                  Storage, $location, RbacService, notification, $rootScope) {
+                  Storage, $location, RbacService, notification, $rootScope, http) {
         return {
             restrict: 'EA',
             scope: {
@@ -535,11 +535,16 @@
                     scope.refreshingProgress = true;
                 });
 
-                scope.$on('uploadProgress', function (event, progress) {
+                scope.$on('uploadProgress', function (event, progress, path) {
                     scope.uploads[progress.id] = progress;
+                    progress.filePath = path;
                     progress.loadedStr = util.getReadableFileSizeString(progress.loaded);
                     progress.totalStr = util.getReadableFileSizeString(progress.total);
                 });
+
+                scope.cancelUpload = function (id) {
+                    http.abortUploadFiles(id);
+                }
             }
         };
     }]);

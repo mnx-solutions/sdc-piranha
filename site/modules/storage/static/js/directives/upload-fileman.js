@@ -17,11 +17,11 @@
                         scope.$apply(function () {
                             if (error || data.status === 'error') {
                                 PopupDialog.error(null, data && data.message || error);
-                                scope.$parent.$emit('uploadReady', data.id, true, scope.filemanUpload);
+                                scope.$parent.$emit('uploadReady', data.id, true, data.path);
                             } else if (data.status === 'progress') {
-                                scope.$parent.$emit('uploadProgress', data.progress, scope.filemanUpload);
+                                scope.$parent.$emit('uploadProgress', data.progress, data.progress.path);
                             } else if (data.status === 'success') {
-                                scope.$parent.$emit('uploadReady', data.id, true, scope.filemanUpload);
+                                scope.$parent.$emit('uploadReady', data.id, true, data.path);
                             }
                         });
                     });

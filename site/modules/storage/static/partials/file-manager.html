@@ -21,17 +21,25 @@
 
 <div id="folder" class="folder-container" data-path="{{ currentPath }}" data-ng-hide="loading">
     <div class="folder-container-sub">
-        <div data-ng-repeat="files in filesTree" class="{{getColumnClass($index)}}" data-ng-class="{'column-folders': loadingFolder && (splittedCurrentPath.length == 2)}">
+        <div data-ng-repeat="(key, files) in filesTree" class="{{getColumnClass($index)}}" data-ng-class="{'column-folders': loadingFolder && (splittedCurrentPath.length == 2)}">
             <div class="files-box" data-ng-class="{'column-files': loadingFolder && (splittedCurrentPath.length == 2)}">
                 <div class="loading-medium-transparent" data-ng-show="!refreshingProgress && refreshingFolder && $last"></div>
-                <div class="uploading-progress" data-ng-show="refreshingFolder && refreshingProgress && $last">
-                    <div data-ng-repeat="(fileId, progress) in uploads">
-                        {{ progress.name }}<br>
-                        {{ progress.loadedStr }} of {{ progress.totalStr }}<br>
-                        <progress max="100" value="{{ progress.loaded / progress.total * 100 }}"></progress>
-                    </div>
-                </div>
-                <div class="files-tree" data-ng-hide="refreshingFolder && $last">
+                <div class="files-tree">
+                    <table class="upload-bar">
+                        <tr data-ng-repeat="(fileId, progress) in uploads" data-ng-show="progress.filePath == key">
+                            <td>
+                                <div class="tooltip-hover" data-toggle="tooltip" data-placement="top" data-html="true" data-original-title="{{progress.name}} <br> {{ progress.loadedStr }} of {{ progress.totalStr }}">
+                                    <div class="bar" data-ng-style="{width: progress.loaded / progress.total * 100 + '%'}"></div>
+                                    <div class="path-name over">{{ progress.name }}</div>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="tooltip-hover" data-toggle="tooltip" data-placement="top" data-html="true" data-original-title="Cancel upload">
+                                    <div class="remove-icon" data-ng-click="cancelUpload(fileId)"></div>
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
                     <div data-ng-repeat="path in files"  class="finder-elements" data-ng-class="{active: path.active}">
                         <span data-ng-click="setCurrentPath(path, true)">
                             <div class="{{path.type}} path-name"></div>
