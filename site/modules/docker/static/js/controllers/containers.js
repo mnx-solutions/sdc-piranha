@@ -135,7 +135,7 @@
                     },
                     {
                         id: 'hostId',
-                        name: 'Host Id',
+                        name: 'Host ID',
                         sequence: 10,
                         active: true
                     }

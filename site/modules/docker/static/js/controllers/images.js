@@ -163,7 +163,7 @@
                     },
                     {
                         id: 'hostId',
-                        name: 'Host Id',
+                        name: 'Host ID',
                         sequence: 7,
                         active: true
                     }
@@ -474,7 +474,7 @@
                             },
                             {
                                 id: 'description',
-                                name: 'description',
+                                name: 'Description',
                                 sequence: 4,
                                 active: false
                             },
