@@ -144,17 +144,12 @@ var Docker = function execute(scope, app) {
                 if (error) {
                     return callback(error, call.data.suppressErrors);
                 }
-                client.ping(function (error) {
-                    if (error) {
-                        return callback(new Docker.DockerHostUnreachable(call.data.host).message, true);
+                client[method](call.data.options, function (error) {
+                    if (error === 'CAdvisor unavailable') {
+                        callback(error, true);
+                        return;
                     }
-                    client[method](call.data.options, function (error) {
-                        if (error === 'CAdvisor unavailable') {
-                            callback(error, true);
-                            return;
-                        }
-                        callback.apply(this, arguments);
-                    });
+                    callback.apply(this, arguments);
                 });
             });
         };
@@ -234,58 +229,53 @@ var Docker = function execute(scope, app) {
             if (error) {
                 return callback(error);
             }
-            client.ping(function (error) {
-                var host = hostObj.primaryIp;
-                if (error) {
-                    return callback(new Docker.DockerHostUnreachable(host).message, true);
+            var host = hostObj.primaryIp;
+            var container = data.container;
+            return removeContainer(call, client, container, data.options, function (err) {
+                if (err) {
+                    return call.log.warn(err.message, true);
                 }
-                var container = data.container;
-                return removeContainer(call, client, container, data.options, function (err) {
-                    if (err) {
-                        return call.log.warn(err.message, true);
-                    }
-                    var ports = [];
-                    if (container.Ports && container.Ports.length > 0) {
-                        ports = container.Ports.map(function (port) {
-                            return port.PublicPort;
-                        });
-                    } else {
-                        var isPrivateRegistryName = container.Names.some(function (name) {
-                            return name === '/private-registry';
-                        });
-                        ports = isPrivateRegistryName && container.Image.indexOf('private-registry') >= 0 ? [5000] : [];
-                    }
-                    if (ports.length) {
-                        // delete registry
-                        return Docker.getRegistries(call, function (error, list) {
-                            var matchingRegistryId;
-                            list = list.filter(function (item) {
-                                if (url.parse(item.host).hostname === host) {
-                                    var matchingPorts = ports.some(function (port) {
-                                        return port === parseInt(item.port, 10);
-                                    });
-                                    matchingRegistryId = matchingPorts ? item.id : null;
-                                    return !matchingPorts;
-                                } else {
-                                    return true;
-                                }
-                            });
-                            if (matchingRegistryId) {
-                                delete Docker.registriesCache[matchingRegistryId];
-                                return Docker.saveRegistries(call, list, function (errSave) {
-                                    if (errSave) {
-                                        call.log.warn(errSave);
-                                    }
-                                    callback(null, {});
+                var ports = [];
+                if (container.Ports && container.Ports.length > 0) {
+                    ports = container.Ports.map(function (port) {
+                        return port.PublicPort;
+                    });
+                } else {
+                    var isPrivateRegistryName = container.Names.some(function (name) {
+                        return name === '/private-registry';
+                    });
+                    ports = isPrivateRegistryName && container.Image.indexOf('private-registry') >= 0 ? [5000] : [];
+                }
+                if (ports.length) {
+                    // delete registry
+                    return Docker.getRegistries(call, function (error, list) {
+                        var matchingRegistryId;
+                        list = list.filter(function (item) {
+                            if (url.parse(item.host).hostname === host) {
+                                var matchingPorts = ports.some(function (port) {
+                                    return port === parseInt(item.port, 10);
                                 });
+                                matchingRegistryId = matchingPorts ? item.id : null;
+                                return !matchingPorts;
                             } else {
-                                callback(null, {});
+                                return true;
                             }
                         });
-                    } else {
-                        callback(null, {});
-                    }
-                });
+                        if (matchingRegistryId) {
+                            delete Docker.registriesCache[matchingRegistryId];
+                            return Docker.saveRegistries(call, list, function (errSave) {
+                                if (errSave) {
+                                    call.log.warn(errSave);
+                                }
+                                callback(null, {});
+                            });
+                        } else {
+                            callback(null, {});
+                        }
+                    });
+                } else {
+                    callback(null, {});
+                }
             });
         });
     };
@@ -320,29 +310,23 @@ var Docker = function execute(scope, app) {
                                         return callback(null, []);
                                     }
 
-                                    client.ping(function (error) {
-                                        if (error) {
-                                            suppressErrors.push(error);
+                                    client[method](util._extend({}, call.data.options), function (err, response) {
+                                        if (err) {
+                                            suppressErrors.push(err);
                                             return callback(null, []);
                                         }
-                                        client[method](util._extend({}, call.data.options), function (err, response) {
-                                            if (err) {
-                                                suppressErrors.push(err);
-                                                return callback(null, []);
-                                            }
-                                            if (response && Array.isArray(response)) {
-                                                response.forEach(function (container) {
-                                                    container.hostName = host.name;
-                                                    container.hostId = host.id;
-                                                    container.primaryIp = host.primaryIp;
-                                                    container.isSdc = host.isSdc;
-                                                    if (method === 'containers') {
-                                                        container.containers = container.Status.indexOf('Up') !== -1 ? 'running' : 'stopped';
-                                                    }
-                                                });
-                                            }
-                                            callback(null, response);
-                                        });
+                                        if (response && Array.isArray(response)) {
+                                            response.forEach(function (container) {
+                                                container.hostName = host.name;
+                                                container.hostId = host.id;
+                                                container.primaryIp = host.primaryIp;
+                                                container.isSdc = host.isSdc;
+                                                if (method === 'containers') {
+                                                    container.containers = container.Status.indexOf('Up') !== -1 ? 'running' : 'stopped';
+                                                }
+                                            });
+                                        }
+                                        callback(null, response);
                                     });
                                 });
                             });
@@ -457,15 +441,6 @@ var Docker = function execute(scope, app) {
                 Docker.createClient(call, host, function (error, client) {
                     collector.client = client;
                     callback(error);
-                });
-            });
-
-            pipeline.push(function ping(collector, callback) {
-                collector.client.ping(function (error) {
-                    if (error) {
-                        return callback(new Docker.DockerHostUnreachable(call.data.host).message, true);
-                    }
-                    callback();
                 });
             });
 
@@ -904,44 +879,39 @@ var Docker = function execute(scope, app) {
                                 if (error) {
                                     return call.done(error);
                                 }
-                                client.ping(function (errPing) {
-                                    if (errPing) {
-                                        return call.done(new Docker.DockerHostUnreachable(host).message, true);
+                                client.containers({all: true}, function (err, containers) {
+                                    if (err) {
+                                        return call.done(err);
                                     }
-                                    client.containers({all: true}, function (err, containers) {
-                                        if (err) {
-                                            return call.done(err);
-                                        }
-                                        var matchingContainer = containers.find(function (container) {
-                                            if (container.Status.indexOf('Exited') !== -1) {
-                                                var isPrivateRegistryName = container.Names.some(function (name) {
-                                                    return name === '/private-registry';
-                                                });
-                                                return isPrivateRegistryName && container.Image.indexOf('registry') !== -1;
-                                            }
-                                            return container.Ports.some(function (port) {
-                                                return port.PublicPort === parseInt(registry.port, 10);
+                                    var matchingContainer = containers.find(function (container) {
+                                        if (container.Status.indexOf('Exited') !== -1) {
+                                            var isPrivateRegistryName = container.Names.some(function (name) {
+                                                return name === '/private-registry';
                                             });
+                                            return isPrivateRegistryName && container.Image.indexOf('registry') !== -1;
+                                        }
+                                        return container.Ports.some(function (port) {
+                                            return port.PublicPort === parseInt(registry.port, 10);
                                         });
-                                        if (matchingContainer) {
-                                            var remove = function() {
-                                                matchingContainer.hostId = machine.id;
-                                                matchingContainer.hostName = machine.name;
-                                                return removeContainer(call, client, matchingContainer, call.done.bind(call));
-                                            };
-                                            if (matchingContainer.Status.indexOf('Paused') === -1) {
-                                                return remove();
-                                            }
-                                            client.unpause({id: matchingContainer.Id}, function (err) {
-                                                if (err) {
-                                                    return call.done(err);
-                                                }
-                                                remove();
-                                            });
-                                        } else {
-                                            call.done();
-                                        }
                                     });
+                                    if (matchingContainer) {
+                                        var remove = function() {
+                                            matchingContainer.hostId = machine.id;
+                                            matchingContainer.hostName = machine.name;
+                                            return removeContainer(call, client, matchingContainer, call.done.bind(call));
+                                        };
+                                        if (matchingContainer.Status.indexOf('Paused') === -1) {
+                                            return remove();
+                                        }
+                                        client.unpause({id: matchingContainer.Id}, function (err) {
+                                            if (err) {
+                                                return call.done(err);
+                                            }
+                                            remove();
+                                        });
+                                    } else {
+                                        call.done();
+                                    }
                                 });
                             });
                         } else {

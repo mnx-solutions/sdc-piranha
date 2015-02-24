@@ -2368,6 +2368,12 @@
           "resolved": "https://registry.npmjs.org/ultron/-/ultron-1.0.1.tgz"
         }
       }
+    },
+    "lru-cache": {
+      "name": "lru-cache",
+      "version": "2.5.0",
+      "from": "lru-cache@",
+      "resolved": "https://registry.npmjs.org/lru-cache/-/lru-cache-2.5.0.tgz"
     }
   }
 }

@@ -12,6 +12,10 @@ var exec = require('child_process').exec;
 var os = require('os');
 var EventEmitter = require('events').EventEmitter;
 var Auditor = require('./libs/auditor.js');
+var cache = require('lru-cache')({
+    max: 1000,
+    maxAge: 10 * 60
+});
 
 var SUBUSER_LOGIN = 'docker';
 var SUBUSER_REGISTRY_LOGIN = SUBUSER_LOGIN + '_registry';
@@ -60,12 +64,9 @@ function formatUrl(url, params) {
     });
 }
 
-function createCallback(client, dockerInstance, opts, auditParams, callback) {
+function createCallback(scope, dockerInstance, opts, auditParams, callback) {
     //noinspection JSLint
     return function (error, req, res, data) {
-        if (!opts.raw) {
-            client.close();
-        }
         if (error) {
             if (error.statusCode && res.headers['content-type'] === 'text/html') {
                 var httpError = restify.errors.codeToHttpError(error.statusCode);
@@ -74,7 +75,8 @@ function createCallback(client, dockerInstance, opts, auditParams, callback) {
 
                 }
             }
-            if (error.statusCode > 500 || error.statusCode === 400 ||
+            if (['ECONNRESET', 'ENOTFOUND', 'ESOCKETTIMEDOUT', 'ETIMEDOUT', 'ECONNREFUSED', 'EHOSTUNREACH'].indexOf(error.code) !== -1 ||
+                error.statusCode > 500 || error.statusCode === 400 ||
                 error.name === 'RequestTimeoutError' || error.name === 'ConnectTimeoutError') {
                 if (req.path.indexOf('/utilization') === 0) {
                     error = new CAdvisorUnreachable();
@@ -173,7 +175,7 @@ function createMethod(scope, opts, selfName) {
         if (raw) {
             args.push(callback);
         } else {
-            args.push(createCallback(client, self, opts, auditParams, callback));
+            args.push(createCallback(scope, self, opts, auditParams, callback));
         }
 
         client[requestMap[options.method]].apply(client, args);
@@ -533,7 +535,7 @@ module.exports = function execute(scope, register) {
             opts.forceMethod = access;
         }
         if (!access || access === 'GET') {
-            opts.type = 'images'
+            opts.type = 'images';
         }
 
         this.tokenRequest(opts, function (error, req) {
@@ -654,10 +656,9 @@ module.exports = function execute(scope, register) {
                     if (error) {
                         return callback(error);
                     }
-                    machines.forEach(function (machine) {
-                        machine.datacenter = dcName;
-                    });
+                    machines = machines || [];
                     var createdMachines = machines.filter(function (machine) {
+                        machine.datacenter = dcName;
                         return machine.primaryIp && machine.state === 'running';
                     });
                     callback(null, createdMachines);
@@ -1266,6 +1267,10 @@ module.exports = function execute(scope, register) {
     function createClient(call, Service, opts, callback) {
         var qrKey = 'create-' + Service.name + '-client-' + call.req.session.userId;
         var clientRequest = queuedRequests[qrKey];
+        var cachedClient = cache.get(opts.url);
+        if (cachedClient) {
+            return callback(null, cachedClient);
+        }
 
         if (!clientRequest) {
             clientRequest = queuedRequests[qrKey] = new EventEmitter();
@@ -1289,20 +1294,27 @@ module.exports = function execute(scope, register) {
                     'Content-type': 'application/json'
                 }, opts.headers)
             };
-            if (!serviceConfig.isSdc) {
+
+            if (serviceConfig.isSdc) {
+                serviceConfig.headers = util._extend(serviceConfig.headers, {
+                    'X-Auth-Token': call.req.session.token || call.req.cloud._token
+                });
+            } else {
                 serviceConfig.requestCert = true;
                 serviceConfig.ca = certificates.ca;
                 serviceConfig.cert = certificates.cert;
                 serviceConfig.key = certificates.key;
             }
-            callback(null, new Service(serviceConfig, call));
+            var service = new Service(serviceConfig, call);
+            cache.set(opts.url, service);
+            callback(null, service);
         });
     }
 
     api.createClient = function (call, machine, callback) {
         var isSdc = machine.isSdc || machine.id === SDC_DOCKER_ID;
         var opts = {
-            url: (disableTls || isSdc ? 'http://' : 'https://') + machine.primaryIp + (isSdc ? ':2375' : ':4243'),
+            url: 'https://' + machine.primaryIp + (isSdc ? ':2376' : ':4243'),
             host: machine,
             isSdc: isSdc
         };
@@ -1443,7 +1455,7 @@ module.exports = function execute(scope, register) {
         }
 
         if (typeof (fromCache) === 'boolean' && fromCache && Object.keys(api.registriesCache).length) {
-            return callback(null, Object.keys(api.registriesCache).map(function (key) {return api.registriesCache[key]}));
+            return callback(null, Object.keys(api.registriesCache).map(function (key) {return api.registriesCache[key];}));
         }
         client.getFileJson('~~/stor/.joyent/docker/registries.json', function (error, list) {
             if (error) {
@@ -1486,18 +1498,18 @@ module.exports = function execute(scope, register) {
     };
 
     var timeout = api.timeout;
-    function updateRegistriesList (call, data, callback) {
-            callback(null);
 
-            var later = function () {
-                timeout = null;
-                data = data.filter(function (item) {
-                    return api.registriesCache.hasOwnProperty(item.id);
-                });
-                return api.saveRegistries(call, data, function() {});
-            };
-            clearTimeout(timeout);
-            timeout = setTimeout(later, 500);
+    function updateRegistriesList(call, data, callback) {
+        setImmediate(callback);
+
+        clearTimeout(timeout);
+        timeout = setTimeout(function () {
+            timeout = null;
+            data = data.filter(function (item) {
+                return api.registriesCache.hasOwnProperty(item.id);
+            });
+            api.saveRegistries(call, data, function () {});
+        }, 500);
     }
 
     api.deleteRegistry = function (call, key, value, callback) {
