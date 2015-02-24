@@ -6,13 +6,13 @@
         'Docker',
         'Machine',
         'PopupDialog',
-        '$q',
+        '$qe',
         'requestContext',
         'localization',
         '$location',
         'util',
         'dockerPushImage',
-        function ($scope, Docker, Machine, PopupDialog, $q, requestContext, localization, $location, util, dockerPushImage) {
+        function ($scope, Docker, Machine, PopupDialog, $qe, requestContext, localization, $location, util, dockerPushImage) {
             localization.bind('docker', $scope);
             requestContext.setUpRenderContext('docker.images-details', $scope, {
                 title: localization.translate(null, 'docker', 'View Joyent Image Details')
@@ -35,21 +35,25 @@
             };
 
             var getDockerInspectImage = function () {
-                var machine = $q.when(Machine.machine(hostId));
-                machine.then(function (machine) {
+                var host = $qe.when(Docker.listHosts({id:hostId}));
+                host.then(function (machine) {
                     var primaryIp = machine.primaryIp;
                     var hostId = machine.id;
                     image.primaryIp = primaryIp;
                     image.hostId = machine.id;
-                    $q.all([
-                        $q.when(Docker.inspectImage(image)),
-                        $q.when(Docker.historyImage(image)),
-                        $q.when(Docker.listContainers({host: 'All', options: {all: true}})),
-                        $q.when(Docker.getAuditInfo({event: {type: 'image', host: hostId, entry: imageId}, params: true}))
-                    ]).then(function (result) {
-                        $scope.images = result[1] || [];
+                    var tasks = [
+                        $qe.when(Docker.inspectImage(image)),
+                        $qe.when(Docker.listContainers({host: 'All', options: {all: true}})),
+                        $qe.when(Docker.getAuditInfo({event: {type: 'image', host: hostId, entry: imageId}, params: true}))
+                    ];
+
+                    if (!machine.isSdc) {
+                        tasks.push($qe.when(Docker.historyImage(image)));
+                    }
+                    $qe.every(tasks).then(function (result) {
+                        $scope.images = result[3] && Array.isArray(result[3]) ? result[3] : [];
                         $scope.image = result[0] || {};
-                        $scope.audit = result[3] || [];
+                        $scope.audit = result[2] || [];
                         $scope.audit.forEach(function (event) {
                             event.hostName = machine.name || machine.id;
                         });
@@ -60,11 +64,12 @@
                             image.ShortId = image.Id.slice(0, 12);
                             image.Created = new Date(image.Created * 1000);
                         });
+                        $scope.image.info = $scope.image.info || $scope.image;
                         $scope.imageInfoTags = '';
                         if ($scope.image.info && $scope.image.info.Tags) {
                             $scope.imageInfoTags = $scope.image.info.Tags.join(', ');
                         }
-                        var hostsContainers = result[2] || [];
+                        var hostsContainers = result[1] || [];
                         $scope.imageContainer = $scope.image.Container.slice(0, 12);
                         var container = hostsContainers.find(function (container) {
                             return container.Id === $scope.image.Container;
