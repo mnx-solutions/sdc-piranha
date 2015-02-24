@@ -475,6 +475,10 @@
                         Privileged: $scope.privileged
                     };
 
+                    if ($scope.container.name.length === 1) {
+                        return errorCallback('Container name should be more than one character.');
+                    }
+
                     Docker.run(host, {create: $scope.container, start: startOptions}).then(function () {
                         $location.path('/docker/containers');
                     }, function (err) {
