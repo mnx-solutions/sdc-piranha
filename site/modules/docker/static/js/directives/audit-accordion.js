@@ -1,7 +1,7 @@
 'use strict';
 
 (function (app) {
-    app.directive('auditAccordion',  ['Account', 'dockerClone', function (Account, dockerClone) {
+    app.directive('auditAccordion',  ['Account', 'dockerClone', 'Docker', function (Account, dockerClone, Docker) {
         return {
             templateUrl: 'docker/static/partials/audit-accordion.html',
             restrict: 'EA',
@@ -54,9 +54,7 @@
                         name: 'Result',
                         type: 'button',
                         btn: {
-                            getLabel: function (event) {
-                                return event.parsedParams && event.parsedParams.error ? 'Error' : 'Clone';
-                            },
+                            getLabel: Docker.getAuditButtonLabel,
                             getClass: function (event) {
                                 return 'btn-edit ci btn-audit ' + (event.parsedParams && event.parsedParams.error ? 'effect-orange-button show-on-click' : 'btn btn-original-text orange');
                             },
@@ -70,6 +68,7 @@
                                 return event.parsedParams && event.parsedParams.errorMessage ? event.parsedParams.errorMessage : '';
                             }
                         },
+                        _order: Docker.getAuditButtonLabel,
                         sequence: 0,
                         active: true
                     }

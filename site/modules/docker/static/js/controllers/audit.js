@@ -105,9 +105,7 @@
                     name: 'Result',
                     type: 'button',
                     btn: {
-                        getLabel: function (event) {
-                            return event.parsedParams && event.parsedParams.error ? 'Error' : 'Clone';
-                        },
+                        getLabel: Docker.getAuditButtonLabel,
                         getClass: function (event) {
                             return 'btn-edit ci btn-audit ' + (event.parsedParams && event.parsedParams.error ? 'effect-orange-button show-on-click' : 'btn btn-original-text orange');
                         },
@@ -121,6 +119,7 @@
                             return event.parsedParams && event.parsedParams.errorMessage ? event.parsedParams.errorMessage : '';
                         }
                     },
+                    _order: Docker.getAuditButtonLabel,
                     sequence: 0,
                     active: true
                 }
