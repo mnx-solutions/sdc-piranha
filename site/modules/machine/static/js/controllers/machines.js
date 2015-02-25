@@ -167,6 +167,10 @@
                                 if (action === 'delete') {
                                     $$track.event('machine', 'delete');
                                     var resolvedDeleteAction = function (el, isDeletedDockerMachine) {
+                                        if ($location.path() === '/compute/instance/' + el.id) {
+                                            PopupDialog.message('Message', 'Your instance "' + el.name + '" has been successfully deleted.');
+                                            $location.path('/compute');
+                                        }
                                         if (!$scope.machines.length && currentLocation === $location.path()) {
                                             Machine.gotoCreatePage();
                                         }
