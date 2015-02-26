@@ -167,6 +167,13 @@
                 }, false);
                 xhr.open('post', url, true);
                 xhr.send(data);
+                setTimeout(function () {
+                    cb(null, {status: 'uploadWaiting', progress: {
+                        id: chunkId,
+                        name: shortNames,
+                        filePath: path
+                    }});
+                });
             }
 
             function abortUploadFiles(id) {

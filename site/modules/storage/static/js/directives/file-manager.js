@@ -538,8 +538,12 @@
                 scope.$on('uploadProgress', function (event, progress, path) {
                     scope.uploads[progress.id] = progress;
                     progress.filePath = path;
-                    progress.loadedStr = util.getReadableFileSizeString(progress.loaded);
-                    progress.totalStr = util.getReadableFileSizeString(progress.total);
+                    progress.title = util.getReadableFileSizeString(progress.loaded) + ' of ' + util.getReadableFileSizeString(progress.total);
+                });
+
+                scope.$on('uploadWaiting', function (event, progress) {
+                    scope.uploads[progress.id] = progress;
+                    progress.title = 'Waiting';
                 });
 
                 scope.cancelUpload = function (id) {

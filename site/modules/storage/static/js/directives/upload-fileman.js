@@ -18,6 +18,8 @@
                             if (error || data.status === 'error') {
                                 PopupDialog.error(null, data && data.message || error);
                                 scope.$parent.$emit('uploadReady', data.id, true, data.path);
+                            } else if (data.status === 'uploadWaiting') {
+                                scope.$parent.$emit('uploadWaiting', data.progress);
                             } else if (data.status === 'progress') {
                                 scope.$parent.$emit('uploadProgress', data.progress, data.progress.path);
                             } else if (data.status === 'success') {
