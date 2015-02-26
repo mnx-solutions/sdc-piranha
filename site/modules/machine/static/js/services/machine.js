@@ -707,11 +707,10 @@
         bindCollectionCRUD('metadata');
 
         service.checkFirstInstanceCreated = function (id) {
-            var job = serverTab.call({
+            return serverTab.call({
                 name: 'checkFirstInstanceCreated',
                 data: {uuid: id}
-            });
-            return job.deferred;
+            }).promise;
         };
 
         service.listAllMachines = function () {
