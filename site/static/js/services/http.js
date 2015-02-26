@@ -124,6 +124,8 @@
                 var metadata = {path: path, files: {}};
                 var fileIndex;
 
+                files = Array.prototype.slice.call(files);
+
                 files.forEach(function (file) {
                     metadata.files[file.name] = file.size;
                 });
@@ -156,6 +158,13 @@
                 }, false);
                 xhr.addEventListener('load', function () {
                     if (xhr.status === 200) {
+                        var responseObj = null;
+                        try {
+                            responseObj = JSON.parse(xhr.responseText);
+                        } catch (e) {}
+                        if (responseObj && responseObj.error) {
+                            return cb(responseObj);
+                        }
                         cb(null, {status: 'success', id: chunkId, path: path});
                     } else {
                         var message = 'Failed to upload ' + shortNames + ': ' + xhr.responseText || xhr.statusText;

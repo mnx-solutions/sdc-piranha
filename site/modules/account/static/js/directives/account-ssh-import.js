@@ -109,7 +109,10 @@
                                     if (subUserId) {
                                         path = 'account/upload?userId=' +  subUserId;
                                     }
-                                    return http.uploadFiles(path, elem.value, files, function (error) {
+                                    return http.uploadFiles(path, elem.value, files, function (error, result) {
+                                        if (result && result.status !== 'success' && result.status !== 'error') {
+                                            return;
+                                        }
                                         $scope.loadingKeys = false;
                                         $rootScope.$broadcast('sshProgress', false);
 
