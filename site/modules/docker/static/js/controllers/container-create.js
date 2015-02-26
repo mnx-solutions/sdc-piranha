@@ -475,6 +475,10 @@
                         Privileged: $scope.privileged
                     };
 
+                    var containerNamePattern = /^[\.\_\-]/;
+                    if (containerNamePattern.test($scope.container.name)) {
+                        return errorCallback('Container name can not start with \'.\' or \'-\' or \'_\'');
+                    }
                     if ($scope.container.name.length === 1) {
                         return errorCallback('Container name should be more than one character.');
                     }
