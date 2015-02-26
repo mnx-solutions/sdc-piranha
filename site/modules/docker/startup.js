@@ -1153,6 +1153,8 @@ var Docker = function execute(scope, app) {
                 var opts = {registry: registryRecord, image: call.data.options.name, access: 'POST'};
                 if (registryRecord.type === 'local') {
                     opts.access = 'GET';
+                } else if (registryRecord.type === 'remote' && call.data.action === 'addImageTag') {
+                    opts.access = 'PUT';
                 }
                 Docker.createIndexClient(call, opts, function (error, clients) {
                     if (error) {

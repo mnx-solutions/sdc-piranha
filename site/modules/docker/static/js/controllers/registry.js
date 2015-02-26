@@ -128,6 +128,10 @@
                     return hasDuplicates;
                 };
 
+                function isRegistryTypeRemote() {
+                    return $scope.registry.type === 'remote';
+                }
+
                 $scope.gridOrder = [];
                 $scope.gridProps = [
                     {
@@ -183,13 +187,14 @@
                                     return 'btn grid-mini-btn download effect-orange-button';
                                 },
                                 disabled: function (object) {
-                                    return object.loading || object.processing || $scope.registry.type !== 'local';
+                                    return object.loading || object.processing || object.actionInProgress;
                                 },
                                 action: function (object) {
                                     object.processing = true;
                                     PopupDialog.custom({
                                         templateUrl: 'docker/static/partials/image-add-tag.html',
                                         openCtrl: function ($scope, dialog) {
+                                            $scope.isRegistryTypeRemote = isRegistryTypeRemote();
                                             $scope.newTag = '';
                                             $scope.tags = angular.copy(object.tags) || [];
                                             var storeTags = function () {
@@ -207,13 +212,18 @@
                                                 });
                                             };
                                             $scope.editTag = function (tag) {
+                                                if ($scope.isRegistryTypeRemote) {
+                                                    return;
+                                                }
                                                 storeTags();
                                                 $scope.focusOut();
                                                 tag.edit = true;
                                             };
+                                            // removeImageTag isn't working on remote registry due to an issue:
+                                            // https://github.com/docker/docker/issues/8759
                                             $scope.removeTag = function (tag) {
                                                 tag.actionInProgress = true;
-                                                registryImageTag('removeImageTag', object.name, tag.name, tag.id, function (error) {
+                                                registryImageTag('removeImageTag', object.name, tag.name, JSON.stringify(object.layoutId), function (error) {
                                                     if (error) {
                                                         return;
                                                     }
@@ -246,7 +256,7 @@
                                                     var oldTag = angular.copy($scope.lastSavedTags ? $scope.lastSavedTags[index] : $scope.tags[index]);
                                                     tag.actionInProgress = true;
                                                     tag.edit = false;
-                                                    registryImageTag('addImageTag', object.name, tag.name, JSON.stringify(tag.id), function (error) {
+                                                    registryImageTag('addImageTag', object.name, tag.name, JSON.stringify(object.layoutId), function (error) {
                                                         if (error) {
                                                             tag.actionInProgress = false;
                                                             return;
