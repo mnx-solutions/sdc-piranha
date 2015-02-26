@@ -230,16 +230,19 @@
                         'Are you sure you want to delete the selected user?'
                     ),
                     function () {
-                        if ($scope.listUserKeys.length !== 0) {
-                            var message = 'Cannot delete user with SSH keys. Please delete SSH keys first.';
-                            loggingService.log('info', message);
-                            errorCallback({message: message});
-                            return;
-                        }
                         $scope.loading = true;
-                        service.deleteUser($scope.user.id).then(function () {
-                            $scope.loading = false;
-                            $location.path('/accounts/users');
+                        service.listUserKeys($scope.user.id).then(function (list) {
+                            $scope.listUserKeys = list;
+                            if ($scope.listUserKeys.length !== 0) {
+                                var message = 'Cannot delete user with SSH keys. Please delete SSH keys first.';
+                                loggingService.log('info', message);
+                                errorCallback({message: message});
+                                return;
+                            }
+                            service.deleteUser($scope.user.id).then(function () {
+                                $scope.loading = false;
+                                $location.path('/accounts/users');
+                            }, errorCallback);
                         }, errorCallback);
                     }
                 );
