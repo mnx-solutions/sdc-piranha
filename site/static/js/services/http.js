@@ -174,6 +174,9 @@
                 xhr.addEventListener('abort', function () {
                     cb(null, {status: 'success', id: chunkId, path: path});
                 }, false);
+                xhr.addEventListener('error', function () {
+                    cb(null, {status: 'error', message: 'Failed to read or upload file', id: chunkId, path: path});
+                }, false);
                 xhr.open('post', url, true);
                 xhr.send(data);
                 setTimeout(function () {
