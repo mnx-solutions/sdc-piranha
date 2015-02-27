@@ -34,7 +34,7 @@
     "fwrule": "git+ssh://git@git.joyent.com:fwrule.git",
     "soap": "~0.4.5",
     "http-signature": "~0.10.0",
-    "ursa": "git+ssh://git@github.com:13W/ursa.git",
+    "ursa": "0.8.3",
     "manta": "1.4.3",
     "memorystream": "0.2.0",
     "formidable": "1.0.15",
