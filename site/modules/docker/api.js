@@ -851,13 +851,36 @@ module.exports = function execute(scope, register) {
     }
 
     function deleteSubAccount(call, subId, name, deleteCallback) {
+        function deleteRolePolicy(action, rolePolicyList, callback) {
+            var rolePolicyNames = [SUBUSER_OBJ_NAME, SUBUSER_OBJ_NAME_REGISTRY];
+            if (name) {
+                rolePolicyNames = [name];
+            }
+            vasync.forEachPipeline({
+                inputs: rolePolicyNames,
+                func: function (rolePolicyName, pipeCallback) {
+                    var dockerRolePolicy = rolePolicyList.find(function (item) { return item.name === rolePolicyName; });
+                    if (dockerRolePolicy) {
+                        call.cloud[action](dockerRolePolicy.id, pipeCallback);
+                    } else {
+                        pipeCallback();
+                    }
+                }
+            }, callback);
+        }
         vasync.waterfall([
             function (callback) {
+                if (!subId) {
+                    return callback(null, null);
+                }
                 call.cloud.listUserKeys(subId, function (listErr, keys) {
                     callback(listErr, keys);
                 });
             },
             function (keys, callback) {
+                if (!keys) {
+                    return callback(null, null);
+                }
                 vasync.forEachPipeline({
                     inputs: keys,
                     func: function (key, pipeCallback) {
@@ -871,27 +894,20 @@ module.exports = function execute(scope, register) {
                 });
             },
             function (roles, callback) {
-                var dockerRole = roles.find(function (role) { return role.name === name; });
-                if (dockerRole) {
-                    call.cloud.deleteRole(dockerRole.id, callback);
-                } else {
-                    callback();
-                }
+                deleteRolePolicy('deleteRole', roles, callback);
             },
-            function (callback) {
+            function (_, callback) {
                 call.cloud.listPolicies(function (listErr, policies) {
                     callback(listErr, policies);
                 });
             },
             function (policies, callback) {
-                var dockerPolicy = policies.find(function (policy) { return policy.name === name; });
-                if (dockerPolicy) {
-                    call.cloud.deletePolicy(dockerPolicy.id, callback);
-                } else {
-                    callback();
-                }
+                deleteRolePolicy('deletePolicy', policies, callback);
             },
-            function (callback) {
+            function (_, callback) {
+                if (!subId) {
+                    return callback();
+                }
                 call.cloud.deleteUser(subId, callback);
             }
         ], deleteCallback);
@@ -1054,7 +1070,12 @@ module.exports = function execute(scope, register) {
                         setupSubAccounts(call, keyPair, callback);
                     });
                 } else {
-                    setupSubAccounts(call, keyPair, callback);
+                    deleteSubAccount(call, null, null, function (deleteError) {
+                        if (deleteError) {
+                            return callback(deleteError);
+                        }
+                        setupSubAccounts(call, keyPair, callback);
+                    });
                 }
             };
             if (dockerUser) {
