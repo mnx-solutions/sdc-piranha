@@ -6,13 +6,14 @@
                     <h5><i class="glyphicon glyphicon-info-sign"></i><b>Image Tags</b></h5>
                 </div>
                 <div class="modal-body">
+                    <div class="tag-list-note" data-ng-show="isRegistryTypeRemote">Note: Updating and deleting tags are not presently supported for "index.docker.io".</div>
                     <div class="tag-list-wrapper">
                         <table class="form-add-tag" data-ng-repeat="tag in tags">
                             <tr data-ng-show="!tag.edit" class="tag-row">
                                 <td>Tag {{$index + 1}}</td>
                                 <td data-ng-click="!tag.actionInProgress && editTag(tag)" data-ng-disabled="tag.actionInProgress">{{tag.name}}</td>
                                 <td>
-                                    <span class="remove-icon delete pull-right" data-ng-click="!tag.actionInProgress && removeTag(tag)" data-ng-show="!saving && !tag.actionInProgress"></span>
+                                    <span class="remove-icon delete pull-right" data-ng-click="!tag.actionInProgress && removeTag(tag)" data-ng-disabled="isRegistryTypeRemote" data-ng-show="!isRegistryTypeRemote && !saving && !tag.actionInProgress"></span>
                                     <div class="loading-medium-tr loading-medium-tags" data-ng-show="tag.actionInProgress"></div>
                                 </td>
                             </tr>
@@ -21,7 +22,7 @@
                                 <td><input type="text" data-ng-model="tag.name" 
                                            data-ng-pattern="/^[A-Za-z0-9_\.\-]+$/" data-ng-minlength="2" data-ng-maxlength="30"/></td>
                                 <td>
-                                    <div class="btn orange" data-ng-click="saveTag(tag, $index)" data-ng-disabled="tag.name.length == 0 || editTags.$invalid" data-ng-hide="tag.actionInProgress">Save</div>
+                                    <div class="btn orange" data-ng-click="saveTag(tag, $index)" data-ng-disabled="isRegistryTypeRemote || tag.name.length == 0 || editTags.$invalid" data-ng-hide="tag.actionInProgress">Save</div>
                                     <div class="loading-medium-tr loading-medium-tags" data-ng-show="tag.actionInProgress"></div>
                                 </td>
                             </tr>

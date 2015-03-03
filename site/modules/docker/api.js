@@ -550,6 +550,10 @@ module.exports = function execute(scope, register) {
                     endpoint: res.headers['x-docker-endpoints']
                 });
             });
+            if (access === 'PUT') {
+                req.write('[]');
+                req.end();
+            }
         });
     };
 
@@ -1317,17 +1321,22 @@ module.exports = function execute(scope, register) {
         var credentials = options.registry;
         var imageName = options.image;
         var access = options.access;
+        var basicAuth = null;
         var parsedHost = url.parse(credentials.host);
         parsedHost.port = credentials.port || parsedHost.port;
         if (credentials.auth) {
             var auth = parseAuthData(credentials.auth);
             if (auth.username && auth.password) {
                 parsedHost.auth = [auth.username, auth.password].join(':');
+                basicAuth = new Buffer(parsedHost.auth).toString('base64');
             }
         }
         delete parsedHost.host;
-
-        createClient(call, Index, {url: url.format(parsedHost)}, function (error, indexClient) {
+        var createClientOpts = {url: url.format(parsedHost)};
+        if (basicAuth) {
+            createClientOpts.headers = {'Authorization': 'Basic ' + basicAuth};
+        }
+        createClient(call, Index, createClientOpts, function (error, indexClient) {
             indexClient.getAuthToken(imageName, access || 'GET', function (authError, authResult) {
                 if (authError) {
                     return callback(authError);
