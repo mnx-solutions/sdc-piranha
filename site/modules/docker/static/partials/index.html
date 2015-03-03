@@ -49,7 +49,7 @@
                 <div class="progress-wrapper" data-ng-show="machine.cadvisorUnavailable">
                     <p class="cadvisor-unavailable">cAdvisor is unavailable</p>
                 </div>
-                <div data-ng-hide="machine.isSdc" class="progress-wrapper" data-ng-hide="machine.cadvisorUnavailable">
+                <div class="progress-wrapper" data-ng-hide="machine.cadvisorUnavailable || machine.isSdc">
                     <p class="title">CPU</p>
                     <div class="progress" title="{{machine.cpuLoad}}">
                         <div class="progress-bar" ng-style="{width: machine.cpuLoad}"></div>
