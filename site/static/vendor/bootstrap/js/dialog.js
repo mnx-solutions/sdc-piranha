@@ -205,20 +205,6 @@ dialogModule.provider("$dialog", function(){
       this.deferred.resolve(result);
     };
 
-    var setSelect2Deep = function () {
-      $timeout(function () {
-        var s2mask = angular.element('.select2-drop-mask');
-        var s2drop = angular.element('.select2-drop');
-        if (activeDialogs && activeDialogs.value > 0) {
-          s2mask.css('z-index', '9999990');
-          s2drop.css('z-index', '9999999');
-        } else {
-          s2mask.css('z-index', '99990');
-          s2drop.css('z-index', '99999');
-        }
-      });
-    };
-
     var zIndex = 9999900;
     Dialog.prototype._addElementsToDom = function(){
       activeDialogs.value++;
@@ -227,7 +213,6 @@ dialogModule.provider("$dialog", function(){
       body.append(this.modalEl);
       this.modalEl.css('z-index', zIndex + activeDialogs.value);
       this._open = true;
-      setSelect2Deep();
     };
 
     Dialog.prototype._removeElementsFromDom = function(){
@@ -235,7 +220,6 @@ dialogModule.provider("$dialog", function(){
       this.backdropEl.remove();
       activeDialogs.value--;
       this._open = false;
-      setSelect2Deep();
     };
 
     // Loads all `options.resolve` members to be used as locals for the controller associated with the dialog.
@@ -295,6 +279,9 @@ dialogModule.provider("$dialog", function(){
         }});
         var _originalOpen = dlg.open, _originalClose = dlg.close;
         dlg.open = function () {
+            window.addEventListener("popstate", function (e) {
+                dlg.close();
+            });
           if (typeof _gaq !== 'undefined') {
             _gaq.push(["_trackEvent", "Dialog", "Open " + title]);
           }

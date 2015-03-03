@@ -6,7 +6,7 @@
 
     <div class="loading-large" data-ng-show="!images.length && loading"></div>
 
-    <div data-ng-show="images.length">
+    <div data-ng-if="images.length">
         <div data-grid-view
              data-user-config="gridUserConfig"
              data-props="gridProps"

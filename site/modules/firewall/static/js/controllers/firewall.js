@@ -38,14 +38,17 @@
         'Account',
         '$location',
         '$anchorScroll',
+        'Select2overlay',
 
         function ($scope, $rootScope, $filter, $q, $qe, requestContext, localization, rule, Image, Datacenter, Machine, $http, PopupDialog, Account, $location,
-                  $anchorScroll) {
+                  $anchorScroll, Select2overlay) {
 
             localization.bind('firewall', $scope);
             requestContext.setUpRenderContext('firewall.index', $scope);
             $scope.tabFilterDefault = $rootScope.commonConfig('datacenter');
             $scope.openRuleForm = false;
+            var openHandler = Select2overlay.openHandler;
+            var closeHandler = Select2overlay.closeHandler;
 
             function scrollTo(id) {
                 if ($location.hash() === id) {
@@ -189,7 +192,7 @@
                             addOnSelect(val);
                         }
                     });
-                });
+                }).on('open', openHandler).on('close', closeHandler);
             }
 
             // Create target comboboxes
@@ -263,7 +266,7 @@
                 $scope.vms.forEach(function (vm) {
                     var id = ng.fromJson(vm.id);
                     if (id.text === $scope.current[objId].text) {
-                        select.select2('data', vm);
+                        select.select2('data', vm).on('open', openHandler).on('close', closeHandler);
                         $scope.$apply(function () {
                             $scope[objId + 'Form'].$pristine = false;
                         });
@@ -276,7 +279,7 @@
                     setTimeout(function(){
                         var fromInstanceSelect = $('#' + formId);
                         createCombobox('#' + formId, 'current', formName, instancesQuery, function(m) {
-                            fromInstanceSelect.select2('val', m.text);
+                            fromInstanceSelect.select2('val', m.text).on('open', openHandler).on('close', closeHandler);
                             $scope[formName + 'Form'].$pristine = false;
                         });
 
@@ -374,11 +377,11 @@
 
             $scope.refreshSelects = function () {
                 // update select2's
-                $('#actionSelect').select2('val', $scope.data.parsed.action);
+                $('#actionSelect').select2('val', $scope.data.parsed.action).on('open', openHandler).on('close', closeHandler);
                 $scope.selected.status = $scope.data.enabled.toString();
-                $('#stateSelect').select2('val', $scope.selected.status);
-                $('#protocolSelect').select2('val', $scope.data.parsed.protocol.name);
-                $('#dcSelect').select2('enable').select2('val', $scope.selected.datacenter);
+                $('#stateSelect').select2('val', $scope.selected.status).on('open', openHandler).on('close', closeHandler);
+                $('#protocolSelect').select2('val', $scope.data.parsed.protocol.name).on('open', openHandler).on('close', closeHandler);
+                $('#dcSelect').select2('enable').select2('val', $scope.selected.datacenter).on('open', openHandler).on('close', closeHandler);
             };
 
             // FIXME: Get rid of copy-paste from provision.js!!!
@@ -415,7 +418,7 @@
                     $scope.datasetsLoading = true;
                     Datacenter.datacenterPing(newVal).then(function (result) {
                         if (result === 'pong') {
-                            $('#dcSelect').select2('val', newVal);
+                            $('#dcSelect').select2('val', newVal).on('open', openHandler).on('close', closeHandler);
                             $scope.datacenter = newVal;
                         } else {
                             switchToOtherDatacenter(newVal);
@@ -559,11 +562,11 @@
 
             $scope.resetCurrent = function (direction) {
                 if (from && direction === 'from') {
-                    from.select2('val', '');
+                    from.select2('val', '').on('open', openHandler).on('close', closeHandler);
                 }
 
                 if (to && direction === 'to') {
-                    to.select2('val', '');
+                    to.select2('val', '').on('open', openHandler).on('close', closeHandler);
                 }
 
                 if (!direction || direction === 'from') {

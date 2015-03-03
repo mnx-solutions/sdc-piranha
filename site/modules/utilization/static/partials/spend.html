@@ -71,7 +71,7 @@
         </div>
         <div class="grid-holder">
             <div class="grid-title">CPU</div>
-            <div data-ng-show="cpu.length">
+            <div data-ng-if="cpu.length">
                 <div data-grid-view
                      data-user-config="gridUserConfig"
                      data-props="gridProps"
@@ -89,7 +89,7 @@
 
         <div class="grid-holder">
             <div class="grid-title">Storage</div>
-            <div data-ng-show="manta.length">
+            <div data-ng-if="manta.length">
                 <div data-grid-view
                      data-user-config="gridUserConfig"
                      data-props="gridProps"
@@ -107,7 +107,7 @@
 
         <div class="grid-holder">
             <div class="grid-title">Bandwidth</div>
-            <div data-ng-show="bandwidth.length">
+            <div data-ng-if="bandwidth.length">
                 <div data-grid-view
                      data-user-config="gridUserConfig"
                      data-props="gridProps"

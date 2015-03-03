@@ -368,7 +368,7 @@
                                                 The default rules are overridden by your own rules. There is no ordering to your own rules. For incoming traffic, the least restrictive rule wins. For outgoing traffic, the most restrictive rule wins.
                                             </div>
                                         </div>
-                                        <div data-ng-show="firewallRules.length >= 1">
+                                        <div data-ng-if="firewallRules.length >= 1">
                                             <div data-grid-view
                                                  data-user-config="gridUserConfig"
                                                  data-props="gridProps"
@@ -490,7 +490,7 @@
                     <div id="collapse_docker_containers" class="panel-collapse collapse">
                         <div class="panel-body">
                             <div class="beta-sticker tab">beta</div>
-                            <div data-ng-show="containers.length >= 1">
+                            <div data-ng-if="containers.length >= 1">
                                 <div data-grid-view
                                      data-user-config="gridUserConfigDocker"
                                      data-props="gridPropsDocker"
