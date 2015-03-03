@@ -1,9 +1,8 @@
 /**
- * Enhanced Select2 Dropmenus
- *
- * @AJAX Mode - When in this mode, your value will be an object (or array of objects) of the data used by Select2
- *     This change is so that you do not have to do an additional query yourself on top of Select2's own query
- * @params [options] {object} The configuration options passed to $.fn.select2(). Refer to the documentation
+ * AngularUI - The companion suite for AngularJS
+ * @version v0.4.0 - 2013-04-09
+ * @link http://angular-ui.github.com
+ * @license MIT License, http://www.opensource.org/licenses/MIT
  */
 angular.module("ui.config",[]).value("ui.config",{});
 angular.module("ui.filters",["ui.config"]);
@@ -102,27 +101,8 @@ angular.module("ui.directives").directive('uiSelect2', ['ui.config', '$timeout',
                             elm.select2('val', controller.$viewValue).on('open', openHandler).on('close', closeHandler);
                         } else {
                             if (opts.multiple) {
-                                controller.$isEmpty = function (value) {
-                                    return !value || value.length === 0;
-                                };
-                                var viewValue = controller.$viewValue;
-                                if (angular.isString(viewValue)) {
-                                    viewValue = viewValue.split(',');
-                                }
                                 elm.select2(
-                                    'data', convertToSelect2Model(viewValue)).on('open', openHandler).on('close', closeHandler);
-                                if (opts.sortable) {
-                                    elm.select2("container").find("ul.select2-choices").sortable({
-                                        containment: 'parent',
-                                        start: function () {
-                                            elm.select2("onSortStart");
-                                        },
-                                        update: function () {
-                                            elm.select2("onSortEnd");
-                                            elm.trigger('change');
-                                        }
-                                    }).on('open', openHandler).on('close', closeHandler);
-                                }
+                                    'data', convertToSelect2Model(controller.$viewValue));
                             } else {
                                 if (angular.isObject(controller.$viewValue)) {
                                     elm.select2('data', controller.$viewValue).on('open', openHandler).on('close', closeHandler);
@@ -145,7 +125,7 @@ angular.module("ui.directives").directive('uiSelect2', ['ui.config', '$timeout',
                             $timeout(function () {
                                 elm.select2('val', controller.$viewValue);
                                 // Refresh angular to remove the superfluous option
-                                controller.$render();
+                                elm.trigger('change');
                                 if(newVal && !oldVal && controller.$setPristine) {
                                     controller.$setPristine(true);
                                 }
@@ -168,9 +148,7 @@ angular.module("ui.directives").directive('uiSelect2', ['ui.config', '$timeout',
 
                     if (!isSelect) {
                         // Set the view and model value and update the angular template manually for the ajax/multiple select2.
-                        elm.bind("change", function (e) {
-                            e.stopImmediatePropagation();
-
+                        elm.bind("change", function () {
                             if (scope.$$phase || scope.$root.$$phase) {
                                 return;
                             }
@@ -184,13 +162,8 @@ angular.module("ui.directives").directive('uiSelect2', ['ui.config', '$timeout',
                             var initSelection = opts.initSelection;
                             opts.initSelection = function (element, callback) {
                                 initSelection(element, function (value) {
-                                    var isPristine = controller.$pristine;
                                     controller.$setViewValue(convertToAngularModel(value));
                                     callback(value);
-                                    if (isPristine) {
-                                        controller.$setPristine();
-                                    }
-                                    elm.prev().toggleClass('ng-pristine', controller.$pristine);
                                 });
                             };
                         }
@@ -217,21 +190,15 @@ angular.module("ui.directives").directive('uiSelect2', ['ui.config', '$timeout',
                     elm.select2(opts);
 
                     // Set initial value - I'm not sure about this but it seems to need to be there
-                    elm.select2('data', controller.$modelValue);
+                    elm.val(controller.$viewValue);
                     // important!
                     controller.$render();
 
                     // Not sure if I should just check for !isSelect OR if I should check for 'tags' key
                     if (!opts.initSelection && !isSelect) {
-                        var isPristine = controller.$pristine;
-                        controller.$pristine = false;
                         controller.$setViewValue(
                             convertToAngularModel(elm.select2('data'))
                         );
-                        if (isPristine) {
-                            controller.$setPristine();
-                        }
-                        elm.prev().toggleClass('ng-pristine', controller.$pristine);
                     }
                 });
             };

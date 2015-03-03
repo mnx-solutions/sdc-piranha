@@ -76,7 +76,7 @@
                         <div data-ng-show="!loading && !invoices.length">
                             <div>You don't have any invoices yet</div>
                         </div>
-                        <div data-ng-if="!loading && !error && invoices.length">
+                        <div data-ng-show="!loading && !error && invoices.length">
                             <div data-grid-view
                                  data-user-config="gridUserConfig"
                                  data-props="gridProps"
