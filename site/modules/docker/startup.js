@@ -96,13 +96,18 @@ var Docker = function execute(scope, app) {
     function putToAudit(call, entry, params, error, finish) {
         var mantaClient = scope.api('MantaClient').createClient(call);
         var auditor = new Auditor(call, mantaClient);
+        var result = false;
         if (error) {
             params.error = true;
             params.errorMessage = error.message || error;
+            if (error.statusCode === 404 || error === 'Unable to pull empty repository') {
+                result = true;
+                call.log.info(params.errorMessage);
+            }
         }
         auditor.put(entry, params);
         if (finish) {
-            call.done(error);
+            call.done(error, result);
         }
     }
 
