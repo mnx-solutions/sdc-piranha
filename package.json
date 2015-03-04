@@ -41,7 +41,8 @@
     "fastly": "1.2.0",
     "tar": "git+ssh://git@github.com:13W/node-tar.git",
     "term.js": "0.0.4",
-    "ws": "0.6.5"
+    "ws": "0.6.5",
+    "lru-cache": "2.5.0"
   },
   "devDependencies": {
     "grunt": "~0.4.1",
