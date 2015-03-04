@@ -9,7 +9,7 @@
     </div>
     <div data-ng-include="'storage/static/partials/ocean.html'" data-ng-show="!account.provisionEnabled && !loading"></div>
     <div class="loading-large" data-ng-show="loading"></div>
-    <div data-ng-if="jobs.length">
+    <div data-ng-show="jobs.length">
         <div data-grid-view
              data-user-config="gridUserConfig"
              data-props="gridProps"

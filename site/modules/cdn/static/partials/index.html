@@ -13,7 +13,7 @@
     <div class="loading-large" data-ng-show="loading"></div>
     <div data-ng-include="'storage/static/partials/ocean.html'" data-ng-show="!provisionEnabled && !loading"></div>
     <div class="row">
-        <div data-ng-if="apiKey && provisionEnabled && !loading">
+        <div data-ng-show="apiKey && provisionEnabled && !loading">
             <div data-grid-view
                  data-user-config="gridUserConfig"
                  data-props="gridProps"

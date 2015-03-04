@@ -341,6 +341,7 @@
                             $scope.fullRegistriesList = result.full;
                             $scope.registries = Docker.addRegistryUsernames($scope.registries);
                             pullDialogOpeningStatus(false);
+                            $scope.registryId = $scope.registries[0].id || null;
                             $scope.loading = false;
                         }, errorCallback);
 
@@ -549,6 +550,7 @@
                                     ]).then(function (result) {
                                         $scope.hosts = result[0] && result[0].length ? removeUnreachableHosts(result[0]) : [];
                                         $scope.tags = result[1] || [];
+                                        $scope.tag = $scope.tags[0].name || null;
                                         $scope.tags.push({name: 'all'});
                                         $scope.loading = false;
                                     });
