@@ -389,12 +389,13 @@ module.exports = function execute(scope) {
     server.onCall('checkFirstInstanceCreated', function (call) {
         var uuid = call.data.uuid;
         var req = (call.done && call.req) || call;
-        metadata.get(req.session.userId, metadata.FIRST_INSTANCE, function (err, instance) {
+        var accountId = req.session.parentAccountId || req.session.userId;
+        metadata.get(accountId, metadata.FIRST_INSTANCE, function (err, instance) {
             if (instance) {
                 call.done(null, instance);
                 return;
             }
-            metadata.set(req.session.userId, metadata.FIRST_INSTANCE, uuid, function (setErr) {
+            metadata.set(accountId, metadata.FIRST_INSTANCE, uuid, function (setErr) {
                 if (setErr) {
                     call.log.error(setErr);
                 } else {
