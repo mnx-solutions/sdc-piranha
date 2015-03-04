@@ -13,17 +13,19 @@ module.exports = function execute(scope) {
     var Manta = scope.api('MantaClient');
     var server = scope.api('Server');
 
-    function sendError(call, error, suppressErrorLog) {
+    function sendError(call, error, suppressErrorLog, errorPath) {
         function done(err) {
             if (err) {
                 var message = err.message || '';
-                if (err.code === 'NoMatchingRoleTag' && message && call.data && call.data.path) {
-                    err.message = message.substring(0, message.length - 1) + " '" + call.data.path + "'.";
+                errorPath = errorPath ? ('~~' + errorPath) : call.data && call.data.path;
+                if ((err.code === 'NoMatchingRoleTag' || err.restCode === 'NoMatchingRoleTag') &&
+                    message.indexOf(errorPath.replace(/^~~/, '')) === -1) {
+                    err.message = 'None of your active roles are present on the resource \'' + errorPath + '\'.';
                 }
                 if (err.code === 'ENOTFOUND') {
                     err.message = mantaNotAvailable;
                 }
-                call.req.log.debug('sendError', err);
+                call.req.log.error('sendError', err);
                 call.done(err.message || mantaNotAvailable, suppressErrorLog);
             } else {
                 call.done();
@@ -69,7 +71,7 @@ module.exports = function execute(scope) {
                 if (fallback) {
                     client[fallback](jobId, processJobRequest(call, 'key', jobId));
                 } else {
-                    sendError(call, err);
+                    sendError(call, err, null, jobPath);
                 }
                 return;
             }
@@ -108,7 +110,15 @@ module.exports = function execute(scope) {
                     getArchivedJobFile(call, jobId, fallbackPath, checkResponse(call));
                     return;
                 }
-                sendError(call, err);
+                var errorPath = '';
+                if (dataKey === 'job') {
+                    errorPath += '/jobs';
+                    if (jobId) {
+                        errorPath += '/' + jobId;
+                    }
+                }
+
+                sendError(call, err, null, errorPath);
             });
         };
     }
@@ -168,7 +178,7 @@ module.exports = function execute(scope) {
 
         client.cancelJob(jobId, function (err) {
             if (err) {
-                sendError(call, err);
+                sendError(call, err, null, '/jobs/' + jobId);
                 return;
             }
             var message = 'Job ' + jobId + ' was successfully canceled';
@@ -213,7 +223,7 @@ module.exports = function execute(scope) {
             }
             if (reduceStep) {
                 var phasesPropsReduce = {
-                    type: "reduce",
+                    type: 'reduce',
                     exec: reduceStep,
                     assets: assets
                 };
@@ -237,7 +247,7 @@ module.exports = function execute(scope) {
             console.log(job, inputs, 'CreateJob');
             client.createJob(job, function (error, jobId) {
                 if (error) {
-                    sendError(call, error);
+                    sendError(call, error, null, '/jobs');
                     return;
                 }
                 if (jobId) {
@@ -330,10 +340,10 @@ module.exports = function execute(scope) {
 
     server.onCall('FileManStorageReport', function (call) {
         var client = Manta.createClient(call);
-        var reportPath = '~~/reports/usage/storage/' + call.data.originPath;
-        client.getFileContents(reportPath, 'utf8', function (error, data) {
+        var reportPath = '/reports/usage/storage/' + call.data.originPath;
+        client.getFileContents('~~' + reportPath, 'utf8', function (error, data) {
             if (error) {
-                sendError(call);
+                sendError(call, error, null, reportPath);
                 return;
             }
             call.done(null, data);
