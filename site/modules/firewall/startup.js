@@ -2,6 +2,7 @@
 
 var fwrule = require('fwrule');
 var config = require('easy-config');
+var vasync = require('vasync');
 
 var firewall = function execute (scope) {
     var server = scope.api('Server');
@@ -228,52 +229,61 @@ var firewall = function execute (scope) {
                 call.done(err);
                 return;
             }
-            var keys = Object.keys(datacenters || {});
-            var count = keys.length;
-            keys.forEach(function (name) {
-                var cloud = call.cloud.separate(name);
-                call.log.debug('List rules for datacenter %s', name);
+            vasync.forEachParallel({
+                inputs: Object.keys(datacenters || {}),
+                func: function (name, callback) {
+                    var cloud = call.cloud.separate(name);
+                    call.log.debug('List rules for datacenter %s', name);
 
-                cloud.listFwRules(function (err, rules) {
-                    var response = {
-                        name: name,
-                        status: 'pending',
-                        rules: []
-                    };
+                    cloud.listFwRules(function (err, rules) {
+                        var response = {
+                            name: name,
+                            status: 'pending',
+                            rules: []
+                        };
 
-                    if (err) {
-                        call.log.error('List rules failed for datacenter %s, url %s; err.message: %s', name, datacenters[name], err.message, err);
-                        response.status = 'error';
-                        response.error = err;
-                        if (err.restCode === 'NotAuthorized') {
-                            call.done(err);
-                            return;
-                        }
-                    } else {
-                        // Serialize rules
-                        rules.forEach(function (rule) {
-                            rule.datacenter = name;
-                            rule.uuid = rule.id;
-
-                            try {
-                                rule.parsed = fwrule.parse(rule.rule);
-                            } catch (e) {
-                                call.log.error(rule.rule, 'Failed to parse fwrule');
+                        if (err) {
+                            call.log.error('List rules failed for datacenter %s, url %s; err.message: %s', name, datacenters[name], err.message, err);
+                            response.status = 'error';
+                            response.error = err;
+                            if (err.restCode === 'NotAuthorized') {
+                                callback(err);
                                 return;
                             }
+                        } else {
+                            // Serialize rules
+                            rules.forEach(function (rule) {
+                                rule.datacenter = name;
+                                rule.uuid = rule.id;
 
-                            response.rules.push(rule);
-                        });
+                                try {
+                                    rule.parsed = fwrule.parse(rule.rule);
+                                } catch (e) {
+                                    call.log.error(rule.rule, 'Failed to parse fwrule');
+                                    return;
+                                }
 
-                        call.log.debug('List rules succeeded for datacenter %s', name);
-                        response.status = 'complete';
+                                response.rules.push(rule);
+                            });
+
+                            call.log.debug('List rules succeeded for datacenter %s', name);
+                            response.status = 'complete';
+                        }
+                        call.update(null, response);
+                        callback();
+                    }, undefined, true);
+                }
+            }, function (vasyncError) {
+                if (vasyncError) {
+                    var cause = vasyncError['ase_errors'];
+                    if (Array.isArray(cause)) {
+                        cause = cause[0];
+                    } else {
+                        return call.done(vasyncError);
                     }
-                    call.update(null, response);
-
-                    if (--count === 0) {
-                        call.done();
-                    }
-                }, undefined, true);
+                    return call.done(cause);
+                }
+                call.done();
             });
         }, !!call.req.session.subId);
 
