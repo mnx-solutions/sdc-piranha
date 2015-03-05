@@ -182,7 +182,7 @@ var firewall = function execute (scope) {
                     return;
                 }
                 fwPoller(call, uuid, config.polling.firewallRuleDeleteTimeout, function (error) {
-                    return error && error.statusCode === 404;
+                    return error && error.statusCode >= 400 && error.statusCode < 500;
                 }, 'Rule not deleted');
             });
         }
