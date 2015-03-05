@@ -98,18 +98,18 @@ angular.module("ui.directives").directive('uiSelect2', ['ui.config', '$timeout',
                         var openHandler = Select2overlay.openHandler;
                         var closeHandler = Select2overlay.closeHandler;
                         if (isSelect) {
-                            elm.select2('val', controller.$viewValue).on('open', openHandler).on('close', closeHandler);
+                            elm.select2('val', controller.$viewValue).on('open', openHandler).on('close', closeHandler).on('opening', function () {this.focus();});
                         } else {
                             if (opts.multiple) {
                                 elm.select2(
                                     'data', convertToSelect2Model(controller.$viewValue));
                             } else {
                                 if (angular.isObject(controller.$viewValue)) {
-                                    elm.select2('data', controller.$viewValue).on('open', openHandler).on('close', closeHandler);
+                                    elm.select2('data', controller.$viewValue).on('open', openHandler).on('close', closeHandler).on('opening', function () {this.focus();});
                                 } else if (!controller.$viewValue) {
-                                    elm.select2('data', null).on('open', openHandler).on('close', closeHandler);
+                                    elm.select2('data', null).on('open', openHandler).on('close', closeHandler).on('opening', function () {this.focus();});
                                 } else {
-                                    elm.select2('val', controller.$viewValue).on('open', openHandler).on('close', closeHandler);
+                                    elm.select2('val', controller.$viewValue).on('open', openHandler).on('close', closeHandler).on('opening', function () {this.focus();});
                                 }
                             }
                         }

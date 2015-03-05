@@ -32,7 +32,7 @@
                                 $scope[$attrs.fn](e.val);
                             }
                         });
-                    }).on('open', Select2overlay.openHandler).on('close', Select2overlay.closeHandler);
+                    }).on('open', Select2overlay.openHandler).on('close', Select2overlay.closeHandler).on('opening', function () {this.focus();});
 
                     if ($attrs.select) {
                         $scope.$watch($attrs.select, function (val) {
