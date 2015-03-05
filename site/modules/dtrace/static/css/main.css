@@ -63,3 +63,12 @@
     padding: 0 10px;
     background-color: #fafcfd;
 }
+.heatmap-wrapper {
+    margin-top: 15px;
+}
+
+.heatmap-button {
+    width: 100px;
+    margin-left: 10px;
+    padding: 5px 0;
+}

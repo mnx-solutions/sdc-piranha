@@ -38,7 +38,7 @@
             service.listHosts = function () {
                 return Machine.listAllMachines().then(function (machines) {
                     return machines.filter(function (machine) {
-                        return machine.tags && machine.tags['JPC_tag'] === 'DTraceHost';
+                        return machine.tags && machine.tags['JPC_tag'] === 'DTraceHost' && machine.state === 'running';
                     });
                 });
             };
