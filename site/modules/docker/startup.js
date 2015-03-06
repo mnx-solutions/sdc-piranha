@@ -1643,11 +1643,13 @@ var Docker = function execute(scope, app) {
                 if (error) {
                     return call.done(error);
                 }
-                var dockerUrl = client.options.url;
-                var parsedUrl = url.parse(dockerUrl);
-                parsedUrl.port = DOCKER_TCP_PORT;
-                delete parsedUrl.host;
-                client.options.url = url.format(parsedUrl);
+                if (!data.machine.isSdc) {
+                    var dockerUrl = client.options.url;
+                    var parsedUrl = url.parse(dockerUrl);
+                    parsedUrl.port = DOCKER_TCP_PORT;
+                    delete parsedUrl.host;
+                    client.options.url = url.format(parsedUrl);
+                }
                 client.ping(function (err, result) {
                     call.done(err, result);
                 });

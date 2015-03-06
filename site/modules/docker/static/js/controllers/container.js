@@ -88,7 +88,8 @@
                     $scope.machine = machine;
                     $scope.termOpts = {
                         machine: $scope.machine,
-                        containerId: containerId
+                        containerId: containerId,
+                        isSdc: machine.isSdc
                     };
 
                     Docker.inspectContainer(container).then(function (info) {
@@ -101,8 +102,8 @@
                             containerState = 'paused';
                         } else if (info.State.Restarting) {
                             containerState = 'restarting';
-                        } else if (info.State.Running) {
-                            containerState = 'running';
+                        } else if (info.State.Running && info.State.StartedAt) { // sdc-docker do not sends State.StartedAt
+                            containerState = 'running';                          // parameter if container is offline
                         }
                         $scope.termOpts.containerState = containerState;
                         $scope.container = {
@@ -116,7 +117,9 @@
                             cpuShares: info.Config.CpuShares,
                             created: info.Created,
                             state: containerState,
-                            infoId: info.Id
+                            infoId: info.Id,
+                            isSdc: machine.isSdc,
+                            Uuid: Docker.idToUuid(container.Id)
                         };
                         $scope.actionInProgress = false;
                         $scope.loading = false;

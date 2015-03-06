@@ -52,7 +52,9 @@
 
             Docker.pingManta(function () {
                 Docker.listHosts().then(function (hosts) {
-                    $scope.hosts = hosts || [];
+                    $scope.hosts = (hosts || []).filter(function (host) {
+                        return !host.isSdc;
+                    });
                     if (hostId) {
                         $scope.hosts.forEach(function (host) {
                             if (hostId === host.id) {
@@ -80,7 +82,7 @@
                 $scope.defaultMetrics = ['cpuTotal', 'memory'];
                 Docker.listContainers({host: {primaryIp: $scope.current.host, id: $scope.hostId}}).then(function (containers) {
                     var isRunningCAdvisor = containers.filter(function (container) {
-                       return container.name === '/cAdvisor' && container.Status.indexOf('Paused') === -1;
+                        return container.name === '/cAdvisor' && container.Status.indexOf('Paused') === -1;
                     });
 
                     if (!isRunningCAdvisor) {

@@ -172,7 +172,21 @@
                     <p data-translate>Remove</p>
                 </button>
             </div>
-            <div data-ng-if="container.state == 'running' && !actionInProgress" data-ng-hide="cadvisorUnavailable">
+            <div data-ng-if="container.state == 'running' && features.cloudAnalytics == 'enabled' && container.isSdc">
+                <div data-ng-controller="cloudController" ng-init="createMachineDetailInstrumentations()">
+                    <div class="detail_chart">
+                        <div class="loading-small" data-ng-hide="cpuGraphs.length >= 0 && memGraphs.length >= 0"></div>
+                        <graph data-ng-repeat="graph in cpuGraphs" options="graph"></graph>
+                        <div class="detail_chart">
+                            <graph data-ng-repeat="graph in memGraphs" options="graph"></graph>
+                        </div>
+                        <div class="detail_chart">
+                            <graph data-ng-repeat="graph in nicGraphs" options="graph"></graph>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div data-ng-if="container.state == 'running' && !actionInProgress && !container.isSdc" data-ng-hide="cadvisorUnavailable">
                 <adviser-graph data-ng-repeat="graph in graphs" type="graph"></adviser-graph>
                 <div class="container-detailed-analytics-btn">
                     <a id="button-detailed-analytics" href="#!/docker/analytics/{{machine.id}}/{{container.infoId}}" class="btn light pull-right effect-orange-button"><i class="chart-icon"></i>View Detailed Analytics</a>
