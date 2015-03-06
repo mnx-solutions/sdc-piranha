@@ -36,18 +36,22 @@ window.JP.main.service('util', [
             return ret;
         };
 
-        service.getReadableFileSize = function (bytes) {
-            var sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
-            var i = parseInt(Math.floor(Math.log(bytes) / Math.log(1024)), 10);
-            return {
-                value: Math.round(bytes / Math.pow(1024, i), 2) || 0,
-                measure: sizes[i] || sizes[0]
-            };
+        service.getReadableFileSize = function (bytes, base) {
+            var result = {value: 0, measure: 'Byte'};
+            if (bytes > 0) {
+                var sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
+                var base = base || 1024;
+                var i = parseInt(Math.floor(Math.log(bytes) / Math.log(base)), 10);
+                var places = i > 2 ? 2 : (i === 2 ? 1 : 0);
+                result.value = (bytes / Math.pow(base, i)).toFixed(places);
+                result.measure = sizes[i];
+            }
+            return result;
         };
 
-        service.getReadableFileSizeString = function (bytes) {
-            var formatted = service.getReadableFileSize(bytes);
-            return formatted.value + ' ' + formatted.measure;
+        service.getReadableFileSizeString = function (bytes, base) {
+            var size = service.getReadableFileSize(bytes, base);
+            return size.value + ' ' + size.measure;
         };
 
         service.getReadableDramUsage = function (num) {
