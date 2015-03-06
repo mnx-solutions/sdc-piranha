@@ -37,7 +37,7 @@
                         lastChar = str.substr(-1);
 
                     if ((firstChar === '"' && lastChar === '"') ||
-                        (firstChar === "'" && lastChar === "'")) {
+                        (firstChar === '\'' && lastChar === '\'')) {
                         str = str.slice(1, -1);
                     }
                     return str;
@@ -65,7 +65,7 @@
                                 if (!Array.isArray(portBindings[exposedPort])) {
                                     portBindings[exposedPort] = [];
                                 }
-                                portBindings[exposedPort].push({"HostPort": hostPort, "HostIp": hostIp});
+                                portBindings[exposedPort].push({HostPort: hostPort, HostIp: hostIp});
                             } else {
                                 $scope.container.ExposedPorts[port + '/tcp'] = {};
                             }
@@ -150,7 +150,7 @@
                     var parsedEnvironments = [];
                     environments.match(/(?:[^\s"]+|"[^"]*")+/g).forEach(function (string) {
 
-                        if (string.length > 3 && string.indexOf("=") > 0) {
+                        if (string.length > 3 && string.indexOf('=') > 0) {
                             var envValue = string.split('=');
                             string = envValue[0] + '=';
                             if (envValue[1]) {
@@ -184,26 +184,26 @@
                             var lxcConfParams = line.split('=');
                             var lxcKey = lxcConfParams[0];
                             var lxcValue = lxcConfParams[1];
-                            var lxcOption = {"Key": lxcKey.trim(), "Value": lxcValue.trim()};
+                            var lxcOption = {Key: lxcKey.trim(), Value: lxcValue.trim()};
                             lxcOptions.push(lxcOption);
                         }
                     });
                     return lxcOptions;
                 }
 
-                function parseRestartPolicy(restartpPolicy) {
-                    var policy = {"Name": "", "MaximumRetryCount": 0};
-                    if (!restartpPolicy) {
+                function parseRestartPolicy(restartPolicy) {
+                    var policy = {Name: '', MaximumRetryCount: 0};
+                    if (!restartPolicy) {
                         return policy;
                     }
 
-                    if (restartpPolicy.indexOf('no') !== -1) {
-                        policy["Name"] = "no";
-                    } else if (restartpPolicy.indexOf('always') !== -1) {
-                        policy["Name"] = "always";
-                    } else if (restartpPolicy.indexOf('failure') !== -1) {
-                        policy["Name"] = "on-failure";
-                        policy["MaximumRetryCount"] = parseInt(restartpPolicy.split(':')[1], 10) || 0;
+                    if (restartPolicy.indexOf('no') !== -1) {
+                        policy.Name = 'no';
+                    } else if (restartPolicy.indexOf('always') !== -1) {
+                        policy.Name = 'always';
+                    } else if (restartPolicy.indexOf('failure') !== -1) {
+                        policy.Name = 'on-failure';
+                        policy.MaximumRetryCount = parseInt(restartPolicy.split(':')[1], 10) || 0;
                     }
                     return policy;
                 }
@@ -224,30 +224,31 @@
                 $scope.memorySwap = 0;
                 $scope.networkMode = 'bridge';
                 $scope.container = {
-                    "Hostname": "",
-                    "Domainname": "",
-                    "User": "",
-                    "Memory": 0,
-                    "MemorySwap": 0,
-                    "CpuShares": 0,
-                    "Cpuset": "",
-                    "AttachStdin": true,
-                    "AttachStdout": true,
-                    "AttachStderr": true,
-                    "PortSpecs": [],
-                    "Tty": true,
-                    "OpenStdin": true,
-                    "StdinOnce": false,
-                    "Env": null,
-                    "Cmd": [],
-                    "ExposedPorts": {},
-                    "WorkingDir": "",
-                    "NetworkDisabled": false,
-                    "name": ""
+                    Hostname: '',
+                    Domainname: '',
+                    User: '',
+                    Memory: 0,
+                    MemorySwap: 0,
+                    CpuShares: 0,
+                    Cpuset: '',
+                    AttachStdin: true,
+                    AttachStdout: true,
+                    AttachStderr: true,
+                    PortSpecs: [],
+                    Tty: true,
+                    OpenStdin: true,
+                    StdinOnce: false,
+                    Env: null,
+                    Cmd: [],
+                    ExposedPorts: {},
+                    WorkingDir: '',
+                    NetworkDisabled: false,
+                    name: ''
                 };
                 if ($scope.preSelectedData) {
                     var createData = $scope.preSelectedData.create;
                     var startData = $scope.preSelectedData.start;
+                    var rp = startData.RestartPolicy;
 
                     $scope.commands = unParseCommands(createData.Cmd);
                     $scope.entrypoint = unParseCommands(createData.Entrypoint);
@@ -259,7 +260,10 @@
                     $scope.ports = unParsePorts(startData.PortBindings);
                     $scope.volumes = unParseVolumes(createData.Volumes, startData.Binds);
                     $scope.lxcConf = unParseLxcConf(startData.LxcConf);
-                    $scope.restartPolicy = startData.RestartPolicy && startData.RestartPolicy.Name ? startData.RestartPolicy.Name + (startData.RestartPolicy.MaximumRetryCount ? ':' + startData.RestartPolicy.MaximumRetryCount : '') : '';
+                    $scope.restartPolicy = '';
+                    if (rp) {
+                        $scope.restartPolicy = rp.Name ? rp.Name + (rp.MaximumRetryCount ? ':' + rp.MaximumRetryCount : '') : '';
+                    }
                     $scope.privileged = startData.Privileged;
                     $scope.publishAllPorts = startData.PublishAllPorts;
                     $scope.dns = getJoinedStr(startData.Dns);
@@ -444,7 +448,6 @@
                     }
                 }, errorCallback);
 
-
                 var createContainer = function () {
                     var containerPorts = parsePorts($scope.ports);
                     var containerLinks = parseContainerLinks($scope.containerLinks);
@@ -482,6 +485,9 @@
                     if ($scope.container.name.length === 1) {
                         return errorCallback('Container name should be more than one character.');
                     }
+                    $scope.container.HostConfig = {};
+
+                    angular.copy($scope.container.HostConfig, startOptions);
 
                     Docker.run(host, {create: $scope.container, start: startOptions}).then(function () {
                         $location.path('/docker/containers');
