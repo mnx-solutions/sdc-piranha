@@ -456,7 +456,12 @@ module.exports = function execute(scope, register) {
             if (!err) {
                 pollForObjectStateChange(cloud, call, 'state', 'deleted', (60 * 60 * 1000), 'Image', options.imageId, callback);
             } else {
-                callback(err);
+                var result = false;
+                if (err.restCode === 'NotAuthorized' && err.statusCode === 403 && cloud._subId) {
+                    result = true;
+                    call.log.info(err.message);
+                }
+                callback(err, result);
             }
         });
     };
@@ -504,7 +509,8 @@ module.exports = function execute(scope, register) {
                     };
 
                     if (err) {
-                        call.log.error('List images failed for datacenter %s, url %s; err.message: %s', datacenterName, datacenters[datacenterName], err.message, err);
+                        var logLevel = err.restCode === 'NotAuthorized' && err.statusCode === 403 && cloud._subId ? 'info' : 'error';
+                        call.log[logLevel]('List images failed for datacenter %s, url %s; err.message: %s', datacenterName, datacenters[datacenterName], err.message, err);
                         response.status = 'error';
                         response.error = err;
                     } else {

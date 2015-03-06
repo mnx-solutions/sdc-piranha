@@ -81,12 +81,13 @@ var firewall = function execute (scope) {
                 } else if (new Date().getTime() - start < timeout) {
                     setTimeout(getRule, config.polling.firewallRuleCheckingDelay);
                 } else {
-                    var message = error.message || error;
-                    var isPermissionRelated = message.indexOf('permission') !== -1;
-                    if (isPermissionRelated) {
-                        errorMessage = 'Can\'t get status for rule. ' + message;
+                    if (error) {
+                        error = checkRuleStatusError(call, error);
+                        if (error.isPermissionRelated) {
+                            errorMessage = error.message;
+                        }
                     }
-                    call.done(error && errorMessage, !error && result || isPermissionRelated);
+                    call.done(error && errorMessage, !error && result || error && error.isPermissionRelated);
                 }
             }, null, true);
         }
@@ -189,6 +190,21 @@ var firewall = function execute (scope) {
         }
     });
 
+    function checkRuleStatusError(call, error) {
+        if (typeof(error) === 'string') {
+            error = {message: error};
+        }
+        var message = error.message;
+        error.isPermissionRelated = message.indexOf('permission') !== -1;
+        if (error.isPermissionRelated) {
+            if (!/(enablefirewallrule|disablefirewallrule)/.test(message)) {
+                message = error.message = 'Can\'t get status for rule. ' + message;
+            }
+            call.log.info(message);
+        }
+        return error;
+    }
+
     server.onCall('RuleEnable', {
         verify: function (data) {
             return typeof data === 'object' &&
@@ -201,7 +217,10 @@ var firewall = function execute (scope) {
             var cloud = call.cloud.separate(call.data.datacenter);
 
             call.log.info('Enable firewall rule ' + uuid);
-            cloud.enableFwRule(uuid, call.done.bind(call));
+            cloud.enableFwRule(uuid, function (error, result) {
+                error = error && checkRuleStatusError(call, error);
+                call.done(error, result);
+            });
         }
     });
 
@@ -217,7 +236,10 @@ var firewall = function execute (scope) {
             var cloud = call.cloud.separate(call.data.datacenter);
 
             call.log.info('Disable firewall rule ' + uuid);
-            cloud.disableFwRule(uuid, call.done.bind(call));
+            cloud.disableFwRule(uuid, function (error, result) {
+                error = error && checkRuleStatusError(call, error);
+                call.done(error, result);
+            });
         }
     });
 
