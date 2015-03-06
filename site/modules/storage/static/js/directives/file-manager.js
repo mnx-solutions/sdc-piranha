@@ -204,7 +204,7 @@
 
                         var infoModalCtrl = function ($scope, dialog) {
                             $scope.info = info.__read();
-                            $scope.fileSize = util.getReadableFileSizeString($scope.info.size);
+                            $scope.fileSize = util.getReadableFileSizeString($scope.info.size, 1000);
 
                             if ($scope.info.extension === 'directory') {
                                 $scope.title = 'Folder Information';
@@ -538,7 +538,8 @@
                 scope.$on('uploadProgress', function (event, progress, path) {
                     scope.uploads[progress.id] = progress;
                     progress.filePath = path;
-                    progress.title = util.getReadableFileSizeString(progress.loaded) + ' of ' + util.getReadableFileSizeString(progress.total);
+                    progress.title = util.getReadableFileSizeString(progress.loaded, 1000) + ' of ' +
+                        util.getReadableFileSizeString(progress.total, 1000);
                 });
 
                 scope.$on('uploadWaiting', function (event, progress) {
