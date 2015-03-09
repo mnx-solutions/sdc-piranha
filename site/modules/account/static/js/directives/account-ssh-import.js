@@ -114,10 +114,10 @@
                                             return;
                                         }
                                         $scope.loadingKeys = false;
-                                        $rootScope.$broadcast('sshProgress', false);
 
                                         if (error) {
                                             var message = error.error;
+                                            $rootScope.$broadcast('sshProgress', false);
 
                                             if (error.status && error.status === 409) {
                                                 loggingService.log('info', error.error);
