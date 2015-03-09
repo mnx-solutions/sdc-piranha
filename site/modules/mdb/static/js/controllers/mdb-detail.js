@@ -152,6 +152,9 @@
                     PopupDialog.error(null, 'You must add the core file.', flushAll);
                     return;
                 }
+                if ($scope.processing) {
+                    return;
+                }
                 flushAll();
                 $scope.processing = true;
                 var callJob = mdb.process({coreFile: $scope.getFilePath(true)}, function (error, job) {
@@ -186,6 +189,9 @@
             };
 
             $scope.cancel = function () {
+                if (!$scope.processing) {
+                    return;
+                }
                 $scope.processing = false;
                 $scope.status = 'Canceling';
                 mdb.cancel($scope.jobId).then(function (status) {
