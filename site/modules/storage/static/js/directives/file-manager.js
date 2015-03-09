@@ -17,6 +17,7 @@
                 scope.loadingFolder = false;
                 scope.refreshingFolder = false;
                 scope.loading = true;
+                scope.infoDialogOpening = false;
                 scope.filesTree = {};
                 scope.userConfig = Account.getUserConfig().$child('fileman');
                 scope.rbacEnabled = $rootScope.features.rbac === 'enabled';
@@ -190,18 +191,20 @@
                         }
                     );
                 };
+
                 scope.getInfo = function () {
                     if (!lastSelectedFile) {
                         return false;
                     }
-
+                    scope.infoDialogOpening = true;
                     var path = getObjectPath(lastSelectedFile);
 
                     return fileman.info(path, function (error, info) {
                         if (error) {
+                            scope.infoDialogOpening = false;
                             return showPopupDialog('error', 'Error', error);
                         }
-
+                        scope.infoDialogOpening = false;
                         var infoModalCtrl = function ($scope, dialog) {
                             $scope.info = info.__read();
                             $scope.fileSize = util.getReadableFileSizeString($scope.info.size, 1000);
