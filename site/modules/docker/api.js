@@ -1267,7 +1267,8 @@ module.exports = function execute(scope, register) {
     function createClient(call, Service, opts, callback) {
         var qrKey = 'create-' + Service.name + '-client-' + call.req.session.userId;
         var clientRequest = queuedRequests[qrKey];
-        var cachedClient = cache.get(opts.url);
+        var cacheKey = Service.name + opts.url;
+        var cachedClient = cache.get(cacheKey);
         if (cachedClient) {
             return callback(null, cachedClient);
         }
@@ -1306,7 +1307,7 @@ module.exports = function execute(scope, register) {
                 serviceConfig.key = certificates.key;
             }
             var service = new Service(serviceConfig, call);
-            cache.set(opts.url, service);
+            cache.set(cacheKey, service);
             callback(null, service);
         });
     }
