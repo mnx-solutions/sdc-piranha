@@ -57,6 +57,13 @@
                 }).promise;
             };
 
+            service.saveFlameGraph = function (data) {
+                return serverTab.call({
+                    name: 'SaveFlameGraph',
+                    data: { svg: data.svg, id: data.id }
+                }).promise;
+            }
+
         return service;
     }]);
 }(window.angular, window.JP.getModule('dtrace')));

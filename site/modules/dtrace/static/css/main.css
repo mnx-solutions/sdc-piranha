@@ -72,3 +72,7 @@
     margin-left: 10px;
     padding: 5px 0;
 }
+
+.flamegraph svg {
+    padding-right: 47px;
+}

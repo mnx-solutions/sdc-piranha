@@ -7,6 +7,7 @@ var dtrace = function execute(scope) {
     var server = scope.api('Server');
 
     var filePath = '~~/stor/.joyent/dtrace/scripts.json';
+    var flameGraphPath = '~~/stor/.joyent/dtrace/flameGraph';
 
     function getScriptsList (call, client, callback) {
         client.getFileJson(filePath, function (error, scripts) {
@@ -115,6 +116,23 @@ var dtrace = function execute(scope) {
                     }
                     call.done(null, list);
                 });
+            });
+        }
+    });
+
+    server.onCall('SaveFlameGraph', {
+        verify: function (data) {
+            return data.id && data.svg;
+        },
+        handler: function (call) {
+            var client = mantaClient.createClient(call);
+            client.putFileContents(flameGraphPath + '/' + call.data.id + '/' + new Date().toISOString() + '.svg',
+                call.data.svg,
+                function (err) {
+                    if (err) {
+                        return call.done(err);
+                    } 
+                    call.done();
             });
         }
     });

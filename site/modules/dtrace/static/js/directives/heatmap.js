@@ -31,8 +31,8 @@
 
                 /* On load we create our web socket (or flash socket if your browser doesn't support it ) and
                  send the d script we wish to be tracing. This extremely powerful and *insecure*. */
-                if (!$scope.status && $scope.options.host) {
-                    heat_tracer($scope.options.host);
+                if (!$scope.status && $scope.options.hostIp) {
+                    heat_tracer($scope.options.hostIp);
                 }
 
                 function getDscript(pid) {
@@ -50,14 +50,14 @@
                     if (status) {
                         var dscript = $scope.options.script.body || getDscript($scope.options.pid);
                         var name = $scope.options.script.name + ($scope.options.pid ? ' PID:' + $scope.options.pid : '');
-                        heat_tracer($scope.options.host, dscript, $scope.options.continuation, name);
+                        heat_tracer($scope.options.hostIp, dscript, $scope.options.continuation, name);
                     } else {
                         closeWebsocket();
                     }
                 });
 
-                function heat_tracer(host, dscript, continuation, name) {
-                    if (!host) {
+                function heat_tracer(hostIp, dscript, continuation, name) {
+                    if (!hostIp) {
                         return;
                     }
                     var locationPath = $location.path();
@@ -67,7 +67,7 @@
                         ctx.fillRect(0, 0, width, height);
                     }
 
-                    websocket = new WebSocket('ws://' + host + ':' + dtracePort);
+                    websocket = new WebSocket('ws://' + hostIp + ':' + dtracePort);
                     websocket.onmessage = function (event) {
                         if (locationPath === $location.path()) {
                             var data;
@@ -95,9 +95,9 @@
                         ctx.fillStyle = '#fff';
                         ctx.textAlign = 'left';
                         name = name || 'all syscall';
-                        ctx.fillText('host :' + host + '; dtrace script :' + name, 5, 14);
+                        ctx.fillText('host :' + hostIp + '; dtrace script :' + name, 5, 14);
 
-                        websocket.send(dscript);
+                        websocket.send(JSON.stringify({type: 'heatmap', message: dscript}));
                     };
 
                     websocket.onerror = function (event) {
@@ -113,6 +113,10 @@
                 window.onbeforeunload = function () {
                     closeWebsocket(websocket);
                 };
+
+                $scope.$on('$routeChangeStart', function (next, current) { 
+                    closeWebsocket();
+                });
 
                 /* Take the aggregation data and update the heatmap */
                 function draw(message) {
