@@ -21,8 +21,12 @@
                 var sourceId = requestContext.getParam('sourceid');
                 var hostId = requestContext.getParam('hostid');
 
+                var isArrayNotEmpty = function (data) {
+                    return data && Array.isArray(data) && data.length;
+                };
+
                 var getJoinedStr = function (data) {
-                    return data && Array.isArray(data) && data.length ? data.join(' ') : '';
+                    return isArrayNotEmpty(data) ? data.join(' ') : '';
                 };
 
                 function addQuotes(str) {
@@ -250,16 +254,16 @@
                     var startData = $scope.preSelectedData.start;
                     var rp = startData.RestartPolicy;
 
-                    $scope.commands = unParseCommands(createData.Cmd);
-                    $scope.entrypoint = unParseCommands(createData.Entrypoint);
+                    $scope.commands = isArrayNotEmpty(createData.Cmd) ? unParseCommands(createData.Cmd) : '';
+                    $scope.entrypoint = isArrayNotEmpty(createData.Entrypoint) ? unParseCommands(createData.Entrypoint) : '';
                     $scope.memory = Math.floor(createData.Memory / 1024 / 1024);
                     $scope.memorySwap = Math.floor(createData.MemorySwap / 1024 / 1024);
-                    $scope.environment = unParseEnv(createData.Env);
+                    $scope.environment = isArrayNotEmpty(createData.Env) ? unParseEnv(createData.Env) : '';
                     $scope.container = ng.extend($scope.container, $scope.preSelectedData.create);
 
                     $scope.ports = unParsePorts(startData.PortBindings);
                     $scope.volumes = unParseVolumes(createData.Volumes, startData.Binds);
-                    $scope.lxcConf = unParseLxcConf(startData.LxcConf);
+                    $scope.lxcConf = isArrayNotEmpty(startData.LxcConf) ? unParseLxcConf(startData.LxcConf) : '';
                     $scope.restartPolicy = '';
                     if (rp) {
                         $scope.restartPolicy = rp.Name ? rp.Name + (rp.MaximumRetryCount ? ':' + rp.MaximumRetryCount : '') : '';
