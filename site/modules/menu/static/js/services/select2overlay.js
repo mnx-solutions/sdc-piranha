@@ -41,7 +41,7 @@
                     }
                 }
             }
-            if ((zenbox.offset().left) < (drop.offset().left + drop.width() + rightTabsBorder)) {
+            if (zenbox.length && zenbox.offset().left < drop.offset().left + drop.width() + rightTabsBorder) {
                 ng.element('.feedback-tab').hide();
                 zenbox.hide();
             }
