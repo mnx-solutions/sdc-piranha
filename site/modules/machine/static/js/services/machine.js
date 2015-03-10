@@ -450,7 +450,7 @@
         service.deleteMachine = changeState({
             name: 'MachineDelete',
             done: function(err, job) {
-                if (err) {
+                if (err && err.message.indexOf('getmachine') < 0) {
                     var errorMessage = getMessage(job.machine, err, 'execute command "' + job.name + '" for');
                     if (err.restCode === 'NotAuthorized') {
                         errorMessage = err.message;
@@ -743,7 +743,7 @@
                     }
                 },
                 done: function (err) {
-                    if (!err) {
+                    if (!err || err.indexOf('getmachine') > -1) {
                         handleChunk(machine, 'delete');
                         machines.list.splice(machines.list.indexOf(machine), 1);
                         $rootScope.$emit('clearDockerCache');
