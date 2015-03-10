@@ -46,7 +46,7 @@ module.exports = function execute(scope) {
             Object.defineProperty(req, 'cloud', {
                 get: function() {
                     if(!_cloud) {
-                        _cloud = smartCloud.cloud({ token: req.session.token });
+                        _cloud = smartCloud.cloud({ token: req.session.token, subId: req.session.subId });
                     }
                     return _cloud;
                 },
@@ -54,7 +54,7 @@ module.exports = function execute(scope) {
             });
 
             if(smartCloud.needRefresh()) {
-                smartCloud.cloud({token: req.session.token}, function (err, cloud) {
+                smartCloud.cloud({ token: req.session.token, subId: req.session.subId }, function (err, cloud) {
                     // Ignore authorization error for sub-user
                     if (err && req.session.subId) {
                         _cloud = cloud;
