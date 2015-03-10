@@ -13,8 +13,9 @@
                 }
                 $(el).datepicker({
                     autoclose: true,
-                    format: 'yyyy/MM/dd'
-                }).on('changeDate', function(ev){
+                    format: 'yyyy/MM/dd',
+                    orientation: 'top left'
+                }).on('changeDate', function (ev) {
                     if (!ev.date || scope.date === new Date(ev.date)) {
                         setDatepickerDate();
                         return;
