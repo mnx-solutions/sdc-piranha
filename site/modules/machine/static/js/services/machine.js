@@ -1,7 +1,5 @@
-'use strict';
-
-
 (function (ng, app) {
+    'use strict';
     app.factory('Machine', [
         'serverTab',
         '$rootScope',
@@ -330,7 +328,7 @@
                         if (!opts.progress) {
                             opts.progress = function (err, data) {
                                 var step = data.step;
-                                if (step && typeof step === 'object'){
+                                if (step && typeof (step) === 'object') {
                                     Object.keys(step).forEach(function (k) {
                                         if (!stateChanged || k !== 'state') {
                                             data.machine[k] = step[k];
@@ -342,7 +340,7 @@
                         if (!opts.done) {
                             opts.done = function (err, job) {
                                 showNotification(err, job);
-                            }
+                            };
                         }
                         var job = serverTab.call(ng.copy(opts));
                         job.machine = machine;
@@ -426,7 +424,7 @@
                         collection = job.data.metadata;
                         item = 'Metadata "';
                     }
-                    if (typeof(collection) === 'string') {
+                    if (typeof (collection) === 'string') {
                         collection = item + collection;
                     } else {
                         var collectionKeys = Object.keys(collection);
@@ -626,7 +624,7 @@
                         if (deleteReadJob) {
                             delete machine[collectionName + 'ReadJob'];
                         }
-                    }
+                    };
                 }
 
                 function getMachine(id, callback) {
@@ -649,7 +647,7 @@
                             data: createData(machine, newItems),
                             done: done(machine, d),
                             error: done(machine, d)
-                        })
+                        });
                     });
                     return d.promise;
                 }
@@ -691,7 +689,7 @@
                             data: createData(machine, item),
                             done: done(machine, d),
                             error: done(machine, d)
-                        })
+                        });
                     });
                     return d.promise;
                 }

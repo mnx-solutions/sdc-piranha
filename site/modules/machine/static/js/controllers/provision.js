@@ -1,5 +1,3 @@
-'use strict';
-
 (function (app, ng) {
     app.controller('Machine.ProvisionController', ['$scope',
         '$filter',
@@ -25,6 +23,9 @@
         'Limits',
         'errorContext',
         function ($scope, $filter, requestContext, $timeout, Machine, Datacenter, Package, Account, Network, Image, $location, localization, $q, $qe, $$track, PopupDialog, $cookies, $rootScope, FreeTier, loggingService, util, Limits, errorContext) {
+
+            'use strict';
+
             localization.bind('machine', $scope);
             requestContext.setUpRenderContext('machine.provision', $scope, {
                 title: localization.translate(null, 'machine', 'Create Instances on Joyent')
@@ -482,14 +483,14 @@
                     }
                 }
             }
-            var tasks =[
+            var tasks = [
                 $q.when(Account.getKeys()),
                 $q.when(Datacenter.datacenter()),
                 $q.when(Machine.getSimpleImgList()),
                 $q.when(Machine.machine())
             ];
-            tasks.push($q.when($scope.isProvisioningLimitsEnable ? getUserLimits(): []));
-            tasks.push($q.when($scope.features.freetier === 'enabled' ? FreeTier.freetier(): []));
+            tasks.push($q.when($scope.isProvisioningLimitsEnable ? getUserLimits() : []));
+            tasks.push($q.when($scope.features.freetier === 'enabled' ? FreeTier.freetier() : []));
             tasks.push($q.when(Account.getAccount(true)));
 
             $qe.every(tasks).then(function (result) {
@@ -560,7 +561,7 @@
                         });
                     });
                 }
-                if($scope.isProvisioningLimitsEnable) {
+                if ($scope.isProvisioningLimitsEnable) {
                     $scope.limits = [];
                     if (limitsResult.error) {
                         PopupDialog.errorObj(limitsResult.error);
@@ -707,7 +708,6 @@
                 $scope.selectNetwork(id);
             };
 
-
             var nextStep = function (step) {
                 var isNextStep = step - $scope.currentSlidePageIndex === 1;
                 if (isNextStep) {
@@ -804,7 +804,7 @@
 
             function setNetworks (datacenter) {
                 function configureNetworks (val) {
-                    $scope.networks = ['',''];
+                    $scope.networks = ['', ''];
                     $scope.selectedNetworks.length = 0;
                     var confNetwork = {
                         'Joyent-SDC-Private': 0,
@@ -820,7 +820,7 @@
                             $scope.networks.push(network);
                         }
                     });
-                    $scope.networks = $scope.networks.filter(function(e){return e;});
+                    $scope.networks = $scope.networks.filter(function (e) {return e;});
                 }
 
                 if ($scope.datacenterForNetworks === datacenter && $scope.networks.length > 0) {
@@ -945,7 +945,7 @@
             };
 
             $scope.selectDataset = function (id, changeDataset) {
-                Image.image({ id: id, datacenter: $scope.data.datacenter }).then(function (dataset) {
+                Image.image({id: id, datacenter: $scope.data.datacenter}).then(function (dataset) {
                     if (dataset.type == 'virtualmachine') {
                         $scope.datasetType = 'kvm';
                     } else if (dataset.type == 'smartmachine') {
@@ -1050,7 +1050,7 @@
                 if (!$scope.filterModel.searchText) {
                     return true;
                 }
-                var props = [ 'name', 'description' ];
+                var props = ['name', 'description'];
                 return props.some(function (prop) {
                     if (item[prop] && item[prop].toLowerCase().indexOf($scope.filterModel.searchText.toLowerCase()) !== -1) {
                         return true;
@@ -1089,7 +1089,7 @@
 
             $scope.selectPackage = function (id) {
                 $scope.data.name = null;
-                Package.package({ id: id, datacenter: $scope.data.datacenter }).then(function (pkg) {
+                Package.package({id: id, datacenter: $scope.data.datacenter}).then(function (pkg) {
                     $scope.showFinishConfiguration = true;
                     $scope.selectedPackage = id;
                     $scope.selectedPackageInfo = pkg;
@@ -1100,34 +1100,31 @@
 
             $scope.filterPackages = function (packageType, isPackageTypeCollapsed) {
                 return function (item) {
-                    //TODO: improve to have one exit point
+                    var result = true;
 
-                    if ($scope.datasetType !== item.type || item.freeTierHidden
-                        || isPackageTypeCollapsed && packageType === item.group) {
-                        return false;
+                    if ($scope.datasetType !== item.type || item.freeTierHidden ||
+                        isPackageTypeCollapsed && packageType === item.group) {
+                        result = false;
                     }
                     else if (packageType && packageType !== item.group) {
-                        return isPackageTypeCollapsed && $scope.collapsedPackageTypes.indexOf(item.group) === -1;
+                        result = isPackageTypeCollapsed && $scope.collapsedPackageTypes.indexOf(item.group) === -1;
                     }
-
-                    if ($scope.selectedDataset && $scope.selectedDataset.requirements) {
+                    else if ($scope.selectedDataset && $scope.selectedDataset.requirements) {
                         var memory = item.memory && parseInt(item.memory, 10);
                         if (memory) {
                             var requirements = $scope.selectedDataset.requirements;
-                            if (requirements.min_memory && memory < parseInt(requirements.min_memory, 10)) {
-                                return false;
-                            }
-                            if (requirements.max_memory && memory > parseInt(requirements.max_memory, 10)) {
-                                return false;
+                            if (requirements.min_memory && memory < parseInt(requirements.min_memory, 10) ||
+                                requirements.max_memory && memory > parseInt(requirements.max_memory, 10)) {
+                                result = false;
                             }
                         }
                     }
 
                     if (packageType && packageType !== item.group) {
-                        return false;
+                        result = false;
                     }
 
-                    return true;
+                    return result;
                 };
             };
 
@@ -1167,7 +1164,7 @@
                         .filter($scope.filterPackagesByProp)
                         .filter($scope.filterPackages(packageType, isPackageCollapsed))
                         .forEach(function (pkg) {
-                            if (!minimalPackage || minimalPackage.memory > pkg.memory || (minimalPackage.memory === pkg.memory && pkg.group === "Standard")) {
+                            if (!minimalPackage || minimalPackage.memory > pkg.memory || (minimalPackage.memory === pkg.memory && pkg.group === 'Standard')) {
                                 minimalPackage = pkg;
                             }
                         });
@@ -1202,7 +1199,6 @@
                     });
                 }
             };
-
 
             $scope.selectFilterType = function (name) {
                 if (name && (name !== $scope.filterModel.key)) {
@@ -1324,7 +1320,7 @@
                 if ($scope.preSelectedImage) {
                     $scope.preSelectedImage.then(function (image) {
                         $scope.selectVersion(image);
-                    })
+                    });
                 }
             }
 
@@ -1463,7 +1459,7 @@
                                 null,
                                 'machine',
                                 'CloudAPI is not responding in the {{name}} data center. Our operations team is investigating.',
-                                { name: datacenter }
+                                {name: datacenter}
                             )
                         );
                         if (!err || (err && err.restCode !== 'NotAuthorized')) {
@@ -1480,8 +1476,8 @@
                     $scope.reloading = true;
                     $scope.datasetsLoading = true;
                     $qe.every([
-                        $q.when(Image.image({ datacenter: newVal })),
-                        $q.when(Package.package({ datacenter: newVal })),
+                        $q.when(Image.image({datacenter: newVal})),
+                        $q.when(Package.package({datacenter: newVal})),
                         $q.when(getCreatedMachines())
                     ]).then(function (result) {
                         var datasetsResult = result[0];
@@ -1521,7 +1517,6 @@
                 $scope.reloading = false;
             });
 
-
             ng.element('#provisionCarousel').carousel({
                 interval: false
             });
@@ -1536,7 +1531,6 @@
                     }
                 }
             });
-
 
             $scope.slideCarousel = function () {
                 $scope.previousPos = ng.element('.carousel-inner').scrollTop();
