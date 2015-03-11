@@ -44,7 +44,7 @@
                         }
                     },
                     {
-                        id: 'host',
+                        id: 'hostId',
                         name: 'Host ID',
                         sequence: 5,
                         active: false
@@ -76,7 +76,7 @@
 
                 $scope.gridActionButtons = [];
                 $scope.exportFields = {
-                    ignore: []
+                    ignore: ['host']
                 };
                 $scope.searchForm = true;
                 $scope.enabledCheckboxes = false;

@@ -1565,6 +1565,9 @@ var Docker = function execute(scope, app) {
                     }
                     return call.done(err, []);
                 }
+                data.forEach(function(item) {
+                    item.hostId = Docker.isSdcHost(item.host) ? 'N/A' : item.host;
+                });
                 if (!call.data.params) {
                     return call.done(null, data);
                 }

@@ -377,6 +377,12 @@
                         itemId = invertedKeysMap[id];
                     }
                     var itemValue = el[itemId];
+                    var getterValue;
+                    $scope.props.some(function (prop) {
+                        getterValue = prop.id === itemId && prop.exportGetter && prop._getter && prop._getter(el);
+                        return getterValue;
+                    });
+                    itemValue = getterValue || itemValue;
                     if (angular.isArray(itemValue)) {
                         itemValue = itemValue.join(', ');
                     }
@@ -384,7 +390,6 @@
                 });
                 data.push(item);
             });
-
             return {
                 data: data,
                 order: order

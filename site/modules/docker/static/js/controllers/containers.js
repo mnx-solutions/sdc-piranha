@@ -14,10 +14,11 @@
             'Account',
             function ($scope, requestContext, localization, Docker, $q, PopupDialog, $location, $filter, Account) {
                 localization.bind('docker', $scope);
-                requestContext.setUpRenderContext('docker.containers', $scope, {
+                var CURRENT_PAGE_ACTION = 'docker.containers';
+                requestContext.setUpRenderContext(CURRENT_PAGE_ACTION, $scope, {
                     title: localization.translate(null, 'docker', 'See my Joyent Docker Containers')
                 });
-
+                var hostId = requestContext.getParam('host') || '';
                 $scope.loading = true;
                 if ($location.path() === '/docker/containers/running') {
                     $scope.forceTabActive = 'running';
@@ -44,6 +45,11 @@
 
                 var listAllContainers = function (cache) {
                     Docker.listContainers({host: 'All', cache: cache, options: {all: true}, suppressErrors: true}).then(function (containers) {
+                        if (hostId) {
+                            containers = containers.filter(function (container) {
+                                return container.hostId === hostId;
+                            });
+                        }
                         $scope.containers = containers.map(function (container) {
                             container.ShortId = container.Id.slice(0, 12);
                             container.state = getContainerState(container);
@@ -67,7 +73,6 @@
                     $scope.gridUserConfig = Account.getUserConfig().$child('docker-containers');
                 }
 
-                $scope.query = requestContext.getParam('host') || '';
                 $scope.gridOrder = ['-created'];
                 $scope.gridProps = [
                     {
@@ -137,7 +142,11 @@
                         id: 'hostId',
                         name: 'Host ID',
                         sequence: 10,
-                        active: true
+                        active: true,
+                        exportGetter: true,
+                        _getter: function (container) {
+                            return container.isSdc ? 'N/A' : container.hostId;
+                        }
                     }
                 ];
                 
@@ -335,12 +344,16 @@
                 $scope.enabledCheckboxes = true;
                 $scope.placeHolderText = 'filter containers';
                 $scope.tabFilterField = 'containers';
-                if (requestContext.getParam('host')) {
-                    $scope.forceActive = 'hostId';
-                }
 
                 Docker.pingManta(function () {
                     listAllContainers(true);
+                });
+
+                $scope.$on('$routeChangeSuccess', function(next, current) {
+                    if (current.$$route.action === CURRENT_PAGE_ACTION) {
+                        hostId = requestContext.getParam('host') || '';
+                        listAllContainers(true);
+                    }
                 });
 
                 //create container

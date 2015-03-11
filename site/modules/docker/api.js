@@ -1423,6 +1423,10 @@ module.exports = function execute(scope, register) {
         return sourceDate.getFullYear() + '-' + pad(sourceDate.getMonth() + 1) + '-' + pad(sourceDate.getDate());
     };
 
+    api.isSdcHost = function (hostId) {
+        return hostId === SDC_DOCKER_ID;
+    };
+
     api.parseLogResponse = function (response) {
         var responses = response.split('\n');
         var code;
