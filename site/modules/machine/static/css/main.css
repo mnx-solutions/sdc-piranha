@@ -675,17 +675,6 @@ span.btn-success
     color: #595959;
 }
 
-.detail_chart
-{
-    width: 485px;
-    padding-top: 7px;
-}
-
-.detail_chart .toggle-btn-bg p
-{
-    width: 420px;
-}
-
 .graf-radio-group
 {
     padding-top: 10px;

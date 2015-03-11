@@ -5366,3 +5366,12 @@ a.orange-link
     height: 20px;
     line-height: 20px;
 }
+.detail-chart
+{
+    padding-top: 7px;
+    width: 485px;
+}
+.detail-chart .toggle-btn-bg p
+{
+    width: 420px;
+}

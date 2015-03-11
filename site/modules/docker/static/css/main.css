@@ -753,3 +753,15 @@ span.btn-success
     margin-top: 5px;
     width: 578px;
 }
+.toggle-graf-width
+{
+    width: 100%;
+}
+.del-btn-graf
+{
+    display: none;
+}
+.last-graf
+{
+    padding-bottom: 40px;
+}

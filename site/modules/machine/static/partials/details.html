@@ -582,15 +582,15 @@
     </div>
             <div data-ng-if="features.cloudAnalytics == 'enabled'">
                 <div data-ng-controller="cloudController" ng-init="createMachineDetailInstrumentations()">
-                    <div class="detail_chart">
+                    <div class="detail-chart">
                         <div class="loading-small" data-ng-hide="cpuGraphs.length >= 0 && memGraphs.length >= 0"></div>
                         <graph data-ng-repeat="graph in cpuGraphs" options="graph"></graph>
-                        <div class="detail_chart">
-                            <graph data-ng-repeat="graph in memGraphs" options="graph"></graph>
-                        </div>
-                        <div class="detail_chart">
-                            <graph data-ng-repeat="graph in nicGraphs" options="graph"></graph>
-                        </div>
+                    </div>
+                    <div class="detail-chart">
+                        <graph data-ng-repeat="graph in memGraphs" options="graph"></graph>
+                    </div>
+                    <div class="detail-chart">
+                        <graph data-ng-repeat="graph in nicGraphs" options="graph"></graph>
                     </div>
                     <div class="vda-btn">
                         <a id="button-detailed-analytics" href="#!/cloudAnalytics/{{machine.id}}" class="btn light pull-right effect-orange-button"><i class="chart-icon"></i>View Detailed Analytics</a>
