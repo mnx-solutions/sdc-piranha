@@ -389,14 +389,16 @@
                     Docker.listAllImages({cache: true}).then(function (images) {
                         $scope.images = images || [];
                         $scope.images.forEach(function (image) {
-                            image.ShortId = image.Id.slice(0, 12);
-                            if (!$scope.image && image.RepoTags.indexOf(name) !== -1) {
-                                image.name = name;
-                                $scope.container.Image = name;
-                                $scope.image = image;
-                            } else {
-                                var tag = image.RepoTags[0];
-                                image.name = tag === '<none>:<none>' ? image.ShortId : tag;
+                            if (image.Id || !image.suppressErrors) {
+                                image.ShortId = image.Id.slice(0, 12);
+                                if (!$scope.image && image.RepoTags.indexOf(name) !== -1) {
+                                    image.name = name;
+                                    $scope.container.Image = name;
+                                    $scope.image = image;
+                                } else {
+                                    var tag = image.RepoTags[0];
+                                    image.name = tag === '<none>:<none>' ? image.ShortId : tag;
+                                }
                             }
                         });
                         setTimeout(function () {
