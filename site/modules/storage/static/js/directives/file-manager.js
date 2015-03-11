@@ -207,6 +207,7 @@
                         scope.infoDialogOpening = false;
                         var infoModalCtrl = function ($scope, dialog) {
                             $scope.info = info.__read();
+                            $scope.currentPath = info.data.path;
                             $scope.fileSize = util.getReadableFileSizeString($scope.info.size, 1000);
 
                             if ($scope.info.extension === 'directory') {

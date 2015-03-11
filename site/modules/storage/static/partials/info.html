@@ -22,6 +22,12 @@
                         <td>Last Modified At</td>
                         <td>{{info.headers['last-modified']}}</td>
                     </tr>
+                    <tr>
+                        <td>Current Path</td>
+                        <td><input type="text" name="path" value="{{currentPath}}" class="pull-left current-path-info" disabled />
+                            <copy-to-clipboard path="{{currentPath}}"></copy-to-clipboard>
+                        </td>
+                    </tr>
                 </table>
             </div>
             <div class="modal-footer">

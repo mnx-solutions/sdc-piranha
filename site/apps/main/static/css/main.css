@@ -5358,3 +5358,11 @@ a.orange-link
     min-height: 30px;
     background-position: 100% 50%;
 }
+.current-path-info
+{
+    margin-right: 5px;
+    padding: 0 5px;
+    width: 232px;
+    height: 20px;
+    line-height: 20px;
+}
