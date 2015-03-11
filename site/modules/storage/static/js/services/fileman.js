@@ -43,9 +43,9 @@
 
             fileman.get = function (path, show) {
                 if (show) {
-                    window.open('storage/show?path=' + window.btoa(path), '_blank');
+                    window.open('storage/show?path=' + window.btoa(unescape(encodeURIComponent(path))), '_blank');
                 } else {
-                    window.location.href = 'storage/download?path=' + window.btoa('~~/' + path);
+                    window.location.href = 'storage/download?path=' + window.btoa(unescape(encodeURIComponent('~~/' + path)));
                 }
             };
 
