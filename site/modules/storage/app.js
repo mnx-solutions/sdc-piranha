@@ -186,7 +186,7 @@ module.exports = function (scope, app) {
             res.setHeader('Content-Type', headerType);
             if (action === 'download') {
                 var filename = path.basename(filePath);
-                res.setHeader('Content-Disposition', 'attachment; filename=\"' + filename + '\";"');
+                res.setHeader('Content-Disposition', 'attachment; filename=\"' + encodeURI(filename) + '\";"');
             }
             stream.pipe(res);
         });
