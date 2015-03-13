@@ -43,6 +43,30 @@
             }
         }
 
+        function getLowerCaseSting(value) {
+            var value = value || '';
+            if (value) {
+                if (ng.isNumber(value) || typeof (value) === 'boolean') {
+                    value = value.toString();
+                }
+                if (ng.isObject(value) || ng.isArray(value)) {
+                    value = JSON.stringify(value);
+                }
+            }
+            return value.toLowerCase();
+        }
+
+        function searchInObject(obj, needle) {
+            var result = false;
+            if (ng.isObject(obj)) {
+                result = Object.keys(obj).some(function (key) {
+                    var propertyValue = getLowerCaseSting(obj[key]);
+                    return propertyValue.indexOf(needle) !== -1;
+                });
+            }
+            return result;
+        }
+
         $scope.$watch('pagedItems', function (items) {
             var asyncProps = $scope.props.filter(function (prop) {
                 return prop.type === 'async';
@@ -279,31 +303,25 @@
         $scope.matchesFilter = function (item) {
             var result = false;
             if ($scope.propertyFilter(item)) {
-                if ($scope.filterAll) {
-                    result = $scope.props.some(function (el) {
-                        if (el.active) {
-                            var subject = el._getter && el._getter(item) || item[el.id] || el.id2 && item[el.id][el.id2] || '';
-                            if (el.id === 'hostId' && item.hostIds && item.hostIds.length > 0) {
-                                subject = item.hostIds;
-                            }
-
-                            if (ng.isNumber(subject) || typeof (subject) === 'boolean') {
-                                subject = subject.toString();
-                            }
-
-                            if (ng.isObject(subject) || ng.isArray(subject)) {
-                                subject = JSON.stringify(subject);
-                            }
-
-                            var needle = $scope.filterAll.toLowerCase();
-
-                            return subject.toLowerCase().indexOf(needle) !== -1;
-                        } else {
-                            return false;
-                        }
-                    });
-                }
                 result = true;
+                if ($scope.filterAll) {
+                    var needle = $scope.filterAll.toLowerCase();
+                    if (!searchInObject(item, needle)) {
+                        result = $scope.props.some(function (el) {
+                            if (el.active) {
+                                var subject = el._getter && el._getter(item) || item[el.id] || el.id2 && item[el.id][el.id2] || '';
+                                if (el.id === 'hostId' && item.hostIds && item.hostIds.length > 0) {
+                                    subject = item.hostIds;
+                                }
+                                subject = getLowerCaseSting(subject);
+
+                                return subject.indexOf(needle) !== -1;
+                            } else {
+                                return false;
+                            }
+                        });
+                    }
+                }
             }
             return result;
         };
