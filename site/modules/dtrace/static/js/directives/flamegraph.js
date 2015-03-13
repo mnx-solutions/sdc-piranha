@@ -36,8 +36,9 @@
                                 $scope.loading = false;
                                 $scope.$apply(function () {
                                     var svgElement = $compile(svg)($scope);
-                                    ng.element(element).html(svgElement);
-                                    svgElement[2].onload();
+                                    ng.element(element).html(svgElement).promise().done(function () {
+                                        init();
+                                    });
                                 });
                                 DTrace.saveFlameGraph({svg: svg, id: $scope.options.hostId}).then(function () {}, function (err) {
                                     PopupDialog.errorObj(err);
