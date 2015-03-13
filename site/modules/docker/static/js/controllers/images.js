@@ -81,7 +81,7 @@
                                 image.images = 'top';
                                 topImages.push(image.ShorId);
                             }
-                            image.repository = image.RepoTags ? image.RepoTags[0].split(':')[0] : '';
+                            image.repository = image.RepoTags && image.RepoTags.length ? image.RepoTags[0].split(':')[0] : '';
                         });
                         imagesWithoutGrouping = angular.copy(images);
                         $scope.images = getGroupedImages(images);
