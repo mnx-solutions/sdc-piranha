@@ -83,6 +83,11 @@
                             Instance name should not contain '..' and '.-' or '-.'
                         </div>
                         <div class="error"
+                             data-ng-show="provisionForm.machineName.$error.exceedsMaxLength"
+                             data-translate>
+                            The maximum length of machine name is 189 characters
+                        </div>
+                        <div class="error"
                              data-ng-show="provisionForm.machineName.$error.machineUnique"
                              data-translate>
                             Machine name is already in use
