@@ -98,7 +98,7 @@
                                 var files = elem.files;
                                 var file = files[0];
 
-                                if (file.size > 512) {
+                                if (file.size > 1024) {
                                     $rootScope.$broadcast('sshProgress', false);
 
                                     dialog.close({});
