@@ -11,7 +11,6 @@ module.exports = function execute(scope, register) {
         var self = this;
         var parts = directory.split('/');
         var root = parts.slice(0, 2).join('/');
-        var pipeline = [];
         parts = parts.splice(2);
         if (!parts.slice(-1)) {
             parts.splice(-1, 1);
@@ -19,7 +18,7 @@ module.exports = function execute(scope, register) {
         var parentRoles = '';
         function waitForCreating(directory, callback, retries) {
             retries = retries !== undefined ? retries : 10;
-            self.client.head(directory, function (err, req, res) {
+            self.info(directory, function (err) {
                 if (err) {
                     if (!retries) {
                         return callback(new Error('Directory ' + directory + ' not exist.'));
