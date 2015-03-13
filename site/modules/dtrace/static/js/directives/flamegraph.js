@@ -22,44 +22,49 @@
                     "/ { @[jstack(150, 8000)] = count(); } tick-60s { exit(0); }'";
                 }
                 function getFlamegraph (dtraceScript) {
-                    websocket = new WebSocket('ws://' + $scope.options.hostIp + ':' + dtracePort);
-                    var locationPath = $location.path();
-                    websocket.onmessage = function (event) {
-                        if (locationPath === $location.path()) {
-                            var svg;
-                            try {
-                                svg = JSON.parse(event.data);
-                            } catch (err) {
-                                svg = '';
-                            }
-                            if (svg) {
-                                $scope.loading = false;
-                                $scope.$apply(function () {
-                                    var svgElement = $compile(svg)($scope);
-                                    ng.element(element).html(svgElement).promise().done(function () {
-                                        init();
+                    DTrace.exucute({
+                        host: $scope.options.hostIp + ':' + dtracePort,
+                        dtraceObj: JSON.stringify({type: 'flamegraph', message: dtraceScript})
+                    }).then(function (path) {
+                        var a = document.createElement('a');
+                        a.href = path;
+                        a.protocol = a.protocol === 'http:' ? 'ws:' : 'wss:';
+                        websocket = new WebSocket(a.href);
+                        var locationPath = $location.path();
+                        websocket.onmessage = function (event) {
+                            if (locationPath === $location.path()) {
+                                var svg;
+                                try {
+                                    svg = JSON.parse(event.data);
+                                } catch (err) {
+                                    svg = '';
+                                }
+                                if (svg) {
+                                    $scope.loading = false;
+                                    $scope.$apply(function () {
+                                        var svgElement = $compile(svg)($scope);
+                                        ng.element(element).html(svgElement).promise().done(function () {
+                                            init();
+                                        });
                                     });
-                                });
-                                DTrace.saveFlameGraph({svg: svg, id: $scope.options.hostId}).then(function () {}, function (err) {
-                                    PopupDialog.errorObj(err);
-                                });
-                                websocket.send(JSON.stringify({type: 'flamegraph', message: dtraceScript}));
+                                    DTrace.saveFlameGraph({svg: svg, id: $scope.options.hostId}).then(function () {}, function (err) {
+                                        PopupDialog.errorObj(err);
+                                    });
+                                    websocket.send(JSON.stringify({type: 'flamegraph', message: dtraceScript}));
+                                }
+                            } else {
+                                closeWebsocket();
                             }
-                        } else {
-                            closeWebsocket();
-                        }
-                    };
-                    websocket.onopen = function () {
-                        websocket.send(JSON.stringify({type: 'flamegraph', message: dtraceScript}));
-                    };
+                        };
 
-                    websocket.onerror = function (event) {
-                        loggingService.log('error', 'websocket error: ' + event.data);
-                    };
+                        websocket.onerror = function (event) {
+                            loggingService.log('error', 'websocket error: ' + event.data);
+                        };
 
-                    websocket.onclose = function () {
-                        websocket.close();
-                    };
+                        websocket.onclose = function () {
+                            websocket.close();
+                        };
+                    });
                 }
 
                 var closeWebsocket = function () {

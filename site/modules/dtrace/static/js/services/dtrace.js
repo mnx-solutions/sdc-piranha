@@ -62,6 +62,13 @@
                     name: 'SaveFlameGraph',
                     data: { svg: data.svg, id: data.id }
                 }).promise;
+            };
+
+            service.exucute = function (data) {
+                return serverTab.call({
+                    name: 'DtraceExecute',
+                    data: { host: data.host, dtraceObj: data.dtraceObj }
+                }).promise;
             }
 
         return service;
