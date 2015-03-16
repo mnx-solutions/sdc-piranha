@@ -29,6 +29,11 @@
             Instance name should not contain '..' and '.-' or '-.'
         </div>
         <div class="pull-left error"
+             data-ng-show="renameForm.renameObject.$error.exceedsMaxLength && changingName && newName != object.name"
+             data-translate>
+            The maximum length of machine name is 189 characters
+        </div>
+        <div class="pull-left error"
              data-ng-show="renameForm.renameObject.$error[type + 'Unique'] && changingName && newName != object.name"
              data-translate>
             {{type | capitalize}} name&nbsp;is already in use
