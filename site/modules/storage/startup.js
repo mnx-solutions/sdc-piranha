@@ -16,16 +16,22 @@ module.exports = function execute(scope) {
     function sendError(call, error, suppressErrorLog, errorPath) {
         function done(err) {
             if (err) {
+                var logLevel = 'error';
                 var message = err.message || '';
                 errorPath = errorPath ? ('~~' + errorPath) : call.data && call.data.path;
                 if ((err.code === 'NoMatchingRoleTag' || err.restCode === 'NoMatchingRoleTag') &&
                     message.indexOf(errorPath.replace(/^~~/, '')) === -1) {
                     err.message = 'None of your active roles are present on the resource \'' + errorPath + '\'.';
                 }
+                if (err.code === 'AccountDoesNotExist') {
+                    logLevel = 'info';
+                    suppressErrorLog = true;
+                    err.message = 'You do not have permission to access /my (getaccount)';
+                }
                 if (err.code === 'ENOTFOUND') {
                     err.message = mantaNotAvailable;
                 }
-                call.req.log.error('sendError', err);
+                call.req.log[logLevel]('sendError', err);
                 call.done(err.message || mantaNotAvailable, suppressErrorLog);
             } else {
                 call.done();
