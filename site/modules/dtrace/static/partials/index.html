@@ -1,20 +1,7 @@
 <div data-ng-controller="Dtrace.IndexController" class="container-fluid container-position">
     <div class="row">
         <h3 class="page-title">Dtrace Dashboard</h3>
-        <div class="page-title-btn">
-            <div class="control-panel">
-                <span>Data Center:</span>
-                <div class="provisioning-header-left-button btn-group">
-                    <select type="hidden" data-select-two id="selectDockerDatacenter" data-ng-model="data.datacenter" data-select="data.datacenter" placeholder="No matches found">
-                        <option value=""></option>
-                        <option data-ng-repeat="datacenter in datacenters | orderBy:$index" value="{{datacenter.name}}">
-                            {{datacenter.name}}
-                        </option>
-                    </select>
-                </div>
-            </div>
-            <button data-ng-disabled="!data.imageId" data-ng-click="createDtrace()" type="button" class="btn btn-big orange text-to-left"><i class="plus-btn-icon"></i>Create Dtrace Host</button>
-        </div>
+        <create-dtrace-button></create-dtrace-button>
     </div>
     <div class="beta-sticker">beta</div>
     <div class="loading-large" data-ng-show="loading"></div>
@@ -38,6 +25,6 @@
             </div>
         </div>
     </div>
-
+    <div data-ng-show="!loading && !dtraceMachines.length" class="grid-no-entries">You do not have any DTrace hosts.</div>
 </div>
 

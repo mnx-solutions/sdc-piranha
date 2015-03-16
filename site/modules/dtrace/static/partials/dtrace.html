@@ -4,10 +4,11 @@
             <li><a href="#!/dtrace">DTrace</a></li>
         </ul>
         <h3 class="page-title white-line">{{title}}</h3>
+        <create-dtrace-button data-ng-show="hosts && !hosts.length"></create-dtrace-button>
         <div class="beta-sticker">beta</div>
         <div class="loading-large col-md-12" data-ng-show="loading"></div>
 
-        <div data-ng-hide="loading" class="heatmap-wrapper">
+        <div data-ng-hide="loading || !hosts.length" class="heatmap-wrapper">
 
             <select ui-select2="{minimumResultsForSearch: -1, width: '200px'}" id="hostSelect" data-ng-model="host" ng-change="changeScript()" data-ng-disabled="loadingHostScripts" >
                 <option data-ng-repeat="host in hosts" value="{{host}}">
@@ -30,6 +31,7 @@
             <button data-ng-click="start()" data-ng-disabled="loadingHostProcesses || !scriptName" class="btn grey-new effect-orange-button heatmap-button" data-ng-hide="starting">Start</button>
             <button data-ng-click="stop()" class="btn orange heatmap-button" data-button-focus="true" data-ng-show="starting">Stop</button>
         </div>
+        <div data-ng-show="!loading && !hosts.length" class="grid-no-entries">You do not have any DTrace hosts.</div>
         <div class="heatmap-wrapper" data-ng-if="!loading && title === 'Heatmap'">
             <heatmap data-options="options" data-status="starting"></heatmap>
         </div>
