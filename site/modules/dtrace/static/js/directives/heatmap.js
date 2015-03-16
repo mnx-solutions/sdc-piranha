@@ -1,7 +1,7 @@
 'use strict';
 
 (function (ng, app) {
-    app.directive('heatmap', ['$location', 'loggingService', function ($location, loggingService) {
+    app.directive('heatmap', ['$location', 'loggingService', 'DTrace', function ($location, loggingService, DTrace) {
         return {
             restrict: 'E',
             replace: true,
@@ -66,49 +66,53 @@
                         setup();
                         ctx.fillRect(0, 0, width, height);
                     }
-
-                    websocket = new WebSocket('ws://' + hostIp + ':' + dtracePort);
-                    websocket.onmessage = function (event) {
-                        if (locationPath === $location.path()) {
-                            var data;
-                            try {
-                                data = JSON.parse(event.data);
-                            } catch (e) {
-                                data = {};
+                    DTrace.exucute({
+                        host: hostIp + ':' + dtracePort,
+                        dtraceObj: JSON.stringify({type: 'heatmap', message: dscript})
+                    }).then(function (path) {
+                        var a = document.createElement('a');
+                        a.href = path;
+                        a.protocol = a.protocol === 'http:' ? 'ws:' : 'wss:';
+                        websocket = new WebSocket(a.href);
+                        websocket.onmessage = function (event) {
+                            if (locationPath === $location.path()) {
+                                var data;
+                                try {
+                                    data = JSON.parse(event.data);
+                                } catch (e) {
+                                    data = {};
+                                }
+                                draw(data);
+                            } else {
+                                closeWebsocket();
                             }
-                            draw(data);
-                        } else {
-                            closeWebsocket();
-                        }
-                    };
+                        };
 
-                    websocket.onopen = function () {
-                        dscript = dscript || getDscript();
+                        websocket.onopen = function () {
+                            dscript = dscript || getDscript();
 
-                        // Draw  script name and host
-                        ctx.beginPath();
-                        ctx.strokeStyle = "#fff";
-                        ctx.moveTo(0, 20);
-                        ctx.lineTo(width, 20);
-                        ctx.stroke();
-                        ctx.font = '12px serif';
-                        ctx.fillStyle = '#fff';
-                        ctx.textAlign = 'left';
-                        name = name || 'all syscall';
-                        ctx.fillText('host :' + hostIp + '; dtrace script :' + name, 5, 14);
+                            // Draw  script name and host
+                            ctx.beginPath();
+                            ctx.strokeStyle = "#fff";
+                            ctx.moveTo(0, 20);
+                            ctx.lineTo(width, 20);
+                            ctx.stroke();
+                            ctx.font = '12px serif';
+                            ctx.fillStyle = '#fff';
+                            ctx.textAlign = 'left';
+                            name = name || 'all syscall';
+                            ctx.fillText('host :' + hostIp + '; dtrace script :' + name, 5, 14);
+                        };
 
-                        websocket.send(JSON.stringify({type: 'heatmap', message: dscript}));
-                    };
+                        websocket.onerror = function (event) {
+                            loggingService.log('error', 'websocket error: ' + event.data);
+                        };
 
-                    websocket.onerror = function (event) {
-                        loggingService.log('error', 'websocket error: ' + event.data);
-                    };
-
-                    websocket.onclose = function () {
-                        websocket.close();
-                    };
+                        websocket.onclose = function () {
+                            websocket.close();
+                        };
+                    });
                 }
-
 
                 window.onbeforeunload = function () {
                     closeWebsocket(websocket);

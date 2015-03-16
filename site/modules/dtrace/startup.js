@@ -5,9 +5,13 @@ var dtrace = function execute(scope) {
     var Dtrace = scope.api('Dtrace');
     var mantaClient = scope.api('MantaClient');
     var server = scope.api('Server');
+    var httpServer = scope.get('httpServer');
+    var WebSocket = require('ws');
 
     var filePath = '~~/stor/.joyent/dtrace/scripts.json';
     var flameGraphPath = '~~/stor/.joyent/dtrace/flameGraph';
+
+    var uuid = require('../../static/vendor/uuid/uuid.js');
 
     function getScriptsList (call, client, callback) {
         client.getFileJson(filePath, function (error, scripts) {
@@ -137,6 +141,42 @@ var dtrace = function execute(scope) {
         }
     });
 
+    server.onCall('DtraceExecute', {
+        verify: function (data) {
+            return data.host && data.host.length && data.dtraceObj && data.dtraceObj.length;
+        },
+        handler: function (call) {
+            var path = '/main/dtrace/exec/' + uuid();
+            var wss = new WebSocket.Server({
+                server: httpServer,
+                path: path
+            });
+            call.done(null, path);
+            wss.once('connection', function (socket) {
+                var wsc = new WebSocket('ws://' + call.data.host);
+                function closeSocket () {
+                    wsc.close();
+                    socket.close();
+                    wss.close();
+                }
+                wsc.onmessage = function (event) {
+                    socket.send(event.data);
+                };
+                wsc.onopen = function () {
+                    wsc.send(call.data.dtraceObj);
+                };
+                wsc.onerror = function (event) {
+                    socket.send(event.data);
+                    closeSocket();
+                };
+                socket.on('message', function (message) {
+                    wsc.send(message);
+                });
+                socket.on('error', closeSocket);
+                socket.on('close', closeSocket);
+            });
+        }
+    });
 };
 
 if (!config.features || config.features.dtrace !== 'disabled') {
