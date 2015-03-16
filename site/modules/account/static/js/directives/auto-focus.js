@@ -2,14 +2,23 @@
 
 (function (ng, app) {
     app.directive('autoFocus', [
-        '$timeout',
-        function ($timeout) {
+        function () {
             return {
                 restrict: 'A',
                 link: function(scope, element) {
-                    $timeout(function () {
-                        ng.element(element[0]).focus();
-                    }, 0);
+                    var INTERVAL = 500; // ms
+                    var TIMEOUT = 6000; // ms
+                    var counter = 0;
+                    function setFocus() {
+                        element[0].focus();
+                    }
+                    var doFocus = setInterval(function () {
+                        setFocus();
+                        if (counter >= TIMEOUT || ng.element(element[0]).is(':focus')) {
+                            clearInterval(doFocus);
+                        }
+                        counter += INTERVAL;
+                    }, INTERVAL);
                 }
             };
         }]);
