@@ -1,8 +1,9 @@
-'use strict';
-
 (function (ng, app) {app.controller('GridViewController',
     ['$scope', '$parse', '$filter', '$http', '$location', 'Account', '$rootScope', 'Datacenter', 'PopupDialog', '$qe', '$sce', 'ErrorService', '$timeout',
     function ($scope, $parse, $filter, $http, $location, Account, $rootScope, Datacenter, PopupDialog, $qe, $sce, ErrorService, $timeout) {
+
+        'use strict';
+
         $scope.location = $location;
         $scope.checkedItems = [];
         var types = {};
@@ -276,34 +277,35 @@
         };
 
         $scope.matchesFilter = function (item) {
+            var result = false;
             if ($scope.propertyFilter(item)) {
                 if ($scope.filterAll) {
-                    return $scope.props.some(function (el) {
-                        if (!el.active) {
+                    result = $scope.props.some(function (el) {
+                        if (el.active) {
+                            var subject = el._getter && el._getter(item) || item[el.id] || el.id2 && item[el.id][el.id2] || '';
+                            if (el.id === 'hostId' && item.hostIds && item.hostIds.length > 0) {
+                                subject = item.hostIds;
+                            }
+
+                            if (ng.isNumber(subject) || typeof (subject) === 'boolean') {
+                                subject = subject.toString();
+                            }
+
+                            if (ng.isObject(subject) || ng.isArray(subject)) {
+                                subject = JSON.stringify(subject);
+                            }
+
+                            var needle = $scope.filterAll.toLowerCase();
+
+                            return subject.toLowerCase().indexOf(needle) !== -1;
+                        } else {
                             return false;
                         }
-
-                        var subject = (el._getter && el._getter(item)) || item[el.id] || (el.id2 && item[el.id][el.id2]) || '';
-                        if (el.id === 'hostId' && item.hostIds && item.hostIds.length > 0) {
-                            subject = item.hostIds;
-                        }
-
-                        if (ng.isNumber(subject) || typeof subject === 'boolean') {
-                            subject = subject.toString();
-                        }
-
-                        if (ng.isObject(subject) || ng.isArray(subject)) {
-                            subject = JSON.stringify(subject);
-                        }
-
-                        var needle = $scope.filterAll.toLowerCase();
-
-                        return (subject.toLowerCase().indexOf(needle) !== -1);
                     });
                 }
-                return true;
+                result = true;
             }
-            return false;
+            return result;
         };
 
         $scope.changePage = function (t) {
