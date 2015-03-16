@@ -110,7 +110,12 @@ var firewall = function execute (scope) {
             try {
                 newRule = fwrule.create(call.data);
             } catch (e) {
-                call.done(e.message);
+                var suppressError = false;
+                if (e.message === 'rule does not affect VMs') {
+                    suppressError = true;
+                    call.log.info(e.message);
+                }
+                call.done(e.message, suppressError);
                 return;
             }
             newRule = newRule.text();
