@@ -96,6 +96,15 @@ module.exports = function execute(scope) {
         }
     });
 
+    function checkSuppressError(call, error) {
+        var suppressError = false;
+        if (error.message && error.message.indexOf(call.data.email + '" already exists') !== -1) {
+            suppressError = true;
+            call.log.info(error.message);
+        }
+        return suppressError;
+    }
+
     server.onCall('updateAccount', function (call) {
         // update account using cloudapi
         var data = {};
@@ -109,7 +118,7 @@ module.exports = function execute(scope) {
             data.id = subUserId;
             call.cloud.updateUser(data, function (userErr, userData) {
                 if (userErr) {
-                    return call.done(userErr);
+                    return call.done(userErr, checkSuppressError(call, userErr));
                 }
                 userData.isSubuser = true;
                 return getBillingAndComplete(call, userData);
@@ -163,7 +172,7 @@ module.exports = function execute(scope) {
                     call.log.debug('Updating account with', data);
                     call.cloud.updateAccount(data, function (updateAccountError, result) {
                         if (updateAccountError) {
-                            call.done(updateAccountError);
+                            call.done(updateAccountError, checkSuppressError(call, updateAccountError));
                             return;
                         }
                         Billing.updateActive(result.id, function (err, isActive) {
