@@ -1436,7 +1436,7 @@ module.exports = function execute(scope, register) {
                 if (code === 2) {
                     inputStr = 'stderr';
                 }
-                if (code > 4 || code < 2048) {
+                if (code > 4 && code < 2048) {
                     break;
                 }
             }
