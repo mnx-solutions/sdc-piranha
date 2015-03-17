@@ -38,8 +38,7 @@
                 Image.updateImage($scope.currentImage, function () {}).promise.then(function () {
                     $scope.loading = false;
                     $scope.oldImageData = ng.copy($scope.currentImage);
-                }, function (err) {
-                    PopupDialog.errorObj(err);
+                }, function () {
                     $scope.currentImage = ng.copy($scope.oldImageData);
                     Image.resetImage($scope.oldImageData, function () {
                         $scope.loading = false;

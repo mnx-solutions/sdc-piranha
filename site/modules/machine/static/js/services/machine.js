@@ -371,6 +371,11 @@
                                 }
                             );
                             if (err.restCode === 'NotAuthorized') {
+                                machine.state = machine.prevState;
+                                if ($location.path().indexOf(INSTANCES_PATH) === -1 ||
+                                    $location.path().indexOf(INSTANCES_PATH + '/create') !== -1) {
+                                    return;
+                                }
                                 message = err.message.indexOf('getmachine') !== -1 ? 'Can not get machine status. ' + err.message : err.message;
                             }
                             PopupDialog.error(
@@ -380,10 +385,6 @@
                                     'Error'
                                 ), message
                             );
-                            if (err.restCode === 'NotAuthorized') {
-                                machine.state = machine.prevState;
-                            }
-
                         });
                     return  promise;
                 }
@@ -406,6 +407,9 @@
                 notificationMessage = 'Instance "' + machine.name + '" ';
                 if (err) {
                     notificationMessage += machine.state + ' has been failed.';
+                    if (err.message && err.message.indexOf('permission') !== -1) {
+                        notificationMessage = err.message;
+                    }
                 } else {
                     var machineState = machine.state.replace('ing', 'ed');
                     if (machineState === 'provisioned') {
@@ -607,7 +611,10 @@
                 function done(machine, d, deleteReadJob) {
                     return function (error, job) {
                         if (error) {
-                            showNotification(error, job, true);
+                            if (error.message.indexOf('listmachinemetadata') === -1 &&
+                                error.message.indexOf('listmachinetags') === -1) {
+                                showNotification(error, job, true);
+                            }
                             return d.reject(error);
                         }
 

@@ -5036,7 +5036,9 @@ label.checkbox.folder-name-form-checkbox
 }
 
 .jquery-notific8-notification {
+    max-height: 6em;
     width: 24.5em;
+    height: 6em;
 }
 .jquery-notific8-notification.success
 {
@@ -5068,7 +5070,8 @@ label.checkbox.folder-name-form-checkbox
 
 .right .jquery-notific8-close-sticky
 {
-    top: 1.1em;
+    top: 2em;
+    width: 5.9em;
 }
 
 .configurationForm .edit-value,
