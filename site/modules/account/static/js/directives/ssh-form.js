@@ -42,7 +42,7 @@
                             PopupDialog.errorObj(err);
                         }
                         if (subuserId && err.message.indexOf('listuserkeys') === -1) {
-                            getKeysList();
+                            getKeysList(null, true);
                         }
                     };
 
@@ -57,7 +57,7 @@
                         return key.name || '';
                     };
 
-                    var getKeysList = function (cb) {
+                    var getKeysList = function (cb, suppressErrors) {
                         RBAC.listUserKeys(subuserId).then(function (list) {
                             $scope.keys = list;
                             $scope.loadingKeys = false;
@@ -65,7 +65,9 @@
                                 cb();
                             }
                         }, function (err) {
-                            errorCallback(err, cb);
+                            if (!suppressErrors) {
+                                errorCallback(err, cb);
+                            }
                         });
                     };
 

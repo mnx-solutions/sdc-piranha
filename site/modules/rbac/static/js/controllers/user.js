@@ -38,8 +38,11 @@
                 if (err && err.message.toLowerCase().indexOf('email') !== -1) {
                     err.message = 'This email address is already in use.';
                 }
-
                 PopupDialog.errorObj(err);
+                if (err.statusCode === 404) {
+                    service.updateCache({ids: [userId]}, {}, 'user', service.ACCESS.WRITE);
+                    $location.path('/accounts/users');
+                }
             };
 
             var fillCountryNameFromCode = function () {
