@@ -405,13 +405,13 @@
                 var machine = job.machine || job.initial.machine;
                 notificationMessage = 'Instance "' + machine.name + '" ';
                 if (err) {
-                    notificationMessage += machine.state + ' has failed.';
+                    notificationMessage += machine.state + ' has been failed.';
                 } else {
                     var machineState = machine.state.replace('ing', 'ed');
                     if (machineState === 'provisioned') {
                         machineState = 'created';
                     }
-                    notificationMessage += 'has successfully ' + machineState + '.';
+                    notificationMessage += 'has been successfully ' + machineState + '.';
                 }
             } else if (job.data && (job.data.tags || job.data.metadata)) {
                 instancesPath += '/instance';
@@ -558,7 +558,7 @@
                     }
                     var result = job.__read();
                     result.datacenter = data.datacenter;
-                    showNotification(err, {machine: result});
+                    showNotification(err, job);
                     if (result.tags.JPC_tag === 'DockerHost') {
                         $rootScope.$emit('clearDockerCache', result);
                     }
