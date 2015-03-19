@@ -1,7 +1,7 @@
 'use strict';
 
 (function (app) {
-    app.directive('machineCollection', ['Machine', 'PopupDialog', 'localization', function (Machine, PopupDialog, localization) {
+    app.directive('machineCollection', ['Machine', 'PopupDialog', 'localization', '$location', function (Machine, PopupDialog, localization, $location) {
         return {
             templateUrl: 'machine/static/partials/machine-collection.html',
             restrict: 'EA',
@@ -80,7 +80,7 @@
                 }
 
                 function fail(item, error) {
-                    if (error) {
+                    if (error && $location.path().indexOf('/compute/instance') !== -1) {
                         PopupDialog.error(null, error.message || error);
                     }
                     if (!item.isNew) {

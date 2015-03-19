@@ -30,7 +30,6 @@
                 var renameFinished = function (err) {
                     if(err) {
                         scope.object.name = currentName;
-                        PopupDialog.errorObj(err);
                     }
                     scope.renaming = false;
                     scope.loadingNewName = false;

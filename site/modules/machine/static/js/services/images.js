@@ -309,10 +309,19 @@
                 handleChunk(image);
 
                 var handleImageCreationError = function (imageError, image) {
-                    var notificationMessage = 'New image "' + image.name + '" of version "' + image.version + '" ';
+                    var imagesPath = IMAGES_PATH;
+                    var instanceDetailsPath = '/compute/instance';
+                    var notificationMessage = 'New image "' + image.name + '" of version "' + image.version + '" creation has failed.';
                     handleChunk(image, 'remove');
                     $rootScope.$emit('createdImage', machineId);
-                    notification.popup(true, true, IMAGES_PATH, null, getErrorMessage(image, imageError, true), notificationMessage + 'creation has failed.');
+                    var errorMessage = getErrorMessage(image, imageError, true);
+                    if (imageError.restCode === 'NotAuthorized' && $location.path().indexOf(instanceDetailsPath) !== -1) {
+                        imagesPath = instanceDetailsPath;
+                    }
+                    if (errorMessage.indexOf('permission') !== -1) {
+                        notificationMessage = errorMessage;
+                    }
+                    notification.popup(true, true, imagesPath, null, errorMessage, notificationMessage);
                 };
 
                 var jobCall = serverTab.call({

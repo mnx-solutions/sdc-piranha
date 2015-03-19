@@ -180,14 +180,10 @@
                                     if (el.tags && el.tags.JPC_tag === 'DockerHost') {
                                         Machine.deleteDockerMachine(el).then(function () {
                                             resolvedDeleteAction(el, true);
-                                        }, function (err) {
-                                            PopupDialog.errorObj(err);
                                         });
                                     } else {
                                         Machine.deleteMachine(el.id).then(function () {
                                             resolvedDeleteAction(el);
-                                        }, function (err) {
-                                            PopupDialog.errorObj(err);
                                         });
                                     }
 

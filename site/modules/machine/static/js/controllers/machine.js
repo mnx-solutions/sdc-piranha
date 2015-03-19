@@ -381,10 +381,9 @@
                             $scope.isResizing = false;
                             $scope.machine.freetier = false;
                             reloadPackages(selected.name, $scope.machine.datacenter);
-                        }, function (err) {
+                        }, function () {
                             $scope.isResizing = false;
                             $scope.machine.state = $scope.machine.prevState;
-                            PopupDialog.errorObj(err);
                         });
                     });
             };
@@ -516,14 +515,10 @@
                         if ($scope.machine.tags && $scope.machine.tags.JPC_tag === 'DockerHost') {
                             Machine.deleteDockerMachine($scope.machine).then(function () {
                                 resolvedDeleteAction(machineid, true);
-                            }, function (error) {
-                                PopupDialog.errorObj(error);
                             });
                         } else {
                             Machine.deleteMachine(machineid).then(function () {
                                 resolvedDeleteAction(machineid);
-                            }, function (error) {
-                                PopupDialog.errorObj(error);
                             });
                         }
                     });

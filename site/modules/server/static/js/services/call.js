@@ -12,8 +12,6 @@
             var commonErrorCalls = [
                 'MachineList',
                 'ImagesList',
-                'ImageUpdate',
-                'MachineDelete',
                 'listUsers',
                 'getUser',
                 'deleteUser',
@@ -32,7 +30,6 @@
                 'DockerHistoryImage',
                 'DockerGetInfo',
                 'DockerGetVersion',
-                'DockerDeleteMachine',
                 'SupportListPackages',
                 'JobList',
                 'JobCreate',
