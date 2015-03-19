@@ -94,6 +94,15 @@ var firewall = function execute (scope) {
         getRule();
     }
 
+    function checkSuppressError(call, error) {
+        var suppressError = false;
+        if (error.message === 'rule does not affect VMs') {
+            suppressError = true;
+            call.log.info(error.message);
+        }
+        return suppressError;
+    }
+
     server.onCall('RuleCreate', {
         verify: function (data) {
             return typeof data === 'object' &&
@@ -110,12 +119,7 @@ var firewall = function execute (scope) {
             try {
                 newRule = fwrule.create(call.data);
             } catch (e) {
-                var suppressError = false;
-                if (e.message === 'rule does not affect VMs') {
-                    suppressError = true;
-                    call.log.info(e.message);
-                }
-                call.done(e.message, suppressError);
+                call.done(e.message, checkSuppressError(call, e));
                 return;
             }
             newRule = newRule.text();
@@ -151,7 +155,7 @@ var firewall = function execute (scope) {
             try {
                 newRule = fwrule.create(call.data);
             } catch (e) {
-                call.done(e);
+                call.done(e, checkSuppressError(call, e));
                 return;
             }
             newRule = newRule.text();
