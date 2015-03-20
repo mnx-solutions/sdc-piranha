@@ -2,6 +2,9 @@
 
 // get the old hasban for returnUrl
 window.JP.set('urlHashbang', window.location.hash);
+if (location.search === '?reload') {
+    location.search = '';
+}
 
 (function (app) {
     app.controller('LandingPageController', [
