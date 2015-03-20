@@ -446,7 +446,12 @@ if (!config.features || config.features.rbac !== 'disabled') {
             data.password = call.data.password;
             call.cloud.createUser(data, function (createErr, userData) {
                 if (createErr) {
-                    call.done(createErr);
+                    var suppressError = false;
+                    if (createErr.message && createErr.message.indexOf(data.email + '" already exists') !== -1) {
+                        suppressError = true;
+                        call.log.info(createErr.message);
+                    }
+                    call.done(createErr, suppressError);
                     return;
                 }
 
