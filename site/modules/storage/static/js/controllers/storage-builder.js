@@ -33,6 +33,8 @@
                             $location.url('/manta/intro');
                             $location.replace();
                         });
+                    } else {
+                        $scope.loading = false;
                     }
                 });
                 if (cloneJob) {
