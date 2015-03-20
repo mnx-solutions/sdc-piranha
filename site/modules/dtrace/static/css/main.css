@@ -66,10 +66,35 @@
 .heatmap-wrapper {
     margin-top: 15px;
 }
+.heatmap-controls {
+    width: 100%;
+    min-width: 700px;
+}
+.heatmap-controls td {
+    display: inline-block;
+    box-sizing: content-box;
+    vertical-align: top;
+}
+.heatmap-controls td.medium,
+.heatmap-controls td.big {
+    padding: 0 1% 10px 0;
+}
+.heatmap-controls td.small {
+    width: 10%;
+}
+.heatmap-controls td.medium {
+    width: 23.5%;
+}
+.heatmap-controls td.big {
+    width: 40%;
+}
+.heatmap-controls td.triple {
+    width: 44%;
+}
 
 .heatmap-button {
-    width: 100px;
-    margin-left: 10px;
+    width: 100%;
+    min-width: 100px;
     padding: 5px 0;
 }
 
