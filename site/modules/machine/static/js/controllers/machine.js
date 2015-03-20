@@ -131,6 +131,11 @@
                     }, function (err) {
                         PopupDialog.errorObj(err);
                     });
+                    Docker.listImages(machine).then(function (images) {
+                        $scope.topImages = images.length;
+                    }, function (err) {
+                        PopupDialog.errorObj(err);
+                    });
                     Docker.hostVersion({host: machine, wait: true}).then(function (version) {
                         $scope.dockerVersion = version.Version || '';
                     }, function (err) {
@@ -155,8 +160,8 @@
                     }, function (err) {
                         PopupDialog.errorObj(err);
                     });
-                    $scope.navigateContainersImages = function (route, host) {
-                        $location.url('/docker/' + route + '?host=' + host);
+                    $scope.navigateContainersImages = function (route, host, tab) {
+                        $location.url('/docker/' + route + '?host=' + host + '&tab=' + tab);
                     };
                 });
             };

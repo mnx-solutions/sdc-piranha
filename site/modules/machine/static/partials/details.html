@@ -433,8 +433,24 @@
                                     <td>{{dockerHostInfo.iPv4Forwarding}}</td>
                                 </tr>
                                 <tr>
-                                    <td><a data-ng-click="navigateContainersImages('images', machineid)">Images</a></td>
-                                    <td>{{dockerHostInfo.images}}</td>
+                                    <td>Images</td>
+                                    <td>
+                                        <span class="tooltip-hover"
+                                              data-toggle="tooltip"
+                                              data-placement="top"
+                                              data-html="true"
+                                              data-original-title="all images">
+                                            <a data-ng-click="navigateContainersImages('images', machineid, 'all')">{{dockerHostInfo.images}}</a>
+                                        </span>
+                                        <span data-ng-show="topImages">&nbsp;/&nbsp;</span>
+                                        <span class="tooltip-hover"
+                                              data-toggle="tooltip"
+                                              data-placement="top"
+                                              data-html="true"
+                                              data-original-title="top images">
+                                            <a data-ng-click="navigateContainersImages('images', machineid, 'top')">{{topImages}}</a>
+                                        </span>
+                                    </td>
                                 </tr>
                                 <tr>
                                     <td>IndexServerAddress</td>
