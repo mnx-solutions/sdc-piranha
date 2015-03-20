@@ -25,7 +25,6 @@
     height: 215px;
     border-radius: 3px;
     background-color: #eef0f2;
-    cursor: pointer;
 }
 .docker-wrapper .name {
     overflow: hidden;
