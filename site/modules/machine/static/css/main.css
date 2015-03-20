@@ -102,6 +102,11 @@
     width: 115px !important;
 }
 
+.machine-details-title
+{
+    min-width: 1060px;
+}
+
 .tag.editable
 {
     margin-top: 10px;

@@ -2,9 +2,9 @@
 
     <div data-breadcrumbs></div>
     <div data-ng-show="features.instanceRename == 'enabled'">
-        <div data-rename data-object="machine" data-type="'machine'"></div>
+        <div data-rename data-object="machine" data-type="'machine'" class="machine-details-title"></div>
     </div>
-    <h3 class="page-title" data-ng-hide="features.instanceRename == 'enabled'">
+    <h3 class="page-title wrap machine-details-title" data-ng-hide="features.instanceRename == 'enabled'">
         {{ newInstanceName }}
     </h3>
 
