@@ -67,7 +67,7 @@
                         ctx.fillRect(0, 0, width, height);
                     }
                     DTrace.exucute({
-                        host: hostIp + ':' + dtracePort,
+                        host: $scope.options.hostIp + ':' + dtracePort,
                         dtraceObj: JSON.stringify({type: 'heatmap', message: dscript})
                     }).then(function (path) {
                         var a = document.createElement('a');
@@ -78,7 +78,9 @@
                             if (locationPath === $location.path()) {
                                 var data;
                                 try {
-                                    data = JSON.parse(event.data);
+                                    if (event.data !== 'ping') {
+                                        data = JSON.parse(event.data);
+                                    }
                                 } catch (e) {
                                     data = {};
                                 }
