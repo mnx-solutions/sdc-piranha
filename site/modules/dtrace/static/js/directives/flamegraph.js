@@ -35,7 +35,9 @@
                             if (locationPath === $location.path()) {
                                 var svg;
                                 try {
-                                    svg = JSON.parse(event.data);
+                                    if (event.data !== 'ping') {
+                                        svg = JSON.parse(event.data);
+                                    }
                                 } catch (err) {
                                     svg = '';
                                 }
@@ -49,8 +51,8 @@
                                     });
                                     DTrace.saveFlameGraph({svg: svg, id: $scope.options.hostId}).then(function () {}, function (err) {
                                         PopupDialog.errorObj(err);
+                                        closeWebsocket();
                                     });
-                                    websocket.send(JSON.stringify({type: 'flamegraph', message: dtraceScript}));
                                 }
                             } else {
                                 closeWebsocket();

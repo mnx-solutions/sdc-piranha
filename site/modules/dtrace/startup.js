@@ -154,13 +154,23 @@ var dtrace = function execute(scope) {
             call.done(null, path);
             wss.once('connection', function (socket) {
                 var wsc = new WebSocket('ws://' + call.data.host);
+                var dtraceObj = JSON.parse(call.data.dtraceObj);
+                wsc.on("ping", wsc.pong);
+
+                var pingClient = setInterval(function () {
+                    socket.send('ping');
+                }, 20 * 1000);
+
                 function closeSocket () {
+                    clearInterval(pingClient);
                     wsc.close();
                     socket.close();
-                    wss.close();
                 }
                 wsc.onmessage = function (event) {
                     socket.send(event.data);
+                    if (dtraceObj.type === 'flamegraph') {
+                        wsc.send(call.data.dtraceObj);
+                    }
                 };
                 wsc.onopen = function () {
                     wsc.send(call.data.dtraceObj);
@@ -169,9 +179,9 @@ var dtrace = function execute(scope) {
                     socket.send(event.data);
                     closeSocket();
                 };
-                socket.on('message', function (message) {
-                    wsc.send(message);
-                });
+                wsc.onclose = function (event) {
+                    closeSocket();
+                };
                 socket.on('error', closeSocket);
                 socket.on('close', closeSocket);
             });
