@@ -8,8 +8,22 @@
         $scope.checkedItems = [];
         var types = {};
 
+        function ipToInt(ipAddress) {
+            var result = 0;
+            if (ipAddress) {
+                var octets = ipAddress.split('.');
+                var buffer = new ArrayBuffer(4);
+                var dataView = new DataView(buffer);
+                for (var i = 0; i < 4; i++) {
+                    dataView.setUint8(i, octets[i]);
+                }
+                result = dataView.getUint32(0);
+            }
+            return result;
+        }
+
         $scope.props.forEach(function (prop) {
-            var entryType = prop.entryType;
+            var entryType = prop.entryType === 'ipAddress' ? ipToInt : prop.entryType;
             if (entryType) {
                 types[prop.id] = entryType;
             }

@@ -201,20 +201,6 @@
                 return statuses[object.state];
             };
 
-            var ipToInt = function (object) {
-                var result = 0;
-                if (object.primaryIp) {
-                    var octets = object.primaryIp.split('.');
-                    var buffer = new ArrayBuffer(4);
-                    var dataView = new DataView(buffer);
-                    for (var i = 0; i < 4; i++) {
-                        dataView.setUint8(i, octets[i]);
-                    }
-                    result = dataView.getUint32(0);
-                }
-                return result;
-            };
-
             $scope.gridOrder = [stateOrder, '-created'];
             $scope.fantomSort = {primary: {name: 'Status'} , secondary: {name: 'Created', order: 1}};
             $scope.gridProps = [
@@ -236,7 +222,7 @@
                 {
                     id: 'primaryIp',
                     name: 'IP',
-                    _order: ipToInt,
+                    entryType: 'ipAddress',
                     sequence: 2,
                     active: true
                 },

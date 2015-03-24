@@ -118,6 +118,7 @@
                             created: info.Created,
                             state: containerState,
                             infoId: info.Id,
+                            ipAddress: info.NetworkSettings.IPAddress,
                             isSdc: machine.isSdc,
                             Uuid: Docker.idToUuid(container.Id)
                         };

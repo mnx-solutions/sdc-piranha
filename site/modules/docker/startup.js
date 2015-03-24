@@ -155,6 +155,26 @@ var Docker = function execute(scope, app) {
         };
     });
 
+    ['start', 'stop', 'kill', 'restart'].forEach(function (method) {
+        methodHandlers[method] = function (call, callback) {
+            var containerId = call.data.options.id;
+            waitClient(call, call.data.host, function (error, client) {
+                if (error) {
+                    return callback(error);
+                }
+                client[method](call.data.options, function (error) {
+                    if (error === 'CAdvisor unavailable') {
+                        callback(error, true);
+                        return;
+                    }
+                    client.inspect({id: containerId}, function (errContainer, containerInfo) {
+                        callback(null, containerInfo);
+                    });
+                });
+            });
+        }
+    });
+
     function saveLogsToManta(call, logPath, logs, callback) {
         var mantaclient = scope.api('MantaClient').createClient(call);
         mantaclient.safePutFileContents(logPath, JSON.stringify(logs), function (error) {
@@ -326,7 +346,26 @@ var Docker = function execute(scope, app) {
                                                 }
                                             });
                                         }
-                                        callback(null, response);
+                                        if (method === 'containers') {
+                                            vasync.forEachParallel({
+                                                inputs: response,
+                                                func: function (container, inspectCallback) {
+                                                    client.inspect({id: container.Id}, function (errContainer, containerInfo) {
+                                                        if (errContainer) {
+                                                            suppressErrors.push(errContainer);
+                                                            return inspectCallback(null, []);
+                                                        }
+                                                        container.ipAddress = containerInfo.NetworkSettings.IPAddress;
+                                                        inspectCallback(null, container);
+                                                    });
+                                                }
+                                            }, function (vasyncErr, containers) {
+                                                containers = [].concat.apply([], containers.successes);
+                                                callback(vasyncErr, containers);
+                                            });
+                                        } else {
+                                            callback(null, response);
+                                        }
                                     });
                                 });
                             });
