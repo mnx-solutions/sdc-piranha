@@ -45,8 +45,8 @@ dialogModule.provider("$dialog", function(){
 	};
 
   // Returns the actual `$dialog` service that is injected in controllers
-	this.$get = ["$http", "$document", "$compile", "$rootScope", "$controller", "$templateCache", "$q", "$transition", "$injector", "$timeout",
-  function ($http, $document, $compile, $rootScope, $controller, $templateCache, $q, $transition, $injector, $timeout) {
+	this.$get = ["$http", "$document", "$compile", "$rootScope", "$controller", "$templateCache", "$q", "$transition", "$injector",
+  function ($http, $document, $compile, $rootScope, $controller, $templateCache, $q, $transition, $injector) {
 
 		var body = $document.find('body');
 
@@ -81,7 +81,7 @@ dialogModule.provider("$dialog", function(){
       }
 
       this.handledEscapeKey = function(e) {
-        if (e.which === 27) {
+        if (e.which === 27 && self.index === activeDialogs.value) {
           self.close();
           e.preventDefault();
           self.$scope.$apply();
@@ -213,6 +213,7 @@ dialogModule.provider("$dialog", function(){
       body.append(this.modalEl);
       this.modalEl.css('z-index', zIndex + activeDialogs.value);
       this._open = true;
+      this.index = activeDialogs.value;
     };
 
     Dialog.prototype._removeElementsFromDom = function(){
