@@ -15,10 +15,12 @@
             'Account',
             function ($scope, requestContext, localization, Docker, $q, PopupDialog, $location, $filter, util, Account) {
                 localization.bind('docker', $scope);
-                requestContext.setUpRenderContext('docker.images', $scope, {
+                var CURRENT_PAGE_ACTION = 'docker.images';
+                requestContext.setUpRenderContext(CURRENT_PAGE_ACTION, $scope, {
                     title: localization.translate(null, 'docker', 'See my Joyent Docker Images')
                 });
 
+                var hostId = requestContext.getParam('host') || '';
                 var allImages = false;
                 var topImages = [];
                 $scope.unreachableHosts = [];
@@ -71,7 +73,7 @@
                             if (image.suppressErrors) {
                                 $scope.unreachableHosts = image.suppressErrors;
                             }
-                            return !image.suppressErrors;
+                            return !image.suppressErrors && (!hostId || hostId === image.hostId);
                         });
                         images.forEach(function (image) {
                             image.ShorId = image.Id.slice(0, 12);
@@ -89,7 +91,6 @@
                     }, errorCallback);
                 };
 
-                $scope.query = requestContext.getParam('host') || '';
                 $scope.gridOrder = ['-Created'];
                 $scope.gridProps = [
                     {
@@ -165,7 +166,11 @@
                         id: 'hostId',
                         name: 'Host ID',
                         sequence: 7,
-                        active: true
+                        active: true,
+                        exportGetter: true,
+                        _getter: function (image) {
+                            return image.isSdc ? 'N/A' : image.hostId;
+                        }
                     }
                 ];
 
@@ -270,9 +275,6 @@
                 $scope.enabledCheckboxes = true;
                 $scope.placeHolderText = 'filter images';
                 $scope.tabFilterField = 'images';
-                if (requestContext.getParam('host')) {
-                    $scope.forceActive = 'hostId';
-                }
 
                 Docker.pingManta(function () {
                     listAllImages();
@@ -611,6 +613,15 @@
                         openCtrl: findImagesCtrl
                     });
                 };
+
+                $scope.$on('$routeChangeSuccess', function(next, current) {
+                    if (current.$$route.action === CURRENT_PAGE_ACTION) {
+                        hostId = requestContext.getParam('host') || '';
+                        $scope.tabFilterUpdate = 'top';
+                        allImages = false;
+                        listAllImages();
+                    }
+                });
 
                 $scope.$on('gridViewChangeTab', function (event, tab) {
                     $scope.tab = tab;

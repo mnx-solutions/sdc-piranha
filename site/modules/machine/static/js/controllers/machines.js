@@ -62,15 +62,6 @@
                                 if (!imageExists && !$scope.datasetsInfo[machine.image]) {
                                     $scope.datasetsInfo[machine.image] = 'Image deleted';
                                 }
-                                if (currentLocation === '/compute/dockerHost') {
-                                    $scope.forceActive = 'tags';
-                                    $scope.query = '"JPC_tag":"DockerHost"';
-                                    $scope.gridProps.forEach(function (prop) {
-                                        if (prop.id === 'tags') {
-                                            prop.active = true;
-                                        }
-                                    });
-                                }
                                 $scope.loading = false;
                             }, function (err) {
                                 $scope.loading = false;
@@ -84,6 +75,10 @@
                     });
                 }
             });
+
+            if (currentLocation === '/compute/dockerHost') {
+                $scope.query = '"JPC_tag":"DockerHost"';
+            }
 
             $scope.noCheckBoxChecked = function() {
                 PopupDialog.noItemsSelectedError('instance');
