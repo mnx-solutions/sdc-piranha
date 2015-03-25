@@ -132,7 +132,64 @@ module.exports = function execute(scope) {
     server.onCall('JobList', function (call) {
         var client = Manta.createClient(call);
         var NAME_FILTER_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/;
-        client.jobs(processJobRequest(call, 'job', null, null, NAME_FILTER_REGEX));
+        var isSubuser = Boolean(call.req.session.subId);
+        var JOBS_PATH = '~~/jobs';
+
+        function getJobList(callback) {
+            client.ftw(JOBS_PATH, {maxdepth: 1}, function (err, entriesStream) {
+                if (err) {
+                    if (err.statusCode === 404) {
+                        return callback(null, []);
+                    }
+                    return callback(err);
+                }
+
+                var jobList = [];
+                entriesStream.on('entry', function (data) {
+                    if (NAME_FILTER_REGEX.test(data.name)) {
+                        jobList.push(data);
+                    }
+                });
+
+                entriesStream.on('end', function () {
+                    callback(null, jobList);
+                });
+
+                entriesStream.on('error', function (error) {
+                    callback(error);
+                });
+            });
+        }
+
+        getJobList(function (error, jobList) {
+            if (error) {
+                var suppressError = false;
+                if (error.code === 'ForbiddenError' && isSubuser) {
+                    suppressError = [];
+                }
+                call.done(error.message, suppressError);
+                return;
+            }
+            if (isSubuser) {
+                vasync.forEachParallel({
+                    inputs: jobList,
+                    func: function (job, callback) {
+                        client.info(JOBS_PATH + '/' + job.name + '/job.json', function (err) {
+                            callback(err, job);
+                        });
+                    }
+                }, function (vasyncErrors, jobs) {
+                    if (vasyncErrors && vasyncErrors.jse_cause &&
+                        vasyncErrors.jse_cause.code !== 'ForbiddenError') {
+                        return call.done(vasyncErrors.message);
+                    }
+                    jobs = [].concat.apply([], jobs.successes);
+                    call.done(null, jobs);
+                });
+            } else {
+                call.done(null, jobList);
+            }
+        });
     });
 
     server.onCall('JobGet', function (call) {
