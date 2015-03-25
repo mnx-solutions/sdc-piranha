@@ -845,6 +845,19 @@
                 + dockerId.substr(16, 4) + '-'
                 + dockerId.substr(20, 12);
         };
+
+        service.parsePorts = function (portsArray) {
+            var ports = [];
+            if (portsArray && portsArray.length) {
+                portsArray.forEach(function (port) {
+                    if (port.IP && port.PublicPort) {
+                        ports.push(port.IP + ':' + port.PublicPort);
+                    }
+                });
+            }
+            return  ports.length ? ports.join(', ') : '';
+        };
+
         return service;
     }]);
 }(window.angular, window.JP.getModule('docker')));

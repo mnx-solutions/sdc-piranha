@@ -906,6 +906,9 @@
 			        getClass: function () {
 				        return 'span1 padding-5';
 			        },
+                    _export: function (object) {
+                        return object.parsed.action || '';
+                    },
 			        sequence: 6,
                     active: true
 		        },
@@ -971,6 +974,9 @@
                     name: 'Status',
                     columnClass: 'status-column',
                     type: 'progress',
+                    _export: function (object) {
+                        return ng.element(this._getter(object)).text() || this._getter(object);
+                    },
                     _inProgress: function (object) {
                         return (object.job && !object.job.finished) || object.deleteJob;
                     },
@@ -1124,7 +1130,7 @@
             $scope.placeHolderText = 'filter rules';
             $scope.searchForm = true;
             $scope.exportFields = {
-                ignore: []
+                ignore: ['Edit']
             };
         }
 

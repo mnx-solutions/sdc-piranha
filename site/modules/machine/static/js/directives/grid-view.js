@@ -1,6 +1,6 @@
 (function (ng, app) {app.controller('GridViewController',
-    ['$scope', '$parse', '$filter', '$http', '$location', 'Account', '$rootScope', 'Datacenter', 'PopupDialog', '$qe', '$sce', 'ErrorService', '$timeout',
-    function ($scope, $parse, $filter, $http, $location, Account, $rootScope, Datacenter, PopupDialog, $qe, $sce, ErrorService, $timeout) {
+    ['$scope', '$parse', '$filter', '$http', '$location', 'Account', '$rootScope', 'Datacenter', 'PopupDialog', '$qe', '$sce', 'ErrorService', '$timeout', '$q',
+    function ($scope, $parse, $filter, $http, $location, Account, $rootScope, Datacenter, PopupDialog, $qe, $sce, ErrorService, $timeout, $q) {
 
         'use strict';
 
@@ -347,25 +347,62 @@
         $scope.showProps = function () {
             $scope.propOn = !$scope.propOn;
         };
+
+        var getShortDate = function (date) {
+            var crop = function (dateString) {
+                return dateString.replace('T', ' ').substring(0, 16);
+            };
+            if (typeof(date) === 'string') {
+                return crop(date);
+            } else if (typeof(date) === 'object') {
+                return crop(date.toISOString());
+            }
+            return date;
+        };
+
         function getJSONData() {
             var filtered = $filter('filter')($scope.items, $scope.matchesFilter);
             var ordered = $filter('orderBy')(filtered, $scope.order);
-            var exportKeysMap = {login: 'username', postalCode: 'zipCode'};
 
             // List all the different properties from all items
             var order = [];
-            $scope.items.forEach(function (item) {
-                Object.keys(item).forEach(function (property) {
-                    if (exportKeysMap[property]) {
-                        property = exportKeysMap[property];
+            var data = [];
+            var promises = [];
+
+            ordered.forEach(function (item) {
+                var newItem = {};
+                $scope.props.forEach(function (prop) {
+                    var name = prop.name;
+                    if (prop.hasOwnProperty('_export')) {
+                        var res = prop._export(item);
+                        if (typeof(res) === 'object' && res.hasOwnProperty('then')) {
+                            var deferred = $q.defer();
+                            promises.push(deferred.promise);
+                            res.then(function (result) {
+                                deferred.resolve();
+                                newItem[name] = result;
+                            }, function (err) {
+                                deferred.reject(err);
+                            });
+                        } else {
+                            newItem[name] = res;
+                        }
+                    } else if ((prop.hasOwnProperty('_getter') && prop.type !== 'html' && prop.type !== 'progress')) {
+                        newItem[name] = prop._getter(item);
+                    } else if (prop.type === 'date') {
+                        newItem[name] = getShortDate(item[prop.id]);
+                    }  else if (prop.type === 'array') {
+                        newItem[name] = item[prop.id].join(', ');
+                    } else {
+                        newItem[name] = item[prop.id];
                     }
-                    if (property.indexOf('$$') !== 0 && order.indexOf(property) === -1) {
-                        order.push(property);
+                    if (order.indexOf(name) === -1) {
+                        order.push(name);
                     }
                 });
+                data.push(newItem);
             });
 
-            var data = [];
             if ($scope.exportFields.ignore) {
                 order = order.filter(function (k) { return $scope.exportFields.ignore.indexOf(k) === -1; });
             }
@@ -373,51 +410,31 @@
                 order = order.filter(function (k) { return $scope.exportFields.ignore.indexOf(k) !== -1; });
             }
 
-            var invert = function (obj) {
-                var invertedObj = {};
-                for (var prop in obj) {
-                    if (obj.hasOwnProperty(prop)) {
-                        invertedObj[obj[prop]] = prop;
-                    }
-                }
-                return invertedObj;
-            };
-            var invertedKeysMap = invert(exportKeysMap);
-            ordered.forEach(function (el) {
-                var item = {};
-                order.forEach(function (id) {
-                    var itemId = id;
-                    if (invertedKeysMap[id]) {
-                        itemId = invertedKeysMap[id];
-                    }
-                    var itemValue = el[itemId];
-                    var getterValue;
-                    $scope.props.some(function (prop) {
-                        getterValue = prop.id === itemId && prop.exportGetter && prop._getter && prop._getter(el);
-                        return getterValue;
-                    });
-                    itemValue = getterValue || itemValue;
-                    if (angular.isArray(itemValue)) {
-                        itemValue = itemValue.join(', ');
-                    }
-                    item[id] = itemValue || '';
-                });
-                data.push(item);
+            return $q.all(promises).then(function () {
+                return {
+                    data: data,
+                    order: order
+                };
             });
-            return {
-                data: data,
-                order: order
-            };
         }
 
         $scope.export = function (format) {
-            $http.post('machine/export', getJSONData())
-                .success(function (id) {
-                    $scope.iframe = $sce.trustAsHtml('<iframe src="machine/export/' + id + '/' + format + '/' + $scope.itemsType + '"></iframe>');
-                })
-                .error(function () {
-                    window.console.log('err', arguments);
-                });
+            if ($scope.exportInProgress) {
+               return;
+            }
+            $scope.exportInProgress = true;
+            getJSONData().then(function (data) {
+                $http.post('machine/export', data)
+                    .success(function (id) {
+                        $scope.exportInProgress = false;
+                        $scope.iframe = $sce.trustAsHtml('<iframe src="machine/export/' + id + '/' + format + '/' + $scope.itemsType + '"></iframe>');
+                    })
+                    .error(function () {
+                        $scope.exportInProgress = false;
+                        window.console.log('err', arguments);
+                    });
+            });
+
         };
 
         $scope.getActionButtons = function (item) {

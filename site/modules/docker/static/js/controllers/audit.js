@@ -37,6 +37,12 @@
                 return event.params;
             };
 
+            var findHost = function (el) {
+                return $scope.hosts.find(function (host) {
+                    return el.host === host.id;
+                });
+            };
+
             if ($scope.features.manta === 'enabled') {
                 $scope.gridUserConfig = Account.getUserConfig().$child('docker-audit');
             }
@@ -63,8 +69,15 @@
                     sequence: 3,
                     active: true,
                     type: 'tooltip',
+                    _export: function (event) {
+                        var eventHost = findHost(event);
+                        if (eventHost) {
+                            return eventHost.name || eventHost.id;
+                        }
+                        return 'Host deleted';
+                    },
                     _getter: function (event) {
-                        var eventHost = $scope.hosts.find(function(host) { return event.host === host.id; });
+                        var eventHost = findHost(event);
                         if (eventHost) {
                             var hostName = eventHost.name || eventHost.id;
                             return eventHost.isSdc ? {data: hostName} : {data: '<a href="#!/compute/instance/' + eventHost.id + '" style="min-width: 140px;">' + hostName + '</a>'};
@@ -85,7 +98,8 @@
                     id: 'npDate',
                     name: 'Date',
                     sequence: 5,
-                    active: true
+                    active: true,
+                    type: 'date'
                 },
                 {
                     id: 'params',
@@ -94,6 +108,9 @@
                     active: false,
                     type: 'async',
                     hideSorter: true,
+                    _export: function (event) {
+                        return Docker.getAuditDetails({event: event});
+                    },
                     _getter: function (event) {
                         return getEntryAuditDetails(event).then(function (details) {
                             event.parsedParams = details;
@@ -105,6 +122,15 @@
                     id: 'edit',
                     name: 'Result',
                     type: 'button',
+                    _export: function (event) {
+                        if (!event.parsedParams) {
+                            return getEntryAuditDetails(event).then(function (details) {
+                                event.parsedParams = details;
+                                return Docker.getAuditButtonLabel(event);
+                            });
+                        }
+                        return Docker.getAuditButtonLabel(event);
+                    },
                     btn: {
                         getLabel: Docker.getAuditButtonLabel,
                         getClass: function (event) {
@@ -128,7 +154,7 @@
 
             $scope.gridActionButtons = [];
             $scope.exportFields = {
-                ignore: ['host']
+                ignore: []
             };
             $scope.searchForm = true;
             $scope.enabledCheckboxes = false;

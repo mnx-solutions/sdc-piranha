@@ -56,13 +56,7 @@
                         $scope.containers = containers.map(function (container) {
                             container.ShortId = container.Id.slice(0, 12);
                             container.state = getContainerState(container);
-                            var ports = [];
-                            container.Ports.forEach(function (port) {
-                                if (port.IP && port.PublicPort) {
-                                    ports.push(port.IP + ':' + port.PublicPort);
-                                }
-                            });
-                            container.PortsStr = ports.length ? ports.join(', ') : '';
+
                             return container;
                         });
 
@@ -144,8 +138,11 @@
                         active: true
                     },
                     {
-                        id: 'PortsStr',
+                        id: 'Ports',
                         name: 'Ports',
+                        _getter: function (object) {
+                            return Docker.parsePorts(object.Ports);
+                        },
                         sequence: 10
                     },
                     {

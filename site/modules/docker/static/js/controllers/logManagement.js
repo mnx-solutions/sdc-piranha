@@ -74,13 +74,7 @@
                         $scope.containers.forEach(function (container) {
                             container.Created = new Date(container.Created * 1000);
                             container.ShortId = container.Id.slice(0, 12);
-                            var ports = [];
-                            container.Ports.forEach(function (port) {
-                                if (port.IP && port.PublicPort) {
-                                    ports.push(port.IP + ':' + port.PublicPort);
-                                }
-                            });
-                            container.PortsStr = ports.length ? ports.join(', ') : '';
+
                             setLogsTab(container);
                         });
                         listRemovedContainers();
@@ -297,8 +291,11 @@
                         active: true
                     },
                     {
-                        id: 'PortsStr',
+                        id: 'Ports',
                         name: 'Ports',
+                        _getter: function (container) {
+                            return Docker.parsePorts(container.Ports);
+                        },
                         sequence: 9,
                         active: false
                     },
@@ -340,7 +337,9 @@
                 $scope.searchForm = true;
                 $scope.placeHolderText = 'filter containers';
                 $scope.tabFilterField = 'logs';
-                $scope.exportFields = [];
+                $scope.exportFields = {
+                    ignore: ['Action']
+                };
                 initialGridProps = angular.copy($scope.gridProps);
 
                 $scope.$on('gridViewChangeTab', function (event, tab) {

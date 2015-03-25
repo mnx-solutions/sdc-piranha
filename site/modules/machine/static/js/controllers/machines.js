@@ -237,6 +237,9 @@
                     sequence: 3,
                     active: true,
                     type: 'tooltip',
+                    _export: function (machine) {
+                        return this._getter(machine).data;
+                    },
                     _getter: function (machine) {
                         if (machine.image && $scope.datasetsInfo) {
                             var machineImage = {data: $scope.datasetsInfo[machine.image]};
@@ -267,6 +270,9 @@
                     name: 'Status',
                     sequence: 7,
                     active: true,
+                    _export: function (object) {
+                        return object.state;
+                    },
                     _getter: stateOrder
                 },
                 {
@@ -351,6 +357,10 @@
                     sequence: 4,
                     active: true,
                     type: 'progress',
+                    _export: function (object) {
+                        var state = this._getter(object);
+                        return state === 'N/A' ? state : angular.element(state).text() || state;
+                    },
                     _inProgress: function (object) {
                         return object.fireWallActionRunning;
                     },

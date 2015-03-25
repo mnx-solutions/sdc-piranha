@@ -199,7 +199,7 @@
             ];
 
             $scope.exportFields = {
-                ignore: []
+                ignore: ['Action']
             };
 
             $scope.columnsButton = true;
