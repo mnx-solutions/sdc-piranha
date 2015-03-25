@@ -651,8 +651,15 @@
                         defer.reject('You don\'t have installed Docker hosts');
                         return;
                     }
-                    defer.resolve(hosts[0]);
+                    var notSdcHost = hosts.find(function (host) {
+                        return !host.isSdc;
+                    });
 
+                    if (notSdcHost) {
+                        defer.resolve(notSdcHost);
+                        return;
+                    }
+                    defer.reject('SDC-Docker host doesn\'t support authentication. Please, create another docker host before connect.');
                 }, function (error) {
                     defer.reject(error);
                 });
