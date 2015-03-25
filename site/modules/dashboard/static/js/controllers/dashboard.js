@@ -94,6 +94,9 @@
                     }
                     $scope.machines = result[2] || [];
                     $scope.dockerMachines = result[3] || [];
+                    $scope.dockerMachinesCount = $scope.dockerMachines.filter(function (dockerMachine) {
+                        return dockerMachine.tags && dockerMachine.tags['JPC_tag'] === 'DockerHost';
+                    }).length;
                     $scope.dockerMachinesLink = $scope.dockerMachines.length ? '#!/compute/dockerHost' : '#!/docker';
                     var dockerContainers = result[4] || [];
                     $scope.runningContainers = dockerContainers.filter(function (container) {

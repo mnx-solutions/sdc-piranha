@@ -39,7 +39,7 @@
                         <div class="left-column">
                             <a data-ng-href="{{dockerMachinesLink}}" data-ng-disabled="!dockerMachines.length">
                                 <div class="number">
-                                    {{dockerMachines.length || '0'}}
+                                    {{dockerMachinesCount || '0'}}
                                 </div>
                                 <div class="info">
                                     host<span data-ng-show="dockerMachines.length != 1">s</span>
