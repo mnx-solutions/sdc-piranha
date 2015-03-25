@@ -80,16 +80,16 @@
     padding: 0 1% 10px 0;
 }
 .heatmap-controls td.small {
-    width: 10%;
+    width: 9.5%;
 }
 .heatmap-controls td.medium {
-    width: 23.5%;
+    width: 23%;
 }
 .heatmap-controls td.big {
-    width: 40%;
+    width: 39.5%;
 }
 .heatmap-controls td.triple {
-    width: 44%;
+    width: 43.5%;
 }
 
 .heatmap-button {
