@@ -66,7 +66,8 @@
                     _getter: function (event) {
                         var eventHost = $scope.hosts.find(function(host) { return event.host === host.id; });
                         if (eventHost) {
-                            return {data: '<a href="#!/compute/instance/' + eventHost.id + '" style="min-width: 140px;">' + eventHost.name || eventHost.id + '</a>'};
+                            var hostName = eventHost.name || eventHost.id;
+                            return eventHost.isSdc ? {data: hostName} : {data: '<a href="#!/compute/instance/' + eventHost.id + '" style="min-width: 140px;">' + hostName + '</a>'};
                         }
                         return {
                             data: 'Host deleted',

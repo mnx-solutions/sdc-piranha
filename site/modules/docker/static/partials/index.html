@@ -21,7 +21,8 @@
     <div class="row dockers-wrapper" data-ng-show="dockerMachines.length >= 1 && !loading">
         <div class="docker-wrapper" data-ng-repeat="machine in dockerMachines">
             <div class="name">
-                <p data-tooltip-full-text data-original-title="{{machine.name}}" data-ng-click="navigateMachine(machine)"><a>{{machine.name}}</a></p>
+                <p data-ng-hide="machine.isSdc" data-tooltip-full-text data-original-title="{{machine.name}}" data-ng-click="navigateMachine(machine)"><a>{{machine.name}}</a></p>
+                <p data-ng-show="machine.isSdc">{{machine.name}}</p>
             </div>
             <div class="info">
                 <span>DC: </span>
