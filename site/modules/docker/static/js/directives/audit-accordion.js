@@ -40,7 +40,11 @@
                         active: true,
                         type: 'html',
                         _getter: function (event) {
-                            return '<a href="#!/compute/instance/' + event.host + '" style="min-width: 140px;">' + event.hostName + '</a>';
+                            var html = '<a href="#!/compute/instance/' + event.host + '" style="min-width: 140px;">' + event.hostName + '</a>';
+                            if (event.hostId === 'N/A') {
+                                html = '<span>' + event.hostName + '</span>';
+                            }
+                            return html;
                         }
                     },
                     {

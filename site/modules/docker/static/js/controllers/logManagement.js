@@ -233,7 +233,7 @@
                         type: 'html',
                         _getter: function (container) {
                             var html = '<a href="#!/compute/instance/' + container.hostId + '" style="min-width: 140px;">' + container.hostName + '</a>';
-                            if (container.hostState === 'removed') {
+                            if (container.hostState === 'removed' || container.isSdc) {
                                 html = '<span>' + container.hostName + '</span>';
                             }
                             return html;
