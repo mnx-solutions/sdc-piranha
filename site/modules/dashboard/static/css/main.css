@@ -349,32 +349,41 @@ a.orange
 /*end tiles*/
 .promo-ad
 {
-    padding: 25px 50px;
+    padding: 36px 44px;
     width: 490px;
     height: 280px;
-    background: #e9eef2 url('../img/docker-promo.png') no-repeat;
+    border-radius: 0;
+    background: #e9eef2 url('../img/docker-promo.jpg') no-repeat;
     background-size: 490px 280px;
 }
-.promo-ad-title
+.promo-ad h1
 {
-    padding-top: 10px;
-    font-weight: 500;
+    margin: 0;
+    padding: 0;
+    color: white;
+    font-weight: bold;
     font-size: 26px;
-    line-height: 19px;
+    font-family: 'HelveticaNeue', 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif;
+    line-height: 29px;
 }
-
-.promo-ad-text
+.promo-ad p
 {
-    padding-top: 7px;
-    font-weight: 300;
-    font-size: 18px;
-    line-height: 17px;
+    margin: 10px 0;
+    color: white;
+    font-weight: 100;
+    font-size: 17px;
+    font-family: 'HelveticaNeue-Light', 'Helvetica Neue Light', 'Helvetica Light', 'Arial', sans-serif;
+    line-height: 21px;
 }
-.promo-ad-text a
+.promo-ad p a
 {
-    color: #f60!important;
+    color: white;
     text-decoration: none;
-    font-weight: 500;
+    font-weight: bold;
+}
+.promo-ad p a:hover
+{
+    text-decoration: none;
 }
 
 .separation-container span > a,
