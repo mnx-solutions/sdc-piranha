@@ -275,6 +275,13 @@
                 $scope.enabledCheckboxes = true;
                 $scope.placeHolderText = 'filter images';
                 $scope.tabFilterField = 'images';
+                if (requestContext.getParam('host')) {
+                    $scope.forceActive = 'hostId';
+                }
+                var activeTab = requestContext.getParam('tab');
+                if (activeTab) {
+                    $scope.tabFilterDefault = activeTab;
+                }
 
                 Docker.pingManta(function () {
                     listAllImages();
