@@ -149,7 +149,7 @@
 
                 function parseEnvironments(environments) {
                     if (!environments) {
-                        return [];
+                        return null;
                     }
                     var parsedEnvironments = [];
                     environments.match(/(?:[^\s"]+|"[^"]*")+/g).forEach(function (string) {
@@ -433,7 +433,7 @@
                         setDefaultValues(container[0]);
                     }
                 };
-
+                // TODO: make function
                 $scope.portPattern = '(6553[0-5]|655[0-2]\\d|65[0-4]\\d{2}|6[0-4]\\d{3}|[1-5]\\d{4}|[1-9]\\d{0,3})';
                 $scope.exposedPattern = '(((\\d{1,3}\.){3}\\d{1,3}\\:)?' + $scope.portPattern + '?\\:)?' + $scope.portPattern;
 

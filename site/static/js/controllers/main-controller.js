@@ -102,8 +102,8 @@
                 'lostConnection',
                 function () {
                     errorContext.emit(new Error(localization.translate(null,
-                        "main",
-                        "Can't connect to joyent.com. Confirm you are online and not experiencing any connectivity or DNS issues."
+                        'main',
+                        'Can\'t connect to joyent.com. Confirm you are online and not experiencing any connectivity or DNS issues.'
                     )));
                 }
             );
@@ -112,7 +112,7 @@
                 $rootScope.navigatedAwayAt = new Date().getTime();
             });
 
-            window.addEventListener("offline", function () {
+            window.addEventListener('offline', function () {
                 $rootScope.isOnline = false;
                 checkConnectionTimer = setInterval(function () {
                     $rootScope.checkConnection();
@@ -144,12 +144,11 @@
                     }
                     $rootScope.isAppDown = true;
                     errorContext.emit(new Error(localization.translate(null,
-                        "main",
-                            message || 'Unable to retrieve data from server.'
+                        'main',
+                        message || 'Unable to retrieve data from server.'
                     )));
                 }
             );
-
 
             $scope.requireLogin = function () {
                 $rootScope.$broadcast('event:auth-loginRequired');
