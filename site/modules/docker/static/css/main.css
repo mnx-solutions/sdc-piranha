@@ -35,12 +35,17 @@
     font-size: 16px;
 }
 .docker-wrapper .name p {
+    color: #428bca;
     overflow: hidden;
     height: 23px;
     width: 205px;
     vertical-align: top;
     text-overflow: ellipsis;
     word-wrap: break-word;
+}
+.docker-wrapper .name p:hover {
+    color: #2a6496;
+    text-decoration: underline;
 }
 .docker-wrapper .name .label {
     font-size: 12px;
