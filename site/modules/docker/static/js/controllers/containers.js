@@ -92,26 +92,33 @@
                         active: true
                     },
                     {
+                        id: 'ipAddress',
+                        name: 'IP',
+                        entryType: 'ipAddress',
+                        sequence: 3,
+                        active: true
+                    },
+                    {
                         id: 'hostName',
                         name: 'Host',
-                        sequence: 3,
+                        sequence: 4,
                         active: true
                     },
                     {
                         id: 'Image',
                         name: 'Image',
-                        sequence: 4,
+                        sequence: 5,
                         active: true
                     },
                     {
                         id: 'Command',
                         name: 'Command',
-                        sequence: 5
+                        sequence: 6
                     },
                     {
                         id: 'Created',
                         name: 'Created',
-                        sequence: 6,
+                        sequence: 7,
                         reverseSort: true,
                         _getter: function (container) {
                             return $filter('humanDate')(container.Created);
@@ -120,7 +127,7 @@
                     {
                         id: 'state',
                         name: 'Status',
-                        sequence: 7,
+                        sequence: 8,
                         type: 'progress',
                         _inProgress: function (object) {
                             return object.actionInProgress;
@@ -130,18 +137,18 @@
                     {
                         id: 'Status',
                         name: 'Duration',
-                        sequence: 8,
+                        sequence: 9,
                         active: true
                     },
                     {
                         id: 'PortsStr',
                         name: 'Ports',
-                        sequence: 9
+                        sequence: 10
                     },
                     {
                         id: 'hostId',
                         name: 'Host ID',
-                        sequence: 10,
+                        sequence: 11,
                         active: true,
                         exportGetter: true,
                         _getter: function (container) {
@@ -208,6 +215,7 @@
                         Docker[command](container).then(function (response) {
                             $scope.containers.some(function (container) {
                                 if (container.Id === response.containerId) {
+                                    container.ipAddress = response.NetworkSettings ? response.NetworkSettings.IPAddress : container.ipAddress;
                                     processContainerComplete(container);
                                 }
                             });
