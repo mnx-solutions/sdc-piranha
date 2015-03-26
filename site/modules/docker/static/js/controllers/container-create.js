@@ -512,6 +512,13 @@
                 };
 
                 var createImage = function () {
+                    var sdcHost = $scope.hosts.find(function (host) {
+                        return $scope.hostId === host.id && host.isSdc;
+                    });
+                    if (sdcHost) {
+                        errorCallback('Creating image from container is not presently supported in SDC-Docker.');
+                        return;
+                    }
                     if ($scope.exposedPorts) {
                         $scope.exposedPorts.split(' ').forEach(function (port) {
                             $scope.container.ExposedPorts[port + '/tcp'] = {};
