@@ -29,7 +29,8 @@ var SDC_DOCKER = config.features.sdcDocker === 'enabled' ?
         name: config.sdcDocker.name,
         datacenter: config.sdcDocker.datacenter,
         primaryIp: config.sdcDocker.ip,
-        isSdc: true
+        isSdc: true,
+        allowed: true
     } : null;
 
 var requestMap = {
@@ -193,6 +194,7 @@ function createApi(scope, map, container) {
 
 module.exports = function execute(scope, register) {
     var disableTls = Boolean(config.docker && config.docker.disableTls);
+    var utils = scope.get('utils');
     var queuedRequests = {};
     var api = {};
 
@@ -644,10 +646,31 @@ module.exports = function execute(scope, register) {
         return Object.keys(dockerAPIMethods);
     };
 
+    function verifySDCDockerAvailability(call, host, callback) {
+        host = utils.clone(host);
+        if (!host) {
+            return callback(null, host);
+        }
+        api.createClient(call, host, function (error, client) {
+            if (error) {
+                return callback(error, host);
+            }
+            client.getInfo(function (error) {
+                if (error &&
+                    String(error.message || error).indexOf('Forbidden (This service') === 0) {
+                    host.allowed = false;
+                }
+                callback(error, host);
+            });
+        });
+    }
+
     api.listHosts = function (call, callback) {
         var hostId = call.data && call.data.id;
         if (hostId === SDC_DOCKER_ID) {
-            return callback(null, SDC_DOCKER);
+            return verifySDCDockerAvailability(call, SDC_DOCKER, function (error, host) {
+                callback(null, host.allowed && host);
+            });
         }
         vasync.forEachParallel({
             inputs: Object.keys(call.cloud.listDatacenters()),
@@ -668,14 +691,16 @@ module.exports = function execute(scope, register) {
             if (errors) {
                 return callback(errors);
             }
-            var hosts = [].concat.apply(SDC_DOCKER ? [SDC_DOCKER] : [], operations.successes);
-            if (hostId) {
-                var host = hosts.find(function(host) {
-                    return hostId === host.id;
-                });
-                return callback(host ? null : 'Docker host not found', host);
-            }
-            callback(null, hosts);
+            verifySDCDockerAvailability(call, SDC_DOCKER, function (error, availableHost) {
+                var hosts = [].concat.apply(availableHost || [], operations.successes);
+                if (hostId) {
+                    var host = hosts.find(function(host) {
+                        return hostId === host.id;
+                    });
+                    return callback(host ? null : 'Docker host not found', host);
+                }
+                callback(null, hosts);
+            });
         });
     };
 

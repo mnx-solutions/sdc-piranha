@@ -316,6 +316,9 @@ var Docker = function execute(scope, app) {
                     if (error) {
                         return call.done(error);
                     }
+                    hosts = hosts.filter(function (host) {
+                        return host.allowed;
+                    });
                     var suppressErrors = [];
                     vasync.forEachParallel({
                         inputs: hosts,

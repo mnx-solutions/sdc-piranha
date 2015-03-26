@@ -110,7 +110,7 @@
             $scope.$watch('data.datacenter', function (newVal) {
                 if (newVal) {
                     $scope.data.imageId = '';
-                    Image.image({ datacenter: newVal, public: true }).then(function (images) {
+                    Image.image({datacenter: newVal, public: true}).then(function (images) {
                         var ubuntuImages = images.filter(function (image) {
                             return image.name.indexOf(UBUNTU_IMAGE_NAME) !== -1;
                         });
