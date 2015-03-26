@@ -62,6 +62,7 @@
                             image.ShortId = image.Id.slice(0, 12);
                             image.Created = new Date(image.Created * 1000);
                         });
+                        $scope.image.isSdc = machine.isSdc;
                         $scope.image.info = $scope.image.info || $scope.image;
                         $scope.imageInfoTags = '';
                         if ($scope.image.info && $scope.image.info.Tags) {
@@ -210,6 +211,10 @@
             };
 
             $scope.pushImage = function () {
+                if ($scope.image.isSdc) {
+                    PopupDialog.error(null, 'Pushing SDC-Docker images is not presently supported.');
+                    return;
+                }
                 var pushedImage = angular.copy(image);
                 pushedImage.Id = $scope.image.Id;
                 pushedImage.RepoTag = $scope.image.info.Tags ? $scope.image.info.Tags[0] : null;
