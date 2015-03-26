@@ -859,7 +859,7 @@
 
         service.parseCmd = function (command) {
             if (!command) {
-                return [];
+                return null;
             }
             return command.match(/(?:[^\s"']+|"([^"]*)"|'([^']*)')+/g).map(function (string) {
                 var firstChar = string.substr(0, 1),
