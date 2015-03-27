@@ -39,16 +39,7 @@
                         setup();
                         $scope.options.start = false;
                     }
-                    if (data.indexOf('Error') !== -1 || data.indexOf('error') !== -1) {
-                        DTrace.reportError(data);
-                    } else {
-                        try {
-                            data = JSON.parse(data);
-                        } catch (ex) {
-                            var message = 'Error parsing json for heatmap';
-                            DTrace.reportError(message + '.', message);
-                        }
-                    }
+
                     draw(data || {});
                 }
 

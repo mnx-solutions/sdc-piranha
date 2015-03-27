@@ -6,12 +6,14 @@ var fs = require('fs');
 var path = require('path');
 var url = require('url');
 var certMgmt = require('../../../lib/certificates');
+var subuser = require('../../../lib/subuser');
+var keys = require('../../../lib/keys');
+var config = require('easy-config');
 
 // read sync startup script for DTrace
 var startupScript = fs.readFileSync(__dirname + '/data/startup.sh', 'utf8');
 
 var DTRACE_PORT = 8000;
-var DTRACE_CERT_PATH = '~~/stor/.joyent/dtrace';
 var UNAUTHORIZED_ERROR = 'UnauthorizedError';
 
 var requestMap = {
@@ -21,6 +23,18 @@ var requestMap = {
     DELETE: 'del',
     HEAD: 'head'
 };
+
+var SUBUSER_LOGIN = 'dtrace';
+var SUBUSER_OBJ_NAME = 'dtrace';
+var SUBUSER_LIST_RULES = [
+    'can putobject',
+    'can putdirectory', 
+    'can getobject', 
+    'can getdirectory', 
+    'can deleteobject', 
+    'can deletedirectory'
+];
+var DEVTOOLS_MANTA_PATH = '~~/stor/.joyent/devtools';
 
 function formatUrl(url, params) {
     // noinspection JSLint
@@ -38,7 +52,7 @@ exports.init = function execute(log, config, done) {
     api.createHost = function (call, options, callback) {
         delete options.specification;
         var Machine = require('../machine').Machine;
-        var certificates = call.req.session.dtrace;
+        var certificates = call.req.session.devtoolsCerts;
         var mantaClient = MantaClient.createClient(call);
 
         options.metadata = options.metadata || {};
@@ -46,21 +60,57 @@ exports.init = function execute(log, config, done) {
         options.tags = options.tags || {};
         options.tags['JPC_tag'] = 'DTraceHost';
 
-        function done(certificates) {
-            ['ca', 'server-cert', 'server-key'].forEach(function (file) {
-                options.metadata[file] = certificates[file];
-            });
-            Machine.Create(call, options, callback);
+        function uploadKeysAndSetupSubuser(call, keyPair, uploadCallback) {
+            vasync.waterfall([
+                function (callback) {
+                    mantaClient.putFileContents(DEVTOOLS_MANTA_PATH + '/private.key', keyPair.privateKey, function (err) {
+                        callback(err);
+                    });
+                },
+                function (callback) {
+                    mantaClient.safeMkdirp(DEVTOOLS_MANTA_PATH + '/coreDump', {}, function (err) {
+                        callback(err);
+                    });
+                },
+                function (callback) {
+                    var options = {
+                        subuserLogin: SUBUSER_LOGIN,
+                        subuserObjName: SUBUSER_OBJ_NAME,
+                        path: DEVTOOLS_MANTA_PATH,
+                        listRules: SUBUSER_LIST_RULES,
+                        keyPair: keyPair
+                    };
+                    subuser.setupSubuserForManta(call, mantaClient, options, function (err) {
+                        callback(err);
+                    });
+                }
+            ], uploadCallback);
         }
 
-        if (certificates.ca) {
+        function done(certificates) {
+            keys.getKeyPair(mantaClient, call, DEVTOOLS_MANTA_PATH + '/private.key', 'dtrace', function (keyPair) {
+                call.req.session.privateKey = keyPair.privateKey;
+                options.metadata = certMgmt.setMetadata(options.metadata, certificates);
+                options.metadata = subuser.setMetadata(options.metadata, keyPair,
+                    SUBUSER_LOGIN, mantaClient.user, mantaClient._url);
+
+                uploadKeysAndSetupSubuser(call, keyPair, function (error) {
+                    if (error) {
+                        return callback(error);
+                    }
+                    Machine.Create(call, options, callback);
+                });
+            });
+        }
+
+        if (!certMgmt.checkCertificates(certificates)) {
             return done(certificates);
         }
-        certMgmt.generateCertificates(mantaClient, DTRACE_CERT_PATH, function (error, certificates) {
+        certMgmt.generateCertificates(mantaClient, DEVTOOLS_MANTA_PATH, function (error, certificates) {
             if (error) {
                 return callback(error);
             }
-            call.req.session.dtrace = certificates;
+            call.req.session.devtoolsCerts = certificates;
             call.req.session.save(function (error) {
                 if (error) {
                     return call.done(error);
@@ -127,7 +177,7 @@ exports.init = function execute(log, config, done) {
     createApi(dtraceAPIMethods, Dtrace.prototype);
 
     api.createClient = function (call, machine, callback) {
-        var certificates = call.req.session.dtrace;
+        var certificates = call.req.session.devtoolsCerts;
         if (!certificates.ca) {
             return callback('Certificates were lost. Cannot connect to dtrace.');
         }
@@ -145,7 +195,7 @@ exports.init = function execute(log, config, done) {
             }
         }, call));
     };
-    api.DTRACE_CERT_PATH = DTRACE_CERT_PATH;
+    api.DTRACE_CERT_PATH = DEVTOOLS_MANTA_PATH;
     exports.Dtrace = api;
     done();
 };

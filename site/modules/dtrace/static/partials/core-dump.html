@@ -1,0 +1,10 @@
+<div class="core-dump">
+	<div class="loading-large col-md-12" data-ng-show="loading"></div>
+	<span data-ng-show="coreDumpCreated && !options.loading">
+		Done! You can download this core dump file from the
+		<a href="" data-ng-click="openInStorage()">Storage</a>.
+	</span>
+	<span data-ng-show="coreDumpCreated && !options.loading && nodeProcess">
+		Also you can run <a href="" data-ng-click="openInMdb()">Node.js Debugger</a> for this file. 
+	</span>
+</div>

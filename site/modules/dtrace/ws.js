@@ -5,7 +5,7 @@ var DTRACE_PORT = 8000;
 
 module.exports = function (app, log, config) {
     app.ws('/exec/:id/:host', function (socket, req) {
-        var certificates = req.session.dtrace;
+        var certificates = req.session.devtoolsCerts;
         var id = req.params['id'];
         var host = req.params['host'];
         var execType;

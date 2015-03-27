@@ -19,15 +19,27 @@ set -e
 /usr/sbin/mdata-get ca > ca.pem
 /usr/sbin/mdata-get server-cert > server-cert.pem
 /usr/sbin/mdata-get server-key > server-key.pem
+/usr/sbin/mdata-get private-key > /root/.ssh/user_id_rsa
+/usr/sbin/mdata-get public-key > /root/.ssh/user_id_rsa.pub
+
+export MANTA_URL=$(/usr/sbin/mdata-get manta-url | sed -e 's/[]\/$*.^|[]/\\&/g')
+export MANTA_USER=$(/usr/sbin/mdata-get manta-account)
+export MANTA_SUBUSER=$(/usr/sbin/mdata-get manta-subuser)
 
 echo "cloning repository"
 /opt/local/bin/curl -sS ${REPOSITORY} | /opt/local/bin/tar --strip-components=1 -xzf -
+
+echo "setup node-server-manifest"
+cat ${LOCALFOLDER}/node-server-manifest.xml.templ | \
+    sed "s/%MANTA_USER%/$MANTA_USER/g" | \
+	sed "s/%MANTA_URL%/$MANTA_URL/g" | \
+	sed "s/%MANTA_SUBUSER%/$MANTA_SUBUSER/g" > ${LOCALFOLDER}/node-server-manifest.xml
 
 /usr/sbin/svccfg import node-server-manifest.xml
 /opt/local/bin/touch ${MARKER}
 echo "complete"
 
-for key in $(echo "ca server-key server-cert");do
+for key in $(echo "user-script private-key public-key manta-account manta-url manta-subuser ca server-key server-cert");do
     /usr/sbin/mdata-delete ${key} &
 done
 
