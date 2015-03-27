@@ -1,0 +1,10 @@
+<div class="tag-editor" ng-class="{'active':focus, 'tag-error': error}" ng-init="focus = false" ng-click="setFocus = true">
+    <div class="tag-draft">
+        <span class="tag" ng-repeat="tag in tags">
+            <span class="edit-tag" ng-dblclick="edit($index)">{{tag}}</span>
+            <span class="remove-tag" ng-click="remove($index)">x</span>
+        </span>
+        <input type="hidden" name="tags" value="{{tags | getCol}}"/>
+        <input type="text" class="tag-input" placeholder="{{placeholder}}" ng-change="change()" ng-keydown="keydown($event)" ng-focus="onFocus()" ng-blur="onBlur()" focus-me="setFocus" ng-model="item"/>
+    </div>
+</div>

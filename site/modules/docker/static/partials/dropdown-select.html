@@ -1,0 +1,17 @@
+<div class="dropdown-select-wrapper">
+    <div class="dropdown-select">
+        <div ng-show="tags">
+            <input ng-focus="onFocus()" ng-keydown="keydown($event)" type="text" name="volume" ng-model="volume" focus-me="setFocus"/><div class="action-button" data-ng-click="add()">+</div>
+        </div>
+        <div ng-hide="tags">
+            <div ng-if="!multiple" class="selected" data-ng-repeat="item in items | filter: filterSelected">{{item | getValue:output}}</div>
+            <ul class="dropdown-menu">
+                <li data-ng-repeat="item in items | filter: filterUnSelected"><div data-ng-click="selectVal(item)">{{item | getValue:output}}</div></li>
+            </ul>
+            <a href="javascript:void(0)" class="arrow dropdown-toggle" data-toggle="dropdown" data-ng-click="onFocus()"></a>
+        </div>
+    </div>
+    <div ng-if="multiple && (items | filter: filterSelected).length" class="results">
+        <div data-ng-repeat="item in items | filter: filterSelected">{{item | getValue:output}}<div class="action-button" data-ng-click="remove(item)">x</div></div>
+    </div>
+</div>

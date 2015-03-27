@@ -14,38 +14,83 @@
                 Docker hosts are not available, click to <a class="orange" href="#!/docker">Create Docker Host</a>
             </div>
             <div ng-show="hosts.length" class="edit-form">
-                <form name="containerCreateForm">
-                    <div class="form-group">
-                        <span class="orange-asterix edit-image edit-label">Docker Host</span>
-                        <span class="edit-value">
-                            <select ui-select2="{minimumResultsForSearch: -1, width: '457px'}" id="hostSelect" data-ng-model="ip" ng-change="changeHost()" data-ng-disabled="loadingHostDetails">
-                                <option data-ng-repeat="host in hosts" value="{{host.primaryIp}}">
-                                    {{host.name}}
-                                </option>
-                            </select>
-                        </span>
+                <form name="containerCreateForm" class="container-create-form">
+                    <div data-ng-hide="createImage" class="form-group">
+                        <div class="group-label">Container Name</div>
+                        <div class="edit-value">
+                            <input type="text"
+                                   name="name"
+                                   data-ng-model="container.name"
+                                   data-ng-pattern="/^[a-zA-Z0-9\.\_\-]*$/"
+                                   data-auto-focus
+                                   ng-focus="setNotation('name')"
+                                    />
+                         </div>
+                        <div class="edit-error" data-ng-show="isFormSubmited || containerCreateForm.name.$dirty">
+                            <div class="error"
+                                 data-translate
+                                 data-ng-show="containerCreateForm.name.$error.pattern">
+                                Name error: only [a-zA-Z0-9_.-] are allowed
+                            </div>
+                        </div>
                     </div>
                     <div data-ng-hide="createImage" class="form-group">
-                        <span class="orange-asterix edit-image edit-label">Image</span>
+                        <div class="group-label">Datacenter &amp; Host</div>
+                        <div class="edit-value">
+                            <div class="datacenter-info-wrapper dropdown-select" ng-click="setNotation('host')">
+                                <div class="datacenter-info datacenter-name">{{host.datacenter}} / {{host.name}}</div>
+                                <div class="datacenter-info datacenter-statistic">
+                                     <div data-ng-hide="host.stats || host.cadvisorUnavailable">
+                                        <div class="loading-medium-transparent"></div>
+                                    </div>
+                                    <div data-ng-show="host.stats || host.cadvisorUnavailable">
+                                        <div data-ng-hide="host.isSdc" class="ubuntu-logo"></div>
+                                        <div class="progress-wrapper no-cadvisor" data-ng-show="host.cadvisorUnavailable">
+                                            <div data-ng-hide="host.isSdc">cAdvisor is unavailable</div>
+                                        </div>
+                                        <div class="progress-wrapper" data-ng-hide="host.cadvisorUnavailable || host.isSdc">
+                                            <div class="title">CPU</div>
+                                            <div class="progress" title="{{host.cpuLoad}}">
+                                                <div class="progress-bar" ng-style="{width: host.cpuLoad}"></div>
+                                            </div>
+                                            <div class="title">MEM</div>
+                                            <div class="progress" title="{{host.memoryLoad}}">
+                                                <div class="progress-bar" ng-style="{width: host.memoryLoad}"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="datacenter-info datacenter-containers" data-ng-show="containers">{{containers.length}}</div>
+                                <ul class="dropdown-menu">
+                                    <li data-ng-repeat="host in hosts">
+                                        <div ng-click="changeHost(host)">{{host.datacenter}} / {{host.name}}</div>
+                                    </li>
+                                </ul>
+                                <a href="javascript:void(0)" class="arrow dropdown-toggle" data-toggle="dropdown"></a>
+                            </div>
+                        </div>
+                    </div>
+                    <div data-ng-show="createImage" class="form-group">
+                        <span class="orange-asterix edit-image edit-label">DC &amp; Host</span>
                         <span class="edit-value">
-                            <select data-ng-disabled="!images.length" ui-select2="{minimumResultsForSearch: -1, width: '457px'}" id="imageSelect" data-ng-model="container.Image" required>
-                                <option data-ng-repeat="image in images" value="{{image.name}}">
-                                    {{image.name}}
+                            <select ui-select2="{minimumResultsForSearch: -1, width: '100%'}" id="hostSelect" data-ng-model="ip" ng-change="changeHost()" data-ng-disabled="loadingHostDetails">
+                                <option data-ng-repeat="host in hosts" value="{{host.primaryIp}}">
+                                    {{host.datacenter}} / {{host.name}}
                                 </option>
                             </select>
                         </span>
                     </div>
-                    <div data-ng-show="createImage" class="form-group">
+                    <div data-ng-if="createImage" class="form-group">
                         <span class="orange-asterix edit-image edit-label">Container</span>
                         <span class="edit-value">
-                            <select data-ng-disabled="!containers.length" ui-select2="{minimumResultsForSearch: -1, width: '457px'}" id="containerSelect" data-ng-model="container.container" data-ng-change="changeContainer()" required>
+                            <select data-ng-disabled="!containers.length" ui-select2="{minimumResultsForSearch: -1, width: '100%'}" id="containerSelect" data-ng-model="container.container" data-ng-change="changeContainer()" required>
                                 <option data-ng-repeat="container in containers" value="{{container.Id}}">
                                     {{container.NamesStr}}
                                 </option>
                             </select>
                         </span>
                     </div>
-                    <div class="page-header row">
+                    <div data-ng-show="createImage" class="page-header row">
                         <h3 class="page-title docker-options-title">Docker Options</h3>
                     </div>
                     <div data-ng-show="createImage" class="form-group">
@@ -82,106 +127,18 @@
                             </div>
                         </div>
                     </div>
-                    <div data-ng-hide="createImage" class="form-group">
-                        <span class="edit-containername edit-label">Container Name</span>
-                        <span class="edit-value">
-                            <input type="text"
-                                   name="name"
-                                   data-ng-model="container.name"
-                                   data-ng-pattern="/^[a-zA-Z0-9\.\_\-]*$/"
-                                   data-auto-focus/>
-                        </span>
-                        <div class="edit-error" data-ng-show="isFormSubmited || containerCreateForm.name.$dirty">
-                            <div class="error"
-                                 data-translate
-                                 data-ng-show="containerCreateForm.name.$error.pattern">
-                                Name error: only [a-zA-Z0-9_.-] are allowed
-                            </div>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <span class="edit-env edit-label">Environment Variables</span>
-                        <span class="edit-value">
-                            <input type="text"
-                                   name="env"
-                                   data-ng-model="environment"
-                                    />
-                        </span>
-                        <div class="notation">Format: <strong>VAR=value</strong> or <strong>VAR="value"</strong>. Use space as delimiter.</div>
-                    </div>
-                    <div data-ng-hide="createImage" class="form-group">
-                        <span class="edit-ports edit-label">Container Ports</span>
-                        <span class="edit-value">
-                            <input type="text"
-                                   name="ports"
-                                   data-ng-model="ports"
-                                   data-ng-pattern="/^{{exposedPattern}}(\s{{exposedPattern}})*$/"
-                                    />
-                        </span>
-                        <div class="edit-error" data-ng-show="isFormSubmited || containerCreateForm.ports.$dirty">
-                            <div class="error"
-                                 data-translate
-                                 data-ng-show="containerCreateForm.ports.$error.pattern">
-                                Must contain numbers and signs like '.', ':' and ' '. Max value for port is 65535.
-                            </div>
-                        </div>
-                        <div class="notation">Use space as delimiter. Publish a container's port to the host
-                            format: ip:hostPort:containerPort | ip::containerPort | hostPort:containerPort | containerPort
-                        </div>
-                    </div>
                     <div data-ng-show="createImage" class="form-group">
                         <span class="edit-ports edit-label">Exposed Ports</span>
                         <span class="edit-value">
-                            <input type="text"
-                                   name="exposedPorts"
-                                   data-ng-model="exposedPorts"
-                                   data-ng-pattern="/^{{portPattern}}(\s{{portPattern}})*$/"
-                                    />
+                            <tags-input name="exposedPorts" ng-model="input.exposedPorts" data-on-focus-fn="setNotation('exposedPorts')" regexp-validate="^{{portPattern}}$"></tags-input>
                         </span>
-                        <div class="edit-error" data-ng-show="isFormSubmited || containerCreateForm.exposedPorts.$dirty">
+                        <div class="edit-error" data-ng-show="isFormSubmited || containerCreateForm.exposedPorts.$error.pattern">
                             <div class="error"
                                  data-translate
                                  data-ng-show="containerCreateForm.exposedPorts.$error.pattern">
                                 Must contain only numbers and ' '. Max value for port is 65535.
                             </div>
                         </div>
-                        <div class="notation">Use space as delimiter.</div>
-                    </div>
-                    <div data-ng-hide="createImage" class="form-group">
-                        <span class="edit-dns edit-label">DNS</span>
-                        <span class="edit-value">
-                            <input type="text"
-                                   name="dns"
-                                   data-ng-model="dns"
-                                   data-ng-pattern="/^((\d{1,3}\.){3}(\d{1,3})(\s{1})?)*$/"
-                                    />
-                        </span>
-                        <div class="edit-error" data-ng-show="isFormSubmited || containerCreateForm.dns.$dirty">
-                            <div class="error"
-                                 data-translate
-                                 data-ng-show="containerCreateForm.dns.$error.pattern">
-                                Must contain numbers and signs like '.' and ' '.
-                            </div>
-                        </div>
-                        <div class="notation">Set custom DNS servers. Use space as delimiter.</div>
-                    </div>
-                     <div data-ng-hide="createImage" class="form-group">
-                        <span class="edit-dns-search edit-label">DNS Search</span>
-                        <span class="edit-value">
-                            <input type="text"
-                                   name="dnsSearch"
-                                   data-ng-model="dnsSearch"
-                                   data-ng-pattern="/^((\d{1,3}\.){3}(\d{1,3})(\s{1})?)*$/"
-                                    />
-                        </span>
-                        <div class="edit-error" data-ng-show="isFormSubmited || containerCreateForm.dnsSearch.$dirty">
-                            <div class="error"
-                                 data-translate
-                                 data-ng-show="containerCreateForm.dnsSearch.$error.pattern">
-                                Must contain numbers and signs like '.' and ' '.
-                            </div>
-                        </div>
-                        <div class="notation">Set custom DNS search domains. Use space as delimiter.</div>
                     </div>
                     <div data-ng-show="createImage" class="form-group">
                         <span class="edit-message edit-label">Message</span>
@@ -201,287 +158,164 @@
                                     />
                         </span>
                     </div>
+                    <div data-ng-hide="createImage" class="form-group">
+                        <div class="group-label">Image</div>
+                        <div class="edit-value">
+                            <select data-ng-disabled="!images.length" ui-select2="{minimumResultsForSearch: -1, width: '100%'}" id="image" data-ng-model="container.Image" on-opening="setNotation('image')" required>
+                                <option data-ng-repeat="image in images" value="{{image.name}}">
+                                    {{image.name}}
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+                    <div data-ng-hide="createImage || !host" class="form-group">
+                        <div class="group-label">Size / Package</div>
+                        <div data-ng-show="host.isSdc">
+                            <div data-package-select data-name="{{packagePrefix}}" class="package-select" data-package="package" data-memory="{{input.Memory}}"></div>
+                        </div>
+                        <div data-ng-if="!host.isSdc">
+                            <div class="form-group">
+                                <span class="edit-memory edit-label">Memory</span>
+                                <span class="edit-value">
+                                   <slider ng-model="input.Memory" min="0" max="{{host.memory}}" step="1" show-limit show-value data-measure="{{input.Memory > 0 && ' Mb' || ''}}" ng-mousedown="setNotation('memory')"></slider>
+                                </span>
+                            </div>
+                            <div class="form-group">
+                                <span class="edit-memoreswap edit-label">MemorySwap</span>
+                                <span class="edit-value">
+                                   <slider ng-model="input.MemorySwap" min="{{input.Memory}}" max="{{host.memory * 2}}" step="1" show-limit show-value data-measure="{{input.MemorySwap > 0 && ' Mb' || ''}}" ng-mousedown="setNotation('memorySwap')"></slider>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div data-ng-hide="createImage" class="group-label">Volumes</div>
+                    <div data-ng-hide="createImage" data-ng-if="containers" class="form-group volume-section">
+                        <span class="edit-label">From</span><!--
+                            --><span class="edit-value">
+                           <dropdown-select output="NamesStr" result="NamesStr" multiple on-focus="setNotation('volumesFrom')"
+                                            data-preselected-items="container.HostConfig.VolumesFrom" data-dropdown-data="containers"></dropdown-select>
+                        </span>
+                    </div>
+                    <div class="form-group volume-section" data-ng-if="!host.isSdc">
+                        <span class="edit-label">Volumes</span><!--
+                            --><span class="edit-value">
+                            <dropdown-select multiple tags-available data-preselected-items="input.Volumes" on-focus="setNotation('volumes')"></dropdown-select>
+                        </span>
+                    </div>
+                    <div class="group-label">Runtime Configuration</div>
                     <div class="form-group">
                         <span class="edit-entrypoint edit-label">Entrypoint</span>
                         <span class="edit-value">
-                            <input type="text"
-                                   name="entrypoint"
-                                   data-ng-model="entrypoint"
-                                   />
+                              <input type="text"
+                                     name="entrypoint"
+                                     data-ng-model="input.Entrypoint"
+                                     ng-focus="setNotation('entrypoint')"
+                                      />
                         </span>
-                        <div class="notation">Overwrite the default ENTRYPOINT of the image. Use space as delimiter.</div>
                     </div>
                     <div class="form-group">
                         <span class="edit-commands edit-label">Command</span>
                         <span class="edit-value">
                             <input type="text"
                                    name="commands"
-                                   data-ng-model="commands"
+                                   data-ng-model="input.Cmd"
+                                   ng-focus="setNotation('cmd')"
                                     />
                         </span>
                     </div>
                     <div class="form-group">
-                        <span class="edit-memory edit-label">Memory</span>
+                        <span class="edit-env edit-label">Env</span>
                         <span class="edit-value">
-                            <input type="text"
-                                   name="memory"
-                                   class="digit-input"
-                                   data-ng-model="memory"
-                                   data-ng-pattern="/^(\d)*(\.\d{1,2})?$/"
-                            /> Mb
+                            <tags-input ng-model="input.Env" data-on-focus-fn="setNotation('env')"></tags-input>
                         </span>
-                        <div class="edit-error" data-ng-show="isFormSubmited || containerCreateForm.memory.$dirty">
-                            <div class="error"
-                                 data-translate
-                                 data-ng-show="containerCreateForm.memory.$error.pattern">
-                                Must contain only digits and sign '.' and one or two digits after it.
-                            </div>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <span class="edit-memoryswap edit-label">MemorySwap</span>
-                        <span class="edit-value">
-                            <input type="text"
-                                   name="memoryswap"
-                                   class="digit-input"
-                                   data-ng-model="memorySwap"
-                                   data-ng-pattern="/^(\d)*(\.\d{1,2})?$/"
-                            /> Mb
-                        </span>
-                        <div class="edit-error" data-ng-show="isFormSubmited || containerCreateForm.memoryswap.$dirty">
-                            <div class="error"
-                                 data-translate
-                                 data-ng-show="containerCreateForm.memoryswap.$error.pattern">
-                                Must contain only digits and sign '.' and one or two digits after it.
-                            </div>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <span class="edit-cpushares edit-label">CpuShares</span>
-                        <span class="edit-value">
-                            <input type="text"
-                                   name="cpushares"
-                                   class="digit-input"
-                                   data-ng-model="container.CpuShares"
-                                   data-ng-pattern="/^\d+$/"
-                            />
-                        </span>
-                        <div class="edit-error" data-ng-show="isFormSubmited || containerCreateForm.cpushares.$dirty">
-                            <div class="error"
-                                 data-translate
-                                 data-ng-show="containerCreateForm.cpushares.$error.pattern">
-                                Must contain only digits.
-                            </div>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <span class="edit-workingdir edit-label">WorkingDir</span>
-                        <span class="edit-value">
-                            <input type="text"
-                                   name="workingdir"
-                                   data-ng-model="container.WorkingDir"
-                                    />
-                        </span>
-                    </div>
-                    <div class="form-group">
-                        <span class="edit-volumes edit-label">Volumes</span>
-                        <span class="edit-value">
-                            <input type="text"
-                                   name="volumes"
-                                   data-ng-model="volumes"
-                                    />
-                        </span>
-                        <div class="notation">Use space as delimiter. Mountpoint paths (strings) inside the container<br />
-                            <strong>container_path</strong>: to create a new volume for the container,<br />
-                            <strong>host_path:container_path</strong>: to bind-mount a host path into the container,<br />
-                            <strong>host_path:container_path:&#60ro|rw&#62</strong>: to make the bind-mount &#60read-only|read-write&#62 inside the container.</div>
                     </div>
                     <div data-ng-hide="createImage" class="form-group">
-                        <span class="edit-volumesfrom edit-label">Volumes From</span>
+                        <span class="edit-ports edit-label">Container Ports</span>
                         <span class="edit-value">
-                            <input type="text"
-                                   name="volumesfrom"
-                                   data-ng-model="volumesFrom"
-                                    />
+                            <tags-input name="ports" ng-model="input.PortsBinding" data-on-focus-fn="setNotation('ports')" regexp-validate="^{{exposedPattern}}$"></tags-input>
                         </span>
-                        <div class="notation">A list of volumes to inherit from another container. Specified in the form &#60container name&#62[:&#60ro|rw&#62]</div>
-                    </div>
-                    <div  data-ng-hide="createImage" class="form-group">
-                        <span class="edit-network edit-label">Network Mode</span>
-                        <span class="edit-value">
-                            <input type="text"
-                                   name="network"
-                                   data-ng-model="networkMode"
-                                    />
-                        </span>
-                        <div class="notation">Set the Network mode for the container<br />
-                            <strong>bridge</strong>: creates a new network stack for the container on the docker bridge<br />
-                            <strong>none</strong>: no networking for this container<br />
-                            <strong>container:&#60name|id&#62</strong>: reuses another container network stack<br />
-                            <strong>host</strong>: use the host network stack inside the container. Note: the host mode gives the container full access to local system services such as D-bus and is therefore considered insecure.
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <span class="edit-hostname edit-label">Hostname</span>
-                        <span class="edit-value">
-                            <input type="text"
-                                   name="hostname"
-                                   data-ng-model="container.Hostname"
-                                    />
-                        </span>
-                    </div>
-                    <div class="form-group">
-                        <span class="edit-label">AttachStdin</span>
-                        <span class="edit-value">
-                            <select ui-select2="{minimumResultsForSearch: -1, width: '457px'}" id="attachStdinSelect" data-ng-model="container.AttachStdin">
-                                <option data-ng-repeat="attachStdOption in YES_NO_OPTIONS" value="{{attachStdOption.value}}">
-                                    {{attachStdOption.text}}
-                                </option>
-                            </select>
-                        </span>
-                    </div>
-                    <div class="form-group">
-                        <span class="edit-label">AttachStdout</span>
-                        <span class="edit-value">
-                            <select ui-select2="{minimumResultsForSearch: -1, width: '457px'}" id="attachStdoutSelect" data-ng-model="container.AttachStdout">
-                                <option data-ng-repeat="attachStdOption in YES_NO_OPTIONS" value="{{attachStdOption.value}}">
-                                    {{attachStdOption.text}}
-                                </option>
-                            </select>
-                        </span>
-                    </div>
-                    <div class="form-group">
-                        <span class="edit-label">AttachStderr</span>
-                        <span class="edit-value">
-                            <select ui-select2="{minimumResultsForSearch: -1, width: '457px'}" id="attachStderrSelect" data-ng-model="container.AttachStderr">
-                                <option data-ng-repeat="attachStdOption in YES_NO_OPTIONS" value="{{attachStdOption.value}}">
-                                    {{attachStdOption.text}}
-                                </option>
-                            </select>
-                        </span>
-                    </div>
-                    <div class="form-group">
-                        <span class="edit-label">ContainerIDFile</span>
-                        <span class="edit-value">
-                            <input type="text"
-                                   name="containerIDFile"
-                                   data-ng-model="containerIDFile"
-                                    />
-                        </span>
-                    </div>
-                    <div class="form-group">
-                        <span class="edit-label">Cpuset</span>
-                        <span class="edit-value">
-                            <input type="text"
-                                   name="cpuset"
-                                   data-ng-pattern="/^\d+((\,|\-)\d+)*$/"
-                                   data-ng-model="container.Cpuset"
-                                    />
-                        </span>
-                        <div class="notation">Set CPUs in which to allow execution (0-3, 0,1)</div>
-                    </div>
-                    <div class="form-group">
-                        <span class="edit-label">OpenStdin</span>
-                        <span class="edit-value">
-                            <select ui-select2="{minimumResultsForSearch: -1, width: '457px'}" id="openStdinSelect" data-ng-model="container.OpenStdin">
-                                <option data-ng-repeat="openStdinOption in YES_NO_OPTIONS" value="{{openStdinOption.value}}">
-                                    {{openStdinOption.text}}
-                                </option>
-                            </select>
-                        </span>
-                    </div>
-                    <div class="form-group">
-                        <span class="edit-label">Links</span>
-                        <span class="edit-value">
-                            <input type="text"
-                                   name="containerLinks"
-                                   data-ng-model="containerLinks"
-                                    />
-                        </span>
-                        <div class="notation">Add link to another container (name:alias)</div>
-                    </div>
-                    <div class="form-group">
-                        <span class="edit-lxc-conf edit-label">LxcConf</span>
-                        <span class="edit-value">
-                             <textarea type="text"
-                                       name="lxcConf"
-                                       data-ng-model="lxcConf"
-                                       class="value-width"
-                                       data-ng-pattern="/^(\w+(\.\w+)+\=\w+)(\n\w+(\.\w+)+\=\w+)*$/"
-                                       rows="4"></textarea>
-                        </span>
-                        <div class="edit-error" data-ng-show="isFormSubmited || containerCreateForm.lxcConf.$dirty">
+                        <div class="edit-error" data-ng-show="isFormSubmited || containerCreateForm.ports.$error.pattern">
                             <div class="error"
                                  data-translate
-                                 data-ng-show="containerCreateForm.lxcConf.$error.pattern">
-                                Must contain '.' and '=', generally starts with 'lxc.'
+                                 data-ng-show="containerCreateForm.ports.$error.pattern">
+                                Must contain numbers and signs like '.', ':' and ' '. Max value for port is 65535.
                             </div>
                         </div>
-                        <div class="notation">Add custom lxc options: lxc.network.type = veth. Use new line as delimiter.</div>
                     </div>
                     <div class="form-group">
-                        <span class="edit-capadd edit-label">CapAdd</span>
-                        <span class="edit-value">
-                            <input type="text"
-                                   name="capadd"
-                                   data-ng-model="capAdd"
-                                    />
-                        </span>
-                        <div class="notation">Add Linux capabilities. Use space as delimiter.</div>
-                    </div>
-                    <div class="form-group">
-                        <span class="edit-capdrop edit-label">CapDrop</span>
-                        <span class="edit-value">
-                            <input type="text"
-                                   name="capdrop"
-                                   data-ng-model="capDrop"
-                                    />
-                        </span>
-                        <div class="notation">Drop Linux capabilities. Use space as delimiter.</div>
-                    </div>
-                    <div class="form-group">
-                        <span class="edit-restartpolicy edit-label">Restart Policy</span>
-                        <span class="edit-value">
-                            <input type="text"
-                                   name="restartpolicy"
-                                   data-ng-model="restartPolicy"
-                                    />
-                        </span>
-                        <div class="notation">Restart policy to apply when a container exits (no, on-failure[:max-retry], always)</div>
-                    </div>
-                    <div class="form-group">
-                        <span class="edit-label">PublishAllPorts</span>
-                        <span class="edit-value">
-                            <select data-select-two
-                                    id="publishAllPortsSelect"
-                                    data-width="457px"
-                                    data-ng-model="publishAllPorts"
-                                    data-select="selectDataText(publishAllPorts)"
-                                    data-ng-options="publishAllPortsOption.value as publishAllPortsOption.text for publishAllPortsOption in NO_YES_OPTIONS">
-                            </select>
-                        </span>
-                        <div class="notation" data-ng-show="isSdc">PublishAllPorts is the way the Triton knows to assign a public IP address to the container, without that you can not get to the container from the internet.</div>
-                    </div>
-                    <div class="form-group">
-                        <span class="edit-label">Privileged</span>
-                        <span class="edit-value">
-                            <select ui-select2="{minimumResultsForSearch: -1, width: '457px'}" id="privilegedSelect" data-ng-model="privileged">
-                                <option data-ng-repeat="privilegedOption in NO_YES_OPTIONS" value="{{privilegedOption.value}}">
-                                    {{privilegedOption.text}}
+                        <span class="edit-label">Network</span>
+                        <span class="edit-value restart-name">
+                            <select ui-select2="{minimumResultsForSearch: -1, width: '157px'}" id="network" data-ng-model="input.NetworkMode" on-opening="setNotation('network')">
+                                <option data-ng-repeat="type in networkTypes" value="{{type}}">
+                                    {{type}}
                                 </option>
                             </select>
                         </span>
-                    </div>
-                    <div class="form-group">
-                        <span class="edit-label">User</span>
-                        <span class="edit-value">
-                            <input type="text"
-                                   name="user"
-                                   data-ng-model="container.User"
-                                    />
+                        <span data-ng-show="input.NetworkMode == 'container'" class="max-restart-wrapper">
+                            <span class="edit-value networkContainer">
+                                <select ui-select2="{minimumResultsForSearch: -1, width: '318px'}" id="networkContainer" data-ng-model="input.networkContainer" on-opening="setNotation('network')">
+                                    <option data-ng-repeat="container in containers" value="{{container.NamesStr}}">
+                                        {{container.NamesStr}}
+                                    </option>
+                                </select>
+                            </span>
                         </span>
                     </div>
-
+                    <div class="form-group">
+                        <span class="edit-label">Restart</span>
+                        <span class="edit-value restart-name">
+                            <select ui-select2="{minimumResultsForSearch: -1, width: '157px'}" id="restartPolicy" data-ng-model="container.HostConfig.RestartPolicy.Name" on-opening="setNotation('restartPolicy')">
+                                <option data-ng-repeat="option in restartOptions" value="{{option}}">
+                                    {{option}}
+                                </option>
+                            </select>
+                        </span>
+                        <span data-ng-show="container.HostConfig.RestartPolicy.Name == 'on-failure'" class="max-restart-wrapper">
+                            <span class="max-restart edit-label">MAX</span>
+                            <span class="edit-value max-retry-count">
+                                <input type="text"
+                                    name="MaximumRetryCount"
+                                    value="5"
+                                    data-ng-pattern="/^(\d)*$/"
+                                    data-ng-model="container.HostConfig.RestartPolicy.MaximumRetryCount"
+                                     />
+                            </span>
+                             <div class="maximum-retry-error" data-ng-show="isFormSubmited || containerCreateForm.MaximumRetryCount.$dirty">
+                                 <div class="error"
+                                      data-translate
+                                      data-ng-show="containerCreateForm.MaximumRetryCount.$error.pattern">
+                                     Must contain only digits.
+                                 </div>
+                             </div>
+                        </span>
+                    </div>
+                    <div class="group-label">Mics</div>
+                    <div class="form-group">
+                        <span class="edit-label">Attach</span>
+                        <div class="attaches" data-ng-repeat="attach in attaches">
+                            <input data-ng-model="container['Attach' + attach]" type="checkbox" />
+                            <label class="attach-name checkbox-label" data-ng-click="container['Attach' + attach]=!container['Attach' + attach]">{{attach}}</label>
+                        </div>
+                        <span class="edit-label">Other</span>
+                        <div class="attaches">
+                            <input data-ng-model="container.HostConfig.PublishAllPorts" type="checkbox" />
+                            <label class="attach-name checkbox-label" data-ng-click="container.HostConfig.PublishAllPorts=!container.HostConfig.PublishAllPorts; setNotation('PublishAllPorts')" data-ng-mouseenter="setNotation('PublishAllPorts')">
+                                Publish All Ports
+                            </label>
+                        </div><!--
+                        --><div class="attaches">
+                            <input data-ng-model="container.HostConfig.Privileged" type="checkbox" />
+                            <label class="attach-name checkbox-label" data-ng-click="container.HostConfig.Privileged=!container.HostConfig.Privileged; setNotation('Privileged')" data-ng-mouseenter="setNotation('Privileged')">
+                                Privileged
+                            </label>
+                        </div><!--
+                        --><div class="attaches">
+                            <input data-ng-model="container.NetworkDisabled" type="checkbox" />
+                            <label class="attach-name checkbox-label" data-ng-click="container.NetworkDisabled=!container.NetworkDisabled; setNotation('NetworkDisabled')" data-ng-mouseenter="setNotation('NetworkDisabled')">
+                                Network Disabled
+                            </label>
+                        </div>
+                    </div>
                     <hr data-ng-show="!loading" />
                     <div class="row btn-bottom-block" data-ng-show="!loading">
                         <span class="orange-asterix-left">required fields</span>
@@ -492,6 +326,7 @@
                         <div class="pull-right loading-medium-transparent" data-ng-show="creating"></div>
                     </div>
                 </form>
+                <div class="advanced-info pull-right" data-ng-bind-html="notation"></div>
             </div>
         </div>
     </div>

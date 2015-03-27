@@ -20,6 +20,42 @@
 
                 var sourceId = requestContext.getParam('sourceid');
                 var hostId = requestContext.getParam('hostid');
+                var images = {};
+                var containers = {};
+                var hostsStats = {};
+                var notations = {
+                    name: 'Enter Container Name (optional)',
+                    image: 'Image to use for the container.',
+                    memory: 'Memory limit in MB',
+                    memorySwap: 'Total memory usage (memory + swap)',
+                    host: 'Choose datacenter & host where you create container',
+                    volumesFrom: 'A list of volumes to inherit from another container.',
+                    entrypoint: 'Overwrite the default ENTRYPOINT of the image. Use space as delimiter.',
+                    cmd: 'Command to run specified',
+                    PublishAllPorts: 'Allocates a random host port for all of a container\'s exposed ports.',
+                    sdcPublishAllPorts: 'Allocates a random host port for all of a container\'s exposed ports.<br /> \
+                            PublishAllPorts is the way the SDC-Docker knows to assign a public IP address to the container, without that you can not get to the container from the internet.',
+                    Privileged: 'Gives the container full access to the host.',
+                    NetworkDisabled: 'Boolean value, when true disables neworking for the container',
+                    env: 'A list of environment variables in the form of <strong>VAR=value</strong> or <strong>VAR="value"</strong><br />Press <strong>Enter</strong> button for adding value.',
+                    exposedPorts: 'Ports accessible from the host by default',
+                    ports: 'Publish a container\'s port to the host. Format: <strong>ip:hostPort:containerPort</strong> | <strong> ip::containerPort</strong> | <strong>hostPort:containerPort</strong> |  <strong>containerPort</strong> \
+                            <br />Press <strong>Enter</strong> button for adding value.',
+                    volumesImage: 'A mount point with the specified name and marks it as holding externally mounted volumes from native host or other containers',
+                    volumes: 'Mountpoint paths (strings) inside the container<br /> \
+                            <strong>container_path</strong> to create a new volume for the container,<br /> \
+                            <strong>host_path:container_path</strong> to bind-mount a host path into the container,<br /> \
+                            <strong>host_path:container_path:&#60ro|rw&#62</strong> to make the bind-mount &#60read-only|read-write&#62 inside the container.',
+                    restartPolicy: 'The behavior to apply when the container exits. The value is an object with a Name property of either \
+                            <strong>"always"</strong> to always restart or <strong>"on-failure"</strong> to restart only when the container exit code is non-zero. \
+                            If <strong>on-failure</strong> is used, <strong>MaximumRetryCount</strong> controls the number of times to retry before giving up. The default is not to restart. \
+                            (optional) An ever increasing delay (double the previous delay, starting at 100mS) is added before each restart to prevent flooding the server.',
+                    network: 'Set the Network mode for the container<br /> \
+                            <strong>bridge</strong>: creates a new network stack for the container on the docker bridge<br />\
+                            <strong>none</strong>: no networking for this container<br /> \
+                            <strong>container:&#60name|id&#62</strong>: reuses another container network stack<br /> \
+                            <strong>host</strong>: use the host network stack inside the container. Note: the host mode gives the container full access to local system services such as D-bus and is therefore considered insecure.'
+                };
 
                 var isArrayNotEmpty = function (data) {
                     return data && Array.isArray(data) && data.length;
@@ -49,8 +85,8 @@
 
                 function parsePorts(ports) {
                     var portBindings = {};
-                    if (ports) {
-                        ports.split(' ').map(function (port) {
+                    if (isArrayNotEmpty(ports)) {
+                        ports.forEach(function (port) {
                             if (port.indexOf(':') !== -1) {
                                 port = port.split(':');
                                 var hostIp = '';
@@ -79,13 +115,12 @@
                 }
 
                 function unParsePorts(portBindings) {
-                    var ports;
+                    var ports = [];
                     for (var port in portBindings) {
-                        ports = ports ? ports + ' ' : '';
                         portBindings[port].forEach(function (bind) {
                             var ip = bind.HostIp ? bind.HostIp + ':' : '';
                             var hostPort = bind.HostPort ? bind.HostPort + ':' : ip ? ':' : '';
-                            ports += ip + hostPort + port.substring(0, port.indexOf('/'));
+                            ports.push(ip + hostPort + port.substring(0, port.indexOf('/')));
                         });
 
                     }
@@ -93,15 +128,14 @@
                 }
 
                 function unParseVolumes(volumes, binds) {
-                    var output;
+                    var output = [];
                     var i = 0;
                     for (var path in volumes) {
-                        output = output ? output + ' ' : '';
                         if (binds[i] && binds[i].indexOf(path) !== -1) {
-                            output += binds[i];
+                            output.push(binds[i]);
                             i++;
                         } else {
-                            output += path;
+                            output.push(path);
                         }
                     }
                     return output;
@@ -116,19 +150,6 @@
                     return output;
                 }
 
-                function unParseEnv(env) {
-                    var output = '';
-                    env.forEach(function (data) {
-                        output = output ? output + '\n' : '';
-                        var envValue = data.split('=');
-                        output = envValue[0] + '=';
-                        if (envValue[1]) {
-                            output += addQuotes(envValue[1]);
-                        }
-                    });
-                    return output;
-                }
-
                 function unParseCommands(commands) {
                     var output = '';
                     commands.forEach(function (command) {
@@ -139,78 +160,88 @@
                 }
 
                 function parseCommands(commands) {
-                    if (!commands) {
-                        return [];
+                    var output = null;
+                    if (isArrayNotEmpty(commands)) {
+                        output = commands.match(/(?:[^\s"']+|"([^"]*)"|'([^']*)')+/g).map(function (string) {
+                            return removeQuotes(string);
+                        });
                     }
-                    return commands.match(/(?:[^\s"']+|"([^"]*)"|'([^']*)')+/g).map(function (string) {
-                        return removeQuotes(string);
-                    });
+                    return output;
                 }
 
                 function parseEnvironments(environments) {
-                    if (!environments) {
-                        return null;
-                    }
-                    var parsedEnvironments = [];
-                    environments.match(/(?:[^\s"]+|"[^"]*")+/g).forEach(function (string) {
-
-                        if (string.length > 3 && string.indexOf('=') > 0) {
-                            var envValue = string.split('=');
-                            string = envValue[0] + '=';
-                            if (envValue[1]) {
-                                string += removeQuotes(envValue[1]);
+                    var output = null;
+                    if (isArrayNotEmpty(environments)) {
+                        output = [];
+                        environments.forEach(function (string) {
+                            if (string.length > 3 && string.indexOf('=') > 0) {
+                                var envValue = string.split('=');
+                                string = envValue[0] + '=';
+                                if (envValue[1]) {
+                                    string += removeQuotes(envValue[1]);
+                                }
+                                output.push(string);
                             }
-                            parsedEnvironments.push(string);
-                        }
-                    });
-                    return parsedEnvironments;
+                        });
+                    }
+                    return output;
                 }
 
                 function parseContainerLinks(links) {
-                    if (!links) {
-                        return [];
+                    var output = [];
+                    if (isArrayNotEmpty(links)) {
+                        links.match(/(?:[^\s"]+|"[^"]*")+/g).forEach(function (string) {
+                            if (string && string.indexOf(':') === -1) {
+                                string += ':' + string;
+                            }
+                            output.push(string);
+                        });
                     }
-                    return links.match(/(?:[^\s"]+|"[^"]*")+/g).map(function (string) {
-                        if (string && string.indexOf(':') === -1) {
-                            string += ':' + string;
-                        }
-                        return string;
-                    });
+                    return output;
                 }
 
                 function parseLxcConf(lxcConf) {
-                    if (!lxcConf) {
-                        return [];
-                    }
                     var lxcOptions = [];
-                    lxcConf.split('\n').forEach(function (line) {
-                        if (line && line.indexOf('=') !== -1) {
-                            var lxcConfParams = line.split('=');
-                            var lxcKey = lxcConfParams[0];
-                            var lxcValue = lxcConfParams[1];
-                            var lxcOption = {Key: lxcKey.trim(), Value: lxcValue.trim()};
-                            lxcOptions.push(lxcOption);
-                        }
-                    });
+                    if (isArrayNotEmpty(lxcConf)) {
+                        lxcConf.split('\n').forEach(function (line) {
+                            if (line && line.indexOf('=') !== -1) {
+                                var lxcConfParams = line.split('=');
+                                var lxcKey = lxcConfParams[0];
+                                var lxcValue = lxcConfParams[1];
+                                var lxcOption = {Key: lxcKey.trim(), Value: lxcValue.trim()};
+                                lxcOptions.push(lxcOption);
+                            }
+                        });
+                    }
                     return lxcOptions;
                 }
 
-                function parseRestartPolicy(restartPolicy) {
-                    var policy = {Name: '', MaximumRetryCount: 0};
-                    if (!restartPolicy) {
-                        return policy;
+                function parseVolumes(containerVolumes) {
+                    var binds = [];
+                    var volumes = null;
+                    if (isArrayNotEmpty(containerVolumes)) {
+                        volumes = {};
+                        containerVolumes.forEach(function (volume) {
+                            var parsed = volume.split(':'); // containerPath || hostPath:containerPath || hostPath:containerPath:permission
+                            volumes[parsed[1] || parsed[0]] = {};
+                            if (parsed[1]) {
+                                binds.push(volume);
+                            }
+                        });
                     }
-
-                    if (restartPolicy.indexOf('no') !== -1) {
-                        policy.Name = 'no';
-                    } else if (restartPolicy.indexOf('always') !== -1) {
-                        policy.Name = 'always';
-                    } else if (restartPolicy.indexOf('failure') !== -1) {
-                        policy.Name = 'on-failure';
-                        policy.MaximumRetryCount = parseInt(restartPolicy.split(':')[1], 10) || 0;
-                    }
-                    return policy;
+                    $scope.container.HostConfig.Binds = binds;
+                    return volumes;
                 }
+
+                $scope.setNotation = function (name) {
+                    $scope.notation = notations[name] || '';
+                    if ($scope.isSdc && notations['sdc' + name]) {
+                        $scope.notation = notations['sdc' + name];
+                    }
+                    if ($scope.createImage && notations[name + 'Image']) {
+                        $scope.notation = notations[name + 'Image'];
+                    }
+                };
 
                 $scope.preSelectedData = $rootScope.popCommonConfig('cloneDockerParams');
 
@@ -221,12 +252,9 @@
                     $scope.createImage = true;
                     $scope.title = 'Create Image From Container';
                 }
-                $scope.YES_NO_OPTIONS = [{value: true, 'text': 'yes'}, {value: false, 'text': 'no'}];
-                $scope.NO_YES_OPTIONS = [{value: false, 'text': 'no'}, {value: true, 'text': 'yes'}];
-
-                $scope.memory = 0;
-                $scope.memorySwap = 0;
-                $scope.networkMode = 'bridge';
+                $scope.attaches = ['Stdin', 'Stdout', 'Stderr'];
+                $scope.restartOptions = ['no', 'on-failure', 'always'];
+                $scope.networkTypes = ['none', 'bridge', 'host'];
                 $scope.container = {
                     Hostname: '',
                     Domainname: '',
@@ -235,9 +263,9 @@
                     MemorySwap: 0,
                     CpuShares: 0,
                     Cpuset: '',
-                    AttachStdin: true,
-                    AttachStdout: true,
-                    AttachStderr: true,
+                    AttachStdin: false,
+                    AttachStdout: false,
+                    AttachStderr: false,
                     PortSpecs: [],
                     Tty: true,
                     OpenStdin: true,
@@ -247,38 +275,65 @@
                     ExposedPorts: {},
                     WorkingDir: '',
                     NetworkDisabled: false,
-                    name: ''
+                    Volumes: null,
+                    name: '',
+                    HostConfig: {
+                        Binds: [],
+                        Dns: [],
+                        DnsSearch: [],
+                        VolumesFrom: [],
+                        PortBindings: {},
+                        NetworkMode: 'bridge',
+                        Links: [],
+                        LxcConf: [],
+                        CapAdd: [],
+                        CapDrop:  [],
+                        RestartPolicy:  {'Name': 'no'},
+                        PublishAllPorts: false,
+                        Privileged: false
+                    }
                 };
+                $scope.input = {
+                    Memory: 0,
+                    MemorySwap: 0,
+                    Env: [],
+                    NetworkMode: 'bridge'
+                };
+
                 if ($scope.preSelectedData) {
                     var createData = $scope.preSelectedData.create;
                     var startData = $scope.preSelectedData.start;
-                    var rp = startData.RestartPolicy;
+                    $scope.container = ng.extend($scope.container, createData);
 
-                    $scope.commands = isArrayNotEmpty(createData.Cmd) ? unParseCommands(createData.Cmd) : '';
-                    $scope.entrypoint = isArrayNotEmpty(createData.Entrypoint) ? unParseCommands(createData.Entrypoint) : '';
-                    $scope.memory = Math.floor(createData.Memory / 1024 / 1024);
-                    $scope.memorySwap = Math.floor(createData.MemorySwap / 1024 / 1024);
-                    $scope.environment = isArrayNotEmpty(createData.Env) ? unParseEnv(createData.Env) : '';
-                    $scope.container = ng.extend($scope.container, $scope.preSelectedData.create);
-
-                    $scope.ports = unParsePorts(startData.PortBindings);
-                    $scope.volumes = unParseVolumes(createData.Volumes, startData.Binds);
-                    $scope.lxcConf = isArrayNotEmpty(startData.LxcConf) ? unParseLxcConf(startData.LxcConf) : '';
-                    $scope.restartPolicy = '';
-                    if (rp) {
-                        $scope.restartPolicy = rp.Name ? rp.Name + (rp.MaximumRetryCount ? ':' + rp.MaximumRetryCount : '') : '';
+                    $scope.input.Cmd = isArrayNotEmpty(createData.Cmd) ? unParseCommands(createData.Cmd) : '';
+                    $scope.input.Entrypoint = isArrayNotEmpty(createData.Entrypoint) ? unParseCommands(createData.Entrypoint) : '';
+                    $scope.input.Memory = Math.floor(createData.Memory / 1024 / 1024);
+                    $scope.input.MemorySwap = Math.floor(createData.MemorySwap / 1024 / 1024);
+                    $scope.input.Env = createData.Env || [];
+                    $scope.input.Volumes = unParseVolumes(createData.Volumes, startData.Binds);
+                    $scope.input.PortBindings = unParsePorts(startData.PortBindings);
+                    $scope.input.LxcConf = isArrayNotEmpty(startData.LxcConf) ? unParseLxcConf(startData.LxcConf) : '';
+                    var restartPolicy = startData.RestartPolicy;
+                    if (restartPolicy && $scope.restartOptions.indexOf(restartPolicy.Name) !== -1) {
+                        $scope.container.HostConfig.RestartPolicy = restartPolicy;
                     }
-                    $scope.privileged = startData.Privileged;
-                    $scope.publishAllPorts = startData.PublishAllPorts;
-                    $scope.dns = getJoinedStr(startData.Dns);
-                    $scope.dnsSearch = getJoinedStr(startData.DnsSearch);
-                    $scope.capAdd = getJoinedStr(startData.CapAdd);
-                    $scope.capDrop = getJoinedStr(startData.CapDrop);
-                    $scope.volumesFrom = getJoinedStr(startData.VolumesFrom);
-                    $scope.networkMode = startData.NetworkMode;
-                    $scope.containerIDFile = startData.ContainerIDFile;
+                    if (startData.NetworkMode) {
+                        $scope.input.NetworkMode = startData.NetworkMode;
+                        if (startData.NetworkMode.indexOf('container') !== -1) {
+                            $scope.input.networkContainer = $scope.container.HostConfig.NetworkMode.slice(10);
+                            $scope.input.NetworkMode = 'container';
+                        }
+                    }
                 }
 
+                function setImageData (image) {
+                    if (image && typeof (image) === 'object') {
+                        var tag = Array.isArray(image.RepoTags) && image.RepoTags[0];
+                        image.ShortId = image.Id.slice(0, 12);
+                        image.name = !tag || tag === '<none>:<none>' ? image.ShortId : tag;
+                    }
+                    return image;
+                }
                 var errorCallback = function (err) {
                     $scope.loading = false;
                     $scope.loadingHostDetails = false;
@@ -309,10 +364,7 @@
                         Docker.listImages(host).then(function (images) {
 
                             $scope.images = images.map(function (image) {
-                                var tag = image.RepoTags[0];
-                                image.ShortId = image.Id.slice(0, 12);
-                                image.name = tag === '<none>:<none>' ? image.ShortId : tag;
-                                return image;
+                                return setImageData(image);
                             });
                             if ($scope.images.length > 0) {
                                 $scope.container.Image = selectSource($scope.images, 'name');
@@ -344,9 +396,7 @@
                         $scope.hosts = $scope.hosts.filter(function (host) {
                             return hosts.indexOf(host.id) !== -1;
                         });
-                        var tag = $scope.image.RepoTags[0];
-                        $scope.image.ShortId = $scope.image.Id.slice(0, 12);
-                        $scope.image.name = tag === '<none>:<none>' ? $scope.image.ShortId : tag;
+                        setImageData($scope.image);
                         $scope.images = [$scope.image];
                         $scope.container.Image = $scope.image.name;
                         setTimeout(function () {
@@ -389,14 +439,11 @@
                         $scope.images = images || [];
                         $scope.images.forEach(function (image) {
                             if (image.Id || !image.suppressErrors) {
-                                image.ShortId = image.Id.slice(0, 12);
+                                setImageData(image);
                                 if (!$scope.image && image.RepoTags.indexOf(name) !== -1) {
                                     image.name = name;
                                     $scope.container.Image = name;
                                     $scope.image = image;
-                                } else {
-                                    var tag = image.RepoTags[0];
-                                    image.name = tag === '<none>:<none>' ? image.ShortId : tag;
                                 }
                             }
                         });
@@ -407,23 +454,68 @@
                     }, errorCallback);
                 };
 
-                $scope.selectDataText = function (selectedValue) {
-                    var selectedOption = $scope.NO_YES_OPTIONS.find(function (option) {
-                        return option.value === selectedValue;
-                    });
-                    return selectedOption && selectedOption.text || $scope.NO_YES_OPTIONS[0].text;
+                function updateNetworkTypes () {
+                    var containersCount = $scope.containers.length;
+                    var indexContainerNetwork = $scope.networkTypes.indexOf('container');
+                    if (containersCount > 0 && indexContainerNetwork === -1) {
+                        $scope.networkTypes.push('container');
+                    } else if (containersCount === 0 && indexContainerNetwork !== -1) {
+                        $scope.networkTypes.pop();
+                    }
+                    $scope.input.NetworkMode = $scope.input.NetworkMode === 'container' ? 'bridge' : $scope.input.NetworkMode;
+                }
+
+                var getHostStats = function (host) {
+                    $scope.containers = null;
+                    if (containers[host.id]) {
+                        $scope.containers = containers[host.id];
+                        updateNetworkTypes();
+                    } else {
+                        Docker.listContainers({host: host, options: {all: true}}).then(function (containers) {
+                            containers[host.id] = containers.map(function (container) {
+                                container.ShortId = container.Id.slice(0, 12);
+                                return container;
+                            });
+                            $scope.containers = containers[host.id];
+                            updateNetworkTypes();
+                        });
+                    }
+
+                    if (hostsStats[host.id]) {
+                        host = ng.extend(host, hostsStats[host.id]);
+                    } else {
+                        Docker.hostUsage({host: host, wait: true, suppressErrors: true}).then(function (usage) {
+                            usage = Array.isArray(usage) ? usage.slice(-1)[0] : usage;
+                            hostsStats[host.id] = {
+                                cadvisorUnavailable: false,
+                                cpuLoad: usage.cpu + '%',
+                                memoryLoad: usage.memory + '%',
+                                stats: true
+                            };
+                            host = ng.extend(host, hostsStats[host.id]);
+                        }, function (error) {
+                            hostsStats[host.id] = {
+                                cadvisorUnavailable: true
+                            };
+                            host.cadvisorUnavailable = true;
+                        });
+                    }
                 };
 
                 $scope.changeHost = function (host) {
                     host = host || Docker.getHost($scope.hosts, $scope.ip);
-                    $scope.hostId = host.id;
                     $scope.isSdc = host.isSdc;
+                    $scope.host = host;
+                    $scope.container.HostConfig.VolumesFrom = [];
+
                     if ($scope.preSelectedData) {
+                        getHostStats($scope.host);
                         return;
                     }
                     if ($scope.type === 'Images') {
                         hostContainers(host);
                     } else {
+                        getHostStats($scope.host);
                         if (sourceId) {
                             imageHosts(sourceId);
                         } else {
@@ -454,44 +546,27 @@
                         $scope.hosts.forEach(function (host) {
                             if (hostId === host.id) {
                                 $scope.ip = host.primaryIp;
-                                $scope.hostId = host.id;
                                 $scope.isSdc = host.isSdc;
                                 $scope.changeHost(host);
                             }
                         });
+                    } else {
+                        $scope.changeHost(hosts[0]);
                     }
                 }, errorCallback);
 
+                var setMemory = function () {
+                    if ($scope.host.isSdc && $scope.package) {
+                        $scope.container.Memory = $scope.package.memory * 1024 * 1024;
+                        $scope.container.MemorySwap = $scope.package.swap * 1024 * 1024;
+                    } else {
+                        var memorySwap = $scope.input.MemorySwap;
+                        $scope.container.Memory = $scope.input.Memory * 1024 * 1024;
+                        $scope.container.MemorySwap = memorySwap > 0 ?  $scope.container.Memory + memorySwap * 1024 * 1024 : memorySwap;
+                    }
+                };
+
                 var createContainer = function () {
-                    var containerPorts = parsePorts($scope.ports);
-                    var containerLinks = parseContainerLinks($scope.containerLinks);
-                    var lxcConf = parseLxcConf($scope.lxcConf);
-                    var restartPolicy = parseRestartPolicy($scope.restartPolicy);
-
-                    $scope.container.Memory = $scope.memory * 1024 * 1024;
-                    $scope.container.MemorySwap = $scope.memorySwap * 1024 * 1024;
-                    var host = {
-                        primaryIp: $scope.ip,
-                        id: $scope.hostId
-                    };
-
-                    var startOptions = {
-                        Binds: $scope.binds || [],
-                        Dns: $scope.dns ? $scope.dns.split(' ') : [],
-                        DnsSearch: $scope.dnsSearch ? $scope.dnsSearch.split(' ') : [],
-                        VolumesFrom: $scope.volumesFrom ? $scope.volumesFrom.split(' ') : [],
-                        PortBindings: containerPorts,
-                        NetworkMode: $scope.networkMode,
-                        ContainerIDFile: $scope.containerIDFile,
-                        Links: containerLinks,
-                        LxcConf: lxcConf,
-                        CapAdd: $scope.capAdd ? $scope.capAdd.split(' ') : [],
-                        CapDrop: $scope.capDrop ? $scope.capDrop.split(' ') : [],
-                        RestartPolicy: restartPolicy,
-                        PublishAllPorts: $scope.publishAllPorts,
-                        Privileged: $scope.privileged
-                    };
-
                     var containerNamePattern = /^[\.\_\-]/;
                     if (containerNamePattern.test($scope.container.name)) {
                         return errorCallback('Container name can not start with \'.\' or \'-\' or \'_\'');
@@ -499,12 +574,15 @@
                     if ($scope.container.name.length === 1) {
                         return errorCallback('Container name should be more than one character.');
                     }
-                    $scope.container.HostConfig = {};
 
-                    angular.extend($scope.container.HostConfig, startOptions);
-                    angular.extend($scope.container, startOptions);
+                    $scope.container.HostConfig.PortBindings = parsePorts($scope.input.PortBindings);
+                    $scope.container.HostConfig.Links = parseContainerLinks($scope.input.Links);
+                    $scope.container.HostConfig.LxcConf = parseLxcConf($scope.input.LxcConf);
 
-                    Docker.run(host, {create: $scope.container, start: startOptions}).then(function () {
+                    setMemory();
+                    var volumesFrom = $scope.container.HostConfig.VolumesFrom;
+                    $scope.container.HostConfig.VolumesFrom = isArrayNotEmpty(volumesFrom) ? volumesFrom : null;
+                    Docker.run($scope.host, {create: $scope.container, start: $scope.container.HostConfig}).then(function () {
                         $location.path('/docker/containers');
                     }, function (err) {
                         if (typeof (err) === 'string') {
@@ -521,42 +599,37 @@
                 };
 
                 var createImage = function () {
-                    var sdcHost = $scope.hosts.find(function (host) {
-                        return $scope.hostId === host.id && host.isSdc;
-                    });
-                    if (sdcHost) {
+                    if ($scope.host.isSdc) {
                         errorCallback('Creating image from container is not presently supported in SDC-Docker.');
                         return;
                     }
-                    if ($scope.exposedPorts) {
-                        $scope.exposedPorts.split(' ').forEach(function (port) {
+                    if ($scope.input.exposedPorts.length) {
+                        $scope.input.exposedPorts.forEach(function (port) {
                             $scope.container.ExposedPorts[port + '/tcp'] = {};
                         });
                     }
-                    $scope.container.hostId = $scope.hostId;
+                    $scope.container.hostId = $scope.host.id;
                     Docker.createImage($scope.container).then(function () {
                         $location.path('/docker/images');
                     }, errorCallback);
                 };
 
                 $scope.create = function () {
+                    $scope.container.Cmd = Docker.parseCmd($scope.input.Cmd);
+                    $scope.container.Entrypoint = Docker.parseCmd($scope.input.Entrypoint);
+                    $scope.container.Env = parseEnvironments($scope.input.Env);
+                    $scope.container.Volumes = parseVolumes($scope.input.Volumes);
+                    $scope.container.HostConfig.NetworkMode = $scope.input.NetworkMode;
+                    $scope.container.HostConfig.PortBindings = parsePorts($scope.input.PortsBinding);
 
-                    $scope.container.Cmd = Docker.parseCmd($scope.commands);
-                    $scope.container.Entrypoint = Docker.parseCmd($scope.entrypoint);
-                    $scope.container.Env = parseEnvironments($scope.environment);
-
-                    if ($scope.volumes) {
-                        $scope.binds = [];
-                        var volumes = {};
-                        $scope.volumes.split(' ').forEach(function (volume) {
-                            var parsed = volume.split(':'); // containerPath || hostPath:containerPath || hostPath:containerPath:permission
-                            volumes[parsed[1] || parsed[0]] = {};
-                            if (parsed[1]) {
-                                $scope.binds.push(volume);
-                            }
-                        });
-                        $scope.container.Volumes = volumes;
+                    if ($scope.input.NetworkMode === 'container') {
+                        if ($scope.input.networkContainer) {
+                            $scope.container.HostConfig.NetworkMode = 'container:' + $scope.input.networkContainer;
+                        } else {
+                            $scope.container.HostConfig.NetworkMode = 'bridge';
+                        }
                     }
+
                     $scope.creating = true;
                     if ($scope.type === 'Images') {
                         createImage();

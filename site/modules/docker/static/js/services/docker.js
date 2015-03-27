@@ -823,8 +823,15 @@
             return createCall('execute', opts);
         };
 
+        service.SdcPackage = function () {
+            var job = serverTab.call({
+                name: 'SdcPackageList'
+            });
+            return job.promise;
+        };
+
         service.parseCmd = function (command) {
-            if (!command) {
+            if (!command || Array.isArray(command) && !command.length) {
                 return null;
             }
             return command.match(/(?:[^\s"']+|"([^"]*)"|'([^']*)')+/g).map(function (string) {

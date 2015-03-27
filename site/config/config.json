@@ -189,6 +189,7 @@
     , "name": "Triton: East 3B"
     , "datacenter": "us-east-3b"
     , "fullDataCenter": true
+    , "packagePrefix": "t4-"
 }
 , "subUserDenied" : [
     "slb"
