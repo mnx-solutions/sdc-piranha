@@ -45,13 +45,17 @@
 
             var getDockerHostInfo = function (machine) {
                 $scope.states[machine.id] = 'initializing';
-                Docker.hostInfo({host: machine, wait: true}, function (error, states) {
+                Docker.hostInfo({host: machine, wait: true, suppressErrors: machine.prohibited}, function (error, states) {
                     states.forEach(function (state) {
                         if (state.status) {
                             $scope.states[state.hostId] = state.status;
                         }
                     });
                 }).then(function (info) {
+                    if (angular.equals(info, {})) {
+                        $scope.states[machine.id] = 'unreachable';
+                        return;
+                    }
                     info = Array.isArray(info) ? info.slice(-1)[0] : info;
                     $scope.states[machine.id] = 'completed';
                     machine.containersCount = info.Containers;
@@ -64,6 +68,9 @@
 
             var getDockerHostAnalytics = function () {
                 $scope.dockerMachines.forEach(function (machine) {
+                    if (machine.prohibited) {
+                        return;
+                    }
                     Docker.hostUsage({host: machine, wait: true, suppressErrors: true}).then(function (usage) {
                         usage = Array.isArray(usage) ? usage.slice(-1)[0] : usage;
                         machine.cadvisorUnavailable = false;
@@ -83,7 +90,7 @@
             });
 
             $q.all([
-                $q.when(Docker.listHosts()),
+                $q.when(Docker.listHosts({prohibited: true})),
                 Account.getAccount()
             ]).then(function (result) {
                 var account = result[1] || {};
@@ -96,7 +103,9 @@
                     });
                     Docker.pingManta(function () {
                         $scope.dockerMachines.forEach(function (machine) {
-                            getDockerHostInfo(machine);
+                            if (!machine.prohibited) {
+                                getDockerHostInfo(machine);
+                            }
                         });
                         getDockerHostAnalytics();
                     });

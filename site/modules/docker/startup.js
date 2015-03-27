@@ -306,6 +306,9 @@ var Docker = function execute(scope, app) {
                 return data && data.host && typeof (data.host.primaryIp) === 'string';
             },
             handler: function (call) {
+                if (call.data.host.prohibited) {
+                    return call.done(null, {});
+                }
                 methodHandlers[method](call, call.done.bind(call));
             }
         });
@@ -317,7 +320,7 @@ var Docker = function execute(scope, app) {
                         return call.done(error);
                     }
                     hosts = hosts.filter(function (host) {
-                        return host.allowed;
+                        return !host.prohibited;
                     });
                     var suppressErrors = [];
                     vasync.forEachParallel({

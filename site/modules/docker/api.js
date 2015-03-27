@@ -30,7 +30,7 @@ var SDC_DOCKER = config.features.sdcDocker === 'enabled' ?
         datacenter: config.sdcDocker.datacenter,
         primaryIp: config.sdcDocker.ip,
         isSdc: true,
-        allowed: true
+        prohibited: false
     } : null;
 
 var requestMap = {
@@ -648,6 +648,7 @@ module.exports = function execute(scope, register) {
 
     function verifySDCDockerAvailability(call, host, callback) {
         host = utils.clone(host);
+        var showProhibited = call.data && call.data.prohibited;
         if (!host) {
             return callback(null, host);
         }
@@ -658,9 +659,9 @@ module.exports = function execute(scope, register) {
             client.getInfo(function (error) {
                 if (error &&
                     String(error.message || error).indexOf('Forbidden (This service') === 0) {
-                    host.allowed = false;
+                    host.prohibited = true;
                 }
-                callback(error, host);
+                callback(error, (showProhibited || !host.prohibited) && host);
             });
         });
     }
@@ -669,7 +670,7 @@ module.exports = function execute(scope, register) {
         var hostId = call.data && call.data.id;
         if (hostId === SDC_DOCKER_ID) {
             return verifySDCDockerAvailability(call, SDC_DOCKER, function (error, host) {
-                callback(null, host.allowed && host);
+                callback(null, host);
             });
         }
         vasync.forEachParallel({

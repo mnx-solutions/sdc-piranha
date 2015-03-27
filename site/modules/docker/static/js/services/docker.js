@@ -338,7 +338,9 @@
                         err.error = err.syscall ? err.syscall + ' ' : '';
                         err.error += err.errno || '';
                     }
-                    PopupDialog.errorObj(err);
+                    if (!suppressErrors) {
+                        PopupDialog.errorObj(err);
+                    }
                     if (method in doneHandler) {
                         doneHandler[method](err, null, options);
                     }
