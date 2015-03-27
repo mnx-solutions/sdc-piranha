@@ -203,6 +203,11 @@
                 function processContainerAction(action) {
                     var promises = [];
                     $scope.checkedItems.forEach(function (container) {
+                        container.checked = false;
+                        if (container.isSdc && (action === 'pause' || action === 'unpause')) {
+                            errorCallback('Pausing of containers is not presently supported in SDC-Docker.');
+                            return;
+                        }
                         var deferred = $q.defer();
                         var command = action;
                         container.actionInProgress = true;
@@ -211,7 +216,6 @@
                         } else {
                             command += 'Container';
                         }
-                        container.checked = false;
                         Docker[command](container).then(function (response) {
                             $scope.containers.some(function (container) {
                                 if (container.Id === response.containerId) {
