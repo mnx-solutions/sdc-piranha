@@ -73,6 +73,11 @@
                             Machine.gotoCreatePage();
                         }
                     });
+                    var permissionErrors = Machine.getCacheErrors() || [];
+                    permissionErrors.forEach(function (errorMessage) {
+                        PopupDialog.errorObj({message: errorMessage});
+                    });
+                    Machine.clearCacheErrors();
                 }
             });
 
