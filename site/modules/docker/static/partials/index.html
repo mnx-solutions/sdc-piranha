@@ -32,12 +32,12 @@
                 <span>IP: </span>
                 <span>{{machine.primaryIp}}</span>
             </div>
-            <div class="info" data-ng-hide="states[machine.id] == 'completed' || machine.isSdc && !machine.allowed">
+            <div class="info" data-ng-hide="states[machine.id] == 'completed' || machine.prohibited">
                 <span>Status: </span>
                 <span>{{states[machine.id] || 'initializing'}}</span>
-                <div class="loading-medium-tr" data-ng-hide="states[machine.id] == 'unreachable' || machine.isSdc && !machine.allowed"></div>
+                <div class="loading-medium-tr" data-ng-hide="states[machine.id] == 'unreachable' || machine.prohibited"></div>
             </div>
-            <div data-ng-show="states[machine.id] == 'completed' && !machine.isSdc || machine.allowed">
+            <div data-ng-show="states[machine.id] == 'completed' && !machine.prohibited">
                 <div class="info">
                     <span><a href="" data-ng-click="navigateContainersImages('containers', machine.id)">Containers</a>: </span>
                     <span>{{machine.containersCount}}</span>
@@ -60,14 +60,14 @@
                         <div class="progress-bar" ng-style="{width: machine.memoryLoad}"></div>
                     </div>
                 </div>
-                <div data-ng-show="machine.isSdc && machine.allowed" class="progress-wrapper">
+                <div data-ng-show="machine.isSdc && !machine.prohibited" class="progress-wrapper">
                     <button data-ng-click="createContainer()" type="button" class="btn btn-big orange text-to-left"><i class="plus-btn-icon"></i>Start new container</button>
                 </div>
                 <div data-ng-hide="machine.isSdc" class="os-based ubuntu-logo">
                     <p class="title">Ubuntu</p>
                 </div>
             </div>
-            <div data-ng-show="machine.isSdc && !machine.allowed" class="progress-wrapper">
+            <div data-ng-show="machine.prohibited" class="progress-wrapper">
                 <a href="https://www.joyent.com/lp/preview" target="_blank" type="button" class="btn btn-big orange text-to-left triton-req-button">Request Triton Preview</a>
             </div>
         </div>
