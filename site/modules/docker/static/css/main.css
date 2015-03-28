@@ -770,6 +770,9 @@ span.btn-success
     padding-bottom: 40px;
 }
 .triton-req-button {
+    width: 208px;
+    position: absolute;
+    top: 157px;
     padding-top: 11px;
     padding-left: 20px;
 }
