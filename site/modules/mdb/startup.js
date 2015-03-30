@@ -3,10 +3,10 @@ var config = require('easy-config');
 var restify = require('restify');
 var vasync = require('vasync');
 var path = require('path');
-var generalErrorMessage = 'Something went wrong, please try again.';
-var mantaNotAvailable = 'Manta service is not available.';
-var mdbJobsListPath = '/stor/.joyent/portal/MdbJobs.json';
-var delimiter = '-delimiter-';
+var GENERAL_ERROR_MESSAGE = 'Something went wrong, please try again.';
+var MANTA_NOT_AVAILABLE = 'Manta service is not available.';
+var MDB_JOBS_PATH = '/stor/.joyent/portal/MdbJobs.json';
+var DELIMITER = '-delimiter-';
 
 function objectsParser(data) {
     var result = {counters: {}, data: []};
@@ -85,7 +85,7 @@ function modulesParser(rawModulesContent) {
     }
 
     modules.root = getModule('root');
-    rawModulesContent.split(delimiter).forEach(function (rec) {
+    rawModulesContent.split(DELIMITER).forEach(function (rec) {
         var parsed = rec.split('\n').filter(function (e) {return e.trim(); });
 
         if (!parsed[1]) {
@@ -147,9 +147,9 @@ var mdbApi = function execute(scope) {
             client.job(jobId, function (error, jobInfo) {
                 if (error) {
                     if (error.statusCode === 404) {
-                        error.message = generalErrorMessage;
+                        error.message = GENERAL_ERROR_MESSAGE;
                     }
-                    error.message = error.message || generalErrorMessage;
+                    error.message = error.message || GENERAL_ERROR_MESSAGE;
                     callback(error);
                 } else if (jobInfo.cancelled) {
                     call.done(null, {status: 'Cancelled'});
@@ -168,7 +168,7 @@ var mdbApi = function execute(scope) {
         client.getFileContents('~~/jobs/' + jobId + '/' + filename + '.txt', function (error, data) {
             if (error) {
                 if (error.statusCode === 404) {
-                    error.message = generalErrorMessage;
+                    error.message = GENERAL_ERROR_MESSAGE;
                 }
                 callback(error);
                 return;
@@ -183,18 +183,25 @@ var mdbApi = function execute(scope) {
     }
 
     function sendError(call, error, errorPath) {
-        if (error.restCode === 'NoMatchingRoleTag' && errorPath) {
-            error.message = error.message.replace('resource.', 'resource') + ' \'~~' + errorPath + '\'';
-        }
+        var suppressErrorLog = false;
         if (error.code === 'ENOTFOUND') {
-            error.message = mantaNotAvailable;
+            error.message = MANTA_NOT_AVAILABLE;
+        } else {
+            if (error.name === 'NoMatchingRoleTagError' && errorPath) {
+                error.message = error.message.replace('resource.', 'resource') + ' \'~~' + errorPath + '\'';
+            }
+            if (error.name === 'NoMatchingRoleTagError' || (error.name === 'AuthorizationFailedError' ||
+                error.name === 'ForbiddenError') && error.statusCode === 403 && call.req.session.subId) {
+                suppressErrorLog = true;
+                call.req.log.info(error.message);
+            }
         }
-        call.done(error.message || error);
+        call.done(error.message || error, suppressErrorLog);
     }
 
     function getJobsList(call, callback) {
         var client = Manta.createClient(call);
-        client.getFileContents('~~/' + mdbJobsListPath, function (error, list) {
+        client.getFileContents('~~/' + MDB_JOBS_PATH, function (error, list) {
             if (error && error.statusCode !== 404) {
                 callback(error);
                 return;
@@ -225,7 +232,7 @@ var mdbApi = function execute(scope) {
                 jobId: jobId,
                 status: 'Processing'
             });
-            client.putFileContents('~~/' + mdbJobsListPath, list, callback);
+            client.putFileContents('~~/' + MDB_JOBS_PATH, list, callback);
         });
     }
 
@@ -245,7 +252,7 @@ var mdbApi = function execute(scope) {
                     }
                 });
             });
-            client.putFileContents('~~/' + mdbJobsListPath, list, callback);
+            client.putFileContents('~~/' + MDB_JOBS_PATH, list, callback);
         });
     }
 
@@ -284,7 +291,7 @@ var mdbApi = function execute(scope) {
                 }
                 return false;
             });
-            client.putFileContents('~~/' + mdbJobsListPath, list, callback);
+            client.putFileContents('~~/' + MDB_JOBS_PATH, list, callback);
         });
     }
 
@@ -399,7 +406,7 @@ var mdbApi = function execute(scope) {
                     });
 
                     if (deletedMdbJob) {
-                        client.putFileContents('~~/' + mdbJobsListPath, mdbList, function () {});
+                        client.putFileContents('~~/' + MDB_JOBS_PATH, mdbList, function () {});
                     }
                     call.done(null, mdbList);
                 });
