@@ -643,19 +643,6 @@ span.btn-success
 {
     background-image: url("../img/docker-icon-06.png");
 }
-.docker-title
-{
-    font-size: 30px;
-}
-.docker-subtitle
-{
-    font-size: 16px;
-}
-.docker-subtitle,
-.docker-title
-{
-    font-weight: 300;
-}
 .docker-info
 {
     margin: 35px 0 25px 10%;

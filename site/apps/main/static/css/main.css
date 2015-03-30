@@ -5378,3 +5378,16 @@ a.orange-link
 {
     width: 420px;
 }
+.page-heading
+{
+    font-size: 30px;
+}
+.page-subheading
+{
+    font-size: 16px;
+}
+.page-subheading,
+.page-heading
+{
+    font-weight: 300;
+}
