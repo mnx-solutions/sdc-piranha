@@ -114,7 +114,13 @@
                 $scope.placeHolderText = 'filter scripts';
 
                 $scope.createScript = function () {
-                    $location.path('/dtrace/script/create');
+                    var path = '/dtrace/script/create';
+                    Account.checkProvisioning({btnTitle: 'Submit and Access DTrace Scripts'}, function () {
+                        $location.path(path);
+                    }, null, function (isSuccess) {
+                        path = isSuccess ? path : '/dtrace/scripts';
+                        $location.path(path);
+                    }, true);
                 };
 
                 loadList();

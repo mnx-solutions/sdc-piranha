@@ -16,7 +16,11 @@ var dtrace = function execute(scope) {
     function getScriptsList (call, client, callback) {
         client.getFileJson(filePath, function (error, scripts) {
             if (error) {
-                call.log.warn('DTrace scripts list is corrupted');
+                if (error.code === 'AccountDoesNotExist') {
+                    error = null;
+                } else {
+                    call.log.warn('DTrace scripts list is corrupted');
+                }
                 return callback(error, scripts);
             }
             callback(null, scripts);
