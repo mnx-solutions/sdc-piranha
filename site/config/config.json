@@ -111,7 +111,7 @@
   }
 , "polling": {
     "machineTags": 5000
-  , "machineTagsTimeout": 120000 
+  , "machineTagsTimeout": 120000
   , "machineMetadata": 5000
   , "machineMetadataTimeout": 120000
   , "machineState": 10000
@@ -258,7 +258,7 @@
   , "twitter": "yes"
   , "googleAnalytics": "yes"
   , "billing": "yes"
+  , "sdcDocker": "yes"
   , "dtrace": "no"
-  , "sdcDocker": "no"
   }
 }
