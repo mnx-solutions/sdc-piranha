@@ -45,7 +45,7 @@ mdata-get server-key > ${KEYS_PATH}/server-key.pem
 mdata-get server-cert > ${KEYS_PATH}/server-cert.pem
 
 for key in $(echo "user-script private-key public-key manta-account manta-url disable-tls ca server-key server-cert");do
-    /usr/sbin/mdata-delete ${key}
+    /usr/sbin/mdata-delete ${key} &
 done
 
 
