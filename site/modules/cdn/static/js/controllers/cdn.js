@@ -75,7 +75,15 @@
                     }, function (err) {
                         if (err) {
                             showError(err.message || err, function () {
-                                $location.url('/manta/intro');
+                                var path = '/manta/intro';
+                                if (err.name === 'JsonParseError') {
+                                    path = '/manta/files';
+                                    var filemanConfig = Account.getUserConfig().$child('fileman');
+                                    filemanConfig['path'] = '/stor/.joyent/portal/cdn/Fastly/config.json';
+                                    filemanConfig.dirty(true);
+                                    filemanConfig.$save();
+                                }
+                                $location.url(path);
                                 $location.replace();
                             });
                             return;
