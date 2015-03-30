@@ -78,10 +78,13 @@
                     }
                     $scope.options.script = script;
                     $scope.starting = true;
+                    $scope.options.loading = true;
+                    $scope.options.isDataOk = false;
                 };
 
                 $scope.stop = function () {
                     $scope.starting = false;
+                    $scope.options.loading = false;
                 };
             }
         ]);
