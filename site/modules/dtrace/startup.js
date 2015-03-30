@@ -151,6 +151,8 @@ var dtrace = function execute(scope) {
         },
         handler: function (call) {
             var path = '/main/dtrace/exec/' + uuid();
+            httpServer.setMaxListeners(0);
+
             var wss = new WebSocket.Server({
                 server: httpServer,
                 path: path
@@ -170,17 +172,24 @@ var dtrace = function execute(scope) {
                     wsc.close();
                     socket.close();
                 }
+
                 wsc.onmessage = function (event) {
-                    socket.send(event.data);
-                    if (dtraceObj.type === 'flamegraph') {
-                        wsc.send(call.data.dtraceObj);
+                    if (socket.readyState === WebSocket.OPEN) {
+                        socket.send(event.data);
+                        if (dtraceObj.type === 'flamegraph') {
+                            wsc.send(call.data.dtraceObj);
+                        }
                     }
                 };
                 wsc.onopen = function () {
-                    wsc.send(call.data.dtraceObj);
+                    if (wsc.readyState === WebSocket.OPEN) {
+                        wsc.send(call.data.dtraceObj);
+                    }
                 };
                 wsc.onerror = function (event) {
-                    socket.send(event.data);
+                    if (socket.readyState === WebSocket.OPEN) {
+                        socket.send(event.data);
+                    }
                     closeSocket();
                 };
                 wsc.onclose = function (event) {
