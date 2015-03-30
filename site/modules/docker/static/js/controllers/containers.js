@@ -13,11 +13,13 @@
             '$filter',
             'Account',
             function ($scope, requestContext, localization, Docker, $q, PopupDialog, $location, $filter, Account) {
-                localization.bind('docker', $scope);
                 var CURRENT_PAGE_ACTION = 'docker.containers';
+
+                localization.bind('docker', $scope);
                 requestContext.setUpRenderContext(CURRENT_PAGE_ACTION, $scope, {
                     title: localization.translate(null, 'docker', 'See my Joyent Docker Containers')
                 });
+
                 var hostId = requestContext.getParam('host') || '';
                 $scope.loading = true;
                 if ($location.path() === '/docker/containers/running') {
@@ -156,7 +158,7 @@
                         }
                     }
                 ];
-                
+
                 var gridMessages = {
                     start: {
                         single: 'Start selected container?',
@@ -202,11 +204,23 @@
 
                 function processContainerAction(action) {
                     var promises = [];
+                    var bothKvmAndTritonSelected = $scope.checkedItems.length > 1 && $scope.checkedItems.some(function (item) {
+                        return !item.isSdc;
+                    });
                     $scope.checkedItems.forEach(function (container) {
                         container.checked = false;
-                        if (container.isSdc && (action === 'pause' || action === 'unpause')) {
-                            errorCallback('Pausing of containers is not presently supported in SDC-Docker.');
-                            return;
+                        if (container.isSdc) {
+                            var message = null;
+                            if (action.indexOf('pause') > -1) {
+                                message = 'Pausing of containers is not presently supported in SDC-Docker.';
+                            } else if (action === 'createImage') {
+                                message = bothKvmAndTritonSelected ?
+                                    'Some of the selected containers are at SDC-Docker and do not support image creation.' :
+                                    'Creating image from container is not presently supported in SDC-Docker.';
+                            }
+                            if (message) {
+                                return errorCallback(message);
+                            }
                         }
                         var deferred = $q.defer();
                         var command = action;
@@ -234,7 +248,7 @@
                     });
 
                     $q.all(promises).then(function () {
-                        if (action === 'createImage') {
+                        if (action === 'createImage' && bothKvmAndTritonSelected) {
                             return $location.path('/docker/images');
                         }
                         var hasContainersInProgress = $scope.containers.some(function (container) {
@@ -372,7 +386,6 @@
                 $scope.createContainer = function () {
                     $location.path('/docker/container/create');
                 };
-
             }
         ]);
 }(window.JP.getModule('docker')));
