@@ -20,19 +20,23 @@ if (!config.features || config.features.cdn !== 'disabled') {
             var client = Manta.createClient(call);
             client.getFileContents(CDN_CONFIG_PATH, 'utf8', function (err, config) {
                 if (err) {
-                    if (err.statusCode === 404) {
-                        callback(null);
-                        return;
+                    if (err.message && err.message.indexOf('getaddrinfo ENOTFOUND') !== -1) {
+                        err = message;
+                    } else if (err.statusCode === 404) {
+                        err = null;
                     }
-                    if (err.message.indexOf('getaddrinfo ENOTFOUND') !== -1) {
-                        err.message = message;
+                } else {
+                    try {
+                        config = JSON.parse(config);
+                    } catch (parseError) {
+                        err = new SyntaxError();
+                        err.message = 'Something\'s wrong with your CDN config file. Please check and try again.';
+                        err.name = 'JsonParseError';
+                        err.stack = parseError.stack;
                     }
-                    callback(err.message || err, config);
-                    return;
                 }
-                callback(null, JSON.parse(config));
+                return callback(err, config);
             });
-
         };
 
         var updateCdnConfig = function (call, config, callback) {
