@@ -18,6 +18,7 @@
                 $scope.title = $route.current.$$route.title;
                 
                 $scope.loading = true;
+                $scope.processing = false;
                 var processes = {};
                 var script;
                 var pidPlaceholder = '$PID';
