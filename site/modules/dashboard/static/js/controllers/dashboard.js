@@ -1,28 +1,12 @@
 'use strict';
 
 (function (ng, app) {
-    app.controller('Dashboard.IndexController', [
-        '$scope',
-        '$q',
-        'requestContext',
-        'Account',
-        'Zendesk',
-        'Machine',
-        'localization',
-        '$http',
-        '$cookies',
-        'slb.Service',
-        '$rootScope',
-        'Support',
-        'fileman',
-        'Utilization',
-        'util',
-        'Datacenter',
-        'FreeTier',
-        '$location',
-        'Docker',
+    app.controller('Dashboard.IndexController', ['$scope', '$q', 'requestContext', 'Account', 'Zendesk', 'Machine',
+        'localization', '$http', '$cookies', 'slb.Service', '$rootScope', 'Support', 'fileman', 'Utilization', 'util',
+        'Datacenter', 'FreeTier', '$location', 'Docker',
 
-        function ($scope, $q, requestContext, Account, Zendesk, Machine, localization, $http, $cookies, slbService, $rootScope, Support, fileman, Utilization, util, Datacenter, FreeTier, $location, Docker) {
+        function ($scope, $q, requestContext, Account, Zendesk, Machine, localization, $http, $cookies, slbService,
+                  $rootScope, Support, fileman, Utilization, util, Datacenter, FreeTier, $location, Docker) {
             localization.bind('dashboard', $scope);
             requestContext.setUpRenderContext('dashboard.index', $scope);
             $scope.loading = true;
@@ -35,7 +19,6 @@
             $scope.dockerEnabled = $rootScope.features.docker === 'enabled';
             $scope.mantaMemory = {};
             $scope.systemStatusTopics = [];
-
 
 //                $scope.forums      = Zendesk.getForumsList();
             $scope.forums = {
@@ -54,7 +37,7 @@
             $scope.campaignId = ($cookies.campaignId || 'default');
 
             if ($rootScope.features.blogEntries === 'enabled') {
-                window.dashboard_rss_feed_callback = function (data) {
+                window['dashboard_rss_feed_callback'] = function (data) {
                     $scope.rssentries = data.responseData.feed.entries;
                 };
                 $http.jsonp('//ajax.googleapis.com/ajax/services/feed/load?v=1.0&num=7&callback=dashboard_rss_feed_callback&q=' + encodeURIComponent('http://www.joyent.com/blog/feed'));
@@ -67,9 +50,17 @@
             ];
             if ($rootScope.features.docker === 'enabled') {
                 dashboardOperations = dashboardOperations.concat([
-                    $q.when(Docker.listHosts()),
-                    $q.when(Docker.listContainers({host: 'All', options: {all: true}, suppressErrors: true})),
                     $q.when(Docker.pingManta(function () {
+                        Docker.listHosts().then(function (machines) {
+                            $scope.dockerMachines = machines;
+                        });
+                        Docker.listContainers({host: 'All', options: {all: true}, suppressErrors: true}).then(function (containers) {
+                            $scope.runningContainers = containers.filter(function (container) {
+                                return container.containers === 'running';
+                            });
+                            $scope.containersLink = $scope.runningContainers.length ? '#!/docker/containers/running' : '#!/docker';
+
+                        });
                         Docker.getRegistriesList().then(function (list) {
                             $scope.registries = list.filter(function (registry) {
                                 return registry.type === 'local';
@@ -93,16 +84,12 @@
                         });
                     }
                     $scope.machines = result[2] || [];
-                    $scope.dockerMachines = result[3] || [];
+
                     $scope.dockerMachinesCount = $scope.dockerMachines.filter(function (dockerMachine) {
                         return dockerMachine.tags && dockerMachine.tags['JPC_tag'] === 'DockerHost';
                     }).length;
                     $scope.dockerMachinesLink = $scope.dockerMachines.length ? '#!/compute/dockerHost' : '#!/docker';
-                    var dockerContainers = result[4] || [];
-                    $scope.runningContainers = dockerContainers.filter(function (container) {
-                        return container.containers === 'running';
-                    });
-                    $scope.containersLink = $scope.runningContainers.length ? '#!/docker/containers/running' : '#!/docker';
+
                     if ($scope.slbFeatureEnabled) {
                         tasks.push($q.when(slbService.getBalancers()));
                         tasks.push($q.when(slbService.getController()));
@@ -133,7 +120,6 @@
                 $scope.loading = false;
             });
 
-
             // count running/not running machines
             $scope.$watch('machines', function (machines) {
                 var runningcount = 0;
@@ -154,7 +140,6 @@
                     freeTierTileStatus();
                 }
             }, true);
-
 
             $scope.runningcount = 0;
             $scope.othercount = 0;
@@ -193,7 +178,7 @@
                                 } else {
                                     $scope.machines.forEach(function (machine) {
                                         if (machine.freetier && datacenter.name === machine.datacenter) {
-                                            datacenter.tooltip = 'Instance '+ machine.name + ' is ' + machine.state;
+                                            datacenter.tooltip = 'Instance ' + machine.name + ' is ' + machine.state;
                                         }
                                     });
                                 }
@@ -215,7 +200,7 @@
                 Zendesk.getSystemStatusTopics().then(function (topics) {
                     if ($scope.features.systemStatusTile === 'enabled') {
                         $scope.systemStatusTopics = topics.filter(function (topic) {
-                            return new Date().getTime() < (new Date(topic.created_at).getTime() + 2 * 24 * 3600 * 1000);
+                            return new Date().getTime() < (new Date(topic['created_at']).getTime() + 2 * 24 * 3600 * 1000);
                         });
                         if ($scope.systemStatusTopics.length > 1) {
                             $scope.systemStatusTopics.length = 2;
