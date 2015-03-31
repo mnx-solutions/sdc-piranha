@@ -647,11 +647,11 @@ module.exports = function execute(scope, register) {
     };
 
     function verifySDCDockerAvailability(call, host, callback) {
-        host = utils.clone(host);
         var showProhibited = call.data && call.data.prohibited;
         if (!host) {
             return callback(null, host);
         }
+        host = utils.clone(host);
         api.createClient(call, host, function (error, client) {
             if (error) {
                 return callback(error, host);
