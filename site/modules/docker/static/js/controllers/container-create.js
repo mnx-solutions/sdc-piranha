@@ -411,6 +411,7 @@
                 $scope.changeHost = function (host) {
                     host = host || Docker.getHost($scope.hosts, $scope.ip);
                     $scope.hostId = host.id;
+                    $scope.isSdc = host.isSdc;
                     if ($scope.preSelectedData) {
                         return;
                     }
@@ -448,6 +449,7 @@
                             if (hostId === host.id) {
                                 $scope.ip = host.primaryIp;
                                 $scope.hostId = host.id;
+                                $scope.isSdc = host.isSdc;
                                 $scope.changeHost(host);
                             }
                         });
@@ -480,7 +482,7 @@
                         CapAdd: $scope.capAdd ? $scope.capAdd.split(' ') : [],
                         CapDrop: $scope.capDrop ? $scope.capDrop.split(' ') : [],
                         RestartPolicy: restartPolicy,
-                        PublishAllPorts: $scope.publishAllPorts,
+                        PublishAllPorts: $scope.publishAllPorts === 'true',
                         Privileged: $scope.privileged
                     };
 
@@ -493,7 +495,8 @@
                     }
                     $scope.container.HostConfig = {};
 
-                    angular.copy($scope.container.HostConfig, startOptions);
+                    angular.extend($scope.container.HostConfig, startOptions);
+                    angular.extend($scope.container, startOptions);
 
                     Docker.run(host, {create: $scope.container, start: startOptions}).then(function () {
                         $location.path('/docker/containers');
