@@ -8,8 +8,7 @@
             replace: true,
             scope: {
                 options: '=',
-                status: '=',
-                loading: '='
+                status: '='
             },
             template: function(element, attrs) {
                 return '<div class="flamegraph"></div>';
@@ -42,7 +41,7 @@
                                     svg = '';
                                 }
                                 if (svg) {
-                                    $scope.loading = false;
+                                    $scope.options.loading = false;
                                     $scope.$apply(function () {
                                         var svgElement = $compile(svg)($scope);
                                         ng.element(element).html(svgElement).promise().done(function () {

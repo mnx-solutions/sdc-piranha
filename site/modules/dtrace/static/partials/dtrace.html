@@ -6,7 +6,6 @@
         <h3 class="page-title">{{title}}</h3>
         <create-dtrace-button data-ng-show="hosts && !hosts.length"></create-dtrace-button>
         <div class="beta-sticker">beta</div>
-        <div class="loading-large col-md-12" data-ng-show="loading"></div>
 
         <div data-ng-hide="loading || !hosts.length" class="heatmap-wrapper">
             <table class="heatmap-controls">
@@ -39,12 +38,13 @@
                 </tr>
             </table>
         </div>
+        <div class="loading-large col-md-12" data-ng-show="loading || options.loading"></div>
         <div data-ng-show="!loading && !hosts.length" class="grid-no-entries">You do not have any DTrace hosts.</div>
-        <div class="heatmap-wrapper" data-ng-if="!loading && title === 'Heatmap'">
+        <div data-ng-show="!options.loading && options.isDataOk" class="heatmap-wrapper" data-ng-if="!loading && title === 'Heatmap'">
             <heatmap data-options="options" data-status="starting"></heatmap>
         </div>
         <div class="heatmap-wrapper" data-ng-if="!loading && title === 'Flamegraph'">
-            <flamegraph data-options="options" data-status="starting" data-loading="loading"></flamegraph>
+            <flamegraph data-options="options" data-status="starting"></flamegraph>
         </div>
     </div>
 </div>

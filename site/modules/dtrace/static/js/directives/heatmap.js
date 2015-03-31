@@ -80,14 +80,19 @@
                                 try {
                                     if (event.data !== 'ping') {
                                         data = JSON.parse(event.data);
+                                        $scope.options.isDataOk = true;
                                     }
                                 } catch (e) {
                                     data = {};
+                                    $scope.options.isDataOk = false;
                                 }
                                 draw(data);
                             } else {
                                 closeWebsocket();
                             }
+                            $scope.$apply(function () {
+                                $scope.options.loading = false;
+                            });
                         };
 
                         websocket.onopen = function () {
