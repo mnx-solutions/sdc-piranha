@@ -16,7 +16,7 @@ var dtrace = function execute(scope) {
     function getScriptsList (call, client, callback) {
         client.getFileJson(filePath, function (error, scripts) {
             if (error) {
-                if (error.code === 'AccountDoesNotExist') {
+                if (error.code === 'AccountDoesNotExist' || error.code === 'AccountBlocked') {
                     error = null;
                 } else {
                     call.log.warn('DTrace scripts list is corrupted');
