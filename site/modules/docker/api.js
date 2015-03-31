@@ -656,7 +656,7 @@ module.exports = function execute(scope, register) {
             if (error) {
                 return callback(error, host);
             }
-            client.getInfo(function (error) {
+            client.ping(function (error) {
                 if (error &&
                     String(error.message || error).indexOf('Forbidden (This service') === 0) {
                     host.prohibited = true;
