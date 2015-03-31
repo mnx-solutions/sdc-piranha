@@ -213,6 +213,7 @@
     , "cloudAnalytics"
     , "cdn"
     , "docker"
+    , "dtrace"
 ]
 , "features": {
     "privateSdc": "disabled"
@@ -250,7 +251,7 @@
   , "cdn": "yes"
   , "docker": "yes"
   , "dockerMemoryLimit": "yes"
-  , "dockerExec": "yes"
+  , "dockerExec": "no"
   , "zendesk": "yes"
   , "feedback": "yes"
   , "blogEntries": "yes"
@@ -258,7 +259,7 @@
   , "twitter": "yes"
   , "googleAnalytics": "yes"
   , "billing": "yes"
-  , "sdcDocker": "yes"
-  , "dtrace": "no"
+  , "sdcDocker": "no"
+  , "dtrace": "yes"
   }
 }
