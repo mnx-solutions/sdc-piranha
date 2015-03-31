@@ -29,9 +29,10 @@
                 }).promise;
             };
 
-            service.getScriptsList = function () {
+            service.getScriptsList = function (type) {
                 return serverTab.call({
-                    name: 'GetScripts'
+                    name: 'GetScripts',
+                    data: {type: type}
                 }).promise;
             };
 

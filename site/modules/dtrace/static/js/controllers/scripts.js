@@ -21,7 +21,7 @@
 
                 var loadList = function () {
                     DTrace.getScriptsList().then(function (list) {
-                        $scope.scripts = list || [];
+                        $scope.scripts = list && list.filter(function (script) { return script.hasOwnProperty('id') }) || [];
                         $scope.loading = false;
                     }, errorCallback);
                 };

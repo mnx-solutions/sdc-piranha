@@ -35,20 +35,35 @@
                     };
                 };
 
+                DTrace.getScriptsList().then(function (list) {
+                    $scope.list = list;
+                    $scope.loading = false;
+                }, function (error) {
+                    PopupDialog.error(null, error);
+                    indexPage();
+                });
+
                 if ($scope.scriptId) {
-                    DTrace.getScriptsList().then(function (list) {
-                        $scope.script = list.find(function (script) {
-                            return script.id === $scope.scriptId;
-                        });
-                        $scope.loading = false;
-                    }, function (error) {
-                        PopupDialog.error(null, error);
-                        indexPage();
+                    $scope.script = $scope.list.find(function (script) {
+                        return script.id === $scope.scriptId;
                     });
                 } else {
                     newScript();
                     $scope.loading = false;
                 }
+
+                $scope.$watch('script.name', function (name) {
+                    if ($scope.list && $scope.list.length) {
+                        var script = $scope.list.find(function (script) {
+                            return script.name === name;
+                        });
+                        if (script) {
+                            $scope.scriptForm.$setValidity('unique', false);
+                        } else {
+                            $scope.scriptForm.$setValidity('unique', true);
+                        }
+                    }
+                });
 
                 $scope.saveScript = function () {
                     //TODO validate script
