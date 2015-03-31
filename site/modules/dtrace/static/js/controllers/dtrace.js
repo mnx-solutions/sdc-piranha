@@ -19,7 +19,6 @@
                 
                 $scope.loading = true;
                 var processes = {};
-                var script;
                 var pidPlaceholder = '$PID';
 
                 var errorCallback = function (err) {
@@ -29,11 +28,24 @@
 
                 $scope.options = {};
 
-                $q.all([DTrace.listHosts(), DTrace.getScriptsList()]).then(function (result) {
+                var getScriptsListType = 'all';
+                if ($scope.title === 'Flamegraph') {
+                   getScriptsListType = 'default';
+                }
+                $q.all([DTrace.listHosts(), DTrace.getScriptsList(getScriptsListType)]).then(function (result) {
                     $scope.hosts = result[0] || [];
-                    $scope.scripts = [].concat([{name: 'all syscall'}, {name: 'all syscall for process', pid: true}], result[1] || []);
+                    $scope.scripts = result[1] || [];
+
+                    $scope.scriptName = 'all syscall';
+                    $scope.host = JSON.stringify($scope.hosts[0]);
                     $scope.loading = false;
                 }, errorCallback);
+
+                var getCurrentScript = function () {
+                    return $scope.scripts.find(function (script) {
+                        return script.name === $scope.scriptName;
+                    });
+                } 
 
                 var updateScripts = function () {
                     $scope.processes = null;
@@ -42,16 +54,11 @@
                         return;
                     }
                     $scope.loadingHostProcesses = true;
-                    script = $scope.scripts.find(function (script) {
-                        return script.name === $scope.scriptName;
-                    });
-                    var host = JSON.parse($scope.host);
+                    var script = getCurrentScript();
                     if ((!script.body || script.body.indexOf(pidPlaceholder) === -1) && !script.pid) {
                         $scope.loadingHostProcesses = false;
-                    } else if (processes[host.primaryIp]) {
-                        $scope.processes = processes[host.primaryIp];
-                        $scope.loadingHostProcesses = false;
-                    } else {
+                    } else if (!$scope.processes) {
+                        var host = JSON.parse($scope.host);
                         DTrace.listProcesses({primaryIp: host.primaryIp}).then(function (list) {
                             list.forEach(function(process) {
                                 process.name = ' PID: ' + process.pid + ' CMD: ' + process.cmd;
@@ -63,6 +70,15 @@
                     }
                 };
 
+                $scope.changeHost = function () {
+                    var host = JSON.parse($scope.host);
+                    if (processes[host.primaryIp]) {
+                        $scope.processes = processes[host.primaryIp];
+                    } else {
+                        updateScripts();
+                    }
+                }
+
                 $scope.changeScript = function () {
                     updateScripts();
                 };
@@ -71,9 +87,10 @@
                     var host = JSON.parse($scope.host);
                     $scope.options.hostIp = host.primaryIp;
                     $scope.options.hostId = host.id;
+                    var script = getCurrentScript();
                     if (script && script.body) {
                         script.body = script.body.replace(pidPlaceholder, $scope.pid);
-                    } else if (script.pid) {
+                    } else if (script && script.pid) {
                         script.pid = $scope.pid;
                     }
                     $scope.options.script = script;

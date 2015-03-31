@@ -11,14 +11,14 @@
             <table class="heatmap-controls">
                 <tr>
                     <td class="medium" data-ng-class="{triple: !processes}">
-                        <select ui-select2="{minimumResultsForSearch: -1, width: '100%'}" id="hostSelect" data-ng-model="host" ng-change="changeScript()" data-ng-disabled="loadingHostScripts" >
+                        <select ui-select2="{minimumResultsForSearch: -1, width: '100%'}" id="hostSelect" data-ng-model="host" data-ng-change="changeHost()" data-ng-disabled="loadingHostScripts">
                             <option data-ng-repeat="host in hosts" value="{{host}}">
                                 {{host.name}}
                             </option>
                         </select>
                     </td>
                     <td class="medium" data-ng-class="{triple: !processes}">
-                        <select ui-select2="{minimumResultsForSearch: -1, width: '100%'}" id="scriptSelect" data-ng-model="scriptName" ng-change="changeScript()" data-ng-disabled="loadingHostScripts" >
+                        <select ui-select2="{minimumResultsForSearch: -1, width: '100%'}" id="scriptSelect" data-ng-model="scriptName" ng-change="changeScript()" data-ng-disabled="loadingHostScripts">
                             <option data-ng-repeat="script in scripts" value="{{script.name}}">
                                 {{script.name}}
                             </option>

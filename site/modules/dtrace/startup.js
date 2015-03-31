@@ -13,7 +13,12 @@ var dtrace = function execute(scope) {
 
     var uuid = require('../../static/vendor/uuid/uuid.js');
 
-    function getScriptsList (call, client, callback) {
+    var defaultScriptsList = [{name: 'all syscall'}, {name: 'all syscall for process', pid: true}];
+
+    function getScriptsList (call, client, type, callback) {
+        if (type === 'default') {
+            return callback(null, defaultScriptsList);
+        }
         client.getFileJson(filePath, function (error, scripts) {
             if (error) {
                 if (error.code === 'AccountDoesNotExist' || error.code === 'AccountBlocked') {
@@ -21,9 +26,12 @@ var dtrace = function execute(scope) {
                 } else {
                     call.log.warn('DTrace scripts list is corrupted');
                 }
-                return callback(error, scripts);
             }
-            callback(null, scripts);
+            var scriptsList = scripts;
+            if (type === 'all') {
+                scriptsList = [].concat(defaultScriptsList, scripts || []);
+            }
+            callback(error, scriptsList);
         });
     }
 
@@ -34,7 +42,7 @@ var dtrace = function execute(scope) {
         handler: function (call) {
             var scriptToSave = call.data;
             var client = mantaClient.createClient(call);
-            getScriptsList(call, client, function (error, list) {
+            getScriptsList(call, client, 'manta', function (error, list) {
                 if (error) {
                     return call.done(error, true);
                 }
@@ -61,7 +69,7 @@ var dtrace = function execute(scope) {
         },
         handler: function (call) {
             var client = mantaClient.createClient(call);
-            getScriptsList(call, client, function (error, list) {
+            getScriptsList(call, client, 'manta', function (error, list) {
                 if (error) {
                     return call.done(error, true);
                 }
@@ -76,7 +84,7 @@ var dtrace = function execute(scope) {
     });
 
     server.onCall('GetScripts', function (call) {
-        getScriptsList(call, mantaClient.createClient(call), call.done.bind(call));
+        getScriptsList(call, mantaClient.createClient(call), call.data.type, call.done.bind(call));
     });
 
     server.onCall('DtraceHostStatus', {
