@@ -58,24 +58,28 @@
                     if ((!script.body || script.body.indexOf(pidPlaceholder) === -1) && !script.pid) {
                         $scope.loadingHostProcesses = false;
                     } else if (!$scope.processes) {
-                        var host = JSON.parse($scope.host);
-                        DTrace.listProcesses({primaryIp: host.primaryIp}).then(function (list) {
-                            list.forEach(function(process) {
-                                process.name = ' PID: ' + process.pid + ' CMD: ' + process.cmd;
-                            });
-                            processes[host.primaryIp] = list;
-                            $scope.processes = list;
-                            $scope.loadingHostProcesses = false;
-                        }, errorCallback);
+                        if ($scope.host) {
+                            var host = JSON.parse($scope.host);
+                            DTrace.listProcesses({primaryIp: host.primaryIp}).then(function (list) {
+                                list.forEach(function(process) {
+                                    process.name = ' PID: ' + process.pid + ' CMD: ' + process.cmd;
+                                });
+                                processes[host.primaryIp] = list;
+                                $scope.processes = list;
+                                $scope.loadingHostProcesses = false;
+                            }, errorCallback);
+                        }
                     }
                 };
 
                 $scope.changeHost = function () {
-                    var host = JSON.parse($scope.host);
-                    if (processes[host.primaryIp]) {
-                        $scope.processes = processes[host.primaryIp];
-                    } else {
-                        updateScripts();
+                    if ($scope.host) {
+                        var host = JSON.parse($scope.host);
+                        if (processes[host.primaryIp]) {
+                            $scope.processes = processes[host.primaryIp];
+                        } else {
+                            updateScripts();
+                        }
                     }
                 }
 
@@ -84,19 +88,22 @@
                 };
 
                 $scope.start = function () {
-                    var host = JSON.parse($scope.host);
-                    $scope.options.hostIp = host.primaryIp;
-                    $scope.options.hostId = host.id;
-                    var script = getCurrentScript();
-                    if (script && script.body) {
-                        script.body = script.body.replace(pidPlaceholder, $scope.pid);
-                    } else if (script && script.pid) {
-                        script.pid = $scope.pid;
+                    if ($scope.host) {
+                        var host = JSON.parse($scope.host);
+                        $scope.options.hostIp = host.primaryIp;
+                        $scope.options.hostId = host.id;
+                        var script = getCurrentScript();
+                        if (script && script.body) {
+                            script.body = script.body.replace(pidPlaceholder, $scope.pid);
+                        } else if (script && script.pid) {
+                            script.pid = $scope.pid;
+                        }
+                        $scope.options.script = script;
+                        $scope.starting = true;
+                        $scope.options.loading = true;
+                        $scope.options.isDataOk = false;
                     }
-                    $scope.options.script = script;
-                    $scope.starting = true;
-                    $scope.options.loading = true;
-                    $scope.options.isDataOk = false;
+                    
                 };
 
                 $scope.stop = function () {
