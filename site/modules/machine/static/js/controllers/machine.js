@@ -153,7 +153,7 @@
                             container.PortsStr = ports.length ? ports.join(', ') : '';
                             container.hostId = machine.id;
                             container.hostName = machine.name;
-                            container.containers = container.Status.indexOf('Up') !== -1 ? 'running' : 'stopped';
+                            container.state = container.Status.indexOf('Up') !== -1 ? 'running' : 'stopped';
                             return container;
                         });
                     }, function (err) {
@@ -742,7 +742,7 @@
                 };
 
                 $scope.searchFormDocker = false;
-                $scope.tabFilterField = 'containers';
+                $scope.tabFilterField = 'state';
 
             }
         }

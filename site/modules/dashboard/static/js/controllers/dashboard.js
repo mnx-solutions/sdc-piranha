@@ -51,26 +51,9 @@
             if ($rootScope.features.docker === 'enabled') {
                 dashboardOperations = dashboardOperations.concat([
                     $q.when(Storage.pingManta(function () {
-                        Docker.listHosts().then(function (machines) {
-                            $scope.dockerMachines = machines || [];
-                            $scope.dockerMachinesCount = machines.filter(function (dockerMachine) {
-                                return dockerMachine.tags && dockerMachine.tags['JPC_tag'] === 'DockerHost';
-                            }).length;
-                            $scope.dockerMachinesLink = machines.length ? '#!/compute/dockerHost' : '#!/docker';
-
-                        });
-                        Docker.listContainers({host: 'All', options: {all: true}, suppressErrors: true}).then(function (containers) {
-                            $scope.runningContainers = containers.filter(function (container) {
-                                return container.containers === 'running';
-                            });
-                            $scope.containersLink = $scope.runningContainers.length ? '#!/docker/containers/running' : '#!/docker';
-
-                        });
-                        Docker.getRegistriesList().then(function (list) {
-                            $scope.registries = list.filter(function (registry) {
-                                return registry.type === 'local';
-                            });
-                            $scope.registriesLink = $scope.registries.length ? '#!/docker/registries' : '#!/docker';
+                        Docker.getContainersCount().then(function (containers) {
+                            $scope.runningContainers = containers.running;
+                            $scope.otherContainers = containers.stopped;
                         });
                     }))
                 ]);

@@ -33,32 +33,30 @@
 
         <div class="pull-left tile-wrapper" data-ng-show="dockerEnabled">
             <div class="tile docker-bg">
-                <a data-ng-href="{{'#!/docker'}}">
+                <a data-ng-href="{{'#!/docker/containers'}}">
                     <div class="tile-body">
-                        <div class="title">Docker</div>
+                        <div class="title">Docker Containers</div>
                         <div class="left-column">
-                            <a data-ng-href="{{dockerMachinesLink}}" data-ng-disabled="!dockerMachines.length">
+                            <a data-ng-href="{{'#!/docker/containers/running'}}" data-ng-disabled="!runningContainers">
                                 <div class="number">
-                                    {{dockerMachinesCount || '0'}}
+                                    {{runningContainers || '0'}}
                                 </div>
                                 <div class="info">
-                                    host<span data-ng-show="dockerMachines.length != 1">s</span>
+                                    running
                                 </div>
                             </a>
                         </div>
                         <div class="right-column">
-                            <a data-ng-href="{{containersLink}}" data-ng-disabled="!runningContainers.length">
-                                <div class="number">
-                                    {{runningContainers.length || '0'}}
-                                </div>
-                                <div class="info">
-                                    running container<span data-ng-show="runningContainers.length != 1">s</span>
-                                </div>
-                            </a>
+                            <div class="number">
+                                {{otherContainers || '0'}}
+                            </div>
+                            <div class="info">
+                                stopped
+                            </div>
                         </div>
                     </div>
                 </a>
-                <a class="tile-button" href="#!/docker">+ Create Docker Host</a>
+                <a class="tile-button" href="#!/docker/container/create">+ Create Docker Container</a>
             </div>
         </div>
 

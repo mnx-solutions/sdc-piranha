@@ -173,7 +173,7 @@
                     loadCurrentTabFilter();
                 });
             } else {
-                if ($scope.tabFilterField === 'containers') {
+                if ($scope.tabFilterField === 'state') {
                     $scope.tabFilters = ['running', 'all'];
                     loadCurrentTabFilter();
                 } else if ($scope.tabFilterField === 'logs') {

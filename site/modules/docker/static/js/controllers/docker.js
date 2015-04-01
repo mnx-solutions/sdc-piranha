@@ -29,11 +29,29 @@
                 datacenter: '',
                 imageId: ''
             };
+            $scope.isTriton = true;
+            var triton = [];
+            var kvm = [];
+
+            $scope.tabs = ['Triton', 'KVM-Docker'];
+            $scope.activeTab = $scope.tabs[0];
+
+            $scope.isChecked = function (tab) {
+                return $scope.activeTab === tab;
+            };
+            $scope.setActive = function (tab) {
+                $scope.activeTab = tab;
+                $scope.isTriton = $scope.activeTab === $scope.tabs[0];
+            };
 
             var errorCallback = function (err) {
                 Docker.errorCallback(err, function () {
                     $scope.loading = false;
                 });
+            };
+
+            $scope.getFilteredMachines = function (machines) {
+                return $scope.activeTab === $scope.tabs[0] ? triton : kvm;
             };
 
             function getHostImagesCount(machine) {
@@ -109,8 +127,19 @@
                             }
                         });
                         getDockerHostAnalytics();
+                        Docker.getContainersCount(true).then(function (containers) {
+                            $scope.runningContainers = containers.running;
+                            $scope.otherContainers = containers.stopped;
+                        });
                     });
                 }
+                $scope.dockerMachines.forEach(function (machine) {
+                    if (machine.isSdc) {
+                        triton.push(machine);
+                    } else {
+                        kvm.push(machine);
+                    }
+                });
                 $scope.loading = false;
             }, function (err) {
                 $scope.loading = false;

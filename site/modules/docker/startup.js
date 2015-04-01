@@ -350,7 +350,7 @@ var Docker = function execute(scope, app) {
                                                 container.primaryIp = host.primaryIp;
                                                 container.isSdc = host.isSdc;
                                                 if (method === 'containers') {
-                                                    container.containers = container.Status.indexOf('Up') !== -1 ? 'running' : 'stopped';
+                                                    container.state = container.Status.indexOf('Up') !== -1 ? 'running' : 'stopped';
                                                 }
                                             });
                                         }

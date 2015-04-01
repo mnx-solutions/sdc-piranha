@@ -756,10 +756,22 @@ span.btn-success
 {
     padding-bottom: 40px;
 }
-.triton-req-button {
-    width: 208px;
+
+.grid-tab.dashboard {
+    margin: 0 2px -1px 0;
+}
+.nav-tabs {
+    margin-bottom: 10px;
+    padding-top: 10px;
+}
+
+.triton-btn {
     position: absolute;
-    top: 157px;
+    top: 163px;
+    width: 220px;
+    margin-left: -6px;
+}
+.triton-btn.req {
     padding-top: 11px;
     padding-left: 20px;
 }
@@ -778,4 +790,45 @@ span.btn-success
 .kvm-type,
 .triton-type {
     text-align: center;
+}
+.triton-btn .plus-btn-icon {
+    left: -3px;
+    margin-right: 5px;
+}
+.triton-bg {
+    background: url("../img/triton.png") no-repeat right top #eef0f2;
+    background-size: 220px 185px;
+}
+.triton-info {
+    margin-left: 15px;
+}
+.triton-info .num {
+    padding: 0 5px 0 8px;
+    text-align: right;
+    font-weight: bold;
+}
+.nav-tabs .page-title-btn {
+    margin-top: -25px;
+}
+.page-title-btn.icons {
+    margin-top: -50px;
+}
+.pricing,
+.terminal,
+.faq {
+    display: inline-block;
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-size: 24px;
+    width: 26px;
+    height: 24px;
+}
+.pricing {
+    background-image: url("../img/usd.png");
+}
+.terminal {
+    background-image: url("../img/terminal.png");
+}
+.faq {
+    background-image: url("../img/faq.png");
 }

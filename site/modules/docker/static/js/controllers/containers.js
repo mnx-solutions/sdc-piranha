@@ -400,7 +400,7 @@
                 $scope.searchForm = true;
                 $scope.enabledCheckboxes = true;
                 $scope.placeHolderText = 'filter containers';
-                $scope.tabFilterField = 'containers';
+                $scope.tabFilterField = 'state';
 
                 Storage.pingManta(function () {
                     listAllContainers(true);
