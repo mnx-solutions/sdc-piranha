@@ -32,12 +32,17 @@
                 if ($scope.title === 'Flamegraph') {
                    getScriptsListType = 'default';
                 }
+
                 $q.all([DTrace.listHosts(), DTrace.getScriptsList(getScriptsListType)]).then(function (result) {
                     $scope.hosts = result[0] || [];
                     $scope.scripts = result[1] || [];
 
                     $scope.scriptName = 'all syscall';
                     $scope.host = JSON.stringify($scope.hosts[0]);
+                    if ($scope.title === 'Flamegraph') {
+                        $scope.scriptName = 'all syscall for process';
+                        updateScripts();
+                    }
                     $scope.loading = false;
                 }, errorCallback);
 
@@ -45,7 +50,7 @@
                     return $scope.scripts.find(function (script) {
                         return script.name === $scope.scriptName;
                     });
-                } 
+                };
 
                 var updateScripts = function () {
                     $scope.processes = null;
@@ -81,7 +86,7 @@
                             updateScripts();
                         }
                     }
-                }
+                };
 
                 $scope.changeScript = function () {
                     updateScripts();
