@@ -35,29 +35,34 @@
                     };
                 };
 
+                var oldScriptName;
+                var scriptsList = [];
                 DTrace.getScriptsList().then(function (list) {
-                    $scope.list = list;
+                    scriptsList = list;
+                    if ($scope.scriptId) {
+                        $scope.script = scriptsList.find(function (script) {
+                            return script.id === $scope.scriptId;
+                        });
+                        if ($scope.script) {
+                            $scope.scriptName = oldScriptName = $scope.script.name;
+                        } else {
+                            newScript(); 
+                        }
+                    } else {
+                        newScript(); 
+                    }
                     $scope.loading = false;
                 }, function (error) {
                     PopupDialog.error(null, error);
                     indexPage();
                 });
 
-                if ($scope.scriptId) {
-                    $scope.script = $scope.list.find(function (script) {
-                        return script.id === $scope.scriptId;
-                    });
-                } else {
-                    newScript();
-                    $scope.loading = false;
-                }
-
-                $scope.$watch('script.name', function (name) {
-                    if ($scope.list && $scope.list.length) {
-                        var script = $scope.list.find(function (script) {
+                $scope.$watch('scriptName', function (name) {
+                    if (scriptsList.length) {
+                        var script = scriptsList.find(function (script) {
                             return script.name === name;
                         });
-                        if (script) {
+                        if (script && oldScriptName !== name) {
                             $scope.scriptForm.$setValidity('unique', false);
                         } else {
                             $scope.scriptForm.$setValidity('unique', true);
@@ -69,6 +74,7 @@
                     //TODO validate script
                     $scope.loading = true;
                     $scope.script.id = $scope.script.id || uuid();
+                    $scope.script.name = $scope.scriptName;
                     DTrace.createScript($scope.script).then(function () {
                         indexPage();
                     }, errorCallback);
