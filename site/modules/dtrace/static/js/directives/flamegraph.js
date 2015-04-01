@@ -8,7 +8,8 @@
             replace: true,
             scope: {
                 options: '=',
-                status: '='
+                status: '=',
+                processing: '=?'
             },
             template: function(element, attrs) {
                 return '<div class="flamegraph"></div>';
@@ -53,17 +54,22 @@
                                         closeWebsocket();
                                     });
                                 }
+                                $scope.processing = false;
                             } else {
                                 closeWebsocket();
                             }
                         };
 
-                        websocket.onerror = function (event) {
-                            loggingService.log('error', 'websocket error: ' + event.data);
+                        websocket.onopen = function () {
+                            $scope.processing = false;
+                        };
+
+                        websocket.onerror = function (data) {
+                            loggingService.log('error', 'websocket error: ' + data);
                         };
 
                         websocket.onclose = function () {
-                            websocket.close();
+                            closeWebsocket();
                         };
                     });
                 }
@@ -72,12 +78,14 @@
                     if (websocket) {
                         websocket.close();
                     }
+                    $scope.processing = false;
                 };
 
                 $scope.$watch('status', function (status) {
+                    $scope.processing = true;
                     if (status) {
                         ng.element(element).html('');
-                        var options = $scope.options
+                        var options = $scope.options;
                         var dtraceScript = options.script && options.script.body ||
                             getDscript(options.script && options.script.pid || undefined);
                         getFlamegraph(dtraceScript);
