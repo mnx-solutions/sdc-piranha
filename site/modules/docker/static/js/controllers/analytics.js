@@ -6,11 +6,12 @@
         'Docker',
         'adviserGraph',
         'PopupDialog',
+        'Storage',
         '$q',
         'requestContext',
         'localization',
         '$location',
-        function ($scope, Docker, adviserGraph, PopupDialog, $q, requestContext, localization, $location) {
+        function ($scope, Docker, adviserGraph, PopupDialog, Storage, $q, requestContext, localization, $location) {
             localization.bind('docker', $scope);
             requestContext.setUpRenderContext('docker.analytics', $scope, {
                 title: localization.translate(null, 'docker', 'Docker Analytics')
@@ -50,7 +51,7 @@
                 });
             };
 
-            Docker.pingManta(function () {
+            Storage.pingManta(function () {
                 Docker.listHosts().then(function (hosts) {
                     $scope.hosts = (hosts || []).filter(function (host) {
                         return !host.isSdc;

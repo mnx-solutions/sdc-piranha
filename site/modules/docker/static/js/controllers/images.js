@@ -9,11 +9,12 @@
             'Docker',
             '$q',
             'PopupDialog',
+            'Storage',
             '$location',
             '$filter',
             'util',
             'Account',
-            function ($scope, requestContext, localization, Docker, $q, PopupDialog, $location, $filter, util, Account) {
+            function ($scope, requestContext, localization, Docker, $q, PopupDialog, Storage, $location, $filter, util, Account) {
                 localization.bind('docker', $scope);
                 var CURRENT_PAGE_ACTION = 'docker.images';
                 requestContext.setUpRenderContext(CURRENT_PAGE_ACTION, $scope, {
@@ -283,7 +284,7 @@
                     $scope.tabFilterDefault = activeTab;
                 }
 
-                Docker.pingManta(function () {
+                Storage.pingManta(function () {
                     listAllImages();
                 });
 
