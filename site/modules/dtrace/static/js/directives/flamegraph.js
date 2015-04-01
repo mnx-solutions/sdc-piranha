@@ -8,8 +8,7 @@
             replace: true,
             scope: {
                 options: '=',
-                status: '=',
-                processing: '=?'
+                status: '='
             },
             template: function(element, attrs) {
                 return '<div class="flamegraph"></div>';
@@ -54,14 +53,16 @@
                                         closeWebsocket();
                                     });
                                 }
-                                $scope.processing = false;
+                                $scope.options.processing = false;
                             } else {
                                 closeWebsocket();
                             }
                         };
 
                         websocket.onopen = function () {
-                            $scope.processing = false;
+                            $scope.$apply(function () {
+                                $scope.options.processing = false;
+                            });
                         };
 
                         websocket.onerror = function (data) {
@@ -78,11 +79,10 @@
                     if (websocket) {
                         websocket.close();
                     }
-                    $scope.processing = false;
+                    $scope.options.processing = false;
                 };
 
                 $scope.$watch('status', function (status) {
-                    $scope.processing = true;
                     if (status) {
                         ng.element(element).html('');
                         var options = $scope.options;
