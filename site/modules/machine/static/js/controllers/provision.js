@@ -78,7 +78,6 @@
 
             $scope.isProvisioningLimitsEnable = $scope.features.provisioningLimits === 'enabled';
 
-
             $scope.keys = [];
             $scope.datacenters = [];
             $scope.networks = [];
@@ -428,7 +427,7 @@
                 if (simpleImages && simpleImages.length > 0) {
                     if ($scope.datacenters && $scope.datacenters.length > 0) {
                         $scope.datacenters.forEach(function (datacenter) {
-                            Package.package({ datacenter: datacenter.name }).then(function (packages) {
+                            Package.package({datacenter: datacenter.name}).then(function (packages) {
                                 var packagesByName = {};
                                 packages.forEach(function (pkg) {
                                     packagesByName[pkg.name] = pkg.id;
@@ -730,12 +729,19 @@
                 // add networks to data
                 $scope.data.networks = ($scope.selectedNetworks.length > 0) ? $scope.selectedNetworks : '';
 
-                if ($scope.preSelectedImageId && $location.search().specification === 'dockerhost') {
+                var instanceType = '';
+                if ($location.search().specification === 'dtracehost') {
+                    instanceType = 'DTrace';
+                } else if ($location.search().specification === 'dockerhost') {
+                    instanceType = 'Docker';
+                }
+
+                if ($scope.preSelectedImageId && instanceType) {
                     var isPublicNetworkChecked = $scope.networks.some(function (network) {
                         return network.public && network.active;
                     });
                     if (!isPublicNetworkChecked) {
-                        PopupDialog.message('Message', 'Cannot create Docker host without Public network. Please select Public network.');
+                        PopupDialog.message('Message', 'Cannot create ' + instanceType + ' host without Public network. Please select Public network.');
                         return;
                     }
                 }
@@ -1256,12 +1262,12 @@
                     public : {},
                     custom : {}
                 };
-                var operating_systems = {All: 1};
+                var operatingSystems = {All: 1};
 
                 $scope.datasetsLoading = false;
 
                 datasets.forEach(function (dataset) {
-                    operating_systems[dataset.os] = 1;
+                    operatingSystems[dataset.os] = 1;
 
                     var datasetName = dataset.name;
                     var datasetVersion = dataset.version;
@@ -1310,7 +1316,7 @@
                 var publicDatasets = Object.keys(selectedVersions.public)
                     .map(function (item) { return selectedVersions.public[item].pop(); });
 
-                $scope.operating_systems = Object.keys(operating_systems);
+                $scope.operating_systems = Object.keys(operatingSystems);
                 $scope.datasets = publicDatasets.concat(customDatasets).filter(function (n) { return n; });
                 $scope.versions = versions;
                 $scope.listVersions = listVersions;
