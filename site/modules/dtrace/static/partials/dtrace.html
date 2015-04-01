@@ -17,7 +17,7 @@
                             </option>
                         </select>
                     </td>
-                    <td class="medium" data-ng-class="{triple: !processes}">
+                    <td class="medium" data-ng-class="{triple: !processes}" data-ng-show="title !== 'Flamegraph'">
                         <select ui-select2="{minimumResultsForSearch: -1, width: '100%'}" id="scriptSelect" data-ng-model="scriptName" ng-change="changeScript()" data-ng-disabled="loadingHostScripts">
                             <option data-ng-repeat="script in scripts" value="{{script.name}}">
                                 {{script.name}}
