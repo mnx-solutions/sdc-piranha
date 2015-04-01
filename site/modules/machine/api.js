@@ -9,7 +9,7 @@ module.exports = function execute(scope, register) {
     var api = {};
 
     function filterFields(machine) {
-        [ 'user-script', 'ufds_ldap_root_dn', 'ufds_ldap_root_pw' ].forEach(function (f) {
+        ['user-script', 'ufds_ldap_root_dn', 'ufds_ldap_root_pw'].forEach(function (f) {
             if (machine.metadata[f]) {
                 machine.metadata[f] = '__cleaned';
             }
@@ -22,11 +22,11 @@ module.exports = function execute(scope, register) {
             });
         }
 
-        machine.firewall_supported = machine.type === 'smartmachine' ||
-            machine.type === 'virtualmachine' && machine.compute_node && config.ns['fw-blist'].indexOf(machine.compute_node) === -1;
+        machine['firewall_supported'] = machine.type === 'smartmachine' ||
+            machine.type === 'virtualmachine' && machine['compute_node'] && config.ns['fw-blist'].indexOf(machine['compute_node']) === -1;
 
-        if (new Date(machine.created) < new Date(config.images.earliest_date)) {
-            machine.imageCreateNotSupported = 'Instances created before ' + config.images.earliest_date +
+        if (new Date(machine.created) < new Date(config.images['earliest_date'])) {
+            machine.imageCreateNotSupported = 'Instances created before ' + config.images['earliest_date'] +
                 ' are not supported for image creation.';
         }
 
@@ -323,73 +323,77 @@ module.exports = function execute(scope, register) {
     };
 
     api.List = function (call, progress, callback) {
-        if (typeof(progress) === 'function') {
+        if (typeof (progress) === 'function') {
             callback = progress;
             progress = true;
         }
 
         call.log.info('Handling machine list event');
 
-        var datacenters = call.cloud.listDatacenters();
-        var keys = Object.keys(datacenters || {});
-        var count = keys.length;
-        if (count === 0) {
-            callback(null, []);
-            return;
-        }
+        call.cloud.listDatacenters(function (error, datacenters) {
+            if (error) {
+                return callback(error);
+            }
+            var keys = Object.keys(datacenters || {});
+            var count = keys.length;
+            if (count === 0) {
+                callback(null, []);
+                return;
+            }
 
-        keys.forEach(function (datacenterName) {
-            var cloud = call.cloud.separate(datacenterName);
-            call.log.debug('List machines for datacenter %s', datacenterName);
+            keys.forEach(function (datacenterName) {
+                var cloud = call.cloud.separate(datacenterName);
+                call.log.debug('List machines for datacenter %s', datacenterName);
 
-            var allMachines = [];
+                var allMachines = [];
 
-            cloud.listMachines({ credentials: true }, function (err, machines) {
-                var response = {
-                    name: datacenterName,
-                    status: 'pending',
-                    machines: []
-                };
+                cloud.listMachines({credentials: true}, function (err, machines) {
+                    var response = {
+                        name: datacenterName,
+                        status: 'pending',
+                        machines: []
+                    };
 
-                if (err) {
-                    call.log.info('List machines failed for datacenter %s, url %s; err.message: %s', datacenterName, datacenters[datacenterName], err.message, err);
-                    response.status = 'error';
-                    response.error = err;
-                } else {
-                    machines = machines.filter(function (el) {
-                        // Don't show SLB SSC machine unless in dev mode
-                        var slbTagged = el.tags && (el.tags.lbaas && el.tags.lbaas === 'true' ||
-                            el.tags.slb && (el.tags.slb === 'ssc' || el.tags.slb === 'stm'));
-                        return el.state !== 'failed' && (config.showSLBObjects || !slbTagged);
-                    });
+                    if (err) {
+                        call.log.info('List machines failed for datacenter %s, url %s; err.message: %s', datacenterName, datacenters[datacenterName], err.message, err);
+                        response.status = 'error';
+                        response.error = err;
+                    } else {
+                        machines = machines.filter(function (el) {
+                            // Don't show SLB SSC machine unless in dev mode
+                            var slbTagged = el.tags && (el.tags.lbaas && el.tags.lbaas === 'true' ||
+                                el.tags.slb && (el.tags.slb === 'ssc' || el.tags.slb === 'stm'));
+                            return el.state !== 'failed' && (config.showSLBObjects || !slbTagged);
+                        });
 
-                    machines.forEach(function (machine, i) {
-                        machine.datacenter = datacenterName;
-                        machine.metadata.credentials = handleCredentials(machine);
-                        machines[i] = filterFields(machine);
+                        machines.forEach(function (machine, i) {
+                            machine.datacenter = datacenterName;
+                            machine.metadata.credentials = handleCredentials(machine);
+                            machines[i] = filterFields(machine);
 
-                        if (info.instances && info.instances.data[machine.id]) {
-                            machines[i] = utils.extend(machines[i], info.instances.data[machine.id]);
-                        }
+                            if (info.instances && info.instances.data[machine.id]) {
+                                machines[i] = utils.extend(machines[i], info.instances.data[machine.id]);
+                            }
 
-                        allMachines.push(machine);
-                    });
+                            allMachines.push(machine);
+                        });
 
-                    response.status = 'complete';
-                    response.machines = machines;
+                        response.status = 'complete';
+                        response.machines = machines;
 
-                    call.log.debug('List machines succeeded for datacenter %s', datacenterName);
-                }
+                        call.log.debug('List machines succeeded for datacenter %s', datacenterName);
+                    }
 
-                if (progress) {
-                    call.update(null, response);
-                }
+                    if (progress) {
+                        call.update(null, response);
+                    }
 
-                if (--count === 0) {
-                    callback(null, allMachines);
-                }
+                    if (--count === 0) {
+                        callback(null, allMachines);
+                    }
+                });
             });
-        });
+        })
     };
     var supportPackages = [];
     if (config.features.createdBySupportPackages === 'enabled') {
@@ -400,7 +404,6 @@ module.exports = function execute(scope, register) {
             }
         }
     }
-
 
     api.PackageList = function (call, options, callback) {
         call.log.info('Handling list packages event');
@@ -470,7 +473,7 @@ module.exports = function execute(scope, register) {
         if (call.getImmediate) {
             call.getImmediate();
         }
-        call.log.info({ options: options }, 'Creating image %s', options.name);
+        call.log.info({options: options}, 'Creating image %s', options.name);
 
         var cloud = call.cloud.separate(options.datacenter);
         cloud.createImageFromMachine(options, function(err, image) {
@@ -544,7 +547,7 @@ module.exports = function execute(scope, register) {
                                 Object.keys(info.licenses.data['License Portfolio']).forEach(function (k) {
                                     var license = info.licenses.data['License Portfolio'][k];
                                     if (license['API Name'] === img.name) {
-                                        img.license_price = license['Pan-Instance Price Uplift'];
+                                        img['license_price'] = license['Pan-Instance Price Uplift'];
                                     }
                                 });
                             }

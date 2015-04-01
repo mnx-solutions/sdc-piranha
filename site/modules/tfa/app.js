@@ -62,87 +62,87 @@ module.exports = function execute(scope, app) {
         req.params.url = req.params.url.replace(/\-/g, '/');
         // redirect to this url after we're done with the token
         var redirectUrl = (new Buffer(req.params.url, 'base64')).toString('ascii');
-        var cloud = smartCloud.cloud({token: token, log: req.log});
+        smartCloud.cloud({token: token, log: req.log}, function (error, cloud) {
+            var saveSessionToken = function (userObj, signupStep, tfaSecret) {
+                req.session.userId = userObj.id;
+                req.session.userName = userObj.login;
+                req.session.redirectUrl = redirectUrl;
+                req.session.userIsNew = !signupStep && userObj.created === userObj.updated;
+                if (tfaSecret) {
+                    req.session._preToken = token;
+                    req.session._tfaSecret = tfaSecret;
+                } else {
+                    req.session.token = token;
+                }
+                req.session.save();
+                if (tfaSecret) {
+                    req.log.info({userId: userObj.id}, 'User redirected to TFA login');
+                    res.redirect('/#!/tfa');
+                } else {
+                    logUserInformation(req);
+                    res.redirect(redirectUrl);
+                }
+            };
 
-        var saveSessionToken = function (userObj, signupStep, tfaSecret) {
-            req.session.userId = userObj.id;
-            req.session.userName = userObj.login;
-            req.session.redirectUrl = redirectUrl;
-            req.session.userIsNew = !signupStep && userObj.created === userObj.updated;
-            if (tfaSecret) {
-                req.session._preToken = token;
-                req.session._tfaSecret = tfaSecret;
-            } else {
-                req.session.token = token;
-            }
-            req.session.save();
-            if (tfaSecret) {
-                req.log.info({userId: userObj.id}, 'User redirected to TFA login');
-                res.redirect('/#!/tfa');
-            } else {
-                logUserInformation(req);
-                res.redirect(redirectUrl);
-            }
-        };
-
-        var userCallback = function (err, user) {
-            if (err) {
-                next(err);
-                return;
-            }
-            if (userId) {
-                req.session.subId = userId;
-                cloud.getAccount(function (err, account) {
-                    req.session.parentAccountError = err;
-                    if (!err) {
-                        req.session.parentAccount = account.login;
-                        req.session.parentAccountId = account.id;
-                    }
-                    saveSessionToken(user);
-                });
-            }
-        };
-
-        var accountCallback = function (err, user) {
-            if (err) {
-                next(err);
-                return;
-            }
-            TFA.getSecurity(user.id, function (tfaErr, secret) {
-                if (tfaErr) {
-                    next(tfaErr);
+            var userCallback = function (err, user) {
+                if (err) {
+                    next(err);
                     return;
                 }
-
-                if (!req.session) {
-                    req.log.fatal('Session is not valid, probably Redis is not running');
-                    process.exit();
+                if (userId) {
+                    req.session.subId = userId;
+                    cloud.getAccount(function (err, account) {
+                        req.session.parentAccountError = err;
+                        if (!err) {
+                            req.session.parentAccount = account.login;
+                            req.session.parentAccountId = account.id;
+                        }
+                        saveSessionToken(user);
+                    });
                 }
+            };
 
-                // clear session string properties (like signupStep)
-                for (var prop in req.session) {
-                    if (req.session.hasOwnProperty(prop) && typeof (req.session[prop]) === 'string') {
-                        delete req.session[prop];
+            var accountCallback = function (err, user) {
+                if (err) {
+                    next(err);
+                    return;
+                }
+                TFA.getSecurity(user.id, function (tfaErr, secret) {
+                    if (tfaErr) {
+                        next(tfaErr);
+                        return;
                     }
-                }
 
-                metadata.get(user.id, metadata.SIGNUP_STEP, function (metaErr, signupStep) {
-                    // can safely ignore possible metadata error here
-                    saveSessionToken(user, signupStep, secret);
+                    if (!req.session) {
+                        req.log.fatal('Session is not valid, probably Redis is not running');
+                        process.exit();
+                    }
+
+                    // clear session string properties (like signupStep)
+                    for (var prop in req.session) {
+                        if (req.session.hasOwnProperty(prop) && typeof (req.session[prop]) === 'string') {
+                            delete req.session[prop];
+                        }
+                    }
+
+                    metadata.get(user.id, metadata.SIGNUP_STEP, function (metaErr, signupStep) {
+                        // can safely ignore possible metadata error here
+                        saveSessionToken(user, signupStep, secret);
+                    });
                 });
-            });
-        };
-        if (userId) {
-            if (config.features.rbac === 'disabled') {
-                var error = new Error('Role-based access control is not yet available');
-                error.statusCode = 403;
-                next(error);
-                return;
+            };
+            if (userId) {
+                if (config.features.rbac === 'disabled') {
+                    var error = new Error('Role-based access control is not yet available');
+                    error.statusCode = 403;
+                    next(error);
+                    return;
+                }
+                cloud.getUser(userId, userCallback);
+            } else {
+                cloud.getAccount(accountCallback);
             }
-            cloud.getUser(userId, userCallback);
-        } else {
-            cloud.getAccount(accountCallback);
-        }
+        });
     });
 
     app.get('/remove', function (req, res, next) {

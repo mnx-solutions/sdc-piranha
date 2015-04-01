@@ -1,5 +1,9 @@
 'use strict';
 var config = require('easy-config');
+var additionalDatacenters = {};
+if (config.features.sdcDocker === 'enabled') {
+    additionalDatacenters[config.sdcDocker.datacenter] = 'https://' + config.sdcDocker.datacenter + '.api.joyentcloud.com';
+}
 
 module.exports = function execute(scope) {
     var smartCloud = scope.get('smartCloud');
@@ -41,36 +45,25 @@ module.exports = function execute(scope) {
         }
 
         // we have a token, create a new cloudapi object with this
-        if(!req.cloud) {
-            var _cloud = null;
-            Object.defineProperty(req, 'cloud', {
-                get: function() {
-                    if(!_cloud) {
-                        _cloud = smartCloud.cloud({ token: req.session.token, subId: req.session.subId });
-                    }
-                    return _cloud;
-                },
-                enumerable: true
-            });
-
-            if(smartCloud.needRefresh()) {
-                smartCloud.cloud({ token: req.session.token, subId: req.session.subId }, function (err, cloud) {
-                    // Ignore authorization error for sub-user
-                    if (err && req.session.subId) {
-                        _cloud = cloud;
-                        next();
-                        return;
-                    }
-                    if (err) {
-                        next(err);
-                        return;
-                    }
-                    _cloud = cloud;
+        if (!req.cloud) {
+            smartCloud.cloud({token: req.session.token,
+                userId: req.session.userId,
+                subId: req.session.subId,
+                additionalDatacenters: additionalDatacenters
+            }, function (err, cloud) {
+                // Ignore authorization error for sub-user
+                if (err && req.session.subId) {
+                    req.cloud = cloud;
                     next();
-                });
-            } else {
+                    return;
+                }
+                if (err) {
+                    next(err);
+                    return;
+                }
+                req.cloud = cloud;
                 next();
-            }
+            });
         } else {
             next();
         }
