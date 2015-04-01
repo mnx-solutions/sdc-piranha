@@ -96,18 +96,21 @@
                 $scope.start = function () {
                     if ($scope.host) {
                         var host = JSON.parse($scope.host);
-                        $scope.options.hostIp = host.primaryIp;
-                        $scope.options.hostId = host.id;
                         var script = getCurrentScript();
                         if (script && script.body) {
                             script.body = script.body.replace(pidPlaceholder, $scope.pid);
                         } else if (script && script.pid) {
                             script.pid = $scope.pid;
                         }
-                        $scope.options.script = script;
+                        $scope.options = {
+                            script: script,
+                            hostIp: host.primaryIp,
+                            hostId: host.id,
+                            loading: true,
+                            processing: true,
+                            isDataOk: false
+                        }
                         $scope.starting = true;
-                        $scope.options.loading = true;
-                        $scope.options.isDataOk = false;
                     }
                     
                 };

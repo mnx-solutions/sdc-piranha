@@ -7,7 +7,6 @@
             replace: true,
             scope: {
                 options: '=',
-                processing: '=?',
                 status: '=?'
             },
             template: function(element, attrs) {
@@ -44,11 +43,10 @@
                     if (websocket) {
                         websocket.close();
                     }
-                    $scope.processing = false;
+                    $scope.options.processing = false;
                 };
 
                 $scope.$watch('status', function (status) {
-                    $scope.processing = true;
                     if (status) {
                         var dscript = $scope.options.script.body || getDscript($scope.options.pid);
                         var name = $scope.options.script.name + ($scope.options.pid ? ' PID:' + $scope.options.pid : '');
@@ -88,7 +86,7 @@
                                     data = {};
                                     $scope.options.isDataOk = false;
                                 }
-                                $scope.processing = false;
+                                $scope.options.processing = false;
                                 draw(data);
                             } else {
                                 closeWebsocket();
@@ -99,7 +97,9 @@
                         };
 
                         websocket.onopen = function () {
-                            $scope.processing = false;
+                            $scope.$apply(function () {
+                                $scope.options.processing = false;
+                            });
                             dscript = dscript || getDscript();
 
                             // Draw  script name and host
