@@ -19,7 +19,7 @@
                         <div>
                             <input name="scriptName"
                                     type="text"
-                                    data-ng-model="script.name"
+                                    data-ng-model="scriptName"
                                     data-ng-pattern="/^[A-Za-z0-9]+[A-Za-z0-9\.\-\s]*$/" 
                                     required/>
                         </div>
@@ -45,7 +45,7 @@
         <span class="orange-asterix-left">required fields</span>
         <div class="pull-right">
             <a href="#!/dtrace/scripts" class="btn grey-new effect-orange-button">Cancel</a>
-            <button data-ng-click="saveScript()" class="btn orange" data-ng-disabled="!script.body.length || !script.name.length || !scriptForm.$valid">Save</button>
+            <button data-ng-click="saveScript()" class="btn orange" data-ng-disabled="!script.body.length || !scriptName.length || !scriptForm.$valid">Save</button>
         </div>
     </div>
 </div>
