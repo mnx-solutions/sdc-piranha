@@ -231,6 +231,11 @@
                             command += 'Container';
                         }
                         Docker[command](container).then(function (response) {
+                            if (action === 'remove') {
+                                $scope.containers = $scope.containers.filter(function (item) {
+                                    return container.Id !== item.Id;
+                                });
+                            }
                             $scope.containers.some(function (container) {
                                 if (container.Id === response.containerId) {
                                     container.ipAddress = response.NetworkSettings ? response.NetworkSettings.IPAddress : container.ipAddress;
