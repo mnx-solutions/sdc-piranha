@@ -1,11 +1,11 @@
 'use strict';
 
 (function (app) {
-    // I provide information about the current route request.
-	app.factory('Menu', ["$resource", function ($resource){
+    // provide information about the current route request.
+    app.factory('Menu', ['$resource', function ($resource) {
 
-		var Menu = $resource('/menu', {}, {});
-		var mainMenu = [];
+        var Menu = $resource('/menu', {}, {});
+        var mainMenu = [];
 
         Menu.getMenu = function () {
             return mainMenu;
@@ -15,29 +15,29 @@
             mainMenu.push(item);
         };
 
-		Menu.register = function (item) {
+        Menu.register = function (item) {
 
-			mainMenu.push(item);
-            mainMenu.sort(function (a,b){
-                if (!a.order && !b.order){
+            mainMenu.push(item);
+            mainMenu.sort(function (a, b) {
+                if (!a.order && !b.order) {
                     return 0;
                 }
-                if (!a.order){
+                if (!a.order) {
                     return 1;
                 }
-                if (!b.order){
+                if (!b.order) {
                     return -1;
                 }
-                if (a.order < b.order){
+                if (a.order < b.order) {
                     return -1;
                 }
-                if (a.order > b.order){
+                if (a.order > b.order) {
                     return 1;
                 }
                 return 0;
             });
-		};
+        };
 
-            return Menu;
-        }]);
+        return Menu;
+    }]);
 }(window.JP.getModule('Menu')));

@@ -17,7 +17,7 @@
                             </option>
                         </select>
                     </td>
-                    <td class="medium" data-ng-class="{triple: !processes}" data-ng-show="title !== 'Flamegraph'">
+                    <td class="medium" data-ng-class="{triple: !processes}" data-ng-show="title !== 'Flame Graph'">
                         <select ui-select2="{minimumResultsForSearch: -1, width: '100%'}" id="scriptSelect" data-ng-model="scriptName" ng-change="changeScript()" data-ng-disabled="loadingHostScripts">
                             <option data-ng-repeat="script in scripts" value="{{script.name}}">
                                 {{script.name}}
@@ -43,7 +43,7 @@
         <div data-ng-show="!options.loading && options.isDataOk" class="heatmap-wrapper" data-ng-if="title === 'Heatmap'">
             <heatmap data-options="options" data-status="starting"></heatmap>
         </div>
-        <div class="heatmap-wrapper" data-ng-show="!loading" data-ng-if="title === 'Flamegraph'">
+        <div class="heatmap-wrapper" data-ng-show="!loading" data-ng-if="title === 'Flame Graph'">
             <flamegraph data-options="options" data-status="starting"></flamegraph>
         </div>
     </div>

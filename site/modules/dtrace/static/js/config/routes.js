@@ -14,7 +14,7 @@ window.JP.main.config(['routeProvider', function (routeProvider) {
             title: 'Heatmap',
             action: 'dtrace.heatmap'
         }).when('/dtrace/flamegraph', {
-            title: 'Flamegraph',
+            title: 'Flame Graph',
             action: 'dtrace.flamegraph'
         }).when('/dtrace/scripts', {
             title: 'Scripts',

@@ -2,7 +2,7 @@
 
 (function (ng, app) {
 
-	app.factory('Select2overlay', [function () {
+    app.factory('Select2overlay', [function () {
         var autoScroll = false;
         var wnd = ng.element(window);
 
@@ -45,7 +45,7 @@
                 ng.element('.feedback-tab').hide();
                 zenbox.hide();
             }
-            wnd.bind("popstate resize", function (e) {
+            wnd.bind('popstate resize', function (e) {
                 showTabs();
                 mask.mousedown();
                 mask.remove();
@@ -59,7 +59,7 @@
         };
 
         var closeHandler = function (e) {
-            wnd.unbind("popstate");
+            wnd.unbind('popstate');
             wnd.unbind('scroll');
             wnd.unbind('resize');
             showTabs();
