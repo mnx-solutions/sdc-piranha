@@ -4,22 +4,28 @@
     app.directive('codeMirror', ['$timeout', function ($timeout) {
         return {
             scope: {
-                source: '='
+                ngModel: '='
             },
-            link: function (scope, $element) {
+            require: 'ngModel',
+            link: function (scope, element, attrs, ctrl) {
                 var sourceValue;
-                var editor = CodeMirror.fromTextArea($element[0], {
+                var regex = attrs.regexValidate ? new RegExp(attrs.regexValidate, 'i') : null;
+                var editor = CodeMirror.fromTextArea(element[0], {
                     lineNumbers : true,
                     lineWrapping: true,
                     theme: 'custom',
                     mode: 'javascript'
                 });
+
                 editor.on('change', function (cm) {
                     $timeout(function () {
-                        scope.source = sourceValue = cm.getValue();
+                        scope.ngModel = sourceValue = cm.getValue();
+                        if (regex && sourceValue) {
+                            ctrl.$setValidity('pattern', regex.test(sourceValue));
+                        }
                     });
                 });
-                scope.$watch('source', function (source) {
+                scope.$watch('ngModel', function (source) {
                     if (sourceValue !== source) {
                         editor.setValue(source);
                     }
