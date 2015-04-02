@@ -17,8 +17,8 @@
                 var websocket;
                 var dtracePort = 8000;
                 function getDscript(pid) {
-                    return "-n 'profile-97 /" + (pid ? 'pid == ' + pid : 'arg1') +
-                    "/ { @[jstack(150, 8000)] = count(); } tick-60s { exit(0); }'";
+                    return '-n \'profile-97 /' + (pid ? 'pid == ' + pid : 'arg1') +
+                    '/ { @[jstack(150, 8000)] = count(); } tick-60s { exit(0); }\'';
                 }
                 function getFlamegraph (dtraceScript) {
                     DTrace.exucute({
@@ -93,8 +93,8 @@
                         closeWebsocket();
                     }
                 });
-                
-                $scope.$on('$routeChangeStart', function(next, current) { 
+
+                $scope.$on('$routeChangeStart', function(next, current) {
                     closeWebsocket();
                 });
             }

@@ -16,7 +16,7 @@
                     title: localization.translate(null, 'dtrace', 'See my Joyent DTrace Heatmap')
                 });
                 $scope.title = $route.current.$$route.title;
-                
+
                 $scope.loading = true;
                 $scope.processing = false;
                 var processes = {};
@@ -30,8 +30,8 @@
                 $scope.options = {};
 
                 var getScriptsListType = 'all';
-                if ($scope.title === 'Flamegraph') {
-                   getScriptsListType = 'default';
+                if ($scope.title === 'Flame Graph') {
+                    getScriptsListType = 'default';
                 }
 
                 $q.all([DTrace.listHosts(), DTrace.getScriptsList(getScriptsListType)]).then(function (result) {
@@ -40,7 +40,7 @@
 
                     $scope.scriptName = 'all syscall';
                     $scope.host = JSON.stringify($scope.hosts[0]);
-                    if ($scope.title === 'Flamegraph') {
+                    if ($scope.title === 'Flame Graph') {
                         $scope.scriptName = 'all syscall for process';
                         updateScripts();
                     }
@@ -112,7 +112,7 @@
                         }
                         $scope.starting = true;
                     }
-                    
+
                 };
 
                 $scope.stop = function () {
