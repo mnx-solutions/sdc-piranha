@@ -3,8 +3,9 @@
 (function (app) {
 
     app.factory('fileman', [
+        'Account',
         'serverTab',
-        function (serverTab) {
+        function (Account, serverTab) {
             var fileman = {};
 
             function createMethod(name, isAbsolutePath) {
@@ -70,6 +71,13 @@
             fileman.storageReport = createMethod('FileManStorageReport');
 
             fileman.mfind = createMethod('FileManMfind', true);
+
+            fileman.saveFilemanConfig = function (path) {
+                var filemanConfig = Account.getUserConfig().$child('fileman');
+                filemanConfig['path'] = path;
+                filemanConfig.dirty(true);
+                filemanConfig.$save();
+            };
 
             return fileman;
         }
