@@ -139,7 +139,7 @@
                 </button>
 
                 <button data-ng-disabled="container.state == 'stopped' || actionInProgress"
-                        data-ng-show="container.state != 'paused'"
+                        data-ng-show="container.state != 'paused' && !container.isSdc"
                         data-ng-click="makeContainerAction('pause')"
                         data-translate-attributes="data-original-title"
                         data-toggle="tooltip"
