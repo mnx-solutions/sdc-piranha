@@ -202,6 +202,15 @@
                 });
             };
 
+            var billingStartMessage = localization.translate(
+                $scope,
+                'machine',
+                 $scope.features.billing === 'enabled' ?
+                    'Billing will start once this instance is created' :
+                    'Instance will be created and started'
+            );
+            var titleCreateInstance = 'Confirm: Create Instance';
+
             var provision = function (machine) {
                 var finalProvision = function () {
                     if (machine && !machine.dataset) {
@@ -340,18 +349,10 @@
 
                     var dataset = $scope.selectedDataset;
                     var description = dataset && dataset.description;
-                    var billingStartMessage = localization.translate(
-                            $scope,
-                            'machine',
-                            $scope.features.billing === 'enabled' ?
-                                'Billing will start once this instance is created' :
-                                'Instance will be created and started'
-                    );
-                    var title = 'Confirm: Create Instance';
                     var popupContent = billingStartMessage;
                     if (dataset && dataset.eula || description && description.indexOf('Stingray') > -1 ||
                         description && description.indexOf('SteelApp') > -1) {
-                        title = 'Accept End-User License Agreement';
+                        titleCreateInstance = 'Accept End-User License Agreement';
                         popupContent = {
                             templatePath: dataset.eula || 'slb/static/templates/eula.html',
                             footer: billingStartMessage
@@ -362,7 +363,7 @@
                             localization.translate(
                                     $scope,
                                     null,
-                                    title
+                                    titleCreateInstance
                             ),
                             popupContent,
                             finalProvision,
@@ -766,7 +767,9 @@
             };
 
             $scope.createSimple = function (data) {
-                provision(data);
+                PopupDialog.confirm(titleCreateInstance, billingStartMessage, function () {
+                    provision(data);
+                });
             };
 
             $scope.createRecent = function (data) {
