@@ -52,7 +52,12 @@
                 dashboardOperations = dashboardOperations.concat([
                     $q.when(Docker.pingManta(function () {
                         Docker.listHosts().then(function (machines) {
-                            $scope.dockerMachines = machines;
+                            $scope.dockerMachines = machines || [];
+                            $scope.dockerMachinesCount = machines.filter(function (dockerMachine) {
+                                return dockerMachine.tags && dockerMachine.tags['JPC_tag'] === 'DockerHost';
+                            }).length;
+                            $scope.dockerMachinesLink = machines.length ? '#!/compute/dockerHost' : '#!/docker';
+
                         });
                         Docker.listContainers({host: 'All', options: {all: true}, suppressErrors: true}).then(function (containers) {
                             $scope.runningContainers = containers.filter(function (container) {
@@ -85,10 +90,6 @@
                     }
                     $scope.machines = result[2] || [];
 
-                    $scope.dockerMachinesCount = $scope.dockerMachines.filter(function (dockerMachine) {
-                        return dockerMachine.tags && dockerMachine.tags['JPC_tag'] === 'DockerHost';
-                    }).length;
-                    $scope.dockerMachinesLink = $scope.dockerMachines.length ? '#!/compute/dockerHost' : '#!/docker';
 
                     if ($scope.slbFeatureEnabled) {
                         tasks.push($q.when(slbService.getBalancers()));
