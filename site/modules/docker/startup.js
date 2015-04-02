@@ -24,6 +24,7 @@ var Docker = function execute(scope, app) {
     var methods = Docker.getMethods();
     var methodsForAllHosts = ['containers', 'getInfo', 'images'];
     var removedContainersCache = {};
+    var MESSAGE_WRONG_IMAGE_NAME = 'Wrong image name';
 
     function capitalize(str) {
         return str[0].toUpperCase() + str.substr(1);
@@ -100,7 +101,8 @@ var Docker = function execute(scope, app) {
         if (error) {
             params.error = true;
             params.errorMessage = error.message || error;
-            if (error.statusCode === 404 || error === 'Unable to pull empty repository') {
+            if (error.statusCode === 404 || error === 'Unable to pull empty repository' ||
+                error.message === MESSAGE_WRONG_IMAGE_NAME) {
                 result = true;
                 call.log.info(params.errorMessage);
             }
@@ -1063,6 +1065,9 @@ var Docker = function execute(scope, app) {
 
                 getImageInfo(call, registryId, {name: call.data.options.fromImage, tag: call.data.options.tag}, function (err, result) {
                     if (err) {
+                        if (err.statusCode === 400 && !err.message) {
+                            err.message = MESSAGE_WRONG_IMAGE_NAME;
+                        }
                         return putToAudit(call, entry, options, err, true);
                     }
                     call.update(null, {totalSize: result.size});
