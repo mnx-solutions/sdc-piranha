@@ -20,7 +20,7 @@
                             <input name="scriptName"
                                     type="text"
                                     data-ng-model="scriptName"
-                                    data-ng-pattern="/^[A-Za-z0-9]+[A-Za-z0-9\.\-\s]*$/" 
+                                    data-ng-pattern="/^[A-Za-z0-9]+[A-Za-z0-9\.\-\s]*$/"
                                     required/>
                         </div>
                         <div class="edit-error" data-ng-show="scriptForm.scriptName.$error.pattern">
@@ -37,7 +37,14 @@
                 </tr>
                 <tr>
                     <td class="orange-asterix">Body</td>
-                    <td><textarea data-code-mirror data-source="script.body"></textarea></td>
+                    <td>
+                        <textarea name="scriptBody" data-code-mirror ng-model="script.body" regex-validate="^[\u0000-\u007F]+$"></textarea>
+                        <div class="edit-error" data-ng-show="scriptForm.scriptBody.$error.pattern">
+                            <div class="error" data-translate>
+                                Script can contain only unicode symbols.
+                            </div>
+                        </div>
+                    </td>
                 </tr>
             </table>
         </form>
