@@ -5,12 +5,13 @@
         'DTrace.DtraceController', [
             '$scope',
             'DTrace',
+            'Storage',
             '$q',
             'requestContext',
             'localization',
             'PopupDialog',
             '$route',
-            function ($scope, DTrace, $q, requestContext, localization, PopupDialog, $route) {
+            function ($scope, DTrace, Storage, $q, requestContext, localization, PopupDialog, $route) {
                 localization.bind('dtrace', $scope);
                 requestContext.setUpRenderContext('dtrace.script', $scope, {
                     title: localization.translate(null, 'dtrace', 'See my Joyent DTrace Heatmap')
@@ -34,18 +35,19 @@
                     getScriptsListType = 'default';
                 }
 
-                $q.all([DTrace.listHosts(), DTrace.getScriptsList(getScriptsListType)]).then(function (result) {
-                    $scope.hosts = result[0] || [];
-                    $scope.scripts = result[1] || [];
-
-                    $scope.scriptName = 'all syscall';
-                    $scope.host = JSON.stringify($scope.hosts[0]);
-                    if ($scope.title === 'Flame Graph') {
-                        $scope.scriptName = 'all syscall for process';
-                        updateScripts();
-                    }
-                    $scope.loading = false;
-                }, errorCallback);
+                Storage.pingManta(function () {
+                    $q.all([DTrace.listHosts(), DTrace.getScriptsList(getScriptsListType)]).then(function (result) {
+                        $scope.hosts = result[0] || [];
+                        $scope.scripts = result[1] || [];
+                        $scope.scriptName = 'all syscall';
+                        $scope.host = JSON.stringify($scope.hosts[0]);
+                        if ($scope.title === 'Flame Graph') {
+                            $scope.scriptName = 'all syscall for process';
+                            updateScripts();
+                        }
+                        $scope.loading = false;
+                    }, errorCallback);
+                });
 
                 var getCurrentScript = function () {
                     return $scope.scripts.find(function (script) {

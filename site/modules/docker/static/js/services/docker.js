@@ -1,9 +1,9 @@
 'use strict';
 
-(function (ng, app) {app.factory('Docker', ['serverTab', '$rootScope', 'Account', 'errorContext', 'EventBubble', 'Machine',
-    'PopupDialog', 'localization', 'Storage', '$q', '$location', 'DockerCacheProvider',
-    function (serverTab, $rootScope, Account, errorContext, EventBubble, Machine, PopupDialog,
-              localization, Storage, $q, $location, DockerCacheProvider) {
+(function (ng, app) {app.factory('Docker', ['serverTab', '$rootScope', 'errorContext', 'EventBubble', 'Machine',
+    'PopupDialog', 'localization', '$q', '$location', 'DockerCacheProvider', 'Storage',
+    function (serverTab, $rootScope, errorContext, EventBubble, Machine, PopupDialog,
+              localization, $q, $location, DockerCacheProvider, Storage) {
 
         if ($rootScope.features.docker !== 'enabled') {
             return;
@@ -13,8 +13,6 @@
         var service = {cache: {}, jobs: {}, version: dockerVersions.dockerVersion};
         var containerActions = ['start', 'stop', 'pause', 'unpause', 'inspect', 'restart', 'kill', 'logs', 'remove'];
         var imageActions = ['remove', 'inspect', 'history'];
-        var billingIsActive = false;
-        var mantaIsActive;
         var caches = ['containers', 'images', 'topImages', 'registriesList'];
         caches.forEach(function (cache) {
             service.cache[cache] = new DockerCacheProvider(cache === 'registriesList' ? {key: 'id'} : null);
@@ -103,45 +101,6 @@
         service.getAuditButtonLabel = function (event) {
             var isAction = event.parsedParams && (event.action || event.parsedParams.error);
             return isAction ? (event.parsedParams.error ? 'Error' : 'Clone') : '';
-        };
-
-        service.pingManta = function (callback) {
-            function errorPingManta() {
-                if ($location.path().indexOf('/dashboard') !== 0) {
-                    errorContext.emit(new Error(localization.translate(null,
-                        'docker',
-                        'Our operations team is investigating.'
-                    )));
-                }
-            }
-            function storagePing(billingEnabled) {
-                Storage.ping(billingEnabled, true).then(function () {
-                    mantaIsActive = true;
-                    callback();
-                }, function () {
-                    mantaIsActive = false;
-                    if (billingEnabled) {
-                        errorPingManta();
-                    }
-                });
-            }
-            if (billingIsActive && mantaIsActive !== undefined) {
-                if (mantaIsActive) {
-                    callback();
-                } else {
-                    errorPingManta();
-                }
-            } else {
-                Account.getAccount().then(function (account) {
-                    var billingEnabled = account.provisionEnabled;
-                    if (billingEnabled) {
-                        billingIsActive = true;
-                    }
-                    storagePing(billingEnabled);
-                }, function () {
-                    errorPingManta();
-                });
-            }
         };
 
         service.pingHosts = function () {
@@ -875,7 +834,7 @@
             });
         };
 
-        service.pingManta(function () {
+        Storage.pingManta(function () {
             service.getRegistriesList({cache: true});
         });
 

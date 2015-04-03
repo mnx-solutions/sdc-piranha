@@ -5,12 +5,13 @@
         'DTrace.ScriptsController', [
             '$scope',
             'DTrace',
+            'Storage',
             'Account',
             'requestContext',
             'localization',
             'PopupDialog',
             '$location',
-            function ($scope, DTrace, Account, requestContext, localization, PopupDialog, $location) {
+            function ($scope, DTrace, Storage, Account, requestContext, localization, PopupDialog, $location) {
                 localization.bind('dtrace', $scope);
                 requestContext.setUpRenderContext('dtrace.scripts', $scope, {
                     title: localization.translate(null, 'dtrace', 'See my Joyent DTrace Scripts')
@@ -123,7 +124,9 @@
                     }, true);
                 };
 
-                loadList();
+                Storage.pingManta(function () {
+                    loadList();
+                });
 
             }
         ]);

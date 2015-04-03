@@ -9,10 +9,11 @@
             'Docker',
             '$q',
             'PopupDialog',
+            'Storage',
             '$location',
             '$filter',
             'Account',
-            function ($scope, requestContext, localization, Docker, $q, PopupDialog, $location, $filter, Account) {
+            function ($scope, requestContext, localization, Docker, $q, PopupDialog, Storage, $location, $filter, Account) {
                 var CURRENT_PAGE_ACTION = 'docker.containers';
 
                 localization.bind('docker', $scope);
@@ -376,7 +377,7 @@
                 $scope.placeHolderText = 'filter containers';
                 $scope.tabFilterField = 'containers';
 
-                Docker.pingManta(function () {
+                Storage.pingManta(function () {
                     listAllContainers(true);
                 });
 

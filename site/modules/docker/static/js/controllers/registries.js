@@ -8,10 +8,11 @@
             'Docker',
             'Account',
             'PopupDialog',
+            'Storage',
             'localization',
             '$location',
 
-            function ($scope, $q, Docker, Account, PopupDialog, localization, $location) {
+            function ($scope, $q, Docker, Account, PopupDialog, Storage, localization, $location) {
 
                 $scope.loading = true;
                 $scope.newRegistryDialogOpening = false;
@@ -26,7 +27,7 @@
 
                 $scope.registries = [];
 
-                Docker.pingManta(function () {
+                Storage.pingManta(function () {
                     Docker.getRegistriesList({cache: true}).then(function (list) {
                         $scope.registries = ng.copy(list);
                         $scope.registries.forEach(function (registry) {

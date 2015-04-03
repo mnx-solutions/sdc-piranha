@@ -10,8 +10,9 @@
             '$rootScope',
             '$location',
             'localization',
+            'Storage',
 
-            function ($scope, Docker, PopupDialog, Account, $rootScope, $location, localization) {
+            function ($scope, Docker, PopupDialog, Account, $rootScope, $location, localization, Storage) {
                 var REMOVED_CONTAINER_STATUS = 'Deleted';
                 $scope.loading = true;
                 $scope.containers = [];
@@ -67,7 +68,7 @@
                     dateRangeValidation();
                 });
 
-                Docker.pingManta(function () {
+                Storage.pingManta(function () {
                     Docker.listContainers({cache: true, host: 'All', options: {all: true}}).then(function (containers) {
                         $scope.containers = angular.copy(containers);
                         $scope.containers.forEach(function (container) {

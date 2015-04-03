@@ -13,8 +13,9 @@
         'PopupDialog',
         'Docker',
         'Account',
+        'Storage',
 
-        function ($scope, $rootScope, $q, requestContext, localization, $location, Datacenter, Image, PopupDialog, Docker, Account) {
+        function ($scope, $rootScope, $q, requestContext, localization, $location, Datacenter, Image, PopupDialog, Docker, Account, Storage) {
             localization.bind('docker.index', $scope);
             requestContext.setUpRenderContext('docker.index', $scope, {
                 title: localization.translate(null, 'docker', 'See my Joyent Docker Instances')
@@ -101,7 +102,7 @@
                     $scope.dockerMachines = dockerMachines.filter(function (machine) {
                         return machine.primaryIp;
                     });
-                    Docker.pingManta(function () {
+                    Storage.pingManta(function () {
                         $scope.dockerMachines.forEach(function (machine) {
                             if (!machine.prohibited) {
                                 getDockerHostInfo(machine);

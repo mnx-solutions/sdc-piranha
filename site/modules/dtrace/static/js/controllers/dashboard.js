@@ -9,12 +9,13 @@
         'localization',
         '$location',
         'Datacenter',
+        'Storage',
         'Image',
         'PopupDialog',
         'DTrace',
         'Account',
 
-        function ($scope, $rootScope, $q, requestContext, localization, $location, Datacenter, Image, PopupDialog, DTrace, Account) {
+        function ($scope, $rootScope, $q, requestContext, localization, $location, Datacenter, Storage, Image, PopupDialog, DTrace, Account) {
             localization.bind('dtrace.index', $scope);
             requestContext.setUpRenderContext('dtrace.index', $scope, {
                 title: localization.translate(null, 'dtrace', 'See my Joyent DTrace Instances')
@@ -53,24 +54,26 @@
                 $scope.data.datacenter = $scope.datacenters[0].name;
             });
 
-            $q.all([
-                $q.when(DTrace.listHosts()),
-                Account.getAccount()
-            ]).then(function (result) {
-                $scope.dtraceMachines = [];
-                var dtraceMachines = result[0] || [];
-                if (dtraceMachines.length > 0) {
-                    $scope.dtraceMachines = dtraceMachines.filter(function (machine) {
-                        getHostStatus(machine);
-                        return machine.primaryIp;
-                    });
-                }
-                var account = result[1] || {};
-                $scope.provisionEnabled = account.provisionEnabled;
-                $scope.loading = false;
-            }, function (err) {
-                $scope.loading = false;
-                PopupDialog.errorObj(err);
+            Storage.pingManta(function () {
+                $q.all([
+                    $q.when(DTrace.listHosts()),
+                    Account.getAccount()
+                ]).then(function (result) {
+                    $scope.dtraceMachines = [];
+                    var dtraceMachines = result[0] || [];
+                    if (dtraceMachines.length > 0) {
+                        $scope.dtraceMachines = dtraceMachines.filter(function (machine) {
+                            getHostStatus(machine);
+                            return machine.primaryIp;
+                        });
+                    }
+                    var account = result[1] || {};
+                    $scope.provisionEnabled = account.provisionEnabled;
+                    $scope.loading = false;
+                }, function (err) {
+                    $scope.loading = false;
+                    PopupDialog.errorObj(err);
+                });
             });
 
             $scope.$watch('data.datacenter', function (newVal) {

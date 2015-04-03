@@ -5,9 +5,12 @@ window.fn = [];
     app.factory('Storage', [
         'serverTab',
         '$q',
+        'Account',
+        'errorContext',
+        'localization',
         'PopupDialog',
         '$location',
-        function (serverTab, $q, PopupDialog, $location) {
+        function (serverTab, $q, Account, errorContext, localization, PopupDialog, $location) {
 
             var service = {};
             var resourceErrors = [];
@@ -107,6 +110,48 @@ window.fn = [];
                 return serverTab.call({
                     name: 'StorageMantaUrl'
                 }).promise;
+            };
+
+            var billingIsActive = false;
+            var mantaIsActive;
+
+            service.pingManta = function (callback) {
+                function errorPingManta() {
+                    if ($location.path().indexOf('/dashboard') !== 0) {
+                        errorContext.emit(new Error(localization.translate(null,
+                            'docker',
+                            'Our operations team is investigating.'
+                        )));
+                    }
+                }
+                function storagePing(billingEnabled) {
+                    service.ping(billingEnabled, true).then(function () {
+                        mantaIsActive = true;
+                        callback();
+                    }, function () {
+                        mantaIsActive = false;
+                        if (billingEnabled) {
+                            errorPingManta();
+                        }
+                    });
+                }
+                if (billingIsActive && mantaIsActive !== undefined) {
+                    if (mantaIsActive) {
+                        callback();
+                    } else {
+                        errorPingManta();
+                    }
+                } else {
+                    Account.getAccount().then(function (account) {
+                        var billingEnabled = account.provisionEnabled;
+                        if (billingEnabled) {
+                            billingIsActive = true;
+                        }
+                        storagePing(billingEnabled);
+                    }, function () {
+                        errorPingManta();
+                    });
+                }
             };
 
             return service;

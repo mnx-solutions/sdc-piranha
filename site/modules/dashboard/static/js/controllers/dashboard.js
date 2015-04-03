@@ -3,10 +3,10 @@
 (function (ng, app) {
     app.controller('Dashboard.IndexController', ['$scope', '$q', 'requestContext', 'Account', 'Zendesk', 'Machine',
         'localization', '$http', '$cookies', 'slb.Service', '$rootScope', 'Support', 'fileman', 'Utilization', 'util',
-        'Datacenter', 'FreeTier', '$location', 'Docker',
+        'Datacenter', 'FreeTier', '$location', 'Docker', 'Storage',
 
         function ($scope, $q, requestContext, Account, Zendesk, Machine, localization, $http, $cookies, slbService,
-                  $rootScope, Support, fileman, Utilization, util, Datacenter, FreeTier, $location, Docker) {
+                  $rootScope, Support, fileman, Utilization, util, Datacenter, FreeTier, $location, Docker, Storage) {
             localization.bind('dashboard', $scope);
             requestContext.setUpRenderContext('dashboard.index', $scope);
             $scope.loading = true;
@@ -50,7 +50,7 @@
             ];
             if ($rootScope.features.docker === 'enabled') {
                 dashboardOperations = dashboardOperations.concat([
-                    $q.when(Docker.pingManta(function () {
+                    $q.when(Storage.pingManta(function () {
                         Docker.listHosts().then(function (machines) {
                             $scope.dockerMachines = machines || [];
                             $scope.dockerMachinesCount = machines.filter(function (dockerMachine) {
