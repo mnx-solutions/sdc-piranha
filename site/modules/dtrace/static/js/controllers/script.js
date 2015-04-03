@@ -18,6 +18,7 @@
 
                 $scope.loading = true;
                 $scope.scriptId = requestContext.getParam('id') === 'create' ? false : requestContext.getParam('id');
+                $scope.devToolsPath = DTrace.devToolsLink();
 
                 var errorCallback = function (err) {
                     $scope.loading = false;
@@ -25,7 +26,7 @@
                 };
 
                 var indexPage =  function () {
-                    $location.path('/dtrace/scripts');
+                    $location.path('/devtools/dtrace/scripts');
                 };
 
                 var newScript = function () {
@@ -37,26 +38,25 @@
 
                 var oldScriptName;
                 var scriptsList = [];
-                Storage.pingManta(function () {
-                    DTrace.getScriptsList().then(function (list) {
-                        scriptsList = list;
-                        if ($scope.scriptId) {
-                            $scope.script = scriptsList.find(function (script) {
-                                return script.id === $scope.scriptId;
-                            });
-                            if ($scope.script) {
-                                $scope.scriptName = oldScriptName = $scope.script.name;
-                            } else {
-                                newScript();
-                            }
+                DTrace.getScriptsList().then(function (list) {
+                    Storage.pingManta();
+                    scriptsList = list;
+                    if ($scope.scriptId) {
+                        $scope.script = scriptsList.find(function (script) {
+                            return script.id === $scope.scriptId;
+                        });
+                        if ($scope.script) {
+                            $scope.scriptName = oldScriptName = $scope.script.name;
                         } else {
                             newScript();
                         }
-                        $scope.loading = false;
-                    }, function (error) {
-                        PopupDialog.error(null, error);
-                        indexPage();
-                    });
+                    } else {
+                        newScript();
+                    }
+                    $scope.loading = false;
+                }, function (error) {
+                    PopupDialog.error(null, error);
+                    indexPage();
                 });
 
                 $scope.$watch('scriptName', function (name) {

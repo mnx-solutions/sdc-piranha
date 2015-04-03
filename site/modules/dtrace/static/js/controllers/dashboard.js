@@ -34,6 +34,7 @@
                 datacenter: '',
                 imageId: ''
             };
+            $scope.devToolsPath = DTrace.devToolsLink();
 
             var errorCallback = function (err) {
                 $scope.loading = false;
@@ -55,26 +56,25 @@
                 $scope.data.datacenter = $scope.datacenters[0].name;
             });
 
-            Storage.pingManta(function () {
-                $q.all([
-                    $q.when(DTrace.listHosts()),
-                    Account.getAccount()
-                ]).then(function (result) {
-                    $scope.dtraceMachines = [];
-                    var dtraceMachines = result[0] || [];
-                    if (dtraceMachines.length > 0) {
-                        $scope.dtraceMachines = dtraceMachines.filter(function (machine) {
-                            getHostStatus(machine);
-                            return machine.primaryIp;
-                        });
-                    }
-                    var account = result[1] || {};
-                    $scope.provisionEnabled = account.provisionEnabled;
-                    $scope.loading = false;
-                }, function (err) {
-                    $scope.loading = false;
-                    PopupDialog.errorObj(err);
-                });
+            $q.all([
+                $q.when(DTrace.listHosts()),
+                Account.getAccount()
+            ]).then(function (result) {
+                $scope.dtraceMachines = [];
+                var dtraceMachines = result[0] || [];
+                var account = result[1] || {};
+                $scope.provisionEnabled = account.provisionEnabled;
+                if (dtraceMachines.length > 0 && $scope.provisionEnabled) {
+                    Storage.pingManta();
+                    $scope.dtraceMachines = dtraceMachines.filter(function (machine) {
+                        getHostStatus(machine);
+                        return machine.primaryIp;
+                    });
+                }
+                $scope.loading = false;
+            }, function (err) {
+                $scope.loading = false;
+                PopupDialog.errorObj(err);
             });
 
             $scope.$watch('data.datacenter', function (newVal) {
@@ -121,7 +121,7 @@
 
             $scope.completeAccount = function () {
                 Account.checkProvisioning({btnTitle: 'Submit and Access DTrace'}, null, null, function () {
-                    $location.path('/dtrace');
+                    $location.path('/devtools/dtrace');
                 }, false);
             };
         }

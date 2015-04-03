@@ -116,6 +116,7 @@ window.fn = [];
             var mantaIsActive;
 
             service.pingManta = function (callback) {
+                callback = callback || angular.noop;
                 function errorPingManta() {
                     if ($location.path().indexOf('/dashboard') !== 0) {
                         errorContext.emit(new Error(localization.translate(null,

@@ -9,11 +9,21 @@
         'Machine',
         function (serverTab, PopupDialog, $q, $rootScope, Machine) {
 
-            if ($rootScope.features.dtrace !== 'enabled') {
-                return;
-            }
-
             var service = {};
+
+            service.devToolsLink = function () {
+                var devToolsLink = '';
+                if ($rootScope.features.mdb === 'enabled') {
+                    devToolsLink = '#!/devtools/mdb';
+                } else if ($rootScope.features.dtrace === 'enabled') {
+                    devToolsLink = '#!/devtools/dtrace';
+                }
+                return devToolsLink;
+            };
+
+            if ($rootScope.features && $rootScope.features.dtrace !== 'enabled') {
+                return service;
+            }
 
             service.createScript = function (script) {
                 return serverTab.call({

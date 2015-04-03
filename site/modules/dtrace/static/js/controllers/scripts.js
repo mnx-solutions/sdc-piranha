@@ -19,15 +19,23 @@
 
                 $scope.loading = true;
                 $scope.checkedItems = [];
+                $scope.devToolsPath = DTrace.devToolsLink();
 
                 var loadList = function () {
                     DTrace.getScriptsList().then(function (list) {
-                        $scope.scripts = list && list.filter(function (script) { return script.hasOwnProperty('id') }) || [];
+                        Storage.pingManta();
+                        $scope.scripts = [];
+                        if (list) {
+                            $scope.scripts = list.filter(function (script) {
+                                return script.hasOwnProperty('id');
+                            });
+                        }
                         $scope.loading = false;
                     }, errorCallback);
                 };
 
                 var errorCallback = function (err) {
+                    Storage.pingManta();
                     $scope.loading = false;
                     PopupDialog.errorObj(err);
                 };
@@ -47,7 +55,7 @@
                             return object.actionInProgress;
                         },
                         _getter: function (object) {
-                            return '<a href="#!/dtrace/script/' + object.id + '">' + object.name + '</a>';
+                            return '<a href="#!/devtools/dtrace/script/' + object.id + '">' + object.name + '</a>';
                         },
                         active: true
                     },
@@ -118,18 +126,16 @@
                 $scope.placeHolderText = 'filter scripts';
 
                 $scope.createScript = function () {
-                    var path = '/dtrace/script/create';
+                    var path = '/devtools/dtrace/script/create';
                     Account.checkProvisioning({btnTitle: 'Submit and Access DTrace Scripts'}, function () {
                         $location.path(path);
                     }, null, function (isSuccess) {
-                        path = isSuccess ? path : '/dtrace/scripts';
+                        path = isSuccess ? path : '/devtools/dtrace/scripts';
                         $location.path(path);
                     }, true);
                 };
 
-                Storage.pingManta(function () {
-                    loadList();
-                });
+                loadList();
 
             }
         ]);

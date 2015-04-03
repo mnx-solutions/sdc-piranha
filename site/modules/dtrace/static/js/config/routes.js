@@ -7,19 +7,19 @@ window.JP.main.config(['routeProvider', function (routeProvider) {
     }
 
     routeProvider
-        .when('/dtrace', {
+        .when('/devtools/dtrace', {
             title: 'DTrace',
             action: 'dtrace.index'
-        }).when('/dtrace/heatmap', {
+        }).when('/devtools/dtrace/heatmap', {
             title: 'Heatmap',
             action: 'dtrace.heatmap'
-        }).when('/dtrace/flamegraph', {
+        }).when('/devtools/dtrace/flamegraph', {
             title: 'Flame Graph',
             action: 'dtrace.flamegraph'
-        }).when('/dtrace/scripts', {
+        }).when('/devtools/dtrace/scripts', {
             title: 'Scripts',
             action: 'dtrace.scripts'
-        }).when('/dtrace/script/:id', {
+        }).when('/devtools/dtrace/script/:id', {
             title: 'Script Details',
             action: 'dtrace.script'
         });

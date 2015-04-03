@@ -1,7 +1,7 @@
 <div data-ng-controller="DTrace.DtraceController" class="container-fluid container-position">
     <div class="row">
         <ul class="breadcrumb">
-            <li><a href="#!/dtrace">DTrace</a></li>
+            <li><a data-ng-href="{{devToolsPath}}">Dev Tools</a></li>
         </ul>
         <h3 class="page-title">{{title}}</h3>
         <create-dtrace-button data-ng-show="hosts && !hosts.length"></create-dtrace-button>

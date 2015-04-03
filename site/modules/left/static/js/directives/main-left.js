@@ -1,7 +1,7 @@
 'use strict';
 
 (function (app, ng) {
-    app.directive('mainLeft', ['$rootScope', 'Support', 'requestContext', function ($rootScope, Support, requestContext) {
+    app.directive('mainLeft', ['$rootScope', 'DTrace', 'Support', 'requestContext', function ($rootScope, DTrace, Support, requestContext) {
         return {
             templateUrl: 'left/static/partials/menu.html',
             scope: true,
@@ -35,6 +35,8 @@
                 $scope.toggleSideBar = function () {
                     $scope.sideBarMin = !$scope.sideBarMin;
                 };
+
+                $scope.devToolsPath = DTrace.devToolsLink();
 
                 $scope.clickUsage = function (usageType) {
                     var now = new Date();
