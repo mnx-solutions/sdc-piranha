@@ -22,7 +22,7 @@ if [ -f $LOCALFOLDER/node-server-manifest.xml ]; then
     /usr/sbin/svccfg import $LOCALFOLDER/node-server-manifest.xml
     /usr/sbin/svcadm clear $DTRACESERVICE
     touch MARKER
-    echo "comlete"
+    echo "complete"
 else
     echo "error occurred upon cloning the repository"
 fi

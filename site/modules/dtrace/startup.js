@@ -15,6 +15,7 @@ var dtrace = function execute(scope) {
     var uuid = require('../../static/vendor/uuid/uuid.js');
 
     var defaultScriptsList = [{name: 'all syscall'}, {name: 'all syscall for process', pid: true}];
+    var DTRACE_PORT = 8000;
 
     function getScriptsList(call, client, type, callback) {
         if (type === 'default') {
@@ -157,69 +158,101 @@ var dtrace = function execute(scope) {
         }
     });
 
+    server.onCall('DtraceClose', {
+        verify: function (data) {
+            return data.id && data.id.length && data.host && data.host.length;
+        },
+        handler: function (call) {
+            Dtrace.createClient(call, call.data.host, function (error, client) {
+                if (error) {
+                    return call.done(error);
+                }
+                client.close({uuid: call.data.id}, function (err) {
+                    call.done(err);
+                });
+            });
+        }
+    });
+
     server.onCall('DtraceExecute', {
         verify: function (data) {
             return data.host && data.host.length && data.dtraceObj && data.dtraceObj.length;
         },
         handler: function (call) {
-            var path = '/main/dtrace/exec/' + uuid();
+            var id = uuid();
+            var host = call.data.host;
+            var path = '/main/dtrace/exec/' + id;
             httpServer.setMaxListeners(0);
 
             var wss = new WebSocket.Server({
                 server: httpServer,
                 path: path
             });
-            call.done(null, path);
-            wss.once('connection', function (socket) {
-                var dtraceObj;
-                try {
-                    dtraceObj = JSON.parse(call.data.dtraceObj);
-                } catch (ex) {
-                    call.log.error('Error while JSON parsing dtrace object', ex);
-                    return;
+
+            Dtrace.createClient(call, host, function (error, client) {
+                if (error) {
+                    return call.done(error);
                 }
-
-                var execType = dtraceObj.type;
-                call.log.info('User executed %s', execType);
-
-                var wsc = new WebSocket('ws://' + call.data.host);
-
-                wsc.on('ping', wsc.pong);
-
-                var pingClient = setInterval(function () {
-                    socket.send('ping');
-                }, 20 * 1000);
-
-                function closeSocket() {
-                    clearInterval(pingClient);
-                    wsc.close();
-                    socket.close();
-                }
-
-                wsc.onmessage = function (event) {
-                    if (socket.readyState === WebSocket.OPEN) {
-                        socket.send(event.data);
-                        if (execType === 'flamegraph') {
-                            wsc.send(call.data.dtraceObj);
+                client.setup({uuid: id}, function (err, dtracePath) {
+                    if (err) {
+                        return call.done(err);
+                    }
+                    wss.once('connection', function (socket) {
+                        var wsc = new WebSocket('ws://' + host + ':' + DTRACE_PORT +'/' + id);
+                        var execType;
+                        try {
+                            execType = JSON.parse(call.data.dtraceObj).type;
+                        } catch (ex) {
+                            call.log.error('Error while JSON parsing dtrace object', ex);
+                            closeSocket();
+                            return;
                         }
-                    }
-                };
-                wsc.onopen = function () {
-                    if (wsc.readyState === WebSocket.OPEN) {
-                        wsc.send(call.data.dtraceObj);
-                    }
-                };
-                wsc.onerror = function (event) {
-                    if (socket.readyState === WebSocket.OPEN) {
-                        socket.send(event.data);
-                    }
-                    closeSocket();
-                };
-                wsc.onclose = function (event) {
-                    closeSocket();
-                };
-                socket.on('error', closeSocket);
-                socket.on('close', closeSocket);
+
+                        call.log.info('User executed %s', execType);
+                        wsc.on('ping', wsc.pong);
+
+                        var pingClient = setInterval(function () {
+                            if (socket.readyState === WebSocket.OPEN) {
+                                socket.send('ping');
+                            } else {
+                                closeSocket();
+                            }
+                        }, 10 * 1000);
+
+                        function closeSocket () {
+                            clearInterval(pingClient);
+                            wsc.close();
+                            socket.close();
+                        }
+
+                        wsc.onmessage = function (event) {
+                            if (socket.readyState === WebSocket.OPEN) {
+                                socket.send(event.data);
+                                if (execType === 'flamegraph') {
+                                    wsc.send(call.data.dtraceObj);
+                                }
+                            }
+                        };
+                        wsc.onopen = function () {
+                            if (wsc.readyState === WebSocket.OPEN) {
+                                wsc.send(call.data.dtraceObj);
+                            }
+                        };
+                        wsc.onerror = function (event) {
+                            if (socket.readyState === WebSocket.OPEN) {
+                                socket.send('Error');
+                            }
+                            closeSocket();
+                        };
+                        wsc.onclose = function (event) {
+                            closeSocket();
+                        };
+                        socket.on('error', closeSocket);
+                        // not working if using loadBalancer
+                        socket.on('close', closeSocket);
+                    });
+                    call.done(null, {path: path, id: id});
+                });
             });
         }
     });

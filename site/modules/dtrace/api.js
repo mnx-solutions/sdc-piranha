@@ -87,6 +87,12 @@ module.exports = function execute(scope, register) {
         },
         listProcesses: {
             path: '/process-list'
+        },
+        setup: {
+            path: '/setup/:uuid'
+        },
+        close: {
+            path: '/close/:uuid'
         }
     };
 
