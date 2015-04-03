@@ -42,7 +42,10 @@
                         id: 'name',
                         name: 'Name',
                         sequence: 1,
-                        type: 'html',
+                        type: 'progress',
+                        _inProgress: function (object) {
+                            return object.actionInProgress;
+                        },
                         _getter: function (object) {
                             return '<a href="#!/dtrace/script/' + object.id + '">' + object.name + '</a>';
                         },
