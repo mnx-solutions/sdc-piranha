@@ -334,10 +334,7 @@
                             callback(error, result);
                         }
                         if (rootPath !== path && userAction && scope.userConfig.loaded()) {
-                            var config = scope.userConfig.$child('fileman');
-                            config.path = path;
-                            config.dirty(true);
-                            config.$save();
+                            fileman.saveFilemanConfig(path);
                         }
                         return null;
                     });
@@ -445,10 +442,7 @@
                                 return;
                             }
                             if (rootPath !== scope.currentPath && userAction && scope.userConfig.loaded()) {
-                                var config = scope.userConfig.$child('fileman');
-                                config.path = scope.currentPath;
-                                config.dirty(true);
-                                config.$save();
+                                fileman.saveFilemanConfig(scope.currentPath);
                             }
                         });
                     }

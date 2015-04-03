@@ -67,28 +67,28 @@
             Account.getAccount().then(function (account) {
                 scope.provisionEnabled = account.provisionEnabled;
                 if (scope.provisionEnabled) {
-                    cdn.getApiKey().then(function (key) {
-                        if (key) {
-                            scope.apiKey = key;
-                        }
-                        loadConfigurations();
-                    }, function (err) {
-                        if (err) {
-                            showError(err.message || err, function () {
-                                var path = '/manta/intro';
-                                if (err.name === 'JsonParseError') {
-                                    path = '/manta/files';
-                                    var filemanConfig = Account.getUserConfig().$child('fileman');
-                                    filemanConfig['path'] = '/stor/.joyent/portal/cdn/Fastly/config.json';
-                                    filemanConfig.dirty(true);
-                                    filemanConfig.$save();
-                                }
-                                $location.url(path);
-                                $location.replace();
-                            });
-                            return;
-                        }
-                        scope.loading = false;
+                    var path = '/manta/intro';
+                    Storage.ping().then(function () {
+                        cdn.getApiKey().then(function (key) {
+                            if (key) {
+                                scope.apiKey = key;
+                            }
+                            loadConfigurations();
+                        }, function (err) {
+                            if (err) {
+                                showError(err.message || err, function () {
+                                    if (err.name === 'JsonParseError') {
+                                        path = '/manta/files';
+                                        fileman.saveFilemanConfig('/stor/.joyent/portal/cdn/Fastly/config.json');
+                                    }
+                                    $location.path(path);
+                                });
+                                return;
+                            }
+                            scope.loading = false;
+                        });
+                    }, function () {
+                        $location.path(path);
                     });
                 } else {
                     scope.loading = false;
