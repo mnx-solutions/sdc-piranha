@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 var vasync = require('vasync');
 var restify = require('restify');
@@ -11,11 +11,11 @@ var startupScript = fs.readFileSync(__dirname + '/data/startup.sh', 'utf8');
 var DTRACEPORT = 8000;
 
 var requestMap = {
-    'GET': 'get',
-    'PUT': 'put',
-    'POST': 'post',
-    'DELETE': 'del',
-    'HEAD': 'head'
+    GET: 'get',
+    PUT: 'put',
+    POST: 'post',
+    DELETE: 'del',
+    HEAD: 'head'
 };
 
 function HostUnreachable(host) {
@@ -23,7 +23,7 @@ function HostUnreachable(host) {
 }
 
 function formatUrl(url, params) {
-    //noinspection JSLint
+    // noinspection JSLint
     return url.replace(/(?::(\w+))/g, function (part, key) {
         var value = params[key];
         delete params[key];
@@ -66,8 +66,8 @@ module.exports = function execute(scope, register) {
             };
 
             var client = restify.createJsonClient(this.options);
-            client[requestMap[options.method]](options, function(err, req, res, data) {
-                 callback(err, data);
+            client[requestMap[options.method]](options, function (err, req, res, data) {
+                callback(err, data);
             });
         };
     }

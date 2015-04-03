@@ -22,7 +22,9 @@
         'util',
         'Limits',
         'errorContext',
-        function ($scope, $filter, requestContext, $timeout, Machine, Datacenter, Package, Account, Network, Image, $location, localization, $q, $qe, $$track, PopupDialog, $cookies, $rootScope, FreeTier, loggingService, util, Limits, errorContext) {
+        function ($scope, $filter, requestContext, $timeout, Machine, Datacenter, Package, Account, Network, Image,
+            $location, localization, $q, $qe, $$track, PopupDialog, $cookies, $rootScope, FreeTier, loggingService,
+            util, Limits, errorContext) {
 
             'use strict';
 
@@ -38,7 +40,9 @@
             var SSH_STEP_NAME = 'SSH Key';
             var DOCKERHOST_MINIMUM_MEMORY = 512;
 
-            $scope.preSelectedImageId = (requestContext.getParam('imageid') === 'custom') ? null : requestContext.getParam('imageid');
+            $scope.preSelectedImageId = requestContext.getParam('imageid') === 'custom' ? null :
+                requestContext.getParam('imageid');
+
             $scope.hostSpecification = $scope.preSelectedImageId && $location.search().specification;
             $scope.preSelectedImage = null;
 
@@ -65,7 +69,9 @@
             $scope.campaignId = ($cookies.campaignId || 'default');
             $scope.preSelectedData = $rootScope.popCommonConfig('preSelectedData');
 
-            $scope.instanceType = ($scope.preSelectedImageId || $location.path().indexOf('/custom') > -1) ? 'Saved' : 'Public';
+            $scope.instanceType = ($scope.preSelectedImageId || $location.path().indexOf('/custom') > -1) ?
+                'Saved' : 'Public';
+
             if ($scope.preSelectedData && $scope.preSelectedData.preSelectedImageId) {
                 $scope.preSelectedImageId = $scope.preSelectedData.preSelectedImageId;
             }
@@ -218,7 +224,7 @@
                         return;
                     }
                     var machineData = machine || $scope.data;
-                    //we can return this back when make ssh not required for windows
+                    // we can return this back when make ssh not required for windows
                     if ($scope.keys.length === 0) {
                         $rootScope.commonConfig('provisionBundle', {
                             manualCreate: false,
@@ -227,11 +233,11 @@
                         });
                         $location.path('/compute/ssh');
                     } else if (!$scope.provisioningInProgress) {
-                        //add flag for docker host
+                        // add flag for docker host
                         if ($scope.hostSpecification) {
                             machineData.specification = $scope.hostSpecification;
+                            loggingService.log('info', 'Provisioning ' + machineData.specification);
                         }
-
                         $scope.provisioningInProgress = true;
                         waitForCreatingMachinesToFinish(function () {
                             Machine.provisionMachine(machineData).done(function (err, job) {
@@ -251,14 +257,17 @@
                                     });
                                     if (freeDatacenters.length > 0) {
                                         freeDatacenters = freeDatacenters.join(', ');
-                                        messagePart2 = ', and you still have the capacity for free tier instances in ' + freeDatacenters + '.';
+                                        messagePart2 = ', and you still have the capacity for free tier instances in ' +
+                                            freeDatacenters + '.';
                                     }
-                                    err.message = err.message + ' This limitation applies per data center' + messagePart2;
+                                    err.message = err.message + ' This limitation applies per data center' +
+                                        messagePart2;
                                 }
 
                                 if (err && err.message && err.message.indexOf(quotaExceededHeader) === 0) {
                                     var redirectUrl = '/compute/create/simple';
-                                    PopupDialog.error(null, err.message.substr(quotaExceededHeader.length), function () {
+                                    PopupDialog.error(null, err.message.substr(quotaExceededHeader.length),
+                                        function () {
                                         if (err.message.indexOf('Free tier offering is limited') === -1) {
                                             redirectUrl = '/dashboard';
                                             $scope.zenboxDialog({
@@ -335,7 +344,8 @@
                     submitBillingInfo.appendPopupMessage = 'Provisioning will now commence.';
                 }
                 if (machine && machine.freetier) {
-                    submitBillingInfo.beforeBillingMessage = ' Note: Free Dev Tier customers will not be billed until the promotional term expires as this is merely a validation step.';
+                    submitBillingInfo.beforeBillingMessage = ' Note: Free Dev Tier customers will not be billed until' +
+                        'the promotional term expires as this is merely a validation step.';
                 }
                 Account.checkProvisioning(submitBillingInfo, function () {
                     $scope.account.provisionEnabled = true;
@@ -424,7 +434,7 @@
                 return deferred.promise;
             }
 
-            function setupSimpleImages (simpleImages, networks, isFree) {
+            function setupSimpleImages(simpleImages, networks, isFree) {
                 if (simpleImages && simpleImages.length > 0) {
                     if ($scope.datacenters && $scope.datacenters.length > 0) {
                         $scope.datacenters.forEach(function (datacenter) {
@@ -508,9 +518,11 @@
                 var limitsResult = result[4];
                 var freeTierOptionsResult = result[5];
 
-                if (($scope.account.error && !datacentersResult.error) || (keysResult.error && !datacentersResult.error)) {
+                if (($scope.account.error && !datacentersResult.error) ||
+                    (keysResult.error && !datacentersResult.error)) {
                     $scope.loading = false;
-                    PopupDialog.errorObj(keysResult.error ? keysResult.error : {error: 'SDC call timed out. Please refresh the page.'});
+                    PopupDialog.errorObj(keysResult.error ? keysResult.error :
+                        {error: 'SDC call timed out. Please refresh the page.'});
                     return;
                 }
 
@@ -583,7 +595,7 @@
                 }
                 setupSimpleImages(simpleImages, networks);
                 if ($scope.isMantaEnabled && !$scope.data.datacenter) {
-                    //TODO: Handle all other DC drop-downs
+                    // TODO: Handle all other DC drop-downs
                     $scope.userConfig = Account.getUserConfig().$child('datacenter');
                     $scope.userConfig.$load(function (error, config) {
                         if (config.value && !$scope.data.datacenter && !$scope.preSelectedImage) {
@@ -600,7 +612,9 @@
                 }
 
                 if ($scope.preSelectedImageId) {
-                    $scope.preSelectedImage = Image.image({id: $scope.preSelectedImageId, datacenter: $rootScope.commonConfig('datacenter')});
+                    $scope.preSelectedImage = Image.image({
+                        id: $scope.preSelectedImageId, datacenter: $rootScope.commonConfig('datacenter')
+                    });
                     $q.when($scope.preSelectedImage).then(function (image) {
                         var datacenter = null;
                         if (externalInstanceParams) {
@@ -655,7 +669,8 @@
                         $scope.data.opsys = 'All';
                     }
                 }
-                $scope.loading = provisionBundle && provisionBundle.manualCreate === false && provisionBundle.allowCreate === true;
+                $scope.loading = provisionBundle && provisionBundle.manualCreate === false &&
+                    provisionBundle.allowCreate === true;
             }, function (err) {
                 $scope.loading = false;
                 PopupDialog.errorObj(err);
@@ -681,7 +696,8 @@
 
             $scope.$on('ssh-form:onKeyUpdated', function (event, keys) {
                 $scope.keys = keys;
-                if (keys.length > 0 && $scope.currentStep !== REVIEW_STEP_NAME && $scope.currentStep !== SSH_STEP_NAME) {
+                if (keys.length > 0 && $scope.currentStep !== REVIEW_STEP_NAME &&
+                    $scope.currentStep !== SSH_STEP_NAME) {
                     deleteProvisionStep(SSH_STEP_NAME);
                 } else {
                     addProvisionStep({
@@ -742,7 +758,8 @@
                         return network.public && network.active;
                     });
                     if (!isPublicNetworkChecked) {
-                        PopupDialog.message('Message', 'Cannot create ' + instanceType + ' host without Public network. Please select Public network.');
+                        PopupDialog.message('Message', 'Cannot create ' + instanceType +
+                            ' host without Public network. Please select Public network.');
                         return;
                     }
                 }
@@ -811,8 +828,8 @@
                 return parseInt(pkg.memory, 10);
             };
 
-            function setNetworks (datacenter) {
-                function configureNetworks (val) {
+            function setNetworks(datacenter) {
+                function configureNetworks(val) {
                     $scope.networks = ['', ''];
                     $scope.selectedNetworks.length = 0;
                     var confNetwork = {
@@ -1060,19 +1077,14 @@
                     return true;
                 }
                 var props = ['name', 'description'];
+                var term = $scope.filterModel.searchText.toLowerCase();
                 return props.some(function (prop) {
-                    if (item[prop] && item[prop].toLowerCase().indexOf($scope.filterModel.searchText.toLowerCase()) !== -1) {
-                        return true;
-                    }
-                    return false;
+                    return item[prop] && item[prop].toLowerCase().indexOf(term) !== -1;
                 });
             };
 
             $scope.filterDatasetsByOS = function (item) {
-                if ($scope.data.opsys !== 'All' && !item.os.match($scope.data.opsys)) {
-                    return false;
-                }
-                return true;
+                return $scope.data.opsys === 'All' || item.os.match($scope.data.opsys);
             };
 
             $scope.filterDatasetsByVisibility = function (item) {
@@ -1114,11 +1126,9 @@
                     if ($scope.datasetType !== item.type || item.freeTierHidden ||
                         isPackageTypeCollapsed && packageType === item.group) {
                         result = false;
-                    }
-                    else if (packageType && packageType !== item.group) {
+                    } else if (packageType && packageType !== item.group) {
                         result = isPackageTypeCollapsed && $scope.collapsedPackageTypes.indexOf(item.group) === -1;
-                    }
-                    else if ($scope.selectedDataset && $scope.selectedDataset.requirements) {
+                    } else if ($scope.selectedDataset && $scope.selectedDataset.requirements) {
                         var memory = item.memory && parseInt(item.memory, 10);
                         if (memory) {
                             var requirements = $scope.selectedDataset.requirements;
@@ -1139,7 +1149,8 @@
 
             $scope.filterPackageTypes = function (datasetType) {
                 return function (packageType) {
-                    return $scope.indexPackageTypes[packageType].indexOf(datasetType) > -1 && $scope.packages.filter($scope.filterPackagesByProp).some($scope.filterPackages(packageType));
+                    return $scope.indexPackageTypes[packageType].indexOf(datasetType) > -1 &&
+                        $scope.packages.filter($scope.filterPackagesByProp).some($scope.filterPackages(packageType));
                 };
             };
 
@@ -1159,7 +1170,9 @@
 
             function selectMinimalPackage(packageType, isPackageCollapsed) {
                 $scope.selectPackageType(packageType);
-                if ($scope.preSelectedData && $scope.preSelectedData.selectedPackageInfo && $scope.selectedPackage !== $scope.preSelectedData.selectedPackageInfo.id) {
+                if ($scope.preSelectedData && $scope.preSelectedData.selectedPackageInfo &&
+                    $scope.selectedPackage !== $scope.preSelectedData.selectedPackageInfo.id) {
+
                     $scope.selectedPackageInfo = $scope.preSelectedData.selectedPackageInfo;
                     if (!$scope.selectedPackage) {
                         $scope.selectPackage($scope.preSelectedData.selectedPackageInfo.id);
@@ -1173,7 +1186,9 @@
                         .filter($scope.filterPackagesByProp)
                         .filter($scope.filterPackages(packageType, isPackageCollapsed))
                         .forEach(function (pkg) {
-                            if (!minimalPackage || minimalPackage.memory > pkg.memory || (minimalPackage.memory === pkg.memory && pkg.group === 'Standard')) {
+                            if (!minimalPackage || minimalPackage.memory > pkg.memory ||
+                                minimalPackage.memory === pkg.memory && pkg.group === 'Standard') {
+
                                 minimalPackage = pkg;
                             }
                         });
@@ -1199,7 +1214,8 @@
                         var accordion = ng.element('#packagesAccordion');
                         if ($scope.filterModel.key === 'No filter') {
                             setDefaultAccordionBehavior(accordion);
-                            accordion.find('.panel-collapse.collapse').has('div.active').addClass('in').parent().find('a.collapsed').removeClass('collapsed');
+                            accordion.find('.panel-collapse.collapse').has('div.active').addClass('in').parent()
+                                .find('a.collapsed').removeClass('collapsed');
                         } else {
                             $scope.collapsedPackageTypes = [];
                             accordion.find('.collapse').addClass('in').end()
@@ -1258,12 +1274,12 @@
                     custom: {}
                 };
                 var selectedVersions = {
-                    public : {},
-                    custom : {}
+                    public: {},
+                    custom: {}
                 };
                 var manyVersions = {
-                    public : {},
-                    custom : {}
+                    public: {},
+                    custom: {}
                 };
                 var operatingSystems = {All: 1};
 
@@ -1276,7 +1292,8 @@
                     var datasetVersion = dataset.version;
                     var datasetVisibility = dataset.public ? 'public' : 'custom';
                     dataset.limit = checkLimit(dataset.id);
-                    var datasetListVersions = listVersions[datasetVisibility][datasetName] = listVersions[datasetVisibility][datasetName] || [];
+                    var datasetListVersions = listVersions[datasetVisibility][datasetName] =
+                        listVersions[datasetVisibility][datasetName] || [];
                     var datasetVersions = versions[datasetVisibility][datasetName];
 
                     if (!datasetVersions) {
@@ -1338,7 +1355,8 @@
                     return;
                 }
 
-                if ($scope.hostSpecification && $scope.hostSpecification === 'dockerhost' && $scope.features.dockerMemoryLimit === 'enabled') {
+                if ($scope.hostSpecification && $scope.hostSpecification === 'dockerhost' &&
+                    $scope.features.dockerMemoryLimit === 'enabled') {
                     packages = packages.filter(function (p) {
                         return p.memory >= DOCKERHOST_MINIMUM_MEMORY;
                     });
@@ -1443,7 +1461,9 @@
                         instance.description = datasetDescription;
                     }
 
-                    if (instanceDataset && instanceDataset.state === 'active' && (!unique[instance.dataset] || unique[instance.dataset].package !== instance.package)) {
+                    if (instanceDataset && instanceDataset.state === 'active' &&
+                        (!unique[instance.dataset] || unique[instance.dataset].package !== instance.package)) {
+
                         uniqueRecentInstances.push(instance);
                         unique[instance.dataset] = instance;
                     }
@@ -1467,7 +1487,8 @@
                             localization.translate(
                                 null,
                                 'machine',
-                                'CloudAPI is not responding in the {{name}} data center. Our operations team is investigating.',
+                                'CloudAPI is not responding in the {{name}} data center.' +
+                                    ' Our operations team is investigating.',
                                 {name: datacenter}
                             )
                         );
@@ -1561,7 +1582,8 @@
                     Account.checkProvisioning({btnTitle: 'Submit and Create Instance'}, function () {
                         var el = $scope.selectedPackageInfo;
                         $scope.zenboxDialog({
-                            dropboxID: $rootScope.zenboxParams.dropboxOrderPackageId || $rootScope.zenboxParams.dropboxID,
+                            dropboxID: $rootScope.zenboxParams.dropboxOrderPackageId ||
+                                $rootScope.zenboxParams.dropboxID,
                             request_subject: 'I want to order ' + el.description + ' compute instance',
                             request_description: 'API Name: ' + el.name
                         });

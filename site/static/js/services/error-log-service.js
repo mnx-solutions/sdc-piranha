@@ -38,7 +38,7 @@ window.JP.main.factory(
 
             // if our function has any other args passed in, pass them to the server too
             if (arguments.length > 2) {
-                for(var i = 2;i < arguments.length;i++) {
+                for (var i = 2; i < arguments.length; i++) {
                     postData.args.push(arguments[i]);
                 }
             }
@@ -51,8 +51,8 @@ window.JP.main.factory(
                 type: 'POST',
                 url: './account/log/error',
                 data: JSON.stringify(postData),
-                contentType: "application/json; charset=utf-8",
-                dataType: "json",
+                contentType: 'application/json; charset=utf-8',
+                dataType: 'json',
                 success: function (data) {}
             });
         };

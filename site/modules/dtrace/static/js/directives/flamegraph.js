@@ -10,7 +10,7 @@
                 options: '=',
                 status: '='
             },
-            template: function(element, attrs) {
+            template: function (element, attrs) {
                 return '<div class="flamegraph"></div>';
             },
             link: function ($scope, element, attrs) {
@@ -20,8 +20,8 @@
                     return '-n \'profile-97 /' + (pid ? 'pid == ' + pid : 'arg1') +
                     '/ { @[jstack(150, 8000)] = count(); } tick-60s { exit(0); }\'';
                 }
-                function getFlamegraph (dtraceScript) {
-                    DTrace.exucute({
+                function getFlamegraph(dtraceScript) {
+                    DTrace.execute({
                         host: $scope.options.hostIp + ':' + dtracePort,
                         dtraceObj: JSON.stringify({type: 'flamegraph', message: dtraceScript})
                     }).then(function (path) {
@@ -33,12 +33,15 @@
                         websocket.onmessage = function (event) {
                             if (locationPath === $location.path()) {
                                 var svg;
-                                try {
-                                    if (event.data !== 'ping') {
+                                if (event.data !== 'ping') {
+                                    try {
                                         svg = JSON.parse(event.data);
+                                    } catch (ex) {
+                                        svg = '';
+                                        var message = 'Error parsing json for flamegraph';
+                                        PopupDialog.error(message + '.');
+                                        loggingService.log('error', message);
                                     }
-                                } catch (err) {
-                                    svg = '';
                                 }
                                 if (svg) {
                                     $scope.options.loading = false;
@@ -48,7 +51,10 @@
                                             init();
                                         });
                                     });
-                                    DTrace.saveFlameGraph({svg: svg, id: $scope.options.hostId}).then(function () {}, function (err) {
+                                    DTrace.saveFlameGraph({
+                                        svg: svg,
+                                        id: $scope.options.hostId
+                                    }).then(function () {}, function (err) {
                                         PopupDialog.errorObj(err);
                                         closeWebsocket();
                                     });
@@ -94,7 +100,7 @@
                     }
                 });
 
-                $scope.$on('$routeChangeStart', function(next, current) {
+                $scope.$on('$routeChangeStart', function (next, current) {
                     closeWebsocket();
                 });
             }
