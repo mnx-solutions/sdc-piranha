@@ -767,6 +767,9 @@
             };
 
             $scope.createSimple = function (data) {
+                if (data.freetier) {
+                    return provision(data);
+                }
                 PopupDialog.confirm(titleCreateInstance, billingStartMessage, function () {
                     provision(data);
                 });
@@ -778,7 +781,9 @@
                 data.networks = $scope.networks.map(function (network) {
                     return network.id;
                 });
-                provision(data);
+                PopupDialog.confirm(titleCreateInstance, billingStartMessage, function () {
+                    provision(data);
+                });
             };
 
             $scope.selectDatacenter = function (name) {
