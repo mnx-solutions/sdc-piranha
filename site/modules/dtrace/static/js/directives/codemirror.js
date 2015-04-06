@@ -11,7 +11,7 @@
                 var sourceValue;
                 var regex = attrs.regexValidate ? new RegExp(attrs.regexValidate, 'i') : null;
                 var editor = CodeMirror.fromTextArea(element[0], {
-                    lineNumbers : true,
+                    lineNumbers: true,
                     lineWrapping: true,
                     theme: 'custom',
                     mode: 'javascript'

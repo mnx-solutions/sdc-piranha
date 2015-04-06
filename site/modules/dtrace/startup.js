@@ -1,4 +1,5 @@
 'use strict';
+
 var config = require('easy-config');
 
 var dtrace = function execute(scope) {
@@ -15,7 +16,7 @@ var dtrace = function execute(scope) {
 
     var defaultScriptsList = [{name: 'all syscall'}, {name: 'all syscall for process', pid: true}];
 
-    function getScriptsList (call, client, type, callback) {
+    function getScriptsList(call, client, type, callback) {
         if (type === 'default') {
             return callback(null, defaultScriptsList);
         }
@@ -49,13 +50,16 @@ var dtrace = function execute(scope) {
                 var targetScript = list.find(function (script) {
                     return script.id === scriptToSave.id;
                 });
+                var action = 'Updating';
                 if (targetScript) {
                     targetScript.name = scriptToSave.name;
                     targetScript.body = scriptToSave.body;
                 } else {
                     scriptToSave.created = new Date();
                     list.push(scriptToSave);
+                    action = 'Creating';
                 }
+                call.log.info({script: scriptToSave}, action + ' user dtrace script');
                 client.putFileContents(filePath, list, function (error) {
                     call.done(error && error.message, true);
                 });
@@ -74,7 +78,7 @@ var dtrace = function execute(scope) {
                     return call.done(error, true);
                 }
                 var itemsToPreserve = list.filter(function (el) {
-                    return call.data.ids.indexOf(el.id) === - 1;
+                    return call.data.ids.indexOf(el.id) === -1;
                 });
                 client.putFileContents(filePath, itemsToPreserve, function (error) {
                     call.done(error && error.message, true);
@@ -147,9 +151,9 @@ var dtrace = function execute(scope) {
                 function (err) {
                     if (err) {
                         return call.done(err);
-                    } 
+                    }
                     call.done();
-            });
+                });
         }
     });
 
@@ -167,15 +171,26 @@ var dtrace = function execute(scope) {
             });
             call.done(null, path);
             wss.once('connection', function (socket) {
+                var dtraceObj;
+                try {
+                    dtraceObj = JSON.parse(call.data.dtraceObj);
+                } catch (ex) {
+                    call.log.error('Error while JSON parsing dtrace object', ex);
+                    return;
+                }
+
+                var execType = dtraceObj.type;
+                call.log.info('User executed %s', execType);
+
                 var wsc = new WebSocket('ws://' + call.data.host);
-                var dtraceObj = JSON.parse(call.data.dtraceObj);
-                wsc.on("ping", wsc.pong);
+
+                wsc.on('ping', wsc.pong);
 
                 var pingClient = setInterval(function () {
                     socket.send('ping');
                 }, 20 * 1000);
 
-                function closeSocket () {
+                function closeSocket() {
                     clearInterval(pingClient);
                     wsc.close();
                     socket.close();
@@ -184,7 +199,7 @@ var dtrace = function execute(scope) {
                 wsc.onmessage = function (event) {
                     if (socket.readyState === WebSocket.OPEN) {
                         socket.send(event.data);
-                        if (dtraceObj.type === 'flamegraph') {
+                        if (execType === 'flamegraph') {
                             wsc.send(call.data.dtraceObj);
                         }
                     }

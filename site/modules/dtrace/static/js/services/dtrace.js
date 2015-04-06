@@ -61,17 +61,18 @@
             service.saveFlameGraph = function (data) {
                 return serverTab.call({
                     name: 'SaveFlameGraph',
-                    data: { svg: data.svg, id: data.id }
+                    data: {svg: data.svg, id: data.id}
                 }).promise;
             };
 
-            service.exucute = function (data) {
+            service.execute = function (data) {
                 return serverTab.call({
                     name: 'DtraceExecute',
-                    data: { host: data.host, dtraceObj: data.dtraceObj }
+                    data: {host: data.host, dtraceObj: data.dtraceObj}
                 }).promise;
             }
 
-        return service;
-    }]);
+            return service;
+        }]);
+
 }(window.angular, window.JP.getModule('dtrace')));

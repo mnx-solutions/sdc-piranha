@@ -9,7 +9,7 @@
                 options: '=',
                 status: '=?'
             },
-            template: function(element, attrs) {
+            template: function (element, attrs) {
                 var width = parseInt(attrs.width, 10) || 1024;
                 var height = (attrs.height || 512) + 20;
                 return '<canvas id="canvas-heatmap" width="' + width + '" height="' + height + '"></canvas>';
@@ -25,7 +25,7 @@
                 var console_columns = [];
                 var websocket;
                 var canvas = document.getElementById('canvas-heatmap');
-                var ctx = canvas.getContext( '2d' );
+                var ctx = canvas.getContext('2d');
                 var dscriptBeginPart = 'syscall:::entry';
                 var dscriptEndPart = '{self->syscall_entry_ts[probefunc] = vtimestamp;}syscall:::return/self->syscall_entry_ts[probefunc]/{@time[probefunc] = lquantize((vtimestamp - self->syscall_entry_ts[probefunc] ) / 1000, 0, 63, 2);self->syscall_entry_ts[probefunc] = 0;}';
 
@@ -49,7 +49,8 @@
                 $scope.$watch('status', function (status) {
                     if (status) {
                         var dscript = $scope.options.script.body || getDscript($scope.options.pid);
-                        var name = $scope.options.script.name + ($scope.options.pid ? ' PID:' + $scope.options.pid : '');
+                        var name = $scope.options.script.name +
+                            ($scope.options.pid ? ' PID:' + $scope.options.pid : '');
                         heat_tracer($scope.options.hostIp, dscript, $scope.options.continuation, name);
                     } else {
                         closeWebsocket();
@@ -66,7 +67,8 @@
                         setup();
                         ctx.fillRect(0, 0, width, height);
                     }
-                    DTrace.exucute({
+                    loggingService.log('info', 'Trying to execute dtrace script \'' + name + '\' for heatmap');
+                    DTrace.execute({
                         host: $scope.options.hostIp + ':' + dtracePort,
                         dtraceObj: JSON.stringify({type: 'heatmap', message: dscript})
                     }).then(function (path) {
@@ -76,15 +78,17 @@
                         websocket = new WebSocket(a.href);
                         websocket.onmessage = function (event) {
                             if (locationPath === $location.path()) {
-                                var data;
-                                try {
-                                    if (event.data !== 'ping') {
+                                var data = {};
+                                if (event.data !== 'ping') {
+                                    try {
                                         data = JSON.parse(event.data);
                                         $scope.options.isDataOk = true;
+                                    } catch (ex) {
+                                        $scope.options.isDataOk = false;
+                                        var message = 'Error parsing json for heatmap';
+                                        PopupDialog.error(message + '.');
+                                        loggingService.log('error', message);
                                     }
-                                } catch (e) {
-                                    data = {};
-                                    $scope.options.isDataOk = false;
                                 }
                                 $scope.options.processing = false;
                                 draw(data);
@@ -104,7 +108,7 @@
 
                             // Draw  script name and host
                             ctx.beginPath();
-                            ctx.strokeStyle = "#fff";
+                            ctx.strokeStyle = '#fff';
                             ctx.moveTo(0, 20);
                             ctx.lineTo(width, 20);
                             ctx.stroke();
@@ -129,7 +133,7 @@
                     closeWebsocket();
                 };
 
-                $scope.$on('$routeChangeStart', function (next, current) { 
+                $scope.$on('$routeChangeStart', function (next, current) {
                     closeWebsocket();
                 });
 
@@ -146,12 +150,12 @@
                      of syscalls made with latencies in each particular band. */
                     for (var syscall in message) {
                         var val = message[syscall];
-                        for (var result_index in val ) {
+                        for (var result_index in val) {
                             var latency_start = val[result_index][0][0];
                             var count =  val[result_index][1];
                             /* The d script we're using lquantizes from 0 to 63 in steps of two. So dividing by 2
                              tells us which row this result belongs in */
-                            syscalls_by_latency[Math.floor(latency_start/2)] += count;
+                            syscalls_by_latency[Math.floor(latency_start / 2)] += count;
                         }
                     }
 
@@ -160,8 +164,6 @@
                     console_columns.push(syscalls_by_latency);
                     drawArray(console_columns);
                 }
-
-
 
                 /* Draw the columns and rows that map up the heatmap on to the canvas element */
                 function drawArray(console_columns) {
@@ -186,11 +188,11 @@
                 }
 
                 /* The heatmap is is really a default 64x32 grid. Initialize the array which contains the grid data. */
-                function setup () {
-                    for (var column_index = 0; column_index < heatMapSize.x; column_index++) {
+                function setup() {
+                    for (var i = 0; i < heatMapSize.x; i++) {
                         var column = [];
-                        for (var entry_index = 0; entry_index < heatMapSize.y; entry_index++) {
-                            column[entry_index] = 0;
+                        for (var j = 0; j < heatMapSize.y; j++) {
+                            column[j] = 0;
                         }
                         console_columns.push(column);
                     }
