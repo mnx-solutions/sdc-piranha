@@ -153,6 +153,7 @@
                                 return name.substring(1);
                             }).join(', ');
                         }
+                        container.ShortId = container.Id.slice(0, 12);
                     });
                 }
             },

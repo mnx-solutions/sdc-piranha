@@ -26,6 +26,7 @@
                 if ($location.path() === '/docker/containers/running') {
                     $scope.forceTabActive = 'running';
                 }
+                var sdcDatacenter;
 
                 var errorCallback = function (err) {
                     Docker.errorCallback(err, function () {
@@ -47,19 +48,28 @@
                 };
 
                 var listAllContainers = function (cache) {
-                    Docker.listContainers({host: 'All', cache: cache, options: {all: true}, suppressErrors: true}).then(function (containers) {
+                    $q.all([
+                        Docker.listContainers({host: 'All', cache: cache, options: {all: true}, suppressErrors: true}),
+                        Docker.listHosts({prohibited: true})
+                    ]).then(function (result) {
+                        var containers = result[0] || [];
+                        var hosts = result[1] || [];
+                        hosts.some(function (host) {
+                            if (host.isSdc) {
+                                sdcDatacenter = host.datacenter;
+                                return true;
+                            }
+                        });
+
                         if (hostId) {
                             containers = containers.filter(function (container) {
                                 return container.hostId === hostId;
                             });
                         }
                         $scope.containers = containers.map(function (container) {
-                            container.ShortId = container.Id.slice(0, 12);
                             container.state = getContainerState(container);
-
                             return container;
                         });
-
                         $scope.loading = false;
                     }, function (err) {
                         errorCallback(err);
@@ -89,33 +99,54 @@
                         active: true
                     },
                     {
+                        id: 'type',
+                        name: 'Type',
+                        sequence: 3,
+                        type: 'html',
+                        _export: function (container) {
+                            return container.isSdc ? 'Triton' : 'KVM';
+                        },
+                        _getter: function (container) {
+                            var type = this._export(container);
+                            return '<div class="' + type.toLowerCase() + '-type' + '">' + type + '</div>';
+                        },
+                        active: true
+                    },
+                    {
                         id: 'ipAddress',
                         name: 'IP',
                         entryType: 'ipAddress',
-                        sequence: 3,
+                        sequence: 4,
                         active: true
                     },
                     {
                         id: 'hostName',
                         name: 'Host',
-                        sequence: 4,
+                        sequence: 5,
+                        type: 'html',
+                        _export: function (container) {
+                            return container.isSdc && sdcDatacenter ? sdcDatacenter : container.hostName;
+                        },
+                        _getter: function (container) {
+                            return '<span>' + this._export(container) + '</span>';
+                        },
                         active: true
                     },
                     {
                         id: 'Image',
                         name: 'Image',
-                        sequence: 5,
+                        sequence: 6,
                         active: true
                     },
                     {
                         id: 'Command',
                         name: 'Command',
-                        sequence: 6
+                        sequence: 7
                     },
                     {
                         id: 'Created',
                         name: 'Created',
-                        sequence: 7,
+                        sequence: 8,
                         reverseSort: true,
                         _getter: function (container) {
                             return $filter('humanDate')(container.Created);
@@ -124,7 +155,7 @@
                     {
                         id: 'state',
                         name: 'Status',
-                        sequence: 8,
+                        sequence: 9,
                         type: 'progress',
                         _inProgress: function (object) {
                             return object.actionInProgress;
@@ -134,21 +165,18 @@
                     {
                         id: 'Status',
                         name: 'Duration',
-                        sequence: 9,
+                        sequence: 10,
                         active: true
                     },
                     {
                         id: 'Ports',
                         name: 'Ports',
-                        _getter: function (object) {
-                            return Docker.parsePorts(object.Ports);
-                        },
-                        sequence: 10
+                        sequence: 11
                     },
                     {
                         id: 'hostId',
                         name: 'Host ID',
-                        sequence: 11,
+                        sequence: 12,
                         active: true,
                         exportGetter: true,
                         _getter: function (container) {

@@ -143,7 +143,6 @@
                     });
                     Docker.listContainers({host: machine, options: {all: true}, suppressErrors: true}).then(function (containers) {
                         $scope.containers = containers.map(function (container) {
-                            container.shortId = container.Id.slice(0, 12);
                             container.Names = Array.isArray(container.Names) ? container.Names.join(', ') : container.Names;
                             var ports = [];
                             container.Ports.forEach(function (port) {
@@ -689,7 +688,7 @@
                         active: true,
                         type: 'html',
                         _getter: function (container) {
-                            return '<a href="#!/docker/container/' + container.hostId + '/' + container.Id + '" style="min-width: 140px;">' + container.shortId + '</a>';
+                            return '<a href="#!/docker/container/' + container.hostId + '/' + container.Id + '" style="min-width: 140px;">' + container.ShortId + '</a>';
                         }
                     },
                     {
