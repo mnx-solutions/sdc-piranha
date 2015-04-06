@@ -117,7 +117,6 @@
                         name: 'Tag',
                         sequence: 3,
                         active: true,
-                        type: 'html',
                         _getter: function (image) {
                             return image.RepoTags ? Docker.getImageTagsList(image.RepoTags) : '';
                         }
@@ -128,7 +127,6 @@
                         sequence: 4,
                         active: true,
                         _order: 'hostName',
-                        type: 'html',
                         _getter: function (image) {
                             var html = [];
                             if (!image.hostIds) {
@@ -270,7 +268,7 @@
                 ];
 
                 $scope.exportFields = {
-                    ignore: []
+                    ignore: ['Size']
                 };
                 $scope.searchForm = true;
                 $scope.enabledCheckboxes = true;

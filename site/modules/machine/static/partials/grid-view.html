@@ -35,7 +35,7 @@
                 <a data-action-button data-action-fn="actionButtonsList[0].action" data-show-fn="actionButtonsList[0].show" data-label="actionButtonsList[0].label" data-object="object" class="btn btn-default grid-small-font btn-original-text"></a>
             </div>
             <div class="btn-group">
-                <button type="button" class="btn btn-default grid-small-font btn-original-text" data-ng-disabled="!pageNumSum" data-ng-hide="hideExport" data-ng-click="export('csv')">Export.csv</button>
+                <button type="button" class="btn btn-default grid-small-font btn-original-text" data-ng-disabled="!pageNumSum || exportInProgress" data-ng-hide="hideExport" data-ng-click="export('csv')">Export.csv</button>
                 <div style="display:none;" data-ng-bind-html="exportIframe"></div>
             </div>
             <div class="btn-group" data-ng-show="areColumnsEnabled()">
