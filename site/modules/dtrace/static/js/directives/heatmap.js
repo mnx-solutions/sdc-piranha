@@ -51,13 +51,14 @@
                         var dscript = $scope.options.script.body || getDscript($scope.options.pid);
                         var name = $scope.options.script.name +
                             ($scope.options.pid ? ' PID:' + $scope.options.pid : '');
-                        heat_tracer($scope.options.hostIp, dscript, $scope.options.continuation, name);
+                        var selectedProcessName = $scope.options.selectedProcessName || '';
+                        heat_tracer($scope.options.hostIp, dscript, $scope.options.continuation, name, selectedProcessName);
                     } else {
                         closeWebsocket();
                     }
                 });
 
-                function heat_tracer(hostIp, dscript, continuation, name) {
+                function heat_tracer(hostIp, dscript, continuation, name, selectedProcessName) {
                     if (!hostIp) {
                         return;
                     }
@@ -116,7 +117,11 @@
                             ctx.fillStyle = '#fff';
                             ctx.textAlign = 'left';
                             name = name || 'all syscall';
-                            ctx.fillText('host :' + hostIp + '; dtrace script :' + name, 5, 14);
+                            var heatmapGraphTitle = 'host: ' + hostIp + '; dtrace script: ' + name;
+                            if (selectedProcessName) {
+                                heatmapGraphTitle += '; ' + selectedProcessName;
+                            }
+                            ctx.fillText(heatmapGraphTitle, 5, 14);
                         };
 
                         websocket.onerror = function (data) {
