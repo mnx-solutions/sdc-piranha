@@ -673,34 +673,39 @@ module.exports = function execute(scope, register) {
                 callback(null, host);
             });
         }
-        vasync.forEachParallel({
-            inputs: Object.keys(call.cloud.listDatacenters()),
-            func: function (dcName, callback) {
-                call.cloud.separate(dcName).listMachines({}, {'JPC_tag': 'DockerHost'}, function (error, machines) {
-                    if (error) {
-                        return callback(error);
-                    }
-                    machines = machines || [];
-                    var createdMachines = machines.filter(function (machine) {
-                        machine.datacenter = dcName;
-                        return machine.primaryIp && machine.state === 'running';
-                    });
-                    callback(null, createdMachines);
-                });
+        call.cloud.listDatacenters(function (error, datacenters) {
+            if (error) {
+                return callback(error);
             }
-        }, function (errors, operations) {
-            if (errors) {
-                return callback(errors);
-            }
-            verifySDCDockerAvailability(call, SDC_DOCKER, function (error, availableHost) {
-                var hosts = [].concat.apply(availableHost || [], operations.successes);
-                if (hostId) {
-                    var host = hosts.find(function(host) {
-                        return hostId === host.id;
+            vasync.forEachParallel({
+                inputs: Object.keys(datacenters),
+                func: function (dcName, callback) {
+                    call.cloud.separate(dcName).listMachines({}, {'JPC_tag': 'DockerHost'}, function (error, machines) {
+                        if (error) {
+                            return callback(error);
+                        }
+                        machines = machines || [];
+                        var createdMachines = machines.filter(function (machine) {
+                            machine.datacenter = dcName;
+                            return machine.primaryIp && machine.state === 'running';
+                        });
+                        callback(null, createdMachines);
                     });
-                    return callback(host ? null : 'Docker host not found', host);
                 }
-                callback(null, hosts);
+            }, function (errors, operations) {
+                if (errors) {
+                    return callback(errors);
+                }
+                verifySDCDockerAvailability(call, SDC_DOCKER, function (error, availableHost) {
+                    var hosts = [].concat.apply(availableHost || [], operations.successes);
+                    if (hostId) {
+                        var host = hosts.find(function(host) {
+                            return hostId === host.id;
+                        });
+                        return callback(host ? null : 'Docker host not found', host);
+                    }
+                    callback(null, hosts);
+                });
             });
         });
     };
