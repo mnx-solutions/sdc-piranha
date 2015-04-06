@@ -39,6 +39,7 @@
             var ACCOUNT_STEP_NAME = 'Account Information';
             var SSH_STEP_NAME = 'SSH Key';
             var DOCKERHOST_MINIMUM_MEMORY = 512;
+            var MAX_DTRACE_VERSION = '14.3.0';
 
             $scope.preSelectedImageId = requestContext.getParam('imageid') === 'custom' ? null :
                 requestContext.getParam('imageid');
@@ -1058,7 +1059,8 @@
                     var versions = $scope.versions[datasetVisibility][dataset.name];
                     var filteredVersions = [];
                     listVersions.forEach(function (version) {
-                        if (versions[version].public === dataset.public) {
+                        if (versions[version].public === dataset.public && 
+                            ($scope.hostSpecification !== 'dtracehost' || util.cmpVersion(MAX_DTRACE_VERSION, version) > 0)) {
                             filteredVersions.push(versions[version]);
                         }
                     });
