@@ -127,10 +127,11 @@
                         sequence: 4,
                         active: true,
                         _order: 'hostName',
-                        _getter: function (image) {
+                        type: 'html',
+                        _export: function (image) {
                             var html = [];
                             if (!image.hostIds) {
-                                html = '<span>' + image.hostName + '</span>';
+                                html = image.hostName;
                             } else {
                                 image.hostIds.forEach(function (hostId, index) {
                                     html.push(image.hostNames[index]);
@@ -138,6 +139,9 @@
                                 html = html.join(', ');
                             }
                             return html;
+                        },
+                        _getter: function (image) {
+                            return '<span>' + this._export(image) + '</span>';
                         }
                     },
                     {
