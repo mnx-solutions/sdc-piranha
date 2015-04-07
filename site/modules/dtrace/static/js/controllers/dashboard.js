@@ -14,14 +14,15 @@
         'PopupDialog',
         'DTrace',
         'Account',
-
-        function ($scope, $rootScope, $q, requestContext, localization, $location, Datacenter, Storage, Image, PopupDialog, DTrace, Account) {
+        'util',
+        function ($scope, $rootScope, $q, requestContext, localization, $location, Datacenter, Storage, Image, PopupDialog, DTrace, Account, util) {
             localization.bind('dtrace.index', $scope);
             requestContext.setUpRenderContext('dtrace.index', $scope, {
                 title: localization.translate(null, 'dtrace', 'See my Joyent DTrace Instances')
             });
 
             var DTRACE_IMAGE_OS = 'smartos';
+            var MAX_DTRACE_VERSION = '14.4.0';
             var imageOrder = function (object) {
                 var statuses = {nodejs: 1, standard64: 2, base64: 3};
                 return statuses[object.name];
@@ -81,7 +82,7 @@
                     $scope.data.imageId = '';
                     Image.image({ datacenter: newVal, public: true }).then(function (images) {
                         var smartosImages = images.filter(function (image) {
-                            return image.os === DTRACE_IMAGE_OS && imageOrder(image);
+                            return image.os === DTRACE_IMAGE_OS && imageOrder(image) && util.cmpVersion(MAX_DTRACE_VERSION, image.version) > 0;
                         });
                         if (smartosImages.length > 0) {
                             smartosImages.sort(function (a, b) {
