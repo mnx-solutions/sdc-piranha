@@ -18,7 +18,7 @@
             var objectsToNumber = function (object) {
                 return Number(object.objects);
             };
-            var DEBUGGER_JOB_PATH = '/mdb/';
+            var DEBUGGER_JOB_PATH = '/devtools/mdb/';
             $scope.inputFile = [];
             $scope.objects = [];
             $scope.modules = [];
@@ -106,7 +106,7 @@
                     var message = error.message || 'Something went wrong, please try again.';
 
                     PopupDialog.error(null, message, function () {
-                       $location.path('/mdb/');
+                       $location.path('/devtools/mdb/');
                     });
                 });
             };
@@ -242,7 +242,7 @@
                 if (!val || val === 'create') {
                     return;
                 }
-                $location.path('/mdb' + (val ? '/' + val : ''), true);
+                $location.path('/devtools/mdb' + (val ? '/' + val : ''), true);
             });
 
             var getSupportStatus = function () {

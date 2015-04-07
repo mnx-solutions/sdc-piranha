@@ -7,11 +7,11 @@ window.JP.main.config(['routeProvider', function (routeProvider) {
     }
 
     routeProvider
-        .when('/mdb', {
+        .when('/devtools/mdb', {
             title: 'Debugger Jobs',
             action: 'mdb.index'
         })
-        .when('/mdb/:jobId', {
+        .when('/devtools/mdb/:jobId', {
             title: 'Node.js Debugger Job',
             action: 'mdb.detail'
         });

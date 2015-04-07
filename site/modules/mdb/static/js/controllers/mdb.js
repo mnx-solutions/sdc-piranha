@@ -107,7 +107,7 @@
                     active: true,
                     type: 'html',
                     _getter: function (item) {
-                        return '<a href="#!/mdb/' + item.jobId + '" style="min-width: 140px;">' + item.jobId + '</a>';
+                        return '<a href="#!/devtools/mdb/' + item.jobId + '" style="min-width: 140px;">' + item.jobId + '</a>';
                     }
                 },
                 {
@@ -117,7 +117,7 @@
                     active: true,
                     type: 'html',
                     _getter: function (item) {
-                        return '<a href="#!/mdb/' + item.jobId + '">' + item.coreFile + '</a>';
+                        return '<a href="#!/devtools/mdb/' + item.jobId + '">' + item.coreFile + '</a>';
                     }
                 },
                 {
@@ -238,7 +238,7 @@
                     if ($scope.mantaUnavailable) {
                         PopupDialog.error(null, 'Manta service is not available.');
                     } else {
-                        $location.path('/mdb/create');
+                        $location.path('/devtools/mdb/create');
                     }
                 } else {
                     var submitBillingInfo = {
@@ -248,9 +248,9 @@
                         $scope.loading = false;
                         if (isSuccess) {
                             $scope.provisionEnabled = true;
-                            $location.path('/mdb/create');
+                            $location.path('/devtools/mdb/create');
                         } else {
-                            $location.path('/mdb');
+                            $location.path('/devtools/mdb');
                         }
                     }, true);
                 }

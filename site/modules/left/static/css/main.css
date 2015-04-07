@@ -258,16 +258,6 @@ li.active a.accounts-icon
     background-image: url('../img/user-orange.png') !important;
 }
 
-.debug-icon
-{
-    background-image: url('../img/debug-white.png');
-}
-
-li.active a.debug-icon
-{
-    background-image: url('../img/debug-orange.png') !important;
-}
-
 .sdc-download-icon
 {
     background-image: url('../img/download-white.png');
@@ -287,14 +277,14 @@ li.active a.docker-icon
 {
     background-image: url('../img/docker-orange.png') !important;
 }
-.dtrace-icon
+.dev-tools-icon
 {
-    background-image: url('../img/dtrace-white.png');
+    background-image: url('../img/dev-tools-white.png');
 }
 
-li.active a.dtrace-icon
+li.active a.dev-tools-icon
 {
-    background-image: url('../img/dtrace-orange.png') !important;
+    background-image: url('../img/dev-tools-orange.png') !important;
 }
 
 .dashboard-icon,
@@ -303,16 +293,14 @@ li.active a.dtrace-icon
 .usage-icon,
 .support-icon,
 .accounts-icon,
-.debug-icon,
 .sdc-download-icon,
 .docker-icon,
-.dtrace-icon
+.dev-tools-icon
 {
     height: 22px;
-
-    background-repeat: no-repeat;
     background-position: 20px 5px;
     background-size: 22px;
+    background-repeat: no-repeat;
 }
 
 .sdc-download-title

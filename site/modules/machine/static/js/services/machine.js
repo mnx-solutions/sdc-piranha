@@ -21,7 +21,7 @@
         var createInstancePageConfig = null;
         var INSTANCES_PATH = '/compute';
         var cacheErrors = [];
-        if ($rootScope.features.manta === 'enabled') {
+        if ($rootScope.features && $rootScope.features.manta === 'enabled') {
             Account.getUserConfig().$child('createInstancePage').$load(function (error, config) {
                 createInstancePageConfig = config;
             });

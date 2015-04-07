@@ -140,11 +140,54 @@
                     </li>
                 </ul>
             </li>
-            <li class="nested" data-ng-show="features.mdb == 'enabled'" data-ng-class="{'active open': location.path().search('mdb') == 1}">
-                <a href="#!/mdb" class="debug-icon">
-                    <span class="title">Debug Node.js</span>
+            <li class="nested" data-ng-show="features.mdb == 'enabled' || features.dtrace == 'enabled'"
+                data-ng-class="{'active open': location.path().search('devtools/') == 1}">
+                <a data-ng-href="{{devToolsPath}}" class="dev-tools-icon">
+                    <span class="title">Dev Tools</span>
                     <span class="selected"></span>
                 </a>
+                <ul class="sub-menu">
+                    <li left-list-item class="sub"
+                        data-ng-class="{active: location.path().search('devtools/mdb') == 1}"
+                        data-ng-show="features.mdb == 'enabled'">
+                        <a href="#!/devtools/mdb">
+                            <span class="titles">Node.js Debugger</span>
+                            <span class="selected-sub"></span>
+                        </a>
+                    </li>
+                    <li left-list-item class="sub"
+                        data-ng-class="{active: location.path().search('devtools/dtrace$') == 1}"
+                        data-ng-show="features.dtrace == 'enabled'">
+                        <a href="#!/devtools/dtrace">
+                            <span class="titles" data-translate>DTrace hosts</span>
+                            <span class="selected-sub"></span>
+                        </a>
+                    </li>
+                    <li left-list-item class="sub"
+                        data-ng-class="{active: location.path().search('devtools/dtrace/script') == 1}"
+                        data-ng-show="features.dtrace == 'enabled'">
+                        <a href="#!/devtools/dtrace/scripts">
+                            <span class="titles" data-translate>DTrace scripts</span>
+                            <span class="selected-sub"></span>
+                        </a>
+                    </li>
+                    <li left-list-item class="sub"
+                        data-ng-class="{active: location.path().search('devtools/dtrace/heatmap') == 1}"
+                        data-ng-show="features.dtrace == 'enabled'">
+                        <a href="#!/devtools/dtrace/heatmap">
+                            <span class="titles" data-translate>Heatmap</span>
+                            <span class="selected-sub"></span>
+                        </a>
+                    </li>
+                    <li left-list-item class="sub"
+                        data-ng-class="{active: location.path().search('devtools/dtrace/flamegraph') == 1}"
+                        data-ng-show="features.dtrace == 'enabled'">
+                        <a href="#!/devtools/dtrace/flamegraph">
+                            <span class="titles" data-translate>Flame Graph</span>
+                            <span class="selected-sub"></span>
+                        </a>
+                    </li>
+                </ul>
             </li>
             <li class="nested" data-ng-show="features.usageData == 'enabled'" data-ng-class="{active: location.path().search('usage') == 1, open: location.path().search('/currentspend') > 1 || location.path().search('/compute') > 1 || location.path().search('/bandwidth') > 1 || location.path().search('/manta') > 1}">
                 <a data-ng-click="clickUsage()" class="usage-icon">
@@ -173,32 +216,6 @@
                     <li left-list-item class="sub" data-ng-class="{active: location.path().search('usage/manta') == 1}">
                         <a data-ng-click="clickUsage('manta')">
                             <span class="titles" data-translate>Manta</span>
-                            <span class="selected-sub"></span>
-                        </a>
-                    </li>
-                </ul>
-            </li>
-            <li class="nested" data-ng-show="features.dtrace == 'enabled'" data-ng-class="{active: location.path().search('dtrace') == 1, open: location.path().search('/heatmap') > 1 || location.path().search('/flamegraph') > 1 || location.path().search('/scripts') > 1}">
-                <a href="#!/dtrace" class="dtrace-icon">
-                    <span class="title">DTrace</span>
-                    <span class="selected"></span>
-                </a>
-                <ul class="sub-menu" data-ng-show="features.dtrace == 'enabled'">
-                    <li left-list-item class="sub" data-ng-class="{active: location.path().search('dtrace/heatmap') == 1}">
-                        <a href="#!/dtrace/heatmap">
-                            <span class="titles" data-translate>Heatmap</span>
-                            <span class="selected-sub"></span>
-                        </a>
-                    </li>
-                    <li left-list-item class="sub" data-ng-class="{active: location.path().search('dtrace/flamegraph') == 1}">
-                        <a href="#!/dtrace/flamegraph">
-                            <span class="titles" data-translate>Flame Graph</span>
-                            <span class="selected-sub"></span>
-                        </a>
-                    </li>
-                    <li left-list-item class="sub" data-ng-class="{active: location.path().search('dtrace/scripts') == 1}">
-                        <a href="#!/dtrace/scripts">
-                            <span class="titles" data-translate>Scripts</span>
                             <span class="selected-sub"></span>
                         </a>
                     </li>
