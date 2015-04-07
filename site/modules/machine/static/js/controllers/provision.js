@@ -39,7 +39,7 @@
             var ACCOUNT_STEP_NAME = 'Account Information';
             var SSH_STEP_NAME = 'SSH Key';
             var DOCKERHOST_MINIMUM_MEMORY = 512;
-            var MAX_DTRACE_VERSION = '14.3.0';
+            var MAX_DTRACE_VERSION = '14.4.0';
 
             $scope.preSelectedImageId = requestContext.getParam('imageid') === 'custom' ? null :
                 requestContext.getParam('imageid');
