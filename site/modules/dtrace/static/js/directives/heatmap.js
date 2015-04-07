@@ -1,7 +1,7 @@
 'use strict';
 
 (function (ng, app) {
-    app.directive('heatmap', ['$location', 'loggingService', 'DTrace', function ($location, loggingService, DTrace) {
+    app.directive('heatmap', ['$location', 'loggingService', 'DTrace', 'PopupDialog', function ($location, loggingService, DTrace, PopupDialog) {
         return {
             restrict: 'E',
             replace: true,
@@ -53,11 +53,11 @@
 
                 $scope.$watch('status', function (status) {
                     if (status) {
-                        var dscript = $scope.options.script.body || getDscript($scope.options.pid);
-                        var name = $scope.options.script.name +
-                            ($scope.options.pid ? ' PID:' + $scope.options.pid : '');
-                        var selectedProcessName = $scope.options.selectedProcessName || '';
-                        heat_tracer($scope.options.hostIp, dscript, $scope.options.continuation, name, selectedProcessName);
+                        var options = $scope.options;
+                        var dscript = options.script.body || getDscript(options.script.pid);
+                        var name = options.script.name;
+                        var selectedProcessName = options.selectedProcessName || '';
+                        heat_tracer(options.hostIp, dscript, options.continuation, name, selectedProcessName);
                     } else {
                         closeWebsocket();
                     }
