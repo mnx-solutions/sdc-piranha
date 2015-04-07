@@ -15,54 +15,61 @@
             },
             link: function ($scope, element, attrs) {
                 var websocket;
-                var dtracePort = 8000;
+                var id;
+                var host;
                 function getDscript(pid) {
-                    return '-n \'profile-97 /' + (pid ? 'pid == ' + pid : 'arg1') +
-                    '/ { @[jstack(150, 8000)] = count(); } tick-60s { exit(0); }\'';
+                    return "-n 'profile-97 /pid == " + pid +
+                    "/ { @[jstack(150, 8000)] = count(); } tick-60s { exit(0); }'";
                 }
+                function closeWebsocket() {
+                    if (id) {
+                        DTrace.close({host: host, id: id}).then(function () {}, function (err) {
+                            PopupDialog.errorObj(err);
+                        });
+                    }
+                    $scope.options.processing = false;
+                    if (websocket && websocket.readyState !== WebSocket.CLOSED) {
+                        websocket.close();
+                    }
+                };
                 function getFlamegraph(dtraceScript) {
+                    host = $scope.options.hostIp;
                     DTrace.execute({
-                        host: $scope.options.hostIp + ':' + dtracePort,
+                        host: host,
                         dtraceObj: JSON.stringify({type: 'flamegraph', message: dtraceScript})
-                    }).then(function (path) {
-                        var a = document.createElement('a');
-                        a.href = path;
-                        a.protocol = a.protocol === 'http:' ? 'ws:' : 'wss:';
-                        websocket = new WebSocket(a.href);
+                    }).then(function (data) {
+                        id = data.id;
+                        websocket = new WebSocket(data.path);
                         var locationPath = $location.path();
                         websocket.onmessage = function (event) {
-                            if (locationPath === $location.path()) {
-                                var svg;
-                                if (event.data !== 'ping') {
-                                    try {
-                                        svg = JSON.parse(event.data);
-                                    } catch (ex) {
-                                        svg = '';
-                                        var message = 'Error parsing json for flamegraph';
-                                        PopupDialog.error(message + '.');
-                                        loggingService.log('error', message);
-                                    }
+                            var svg;
+                            if (event.data !== 'ping') {
+                                try {
+                                    svg = JSON.parse(event.data);
+                                } catch (ex) {
+                                    svg = '';
+                                    var message = 'Error parsing json for flamegraph';
+                                    PopupDialog.errorObj(message + '.');
+                                    loggingService.log('error', message);
                                 }
-                                if (svg) {
-                                    $scope.options.loading = false;
-                                    $scope.$apply(function () {
-                                        var svgElement = $compile(svg)($scope);
-                                        ng.element(element).html(svgElement).promise().done(function () {
-                                            init();
-                                        });
-                                    });
-                                    DTrace.saveFlameGraph({
-                                        svg: svg,
-                                        id: $scope.options.hostId
-                                    }).then(function () {}, function (err) {
-                                        PopupDialog.errorObj(err);
-                                        closeWebsocket();
-                                    });
-                                }
-                                $scope.options.processing = false;
-                            } else {
-                                closeWebsocket();
                             }
+                            if (svg) {
+                                $scope.options.loading = false;
+                                $scope.$apply(function () {
+                                    ng.element(element).html(svg).promise().done(function () {
+                                        init();
+                                    });
+                                });
+                                DTrace.saveFlameGraph({
+                                    svg: svg,
+                                    id: $scope.options.hostId
+                                }).then(function () {}, function (err) {
+                                    PopupDialog.errorObj(err);
+                                    loggingService.log('error', 'Error while saving flamegraph svg to manta');
+                                    closeWebsocket();
+                                });
+                            }
+                            $scope.options.processing = false;
                         };
 
                         websocket.onopen = function () {
@@ -75,34 +82,25 @@
                             loggingService.log('error', 'websocket error: ' + data);
                         };
 
-                        websocket.onclose = function () {
-                            closeWebsocket();
-                        };
+                        websocket.onclose = closeWebsocket;
                     });
                 }
 
-                var closeWebsocket = function () {
-                    if (websocket) {
-                        websocket.close();
-                    }
-                    $scope.options.processing = false;
-                };
 
                 $scope.$watch('status', function (status) {
                     if (status) {
                         ng.element(element).html('');
                         var options = $scope.options;
                         var dtraceScript = options.script && options.script.body ||
-                            getDscript(options.script && options.script.pid || undefined);
+                            getDscript(options.script && options.script.pid);
                         getFlamegraph(dtraceScript);
                     } else {
                         closeWebsocket();
                     }
                 });
 
-                $scope.$on('$routeChangeStart', function (next, current) {
-                    closeWebsocket();
-                });
+                $scope.$on('$routeChangeStart', closeWebsocket);
+                $scope.$on('$destroy', closeWebsocket);
             }
         };
     }]);

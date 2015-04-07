@@ -15,7 +15,6 @@
                 return '<canvas id="canvas-heatmap" width="' + width + '" height="' + height + '"></canvas>';
             },
             link: function ($scope, element, attrs) {
-                var dtracePort = 8000;
                 var heatMapSize = {
                     x: $scope.options.size && $scope.options.size.x ? $scope.options.size.x : 64,
                     y: $scope.options.size && $scope.options.size.y ? $scope.options.size.y : 32
@@ -28,7 +27,8 @@
                 var ctx = canvas.getContext('2d');
                 var dscriptBeginPart = 'syscall:::entry';
                 var dscriptEndPart = '{self->syscall_entry_ts[probefunc] = vtimestamp;}syscall:::return/self->syscall_entry_ts[probefunc]/{@time[probefunc] = lquantize((vtimestamp - self->syscall_entry_ts[probefunc] ) / 1000, 0, 63, 2);self->syscall_entry_ts[probefunc] = 0;}';
-
+                var host;
+                var id;
                 /* On load we create our web socket (or flash socket if your browser doesn't support it ) and
                  send the d script we wish to be tracing. This extremely powerful and *insecure*. */
                 if (!$scope.status && $scope.options.hostIp) {
@@ -39,11 +39,16 @@
                     return dscriptBeginPart + (pid ? '/pid ==' + pid + '/' : '') + dscriptEndPart;
                 }
 
-                var closeWebsocket = function () {
-                    if (websocket) {
-                        websocket.close();
+                function closeWebsocket() {
+                    if (id) {
+                        DTrace.close({host: host, id: id}).then(function () {}, function (err) {
+                            PopupDialog.errorObj(err);
+                        });
                     }
                     $scope.options.processing = false;
+                    if (websocket && websocket.readyState !== WebSocket.CLOSED) {
+                        websocket.close();
+                    }
                 };
 
                 $scope.$watch('status', function (status) {
@@ -69,33 +74,29 @@
                         ctx.fillRect(0, 0, width, height);
                     }
                     loggingService.log('info', 'Trying to execute dtrace script \'' + name + '\' for heatmap');
+                    host = $scope.options.hostIp;
+
                     DTrace.execute({
-                        host: $scope.options.hostIp + ':' + dtracePort,
+                        host: host,
                         dtraceObj: JSON.stringify({type: 'heatmap', message: dscript})
-                    }).then(function (path) {
-                        var a = document.createElement('a');
-                        a.href = path;
-                        a.protocol = a.protocol === 'http:' ? 'ws:' : 'wss:';
-                        websocket = new WebSocket(a.href);
+                    }).then(function (data) {
+                        id = data.id;
+                        websocket = new WebSocket(data.path);
                         websocket.onmessage = function (event) {
-                            if (locationPath === $location.path()) {
-                                var data = {};
-                                if (event.data !== 'ping') {
-                                    try {
-                                        data = JSON.parse(event.data);
-                                        $scope.options.isDataOk = true;
-                                    } catch (ex) {
-                                        $scope.options.isDataOk = false;
-                                        var message = 'Error parsing json for heatmap';
-                                        PopupDialog.error(message + '.');
-                                        loggingService.log('error', message);
-                                    }
+                            var data = {};
+                            if (event.data !== 'ping') {
+                                try {
+                                    data = JSON.parse(event.data);
+                                    $scope.options.isDataOk = true;
+                                } catch (ex) {
+                                    $scope.options.isDataOk = false;
+                                    var message = 'Error parsing json for heatmap';
+                                    PopupDialog.errorObj(message + '.');
+                                    loggingService.log('error', message);
                                 }
-                                $scope.options.processing = false;
-                                draw(data);
-                            } else {
-                                closeWebsocket();
                             }
+                            $scope.options.processing = false;
+                            draw(data);
                             $scope.$apply(function () {
                                 $scope.options.loading = false;
                             });
@@ -128,19 +129,12 @@
                             loggingService.log('error', 'websocket error: ' + data);
                         };
 
-                        websocket.onclose = function () {
-                            closeWebsocket();
-                        };
+                        websocket.onclose = closeWebsocket;
                     });
                 }
 
-                window.onbeforeunload = function () {
-                    closeWebsocket();
-                };
-
-                $scope.$on('$routeChangeStart', function (next, current) {
-                    closeWebsocket();
-                });
+                $scope.$on('$routeChangeStart', closeWebsocket);
+                $scope.$on('$destroy', closeWebsocket);
 
                 /* Take the aggregation data and update the heatmap */
                 function draw(message) {
