@@ -316,7 +316,7 @@
                 $scope.portChanged = function (port) {
                     $scope.portValid = /^\d+$/.test(port) && port > -1 && port < 65536;
                     if ($scope.portValid) {
-                        $scope.registry.port = Number($scope.registry.port);
+                        $scope.registry.port = parseInt($scope.registry.port, 10);
                     }
                 };
 
@@ -340,8 +340,8 @@
                         registry.id = registry.id || '';
                         if (registry.api === connectedRegistry.api &&
                                 registry.host === connectedRegistry.host &&
-                                registry.port === connectedRegistry.port && checkAuth &&
-                                registry.id !== connectedRegistry.id) {
+                                parseInt(registry.port, 10) === connectedRegistry.port &&
+                                checkAuth && registry.id !== connectedRegistry.id) {
                             exist = true;
                         }
                     });
@@ -362,7 +362,7 @@
                             localization.translate(
                                 $scope,
                                 null,
-                                'Such a registry already exists.'
+                                'This registry already exists.'
                             )
                         );
                     }
