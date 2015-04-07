@@ -66,6 +66,10 @@
                 {
                     id: 'hostName',
                     name: 'Host',
+                    _order: function (event) {
+                        var eventHost = $scope.hosts.find(function (host) { return event.host === host.id; });
+                        return eventHost ? (eventHost.name || eventHost.id) : 'Host deleted';
+                    },
                     sequence: 3,
                     active: true,
                     type: 'tooltip',
