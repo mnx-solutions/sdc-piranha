@@ -111,6 +111,11 @@
                             loading: true,
                             processing: true,
                             isDataOk: false
+                        };
+                        if ($scope.pid) {
+                            $scope.options.selectedProcessName = $scope.processes.find(function (process) {
+                                return process.pid === $scope.pid;
+                            }).name;
                         }
                         $scope.starting = true;
                     }
