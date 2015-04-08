@@ -8,7 +8,7 @@ var qs = require('querystring');
 // read sync startup script for DTrace
 var startupScript = fs.readFileSync(__dirname + '/data/startup.sh', 'utf8');
 
-var DTRACEPORT = 8000;
+var DTRACE_PORT = 8000;
 
 var requestMap = {
     GET: 'get',
@@ -104,7 +104,7 @@ module.exports = function execute(scope, register) {
 
     api.createClient = function (call, machine, callback) {
         return callback(null, new Dtrace({
-            url: 'http://' + machine + ':' + DTRACEPORT,
+            url: 'http://' + machine + ':' + DTRACE_PORT,
             host: machine,
             headers: {
                 'Content-type': 'application/json'

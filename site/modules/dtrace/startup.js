@@ -9,8 +9,8 @@ var dtrace = function execute(scope) {
     var httpServer = scope.get('httpServer');
     var WebSocket = require('ws');
 
-    var filePath = '~~/stor/.joyent/dtrace/scripts.json';
-    var flameGraphPath = '~~/stor/.joyent/dtrace/flameGraph';
+    var SCRIPTS_FILE_PATH = '~~/stor/.joyent/dtrace/scripts.json';
+    var FLAMEGRAPH_PATH = '~~/stor/.joyent/dtrace/flameGraph';
 
     var uuid = require('../../static/vendor/uuid/uuid.js');
 
@@ -21,7 +21,7 @@ var dtrace = function execute(scope) {
         if (type === 'default') {
             return callback(null, defaultScriptsList);
         }
-        client.getFileJson(filePath, function (error, scripts) {
+        client.getFileJson(SCRIPTS_FILE_PATH, function (error, scripts) {
             if (error) {
                 if (error.code === 'AccountDoesNotExist' || error.code === 'AccountBlocked') {
                     error = null;
@@ -61,7 +61,7 @@ var dtrace = function execute(scope) {
                     action = 'Creating';
                 }
                 call.log.info({script: scriptToSave}, action + ' user dtrace script');
-                client.putFileContents(filePath, list, function (error) {
+                client.putFileContents(SCRIPTS_FILE_PATH, list, function (error) {
                     call.done(error && error.message, true);
                 });
             });
@@ -81,7 +81,7 @@ var dtrace = function execute(scope) {
                 var itemsToPreserve = list.filter(function (el) {
                     return call.data.ids.indexOf(el.id) === -1;
                 });
-                client.putFileContents(filePath, itemsToPreserve, function (error) {
+                client.putFileContents(SCRIPTS_FILE_PATH, itemsToPreserve, function (error) {
                     call.done(error && error.message, true);
                 });
             });
@@ -147,7 +147,7 @@ var dtrace = function execute(scope) {
         },
         handler: function (call) {
             var client = mantaClient.createClient(call);
-            client.putFileContents(flameGraphPath + '/' + call.data.id + '/' + new Date().toISOString() + '.svg',
+            client.putFileContents(FLAMEGRAPH_PATH + '/' + call.data.id + '/' + new Date().toISOString() + '.svg',
                 call.data.svg,
                 function (err) {
                     if (err) {
@@ -193,22 +193,30 @@ var dtrace = function execute(scope) {
                 if (error) {
                     return call.done(error);
                 }
-                client.setup({uuid: id}, function (err, dtracePath) {
+                client.setup({uuid: id}, function (err) {
                     if (err) {
                         return call.done(err);
                     }
                     wss.once('connection', function (socket) {
-                        var wsc = new WebSocket('ws://' + host + ':' + DTRACE_PORT +'/' + id);
-                        var execType;
+                        var wsc = new WebSocket('ws://' + host + ':' + DTRACE_PORT + '/' + id);
+                        var parsedDtraceObj;
                         try {
-                            execType = JSON.parse(call.data.dtraceObj).type;
+                            parsedDtraceObj = JSON.parse(call.data.dtraceObj);
                         } catch (ex) {
                             call.log.error('Error while JSON parsing dtrace object', ex);
                             closeSocket();
                             return;
                         }
 
+                        var execType = parsedDtraceObj.type;
+
                         call.log.info('User executed %s', execType);
+                        if (execType === 'heatmap') {
+                            call.log.info({
+                                scriptName: parsedDtraceObj.name,
+                                scriptBody: parsedDtraceObj.message
+                            }, 'Script executed');
+                        }
                         wsc.on('ping', wsc.pong);
 
                         var pingClient = setInterval(function () {
@@ -238,13 +246,13 @@ var dtrace = function execute(scope) {
                                 wsc.send(call.data.dtraceObj);
                             }
                         };
-                        wsc.onerror = function (event) {
+                        wsc.onerror = function (err) {
                             if (socket.readyState === WebSocket.OPEN) {
-                                socket.send('Error');
+                                socket.send(err.data || 'Error');
                             }
                             closeSocket();
                         };
-                        wsc.onclose = function (event) {
+                        wsc.onclose = function () {
                             closeSocket();
                         };
                         socket.on('error', closeSocket);
