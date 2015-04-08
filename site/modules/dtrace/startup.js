@@ -98,7 +98,6 @@ var dtrace = function execute(scope) {
         },
         handler: function (call) {
             var host = call.data.host;
-            var retries = 5;
             Dtrace.createClient(call, host, function (error, client) {
                 if (error) {
                     return call.done(error);
@@ -106,12 +105,7 @@ var dtrace = function execute(scope) {
                 var pingHost = function () {
                     client.ping(function (err) {
                         if (err) {
-                            if (retries > 0) {
-                                retries -= 1;
-                                setTimeout(pingHost, 5000);
-                                return;
-                            }
-                            return call.done(err);
+                            return call.done(null, 'unreachable');
                         }
                         call.done(null, 'completed');
                     });
@@ -154,7 +148,8 @@ var dtrace = function execute(scope) {
                         return call.done(err);
                     }
                     call.done();
-                });
+                }
+            );
         }
     });
 
@@ -182,7 +177,6 @@ var dtrace = function execute(scope) {
             var id = uuid();
             var host = call.data.host;
             var path = '/main/dtrace/exec/' + id;
-            httpServer.setMaxListeners(0);
 
             var wss = new WebSocket.Server({
                 server: httpServer,
@@ -198,7 +192,7 @@ var dtrace = function execute(scope) {
                         return call.done(err);
                     }
                     wss.once('connection', function (socket) {
-                        var wsc = new WebSocket('ws://' + host + ':' + DTRACE_PORT + '/' + id);
+                        var certificates = call.req.session.dtrace;
                         var parsedDtraceObj;
                         try {
                             parsedDtraceObj = JSON.parse(call.data.dtraceObj);
@@ -217,6 +211,14 @@ var dtrace = function execute(scope) {
                                 scriptBody: parsedDtraceObj.message
                             }, 'Script executed');
                         }
+                        var wsc = new WebSocket('wss://' + host + ':' + DTRACE_PORT + '/' + id, {
+                            rejectUnauthorized: false,
+                            requestCert: true,
+                            ca: certificates.ca,
+                            cert: certificates.cert,
+                            key: certificates.key
+                        });
+
                         wsc.on('ping', wsc.pong);
 
                         var pingClient = setInterval(function () {
@@ -246,15 +248,13 @@ var dtrace = function execute(scope) {
                                 wsc.send(call.data.dtraceObj);
                             }
                         };
-                        wsc.onerror = function (err) {
+                        wsc.onerror = function (error) {
                             if (socket.readyState === WebSocket.OPEN) {
-                                socket.send(err.data || 'Error');
+                                socket.send(error.data || error);
                             }
                             closeSocket();
                         };
-                        wsc.onclose = function () {
-                            closeSocket();
-                        };
+                        wsc.onclose = closeSocket;
                         socket.on('error', closeSocket);
                         // not working if using loadBalancer
                         socket.on('close', closeSocket);

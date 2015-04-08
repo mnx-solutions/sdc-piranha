@@ -6,11 +6,13 @@ var util = require('util');
 var qs = require('querystring');
 var vasync = require('vasync');
 var fs = require('fs');
+var path = require('path');
 var config = require('easy-config');
 var ursa = require('ursa');
 var exec = require('child_process').exec;
 var os = require('os');
 var EventEmitter = require('events').EventEmitter;
+var certMgmt = require('../../../lib/certificates');
 var Auditor = require('./libs/auditor.js');
 var cache = require('lru-cache')({
     max: 1000,
@@ -22,7 +24,7 @@ var SUBUSER_REGISTRY_LOGIN = SUBUSER_LOGIN + '_registry';
 var SUBUSER_OBJ_NAME = 'docker';
 var SUBUSER_OBJ_NAME_REGISTRY = SUBUSER_OBJ_NAME + '-registry';
 var SDC_DOCKER_ID = '00000000-0000-0000-0000-000000000000';
-
+var SDC_DOCKER_CERT_PATH = '~~/stor/.joyent/docker';
 var SDC_DOCKER = config.features.sdcDocker === 'enabled' ?
     {
         id: SDC_DOCKER_ID,
@@ -760,70 +762,6 @@ module.exports = function execute(scope, register) {
         getHostStatus();
     };
 
-    function generateCertificates(call, callback) {
-
-        var client = scope.api('MantaClient').createClient(call);
-        var tmpDir = os.tmpdir() + '/' + Math.random().toString(16).substr(2);
-        var options = {
-            env: {
-                KEYS_PATH: tmpDir
-            }
-        };
-        var certMap = {
-            'ca.pem': 'ca',
-            'cert.pem': 'cert',
-            'key.pem': 'key',
-            'server-cert.pem': 'server-cert',
-            'server-key.pem': 'server-key'
-        };
-        var certificates = {};
-        function done(error) {
-            if (error) {
-                call.log.error({error: error}, 'Failed to generate certificates');
-            }
-            callback(error, certificates);
-        }
-
-        var child = exec(__dirname + '/data/generate-certificates.sh', options, function (error) {
-            if (error) {
-                done(error);
-            }
-        });
-
-        child.on('error', done);
-
-        child.on('close', function () {
-            fs.readdir(tmpDir, function (readDirError, files) {
-                if (readDirError) {
-                    return done(readDirError);
-                }
-                vasync.forEachParallel({
-                    inputs: files,
-                    func: function (file, callback) {
-                        var filePath = tmpDir + '/' + file;
-                        var fileContent = fs.readFileSync(filePath, 'utf-8');
-                        if (certMap[file] && !certificates[certMap[file]]) {
-                            certificates[certMap[file]] = fileContent;
-                        }
-                        client.putFileContents('~~/stor/.joyent/docker/' + file, fileContent, function (putError) {
-                            if (putError) {
-                                return callback(putError);
-                            }
-                            fs.unlink(filePath, callback);
-                        });
-                    }
-                }, function (errors) {
-                    if (errors) {
-                        return done(errors);
-                    }
-                    fs.rmdir(tmpDir, function (rmError) {
-                        done(rmError);
-                    });
-                });
-            });
-        });
-    }
-
     function createKeyPairObject(key) {
         return {
             privateKey: key.toPrivatePem('utf8'),
@@ -1199,79 +1137,26 @@ module.exports = function execute(scope, register) {
             options.metadata['docker-version'] = config.docker.dockerVersion;
             options.metadata['cadvisor-version'] = config.docker.cadvisorVersion;
 
-            api.getCertificates(call, function (error, certificates) {
-                if (error) {
-                    return callback(error);
-                }
+            var certificates = call.req.session.docker;
+            function done(certificates) {
                 options.metadata['ca'] = certificates.ca;
                 options.metadata['server-cert'] = certificates['server-cert'];
                 options.metadata['server-key'] = certificates['server-key'];
                 uploadKeysAndCreateMachine(keyPair, options);
-            }, true);
-        });
-    };
-
-    api.getCertificates = function (call, callback, noCache) {
-        var client = scope.api('MantaClient').createClient(call);
-        var retries = 3;
-
-        function getFirstKey(object) {
-            return Object.getOwnPropertyNames(object)[0];
-        }
-        function getKeys(callback) {
-            if (!noCache && call.req.session.dockerCerts) {
-                return setImmediate(function () {
-                    callback(null, call.req.session.dockerCerts);
-                });
             }
-            call.req.session.dockerCerts = {};
-            var certificates = {};
-            var certArr = [
-                {ca: 'ca.pem'},
-                {cert: 'cert.pem'},
-                {key: 'key.pem'},
-                {'server-cert': 'server-cert.pem'},
-                {'server-key': 'server-key.pem'}
-            ];
-            vasync.forEachParallel({
-                inputs: certArr,
-                func: function (input, callback) {
-                    var key = getFirstKey(input);
-                    if (!noCache && call.req.session.dockerCerts[key]) {
-                        certificates[key] = call.req.session.dockerCerts[key];
-                        return callback(null);
-                    }
-                    var filename = input[key];
-                    client.getFileContents('~~/stor/.joyent/docker/' + filename, function (error, body) {
-                        if (error) {
-                            return callback(error);
-                        }
-                        certificates[key] = body;
-                        callback(null);
-                    });
+            if (certificates.ca) {
+                return done(certificates);
+            }
+
+            certMgmt.generateCertificates(mantaClient, SDC_DOCKER_CERT_PATH, function (error, certificates) {
+                if (error) {
+                    return callback(error);
                 }
-            }, function (errors) {
-                if (errors) {
-                    if (retries-- > 0) {
-                        setTimeout(function () {
-                            getKeys(callback);
-                        }, 1000);
-                        return;
-                    }
-                    generateCertificates(call, function (error, certificates) {
-                        if (error) {
-                            return callback(error);
-                        }
-                        call.req.session.dockerCerts = certificates;
-                        callback(null, certificates);
-                    });
-                    return;
-                }
-                call.req.session.dockerCerts = certificates;
-                callback(null, certificates);
+                call.req.session.docker = certificates;
+                call.req.session.save();
+                done(certificates);
             });
-        }
-        getKeys(callback);
+        });
     };
 
     api.getHostStatus = function (call, machineId, callback) {
@@ -1296,51 +1181,40 @@ module.exports = function execute(scope, register) {
     };
 
     function createClient(call, Service, opts, callback) {
-        var qrKey = 'create-' + Service.name + '-client-' + call.req.session.userId;
-        var clientRequest = queuedRequests[qrKey];
         var cacheKey = Service.name + opts.url;
         var cachedClient = cache.get(cacheKey);
+        var certificates = call.req.session.docker;
         if (cachedClient) {
             return callback(null, cachedClient);
         }
 
-        if (!clientRequest) {
-            clientRequest = queuedRequests[qrKey] = new EventEmitter();
-            clientRequest.setMaxListeners(100);
-            api.getCertificates(call, function (error, certificates) {
-                delete queuedRequests[qrKey];
-                clientRequest.emit('getCertificates', error, certificates);
+        var serviceConfig = {
+            isSdc: opts.isSdc,
+            url: opts.url,
+            rejectUnauthorized: false,
+            host: opts.host,
+            headers: util._extend({
+                'Content-type': 'application/json'
+            }, opts.headers)
+        };
+
+        if (serviceConfig.isSdc) {
+            serviceConfig.headers = util._extend(serviceConfig.headers, {
+                'X-Auth-Token': call.req.session.token || call.req.cloud._token
             });
+        } else {
+            if (!certificates.ca) {
+                return callback('Certificates were lost. Cannot connect to docker.');
+            }
+            serviceConfig.requestCert = true;
+            serviceConfig.ca = certificates.ca;
+            serviceConfig.cert = certificates.cert;
+            serviceConfig.key = certificates.key;
         }
 
-        clientRequest.once('getCertificates', function (error, certificates) {
-            if (error) {
-                return callback(error);
-            }
-            var serviceConfig = {
-                isSdc: opts.isSdc,
-                url: opts.url,
-                rejectUnauthorized: false,
-                host: opts.host,
-                headers: util._extend({
-                    'Content-type': 'application/json'
-                }, opts.headers)
-            };
-
-            if (serviceConfig.isSdc) {
-                serviceConfig.headers = util._extend(serviceConfig.headers, {
-                    'X-Auth-Token': call.req.session.token || call.req.cloud._token
-                });
-            } else {
-                serviceConfig.requestCert = true;
-                serviceConfig.ca = certificates.ca;
-                serviceConfig.cert = certificates.cert;
-                serviceConfig.key = certificates.key;
-            }
-            var service = new Service(serviceConfig, call);
-            cache.set(cacheKey, service);
-            callback(null, service);
-        });
+        var service = new Service(serviceConfig, call);
+        cache.set(cacheKey, service);
+        callback(null, service);
     }
 
     api.createClient = function (call, machine, callback) {

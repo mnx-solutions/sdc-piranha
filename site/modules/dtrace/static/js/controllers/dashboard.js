@@ -43,8 +43,8 @@
 
             var getHostStatus = function (machine) {
                 $scope.states[machine.id] = 'initializing';
-                DTrace.hostStatus(machine).then(function () {
-                    $scope.states[machine.id] = 'completed';
+                DTrace.hostStatus(machine).then(function (status) {
+                    $scope.states[machine.id] = status || 'completed';
                 }, function () {
                     $scope.states[machine.id] = 'unreachable';
                     errorCallback.apply(this, arguments);
@@ -80,7 +80,7 @@
             $scope.$watch('data.datacenter', function (newVal) {
                 if (newVal) {
                     $scope.data.imageId = '';
-                    Image.image({ datacenter: newVal, public: true }).then(function (images) {
+                    Image.image({datacenter: newVal, public: true}).then(function (images) {
                         var smartosImages = images.filter(function (image) {
                             return image.os === DTRACE_IMAGE_OS && imageOrder(image) && util.cmpVersion(MAX_DTRACE_VERSION, image.version) > 0;
                         });
@@ -127,4 +127,3 @@
         }
     ]);
 }(window.JP.getModule('dtrace')));
-

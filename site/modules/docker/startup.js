@@ -82,6 +82,9 @@ var Docker = function execute(scope, app) {
         var callOpts = call.data || {};
 
         Docker.createClient(call, host, function (error, client) {
+            if (error) {
+                return callback(error);
+            }
             if (callOpts.wait && host.id && !callOpts.isSdc) {
                 Docker.waitHost(call, host, function (status) {
                     call.update(null, {hostId: host.id, status: status});
