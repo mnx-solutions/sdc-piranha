@@ -13,13 +13,21 @@ var dtrace = function execute(scope) {
     var FLAMEGRAPH_PATH = '~~/stor/.joyent/dtrace/flameGraph';
 
     var uuid = require('../../static/vendor/uuid/uuid.js');
-
-    var defaultScriptsList = [{name: 'all syscall'}, {name: 'all syscall for process', pid: true}];
     var DTRACE_PORT = 8000;
+    var DEFAULT_SCRIPT_LIST = [
+        {name: 'all syscall'},
+        {name: 'syscall for process', pid: true, execname: true},
+        {name: 'fs-latency', body: 'syscall::*write*:entry,syscall::*read*:entry{self->syscall_entry_ts[probefunc] = vtimestamp;}syscall::*write*:return,syscall::*read*:return/self->syscall_entry_ts[probefunc]/{@time[probefunc] = lquantize((vtimestamp - self->syscall_entry_ts[probefunc] ) / 1024, 0, 63, 2); self->syscall_entry_ts[probefunc] = 0;}'},
+        {name: 'dtrace-cpu', body: 'sched:::on-cpu { self->ts = vtimestamp; } sched:::off-cpu /self->ts/ { @[cpu] = lquantize((vtimestamp - self->ts) /1024, 0, 63, 2); self->ts = 0; }'},
+        {name: 'node-slatency', body: 'node*:::http-server-request { ts[args[1]->fd] = vtimestamp; } node*:::http-server-response /this->start = ts[args[0]->fd]/{ @["ns"] = lquantize((vtimestamp - this->start )/ 2000000, 0, 63, 2); ts[pid, args[0]->fd] = 0;}'},
+        {name: 'memory-leak', body: 'pid$PID::malloc:entry,pid$PID::calloc:entry,pid$PID::realloc:entry { self->size[probefunc] = vtimestamp; } pid$PID::malloc:return,pid$PID::calloc:return,pid$PID::realloc:return /self->size[probefunc]/ { @time[probefunc] = lquantize((vtimestamp - self->size[probefunc]) / 1024, 0, 63, 2); self->size[probefunc] = 0; }'},
+        {name: 'read-write block', body: 'plockstat$PID:::rw-block { self->ts[probefunc] = vtimestamp; } plockstat$PID:::rw-acquire /self->ts[probefunc]/ { @time[probefunc] = lquantize((vtimestamp - self->ts[probefunc]), 0, 63, 2); self->ts[probefunc] = 0; }'},
+        {name: 'mutex block', body: 'plockstat$PID:::mutex-block { self->ts[probefunc] = vtimestamp; } plockstat$PID:::mutex-acquire /self->ts[probefunc]/ { @time[probefunc] = lquantize((vtimestamp - self->ts[probefunc]), 0, 63, 2); self->ts[probefunc] = 0; }'}
+    ];
 
     function getScriptsList(call, client, type, callback) {
         if (type === 'default') {
-            return callback(null, defaultScriptsList);
+            return callback(null, DEFAULT_SCRIPT_LIST);
         }
         client.getFileJson(SCRIPTS_FILE_PATH, function (error, scripts) {
             if (error) {
@@ -31,7 +39,7 @@ var dtrace = function execute(scope) {
             }
             var scriptsList = scripts;
             if (type === 'all') {
-                scriptsList = [].concat(defaultScriptsList, scripts || []);
+                scriptsList = [].concat(DEFAULT_SCRIPT_LIST, scripts || []);
             }
             callback(error, scriptsList);
         });

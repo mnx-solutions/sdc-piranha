@@ -1,6 +1,6 @@
 'use strict';
 
-(function (app) {
+(function (ng, app) {
     app.controller(
         'DTrace.DtraceController', [
             '$scope',
@@ -12,8 +12,7 @@
             'localization',
             'PopupDialog',
             '$route',
-            'loggingService',
-            function ($scope, Account, DTrace, Storage, $q, requestContext, localization, PopupDialog, $route, loggingService) {
+            function ($scope, Account, DTrace, Storage, $q, requestContext, localization, PopupDialog, $route) {
                 localization.bind('dtrace', $scope);
                 requestContext.setUpRenderContext('dtrace.script', $scope, {
                     title: localization.translate(null, 'dtrace', 'See my Joyent DTrace Heatmap')
@@ -22,14 +21,14 @@
                 $scope.devToolsPath = DTrace.devToolsLink();
 
                 var DTRACE_SCRIPTS = {
-                    'heatmap': function (pid) {
-                        return 'syscall:::entry' + (pid ? '/pid ==' + pid + '/' : '') + 
+                    'heatmap': function (script) {
+                        return 'syscall:::entry' + (script.pid ? '/' + (script.execname ? 'execname == "' + script.pid + '"'  : 'pid == ' + script.pid) + '/' : '') +
                             '{self->syscall_entry_ts[probefunc] = vtimestamp;}' +
                             'syscall:::return/self->syscall_entry_ts[probefunc]/{@time[probefunc] = lquantize((vtimestamp -' +
                             ' self->syscall_entry_ts[probefunc] ) / 1000, 0, 63, 2);self->syscall_entry_ts[probefunc] = 0;}';
                     },
-                    'flamegraph': function (pid) {
-                        return "-n 'profile-97 /pid == " + pid + " / { @[jstack(150, 8000)] = count(); } tick-60s { exit(0); }'"
+                    'flamegraph': function (script) {
+                        return "-n 'profile-97 /" + (script.pid ? (script.execname ? 'execname == /"' + script.pid + '/"'  : 'pid == ' + script.pid) : 'arg1') + " / { @[jstack(150, 8000)] = count(); } tick-60s { exit(0); }'"
                     }
                 };
 
@@ -38,23 +37,31 @@
                 $scope.options = {};
                 $scope.data = '';
                 var processes = {};
-                var pidPlaceholder = '$PID';
+                var PID_PLACEHOLDER = '$PID';
+                var EXECNAME_PLACEHOLDER = '$EXECNAME';
+                var PID_PATTERN = /\$PID/g;
+                var EXECNAME_PATTERN = /\$EXECNAME/g;
+                var FLAME_GRAPH_TITLE = 'Flame Graph';
+                var FLAME_GRAPH_SCRIPT_NAME = 'syscall for process';
                 var dtraceId;
                 var websocket;
                 var type;
-                
+
                 var errorCallback = function (err) {
                     $scope.loading = false;
                     PopupDialog.errorObj(err);
                 };
 
                 var getScriptsListType = 'all';
-                if ($scope.title === 'Flame Graph') {
+                if ($scope.title === FLAME_GRAPH_TITLE) {
                     getScriptsListType = 'default';
                     type = 'flamegraph';
                 } else if ($scope.title === 'Heatmap') {
                     type = 'heatmap';
                 }
+                var getDscript = function () {
+                    return DTRACE_SCRIPTS[type]($scope.options.script);
+                };
 
                 Account.getAccount(true).then(function (account) {
                     $scope.provisionEnabled = account.provisionEnabled;
@@ -63,12 +70,12 @@
                             $q.all([DTrace.listHosts(), DTrace.getScriptsList(getScriptsListType)]).then(function (result) {
                                 $scope.hosts = result[0] || [];
                                 $scope.scripts = result[1] || [];
-                                $scope.scriptName = 'all syscall';
+                                $scope.scriptName = $scope.scripts ? $scope.scripts[0].name : '';
                                 $scope.host = JSON.stringify($scope.hosts[0]);
-                                if ($scope.title === 'Flame Graph') {
-                                    $scope.scriptName = 'all syscall for process';
-                                    updateScripts();
+                                if ($scope.title === FLAME_GRAPH_TITLE) {
+                                    $scope.scriptName = FLAME_GRAPH_SCRIPT_NAME;
                                 }
+                                updateScripts();
                                 $scope.loading = false;
                             }, function (error) {
                                 $scope.hosts = [];
@@ -86,7 +93,6 @@
                         return script.name === $scope.scriptName;
                     });
                 };
-
                 var updateScripts = function () {
                     $scope.processes = null;
                     if ($scope.loadingHostProcesses || !$scope.scriptName) {
@@ -95,13 +101,16 @@
                     }
                     $scope.loadingHostProcesses = true;
                     var script = getCurrentScript();
-                    if ((!script.body || script.body.indexOf(pidPlaceholder) === -1) && !script.pid) {
+                    $scope.hasPid = script && script.pid || script.body && script.body.indexOf(PID_PLACEHOLDER) !== -1;
+                    $scope.hasExecname = script && script.execname || script.body && script.body.indexOf(EXECNAME_PLACEHOLDER) !== -1;
+                    if (!$scope.hasPid && !$scope.hasExecname) {
                         $scope.loadingHostProcesses = false;
                     } else if (!$scope.processes) {
                         if ($scope.host) {
                             var host = JSON.parse($scope.host);
                             DTrace.listProcesses({primaryIp: host.primaryIp}).then(function (list) {
-                                list.forEach(function(process) {
+                                $scope.pid = $scope.hasExecname ? list[0].execname :list[0].pid;
+                                list.forEach(function (process) {
                                     process.name = ' PID: ' + process.pid + ' CMD: ' + process.cmd;
                                 });
                                 processes[host.primaryIp] = list;
@@ -111,6 +120,24 @@
                         }
                     }
                 };
+
+                var getScriptsListType = 'all';
+                if ($scope.title === FLAME_GRAPH_TITLE) {
+                    getScriptsListType = 'default';
+                }
+
+                $q.all([DTrace.listHosts(), DTrace.getScriptsList(getScriptsListType)]).then(function (result) {
+                    Storage.pingManta();
+                    $scope.hosts = result[0] || [];
+                    $scope.scripts = result[1] || [];
+                    $scope.scriptName = $scope.scripts ? $scope.scripts[0].name : '';
+                    $scope.host = JSON.stringify($scope.hosts[0]);
+                    if ($scope.title === FLAME_GRAPH_TITLE) {
+                        $scope.scriptName = FLAME_GRAPH_SCRIPT_NAME;
+                    }
+                    updateScripts();
+                    $scope.loading = false;
+                }, errorCallback);
 
                 $scope.changeHost = function () {
                     if ($scope.host) {
@@ -131,8 +158,7 @@
                     if (dtraceId && $scope.options.hostIp) {
                         $scope.processing = true;
                         DTrace.close({host: $scope.options.hostIp, id: dtraceId}).then(function () {}, function (err) {
-                            PopupDialog.errorObj(err);
-                            loggingService.log('error', err);
+                            DTrace.reportError(err);
                             $scope.processing = false;
                         });
                     }
@@ -143,10 +169,14 @@
                 $scope.start = function () {
                     if ($scope.host) {
                         var host = JSON.parse($scope.host);
-                        var script = getCurrentScript();
-                        if (script && script.body) {
-                            script.body = script.body.replace(pidPlaceholder, $scope.pid);
+                        var script = ng.copy(getCurrentScript());
+                        if (script && script.body && $scope.pid) {
+                            script.body = script.body.replace(EXECNAME_PATTERN, '\"' + $scope.pid + '\"');
+                            script.body = script.body.replace(PID_PATTERN, $scope.pid);
                         } else if (script && script.pid) {
+                            script.execname = $scope.processes.some(function (process) {
+                                return process.execname === $scope.pid;
+                            });
                             script.pid = $scope.pid;
                         }
                         $scope.options = {
@@ -157,15 +187,11 @@
                         };
 
                         if ($scope.pid) {
-                            $scope.options.selectedProcessName = $scope.processes.find(function (process) {
+                            $scope.options.selectedProcessName = script.execname ? 'EXECNAME: ' + $scope.pid : $scope.processes.find(function (process) {
                                 return process.pid === $scope.pid;
                             }).name;
                         }
                         $scope.isRunning = $scope.processing = true;
-
-                        var getDscript = function () {
-                            return DTRACE_SCRIPTS[type]($scope.pid);;
-                        };
 
                         $scope.options.loading = true;
                         DTrace.execute({
@@ -183,13 +209,12 @@
                                 $scope.$apply(function () {
                                     $scope.processing = false;
                                 });
-                            }
+                            };
 
                             websocket.onerror = function (error) {
-                                PopupDialog.errorObj(error);
-                                loggingService.log('error', 'websocket error: ' + error);
+                                DTrace.reportError(error, 'websocket error: ' + error);
                                 closeWebsocket();
-                            }
+                            };
 
                             websocket.onmessage = function (event) {
                                 if (event.data !== 'ping') {
@@ -201,14 +226,13 @@
                                     }
                                     if ($scope.isRunning) {
                                         $scope.$apply(function () {
-                                            $scope.processing = false; 
+                                            $scope.processing = false;
                                         });
                                     }
                                 }
-                            }
+                            };
                         }, function (err) {
-                            PopupDialog.errorObj(err);
-                            loggingService.log('error', 'websocket error: ' + err);
+                            DTrace.reportError(err, 'websocket error: ' + err);
                         });
                     }
                 };
@@ -219,4 +243,4 @@
                 $scope.$on('$destroy', closeWebsocket);
             }
         ]);
-}(window.JP.getModule('dtrace')));
+}(window.angular, window.JP.getModule('dtrace')));

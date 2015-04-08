@@ -26,9 +26,16 @@
                     </td>
                     <td data-ng-show="processes && processes.length" class="big">
                         <select ui-select2="{minimumResultsForSearch: -1, width: '100%'}" id="pidSelect" data-ng-model="pid" >
-                            <option data-ng-repeat="process in processes" value="{{process.pid}}">
-                                {{process.name}}
-                            </option>
+                            <optgroup data-ng-show="hasExecname" label="execname">
+                                <option data-ng-repeat="process in processes" value="{{process.execname}}">
+                                    {{process.execname}}
+                                </option>
+                            </optgroup>
+                            <optgroup data-ng-show="hasPid" label="pid">
+                                <option data-ng-repeat="process in processes" value="{{process.pid}}">
+                                    {{process.name}}
+                                </option>
+                            </optgroup>
                         </select>
                     </td>
                     <td class="small">

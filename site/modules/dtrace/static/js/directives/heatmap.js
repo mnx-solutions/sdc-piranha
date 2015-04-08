@@ -1,7 +1,7 @@
 'use strict';
 
 (function (ng, app) {
-    app.directive('heatmap', ['$location', 'loggingService', 'DTrace', 'PopupDialog', function ($location, loggingService, DTrace, PopupDialog) {
+    app.directive('heatmap', ['DTrace', function (DTrace) {
         return {
             restrict: 'E',
             replace: true,
@@ -34,17 +34,21 @@
                 function heatTracer(data) {
                     if ($scope.options.start || !consoleСolumns.length) {
                         consoleСolumns = [];
+                        ctx.fillStyle = '#000';
                         ctx.fillRect(0, 0, width, height);
                         setup();
                         $scope.options.start = false;
                     }
-                    try {
-                        data = JSON.parse(data);
-                    } catch (ex) {
-                        var message = 'Error parsing json for heatmap';
-                        PopupDialog.errorObj(message + '.');
-                        loggingService.log('error', message);
-                    }    
+                    if (data.indexOf('Error') !== -1 || data.indexOf('error') !== -1) {
+                        DTrace.reportError(data);
+                    } else {
+                        try {
+                            data = JSON.parse(data);
+                        } catch (ex) {
+                            var message = 'Error parsing json for heatmap';
+                            DTrace.reportError(message + '.', message);
+                        }
+                    }
                     draw(data || {});
                 }
 
