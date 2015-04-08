@@ -270,7 +270,8 @@
             });
 
             function loadMachineNetworks() {
-                if (!Array.isArray($scope.machine.networks)) {
+                var sdcDockerDatacenter = window.JP.get('sdcDockerDatacenter');
+                if (sdcDockerDatacenter === $scope.machine.datacenter || !Array.isArray($scope.machine.networks)) {
                     return;
                 }
                 $scope.machine.networks.forEach(function (machineNetwork) {
