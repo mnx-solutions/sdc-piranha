@@ -149,10 +149,17 @@ module.exports = function (scope, app) {
                 }, 1000 * 60 * 10);
                 uploadFile(filePath, part, function (error) {
                     if (error) {
-                        req.log.error({error: error}, 'Error while uploading files');
+                        var logLevel = 'error';
+                        var suppressError = false;
+                        if (error.name === 'NoMatchingRoleTagError' || (error.name === 'AuthorizationFailedError' ||
+                            error.name === 'ForbiddenError') && error.statusCode === 403 && req.session.subId) {
+                            logLevel = 'info';
+                            suppressError = true;
+                        }
+                        req.log[logLevel]({error: error}, 'Error while uploading files');
                         delete filesInProgress[userId][fullPath];
                         delete requestsInProgress[formId][fullPath];
-                        if (error.name === 'NoMatchingRoleTagError') {
+                        if (suppressError) {
                             res.json({status: 'error', message: error.message});
                             return;
                         }

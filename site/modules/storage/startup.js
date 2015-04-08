@@ -4,7 +4,7 @@ var fs = require('fs');
 var path = require('path');
 var config = require('easy-config');
 var manta = require('manta');
-var mantaNotAvailable = 'Manta service is not available.';
+var MANTA_NOT_AVAILABLE = 'Manta service is not available.';
 var MANTA_PING_RETRIES = 15;
 var PING_ERROR_MESSAGE = 'Something went wrong.  Please try again in a minute.';
 var vasync = require('vasync');
@@ -19,20 +19,23 @@ module.exports = function execute(scope) {
                 var logLevel = 'error';
                 var message = err.message || '';
                 errorPath = errorPath ? ('~~' + errorPath) : call.data && call.data.path;
-                if ((err.code === 'NoMatchingRoleTag' || err.restCode === 'NoMatchingRoleTag') &&
-                    message.indexOf(errorPath.replace(/^~~/, '')) === -1) {
+                if (err.name === 'NoMatchingRoleTagError' && message.indexOf(errorPath.replace(/^~~/, '')) === -1) {
                     err.message = 'None of your active roles are present on the resource \'' + errorPath + '\'.';
                 }
                 if (err.code === 'AccountDoesNotExist') {
-                    logLevel = 'info';
-                    suppressErrorLog = true;
                     err.message = 'You do not have permission to access /my (getaccount)';
                 }
                 if (err.code === 'ENOTFOUND') {
-                    err.message = mantaNotAvailable;
+                    err.message = MANTA_NOT_AVAILABLE;
+                }
+                if (err.code === 'AccountDoesNotExist' || err.name === 'NoMatchingRoleTagError' ||
+                    (err.name === 'AuthorizationFailedError' || err.name === 'ForbiddenError') &&
+                    err.statusCode === 403 && call.req.session.subId) {
+                    logLevel = 'info';
+                    suppressErrorLog = true;
                 }
                 call.req.log[logLevel]('sendError', err);
-                call.done(err.message || mantaNotAvailable, suppressErrorLog);
+                call.done(err.message || MANTA_NOT_AVAILABLE, suppressErrorLog);
             } else {
                 call.done();
             }
