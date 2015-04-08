@@ -763,3 +763,19 @@ span.btn-success
     padding-top: 11px;
     padding-left: 20px;
 }
+.triton-type {
+    padding: 3px 14px 2px;
+    background: #56829d url("../img/triton-type.png") no-repeat 0 0;
+    background-size: 24px;
+    color: white;
+}
+.kvm-type {
+    padding: 2px 13px 1px;
+    background-color: white;
+    border: 1px #4f81bd solid;
+    color: black;
+}
+.kvm-type,
+.triton-type {
+    text-align: center;
+}

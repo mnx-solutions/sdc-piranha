@@ -43,7 +43,6 @@
                             container.NamesStr = container.Names.map(function (name) {
                                 return name[0] === '/' ? name.substring(1) : name;
                             }).join(', ');
-                            container.ShortId = container.Id.slice(0, 12);
                             container.logs = REMOVED_CONTAINER_STATUS;
                         });
                         $scope.containers = $scope.containers.filter(function (container) {
@@ -73,8 +72,6 @@
                         $scope.containers = angular.copy(containers);
                         $scope.containers.forEach(function (container) {
                             container.Created = new Date(container.Created * 1000);
-                            container.ShortId = container.Id.slice(0, 12);
-
                             setLogsTab(container);
                         });
                         listRemovedContainers();

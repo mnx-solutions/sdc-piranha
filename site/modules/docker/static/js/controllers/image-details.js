@@ -85,9 +85,6 @@
                                 return container.Image === tag;
                             });
                         });
-                        $scope.usedIn.forEach(function (container) {
-                            container.ShortId = container.Id.slice(0, 12);
-                        });
                         $scope.loading = false;
                         $scope.actionInProgress = false;
                     }, errorCallback);
