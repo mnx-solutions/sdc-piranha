@@ -272,7 +272,7 @@
                                         if (err.message.indexOf('Free tier offering is limited') === -1) {
                                             redirectUrl = '/dashboard';
                                             $scope.zenboxDialog({
-                                                request_subject: 'Please raise my provisioning limits'
+                                                'request_subject': 'Please raise my provisioning limits'
                                             });
                                         }
                                         $location.path(redirectUrl);
@@ -293,7 +293,7 @@
                                     if (newMachine.id && $scope.features.marketo === 'enabled') {
                                         $q.when(Machine.checkFirstInstanceCreated(newMachine.id), function (uuid) {
                                             if (!uuid || typeof (uuid) === 'object') {
-                                                $$track.marketo_machine_provision($scope.account);
+                                                $$track['marketo_machine_provision']($scope.account);
                                             }
                                         });
                                     }
@@ -996,25 +996,25 @@
                     $scope.data.dataset = dataset.id;
                     $scope.filterModel.searchText = '';
 
-                    if ($scope.packages && dataset.license_price) {
-                        var lPrice = getNr(dataset.license_price);
+                    if ($scope.packages && dataset['license_price']) {
+                        var lPrice = getNr(dataset['license_price']);
                         if (lPrice !== false) {
                             $scope.packages.forEach(function (p) {
                                 if (p.price) {
-                                    p.full_price = lPrice + getNr(p.price);
-                                    p.full_price = p.full_price.toFixed(3);
+                                    p['full_price'] = lPrice + getNr(p.price);
+                                    p['full_price'] = p['full_price'].toFixed(3);
                                 }
 
-                                if (p.price_month) {
-                                    p.full_price_month = getNr(p.price_month) + (lPrice * 730);
-                                    p.full_price_month = p.full_price_month.toFixed(2);
+                                if (p['price_month']) {
+                                    p['full_price_month'] = getNr(p['price_month']) + (lPrice * 730);
+                                    p['full_price_month'] = p['full_price_month'].toFixed(2);
                                 }
                             });
                         }
-                    } else if (!dataset.license_price) {
+                    } else if (!dataset['license_price']) {
                         $scope.packages.forEach(function (p) {
-                            delete(p.full_price);
-                            delete(p.full_price_month);
+                            delete(p['full_price']);
+                            delete(p['full_price_month']);
                         });
                     }
 
@@ -1059,7 +1059,7 @@
                     var versions = $scope.versions[datasetVisibility][dataset.name];
                     var filteredVersions = [];
                     listVersions.forEach(function (version) {
-                        if (versions[version].public === dataset.public && 
+                        if (versions[version].public === dataset.public &&
                             ($scope.hostSpecification !== 'dtracehost' || util.cmpVersion(MAX_DTRACE_VERSION, version) > 0)) {
                             filteredVersions.push(versions[version]);
                         }
@@ -1139,8 +1139,8 @@
                         var memory = item.memory && parseInt(item.memory, 10);
                         if (memory) {
                             var requirements = $scope.selectedDataset.requirements;
-                            if (requirements.min_memory && memory < parseInt(requirements.min_memory, 10) ||
-                                requirements.max_memory && memory > parseInt(requirements.max_memory, 10)) {
+                            if (requirements['min_memory'] && memory < parseInt(requirements['min_memory'], 10) ||
+                                requirements['max_memory'] && memory > parseInt(requirements['max_memory'], 10)) {
                                 result = false;
                             }
                         }
@@ -1343,7 +1343,7 @@
                 var publicDatasets = Object.keys(selectedVersions.public)
                     .map(function (item) { return selectedVersions.public[item].pop(); });
 
-                $scope.operating_systems = Object.keys(operatingSystems);
+                $scope['operating_systems'] = Object.keys(operatingSystems);
                 $scope.datasets = publicDatasets.concat(customDatasets).filter(function (n) { return n; });
                 $scope.versions = versions;
                 $scope.listVersions = listVersions;
@@ -1381,9 +1381,9 @@
                         }
                     }
                     var price = getNr(p.price);
-                    var priceMonth = getNr(p.price_month);
+                    var priceMonth = getNr(p['price_month']);
                     p.price = (price || price === 0) && price.toFixed(3) || undefined;
-                    p.price_month = (priceMonth || priceMonth === 0) && priceMonth.toFixed(2) || undefined;
+                    p['price_month'] = (priceMonth || priceMonth === 0) && priceMonth.toFixed(2) || undefined;
                 });
 
                 var standardIndex = packageTypes.indexOf('Standard');
@@ -1456,7 +1456,7 @@
                                     datasetDescription = versions[version].description;
                                 }
                             } else {
-                                var convertedDate = new Date(versions[version].published_at).getTime();
+                                var convertedDate = new Date(versions[version]['published_at']).getTime();
                                 if (convertedDate > publishedAt) {
                                     publishedAt = convertedDate;
                                     datasetId = versions[version].id;
@@ -1591,8 +1591,8 @@
                         $scope.zenboxDialog({
                             dropboxID: $rootScope.zenboxParams.dropboxOrderPackageId ||
                                 $rootScope.zenboxParams.dropboxID,
-                            request_subject: 'I want to order ' + el.description + ' compute instance',
-                            request_description: 'API Name: ' + el.name
+                            'request_subject': 'I want to order ' + el.description + ' compute instance',
+                            'request_description': 'API Name: ' + el.name
                         });
                         loggingService.log('info', 'User is ordering instance package from support', el);
                     }, ng.noop, function (isSuccess) {
@@ -1622,7 +1622,7 @@
 
             $scope.selectDataValue = function (name) {
                 var dataValue = 'No matches found';
-                if (name === 'os' && $scope.operating_systems) {
+                if (name === 'os' && $scope['operating_systems']) {
                     dataValue = $scope.data.opsys;
                 }
                 return dataValue;

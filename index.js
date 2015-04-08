@@ -15,6 +15,7 @@ var http = require('http');
 var app = express(); // main app
 var httpServer = http.createServer(app);
 var features = require('./lib/features');
+httpServer.setMaxListeners(0);
 
 app.use(app.router);
 app.use(express.urlencoded());

@@ -1,29 +1,30 @@
 #! /bin/bash
 
-REPOSITORY=https://github.com/joyent/dtrace-runner.git
-LOCALFOLDER=/opt/dtrace
-DTRACESERVICE=node-dtrace-service
-LOGFILE=/var/log/dtrace-install.log
-MARKER=/var/tmp/.dtrace-installed
+export REPOSITORY=https://codeload.github.com/joyent/dtrace-runner/tar.gz/master
+export LOCALFOLDER=/opt/dtrace
+export DTRACESERVICE=node-dtrace-service
+export LOGFILE=/var/log/dtrace-install.log
+export MARKER=/var/tmp/.dtrace-installed
 
-exec > $LOGFILE
 
-if [ -e $MARKER ]; then
+if [ -e ${MARKER} ]; then
     exit 0
 fi
 
-echo "check and install git gmake gcc47"
-/opt/local/bin/pkgin -y install git gmake gcc47
+exec 5>&1 3>&1 4>&1 2>&1 1>${LOGFILE}
+set -x
+set -e
+
+/opt/local/bin/mkdir -p ${LOCALFOLDER} && cd $_
+/usr/sbin/mdata-get ca > ca.pem
+/usr/sbin/mdata-get server-cert > server-cert.pem
+/usr/sbin/mdata-get server-key > server-key.pem
 
 echo "cloning repository"
-mkdir $LOCALFOLDER && /opt/local/bin/git clone $REPOSITORY $LOCALFOLDER;
+/opt/local/bin/curl -sS ${REPOSITORY} | /opt/local/bin/tar --strip-components=1 -xzf -
 
-if [ -f $LOCALFOLDER/node-server-manifest.xml ]; then
-    /usr/sbin/svccfg import $LOCALFOLDER/node-server-manifest.xml
-    /usr/sbin/svcadm clear $DTRACESERVICE
-    touch MARKER
-    echo "complete"
-else
-    echo "error occurred upon cloning the repository"
-fi
+/usr/sbin/svccfg import node-server-manifest.xml
+/opt/local/bin/touch ${MARKER}
+echo "complete"
+
 exit 0
