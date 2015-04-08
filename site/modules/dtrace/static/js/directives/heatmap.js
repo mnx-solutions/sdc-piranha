@@ -21,22 +21,24 @@
                 };
                 var width = parseInt(attrs.width);
                 var height = parseInt(attrs.height);
-                var console_columns = [];
+                var consoleСolumns = [];
                 var websocket;
                 var canvas = document.getElementById('canvas-heatmap');
                 var ctx = canvas.getContext('2d');
-                var dscriptBeginPart = 'syscall:::entry';
-                var dscriptEndPart = '{self->syscall_entry_ts[probefunc] = vtimestamp;}syscall:::return/self->syscall_entry_ts[probefunc]/{@time[probefunc] = lquantize((vtimestamp - self->syscall_entry_ts[probefunc] ) / 1000, 0, 63, 2);self->syscall_entry_ts[probefunc] = 0;}';
+                var DSCRIPT_BEGIN_PART = 'syscall:::entry';
+                var DSCRIPT_END_PART = '{self->syscall_entry_ts[probefunc] = vtimestamp;}' +
+                    'syscall:::return/self->syscall_entry_ts[probefunc]/{@time[probefunc] = lquantize((vtimestamp -' +
+                    ' self->syscall_entry_ts[probefunc] ) / 1000, 0, 63, 2);self->syscall_entry_ts[probefunc] = 0;}';
                 var host;
                 var id;
                 /* On load we create our web socket (or flash socket if your browser doesn't support it ) and
                  send the d script we wish to be tracing. This extremely powerful and *insecure*. */
                 if (!$scope.status && $scope.options.hostIp) {
-                    heat_tracer($scope.options.hostIp);
+                    heatTracer($scope.options.hostIp);
                 }
 
                 function getDscript(pid) {
-                    return dscriptBeginPart + (pid ? '/pid ==' + pid + '/' : '') + dscriptEndPart;
+                    return DSCRIPT_BEGIN_PART + (pid ? '/pid ==' + pid + '/' : '') + DSCRIPT_END_PART;
                 }
 
                 function closeWebsocket() {
@@ -49,7 +51,7 @@
                     if (websocket && websocket.readyState !== WebSocket.CLOSED) {
                         websocket.close();
                     }
-                };
+                }
 
                 $scope.$watch('status', function (status) {
                     if (status) {
@@ -57,28 +59,31 @@
                         var dscript = options.script.body || getDscript(options.script.pid);
                         var name = options.script.name;
                         var selectedProcessName = options.selectedProcessName || '';
-                        heat_tracer(options.hostIp, dscript, options.continuation, name, selectedProcessName);
+                        heatTracer(options.hostIp, dscript, options.continuation, name, selectedProcessName);
                     } else {
                         closeWebsocket();
                     }
                 });
 
-                function heat_tracer(hostIp, dscript, continuation, name, selectedProcessName) {
+                function heatTracer(hostIp, dscript, continuation, name, selectedProcessName) {
                     if (!hostIp) {
                         return;
                     }
-                    var locationPath = $location.path();
-                    if (!continuation || !console_columns.length) {
-                        console_columns = [];
+                    if (!continuation || !consoleСolumns.length) {
+                        consoleСolumns = [];
                         setup();
                         ctx.fillRect(0, 0, width, height);
                     }
-                    loggingService.log('info', 'Trying to execute dtrace script \'' + name + '\' for heatmap');
                     host = $scope.options.hostIp;
+                    name = name || 'all syscall';
 
                     DTrace.execute({
                         host: host,
-                        dtraceObj: JSON.stringify({type: 'heatmap', message: dscript})
+                        dtraceObj: JSON.stringify({
+                            type: 'heatmap',
+                            name: name,
+                            message: dscript
+                        })
                     }).then(function (data) {
                         id = data.id;
                         websocket = new WebSocket(data.path);
@@ -117,7 +122,7 @@
                             ctx.font = '12px serif';
                             ctx.fillStyle = '#fff';
                             ctx.textAlign = 'left';
-                            name = name || 'all syscall';
+
                             var heatmapGraphTitle = 'host: ' + hostIp + '; dtrace script: ' + name;
                             if (selectedProcessName) {
                                 heatmapGraphTitle += '; ' + selectedProcessName;
@@ -139,9 +144,9 @@
                 /* Take the aggregation data and update the heatmap */
                 function draw(message) {
                     /* Latest data goes in the right most column, initialize it */
-                    var syscalls_by_latency = [];
+                    var syscallsByLatency = [];
                     for (var index = 0; index < heatMapSize.y; index++) {
-                        syscalls_by_latency[index] = 0;
+                        syscallsByLatency[index] = 0;
                     }
 
                     /* Presently we have the latency for each system call quantized in our message. Merge the data
@@ -149,38 +154,38 @@
                      of syscalls made with latencies in each particular band. */
                     for (var syscall in message) {
                         var val = message[syscall];
-                        for (var result_index in val) {
-                            var latency_start = val[result_index][0][0];
-                            var count =  val[result_index][1];
+                        for (var resultIndex in val) {
+                            var latencyStart = val[resultIndex][0][0];
+                            var count =  val[resultIndex][1];
                             /* The d script we're using lquantizes from 0 to 63 in steps of two. So dividing by 2
                              tells us which row this result belongs in */
-                            syscalls_by_latency[Math.floor(latency_start / 2)] += count;
+                            syscallsByLatency[Math.floor(latencyStart / 2)] += count;
                         }
                     }
 
                     /* We just created a new column, shift the console to the left and add it. */
-                    console_columns.shift();
-                    console_columns.push(syscalls_by_latency);
-                    drawArray(console_columns);
+                    consoleСolumns.shift();
+                    consoleСolumns.push(syscallsByLatency);
+                    drawArray(consoleСolumns);
                 }
 
                 /* Draw the columns and rows that map up the heatmap on to the canvas element */
-                function drawArray(console_columns) {
+                function drawArray(columns) {
                     if (canvas.getContext) {
-                        for (var column_index in console_columns) {
-                            var column = console_columns[column_index];
-                            for (var entry_index in column) {
-                                var entry = column[entry_index];
+                        for (var columnIndex in columns) {
+                            var column = columns[columnIndex];
+                            for (var entryIndex in column) {
+                                var entry = column[entryIndex];
 
                                 /* We're using a logarithmic scale for the brightness. This was all arrived at by
                                  trial and error and found to work well on my Mac.  In the future this
                                  could all be adjustable with controls */
-                                var red_value = 0;
+                                var redValue = 0;
                                 if (entry !== 0) {
-                                    red_value = Math.floor(Math.log(entry) / Math.log(2));
+                                    redValue = Math.floor(Math.log(entry) / Math.log(2));
                                 }
-                                ctx.fillStyle = 'rgb(' + (red_value * 25) + ',0,0)';
-                                ctx.fillRect(column_index * 16, 516 - (entry_index * 16), 16, 16);
+                                ctx.fillStyle = 'rgb(' + (redValue * 25) + ',0,0)';
+                                ctx.fillRect(columnIndex * 16, 516 - (entryIndex * 16), 16, 16);
                             }
                         }
                     }
@@ -193,7 +198,7 @@
                         for (var j = 0; j < heatMapSize.y; j++) {
                             column[j] = 0;
                         }
-                        console_columns.push(column);
+                        consoleСolumns.push(column);
                     }
                 }
 
