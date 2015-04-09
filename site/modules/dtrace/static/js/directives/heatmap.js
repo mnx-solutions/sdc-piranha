@@ -180,12 +180,14 @@
                                 /* We're using a logarithmic scale for the brightness. This was all arrived at by
                                  trial and error and found to work well on my Mac.  In the future this
                                  could all be adjustable with controls */
-                                var redValue = 0;
+                                var orangeValue = 0;
                                 if (entry !== 0) {
-                                    redValue = Math.floor(Math.log(entry) / Math.log(2));
+                                    orangeValue = Math.floor(Math.log(entry) / Math.log(2));
                                 }
-                                ctx.fillStyle = 'rgb(' + (redValue * 25) + ',0,0)';
-                                ctx.fillRect(columnIndex * 16, 516 - (entryIndex * 16), 16, 16);
+                                if (orangeValue) {
+                                    ctx.fillStyle = 'rgb(' + orangeValue * 25 + ',' + orangeValue * 10 + ',0)';
+                                    ctx.fillRect(columnIndex * 16, 516 - entryIndex * 16, 16, 16);
+                                }
                             }
                         }
                     }
