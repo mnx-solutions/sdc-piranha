@@ -229,6 +229,9 @@ var Docker = function execute(scope, app) {
                             hostName: container.hostName,
                             Deleted: new Date()
                         };
+                        if (container.isSdc) {
+                            removedContainer.isSdc = true;
+                        }
                         var hostId = container.hostId;
                         removedContainers.push(removedContainer);
                         if (Array.isArray(removedContainersCache[hostId])) {
