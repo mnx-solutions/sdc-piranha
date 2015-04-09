@@ -1,7 +1,7 @@
 'use strict';
 var config = require('easy-config');
 var additionalDatacenters = {};
-if (config.features.sdcDocker === 'enabled') {
+if (config.features.sdcDocker === 'enabled' && config.sdcDocker.fullDataCenter) {
     additionalDatacenters[config.sdcDocker.datacenter] = 'https://' + config.sdcDocker.datacenter + '.api.joyentcloud.com';
 }
 
