@@ -45,7 +45,7 @@
                     PopupDialog.errorObj('Cannot start container ' + id + '. Container ' + id + '  is paused. Unpause the container.');
                 }
                 if (container && container.Status && container.Status.indexOf('Paused') === -1) {
-                    container.containers = 'running';
+                    container.state = 'running';
                     container.Status = 'Up moments ago';
                     cache.put(container);
                 }
@@ -53,7 +53,7 @@
             stop: function (cache, id) {
                 var container = cache.get(id);
                 if (container && container.Status) {
-                    container.containers = 'stopped';
+                    container.state = 'stopped';
                     container.Status = 'Exited (-1) moments ago';
                     cache.put(container);
                 }
@@ -857,6 +857,23 @@
                 });
             }
             return  ports.length ? ports.join(', ') : '';
+        };
+
+        service.getContainersCount = function (tritonOnly) {
+            return service.listContainers({host: 'All', options: {all: true}, suppressErrors: true}).then(function (containers) {
+                if (tritonOnly) {
+                    containers = containers.filter(function (container) {
+                        return container.isSdc;
+                    });
+                }
+                var runningContainers = containers.filter(function (container) {
+                    return container.state === 'running';
+                });
+                return {
+                    running: runningContainers.length,
+                    stopped: containers.length - runningContainers.length
+                }
+            });
         };
 
         return service;

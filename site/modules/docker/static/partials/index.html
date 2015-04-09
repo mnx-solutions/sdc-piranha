@@ -1,7 +1,28 @@
 <div data-ng-controller="Docker.IndexController" class="container-fluid container-position">
     <div class="row">
-        <h3 class="page-title">Docker Dashboard</h3>
-        <div class="page-title-btn">
+        <h3 class="page-title">Docker Dashboard
+            <span class="preview-sticker">preview</span>
+        </h3>
+        <div class="page-title-btn icons tooltip-hover" data-placement="top" data-html="true" data-toggle="tooltip" data-original-title="Not implemented.">
+            <span class="pricing"></span>
+            <span class="terminal"></span>
+            <span class="faq"></span>
+        </div>
+    </div>
+    <div class="loading-large" data-ng-show="loading"></div>
+    <div class="nav-tabs" data-ng-show="!loading">
+        <span>Type:&nbsp</span>
+        <span data-ng-repeat="tab in tabs">
+            <input type="radio"
+                   name="tab"
+                   id="tab{{$index}}"
+                   class="grid-tab-radio"
+                   data-ng-click="setActive(tab)"
+                   data-ng-checked="isChecked(tab)"
+                    />
+            <label for="tab{{$index}}" class="grid-tab dashboard">{{tab}}</label>
+        </span>
+        <div class="page-title-btn" data-ng-hide="isTriton">
             <div class="control-panel">
                 <span>Data Center:</span>
                 <div class="provisioning-header-left-button btn-group">
@@ -16,63 +37,86 @@
             <button data-ng-disabled="!data.imageId" data-ng-click="createDocker()" type="button" class="btn btn-big orange text-to-left"><i class="plus-btn-icon"></i>Create Docker Host</button>
         </div>
     </div>
-    <div class="beta-sticker">beta</div>
-    <div class="loading-large" data-ng-show="loading"></div>
     <div class="row dockers-wrapper" data-ng-show="dockerMachines.length >= 1 && !loading">
-        <div class="docker-wrapper" data-ng-repeat="machine in dockerMachines">
+        <div class="docker-wrapper" data-ng-repeat="machine in getFilteredMachines(dockerMachines)" data-ng-class="{'triton-bg': machine.isSdc}">
             <div class="name">
                 <p data-ng-hide="machine.isSdc" data-tooltip-full-text data-original-title="{{machine.name}}" data-ng-click="navigateMachine(machine)">{{machine.name}}</p>
-                <span data-ng-show="machine.isSdc">{{machine.name}}</span>
+                <span data-ng-show="machine.isSdc">DC: {{machine.datacenter}}</span>
             </div>
-            <div class="info">
-                <span>DC: </span>
-                <span>{{machine.datacenter}}</span>
+            <div data-ng-show="!machine.isSdc">
+                <div class="info">
+                    <span>DC: </span>
+                    <span>{{machine.datacenter}}</span>
+                </div>
+                <div class="info">
+                    <span>IP: </span>
+                    <span>{{machine.primaryIp}}</span>
+                </div>
+                <div class="info" data-ng-hide="states[machine.id] == 'completed' || machine.prohibited">
+                    <span>Status: </span>
+                    <span>{{states[machine.id] || 'initializing'}}</span>
+                    <div class="loading-medium-tr" data-ng-hide="states[machine.id] == 'unreachable' || machine.prohibited"></div>
+                </div>
             </div>
-            <div class="info">
-                <span>IP: </span>
-                <span>{{machine.primaryIp}}</span>
-            </div>
-            <div class="info" data-ng-hide="states[machine.id] == 'completed' || machine.prohibited">
-                <span>Status: </span>
-                <span>{{states[machine.id] || 'initializing'}}</span>
+            <div class="info" data-ng-hide="states[machine.id] == 'completed' || machine.prohibited || !machine.isSdc">
                 <div class="loading-medium-tr" data-ng-hide="states[machine.id] == 'unreachable' || machine.prohibited"></div>
             </div>
             <div data-ng-show="states[machine.id] == 'completed' && !machine.prohibited">
-                <div class="info">
-                    <span><a href="" data-ng-click="navigateContainersImages('containers', machine.id)">Containers</a>: </span>
-                    <span>{{machine.containersCount}}</span>
+                <div data-ng-show="machine.isSdc && !machine.prohibited">
+                    <table class="triton-info">
+                        <tr>
+                            <td><a href="" data-ng-click="navigateContainersImages('images', machine.id)">Images</a>:</td>
+                            <td class="num">{{machine.imagesCount}}</td>
+                        </tr>
+                        <tr>
+                            <td><a href="" data-ng-click="navigateContainersImages('containers', machine.id)">Containers</a>:</td>
+                            <td class="num">{{runningContainers || 0}}</td>
+                            <td>running</td>
+                        </tr>
+                        <tr>
+                            <td></td> <!-- don't remove -->
+                            <td class="num">{{otherContainers || 0}}</td>
+                            <td>stopped</td>
+                        </tr>
+                    </table>
                 </div>
-                <div class="info">
-                    <span class="info-images-label pull-left"><a href="" data-ng-click="navigateContainersImages('images', machine.id)">Images</a>: </span>
-                    <span class="loading-small loading-images-count pull-left" data-ng-hide="machine.imagesCount || machine.imagesCount == 0"></span>
-                    <span class="pull-left">{{machine.imagesCount}}</span>
-                </div>
-                <div class="progress-wrapper" data-ng-show="machine.cadvisorUnavailable">
-                    <p class="cadvisor-unavailable">cAdvisor is unavailable</p>
-                </div>
-                <div class="progress-wrapper" data-ng-hide="machine.cadvisorUnavailable || machine.isSdc">
-                    <p class="title">CPU</p>
-                    <div class="progress" title="{{machine.cpuLoad}}">
-                        <div class="progress-bar" ng-style="{width: machine.cpuLoad}"></div>
+                <div data-ng-hide="machine.isSdc">
+                    <div class="info">
+                        <span><a href="" data-ng-click="navigateContainersImages('containers', machine.id)">Containers</a>: </span>
+                        <span>{{machine.containersCount}}</span>
                     </div>
-                    <p class="title">Memory</p>
-                    <div class="progress" title="{{machine.memoryLoad}}">
-                        <div class="progress-bar" ng-style="{width: machine.memoryLoad}"></div>
+                    <div class="info">
+                        <span class="info-images-label pull-left"><a href="" data-ng-click="navigateContainersImages('images', machine.id)">Images</a>: </span>
+                        <span class="loading-small loading-images-count pull-left" data-ng-hide="machine.imagesCount || machine.imagesCount == 0"></span>
+                        <span class="pull-left">{{machine.imagesCount}}</span>
+                    </div>
+                    <div class="progress-wrapper" data-ng-show="machine.cadvisorUnavailable">
+                        <p class="cadvisor-unavailable">cAdvisor is unavailable</p>
+                    </div>
+                    <div class="progress-wrapper" data-ng-hide="machine.cadvisorUnavailable || machine.isSdc">
+                        <p class="title">CPU</p>
+                        <div class="progress" title="{{machine.cpuLoad}}">
+                            <div class="progress-bar" ng-style="{width: machine.cpuLoad}"></div>
+                        </div>
+                        <p class="title">Memory</p>
+                        <div class="progress" title="{{machine.memoryLoad}}">
+                            <div class="progress-bar" ng-style="{width: machine.memoryLoad}"></div>
+                        </div>
                     </div>
                 </div>
                 <div data-ng-show="machine.isSdc && !machine.prohibited" class="progress-wrapper">
-                    <button data-ng-click="createContainer()" type="button" class="btn btn-big orange text-to-left"><i class="plus-btn-icon"></i>Start new container</button>
+                    <button data-ng-click="createContainer()" type="button" class="btn btn-big orange text-to-left triton-btn"><i class="plus-btn-icon"></i>Start new Triton container</button>
                 </div>
                 <div data-ng-hide="machine.isSdc" class="os-based ubuntu-logo">
                     <p class="title">Ubuntu</p>
                 </div>
             </div>
             <div data-ng-show="machine.prohibited" class="progress-wrapper">
-                <a href="https://www.joyent.com/lp/preview" target="_blank" type="button" class="btn btn-big orange text-to-left triton-req-button">Request Triton Preview</a>
+                <a href="https://www.joyent.com/lp/preview" target="_blank" type="button" class="btn btn-big orange triton-btn req">Request Triton Preview</a>
             </div>
         </div>
     </div>
-    <div data-ng-show="dockerMachines.length < 1 && !loading">
+    <div data-ng-show="dockerMachines.length < 2 && !loading && !isTriton">
         <p class="page-heading">Welcome to Docker<span data-ng-hide="features.privateSdc == 'enabled'"> on the Joyent Public Cloud</span></p>
         <div data-ng-hide="provisionEnabled">
             <span class="page-subheading active-link" data-ng-click="completeAccount()">Complete your Account Information</span><span class="page-subheading"> in order to begin using Docker on the Joyent Public Cloud</span>
@@ -125,11 +169,8 @@
                 </td>
             </tr>
         </table>
-
     </div>
-
-    <a href="#!/compute/dockerHost" class="orange-link" data-ng-show="dockerMachines.length && !loading">Docker compute instances</a>
-
+    <a href="#!/compute/dockerHost" class="orange-link" data-ng-show="dockerMachines.length > 1 && !loading && !isTriton">Docker compute instances</a>
     <div data-ng-hide="loading" mantadisclaimer class="manta-disclaimer manta-disclaimer-dashboard"></div>
 </div>
 
