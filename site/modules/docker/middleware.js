@@ -9,8 +9,10 @@ module.exports = function execute() {
         index: [
             function (req, res, next) {
                 res.locals.jss = res.locals.jss || [];
-                var dockerCfg = JSON.parse(JSON.stringify(config.docker));
-                res.locals.jss.push('window.JP.set("dockerVersions", ' + JSON.stringify(dockerCfg || {}) + ')');
+                res.locals.jss.push('window.JP.set("dockerVersions", ' + JSON.stringify(config.docker) + ')');
+                if (config.features.sdcDocker === 'enabled' && config.sdcDocker.datacenter) {
+                    res.locals.jss.push('window.JP.set("sdcDockerDatacenter", "' + config.sdcDocker.datacenter + '")');
+                }
 
                 res.locals.js.push({_url: '/main/docker/term.js'});
                 return next();
