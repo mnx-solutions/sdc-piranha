@@ -238,7 +238,7 @@ var dtrace = function execute(scope) {
                         wsc.onmessage = function (event) {
                             if (socket.readyState === WebSocket.OPEN) {
                                 socket.send(event.data);
-                                if (execType === 'flamegraph' && event.data !== 'started') {
+                                if (execType === 'flamegraph') {
                                     wsc.send(call.data.dtraceObj);
                                 }
                             }
@@ -255,7 +255,6 @@ var dtrace = function execute(scope) {
                             closeSocket();
                         };
                         wsc.onclose = closeSocket;
-
                         socket.on('error', closeSocket);
                         // not working if using loadBalancer
                         socket.on('close', closeSocket);

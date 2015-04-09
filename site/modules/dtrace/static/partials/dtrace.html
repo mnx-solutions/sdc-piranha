@@ -32,19 +32,19 @@
                         </select>
                     </td>
                     <td class="small">
-                        <button data-ng-click="start()" data-ng-disabled="loadingHostProcesses || !scriptName || processing" class="btn orange heatmap-button" data-ng-hide="isRunning">Start</button>
-                        <button data-ng-click="stop()" class="btn orange heatmap-button" data-button-focus="true" data-ng-show="isRunning" data-ng-disabled="processing">Stop</button>
+                        <button data-ng-click="start()" data-ng-disabled="loadingHostProcesses || !scriptName" class="btn orange heatmap-button" data-ng-hide="starting">Start</button>
+                        <button data-ng-click="stop()" class="btn orange heatmap-button" data-button-focus="true" data-ng-show="starting" data-ng-disabled="options.processing">Stop</button>
                     </td>
                 </tr>
             </table>
         </div>
         <div class="loading-large col-md-12" data-ng-show="loading || options.loading"></div>
         <div data-ng-show="!loading && !hosts.length" class="grid-no-entries">You do not have any DTrace hosts.</div>
-        <div data-ng-show="!options.loading" class="heatmap-wrapper" data-ng-if="title === 'Heatmap'">
-            <heatmap data-options="options" data-data="data"></heatmap>
+        <div data-ng-show="!options.loading && options.isDataOk" class="heatmap-wrapper" data-ng-if="title === 'Heatmap'">
+            <heatmap data-options="options" data-status="starting"></heatmap>
         </div>
         <div class="heatmap-wrapper" data-ng-show="!loading" data-ng-if="title === 'Flame Graph'">
-            <flamegraph data-options="options" data-data="data"></flamegraph>
+            <flamegraph data-options="options" data-status="starting"></flamegraph>
         </div>
     </div>
 </div>
