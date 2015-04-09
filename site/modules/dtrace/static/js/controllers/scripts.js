@@ -23,7 +23,6 @@
 
                 var loadList = function () {
                     DTrace.getScriptsList().then(function (list) {
-                        Storage.pingManta();
                         $scope.scripts = [];
                         if (list) {
                             $scope.scripts = list.filter(function (script) {
@@ -135,7 +134,16 @@
                     }, true);
                 };
 
-                loadList();
+                Account.getAccount(true).then(function (account) {
+                    $scope.provisionEnabled = account.provisionEnabled;
+                    if ($scope.provisionEnabled) {
+                        Storage.pingManta(function () {
+                            loadList();
+                        });
+                    } else {
+                        $scope.loading = false;
+                    }
+                });
 
             }
         ]);

@@ -21,7 +21,7 @@
             Account.getAccount(true).then(function (account) {
                 $scope.provisionEnabled = account.provisionEnabled;
                 if ($scope.provisionEnabled) {
-                    Storage.ping().then(function () {
+                    Storage.pingManta(function () {
                         $scope.mantaUnavailable = false;
                         mdb.getDebugJobsList().then(function (list) {
                             $scope.objects = list;
@@ -45,10 +45,6 @@
                                 PopupDialog.error(null, err.message || err);
                             }
                         });
-                    }, function () {
-                        $scope.gridNoEntriesMessage = 'Manta service is not available.';
-                        $scope.loading = false;
-                        $scope.mantaUnavailable = true;
                     });
                 } else {
                     $scope.loading = false;

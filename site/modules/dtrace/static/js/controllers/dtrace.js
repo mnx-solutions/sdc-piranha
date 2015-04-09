@@ -4,6 +4,7 @@
     app.controller(
         'DTrace.DtraceController', [
             '$scope',
+            'Account',
             'DTrace',
             'Storage',
             '$q',
@@ -12,7 +13,7 @@
             'PopupDialog',
             '$route',
             'loggingService',
-            function ($scope, DTrace, Storage, $q, requestContext, localization, PopupDialog, $route, loggingService) {
+            function ($scope, Account, DTrace, Storage, $q, requestContext, localization, PopupDialog, $route, loggingService) {
                 localization.bind('dtrace', $scope);
                 requestContext.setUpRenderContext('dtrace.script', $scope, {
                     title: localization.translate(null, 'dtrace', 'See my Joyent DTrace Heatmap')
@@ -55,18 +56,30 @@
                     type = 'heatmap';
                 }
 
-                $q.all([DTrace.listHosts(), DTrace.getScriptsList(getScriptsListType)]).then(function (result) {
-                    Storage.pingManta();
-                    $scope.hosts = result[0] || [];
-                    $scope.scripts = result[1] || [];
-                    $scope.scriptName = 'all syscall';
-                    $scope.host = JSON.stringify($scope.hosts[0]);
-                    if ($scope.title === 'Flame Graph') {
-                        $scope.scriptName = 'all syscall for process';
-                        updateScripts();
+                Account.getAccount(true).then(function (account) {
+                    $scope.provisionEnabled = account.provisionEnabled;
+                    if ($scope.provisionEnabled) {
+                        Storage.pingManta(function () {
+                            $q.all([DTrace.listHosts(), DTrace.getScriptsList(getScriptsListType)]).then(function (result) {
+                                $scope.hosts = result[0] || [];
+                                $scope.scripts = result[1] || [];
+                                $scope.scriptName = 'all syscall';
+                                $scope.host = JSON.stringify($scope.hosts[0]);
+                                if ($scope.title === 'Flame Graph') {
+                                    $scope.scriptName = 'all syscall for process';
+                                    updateScripts();
+                                }
+                                $scope.loading = false;
+                            }, function (error) {
+                                $scope.hosts = [];
+                                errorCallback(error);
+                            });
+                        });
+                    } else {
+                        $scope.hosts = [];
+                        $scope.loading = false;
                     }
-                    $scope.loading = false;
-                }, errorCallback);
+                });
 
                 var getCurrentScript = function () {
                     return $scope.scripts.find(function (script) {
