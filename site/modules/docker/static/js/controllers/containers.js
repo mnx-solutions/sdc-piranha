@@ -80,6 +80,10 @@
                     $scope.gridUserConfig = Account.getUserConfig().$child('docker-containers');
                 }
 
+                var getContainerType = function (container) {
+                    return container.isSdc ? 'Triton' : 'KVM';
+                };
+
                 $scope.gridOrder = ['-created'];
                 $scope.gridProps = [
                     {
@@ -104,10 +108,10 @@
                         sequence: 3,
                         type: 'html',
                         _export: function (container) {
-                            return container.isSdc ? 'Triton' : 'KVM';
+                            return getContainerType(container);
                         },
                         _getter: function (container) {
-                            var type = this._export(container);
+                            var type = getContainerType(container);
                             return '<div class="' + type.toLowerCase() + '-type' + '">' + type + '</div>';
                         },
                         active: true
@@ -123,12 +127,8 @@
                         id: 'hostName',
                         name: 'Host',
                         sequence: 5,
-                        type: 'html',
-                        _export: function (container) {
-                            return container.isSdc && sdcDatacenter ? sdcDatacenter : container.hostName;
-                        },
                         _getter: function (container) {
-                            return '<span>' + this._export(container) + '</span>';
+                            return container.isSdc && sdcDatacenter ? sdcDatacenter : container.hostName;
                         },
                         active: true
                     },
