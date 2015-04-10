@@ -127,8 +127,7 @@
                         sequence: 4,
                         active: true,
                         _order: 'hostName',
-                        type: 'html',
-                        _export: function (image) {
+                        _getter: function (image) {
                             var html = [];
                             if (!image.hostIds) {
                                 html = image.hostName;
@@ -139,9 +138,6 @@
                                 html = html.join(', ');
                             }
                             return html;
-                        },
-                        _getter: function (image) {
-                            return '<span>' + this._export(image) + '</span>';
                         }
                     },
                     {
