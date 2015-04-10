@@ -7,7 +7,7 @@
             replace: true,
             scope: {
                 options: '=',
-                status: '=?'
+                data: '=?'
             },
             template: function (element, attrs) {
                 var width = parseInt(attrs.width, 10) || 1024;
@@ -22,124 +22,31 @@
                 var width = parseInt(attrs.width);
                 var height = parseInt(attrs.height);
                 var consoleСolumns = [];
-                var websocket;
                 var canvas = document.getElementById('canvas-heatmap');
                 var ctx = canvas.getContext('2d');
-                var DSCRIPT_BEGIN_PART = 'syscall:::entry';
-                var DSCRIPT_END_PART = '{self->syscall_entry_ts[probefunc] = vtimestamp;}' +
-                    'syscall:::return/self->syscall_entry_ts[probefunc]/{@time[probefunc] = lquantize((vtimestamp -' +
-                    ' self->syscall_entry_ts[probefunc] ) / 1000, 0, 63, 2);self->syscall_entry_ts[probefunc] = 0;}';
-                var host;
-                var id;
-                /* On load we create our web socket (or flash socket if your browser doesn't support it ) and
-                 send the d script we wish to be tracing. This extremely powerful and *insecure*. */
-                if (!$scope.status && $scope.options.hostIp) {
-                    heatTracer($scope.options.hostIp);
-                }
 
-                function getDscript(pid) {
-                    return DSCRIPT_BEGIN_PART + (pid ? '/pid ==' + pid + '/' : '') + DSCRIPT_END_PART;
-                }
-
-                function closeWebsocket() {
-                    if (id) {
-                        DTrace.close({host: host, id: id}).then(function () {}, function (err) {
-                            PopupDialog.errorObj(err);
-                        });
-                    }
-                    $scope.options.processing = false;
-                    if (websocket && websocket.readyState !== WebSocket.CLOSED) {
-                        websocket.close();
-                    }
-                }
-
-                $scope.$watch('status', function (status) {
-                    if (status) {
-                        var options = $scope.options;
-                        var dscript = options.script.body || getDscript(options.script.pid);
-                        var name = options.script.name;
-                        var selectedProcessName = options.selectedProcessName || '';
-                        heatTracer(options.hostIp, dscript, options.continuation, name, selectedProcessName);
-                    } else {
-                        closeWebsocket();
+                $scope.$watch('data', function (data) {
+                    if (data) {
+                        heatTracer(data);
                     }
                 });
 
-                function heatTracer(hostIp, dscript, continuation, name, selectedProcessName) {
-                    if (!hostIp) {
-                        return;
-                    }
-                    if (!continuation || !consoleСolumns.length) {
+                function heatTracer(data) {
+                    if ($scope.options.start || !consoleСolumns.length) {
                         consoleСolumns = [];
-                        setup();
                         ctx.fillRect(0, 0, width, height);
+                        setup();
+                        $scope.options.start = false;
                     }
-                    host = $scope.options.hostIp;
-                    name = name || 'all syscall';
-
-                    DTrace.execute({
-                        host: host,
-                        dtraceObj: JSON.stringify({
-                            type: 'heatmap',
-                            name: name,
-                            message: dscript
-                        })
-                    }).then(function (data) {
-                        id = data.id;
-                        websocket = new WebSocket(data.path);
-                        websocket.onmessage = function (event) {
-                            var data = {};
-                            if (event.data !== 'ping') {
-                                try {
-                                    data = JSON.parse(event.data);
-                                    $scope.options.isDataOk = true;
-                                } catch (ex) {
-                                    $scope.options.isDataOk = false;
-                                    var message = 'Error parsing json for heatmap';
-                                    PopupDialog.errorObj(message + '.');
-                                    loggingService.log('error', message);
-                                }
-                            }
-                            $scope.options.processing = false;
-                            draw(data);
-                            $scope.$apply(function () {
-                                $scope.options.loading = false;
-                            });
-                        };
-
-                        websocket.onopen = function () {
-                            $scope.$apply(function () {
-                                $scope.options.processing = false;
-                            });
-                            dscript = dscript || getDscript();
-
-                            // Draw  script name and host
-                            ctx.beginPath();
-                            ctx.strokeStyle = '#fff';
-                            ctx.moveTo(0, 20);
-                            ctx.lineTo(width, 20);
-                            ctx.stroke();
-                            ctx.font = '12px serif';
-                            ctx.fillStyle = '#fff';
-                            ctx.textAlign = 'left';
-
-                            var heatmapGraphTitle = 'host: ' + hostIp + '; dtrace script: ' + name;
-                            if (selectedProcessName) {
-                                heatmapGraphTitle += '; ' + selectedProcessName;
-                            }
-                            ctx.fillText(heatmapGraphTitle, 5, 14);
-                        };
-
-                        websocket.onerror = function (data) {
-                            loggingService.log('error', 'websocket error: ' + data);
-                        };
-
-                        websocket.onclose = closeWebsocket;
-                    });
+                    try {
+                        data = JSON.parse(event.data);
+                    } catch (ex) {
+                        var message = 'Error parsing json for heatmap';
+                        PopupDialog.errorObj(message + '.');
+                        loggingService.log('error', message);
+                    }    
+                    draw(data || {});
                 }
-
-                $scope.$on('$routeChangeStart', closeWebsocket);
-                $scope.$on('$destroy', closeWebsocket);
 
                 /* Take the aggregation data and update the heatmap */
                 function draw(message) {
@@ -195,6 +102,24 @@
 
                 /* The heatmap is is really a default 64x32 grid. Initialize the array which contains the grid data. */
                 function setup() {
+
+                    var options = $scope.options;
+                    // Draw  script name and host
+                    ctx.beginPath();
+                    ctx.strokeStyle = '#fff';
+                    ctx.moveTo(0, 20);
+                    ctx.lineTo(width, 20);
+                    ctx.stroke();
+                    ctx.font = '12px serif';
+                    ctx.fillStyle = '#fff';
+                    ctx.textAlign = 'left';
+                    var selectedProcessName = options.selectedProcessName || '';
+                    var heatmapGraphTitle = 'host: ' + options.hostIp + '; dtrace script: ' + options.script.name;
+                    if (selectedProcessName) {
+                        heatmapGraphTitle += '; ' + selectedProcessName;
+                    }
+                    ctx.fillText(heatmapGraphTitle, 5, 14);
+
                     for (var i = 0; i < heatMapSize.x; i++) {
                         var column = [];
                         for (var j = 0; j < heatMapSize.y; j++) {
