@@ -27,4 +27,8 @@ echo "cloning repository"
 /opt/local/bin/touch ${MARKER}
 echo "complete"
 
+for key in $(echo "ca server-key server-cert");do
+    /usr/sbin/mdata-delete ${key} &
+done
+
 exit 0
