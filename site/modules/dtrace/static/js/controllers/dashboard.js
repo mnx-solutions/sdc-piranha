@@ -65,13 +65,16 @@
                 var account = result[1] || {};
                 $scope.provisionEnabled = account.provisionEnabled;
                 if (dtraceMachines.length > 0 && $scope.provisionEnabled) {
-                    Storage.pingManta();
                     $scope.dtraceMachines = dtraceMachines.filter(function (machine) {
                         getHostStatus(machine);
                         return machine.primaryIp;
                     });
+                    Storage.pingManta(function () {
+                        $scope.loading = false;
+                    });
+                } else {
+                    $scope.loading = false;
                 }
-                $scope.loading = false;
             }, function (err) {
                 $scope.loading = false;
                 PopupDialog.errorObj(err);
