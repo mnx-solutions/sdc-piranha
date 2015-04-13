@@ -192,15 +192,19 @@
                             }
 
                             websocket.onmessage = function (event) {
-                                if (event.data !== 'ping' && event.data !== 'started') {
-                                    $scope.$apply(function () {
-                                        $scope.options.loading = false;
-                                        $scope.data = event.data;
-                                    });
+                                if (event.data !== 'ping') {
+                                    if (event.data !== 'started') {
+                                        $scope.$apply(function () {
+                                            $scope.options.loading = false;
+                                            $scope.data = event.data;
+                                        });
+                                    }
+                                    if ($scope.isRunning) {
+                                        $scope.$apply(function () {
+                                            $scope.processing = false; 
+                                        });
+                                    }
                                 }
-                                $scope.$apply(function () {
-                                    $scope.processing = false; 
-                                });
                             }
                         }, function (err) {
                             PopupDialog.errorObj(err);
