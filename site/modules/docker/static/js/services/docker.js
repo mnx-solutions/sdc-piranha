@@ -847,6 +847,18 @@
                 + dockerId.substr(20, 12);
         };
 
+        service.getContainerState = function (containerInfo) {
+            var containerState = 'stopped';
+            if (containerInfo.State.Paused) {
+                containerState = 'paused';
+            } else if (containerInfo.State.Restarting) {
+                containerState = 'restarting';
+            } else if (containerInfo.State.Running && containerInfo.State.StartedAt) { // sdc-docker does not send State.StartedAt
+                containerState = 'running';                                            // parameter if container is offline
+            }
+            return containerState;
+        };
+
         service.parsePorts = function (portsArray) {
             var ports = [];
             if (portsArray && portsArray.length) {

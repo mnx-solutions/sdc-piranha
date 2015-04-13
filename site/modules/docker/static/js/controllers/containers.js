@@ -22,6 +22,7 @@
                 });
 
                 var hostId = requestContext.getParam('host') || '';
+                var updateContainersInfo;
                 $scope.loading = true;
                 if ($location.path() === '/docker/containers/running') {
                     $scope.forceTabActive = 'running';
@@ -34,15 +35,42 @@
                     });
                 };
 
-                var getContainerState = function (container) {
-                    if (container.Status.indexOf('Up') > -1) {
-                        if (container.Status.indexOf('Paused') > -1) {
-                            container.state = 'paused';
-                        } else {
-                            container.state = 'running';
+                var hasContainersInProgress = function () {
+                    return $scope.containers.some(function (container) {
+                        return container.actionInProgress;
+                    }) || false;
+                };
+
+                var getStatsWithInterval = function (start) {
+                    clearInterval(updateContainersInfo);
+                    if (!start) {
+                        return;
+                    }
+                    var INTERVAL = 30000; // ms
+                    updateContainersInfo = setInterval(function () {
+                        listAllContainers(false);
+                        if (hasContainersInProgress()) {
+                            clearInterval(updateContainersInfo);
                         }
+                    }, INTERVAL);
+                };
+
+                var getContainerState = function (container, isUpdate) {
+                    if (isUpdate) {
+                        return Docker.inspectContainer(container).then(function (info) {
+                            return Docker.getContainerState(info);
+                        }, errorCallback);
                     } else {
-                        container.state = 'stopped';
+                        if (container.Status.indexOf('Up') > -1) {
+                            if (container.Status.indexOf('Paused') > -1) {
+                                container.state = 'paused';
+                            } else {
+                                container.state = 'running';
+                            }
+                        } else {
+                            container.state = 'stopped';
+                        }
+                        return container.state;
                     }
                     return container.state;
                 };
@@ -67,10 +95,11 @@
                             });
                         }
                         $scope.containers = containers.map(function (container) {
-                            container.state = getContainerState(container);
+                            container.state = getContainerState(container, false);
                             return container;
                         });
                         $scope.loading = false;
+                        getStatsWithInterval(true);
                     }, function (err) {
                         errorCallback(err);
                     });
@@ -184,7 +213,6 @@
                         }
                     }
                 ];
-
                 var gridMessages = {
                     start: {
                         single: 'Start selected container?',
@@ -224,8 +252,12 @@
                 }
 
                 var processContainerComplete = function (container) {
-                    container.actionInProgress = false;
-                    container.state = getContainerState(container);
+                    getContainerState(container, true).then(function (state) {
+                        container.state = state;
+                        container.actionInProgress = false;
+                        getStatsWithInterval(true);
+                        delete Docker.cache.containers;
+                    });
                 };
 
                 function processContainerAction(action) {
@@ -256,6 +288,7 @@
                         } else {
                             command += 'Container';
                         }
+                        getStatsWithInterval(false);
                         Docker[command](container).then(function (response) {
                             if (action === 'remove') {
                                 $scope.containers = $scope.containers.filter(function (item) {
@@ -282,10 +315,8 @@
                         if (action === 'createImage' && bothKvmAndTritonSelected) {
                             return $location.path('/docker/images');
                         }
-                        var hasContainersInProgress = $scope.containers.some(function (container) {
-                            return container.actionInProgress;
-                        });
-                        if (!hasContainersInProgress) {
+
+                        if (!hasContainersInProgress()) {
                             listAllContainers(true);
                         }
                     });
@@ -417,6 +448,10 @@
                 $scope.createContainer = function () {
                     $location.path('/docker/container/create');
                 };
+                $scope.$on('$destroy', function () {
+                    clearInterval(updateContainersInfo);
+                });
+
             }
         ]);
 }(window.JP.getModule('docker')));
