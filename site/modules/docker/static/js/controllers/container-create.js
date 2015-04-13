@@ -221,8 +221,8 @@
                     $scope.createImage = true;
                     $scope.title = 'Create Image From Container';
                 }
-                $scope.selectOptions = [{value: true, 'text': 'yes'}, {value: false, 'text': 'no'}];
-                $scope.selectReverseOptions = [{value: false, 'text': 'no'}, {value: true, 'text': 'yes'}];
+                $scope.YES_NO_OPTIONS = [{value: true, 'text': 'yes'}, {value: false, 'text': 'no'}];
+                $scope.NO_YES_OPTIONS = [{value: false, 'text': 'no'}, {value: true, 'text': 'yes'}];
 
                 $scope.memory = 0;
                 $scope.memorySwap = 0;
@@ -407,6 +407,13 @@
                     }, errorCallback);
                 };
 
+                $scope.selectDataText = function (selectedValue) {
+                    var selectedOption = $scope.NO_YES_OPTIONS.find(function (option) {
+                        return option.value === selectedValue;
+                    });
+                    return selectedOption && selectedOption.text || $scope.NO_YES_OPTIONS[0].text;
+                };
+
                 $scope.changeHost = function (host) {
                     host = host || Docker.getHost($scope.hosts, $scope.ip);
                     $scope.hostId = host.id;
@@ -481,7 +488,7 @@
                         CapAdd: $scope.capAdd ? $scope.capAdd.split(' ') : [],
                         CapDrop: $scope.capDrop ? $scope.capDrop.split(' ') : [],
                         RestartPolicy: restartPolicy,
-                        PublishAllPorts: $scope.publishAllPorts === 'true',
+                        PublishAllPorts: $scope.publishAllPorts,
                         Privileged: $scope.privileged
                     };
 
