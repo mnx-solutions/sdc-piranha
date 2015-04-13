@@ -395,7 +395,9 @@ module.exports = function execute(scope, register) {
             });
         })
     };
+
     var supportPackages = [];
+
     if (config.features.createdBySupportPackages === 'enabled') {
         for (var name in info.packages.data.all) {
             if (info.packages.data.all.hasOwnProperty(name) && info.packages.data.all[name].createdBySupport) {
@@ -404,6 +406,8 @@ module.exports = function execute(scope, register) {
             }
         }
     }
+
+    var tritonDataCenter = config.features.sdcDocker === 'enabled' ? config.sdcDocker.datacenter : '';
 
     api.PackageList = function (call, options, callback) {
         call.log.info('Handling list packages event');
@@ -414,10 +418,12 @@ module.exports = function execute(scope, register) {
                 return;
             }
 
-            data = data.concat(supportPackages);
-
             if (!info.packages.data[options.datacenter]) {
                 options.datacenter = 'all';
+            }
+
+            if (options.datacenter !== tritonDataCenter) {
+                data = data.concat(supportPackages);
             }
 
             var filteredPackagesMap = {};
