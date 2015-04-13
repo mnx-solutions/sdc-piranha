@@ -3,13 +3,13 @@
 var foldermap = require('foldermap');
 var fs = require('fs');
 
-module.exports = function execute(scope, register, callback) {
+exports.init = function execute(log, config, done) {
 
     var info = {};
 
     foldermap.map({path: __dirname + '/data', ext:['json', 'html'], relative:true}, function (err, map) {
-        if(err) {
-            scope.log.fatal(err);
+        if (err) {
+            log.fatal(err);
             process.exit();
         }
 
@@ -22,14 +22,14 @@ module.exports = function execute(scope, register, callback) {
                     var string = map[f]._ext === 'json' ? JSON.stringify(data, null, 2) : data.data;
                     var old = map[f]._ext === 'json' ? JSON.stringify(self.data, null, 2) : self.data;
                     map.__add('old/' + f + '_' + Date.now() + '.' + map[f]._ext + '.old', old, true, function (oldWriteErr) {
-                        if(oldWriteErr) {
-                            scope.log.error('Failed to update file ' + f, oldWriteErr);
+                        if (oldWriteErr) {
+                            log.error('Failed to update file ' + f, oldWriteErr);
                             cb(oldWriteErr);
                             return;
                         }
                         map[f].__write(string, function (newWriteErr) {
-                            if(newWriteErr) {
-                                scope.log.error('Failed to update file ' + f, newWriteErr);
+                            if (newWriteErr) {
+                                log.error('Failed to update file ' + f, newWriteErr);
                                 cb(newWriteErr);
                                 return;
                             }
@@ -40,7 +40,7 @@ module.exports = function execute(scope, register, callback) {
                 }
             };
         });
-        register('Info', info);
-        callback();
+        exports.Info = info;
+        done();
     });
 };

@@ -1,22 +1,20 @@
 {
-	"em": {
-        "auth":true,
-		"route": "/signup",
-        "defaultHash": "#!/start",
-		"modules": [
-            "localization",
-            "server",
-            "notification",
-            "tracking",
-            "signup",
-            "menu",
-            "billing",
-            "account",
-            "storage",
-            "tfa",
-            "maxmind",
-            "feature-flags",
-            "dialog"
-        ]
-	}
+  "auth": true,
+  "route": "/signup",
+  "defaultHash": "#!/start",
+  "modules": [
+    "localization",
+    "server",
+    "notification",
+    "tracking",
+    "signup",
+    "menu",
+    "billing",
+    "account",
+    "storage",
+    "tfa",
+    "maxmind",
+    "feature-flags",
+    "dialog"
+  ]
 }

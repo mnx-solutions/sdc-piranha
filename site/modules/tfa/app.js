@@ -3,12 +3,16 @@
 var config = require('easy-config');
 var TFAProvider = require('./lib/TFAProvider');
 var metadata = require('../account/lib/metadata');
+var SmartCloud = require('../../../lib/smartcloud');
 
-module.exports = function execute(scope, app) {
-    var smartCloud = scope.get('smartCloud');
-    var TFA = scope.api('TFA');
+module.exports = function execute(app, log, config) {
+    var smartCloud = new SmartCloud({
+        log: log,
+        api: config.cloudapi
+    });
+    var TFA = require('./').TFA;
 
-    var headerClientIpKey = scope.config.server.headerClientIpKey;
+    var headerClientIpKey = config.server.headerClientIpKey;
 
     app.use(function (req, res, next) {
         if (req.session && req.session.userId && req.session.userName) {
@@ -149,19 +153,19 @@ module.exports = function execute(scope, app) {
         req.log.debug('Attempting to remove TFA');
         if (!req.session.token || !req.session.userId) {
             req.log.warn('User not authorized');
-            res.send(401);
+            res.sendStatus(401);
             return;
         }
 
         TFA.setSecurity(req.session.userId, false, function(err, secretkey) {
             if (err) {
                 req.log.error(err, 'TFA removal failed');
-                res.json(500, {status: 'error', err: err});
+                res.sendStatus(500).json({status: 'error', err: err});
                 return;
             }
 
             req.log.info('TFA removed from user');
-            res.json({ status: 'ok' });
+            res.json({status: 'ok'});
         });
     });
 
@@ -169,7 +173,7 @@ module.exports = function execute(scope, app) {
         req.log.debug('Attempting to start TFA setup');
         if (!req.session.userId || !req.session.userName) {
             req.log.warn('User not authorized');
-            res.send(401);
+            res.sendStatus(401);
             return;
         }
 
@@ -185,7 +189,7 @@ module.exports = function execute(scope, app) {
         req.log.debug('Attempting to complete TFA setup');
         if (!req.session._tfaSecret || !req.session.userId) {
             req.log.warn('User not authorized');
-            res.send(401);
+            res.sendStatus(401);
             return;
         }
 
@@ -210,7 +214,7 @@ module.exports = function execute(scope, app) {
         req.log.debug('User attempting to log in via TFA');
         if (!req.session._tfaSecret || !req.session.userId) {
             req.log.warn('User session information missing');
-            res.send(401);
+            res.sendStatus(401);
             return;
         }
 
@@ -223,7 +227,7 @@ module.exports = function execute(scope, app) {
             req.session.save();
 
             logUserInformation(req, redirect);
-            res.send({ status: 'ok', redirect: redirect });
+            res.send({status: 'ok', redirect: redirect});
         }
     });
 };

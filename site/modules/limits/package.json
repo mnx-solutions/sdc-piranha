@@ -1,6 +1,4 @@
 {
-    "em": {
-        "route": "/limits",
-        "auth": true
-    }
+  "route": "/limits",
+  "auth": true
 }

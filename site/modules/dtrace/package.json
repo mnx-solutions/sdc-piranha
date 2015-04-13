@@ -1,6 +1,5 @@
 {
-    "em": {
-        "route": "/dtrace",
-        "auth": true
-    }
+  "main": "api.js",
+  "route": "/dtrace",
+  "auth": true
 }

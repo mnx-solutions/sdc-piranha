@@ -2,8 +2,8 @@
 
 var fs = require('fs');
 
-module.exports = function execute(scope, app) {
-    var SignupProgress = scope.api('SignupProgress');
+module.exports = function execute(app) {
+    var SignupProgress = require('../account').SignupProgress;
 
     app.get('/currentStep', function (req, res) {
         res.send(req.session.signupStep);

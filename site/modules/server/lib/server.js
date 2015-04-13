@@ -36,7 +36,7 @@ Server.prototype.query = function () {
         var isSessionReadable = req._session._readable(id);
 
         if (!req._session._processing(id) && !isSessionReadable) {
-            res.send(204);
+            res.sendStatus(204);
             return;
         }
 
@@ -46,15 +46,15 @@ Server.prototype.query = function () {
                 clearTimeout(timeout);
             }
 
-            res.json(200, { results: req._session.read(req, id) });
+            res.status(200).json({results: req._session.read(req, id)});
         }
 
-        if(isSessionReadable) {
+        if (isSessionReadable) {
             send();
         } else {
             timeout = setTimeout(function () {
                 req._session.getTab(id).removeListener('readable', send);
-                res.send(200, '');
+                res.sendStatus(200).send('');
             }, 30000);
 
             req._session.getTab(id).once('readable', send);
@@ -68,26 +68,23 @@ Server.prototype.call = function () {
         var query = req.body;
         var id = req.query.tab;
 
-        if ('object' !== typeof query ||
-            !query.id ||
-            !query.name ||
-            !id) {
-                req.log.warn('Invalid call format', query);
-                res.send(400, 'Invalid call format');
-                return;
+        if ('object' !== typeof query || !query.id || !query.name || !id) {
+            req.log.warn('Invalid call format', query);
+            res.sendStatus(400).send('Invalid call format');
+            return;
         }
 
-        req.log.debug({queryName: query.name, queryId: query.id, tabId: id},'Incoming RPC call');
+        req.log.debug({queryName: query.name, queryId: query.id, tabId: id}, 'Incoming RPC call');
 
         if (!self._handlers[query.name]) {
             req.log.warn('Client tried to call unhandled call', query);
-            res.send(501, 'Unhandled RPC call', query.name);
+            res.sendStatus(501).send('Unhandled RPC call', query.name);
             return;
         }
 
         if (!self._handlers[query.name].verify(query.data)) {
             req.log.warn({params:query.data}, 'Invalid parameters provided for call %s', query.name);
-            res.send(400, 'Invalid parameters provided');
+            res.sendStatus(400).send('Invalid parameters provided');
             return;
         }
 
@@ -100,7 +97,7 @@ Server.prototype.call = function () {
         var call = req._session.call(id, opts);
 
         if (!call.immediate) {
-            res.send(202);
+            res.sendStatus(202).send('ACCEPTED');
         }
     };
 };

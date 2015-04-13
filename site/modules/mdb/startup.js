@@ -1,6 +1,5 @@
 'use strict';
 var config = require('easy-config');
-var restify = require('restify');
 var vasync = require('vasync');
 var path = require('path');
 var GENERAL_ERROR_MESSAGE = 'Something went wrong, please try again.';
@@ -130,9 +129,9 @@ function modulesParser(rawModulesContent) {
     return {modules: modules.root.children};
 }
 
-var mdbApi = function execute(scope) {
-    var Manta = scope.api('MantaClient');
-    var server = scope.api('Server');
+var mdbApi = function execute(log, config) {
+    var Manta = require('../storage').MantaClient;
+    var server = require('../server').Server;
 
     function copyObjects(distination, source) {
         distination = distination || {};

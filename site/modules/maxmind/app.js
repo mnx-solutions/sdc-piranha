@@ -25,9 +25,9 @@ var serviceMessages = {
     calling: 'Calling...'
 };
 
-module.exports = function execute(scope, app) {
-    var SignupProgress = scope.api('SignupProgress');
-    var Metadata = scope.api('Metadata');
+module.exports = function execute(app) {
+    var SignupProgress = require('../account').SignupProgress;
+    var Metadata = require('../account').Metadata;
 
     function messageFilter(message) {
         if (message.indexOf('Insufficient') !== -1) {
@@ -43,7 +43,7 @@ module.exports = function execute(scope, app) {
 
     function lockAccount(req, res, lockMessage) {
         lockMessage = lockMessage || serviceMessages.wrongPinLocked;
-        if(req.session.maxmindLocked) { // Already locked
+        if (req.session.maxmindLocked) { // Already locked
             res.json({message: lockMessage, success: false, navigate: true});
             return;
         }
@@ -69,7 +69,7 @@ module.exports = function execute(scope, app) {
     }
 
     function finishVerification(req, res, success) {
-        if(success) {
+        if (success) {
             req.log.info('Phone verification successful');
         } else {
             req.log.error('Maxmind phone verification service cannot be reached after %d attempts',
@@ -86,7 +86,7 @@ module.exports = function execute(scope, app) {
             req.session.save();
 
             SignupProgress.setMinProgress(req, 'phone', function(err) {
-                if(err) {
+                if (err) {
                     req.log.error(err);
                     res.json({message: 'Internal error', success: false});
                     return;
@@ -100,11 +100,11 @@ module.exports = function execute(scope, app) {
     app.get('/call/:phone', function (req, res) {
         var retries = req.session.maxmindRetries || 0;
         var serviceFails = req.session.maxmindServiceFails || 0;
-        var code = Math.random().toString(10).substr(2,4);
+        var code = Math.random().toString(10).substr(2, 4);
         req.session.maxmindCode = code;
 
         // Too many tries, lock account
-        if(retries >= limits.calls || req.session.maxmindLocked) {
+        if (retries >= limits.calls || req.session.maxmindLocked) {
             req.session.blockReason = 'Phone verification, too many calls.  REF ID: ' + req.session.attemptId;
             lockAccount(req, res, serviceMessages.wrongCallLocked);
             return;
@@ -191,6 +191,4 @@ module.exports = function execute(scope, app) {
             serviceMessages.wrongPinTooManyTries : serviceMessages.wrongPin;
         res.json({message: wrongPinMessage, success: false});
     });
-
-
 };

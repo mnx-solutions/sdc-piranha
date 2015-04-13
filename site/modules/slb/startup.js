@@ -7,11 +7,11 @@ var manta = require('manta');
 var vasync = require('vasync');
 
 //Logging is done by serverTab itself, no need for additional info/error logging in each request
-var slb = function execute(scope) {
-    var server = scope.api('Server');
-    var machine = scope.api('Machine');
-    var Metadata = scope.api('Metadata');
-    var ssc = scope.api('SLB');
+var slb = function execute(log, config) {
+    var server = require('../server').Server;
+    var machine = require('../machine').Machine;
+    var Metadata = require('../account').Metadata;
+    var ssc = require('./').SLB;
 
     var getSscMachine = ssc.getSscMachine;
     var getSscClient = ssc.getSscClient;
@@ -267,7 +267,7 @@ var slb = function execute(scope) {
     server.onCall('SscMachineCreate', {
         handler: function (call) {
             call.update(null, 'Provisioning load balancer controller');
-            var datacenter = config.slb.ssc_datacenter || 'us-west-1';
+            var datacenter = config.slb['ssc_datacenter'] || 'us-west-1';
             try {
                 machine.PackageList(call, {datacenter: datacenter}, function (packagesErr, packagesData) {
                     if (packagesErr) {
@@ -276,11 +276,11 @@ var slb = function execute(scope) {
                     }
 
                     var chosenPackages = packagesData.filter(function (pack) {
-                        return pack.name === config.slb.ssc_package;
+                        return pack.name === config.slb['ssc_package'];
                     });
 
                     if (chosenPackages.length !== 1) {
-                        call.done('Found no or more than one package with the name: ' + config.slb.ssc_package);
+                        call.done('Found no or more than one package with the name: ' + config.slb['ssc_package']);
                         return;
                     }
 
@@ -289,16 +289,16 @@ var slb = function execute(scope) {
                     var sscKeyPair = createKeyPairs();
                     var portalKeyPair = createKeyPairs();
 
-                    if (config.slb.ssc_private_key && config.slb.ssc_public_key) {
-                        sscKeyPair.privateKey = config.slb.ssc_private_key;
-                        sscKeyPair.publicSsh = config.slb.ssc_public_key;
-                        sscKeyPair.fingerprint = ursa.openSshPublicKey(config.slb.ssc_public_key)
+                    if (config.slb['ssc_private_key'] && config.slb['ssc_public_key']) {
+                        sscKeyPair.privateKey = config.slb['ssc_private_key'];
+                        sscKeyPair.publicSsh = config.slb['ssc_public_key'];
+                        sscKeyPair.fingerprint = ursa.openSshPublicKey(config.slb['ssc_public_key'])
                             .toPublicSshFingerprint('hex').replace(/([a-f0-9]{2})/gi, '$1:').slice(0, -1);
                     }
 
                     var data = {
                         datacenter: datacenter,
-                        dataset: config.slb.ssc_image,
+                        dataset: config.slb['ssc_image'],
                         name: hardControllerName,
                         'package': sscPackageId,
                         'metadata.ssc_private_key': sscKeyPair.privateKey,
@@ -307,15 +307,15 @@ var slb = function execute(scope) {
                         'metadata.account_name': call.req.session.userName,
                         'metadata.manta_account': call.req.session.userName,
                         'metadata.datacenter_name': datacenter,
-                        'metadata.slb_code_url': config.slb.slb_code_url,
+                        'metadata.slb_code_url': config.slb['slb_code_url'],
                         // TODO: remove this line after renaming code in image
-                        'metadata.elb_code_url': config.slb.slb_code_url,
-                        'metadata.sdc_url': config.slb.sdc_url || 'https://us-west-1.api.joyentcloud.com',
+                        'metadata.elb_code_url': config.slb['slb_code_url'],
+                        'metadata.sdc_url': config.slb['sdc_url'] || 'https://us-west-1.api.joyentcloud.com',
                         'tag.slb': 'ssc'
                     };
 
-                    if (config.slb.ssc_networks) {
-                        data.networks = config.slb.ssc_networks;
+                    if (config.slb['ssc_networks']) {
+                        data.networks = config.slb['ssc_networks'];
                     }
 
                     var portalFingerprint = '/' + call.req.session.userName + '/keys/' + portalKeyPair.fingerprint;
@@ -352,7 +352,7 @@ var slb = function execute(scope) {
                                         data.networks = networks.map(function (network) {
                                             return network.id;
                                         });
-                                        call.req.log.info("Creating SSC machine", data);
+                                        call.req.log.info('Creating SSC machine', data);
                                         machine.Create(call, data, function (createError, result) {
                                             if (createError) {
                                                 call.done(createError);
@@ -446,12 +446,12 @@ var slb = function execute(scope) {
 };
 
 if (!config.features || config.features.slb === 'enabled') {
-    assert(config.slb, "slb section is required");
-    assert(config.slb.slb_code_url, "slb.slb_code_url is required");
-    assert(config.slb.ssc_image, "slb.ssc_image is required");
-    assert(config.slb.ssc_package, "slb.ssc_package is required");
-    assert(config.slb.ssc_protocol, "slb.ssc_protocol is required");
-    assert(config.slb.ssc_port, "slb.ssc_port is required");
+    assert(config.slb, 'slb section is required');
+    assert(config.slb['slb_code_url'], 'slb.slb_code_url is required');
+    assert(config.slb['ssc_image'], 'slb.ssc_image is required');
+    assert(config.slb['ssc_package'], 'slb.ssc_package is required');
+    assert(config.slb['ssc_protocol'], 'slb.ssc_protocol is required');
+    assert(config.slb['ssc_port'], 'slb.ssc_port is required');
 
     module.exports = slb;
 }

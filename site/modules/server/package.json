@@ -1,5 +1,4 @@
 {
-	"em": {
-		"auth":true
-	}
+  "main": "api.js",
+  "auth":true
 }

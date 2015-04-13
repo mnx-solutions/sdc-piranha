@@ -152,7 +152,7 @@ Instrumentation.prototype.getValue = function (callback) {
     var method = 'getInstrumentationValue';
     var options = {
         id: this.id,
-        start_time: (this.lastUpdate || Math.floor(this.config.crtime / 1000))
+        'start_time': (this.lastUpdate || Math.floor(this.config.crtime / 1000))
     };
 
     if (arity === 'numeric-decomposition') {
@@ -163,8 +163,8 @@ Instrumentation.prototype.getValue = function (callback) {
         options.duration = this.config.duration || HEATMAP_DURATION;
         options.hues = this.config.hues || HEATMAP_HUES;
         options.ndatapoints = 1;
-        options.end_time = options.start_time;
-        delete options.start_time;
+        options['end_time'] = options['start_time'];
+        delete options['start_time'];
     }
 
     this.cloud[method](options, options, function (error, response) {
@@ -177,10 +177,10 @@ Instrumentation.prototype.getValue = function (callback) {
             return;
         }
 
-        self.lastUpdate = (response.end_time || self.lastUpdate);
+        self.lastUpdate = (response['end_time'] || self.lastUpdate);
 
         if (arity === 'numeric-decomposition') {
-            response.end_time += self.config.duration || HEATMAP_DURATION;
+            response['end_time'] += self.config.duration || HEATMAP_DURATION;
         }
 
         callback(error, response);
@@ -232,8 +232,8 @@ Instrumentation.prototype.valueOf = function () {
     return this.config;
 };
 
-module.exports = function execute(scope, app) {
-    var info = scope.api('Info');
+module.exports = function execute(app) {
+    var info = require('../cms').Info;
 
     app.get('/ca', function (req, res) {
         if (metrics) {
@@ -246,7 +246,7 @@ module.exports = function execute(scope, app) {
                 err = err.restCode === 'NotAuthorized' ? err.message : 'Failed to get Cloud Analytics metrics';
             } else {
                 metrics = _metrics;
-                metrics.help = info.ca_help.data;
+                metrics.help = info['ca_help'].data;
             }
             res.json({error: err, res: metrics});
         });
@@ -343,7 +343,7 @@ module.exports = function execute(scope, app) {
             nbuckets: req.body.nbuckets || HEATMAP_NBUCKETS,
             duration: req.body.duration || HEATMAP_DURATION,
             ndatapoints: 1,
-            end_time: req.body.endtime,
+            'end_time': req.body.endtime,
             x: req.body.x,
             y: req.body.y
         };
@@ -364,7 +364,7 @@ module.exports = function execute(scope, app) {
     /**
      * delete instrumentation
      */
-    app.del('/ca/:datacenter/:zoneId/:id', function (req, res) {
+    app.delete('/ca/:datacenter/:zoneId/:id', function (req, res) {
         vasync.forEachParallel({
             inputs: instrumentationCache.findById(req.params.zoneId, req.params.id),
             func: function (instrumentation, callback) {
@@ -377,7 +377,7 @@ module.exports = function execute(scope, app) {
     /**
      * delete all machine instrumentations
      */
-    app.del('/ca/:datacenter/:zoneId', function (req, res) {
+    app.delete('/ca/:datacenter/:zoneId', function (req, res) {
         vasync.forEachParallel({
             inputs: instrumentationCache.toArray(req.params.zoneId),
             func: function (instrumentation, callback) {

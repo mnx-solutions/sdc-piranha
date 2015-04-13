@@ -1,6 +1,5 @@
 {
-    "em": {
-        "route": "/manta/cdn",
-        "auth": true
-    }
+  "main": "api.js",
+  "route": "/manta/cdn",
+  "auth": true
 }

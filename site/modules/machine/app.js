@@ -11,7 +11,7 @@ function setTempData(data, id) {
 }
 
 function readTempData(id) {
-    if(!TEMP[id]) {
+    if (!TEMP[id]) {
         return false;
     }
 
@@ -21,7 +21,7 @@ function readTempData(id) {
     return data;
 }
 
-module.exports = function (scope, app) {
+module.exports = function (app) {
     app.post('/export', function (req, res, next) {
         var id = Math.random().toString(36).substr(2);
 
@@ -29,10 +29,10 @@ module.exports = function (scope, app) {
         res.send(id);
     });
 
-    app.get('/export/:id/:format/:type', function (req, res, next) {
+    app.get('/export/:id/:format/:type', function (req, res) {
         var data = readTempData(req.params.id);
-        if(!data) {
-            res.send(404);
+        if (!data) {
+            res.sendStatus(404);
             return;
         }
         var type = '';
@@ -41,7 +41,7 @@ module.exports = function (scope, app) {
             type = req.params.type;
         }
 
-        switch(type) {
+        switch (type) {
             case 'firewall':
                 prefix += 'fw-rules-';
                 break;
@@ -73,11 +73,10 @@ module.exports = function (scope, app) {
                 break;
         }
 
-
         var format = req.params.format.toLowerCase();
         var fname = 'attachment; filename=' + prefix + moment().format('YYYY-MM-DD-hh-mm-ss') + '.' + format;
         var fcontent = '';
-        switch(format) {
+        switch (format) {
             case 'json':
                 fcontent = JSON.stringify(data.data);
                 break;
@@ -94,7 +93,7 @@ module.exports = function (scope, app) {
                 fcontent = lines.join('\n');
                 break;
             default:
-                res.send(400, 'Unsupported format');
+                res.sendStatus(400).send('Unsupported format');
                 break;
         }
         res.header('Content-Type', 'application/octet-stream');

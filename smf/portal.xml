@@ -17,7 +17,7 @@
     <exec_method
       type="method"
       name="start"
-      exec="node /opt/portal/index.js &amp;"
+      exec="/opt/portal/node_modules/.bin/gulp serve &amp;"
       timeout_seconds="60">
       <method_context working_directory='/opt/portal'>
         <method_credential user="portal" group="staff" privileges="basic,net_privaddr"/>

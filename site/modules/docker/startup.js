@@ -16,11 +16,11 @@ var DOCKER_TCP_PORT = 4240;
 var DOCKER_HUB_HOST = 'https://index.docker.io';
 var DOCKER_SSL_ERROR = 'routines:SSL3_READ_BYTES';
 
-var Docker = function execute(scope, app) {
-    var Docker = scope.api('Docker');
-    var server = scope.api('Server');
-    var machine = scope.api('Machine');
-    var httpServer = scope.get('httpServer');
+var Docker = function execute(log, config) {
+    var Docker = require('../docker').Docker;
+    var server = require('../server').Server;
+    var machine = require('../machine').Machine;
+    var MantaClient = require('../storage').MantaClient;
 
     var methods = Docker.getMethods();
     var methodsForAllHosts = ['containers', 'getInfo', 'images'];
@@ -99,7 +99,7 @@ var Docker = function execute(scope, app) {
     }
 
     function putToAudit(call, entry, params, error, finish) {
-        var mantaClient = scope.api('MantaClient').createClient(call);
+        var mantaClient = MantaClient.createClient(call);
         var auditor = new Auditor(call, mantaClient);
         var result = false;
         if (error) {
@@ -120,7 +120,7 @@ var Docker = function execute(scope, app) {
     var REMOVED_LOGS_PATH = '~~/stor/.joyent/docker/removed-logs.json';
 
     var getRemovedContainersList = function (call, callback) {
-        var client = scope.api('MantaClient').createClient(call);
+        var client = MantaClient.createClient(call);
         client.getFileJson(REMOVED_LOGS_PATH, function (error, list) {
             if (error) {
                 call.log.warn('Removed docker containers list is corrupted');
@@ -132,7 +132,7 @@ var Docker = function execute(scope, app) {
 
     var saveRemovedContainersList = function (call, data, callback) {
         callback = callback || call.done;
-        var client = scope.api('MantaClient').createClient(call);
+        var client = MantaClient.createClient(call);
         client.safePutFileContents(REMOVED_LOGS_PATH, JSON.stringify(data), function (error) {
             if (error && error.statusCode !== 404) {
                 return callback(error.message, true);
@@ -185,7 +185,7 @@ var Docker = function execute(scope, app) {
     });
 
     function saveLogsToManta(call, logPath, logs, callback) {
-        var mantaclient = scope.api('MantaClient').createClient(call);
+        var mantaclient = MantaClient.createClient(call);
         mantaclient.safePutFileContents(logPath, JSON.stringify(logs), function (error) {
             return callback(error && error.message, true);
         });
@@ -496,7 +496,7 @@ var Docker = function execute(scope, app) {
             var startOptions = options.start;
             var pipeline = [];
 
-            var mantaClient = scope.api('MantaClient').createClient(call);
+            var mantaClient = MantaClient.createClient(call);
             var auditor = new Auditor(call, mantaClient);
 
             pipeline.push(function createClient(collector, callback) {
@@ -583,7 +583,7 @@ var Docker = function execute(scope, app) {
 
     server.onCall('RemoveDeletedContainerLogs', function (call) {
         var logs = call.data.logs;
-        var client = scope.api('MantaClient').createClient(call);
+        var client = MantaClient.createClient(call);
         function getRemovedContainers(logs, callback) {
             vasync.forEachPipeline({
                 func: function (removedContainerLog, callback) {
@@ -630,7 +630,7 @@ var Docker = function execute(scope, app) {
                 data.hasOwnProperty('logs') && data.hasOwnProperty('dates');
         },
         handler: function (call) {
-            var client = scope.api('MantaClient').createClient(call);
+            var client = MantaClient.createClient(call);
             var logs = call.data.logs;
             var startDate = call.data.dates.start;
             var endDate = call.data.dates.end + 86400;
@@ -1484,7 +1484,7 @@ var Docker = function execute(scope, app) {
             return data && data.host && data.host.primaryIp;
         },
         handler: function (call) {
-            var mantaClient = scope.api('MantaClient').createClient(call);
+            var mantaClient = MantaClient.createClient(call);
             var pipeline = [];
             var installConfig = config.docker || {};
             var hostConfig = {
@@ -1621,7 +1621,7 @@ var Docker = function execute(scope, app) {
         handler: function (call) {
 
             var event = call.data.event || {type: 'docker'};
-            var mantaClient = scope.api('MantaClient').createClient(call);
+            var mantaClient = MantaClient.createClient(call);
             var auditor = new Auditor(call, mantaClient);
             auditor.search(event.type, event.host, event.entry, function (err, data) {
                 if (!data || err) {
@@ -1678,7 +1678,7 @@ var Docker = function execute(scope, app) {
         },
         handler: function (call) {
             var event = call.data.event;
-            var mantaClient = scope.api('MantaClient').createClient(call);
+            var mantaClient = MantaClient.createClient(call);
             var auditor = new Auditor(call, mantaClient);
             event.date = new Date(event.npDate);
             auditor.get(event, function (err, data) {
@@ -1691,7 +1691,7 @@ var Docker = function execute(scope, app) {
     });
 
     server.onCall('DockerAuditPing', function (call) {
-        var mantaClient = scope.api('MantaClient').createClient(call);
+        var mantaClient = MantaClient.createClient(call);
         var auditor = new Auditor(call, mantaClient);
         auditor.ping(function (err, data) {
             if (err && err.statusCode !== 404) {

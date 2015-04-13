@@ -1,6 +1,5 @@
 {
-    "em": {
-        "route": "/docker",
-        "auth": true
-    }
+  "main": "api.js",
+  "route": "/docker",
+  "auth": true
 }

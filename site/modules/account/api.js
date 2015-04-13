@@ -1,13 +1,13 @@
 'use strict';
 
-var config = require('easy-config');
 var metadata = require('./lib/metadata');
 var BillingApi = require('./lib/billing');
 
-module.exports = function execute(scope, register) {
-    register('Metadata', metadata);
-    var Billing = new BillingApi(scope);
-    register('Billing', Billing);
+exports.Metadata = metadata;
+
+exports.init = function execute(log, config, done) {
+    var Billing = new BillingApi({log: log});
+    exports.Billing = Billing;
 
     //Compatibility with old version
     var api = {};
@@ -153,7 +153,7 @@ module.exports = function execute(scope, register) {
                 });
             });
         }
-        if(req.session.userId) {
+        if (req.session.userId) {
             var userId = req.session.parentAccountId || req.session.userId;
             getMetadata(userId);
             return;
@@ -236,7 +236,7 @@ module.exports = function execute(scope, register) {
             var isALeap = steps.indexOf(step) - steps.indexOf(oldStep) > 1;
 
             if (isCompleted || isAStepBackwards || isALeap) {
-                scope.log.debug('Can\'t move to the next step, returning');
+                log.debug('Can\'t move to the next step, returning');
                 cb();
                 return;
             }
@@ -261,6 +261,6 @@ module.exports = function execute(scope, register) {
         }
         res.json(result);
     };
-
-    register('SignupProgress', api);
+    exports.SignupProgress = api;
+    done();
 };

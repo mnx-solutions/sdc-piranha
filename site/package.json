@@ -1,29 +1,28 @@
 {
-	"em": {
-		"static": {
-			"js": [
-                "/vendor/jquery/jquery.min.js",
-                "/vendor/bootstrap/js/bootstrap.min.js",
-				"/vendor/angular/angular.js",
-				"/vendor/angular/angular-resource.js",
-                "/vendor/angular/angular-cookies.js",
-                "/vendor/angular/angular-route.js",
-                "/vendor/angular/angular-sanitize.js",
-                "/vendor/zendesk/zenbox.js",
-                "/vendor/bootstrap-datepicker/js/bootstrap-datepicker.min.js",
-				"/js/jp.js",
-				"/js/app.js",
-				"/js/config/routes.js",
-				"/js/http-auth-interceptor.js",
-				"/js/controllers/main-controller.js",
-				"/js/services/request-context.js",
-				"/js/values/render-context.js"
-            ],
-			"css": [
-				"/vendor/bootstrap/css/bootstrap.css",
-				"/vendor/metro/css/style.css",
-                "/vendor/zendesk/zenbox.css"
-			]
-		}
-	}
+  "applications": ["main", "signup", "landing"],
+  "static": {
+	"js": [
+	  "/vendor/jquery/jquery.min.js",
+	  "/vendor/bootstrap/js/bootstrap.min.js",
+	  "/vendor/angular/angular.js",
+	  "/vendor/angular/angular-resource.js",
+	  "/vendor/angular/angular-cookies.js",
+	  "/vendor/angular/angular-route.js",
+	  "/vendor/angular/angular-sanitize.js",
+	  "/vendor/zendesk/zenbox.js",
+	  "/vendor/bootstrap-datepicker/js/bootstrap-datepicker.min.js",
+	  "/js/jp.js",
+	  "/js/app.js",
+	  "/js/config/routes.js",
+	  "/js/http-auth-interceptor.js",
+	  "/js/controllers/main-controller.js",
+	  "/js/services/request-context.js",
+	  "/js/values/render-context.js"
+	],
+	"css": [
+	  "/vendor/bootstrap/css/bootstrap.css",
+	  "/vendor/metro/css/style.css",
+	  "/vendor/zendesk/zenbox.css"
+	]
+  }
 }

@@ -6,7 +6,7 @@ var fs = require('fs');
 var MemoryStream = require('memorystream');
 var vasync = require('vasync');
 
-module.exports = function execute(scope, register) {
+exports.init = function execute(log, config, done) {
     function safeMkdirp(directory, opts, callback) {
         var self = this;
         var parts = directory.split('/');
@@ -268,5 +268,6 @@ module.exports = function execute(scope, register) {
 
     api.createClient = createClient;
 
-    register('MantaClient', api);
+    exports.MantaClient = api;
+    done();
 };

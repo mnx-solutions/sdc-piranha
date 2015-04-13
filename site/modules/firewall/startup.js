@@ -4,10 +4,10 @@ var fwrule = require('fwrule');
 var config = require('easy-config');
 var vasync = require('vasync');
 
-var firewall = function execute (scope) {
-    var server = scope.api('Server');
-    var Machine = scope.api('Machine');
-    var utils = scope.get('utils');
+var firewall = function execute (api, config) {
+    var server = require('../server').Server;
+    var Machine = require('../machine').Machine;
+    var utils = require('../../../lib/utils');
 
     server.onCall('MachineFirewallEnable', {
         verify: function (data) {
@@ -55,7 +55,7 @@ var firewall = function execute (scope) {
 
                         try {
                             rule.parsed = fwrule.parse(rule.rule);
-                        } catch(e) {
+                        } catch (e) {
                             call.log.error(rule.rule, 'Failed to parse fwrule in machine fw list');
                             return;
                         }
@@ -200,7 +200,7 @@ var firewall = function execute (scope) {
     });
 
     function checkRuleStatusError(call, error) {
-        if (typeof(error) === 'string') {
+        if (typeof (error) === 'string') {
             error = {message: error};
         }
         var message = error.message;
@@ -327,4 +327,3 @@ var firewall = function execute (scope) {
 if (!config.features || config.features.firewall !== 'disabled') {
     module.exports = firewall;
 }
-

@@ -1,10 +1,9 @@
 'use strict';
 var config = require('easy-config');
-var restify = require('restify');
 
-var limits = function execute(scope) {
-    var server = scope.api('Server');
-    var Billing = scope.api('Billing');
+var limits = function execute() {
+    var server = require('../server').Server;
+    var Billing = require('../account').Billing;
 
     server.onCall('BillingUserLimits', function (call) {
         Billing.getUserLimits(call.req.session.userId, function (error, req, res, limits) {

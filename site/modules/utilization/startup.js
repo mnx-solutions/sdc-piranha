@@ -4,9 +4,8 @@ var config = require('easy-config');
 var manta = require('manta');
 var vasync = require('vasync');
 
-module.exports = function execute(scope) {
-
-    var server = scope.api('Server');
+module.exports = function execute(log, config) {
+    var server = require('../server').Server;
 
     if (config.features.usageData !== 'enabled') {
         return;
@@ -58,9 +57,9 @@ module.exports = function execute(scope) {
         var usageData = {
             uuid: zone.uuid,
             alias: zone.alias,
-            package_uuid: configs.package.uuid,
-            package_name: configs.package.name,
-            datacenter_name: zone.datacenter_name,
+            'package_uuid': configs.package.uuid,
+            'package_name': configs.package.name,
+            'datacenter_name': zone['datacenter_name'],
             first: configs.date,
             last: configs.date
         };
@@ -145,8 +144,8 @@ module.exports = function execute(scope) {
                         bandwidthOut = usage.MantaComputeGBOut + usage.MantaStorageGBOut;
                         overallResult.manta.usage.push({
                             requests: requests,
-                            bandwidthIn: Math.max(bandwidthIn,0),
-                            bandwidthOut: Math.max(bandwidthOut,0),
+                            bandwidthIn: Math.max(bandwidthIn, 0),
+                            bandwidthOut: Math.max(bandwidthOut, 0),
                             cost: mantaResult.cost,
                             date: result.date
                         });

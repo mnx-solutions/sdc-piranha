@@ -9,9 +9,9 @@ var MANTA_PING_RETRIES = 15;
 var PING_ERROR_MESSAGE = 'Something went wrong.  Please try again in a minute.';
 var vasync = require('vasync');
 
-module.exports = function execute(scope) {
-    var Manta = scope.api('MantaClient');
-    var server = scope.api('Server');
+module.exports = function execute(log, config) {
+    var Manta = require('../storage').MantaClient;
+    var server = require('../server').Server;
 
     function sendError(call, error, suppressErrorLog, errorPath) {
         function done(err) {
@@ -433,7 +433,7 @@ module.exports = function execute(scope) {
     });
 
     var pingStorage = function (call, pingFunc) {
-        var Billing = scope.api('Billing');
+        var Billing = require('../account').Billing;
         var retries = MANTA_PING_RETRIES;
 
         var pingManta = function () {

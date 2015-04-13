@@ -2,14 +2,14 @@
 
 var config = require('easy-config');
 var fs = require('fs');
-var httpSignature = require('http-signature');
 var key = config.slb && config.slb.keyPath ? fs.readFileSync(config.slb.keyPath).toString() : null;
 var ursa = require('ursa');
 var express = require('express');
+var multer = require('multer');
 
-var slb = function execute(scope, app) {
+var slb = function execute(app) {
 
-    var ssc = scope.api('SLB');
+    var ssc = require('./').SLB;
     var getSscClient = ssc.getSscClient;
 
     function getUploadResult(callback, resultObj) {
@@ -31,7 +31,7 @@ var slb = function execute(scope, app) {
         res.send('');
     });
 
-    app.post('/certificates', [express.multipart()], function (req, res) {
+    app.post('/certificates', [multer()], function (req, res) {
         req.log.info('Uploading certificate');
         var callback = req.query.callback;
         if (!req.files || !req.files.certificate) {

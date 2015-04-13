@@ -11,7 +11,7 @@ var riskScoreFraudLimit = config.maxmind.riskScoreFraudLimit || 66;
 
 var fraudVerificationClient = restify.createStringClient({url: config.maxmind.fraudApiUrl});
 
-module.exports = function execute(scope, register) {
+exports.init = function execute(log, config, done) {
     var api = {};
 
     function checkBlackList(data) {
@@ -47,7 +47,7 @@ module.exports = function execute(scope, register) {
             city: billingInfo.city,
             region: billingInfo.state || null,
             bin: creditCardInfo.creditCardNumber.substring(0, 6),
-            license_key: config.maxmind.licenseId,
+            'license_key': config.maxmind.licenseId,
             i: config.maxmind.testClientIp || call.req.userIp // config option for testing
         };
 
@@ -96,5 +96,6 @@ module.exports = function execute(scope, register) {
         });
     };
 
-    register('MaxMind', api);
+    exports.MaxMind = api;
+    done();
 };

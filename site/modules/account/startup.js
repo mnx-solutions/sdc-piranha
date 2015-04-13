@@ -1,16 +1,15 @@
 'use strict';
 
-var config = require('easy-config');
 var metadata = require('./lib/metadata');
 var ursa = require('ursa');
 
-module.exports = function execute(scope) {
-    var server = scope.api('Server');
-    var TFA = scope.api('TFA');
-    var Billing = scope.api('Billing');
-    var SignupProgress = scope.api('SignupProgress');
-    var Marketo = scope.api('Marketo');
-    var MantaClient = scope.api('MantaClient');
+module.exports = function execute(log, config) {
+    var server = require('../server').Server;
+    var TFA = require('../tfa').TFA;
+    var Billing = require('../account').Billing;
+    var SignupProgress = require('../account').SignupProgress;
+    var Marketo = require('../tracking').Marketo;
+    var MantaClient = require('../storage').MantaClient;
 
     var accountFields = ['id', 'login', 'email', 'companyName', 'firstName', 'lastName', 'address', 'postalCode', 'city', 'state', 'country', 'phone', 'created'];
     var updatableAccountFields = ['email', 'companyName', 'firstName', 'lastName', 'address', 'postalCode', 'city', 'state', 'country', 'phone'];
@@ -49,7 +48,7 @@ module.exports = function execute(scope) {
 
     server.onCall('getAccount', function (call) {
         var subUserId = call.req.session.subId;
-        var response = { isSubuser: !!subUserId};
+        var response = {isSubuser: !!subUserId};
         if (subUserId) {
             call.cloud.getUser(subUserId, function (userErr, userData) {
                 if (userErr) {
@@ -149,8 +148,8 @@ module.exports = function execute(scope) {
                     obj.phone = [];
                 }
 
-                obj.email.push({ 'previousValue': data.email, 'time': Date.now()});
-                obj.phone.push({ 'previousValue': data.phone, 'time': Date.now()});
+                obj.email.push({'previousValue': data.email, 'time': Date.now()});
+                obj.phone.push({'previousValue': data.phone, 'time': Date.now()});
 
                 metadata.set(call.req.session.userId, metadata.ACCOUNT_HISTORY, JSON.stringify(obj), function () {});
             });
@@ -198,7 +197,7 @@ module.exports = function execute(scope) {
 
         // get account ssh keys
         if (call.data.noCache) {
-            call.cloud.listKeys({ login: 'my' }, serveKeys, call.data.noCache);
+            call.cloud.listKeys({login: 'my'}, serveKeys, call.data.noCache);
         } else {
             call.cloud.listKeys(serveKeys);
         }

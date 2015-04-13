@@ -1,15 +1,14 @@
 {
-	"em": {
-        "auth": true,
-        "pre": {
-            "js": [
-            ]
-        },
-        "redis":{
-            "db":5
-        },
-        "pages" :{
-            "default": "/signup"
-        }
-	}
+  "main": "api.js",
+  "auth": true,
+  "pre": {
+    "js": [
+    ]
+  },
+  "redis":{
+    "db":5
+  },
+  "pages" :{
+    "default": "/signup"
+  }
 }

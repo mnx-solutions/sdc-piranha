@@ -2,37 +2,32 @@
 
 var config = require('easy-config');
 
-module.exports = function execute(scope) {
-    var SignupProgress = scope.api('SignupProgress');
-
-    function returnPage(req, res, next, step) {
-        if (req.session.signupStep !== step) {
-            req.session.signupStep = step;
-            req.session.save();
-        }
-
-        if (step === 'completed') {
-            return next();
-        }
-
-        return res.redirect('/signup/');
+function returnPage(req, res, next, step) {
+    if (req.session.signupStep !== step) {
+        req.session.signupStep = step;
+        req.session.save();
     }
 
-    var middleware = function (req, res, next) {
-        SignupProgress.getSignupStep(req, function(err, step) {
-            if (err) {
-                next(err);
-                return;
-            }
+    if (step === 'completed') {
+        return next();
+    }
 
-            if (/^\/signup/.test(req.originalUrl)) {
-                next();
-                return;
-            }
+    return res.redirect('/signup/');
+}
 
-            returnPage(req, res, next, step);
-        });
-    };
+module.exports = function accountMiddleware(req, res, next) {
+    var SignupProgress = require('../account').SignupProgress;
+    SignupProgress.getSignupStep(req, function(err, step) {
+        if (err) {
+            next(err);
+            return;
+        }
 
-    return middleware;
+        if (/^\/signup/.test(req.originalUrl)) {
+            next();
+            return;
+        }
+
+        returnPage(req, res, next, step);
+    });
 };

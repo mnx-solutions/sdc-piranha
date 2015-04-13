@@ -2,10 +2,9 @@
 
 var pkg = require('./data/packages.json');
 
-module.exports = function execute(scope) {
-
-    var server = scope.api('Server');
-    var Marketo = scope.api('Marketo');
+module.exports = function execute() {
+    var server = require('../server').Server;
+    var Marketo = require('../tracking').Marketo;
 
     server.onCall('SupportListPackages', function (call) {
         call.done(null, pkg);
@@ -27,4 +26,4 @@ module.exports = function execute(scope) {
             call.done(null, marketoData);
         });
     });
-}
+};

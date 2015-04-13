@@ -1,10 +1,8 @@
 'use strict';
 
-var config = require('easy-config');
-
-module.exports = function execute(scope, register) {
-    var info = scope.api('Info');
-    var utils = scope.get('utils');
+exports.init = function execute(log, config, done) {
+    var info = require('../cms').Info;
+    var utils = require('../../../lib/utils');
 
     var api = {};
 
@@ -168,7 +166,8 @@ module.exports = function execute(scope, register) {
 
         if (options.specification) {
             // not declared in header, because both modules depend on each other
-            scope.api(options.specification === 'dockerhost' ? 'Docker' : 'Dtrace').createHost(call, options, callback);
+            var service = options.specification === 'dockerhost' ? 'Docker' : 'Dtrace';
+            require('../' + service.toLowerCase())[service].createHost(call, options, callback);
             return;
         }
 
@@ -607,5 +606,6 @@ module.exports = function execute(scope, register) {
         });
     };
 
-    register('Machine', api);
+    exports.Machine = api;
+    done();
 };

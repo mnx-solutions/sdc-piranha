@@ -183,7 +183,7 @@
                  */
                 translate: function (scope, target, identifier, params, count) {
                     var module = target || this._find(scope);
-
+                    translations = translations || {};
                     if (translations.hasOwnProperty(module)) {
                         var table = translations[module];
                         if (table.hasOwnProperty(identifier)) {

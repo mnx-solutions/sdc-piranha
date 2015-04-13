@@ -1,6 +1,4 @@
 {
-    "em": {
-        "route": "/downloadSdc",
-        "auth": true
-    }
+  "route": "/downloadSdc",
+  "auth": true
 }
