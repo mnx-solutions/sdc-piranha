@@ -43,6 +43,8 @@
                 multiarch: "smart",
                 smartos: "smart",
                 sngl: "smart",
+                "minimal-32-lts": "smart",
+                "minimal-64-lts": "smart",
                 ssc: "ubuntu",
                 standard: "smart",
                 ubuntu: "ubuntu",
