@@ -39,7 +39,7 @@
                         $scope.options.start = false;
                     }
                     try {
-                        data = JSON.parse(event.data);
+                        data = JSON.parse(data);
                     } catch (ex) {
                         var message = 'Error parsing json for heatmap';
                         PopupDialog.errorObj(message + '.');
