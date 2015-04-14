@@ -50,17 +50,30 @@
                 });
             }, true);
 
+            function setImageName(image) {
+                var imageId = image && image.id || image;
+                var imageName = 'Image deleted';
+                if (image && typeof image !== 'string') {
+                    imageName = image.name + '/' + image.version;
+                }
+                $scope.datasetsInfo[imageId] = imageName;
+            }
+
             $scope.$watch('machines.final', function (result) {
                 if (result) {
                     $q.when($scope.machines, function (machines) {
                         machines.forEach(function (machine) {
                             Image.image({datacenter: machine.datacenter}).then(function (datasets) {
                                 datasets.forEach(function (dataset) {
-                                    $scope.datasetsInfo[dataset.id] = dataset.name + '/' + dataset.version;
+                                    setImageName(dataset);
                                 });
                                 var imageExists = datasets.some(function (image) { return image.id === machine.image; });
-                                if (!imageExists && !$scope.datasetsInfo[machine.image]) {
-                                    $scope.datasetsInfo[machine.image] = 'Image deleted';
+                                if (machine.image && !imageExists && !$scope.datasetsInfo[machine.image]) {
+                                    Image.getImage(machine.datacenter, machine.image).then(function (image) {
+                                        setImageName(image);
+                                    }, function () {
+                                        setImageName(machine.image);
+                                    });
                                 }
                                 $scope.loading = false;
                             }, function (err) {

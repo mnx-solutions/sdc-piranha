@@ -16,6 +16,7 @@
             var service = {};
             var list = [];
             var images = {index: {}, job: null, list: {private: [], all: []}, error: null, search: {}};
+            var imageInfo = {};
             var IMAGES_PATH = '/images';
             var findImageIndexById = function (list, image) {
                 for (var i = 0; i < list.length; i++) {
@@ -292,6 +293,34 @@
             function getSuccessMessage(imageName, action) {
                 return 'Image "' + imageName + '" has successfully ' + action + '.';
             }
+
+            service.getImage = function (datacenter, id) {
+                var d = $q.defer();
+                var imageInfoDatacenter = imageInfo[datacenter];
+                if (imageInfoDatacenter && imageInfoDatacenter[id]) {
+                    d.resolve(imageInfoDatacenter[id]);
+                } else {
+                    serverTab.call({
+                        name: 'GetImage',
+                        data: {uuid: id, datacenter: datacenter},
+                        error: function (err) {
+                            d.reject(err);
+                        },
+                        done: function (err, job) {
+                            var res = job.__read();
+
+                            if (!imageInfoDatacenter) {
+                                imageInfoDatacenter = {};
+                            }
+
+                            imageInfoDatacenter[id] = res;
+                            d.resolve(res);
+                        }
+                    });
+                }
+
+                return d.promise;
+            };
 
             service.createImage = function (machineId, datacenter, name, description, version, locationCallback) {
                 var id = window.uuid.v4();
