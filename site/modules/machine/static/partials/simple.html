@@ -9,7 +9,9 @@
                 <span class="select-name">Data Center:</span>
                 <div class="btn-group">
                     <div class="loading-medium loading-medium-inline" data-ng-show="datasetsLoading"></div>
-                    <select type="hidden" data-select-two id="selectDatacenter" data-ng-model="data.datacenter" data-fn="selectDatacenter" data-select="data.datacenter" placeholder="No matches found">
+                    <select type="hidden" data-select-two id="selectDatacenter" data-ng-model="data.datacenter"
+                        data-fn="selectDatacenter" data-select="data.datacenter" placeholder="No matches found"
+                        data-ng-disabled="datasetsLoading">
                         <option value=""></option>
                         <option data-ng-repeat="datacenter in datacenters | orderBy:$index" value="{{datacenter.name}}">
                             {{datacenter.name}}
