@@ -22,7 +22,7 @@
                     />
             <label for="tab{{$index}}" class="grid-tab dashboard">{{tab}}</label>
         </span>
-        <div class="page-title-btn" data-ng-hide="isTriton">
+        <div class="page-title-btn" data-ng-hide="isTritonTab">
             <div class="control-panel">
                 <span>Data Center:</span>
                 <div class="provisioning-header-left-button btn-group">
@@ -116,7 +116,7 @@
             </div>
         </div>
     </div>
-    <div data-ng-show="!loading && (!isTriton && dockerMachines.length < 2 || isTriton && !provisionEnabled)">
+    <div data-ng-show="!loading && (!isTritonTab && !kvmMachines.length || isTritonTab && !provisionEnabled)">
         <p class="page-heading">Welcome to Docker<span data-ng-hide="features.privateSdc == 'enabled'"> on the Joyent Public Cloud</span></p>
         <div data-ng-hide="provisionEnabled">
             <span class="page-subheading active-link" data-ng-click="completeAccount()">Complete your Account Information</span><span class="page-subheading"> in order to begin using Docker on the Joyent Public Cloud</span>
@@ -125,7 +125,7 @@
             <span class="page-subheading active-link" data-ng-click="createDocker()">Create Docker Host</span><span class="page-subheading" data-ng-hide="features.privateSdc == 'enabled'"> and begin using Docker on the Joyent Public Cloud</span>
         </div>
         <table class="docker-info">
-            <tr data-ng-show="!isTriton">
+            <tr data-ng-show="!isTritonTab">
                 <td class="docker-icon-01"></td>
                 <td>
                     <p class="list-title">Manage Docker Hosts</p>
@@ -170,7 +170,7 @@
             </tr>
         </table>
     </div>
-    <a href="#!/compute/dockerHost" class="orange-link" data-ng-show="dockerMachines.length > 1 && !loading && !isTriton">Docker compute instances</a>
+    <a href="#!/compute/dockerHost" class="orange-link" data-ng-show="dockerMachines.length > 1 && !loading && !isTritonTab">Docker compute instances</a>
     <div data-ng-hide="loading" mantadisclaimer class="manta-disclaimer manta-disclaimer-dashboard"></div>
 </div>
 

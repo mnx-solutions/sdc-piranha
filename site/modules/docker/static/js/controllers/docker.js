@@ -29,11 +29,12 @@
                 datacenter: '',
                 imageId: ''
             };
-            $scope.isTriton = true;
-            var triton = [];
-            var kvm = [];
+            var tritonEnabled = $rootScope.features.sdcDocker === 'enabled';
+            $scope.isTritonTab = tritonEnabled;
+            var tritonMachines = [];
+            $scope.kvmMachines = [];
 
-            $scope.tabs = ['Triton', 'KVM-Docker'];
+            $scope.tabs = tritonEnabled ? ['Triton', 'KVM-Docker'] : ['KVM-Docker'];
             $scope.activeTab = $scope.tabs[0];
 
             $scope.isChecked = function (tab) {
@@ -41,7 +42,7 @@
             };
             $scope.setActive = function (tab) {
                 $scope.activeTab = tab;
-                $scope.isTriton = $scope.activeTab === $scope.tabs[0];
+                $scope.isTritonTab = tritonEnabled ? $scope.activeTab === $scope.tabs[0] : tritonEnabled;
             };
 
             var errorCallback = function (err) {
@@ -51,7 +52,7 @@
             };
 
             $scope.getFilteredMachines = function (machines) {
-                return $scope.activeTab === $scope.tabs[0] ? triton : kvm;
+                return $scope.activeTab === $scope.tabs[0] && tritonEnabled ? tritonMachines : $scope.kvmMachines;
             };
 
             function getHostImagesCount(machine) {
@@ -135,9 +136,9 @@
                 }
                 $scope.dockerMachines.forEach(function (machine) {
                     if (machine.isSdc) {
-                        triton.push(machine);
+                        tritonMachines.push(machine);
                     } else {
-                        kvm.push(machine);
+                        $scope.kvmMachines.push(machine);
                     }
                 });
                 $scope.loading = false;
