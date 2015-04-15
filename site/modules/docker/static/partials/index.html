@@ -11,7 +11,7 @@
     </div>
     <div class="loading-large" data-ng-show="loading"></div>
     <div class="nav-tabs" data-ng-show="!loading">
-        <span>Type:&nbsp</span>
+        <span>Filter:&nbsp</span>
         <span data-ng-repeat="tab in tabs">
             <input type="radio"
                    name="tab"
@@ -34,7 +34,7 @@
                     </select>
                 </div>
             </div>
-            <button data-ng-disabled="!data.imageId" data-ng-click="createDocker()" type="button" class="btn btn-big orange text-to-left"><i class="plus-btn-icon"></i>Create Docker Host</button>
+            <button data-ng-disabled="!data.imageId" data-ng-click="createDocker()" type="button" class="btn btn-big orange text-to-left"><i class="plus-btn-icon"></i>Create KVM-Docker Host</button>
         </div>
     </div>
     <div class="row dockers-wrapper" data-ng-show="dockerMachines.length >= 1 && !loading">
@@ -105,7 +105,7 @@
                     </div>
                 </div>
                 <div data-ng-show="machine.isSdc && !machine.prohibited" class="progress-wrapper">
-                    <button data-ng-click="createContainer()" type="button" class="btn btn-big orange text-to-left triton-btn"><i class="plus-btn-icon"></i>Start new Triton container</button>
+                    <button data-ng-click="createContainer()" type="button" class="btn btn-big orange text-to-left triton-btn"><i class="plus-btn-icon"></i>Start New Docker Container</button>
                 </div>
                 <div data-ng-hide="machine.isSdc" class="os-based ubuntu-logo">
                     <p class="title">Ubuntu</p>
