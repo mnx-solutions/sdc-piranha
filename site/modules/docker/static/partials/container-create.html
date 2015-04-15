@@ -331,7 +331,7 @@
                         <span class="edit-label">AttachStdin</span>
                         <span class="edit-value">
                             <select ui-select2="{minimumResultsForSearch: -1, width: '457px'}" id="attachStdinSelect" data-ng-model="container.AttachStdin">
-                                <option data-ng-repeat="attachStdOption in selectOptions" value="{{attachStdOption.value}}">
+                                <option data-ng-repeat="attachStdOption in YES_NO_OPTIONS" value="{{attachStdOption.value}}">
                                     {{attachStdOption.text}}
                                 </option>
                             </select>
@@ -341,7 +341,7 @@
                         <span class="edit-label">AttachStdout</span>
                         <span class="edit-value">
                             <select ui-select2="{minimumResultsForSearch: -1, width: '457px'}" id="attachStdoutSelect" data-ng-model="container.AttachStdout">
-                                <option data-ng-repeat="attachStdOption in selectOptions" value="{{attachStdOption.value}}">
+                                <option data-ng-repeat="attachStdOption in YES_NO_OPTIONS" value="{{attachStdOption.value}}">
                                     {{attachStdOption.text}}
                                 </option>
                             </select>
@@ -351,7 +351,7 @@
                         <span class="edit-label">AttachStderr</span>
                         <span class="edit-value">
                             <select ui-select2="{minimumResultsForSearch: -1, width: '457px'}" id="attachStderrSelect" data-ng-model="container.AttachStderr">
-                                <option data-ng-repeat="attachStdOption in selectOptions" value="{{attachStdOption.value}}">
+                                <option data-ng-repeat="attachStdOption in YES_NO_OPTIONS" value="{{attachStdOption.value}}">
                                     {{attachStdOption.text}}
                                 </option>
                             </select>
@@ -381,7 +381,7 @@
                         <span class="edit-label">OpenStdin</span>
                         <span class="edit-value">
                             <select ui-select2="{minimumResultsForSearch: -1, width: '457px'}" id="openStdinSelect" data-ng-model="container.OpenStdin">
-                                <option data-ng-repeat="openStdinOption in selectOptions" value="{{openStdinOption.value}}">
+                                <option data-ng-repeat="openStdinOption in YES_NO_OPTIONS" value="{{openStdinOption.value}}">
                                     {{openStdinOption.text}}
                                 </option>
                             </select>
@@ -449,10 +449,12 @@
                     <div class="form-group">
                         <span class="edit-label">PublishAllPorts</span>
                         <span class="edit-value">
-                            <select ui-select2="{minimumResultsForSearch: -1, width: '457px'}" id="publishAllPortsSelect" data-ng-model="publishAllPorts">
-                                <option data-ng-repeat="publishAllPortsOption in selectReverseOptions" value="{{publishAllPortsOption.value}}">
-                                    {{publishAllPortsOption.text}}
-                                </option>
+                            <select data-select-two
+                                    id="publishAllPortsSelect"
+                                    data-width="457px"
+                                    data-ng-model="publishAllPorts"
+                                    data-select="selectDataText(publishAllPorts)"
+                                    data-ng-options="publishAllPortsOption.value as publishAllPortsOption.text for publishAllPortsOption in NO_YES_OPTIONS">
                             </select>
                         </span>
                         <div class="notation" data-ng-show="isSdc">PublishAllPorts is the way the SDC-Docker knows to assign a public IP address to the container, without that you can not get to the container from the internet.</div>
@@ -461,7 +463,7 @@
                         <span class="edit-label">Privileged</span>
                         <span class="edit-value">
                             <select ui-select2="{minimumResultsForSearch: -1, width: '457px'}" id="privilegedSelect" data-ng-model="privileged">
-                                <option data-ng-repeat="privilegedOption in selectReverseOptions" value="{{privilegedOption.value}}">
+                                <option data-ng-repeat="privilegedOption in NO_YES_OPTIONS" value="{{privilegedOption.value}}">
                                     {{privilegedOption.text}}
                                 </option>
                             </select>
