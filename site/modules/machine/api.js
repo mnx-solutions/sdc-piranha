@@ -393,7 +393,7 @@ module.exports = function execute(scope, register) {
                     }
                 });
             });
-        })
+        });
     };
 
     var supportPackages = [];
@@ -440,6 +440,11 @@ module.exports = function execute(scope, register) {
                 if (filteredPackagesMap.hasOwnProperty(packageName)) {
                     filteredPackages.push(filteredPackagesMap[packageName]);
                 }
+            }
+            if (options.datacenter === tritonDataCenter) {
+                filteredPackages = filteredPackages.map(function(pkg) {
+                    pkg.type = pkg.type === 'other' ? 'smartos' : pkg.type;
+                });
             }
             callback(null, filteredPackages);
         });
