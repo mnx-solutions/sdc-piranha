@@ -29,6 +29,9 @@
                 datacenter: '',
                 imageId: ''
             };
+            $scope.chartOptions = {
+                size: 60
+            };
             var tritonEnabled = $rootScope.features.sdcDocker === 'enabled';
             $scope.isTritonTab = tritonEnabled;
             var tritonMachines = [];
@@ -200,8 +203,8 @@
                 }, false);
             };
 
-            $scope.createContainer = function () {
-                $location.path('/docker/container/create');
+            $scope.createContainer = function (machine) {
+                $location.path('/docker/container/create/' + machine.id);
             };
         }
     ]);
