@@ -52,7 +52,7 @@
                                    name="tag"
                                    data-ng-model="container.tag"
                                    data-ng-pattern="/^[A-Za-z0-9_\.\-]{2,30}$/"
-                                    />
+                                   data-auto-focus/>
                         </span>
                         <div class="edit-error" data-ng-show="isFormSubmited || containerCreateForm.tag.$dirty">
                             <div class="error"
@@ -86,7 +86,7 @@
                                    name="name"
                                    data-ng-model="container.name"
                                    data-ng-pattern="/^[a-zA-Z0-9\.\_\-]*$/"
-                                    />
+                                   data-auto-focus/>
                         </span>
                         <div class="edit-error" data-ng-show="isFormSubmited || containerCreateForm.name.$dirty">
                             <div class="error"
