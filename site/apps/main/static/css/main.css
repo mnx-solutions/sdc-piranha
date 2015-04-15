@@ -3109,43 +3109,35 @@ label.checkbox
     display: none !important;
 }
 
-.beta-sticker,
 .preview-sticker
 {
+    padding-left: 10px;
+    padding-top: 3px;
+    margin-top: -15px;
+    width: 110px;
+    height: 21px;
+    background: url('../img/pr-sticker.png') no-repeat 0 0;
+    background-size: 78px 24px;
     font-size: 14px;
     font-weight: 300;
     box-sizing: content-box;
     color: white;
 }
 
-.beta-sticker.tab
+.preview-sticker.tab,
+.page-title .preview-sticker
 {
     position: absolute;
-    right: 0;
+}
+.preview-sticker.tab
+{
+    right: -40px;
     margin-top: -4px;
 }
-
-.beta-sticker
+.page-title .preview-sticker
 {
-    width: 46px;
-    height: 24px;
-    margin-top: -15px;
-    padding-top: 3px;
-    padding-left: 15px;
-    background: url('../img/beta-sticker.png') no-repeat -3px 0;
-}
-
-.preview-sticker
-{
-    position: absolute;
-    padding-left: 10px;
-    padding-top: 3px;
     margin-top: 5px;
     margin-left: 10px;
-    width: 110px;
-    height: 21px;
-    background: url('../img/pr-sticker.png') no-repeat 0 0;
-    background-size: 78px 24px;
 }
 
 .feedback-tab
