@@ -206,7 +206,7 @@
                                     $scope.form.lastName = account.lastName;
                                 }
 
-                                if (account.country.length === 3) {
+                                if (account.country && account.country.length === 3) {
                                     form.country = account.country;
                                 } else {
                                     form.country = 'USA';
@@ -294,7 +294,7 @@
                         $q.when($http.get('account/countryCodes'), function (data) {
                             $scope.countryCodes = data.data;
 
-                            account.country = $scope.isoToObj(account.country.iso3 || account.country || $scope.form.cardHolderInfo.country);
+                            account.country = $scope.isoToObj(account.country && account.country.iso3 || account.country || $scope.form.cardHolderInfo.country);
                             $scope.selectedCountry = account.country.name || '';
                             $scope.selectedCountryCode = account.country.areaCode;
 
