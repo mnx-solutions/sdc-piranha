@@ -34,7 +34,7 @@
             var tritonMachines = [];
             $scope.kvmMachines = [];
 
-            $scope.tabs = tritonEnabled ? ['Triton', 'KVM-Docker'] : ['KVM-Docker'];
+            $scope.tabs = tritonEnabled ? ['Triton Docker Hosts', 'KVM-Docker Hosts'] : ['KVM-Docker Hosts'];
             $scope.activeTab = $scope.tabs[0];
 
             $scope.isChecked = function (tab) {
