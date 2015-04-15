@@ -156,9 +156,6 @@
                         id: 'hostName',
                         name: 'Host',
                         sequence: 5,
-                        _getter: function (container) {
-                            return container.isSdc && sdcDatacenter ? sdcDatacenter : container.hostName;
-                        },
                         active: true
                     },
                     {
