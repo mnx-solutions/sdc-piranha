@@ -980,8 +980,6 @@
                 Image.image({id: id, datacenter: $scope.data.datacenter}).then(function (dataset) {
                     if (dataset.type === 'virtualmachine') {
                         $scope.datasetType = 'kvm';
-                    } else if (dataset.os === 'other') { // TODO: review if we need to consider dataset.type at all
-                        $scope.datasetType = dataset.os;
                     } else if (dataset.type === 'smartmachine') {
                         $scope.datasetType = 'smartos';
                     } else {
