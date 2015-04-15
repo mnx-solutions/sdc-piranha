@@ -176,6 +176,7 @@
                     <div class="title">Free Dev Tier</div>
                     <div class="single-column small">
                         <div class="server tooltip-hover"
+                             data-ng-class="{slim: datacenters.length > 6}"
                              data-ng-repeat="datacenter in datacenters | orderBy:$index track by $index"
                              data-toggle="tooltip"
                              data-placement="top"
