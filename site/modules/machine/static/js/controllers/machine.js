@@ -357,7 +357,7 @@
             };
 
             $scope.clickResize = function () {
-                var selected = JSON.parse($scope.selectedPackage);
+                var selected = angular.isString($scope.selectedPackage) ? JSON.parse($scope.selectedPackage) : $scope.selectedPackage;
 
                 if (!selected) {
                     return;
