@@ -199,9 +199,9 @@
     , "registryDriverVersion": "0.0.19"
 }
 , "sdcDocker": {
-    "ip": "0.0.0.0"
+    "ip": "165.225.168.25"
     , "name": "Triton: East 3B"
-    , "datacenter": "us-west-beta"
+    , "datacenter": "us-east-3b"
     , "fullDataCenter": true
 }
 , "subUserDenied" : [
