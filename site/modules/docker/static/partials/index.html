@@ -38,7 +38,7 @@
         </div>
     </div>
     <div class="row dockers-wrapper" data-ng-show="dockerMachines.length >= 1 && !loading">
-        <div class="docker-wrapper" data-ng-repeat="machine in getFilteredMachines(dockerMachines)" data-ng-class="{'triton-bg': machine.isSdc}">
+        <div class="docker-wrapper triton-bg" data-ng-repeat="machine in getFilteredMachines(dockerMachines)" data-ng-class="{'kvm-bg': !machine.isSdc}">
             <div class="name">
                 <p data-ng-hide="machine.isSdc" data-tooltip-full-text data-original-title="{{machine.name}}" data-ng-click="navigateMachine(machine)">{{machine.name}}</p>
                 <span data-ng-show="machine.isSdc">DC: {{machine.datacenter}}</span>
@@ -90,28 +90,28 @@
                         <span class="loading-small loading-images-count pull-left" data-ng-hide="machine.imagesCount || machine.imagesCount == 0"></span>
                         <span class="pull-left">{{machine.imagesCount}}</span>
                     </div>
-                    <div class="progress-wrapper" data-ng-show="machine.cadvisorUnavailable">
+                    <div class="btn-wrapper" data-ng-show="machine.cadvisorUnavailable">
                         <p class="cadvisor-unavailable">cAdvisor is unavailable</p>
                     </div>
-                    <div class="progress-wrapper" data-ng-hide="machine.cadvisorUnavailable || machine.isSdc">
-                        <p class="title">CPU</p>
-                        <div class="progress" title="{{machine.cpuLoad}}">
-                            <div class="progress-bar" ng-style="{width: machine.cpuLoad}"></div>
-                        </div>
+                    <div class="chart-wrapper" data-ng-hide="machine.cadvisorUnavailable || machine.isSdc" data-ng-click="navigateMachine(machine)">
+                        <easypiechart data-percent="machine.memoryLoad" data-options="chartOptions">
+                            <span class="chart-text">{{machine.memoryLoad}}</span>
+                        </easypiechart>
                         <p class="title">Memory</p>
-                        <div class="progress" title="{{machine.memoryLoad}}">
-                            <div class="progress-bar" ng-style="{width: machine.memoryLoad}"></div>
-                        </div>
                     </div>
                 </div>
-                <div data-ng-show="machine.isSdc && !machine.prohibited" class="progress-wrapper">
-                    <button data-ng-click="createContainer()" type="button" class="btn btn-big orange text-to-left triton-btn"><i class="plus-btn-icon"></i>Start New Docker Container</button>
-                </div>
-                <div data-ng-hide="machine.isSdc" class="os-based ubuntu-logo">
-                    <p class="title">Ubuntu</p>
+                <div class="btn-wrapper">
+                    <button data-ng-show="!machine.prohibited"
+                            data-ng-click="createContainer(machine)"
+                            type="button"
+                            class="btn btn-big orange text-to-left"
+                            data-ng-class="{'triton-btn': machine.isSdc, 'kvm-btn': !machine.isSdc}">
+                        <i class="plus-btn-icon"></i>
+                        Start new {{machine.isSdc && 'Docker' || 'KVM'}} container
+                    </button>
                 </div>
             </div>
-            <div data-ng-show="machine.prohibited" class="progress-wrapper">
+            <div data-ng-show="machine.prohibited" class="btn-wrapper">
                 <a href="https://www.joyent.com/lp/preview" target="_blank" type="button" class="btn btn-big orange triton-btn req">Request Triton Preview</a>
             </div>
         </div>

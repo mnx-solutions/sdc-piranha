@@ -38,7 +38,7 @@
     color: #428bca;
     overflow: hidden;
     height: 23px;
-    width: 205px;
+    width: 160px;
     vertical-align: top;
     text-overflow: ellipsis;
     word-wrap: break-word;
@@ -72,46 +72,9 @@
     width: 190px;
     font-size: 14px;
 }
-.progress-wrapper,
-.os-based {
+.btn-wrapper {
     float: left;
-    margin-top: 20px;
-    margin-left: 15px;
-}
-.progress-wrapper .title,
-.os-based .title {
-    margin-bottom: 0;
-    font-size: 10px;
-}
-.progress {
-    overflow: hidden;
-    margin-bottom: 5px;
-    padding: 1px;
-    width: 150px;
-    height: 10px;
-    border-radius: 0;
-    background-color: #EBECEC;
-    -webkit-box-shadow: inset 0 1px 2px rgba(0,0,0,0.25),0 1px rgba(255,255,255,0.08);
-    box-shadow: inset 0 1px 2px rgba(0,0,0,0.25),0 1px rgba(255,255,255,0.08);
-}
-.progress-bar {
-    height: 8px;
-}
-.progress-bar:before,
-.progress-bar:after {
-    position: absolute;
-    top: 0;
-    right: 0;
-    left: 0;
-    content: '';
-}
-.progress-bar {
-    background-color: #43DA1D;
-}
-.ubuntu-logo {
-    height: 50px;
-    background: url("../../../machine/static/img/icons/ubuntu.png") no-repeat center 17px;
-    background-size: 32px;
+    margin: 20px 0 0 15px;
 }
 .left-part
 {
@@ -591,9 +554,6 @@ span.btn-success
     margin: -3px 0 0 -17px;
     width: auto;
 }
-.progress-wrapper .cadvisor-unavailable {
-    margin-top: 20px;
-}
 .container-cadvisor-unavailable {
     margin-top: 10px;
     color: #7d7d7d;
@@ -765,7 +725,8 @@ span.btn-success
     padding-top: 10px;
 }
 
-.triton-btn {
+.triton-btn,
+.kvm-btn {
     position: absolute;
     top: 163px;
     width: 220px;
@@ -791,13 +752,21 @@ span.btn-success
 .triton-type {
     text-align: center;
 }
-.triton-btn .plus-btn-icon {
+.kvm-btn .plus-btn-icon {
     left: -3px;
     margin-right: 5px;
+}
+.triton-btn .plus-btn-icon {
+    left: -7px;
+    margin-right: 0;
 }
 .triton-bg {
     background: url("../img/triton.png") no-repeat right top #eef0f2;
     background-size: 220px 185px;
+}
+.kvm-bg {
+    background-image: url("../img/kvm.png");
+    background-size: 165px 135px;
 }
 .triton-info {
     margin-left: 15px;
@@ -834,4 +803,22 @@ span.btn-success
 }
 .docker-options-title {
     font-size: 20px;
+}
+.chart-text {
+    position: absolute;
+    top: 20px;
+    left: 30%;
+}
+.chart-wrapper {
+    position: absolute;
+    right: 20px;
+    top: 47px;
+    cursor: pointer;
+}
+.chart-wrapper .title {
+    text-align: center;
+    margin-top: -4px;
+}
+.btn-wrapper .cadvisor-unavailable {
+    margin-top: -10px;
 }
