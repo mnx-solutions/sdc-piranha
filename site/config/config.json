@@ -200,7 +200,7 @@
 }
 , "sdcDocker": {
     "ip": "0.0.0.0"
-    , "name": "SDC-Docker"
+    , "name": "Triton: East 3B"
     , "datacenter": "us-west-beta"
     , "fullDataCenter": true
 }

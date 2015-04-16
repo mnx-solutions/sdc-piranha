@@ -214,7 +214,7 @@
 
                 $scope.preSelectedData = $rootScope.popCommonConfig('cloneDockerParams');
 
-                $scope.title = 'Create Container';
+                $scope.title = 'Start Docker Container';
                 $scope.createImage = false;
                 $scope.type = $location.path().search('image/create') === -1 ? 'Containers' : 'Images';
                 if ($scope.type === 'Images') {

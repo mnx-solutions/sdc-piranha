@@ -832,3 +832,6 @@ span.btn-success
 .faq {
     background-image: url("../img/faq.png");
 }
+.docker-options-title {
+    font-size: 20px;
+}

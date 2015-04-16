@@ -45,6 +45,9 @@
                             </select>
                         </span>
                     </div>
+                    <div class="page-header row">
+                        <h3 class="page-title docker-options-title">Docker Options</h3>
+                    </div>
                     <div data-ng-show="createImage" class="form-group">
                         <span class="edit-tag edit-label">Tag</span>
                         <span class="edit-value">
@@ -457,7 +460,7 @@
                                     data-ng-options="publishAllPortsOption.value as publishAllPortsOption.text for publishAllPortsOption in NO_YES_OPTIONS">
                             </select>
                         </span>
-                        <div class="notation" data-ng-show="isSdc">PublishAllPorts is the way the SDC-Docker knows to assign a public IP address to the container, without that you can not get to the container from the internet.</div>
+                        <div class="notation" data-ng-show="isSdc">PublishAllPorts is the way the Triton knows to assign a public IP address to the container, without that you can not get to the container from the internet.</div>
                     </div>
                     <div class="form-group">
                         <span class="edit-label">Privileged</span>
@@ -484,7 +487,7 @@
                         <span class="orange-asterix-left">required fields</span>
                         <div class="pull-right">
                             <button class="btn light effect-orange-button" data-ng-disabled="creating" data-ng-click="cancel()">Cancel</button>
-                            <button class="btn orange effect-orange-button" data-ng-disabled="containerCreateForm.$invalid || creating" data-ng-click="create()">Create</button>
+                            <button class="btn orange effect-orange-button" data-ng-disabled="containerCreateForm.$invalid || creating" data-ng-click="create()">Start</button>
                         </div>
                         <div class="pull-right loading-medium-transparent" data-ng-show="creating"></div>
                     </div>
