@@ -502,7 +502,7 @@
         service.resizeMachine = function (uuid, sdcpackage) {
             var fn = changeState({
                 name: 'MachineResize',
-                data: {sdcpackage: sdcpackage.name}
+                data: {sdcpackage: sdcpackage.id}
             });
 
             return fn(uuid);
