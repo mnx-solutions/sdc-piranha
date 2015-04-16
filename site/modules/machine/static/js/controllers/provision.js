@@ -1628,6 +1628,10 @@
                 return dataValue;
             };
 
+            $scope.isChangeImageDenied = function () {
+                return $scope.hostSpecification === 'dockerhost' || $scope.hostSpecification === 'dtracehost';
+            };
+
         }
 
     ]);

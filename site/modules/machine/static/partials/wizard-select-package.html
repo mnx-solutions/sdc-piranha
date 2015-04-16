@@ -2,7 +2,7 @@
         <div data-ng-show="selectedPackageInfo" class="preselected pull-right">
             <div class="info small-icon"
                  data-ng-class="selectedDataset.name | logo">
-                <p>IMAGE:</p><button class="btn small-btn effect-orange-button" data-ng-hide="isDockerHost" data-ng-click="reconfigure(0)" id="prev" data-slide="prev">Change</button>
+                <p>IMAGE:</p><button class="btn small-btn effect-orange-button" data-ng-hide="isChangeImageDenied()" data-ng-click="reconfigure(0)" id="prev" data-slide="prev">Change</button>
                 <span><h2>{{selectedDataset.name}}</h2></span>
                 <div class="dataset-desc crop text-wrap">{{selectedDataset.description}}</div>
 
