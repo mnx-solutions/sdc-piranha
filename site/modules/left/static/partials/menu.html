@@ -94,7 +94,9 @@
                     -->
                 </ul>
             </li>
-            <li class="nested" data-ng-class="{active: location.path().search('manta/') == 1, open: location.path().search('manta/') == 1}">
+            <li class="nested"
+                data-ng-hide="features.privateSdc == 'enabled' && features.manta == 'disabled'"
+                data-ng-class="{active: location.path().search('manta/') == 1, open: location.path().search('manta/') == 1}">
                 <a href="#!/manta/intro" class="storage-icon">
                     <span class="title">Storage</span>
                     <span class="selected"></span>

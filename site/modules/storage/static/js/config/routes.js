@@ -3,11 +3,13 @@
 window.JP.main.config(['routeProvider', function (routeProvider) {
     var features = window.JP.get('features');
     if (features && features.manta === 'disabled') {
-        routeProvider
-            .when('/manta/intro', {
-                title: 'Storage',
-                action: 'storage.index'
-            });
+        if (features.privateSdc === 'disabled') {
+            routeProvider
+                .when('/manta/intro', {
+                    title: 'Storage',
+                    action: 'storage.index'
+                });
+        }
     } else {
         routeProvider
             .when('/manta/intro', {
