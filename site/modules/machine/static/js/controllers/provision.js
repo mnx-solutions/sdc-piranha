@@ -88,6 +88,7 @@
             $scope.keys = [];
             $scope.datacenters = [];
             $scope.networks = [];
+            $scope.packages = [];
             $scope.datacenterForNetworks = '';
             $scope.indexPackageTypes = {};
             $scope.packageTypes = [];
@@ -1292,8 +1293,6 @@
                 };
                 var operatingSystems = {All: 1};
 
-                $scope.datasetsLoading = false;
-
                 datasets.forEach(function (dataset) {
                     operatingSystems[dataset.os] = 1;
 
@@ -1357,6 +1356,7 @@
                         $scope.selectVersion(image);
                     });
                 }
+                $scope.datasetsLoading = false;
             }
 
             function processPackages(newDatacenter, packages) {
