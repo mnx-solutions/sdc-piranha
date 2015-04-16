@@ -417,9 +417,9 @@ module.exports = function execute(scope, register) {
                 call.error(err);
                 return;
             }
-
-            if (!info.packages.data[options.datacenter]) {
-                options.datacenter = 'all';
+            var datacenter = options.datacenter;
+            if (!info.packages.data[datacenter]) {
+                datacenter = 'all';
             }
 
             if (options.datacenter !== tritonDataCenter) {
@@ -428,8 +428,8 @@ module.exports = function execute(scope, register) {
 
             var filteredPackagesMap = {};
             data.forEach(function (p) {
-                if (info.packages.data[options.datacenter][p.name]) {
-                    filteredPackagesMap[p.name] = utils.extend(p, info.packages.data[options.datacenter][p.name]);
+                if (info.packages.data[datacenter][p.name]) {
+                    filteredPackagesMap[p.name] = utils.extend(p, info.packages.data[datacenter][p.name]);
                 } else {
                     filteredPackagesMap[p.name] = p;
                 }
@@ -444,6 +444,7 @@ module.exports = function execute(scope, register) {
             if (options.datacenter === tritonDataCenter) {
                 filteredPackages = filteredPackages.map(function(pkg) {
                     pkg.type = pkg.type === 'other' ? 'smartos' : pkg.type;
+                    return pkg;
                 });
             }
             callback(null, filteredPackages);
