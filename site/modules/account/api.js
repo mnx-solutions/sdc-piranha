@@ -11,17 +11,17 @@ module.exports = function execute(scope, register) {
 
     //Compatibility with old version
     var api = {};
-    var steps = [ 'start', 'phone', 'billing', 'ssh' ];
+    var steps = ['start', 'phone', 'billing', 'ssh'];
     if (config.features.phoneVerification !== 'enabled') {
         steps.splice(steps.indexOf('phone'), 1);
     }
 
     function _nextStep(step) {
-        return (step === 'completed' || step === 'complete') ?  step : steps[steps.indexOf(step)+1];
+        return (step === 'completed' || step === 'complete') ?  step : steps[steps.indexOf(step) + 1];
     }
 
     function searchFromList(list, resp) {
-        return Object.keys(list).some(function(key) {
+        return Object.keys(list).some(function (key) {
             if (list[key].fingerprint === resp.fingerprint) {
                 return true;
             }
@@ -38,7 +38,7 @@ module.exports = function execute(scope, register) {
 
             // hold this call until cloudApi really has this key in the list
             (function checkList() {
-                req.cloud.listKeys({login: 'my'}, function(listError, data) {
+                req.cloud.listKeys({login: 'my'}, function (listError, data) {
                     if (listError) {
                         req.log.error('Failed to get listKeys from cloudApi', listError);
                         cb(null);
@@ -54,7 +54,7 @@ module.exports = function execute(scope, register) {
     api.addSubUserSshKey = function (req, name, keyData, cb) {
         var userId = req.body.subUser || req.query.userId;
         req.cloud.uploadUserKey(userId, {name: name, key: keyData}, function (err, resp) {
-            if(err) {
+            if (err) {
                 cb(err);
                 return;
             }
@@ -62,7 +62,7 @@ module.exports = function execute(scope, register) {
             //hold this call until cloudApi really has this key in the list
             (function checkList() {
                 req.cloud.listUserKeys('my', userId, function (listError, data) {
-                    if(listError) {
+                    if (listError) {
                         req.log.error('Failed to get listUserKeys from cloudApi', listError);
                         cb(null);
                     } else if (searchFromList(data, resp)) {
@@ -79,7 +79,7 @@ module.exports = function execute(scope, register) {
         var start = Date.now();
         if (req.session.userId) {
             Billing.getStep(req.session.userId, function (err, state) {
-                req.log.debug('Checking with billing server took ' + (Date.now() - start) +'ms');
+                req.log.debug('Checking with billing server took ' + (Date.now() - start) + 'ms');
                 cb(err, state);
             });
             return;
@@ -94,7 +94,7 @@ module.exports = function execute(scope, register) {
 
             var now = Date.now();
             Billing.getStep(account.id, function (err, state) {
-                req.log.debug('Checking with billing server took ' + (Date.now() - now) +'ms');
+                req.log.debug('Checking with billing server took ' + (Date.now() - now) + 'ms');
                 cb(err, state);
             });
         });
@@ -119,8 +119,14 @@ module.exports = function execute(scope, register) {
         }
         function getMetadata(userId) {
             metadata.get(userId, metadata.SIGNUP_STEP, function (err, storedStep) {
-                if (err && config.features.allowSkipBilling !== 'enabled') {
-                    if (!req.session.parentAccountError) {
+                if (err) {
+                    if (config.features.allowSkipBilling === 'enabled' && req.session.userIsNew) {
+                        metadata.set(userId, metadata.SIGNUP_STEP, 'completed', function (err) {
+                            if (err) {
+                                req.log.info('Failed to set completed signup step in metadata');
+                            }
+                        });
+                    } else if (!req.session.parentAccountError) {
                         req.log.error({error: err}, 'Cannot get signup step from metadata');
                     } else {
                         req.log.error(req.session.parentAccountError);
@@ -148,7 +154,7 @@ module.exports = function execute(scope, register) {
             });
         }
         if(req.session.userId) {
-            var userId =  req.session.parentAccountId || req.session.userId;
+            var userId = req.session.parentAccountId || req.session.userId;
             getMetadata(userId);
             return;
         }
