@@ -470,4 +470,15 @@ module.exports = function execute(scope) {
             machine.ImageUpdate(call, options, call.done.bind(call));
         }
     });
+
+    /* GetImage */
+    server.onCall('GetImage', {
+        verify: function (data) {
+            return data && typeof data.uuid === 'string' && typeof data.datacenter === 'string';
+        },
+        handler: function (call) {
+            call.cloud.separate(call.data.datacenter).getImage(call.data.uuid, call.done.bind(call));
+        }
+    });
+
 };

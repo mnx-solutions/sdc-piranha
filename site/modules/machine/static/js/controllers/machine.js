@@ -262,8 +262,12 @@
 
                     $scope.datasetType = type;
                 }, function () {
-                    $scope.dataset = {name: 'Image deleted'};
-                    $scope.imageCreateNotSupported = 'Instances without images are not supported by the image API.';
+                    Image.getImage(m.datacenter, m.image).then(function (image) {
+                        $scope.dataset = {name: image.name, version: image.version};
+                    }, function () {
+                        $scope.dataset = {name: 'Image deleted'};
+                        $scope.imageCreateNotSupported = 'Instances without images are not supported by the image API.';
+                    });
                 });
             }, function () {
                 locationReplace();
