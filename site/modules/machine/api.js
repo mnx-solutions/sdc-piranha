@@ -227,7 +227,7 @@ module.exports = function execute(scope, register) {
         cloud.resizeMachine(options.uuid, options, function (err) {
             if (!err) {
                 // poll for machine package change (resize)
-                pollForObjectStateChange(cloud, call, 'package', options.package, null, null, options.uuid, callback);
+                pollForObjectStateChange(cloud, call, 'package', options.packageName, null, null, options.uuid, callback);
             } else {
                 (callback || call.error)(err);
             }
