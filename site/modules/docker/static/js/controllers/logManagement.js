@@ -238,9 +238,10 @@
                         active: true,
                         type: 'html',
                         _getter: function (container) {
-                            var html = '<a href="#!/docker/container/' + container.hostId + '/' + container.ShortId + '" style="min-width: 140px;">' + container.ShortId + '</a>';
+                            var shortId = container.ShortId || container.Id.slice(0, 12);
+                            var html = '<a href="#!/docker/container/' + container.hostId + '/' + shortId + '" style="min-width: 140px;">' + shortId + '</a>';
                             if (container.logs === REMOVED_CONTAINER_STATUS) {
-                                html = '<span>' + container.ShortId + '</span>';
+                                html = '<span>' + shortId + '</span>';
                             }
                             return html;
                         }
