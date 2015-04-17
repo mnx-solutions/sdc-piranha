@@ -227,7 +227,8 @@ var Docker = function execute(scope, app) {
                             Names: container.Names,
                             hostId: container.hostId,
                             hostName: container.hostName,
-                            Deleted: new Date()
+                            Deleted: new Date(),
+                            ShortId: container.ShortId
                         };
                         if (container.isSdc) {
                             removedContainer.isSdc = true;
