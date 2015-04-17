@@ -35,13 +35,17 @@
     font-size: 16px;
 }
 .docker-wrapper .name p {
-    color: #428bca;
     overflow: hidden;
-    height: 23px;
     width: 160px;
+    height: 23px;
+    color: #428bca;
     vertical-align: top;
     text-overflow: ellipsis;
     word-wrap: break-word;
+    cursor: pointer;
+}
+.docker-host-title {
+    display: inline;
 }
 .docker-wrapper .name p:hover {
     color: #2a6496;

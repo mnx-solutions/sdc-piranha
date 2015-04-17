@@ -40,7 +40,11 @@
     <div class="row dockers-wrapper" data-ng-show="dockerMachines.length >= 1 && !loading">
         <div class="docker-wrapper triton-bg" data-ng-repeat="machine in getFilteredMachines(dockerMachines)" data-ng-class="{'kvm-bg': !machine.isSdc}">
             <div class="name">
-                <p data-ng-hide="machine.isSdc" data-tooltip-full-text data-original-title="{{machine.name}}" data-ng-click="navigateMachine(machine)">{{machine.name}}</p>
+                <p data-ng-hide="machine.isSdc"
+                   data-tooltip-full-text
+                   data-original-title="{{machine.name}}"
+                   data-ng-click="navigateMachine(machine)"
+                   data-ng-class="{'docker-host-title': machine.name && machine.name.length < 14}">{{machine.name}}</p>
                 <span data-ng-show="machine.isSdc">DC: {{machine.datacenter}}</span>
             </div>
             <div data-ng-show="!machine.isSdc">
