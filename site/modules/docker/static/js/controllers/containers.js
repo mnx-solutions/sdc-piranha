@@ -41,6 +41,12 @@
                     }) || false;
                 };
 
+                var hasCheckedContainers = function () {
+                    return $scope.containers.some(function (container) {
+                        return container.checked;
+                    }) || false;
+                };
+
                 var getStatsWithInterval = function (start) {
                     clearInterval(updateContainersInfo);
                     if (!start) {
@@ -48,7 +54,9 @@
                     }
                     var INTERVAL = 30000; // ms
                     updateContainersInfo = setInterval(function () {
-                        listAllContainers(false);
+                        if (!hasCheckedContainers()) {
+                            listAllContainers(false);
+                        }
                         if (hasContainersInProgress()) {
                             clearInterval(updateContainersInfo);
                         }
