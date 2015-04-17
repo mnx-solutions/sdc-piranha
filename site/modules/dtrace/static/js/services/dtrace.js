@@ -7,7 +7,8 @@
         '$q',
         '$rootScope',
         'Machine',
-        function (serverTab, PopupDialog, $q, $rootScope, Machine) {
+        'loggingService',
+        function (serverTab, PopupDialog, $q, $rootScope, Machine, loggingService) {
 
             var service = {};
 
@@ -100,6 +101,12 @@
                     name: 'DtraceClose',
                     data: data,
                 }).promise;
+            };
+
+            service.reportError = function (errMessage, logMessage) {
+                logMessage = logMessage || errMessage;
+                PopupDialog.errorObj(errMessage);
+                loggingService.log('error', logMessage);
             };
 
             return service;
