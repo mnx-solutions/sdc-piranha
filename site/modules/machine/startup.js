@@ -336,11 +336,13 @@ module.exports = function execute(scope) {
             return typeof data === 'object' &&
                 data.hasOwnProperty('uuid') &&
                 data.hasOwnProperty('datacenter') &&
-                data.hasOwnProperty('sdcpackage');
+                data.hasOwnProperty('sdcpackageId') &&
+                data.hasOwnProperty('sdcpackageName');
         },
         handler: function (call) {
             var options = {
-                package: call.data.sdcpackage,
+                package: call.data.sdcpackageId,
+                packageName: call.data.sdcpackageName,
                 datacenter: call.data.datacenter,
                 uuid: call.data.uuid
             };
