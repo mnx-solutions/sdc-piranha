@@ -34,7 +34,7 @@
                 function heatTracer(data) {
                     if ($scope.options.start || !consoleСolumns.length) {
                         consoleСolumns = [];
-                        ctx.fillStyle = '#000';
+                        ctx.fillStyle = '#3d3d3d';
                         ctx.fillRect(0, 0, width, height);
                         setup();
                         $scope.options.start = false;
