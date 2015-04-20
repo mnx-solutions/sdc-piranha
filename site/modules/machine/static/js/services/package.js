@@ -1,15 +1,10 @@
 'use strict';
-(function (app) {
-    app.factory('Package', [
-        'serverTab',
-        '$q',
-        'localization',
-        'PopupDialog',
+(function (app) { app.factory('Package', ['serverTab', '$q', 'localization', 'PopupDialog',
 
-        function (serverTab, $q, localization, PopupDialog) {
+    function (serverTab, $q, localization, PopupDialog) {
 
         var service = {};
-        var packages = { job: {}, index: {}, nameIndex: {}, list: {}, error: {}, search: {}};
+        var packages = {job: {}, index: {}, nameIndex: {}, list: {}, error: {}, search: {}};
 
         service.updatePackages = function (datacenter) {
             datacenter = datacenter || 'all';
@@ -35,11 +30,10 @@
                 return deferred.promise;
             }
 
-
             packages.list[datacenter].final = false;
             serverTab.call({
                 name:'PackageList',
-                data: { datacenter: datacenter === 'all' ? null : datacenter },
+                data: {datacenter: datacenter === 'all' ? null : datacenter},
                 error: function (err) {
                     packages.job[datacenter].pending = false;
                     deferred.reject(err);
@@ -56,7 +50,7 @@
                                 null,
                                 'machine',
                                 'Unable to retrieve packages from datacenter {{name}}.',
-                                { name: datacenter }
+                                {name: datacenter}
                             )
                         );
 
@@ -111,7 +105,7 @@
 
         service.package = function (params) {
             if (typeof (params) === 'string') {
-                params = { id: params };
+                params = {id: params};
             }
 
             params = params || {};
@@ -157,34 +151,30 @@
             return ret.promise;
         };
 
-        function findPackage(packageName) {
-            var found = packages.list.filter(function (pack) {
-                if (pack.name === packageName) {
-                    return pack;
+        function findPackage(datacenter, packageName) {
+            var pkgs = packages.list[datacenter];
+
+            return pkgs.find(function (pkg) {
+                if (pkg.name === packageName) {
+                    return pkg;
                 }
             });
-
-            if (found.length === 1) {
-                return found[0];
-            }
-
-            return null;
         }
 
-        service.getPackage= function (packageName) {
+        service.getPackage = function (datacenter, packageName) {
             var deferred = $q.defer();
 
-            if (packages.list.final) {
-                deferred.resolve(findPackage(packageName));
+            if (packages.list.final && packages.list[datacenter] && packages.list[datacenter].final) {
+                deferred.resolve(findPackage(datacenter, packageName));
                 return deferred.promise;
             }
 
             // get the new machine list.
-            var job = service.updatePackages();
+            var job = service.updatePackages(datacenter);
 
-            job.done(function (err, job) {
-                deferred.resolve(findPackage(packageName));
-            });
+            job.then(function () {
+                deferred.resolve(findPackage(datacenter, packageName));
+            }, deferred.reject);
 
             return deferred.promise;
         };
