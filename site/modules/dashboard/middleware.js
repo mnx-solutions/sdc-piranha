@@ -11,7 +11,7 @@ module.exports = function execute() {
         if (!res.locals.jss) {
             res.locals.jss = [];
         }
-        res.locals.jss.push('window.JP.set("tritonDatacenter", ' + config.sdcDocker.datacenter + ')');
+        res.locals.jss.push('window.JP.set("tritonDatacenter", "' + config.sdcDocker.datacenter + '")');
 
         return next();
     };
