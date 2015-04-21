@@ -11,6 +11,8 @@
             requestContext.setUpRenderContext('dashboard.index', $scope);
             $scope.loading = true;
 
+            var tritonDatacenter = window.JP.get('tritonDatacenter') || '';
+
             // populate all datasources
             $scope.account = {};
             $scope.slbFeatureEnabled = $rootScope.features.slb === 'enabled';
@@ -20,7 +22,6 @@
             $scope.mantaMemory = {};
             $scope.systemStatusTopics = [];
 
-//                $scope.forums      = Zendesk.getForumsList();
             $scope.forums = {
                 'Getting Started': 'http://wiki.joyent.com/wiki/display/jpc2/Getting+Started+with+your+Joyent+Cloud+Account',
                 'Setting Up Your Application': 'http://wiki.joyent.com/wiki/display/jpc2/Setting+Up+an+Application',
@@ -148,7 +149,14 @@
                 $scope.freeTierOptions = FreeTier.freetier();
                 $scope.freeTierOptions.then(function (freeImages) {
                     Datacenter.datacenter().then(function (datacenters) {
-                        $scope.datacenters = ng.copy(datacenters);
+                        if (tritonDatacenter) {
+                            $scope.datacenters = datacenters.filter(function (datacenter) {
+                                return datacenter.name !== tritonDatacenter;
+                            });
+                        } else {
+                            $scope.datacenters = angular.copy(datacenters);
+                        }
+
                         if (freeImages.valid) {
                             $scope.validUntil = freeImages.validUntil;
                             $scope.validFreeTier = true;
