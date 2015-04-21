@@ -24,7 +24,7 @@ var SUBUSER_REGISTRY_LOGIN = SUBUSER_LOGIN + '_registry';
 var SUBUSER_OBJ_NAME = 'docker';
 var SUBUSER_OBJ_NAME_REGISTRY = SUBUSER_OBJ_NAME + '-registry';
 var SDC_DOCKER_ID = '00000000-0000-0000-0000-000000000000';
-var SDC_DOCKER_CERT_PATH = '~~/stor/.joyent/docker';
+var SDC_DOCKER_PATH = '~~/stor/.joyent/docker';
 var SDC_DOCKER = config.features.sdcDocker === 'enabled' ?
     {
         id: SDC_DOCKER_ID,
@@ -34,6 +34,7 @@ var SDC_DOCKER = config.features.sdcDocker === 'enabled' ?
         isSdc: true,
         prohibited: false
     } : null;
+var CERTIFICATES_KEYS = ['ca', 'server-cert', 'server-key'];
 
 var requestMap = {
     'GET': 'get',
@@ -747,6 +748,9 @@ module.exports = function execute(scope, register) {
                 if (status === 'completed') {
                     delete waitForHosts[pollerKey];
                     return poller.emit('completed');
+                } else if (status === 'unreachable') {
+                    delete waitForHosts[pollerKey];
+                    return poller.emit('error');
                 }
 
                 if (status !== poller.status) {
@@ -778,7 +782,7 @@ module.exports = function execute(scope, register) {
             key = ursa.createPrivateKey(call.req.session.privateKey);
             return callback(createKeyPairObject(key));
         }
-        client.getFileContents('~~/stor/.joyent/docker/private.key', function (error, privateKey) {
+        client.getFileContents(SDC_DOCKER_PATH + '/private.key', function (error, privateKey) {
             if (error && config.manta && config.manta.privateKey) {
                 privateKey = fs.readFileSync(config.manta.privateKey, 'utf-8');
             }
@@ -1091,7 +1095,7 @@ module.exports = function execute(scope, register) {
             funcs: [
                 function (callback) {
                     var client = scope.api('MantaClient').createClient(call);
-                    client.putFileContents('~~/stor/.joyent/docker/private.key', keyPair.privateKey, callback);
+                    client.putFileContents(SDC_DOCKER_PATH + '/private.key', keyPair.privateKey, callback);
                 },
                 function (callback) {
                     checkAndCreateSubAccount(call, keyPair, callback);
@@ -1139,16 +1143,19 @@ module.exports = function execute(scope, register) {
 
             var certificates = call.req.session.docker;
             function done(certificates) {
-                options.metadata['ca'] = certificates.ca;
-                options.metadata['server-cert'] = certificates['server-cert'];
-                options.metadata['server-key'] = certificates['server-key'];
+                CERTIFICATES_KEYS.forEach(function (key) {
+                    options.metadata[key] = certificates[key];
+                });
                 uploadKeysAndCreateMachine(keyPair, options);
             }
-            if (certificates.ca) {
+            var someCertificatesMissing = CERTIFICATES_KEYS.some(function (key) {
+                return !certificates[key];
+            });
+            if (!someCertificatesMissing) {
                 return done(certificates);
             }
 
-            certMgmt.generateCertificates(mantaClient, SDC_DOCKER_CERT_PATH, function (error, certificates) {
+            certMgmt.generateCertificates(mantaClient, SDC_DOCKER_PATH, function (error, certificates) {
                 if (error) {
                     return callback(error);
                 }
@@ -1167,7 +1174,7 @@ module.exports = function execute(scope, register) {
             return;
         }
         var client = scope.api('MantaClient').createClient(call);
-        client.getFileContents('~~/stor/.joyent/docker/.status-' + machineId, function (error, result) {
+        client.getFileContents(SDC_DOCKER_PATH + '/.status-' + machineId, function (error, result) {
             var status = 'initializing';
             if (!error) {
                 try {
@@ -1177,6 +1184,22 @@ module.exports = function execute(scope, register) {
                 }
             }
             callback(null, status);
+        });
+    };
+
+    api.setHostStatus = function (call, machineId, status, callback) {
+        if (!callback || typeof callback !== 'function') {
+            callback = function () {};
+        }
+        if (machineId === SDC_DOCKER_ID) {
+            setImmediate(function () {
+                callback(null);
+            });
+            return;
+        }
+        var client = scope.api('MantaClient').createClient(call);
+        client.safePutFileContents(SDC_DOCKER_PATH + '/.status-' + machineId, JSON.stringify({status: status}), function (error) {
+            return callback();
         });
     };
 
@@ -1367,7 +1390,7 @@ module.exports = function execute(scope, register) {
         if (typeof (fromCache) === 'boolean' && fromCache && Object.keys(api.registriesCache).length) {
             return callback(null, Object.keys(api.registriesCache).map(function (key) {return api.registriesCache[key];}));
         }
-        client.getFileJson('~~/stor/.joyent/docker/registries.json', function (error, list) {
+        client.getFileJson(SDC_DOCKER_PATH + '/registries.json', function (error, list) {
             if (error) {
                 call.log.warn('Registries list is corrupted');
                 return callback(error, list);
@@ -1402,7 +1425,7 @@ module.exports = function execute(scope, register) {
         }
         callback = callback || call.done;
         client = client || scope.api('MantaClient').createClient(call);
-        client.putFileContents('~~/stor/.joyent/docker/registries.json', JSON.stringify(data), function (error) {
+        client.putFileContents(SDC_DOCKER_PATH + '/registries.json', JSON.stringify(data), function (error) {
             return callback(error && error.message, true);
         });
     };

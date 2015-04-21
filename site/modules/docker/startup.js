@@ -14,6 +14,7 @@ var WebSocket = require('ws');
 
 var DOCKER_TCP_PORT = 4240;
 var DOCKER_HUB_HOST = 'https://index.docker.io';
+var DOCKER_SSL_ERROR = 'routines:SSL3_READ_BYTES';
 
 var Docker = function execute(scope, app) {
     var Docker = scope.api('Docker');
@@ -153,6 +154,9 @@ var Docker = function execute(scope, app) {
                     if (error === 'CAdvisor unavailable') {
                         callback(error, true);
                         return;
+                    }
+                    if (error && error.indexOf(DOCKER_SSL_ERROR) !== -1) {
+                        arguments[0] = undefined;
                     }
                     callback.apply(this, arguments);
                 });
@@ -347,7 +351,11 @@ var Docker = function execute(scope, app) {
 
                                     client[method](util._extend({}, call.data.options), function (err, response) {
                                         if (err) {
-                                            suppressErrors.push(err);
+                                            if (err.indexOf(DOCKER_SSL_ERROR) !== -1) {
+                                                Docker.setHostStatus(call, host.id, 'unreachable');
+                                            } else {
+                                                suppressErrors.push(err);
+                                            }
                                             return callback(null, []);
                                         }
                                         if (response && Array.isArray(response)) {

@@ -459,32 +459,36 @@
         };
 
         function getOverallUsage(machineInfo, hostStats) {
-            var cur = hostStats.stats[hostStats.stats.length - 1];
-
             var cpuUsage = 0;
-            var machineCores = machineInfo.cores || 1;
-            if (hostStats.spec['has_cpu'] && hostStats.stats.length >= 2) {
-                var prev = hostStats.stats[hostStats.stats.length - 2];
-                var rawUsage = cur.cpu.usage.total - prev.cpu.usage.total;
-                var intervalInNs = (new Date(cur.timestamp).getTime() - new Date(prev.timestamp).getTime()) * 1000000;
-
-                cpuUsage = Math.round(((rawUsage / intervalInNs) / machineCores) * 100);
-                if (cpuUsage > 100) {
-                    cpuUsage = 100;
-                }
-            }
-
             var memoryUsage = 0;
-            var machineMemory = machineInfo.memory * 1024 * 1024;
-            if (hostStats.spec['has_memory']) {
-                // Saturate to the machine size.
-                var limit = hostStats.spec.memory.limit;
-                if (limit > machineMemory) {
-                    limit = machineMemory;
+            var stats = hostStats && hostStats.stats;
+            if (stats && stats.length) {
+                var currentStats = stats[stats.length - 1];
+
+                var machineCores = machineInfo.cores || 1;
+                if (hostStats.spec['has_cpu'] && stats.length >= 2) {
+                    var previousStats = stats[stats.length - 2];
+                    var rawUsage = currentStats.cpu.usage.total - previousStats.cpu.usage.total;
+                    var intervalInNs = (new Date(currentStats.timestamp) - new Date(previousStats.timestamp)) * 1000000;
+
+                    cpuUsage = Math.round(((rawUsage / intervalInNs) / machineCores) * 100);
+                    if (cpuUsage > 100) {
+                        cpuUsage = 100;
+                    }
                 }
 
-                memoryUsage = Math.round((cur.memory.usage / limit) * 100);
+                var machineMemory = machineInfo.memory * 1024 * 1024;
+                if (hostStats.spec['has_memory']) {
+                    // Saturate to the machine size.
+                    var limit = hostStats.spec.memory.limit;
+                    if (limit > machineMemory) {
+                        limit = machineMemory;
+                    }
+
+                    memoryUsage = Math.round((currentStats.memory.usage / limit) * 100);
+                }
             }
+
             return {cpu: cpuUsage, memory: memoryUsage};
         }
 
