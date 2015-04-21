@@ -59,7 +59,8 @@ module.exports = function (app, log, config) {
         };
         wsc.onerror = function (error) {
             if (socket.readyState === WebSocket.OPEN) {
-                socket.send(error.data || error);
+                var message = error.data || error;
+                socket.send(JSON.stringify({error: message.toString()}));
             }
             closeSocket();
         };

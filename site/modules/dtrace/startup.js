@@ -134,7 +134,7 @@ var dtrace = function execute() {
                 }
                 client.listProcesses(function (err, list) {
                     if (err) {
-                        return call.done(err);
+                        return call.done(err.toString());
                     }
                     call.done(null, list);
                 });
