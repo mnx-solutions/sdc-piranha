@@ -21,6 +21,7 @@ var cache = require('lru-cache')({
     maxAge: 10 * 60
 });
 var apiMethods = require(__dirname + '/data/api-methods');
+var moment = require('moment');
 
 var mantaPrivateKey;
 if (config.manta.privateKey) {
@@ -142,6 +143,9 @@ function createMethod(log, opts, selfName) {
         if (!callback) {
             callback = function () {};
         }
+        if (this.options.error) {
+            return callback(this.options.error);
+        }
         if (!params) {
             params = {};
         }
@@ -220,6 +224,9 @@ exports.init = function execute(log, config, done) {
     var disableTls = Boolean(config.docker && config.docker.disableTls);
     var Manta = require('../storage').MantaClient;
     var api = {};
+    api.SDC_DOCKER_PATH = SDC_DOCKER_PATH;
+    api.DOCKER_HUB_HOST = 'https://index.docker.io';
+    api.CERTIFICATES_LOST = 'Certificates were lost. Cannot connect to docker.';
 
     api.registriesCache = {
         getCache: function (call) {
@@ -256,8 +263,7 @@ exports.init = function execute(log, config, done) {
     function Docker(options, call) {
         this.options = options;
         if (call) {
-            var mantaClient = require('../storage').MantaClient.createClient(call);
-            this.auditor = new Auditor(call, mantaClient);
+            this.auditor = new Auditor(call);
         }
     }
 
@@ -505,17 +511,14 @@ exports.init = function execute(log, config, done) {
             return callback(null, host);
         }
         host = utils.clone(host);
-        api.createClient(call, host, function (error, client) {
-            if (error) {
-                return callback(error, host);
+        var client = api.createClient(call, host);
+        client.getVersion({retries: false, timeout: 3000}, function (error) {
+            var FORBIDDEN_ERROR_PART = 'Forbidden (This service';
+            if (error &&
+                String(error.message || error).indexOf(FORBIDDEN_ERROR_PART) === 0) {
+                host.prohibited = true;
             }
-            client.getVersion({retries: false, timeout: 3000}, function (error) {
-                if (error &&
-                    String(error.message || error).indexOf('Forbidden (This service') === 0) {
-                    host.prohibited = true;
-                }
-                callback(error, (showProhibited || !host.prohibited) && host);
-            });
+            callback(error, (showProhibited || !host.prohibited) && host);
         });
     }
 
@@ -705,7 +708,7 @@ exports.init = function execute(log, config, done) {
                 uploadKeysAndCreateMachine(keyPair, options);
             }
 
-            if (!certMgmt.checkCertificates(certificates)) {
+            if (!certMgmt.areCertificatesLost(certificates)) {
                 return done(certificates);
             }
 
@@ -761,12 +764,12 @@ exports.init = function execute(log, config, done) {
         });
     };
 
-    function createClient(call, Service, opts, callback) {
+    function createClient(call, Service, opts) {
         var cacheKey = Service.name + opts.url;
         var cachedClient = cache.get(cacheKey);
         var certificates = call.req.session.dockerCerts;
         if (cachedClient) {
-            return callback(null, cachedClient);
+            return cachedClient;
         }
 
         var serviceConfig = {
@@ -784,8 +787,8 @@ exports.init = function execute(log, config, done) {
                 'X-Auth-Token': call.req.session.token || call.req.cloud._token
             });
         } else if (!call.data || !call.data.authNotRequired) {
-            if (!certificates.ca) {
-                return callback('Certificates were lost. Cannot connect to docker.');
+            if (certMgmt.areCertificatesLost(certificates)) {
+                serviceConfig.error = api.CERTIFICATES_LOST;
             }
             serviceConfig.requestCert = true;
             serviceConfig.ca = certificates.ca;
@@ -794,18 +797,20 @@ exports.init = function execute(log, config, done) {
         }
 
         var service = new Service(serviceConfig, call);
-        cache.set(cacheKey, service);
-        callback(null, service);
+        if (!serviceConfig.error) {
+            cache.set(cacheKey, service);
+        }
+        return service;
     }
 
-    api.createClient = function (call, machine, callback) {
+    api.createClient = function (call, machine) {
         var isSdc = machine.isSdc || machine.id === SDC_DOCKER_ID;
         var opts = {
             url: 'https://' + machine.primaryIp + (isSdc ? ':2376' : ':4243'),
             host: machine,
             isSdc: isSdc
         };
-        createClient(call, Docker, opts, callback);
+        return createClient(call, Docker, opts);
     };
 
     function parseAuthData(auth) {
@@ -816,9 +821,10 @@ exports.init = function execute(log, config, done) {
         }
     }
 
-    api.createRegistryClient = function (call, credentials, callback) {
+    api.createRegistryClient = function (call, credentials) {
         var parsedUrl = url.parse(credentials.host);
         var port = parseInt(credentials.port || parsedUrl.port, 10);
+        var opts = {headers: credentials.headers};
         if (port) {
             delete parsedUrl.host;
             parsedUrl.port = port;
@@ -830,11 +836,9 @@ exports.init = function execute(log, config, done) {
                 parsedUrl.auth = [auth.username, auth.password].join(':');
             }
         }
-        var opts = {
-            url: url.format(parsedUrl),
-            headers: credentials.headers
-        };
-        createClient(call, Registry, opts, callback);
+
+        opts.url = url.format(parsedUrl);
+        return createClient(call, Registry, opts);
     };
 
     api.createIndexClient = function (call, options, callback) {
@@ -856,27 +860,24 @@ exports.init = function execute(log, config, done) {
         if (basicAuth) {
             createClientOpts.headers = {'Authorization': 'Basic ' + basicAuth};
         }
-        createClient(call, Index, createClientOpts, function (error, indexClient) {
-            indexClient.getAuthToken(imageName, access || 'GET', function (authError, authResult) {
-                if (authError) {
-                    return callback(authError);
+        var indexClient = createClient(call, Index, createClientOpts);
+        indexClient.getAuthToken(imageName, access || 'GET', function (authError, authResult) {
+            if (authError) {
+                return callback(authError);
+            }
+            var registryCredentials = JSON.parse(JSON.stringify(credentials));
+            registryCredentials.headers = {Authorization: 'Token ' + authResult.token};
+            if (authResult.endpoint && registryCredentials.type !== 'local') {
+                var parsedUrl = url.parse(credentials.host);
+                if (authResult.endpoint.indexOf('http') !== 0) {
+                    registryCredentials.host = parsedUrl.protocol + '//' + authResult.endpoint + '/';
+                } else {
+                    registryCredentials.host = authResult.endpoint;
                 }
-                var registryCredentials = JSON.parse(JSON.stringify(credentials));
-                registryCredentials.headers = {Authorization: 'Token ' + authResult.token};
-                if (authResult.endpoint && registryCredentials.type !== 'local') {
-                    var parsedUrl = url.parse(credentials.host);
-                    if (authResult.endpoint.indexOf('http') !== 0) {
-                        registryCredentials.host = parsedUrl.protocol + '//' + authResult.endpoint + '/';
-                    } else {
-                        registryCredentials.host = authResult.endpoint;
-                    }
-                    delete registryCredentials.auth;
-                }
+                delete registryCredentials.auth;
+            }
 
-                api.createRegistryClient(call, registryCredentials, function (clientErr, client) {
-                    callback(clientErr, {index: indexClient, registry: client});
-                });
-            });
+            callback(null, {index: indexClient, registry: api.createRegistryClient(call, registryCredentials)});
         });
     };
 
@@ -905,8 +906,11 @@ exports.init = function execute(log, config, done) {
     }
 
     api.dateFormat = function (sourceDate) {
-        sourceDate = new Date(sourceDate);
-        return sourceDate.getFullYear() + '-' + pad(sourceDate.getMonth() + 1) + '-' + pad(sourceDate.getDate());
+        return moment(sourceDate).format('YYYY-MM-DD');
+    };
+
+    api.getTomorrowDate = function () {
+        return api.dateFormat(moment().add(1, 'days').set({hour: 0, minutes: 0, second: 0}).format());
     };
 
     api.isSdcHost = function (hostId) {

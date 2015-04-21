@@ -5,10 +5,9 @@ var vasync = require('vasync');
 var SEPARATOR = '_';
 var AUDITPATH = '~~/stor/.joyent/docker/audit/';
 
-function Auditor(call, mantaClient) {
+function Auditor(call) {
     this.log = call.log;
-    this.call = call;
-    this.client = mantaClient;
+    this.client = require('../../storage').MantaClient.createClient(call);
 }
 
 function formatDate(date) {

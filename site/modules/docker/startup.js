@@ -3,15 +3,10 @@ var config = require('easy-config');
 var path = require('path');
 var vasync = require('vasync');
 var util = require('util');
-var os = require('os');
-var fs = require('fs');
-var ursa = require('ursa');
 var url = require('url');
-var uuid = require('../../static/vendor/uuid/uuid.js');
-var registryConfig = fs.readFileSync(__dirname + '/data/registry-config.yml', 'utf-8');
 var Auditor = require(__dirname + '/libs/auditor.js');
+var utils = require('../../../lib/utils');
 var WebSocket = require('ws');
-
 var DOCKER_SSL_ERROR = 'routines:SSL3_READ_BYTES';
 
 var Docker = function execute(log, config) {
@@ -19,107 +14,41 @@ var Docker = function execute(log, config) {
     var server = require('../server').Server;
     var machine = require('../machine').Machine;
     var MantaClient = require('../storage').MantaClient;
-
+    var DockerHandler = require(__dirname + '/libs/docker-handlers.js');
     var methods = Docker.getMethods();
     var methodsForAllHosts = ['containers', 'getInfo', 'images'];
     var removedContainersCache = {};
-    var MESSAGE_WRONG_IMAGE_NAME = 'Wrong image name';
+    var DOCKER_LOGS_PATH = Docker.SDC_DOCKER_PATH + '/logs/';
+    var DOCKER_REMOVED_LOGS_PATH = Docker.SDC_DOCKER_PATH + '/removed-logs.json';
+    var DOCKER_EXEC_PATH = '/main/docker/exec/';
+    var methodHandlers = {};
 
-    function capitalize(str) {
-        return str[0].toUpperCase() + str.substr(1);
-    }
-
-    function parseTag(tag) {
-        var parts = /(?:([^:]+:\d+)\/)?((?:([^\/]+)\/)?([^:]+))(?::(.+$))?/.exec(tag);
-        if (!parts) {
-            return {};
-        }
-
-        return {
-            tag: parts[5],
-            name: parts[4],
-            repository: parts[3] || '',
-            fullname: parts[2],
-            registry: parts[1]
-        };
-    }
-
-    function jsonStreamParser(res, eachCallback) {
-        var accumulatedData = '';
-        function parse(part) {
-            try {
-                return JSON.parse(part);
-            } catch (e) {
-                return undefined;
-            }
-        }
-
-        function regexIndexOf(str, regex, startpos) {
-            var indexOf = str.substring(startpos || 0).search(regex);
-            return (indexOf >= 0) ? (indexOf + (startpos || 0)) : indexOf;
-        }
-
-        res.on('data', function (data) {
-            var nextLine = 0;
-            accumulatedData += data.toString();
-            //noinspection JSLint
-            var index;
-            while ((index = regexIndexOf(accumulatedData, /(?:\}\s*\{|\}\s*$)/, nextLine)) !== -1) {
-                var part = accumulatedData.slice(nextLine, index + 1);
-
-                var json = parse(part.trim());
-                if (json === undefined) {
-                    break;
-                }
-                eachCallback(json);
-                nextLine = index + 1;
-            }
+    var isPrivateRegistryName = function (container) {
+        return container.Names.some(function (name) {
+            return name === 'private-registry' ||  name === '/private-registry';
         });
-    }
+    };
 
     function waitClient(call, host, callback) {
         var callOpts = call.data || {};
-
-        Docker.createClient(call, host, function (error, client) {
-            if (error) {
-                return callback(error);
+        var client = Docker.createClient(call, host);
+        if (callOpts.wait && host.id && !callOpts.isSdc) {
+            if (client.options.error) {
+                return callback(client.options.error);
             }
-            if (callOpts.wait && host.id && !callOpts.isSdc) {
-                Docker.waitHost(call, host, function (status) {
-                    call.update(null, {hostId: host.id, status: status});
-                }, function (error) {
-                    callback(error, client);
-                });
-            } else {
+            Docker.waitHost(call, host, function (status) {
+                call.update(null, {hostId: host.id, status: status});
+            }, function (error) {
                 callback(error, client);
-            }
-        });
-    }
-
-    function putToAudit(call, entry, params, error, finish) {
-        var mantaClient = MantaClient.createClient(call);
-        var auditor = new Auditor(call, mantaClient);
-        var result = false;
-        if (error) {
-            params.error = true;
-            params.errorMessage = error.message || error;
-            if (error.statusCode === 404 || error === 'Unable to pull empty repository' ||
-                error.message === MESSAGE_WRONG_IMAGE_NAME) {
-                result = true;
-                call.log.info(params.errorMessage);
-            }
-        }
-        auditor.put(entry, params);
-        if (finish) {
-            call.done(error, result);
+            });
+        } else {
+            callback(null, client);
         }
     }
-
-    var REMOVED_LOGS_PATH = '~~/stor/.joyent/docker/removed-logs.json';
 
     var getRemovedContainersList = function (call, callback) {
         var client = MantaClient.createClient(call);
-        client.getFileJson(REMOVED_LOGS_PATH, function (error, list) {
+        client.getFileJson(DOCKER_REMOVED_LOGS_PATH, function (error, list) {
             if (error) {
                 call.log.warn('Removed docker containers list is corrupted');
                 return callback(error, list);
@@ -131,7 +60,7 @@ var Docker = function execute(log, config) {
     var saveRemovedContainersList = function (call, data, callback) {
         callback = callback || call.done;
         var client = MantaClient.createClient(call);
-        client.safePutFileContents(REMOVED_LOGS_PATH, JSON.stringify(data), function (error) {
+        client.safePutFileContents(DOCKER_REMOVED_LOGS_PATH, JSON.stringify(data), function (error) {
             if (error && error.statusCode !== 404) {
                 return callback(error.message, true);
             }
@@ -140,7 +69,6 @@ var Docker = function execute(log, config) {
         });
     };
 
-    var methodHandlers = {};
     methods.forEach(function (method) {
         methodHandlers[method] = function (call, callback) {
 
@@ -179,7 +107,7 @@ var Docker = function execute(log, config) {
                     });
                 });
             });
-        }
+        };
     });
 
     function saveLogsToManta(call, logPath, logs, callback) {
@@ -196,7 +124,10 @@ var Docker = function execute(log, config) {
     }
 
     function removeContainer(call, client, container, options, callback) {
-        if (typeof (options) === 'function') {
+        var hostId = container.hostId;
+        var logs = '';
+        var logPath = path.join(DOCKER_LOGS_PATH, hostId, container.Id, Docker.getTomorrowDate() + '.log');
+        if (typeof options === 'function') {
             callback = options;
             options = null;
         }
@@ -205,13 +136,9 @@ var Docker = function execute(log, config) {
             if (err) {
                 return callback(err);
             }
-            var logs = '';
             if (response && response.length) {
                 logs = Docker.parseLogResponse(response);
             }
-            var tomorrowDate = Docker.dateFormat(new Date(new Date().getTime() + 24 * 60 * 60 * 1000).setHours(0, 0, 0, 0));
-            var logPath = '~~/stor/.joyent/docker/logs/' + container.hostId + '/' + container.Id + '/' + tomorrowDate + '.log';
-
             saveLogsToManta(call, logPath, logs, function (error) {
                 if (error) {
                     return callback(error);
@@ -222,13 +149,7 @@ var Docker = function execute(log, config) {
                         return callback(error);
                     }
                     getRemovedContainersList(call, function (error, removedContainers) {
-                        if (error) {
-                            if (error.statusCode === 404) {
-                                removedContainers = [];
-                            } else {
-                                return callback(error.message, true);
-                            }
-                        }
+                        var duplicateRemovedContainers = {};
                         var removedContainer = {
                             Id: container.Id,
                             Image: container.Image,
@@ -238,17 +159,22 @@ var Docker = function execute(log, config) {
                             Deleted: new Date(),
                             ShortId: container.ShortId
                         };
+                        if (error) {
+                            if (error.statusCode === 404) {
+                                removedContainers = [];
+                            } else {
+                                return callback(error.message, true);
+                            }
+                        }
                         if (container.isSdc) {
                             removedContainer.isSdc = true;
                         }
-                        var hostId = container.hostId;
                         removedContainers.push(removedContainer);
                         if (Array.isArray(removedContainersCache[hostId])) {
                             removedContainersCache[hostId] = removedContainers.concat(removedContainersCache[hostId]);
                         } else {
                             removedContainersCache[hostId] = removedContainers;
                         }
-                        var duplicateRemovedContainers = {};
                         removedContainersCache[hostId] = removedContainersCache[hostId].filter(function (removedContainer) {
                             return removedContainer.Id in duplicateRemovedContainers ? 0 : duplicateRemovedContainers[removedContainer.Id] = removedContainer.Id;
                         });
@@ -261,34 +187,30 @@ var Docker = function execute(log, config) {
 
     methodHandlers.remove = function (call, callback) {
         var data = call.data;
-        var hostObj = data.host;
-        waitClient(call, hostObj, function (error, client) {
+        var host = data.host;
+        var container = data.container;
+        waitClient(call, host, function (error, client) {
             if (error) {
                 return callback(error);
             }
-            var host = hostObj.primaryIp;
-            var container = data.container;
             return removeContainer(call, client, container, data.options, function (err) {
+                var ports = [];
                 if (err) {
                     return call.log.warn(err.message, true);
                 }
-                var ports = [];
                 if (container.Ports && container.Ports.length > 0) {
                     ports = container.Ports.map(function (port) {
                         return port.PublicPort;
                     });
                 } else {
-                    var isPrivateRegistryName = container.Names.some(function (name) {
-                        return name === '/private-registry';
-                    });
-                    ports = isPrivateRegistryName && container.Image.indexOf('private-registry') >= 0 ? [5000] : [];
+                    ports = isPrivateRegistryName(container) && container.Image.indexOf('private-registry') >= 0 ? [5000] : [];
                 }
                 if (ports.length) {
                     // delete registry
                     return Docker.getRegistries(call, function (error, list) {
                         var matchingRegistryId;
                         list = list.filter(function (item) {
-                            if (url.parse(item.host).hostname === host) {
+                            if (url.parse(item.host).hostname === host.primaryIp) {
                                 var matchingPorts = ports.some(function (port) {
                                     return port === parseInt(item.port, 10);
                                 });
@@ -318,9 +240,9 @@ var Docker = function execute(log, config) {
     };
 
     methods.forEach(function (method) {
-        server.onCall('Docker' + capitalize(method), {
+        server.onCall('Docker' + utils.capitalize(method), {
             verify: function (data) {
-                return data && data.host && typeof (data.host.primaryIp) === 'string';
+                return data && data.host && typeof data.host.primaryIp === 'string';
             },
             handler: function (call) {
                 if (call.data.host.prohibited) {
@@ -331,15 +253,15 @@ var Docker = function execute(log, config) {
         });
 
         if (methodsForAllHosts.indexOf(method) !== -1) {
-            server.onCall('Docker' + capitalize(method) + 'All', function (call) {
+            server.onCall('Docker' + utils.capitalize(method) + 'All', function (call) {
                 Docker.listHosts(call, function (error, hosts) {
+                    var suppressErrors = [];
                     if (error) {
                         return call.done(error);
                     }
                     hosts = hosts.filter(function (host) {
                         return !host.prohibited;
                     });
-                    var suppressErrors = [];
                     vasync.forEachParallel({
                         inputs: hosts,
                         func: function (host, callback) {
@@ -347,53 +269,48 @@ var Docker = function execute(log, config) {
                                 if (error || status !== 'completed') {
                                     return callback(null, []);
                                 }
-                                Docker.createClient(call, host, function (error, client) {
-                                    if (error) {
-                                        suppressErrors.push(error);
+
+                                var client = Docker.createClient(call, host);
+                                client[method](util._extend({}, call.data.options), function (err, response) {
+                                    if (err) {
+                                        if (err.indexOf(DOCKER_SSL_ERROR) !== -1) {
+                                            Docker.setHostStatus(call, host.id, 'unreachable');
+                                        } else {
+                                            suppressErrors.push(err);
+                                        }
                                         return callback(null, []);
                                     }
-
-                                    client[method](util._extend({}, call.data.options), function (err, response) {
-                                        if (err) {
-                                            if (err.indexOf(DOCKER_SSL_ERROR) !== -1) {
-                                                Docker.setHostStatus(call, host.id, 'unreachable');
-                                            } else {
-                                                suppressErrors.push(err);
+                                    if (response && Array.isArray(response)) {
+                                        response.forEach(function (container) {
+                                            container.hostName = host.name;
+                                            container.hostId = host.id;
+                                            container.primaryIp = host.primaryIp;
+                                            container.isSdc = host.isSdc;
+                                            if (method === 'containers') {
+                                                container.state = container.Status.indexOf('Up') !== -1 ? 'running' : 'stopped';
                                             }
-                                            return callback(null, []);
-                                        }
-                                        if (response && Array.isArray(response)) {
-                                            response.forEach(function (container) {
-                                                container.hostName = host.name;
-                                                container.hostId = host.id;
-                                                container.primaryIp = host.primaryIp;
-                                                container.isSdc = host.isSdc;
-                                                if (method === 'containers') {
-                                                    container.state = container.Status.indexOf('Up') !== -1 ? 'running' : 'stopped';
-                                                }
-                                            });
-                                        }
-                                        if (method === 'containers') {
-                                            vasync.forEachParallel({
-                                                inputs: response,
-                                                func: function (container, inspectCallback) {
-                                                    client.inspect({id: container.Id}, function (errContainer, containerInfo) {
-                                                        if (errContainer) {
-                                                            suppressErrors.push(errContainer);
-                                                            return inspectCallback(null, []);
-                                                        }
-                                                        container.ipAddress = containerInfo.NetworkSettings.IPAddress;
-                                                        inspectCallback(null, container);
-                                                    });
-                                                }
-                                            }, function (vasyncErr, containers) {
-                                                containers = [].concat.apply([], containers.successes);
-                                                callback(vasyncErr, containers);
-                                            });
-                                        } else {
-                                            callback(null, response);
-                                        }
-                                    });
+                                        });
+                                    }
+                                    if (method === 'containers') {
+                                        vasync.forEachParallel({
+                                            inputs: response,
+                                            func: function (container, inspectCallback) {
+                                                client.inspect({id: container.Id}, function (errContainer, containerInfo) {
+                                                    if (errContainer) {
+                                                        suppressErrors.push(errContainer);
+                                                        return inspectCallback(null, []);
+                                                    }
+                                                    container.ipAddress = containerInfo.NetworkSettings.IPAddress;
+                                                    inspectCallback(null, container);
+                                                });
+                                            }
+                                        }, function (vasyncErr, containers) {
+                                            containers = [].concat.apply([], containers.successes);
+                                            callback(vasyncErr, containers);
+                                        });
+                                    } else {
+                                        callback(null, response);
+                                    }
                                 });
                             });
                         }
@@ -431,13 +348,9 @@ var Docker = function execute(log, config) {
             vasync.forEachParallel({
                 inputs: hosts,
                 func: function (host, callback) {
-                    Docker.createClient(call, host, function (error, client) {
-                        if (error) {
-                            return callback(error);
-                        }
-                        client.ping(function (err) {
-                            callback(err);
-                        });
+                    var client = Docker.createClient(call, host);
+                    client.ping(function (err) {
+                        callback(err);
                     });
                 }
             }, function (vasyncError) {
@@ -464,14 +377,10 @@ var Docker = function execute(log, config) {
                         }
                         if (status === 'completed') {
                             if (getVersion) {
-                                Docker.createClient(call, host, function (error, client) {
-                                    if (error) {
-                                        return callback(null, []);
-                                    }
-                                    client.getVersion(function (error, version) {
-                                        host.dockerVersion = version;
-                                        callback(error, [host]);
-                                    });
+                                var client = Docker.createClient(call, host);
+                                client.getVersion(function (error, version) {
+                                    host.dockerVersion = version;
+                                    callback(error, [host]);
                                 });
                                 return;
                             }
@@ -494,85 +403,7 @@ var Docker = function execute(log, config) {
             return data && data.host && data.options && data.options.create && data.options.create.Image && data.options.start;
         },
         handler: function (call) {
-            var host = call.data.host;
-            var options = call.data.options;
-            var createOptions = options.create;
-            var startOptions = options.start;
-            var pipeline = [];
-
-            var mantaClient = MantaClient.createClient(call);
-            var auditor = new Auditor(call, mantaClient);
-
-            pipeline.push(function createClient(collector, callback) {
-                Docker.createClient(call, host, function (error, client) {
-                    collector.client = client;
-                    callback(error);
-                });
-            });
-
-            pipeline.push(function listImages(collector, callback) {
-                collector.client.images({}, function(error, images) {
-                    collector.hostImages = images || [];
-                    callback(error);
-                });
-            });
-
-            pipeline.push(function necessaryPullImage(collector, callback) {
-                var isExistImage = collector.hostImages.some(function(image) {
-                    return image.RepoTags.some(function(tag) {
-                        return createOptions.Image === tag;
-                    });
-                });
-                if (isExistImage) {
-                    return callback();
-                }
-                var image = parseTag(options.create.Image);
-                collector.client.pullImage({fromImage: image.name, tag: image.tag, registry: image.registry, repo: image.repository}, function(error) {
-                    callback(error);
-                });
-            });
-
-            pipeline.push(function createContainer(collector, callback) {
-                collector.client.create(createOptions, function(error, response) {
-                    if (response && response.Id) {
-                        startOptions.id = response.Id;
-                    }
-                    callback(error);
-                });
-            });
-
-            pipeline.push(function startContainer(collector, callback) {
-                collector.client.startImmediate(util._extend({}, startOptions), function (error) {
-                    callback(error);
-                });
-            });
-
-            pipeline.push(function setAudit(collector, callback) {
-                var entry = startOptions.id;
-                delete startOptions.id;
-                auditor.put({
-                    host: host.id,
-                    entry: entry,
-                    type: 'container',
-                    name: 'run'
-                }, options);
-                callback();
-            });
-
-            vasync.pipeline({
-                funcs: pipeline,
-                arg: {}
-            }, function (error) {
-                if (error) {
-                    auditor.put({
-                        host: host.id,
-                        entry: startOptions.id,
-                        type: startOptions.id ? 'container' : 'docker',
-                        name: 'run'
-                    }, util._extend(options, {error: true, errorMessage: error.message || error}));
-                }
-                call.done(error);
-            });
+            DockerHandler.run(call);
         }
     });
 
@@ -592,18 +423,19 @@ var Docker = function execute(log, config) {
             vasync.forEachPipeline({
                 func: function (removedContainerLog, callback) {
                     getRemovedContainersList(call, function (error, removedContainers) {
+                        var path = path.join(DOCKER_LOGS_PATH, removedContainerLog.hostId, removedContainerLog.Id);
+                        var hostRemovedContainersCount;
                         if (error) {
                             return callback(error.message, true);
                         }
-                        var path = '~~/stor/.joyent/docker/logs/' + removedContainerLog.hostId + '/' + removedContainerLog.Id;
-                        var countHostRemovedContainers = removedContainers.filter(function (removedContainer) {
+                        hostRemovedContainersCount = removedContainers.filter(function (removedContainer) {
                             return removedContainer.hostId === removedContainerLog.hostId;
                         }).length;
                         removedContainers = removedContainers.filter(function (removedContainer) {
                             return removedContainer.Id !== removedContainerLog.Id;
                         });
-                        if (removedContainerLog.hostState === 'removed' && countHostRemovedContainers === 1) {
-                            path = '~~/stor/.joyent/docker/logs/' + removedContainerLog.hostId;
+                        if (removedContainerLog.hostState === 'removed' && hostRemovedContainersCount === 1) {
+                            path = path.join(DOCKER_LOGS_PATH, removedContainerLog.hostId);
                         }
                         client.rmr(path, function (error) {
                             if (error && error.statusCode !== 404) {
@@ -630,8 +462,7 @@ var Docker = function execute(log, config) {
 
     server.onCall('DockerAnalyzeLogs', {
         verify: function (data) {
-            return typeof data === 'object' &&
-                data.hasOwnProperty('logs') && data.hasOwnProperty('dates');
+            return typeof data === 'object' && data.hasOwnProperty('logs') && data.hasOwnProperty('dates');
         },
         handler: function (call) {
             var client = MantaClient.createClient(call);
@@ -644,7 +475,7 @@ var Docker = function execute(log, config) {
                     inputs: logs,
                     func: function (log, callback) {
                         var analyzeLogFiles = [];
-                        var logPath = '~~/stor/.joyent/docker/logs/' + log.hostId + '/' + log.Id;
+                        var logPath = path.join(DOCKER_LOGS_PATH, log.hostId, log.Id);
                         client.ftw(logPath, function (err, entriesStream) {
                             if (err) {
                                 if (err.statusCode === 404) {
@@ -685,27 +516,19 @@ var Docker = function execute(log, config) {
 
     server.onCall('DockerDeleteMachine', {
         verify: function (data) {
-            return typeof data === 'object' &&
-                data.hasOwnProperty('uuid') && data.hasOwnProperty('datacenter');
+            return typeof data === 'object' && data.hasOwnProperty('uuid') && data.hasOwnProperty('datacenter');
         },
-
         handler: function (call) {
             var options = {
                 uuid: call.data.uuid,
                 datacenter: call.data.datacenter
             };
+            var hostId = call.data.uuid;
             var removedContainerList = [];
             var getHostContainers = function (call, callback) {
-                Docker.createClient(call, call.data.host, function (error, client) {
-                    if (error) {
-                        return callback(error, [], client);
-                    }
-                    client.containers({all: true}, function (error, containers) {
-                        if (error) {
-                            return callback(error, [], client);
-                        }
-                        return callback(error, containers, client);
-                    });
+                var client = Docker.createClient(call, call.data.host, true);
+                client.containers({all: true}, function (error, containers) {
+                    return callback(error, containers, client);
                 });
             };
             getHostContainers(call, function (error, hostContainers, client) {
@@ -720,22 +543,21 @@ var Docker = function execute(log, config) {
                             Id: hostContainer.Id,
                             Image: hostContainer.Image,
                             Names: hostContainer.Names,
-                            hostId: call.data.uuid,
+                            hostId: hostId,
                             hostName: call.data.host.hostName,
                             Deleted: new Date(),
                             hostState: 'removed'
                         };
                         removedContainerList.push(removedContainer);
                         client.logs({id: hostContainer.Id, tail: 'all'}, function (err, response) {
+                            var logs = '';
+                            var logPath = path.join(DOCKER_LOGS_PATH, hostId, hostContainer.Id, Docker.getTomorrowDate() + '.log');
                             if (err) {
                                 return callback(err);
                             }
-                            var logs = '';
                             if (response && response.length) {
                                 logs = Docker.parseLogResponse(response);
                             }
-                            var tomorrowDate = Docker.dateFormat(new Date(new Date().getTime() + 24 * 60 * 60 * 1000).setHours(0, 0, 0, 0));
-                            var logPath = '~~/stor/.joyent/docker/logs/' + call.data.uuid + '/' + hostContainer.Id + '/' + tomorrowDate + '.log';
                             saveLogsToManta(call, logPath, logs, function (error) {
                                 callback(error);
                             });
@@ -776,6 +598,7 @@ var Docker = function execute(log, config) {
                                 },
                                 function updateRemovedContainerList(callback) {
                                     getRemovedContainersList(call, function (error, removedContainers) {
+                                        var duplicateRemovedContainers = {};
                                         if (error) {
                                             if (error.statusCode === 404) {
                                                 removedContainers = [];
@@ -784,13 +607,11 @@ var Docker = function execute(log, config) {
                                             }
                                         }
                                         removedContainerList = removedContainerList.concat(removedContainers);
-                                        var hostId = call.data.uuid;
                                         if (Array.isArray(removedContainersCache[hostId])) {
                                             removedContainersCache[hostId] = removedContainerList.concat(removedContainersCache[hostId]);
                                         } else {
                                             removedContainersCache[hostId] = removedContainerList;
                                         }
-                                        var duplicateRemovedContainers = {};
                                         removedContainersCache[hostId] = removedContainersCache[hostId].filter(function (removedContainer) {
                                             return removedContainer.Id in duplicateRemovedContainers ? 0 : duplicateRemovedContainers[removedContainer.Id] = removedContainer.Id;
                                         });
@@ -829,13 +650,9 @@ var Docker = function execute(log, config) {
             return data;
         },
         handler: function (call) {
-            Docker.createRegistryClient(call, call.data, function (error, client) {
-                if (error) {
-                    return call.done(error);
-                }
-                client.ping(function (err, result) {
-                    call.done(err, result);
-                });
+            var client = Docker.createRegistryClient(call, call.data);
+            client.ping(function (err, result) {
+                call.done(err, result);
             });
         }
     });
@@ -850,6 +667,7 @@ var Docker = function execute(log, config) {
             type: 'global'
         };
         Docker.getRegistries(call, function (error, list) {
+            var checkDefaultRegistry = false;
             Docker.registriesCache.put(call, 'default', defaultRegistry);
             if (error) {
                 if (error.statusCode === 404) {
@@ -860,7 +678,6 @@ var Docker = function execute(log, config) {
                 }
                 return call.done(error, [defaultRegistry]);
             }
-            var checkDefaultRegistry = false;
             list.forEach(function (registry) {
                 Docker.registriesCache.put(call, registry.id, util._extend({}, registry));
                 if (registry.auth) {
@@ -883,18 +700,16 @@ var Docker = function execute(log, config) {
         },
         handler: function (call) {
             var savedRegistry = call.data.registry;
+            var auth = {auth: '', email: ''};
             if (savedRegistry.username && savedRegistry.password && savedRegistry.password.length > 0 && savedRegistry.email) {
-                var auth = {
+                auth = {
                     username: savedRegistry.username,
                     password: savedRegistry.password,
                     email: savedRegistry.email,
                     serveraddress: savedRegistry.host + '/' + savedRegistry.api + '/'
                 };
-                savedRegistry.auth = new Buffer(JSON.stringify(auth)).toString('base64');
-            } else {
-                savedRegistry.auth = new Buffer(JSON.stringify({auth: '', email: ''})).toString('base64');
             }
-
+            savedRegistry.auth = new Buffer(JSON.stringify(auth)).toString('base64');
             delete savedRegistry.password;
             Docker.getRegistries(call, function (error, list) {
                 var edited;
@@ -951,10 +766,7 @@ var Docker = function execute(log, config) {
                                     }
                                     var matchingContainer = containers.find(function (container) {
                                         if (container.Status.indexOf('Exited') !== -1) {
-                                            var isPrivateRegistryName = container.Names.some(function (name) {
-                                                return name === '/private-registry';
-                                            });
-                                            return isPrivateRegistryName && container.Image.indexOf('registry') !== -1;
+                                            return isPrivateRegistryName(container) && container.Image.indexOf('registry') !== -1;
                                         }
                                         return container.Ports.some(function (port) {
                                             return port.PublicPort === parseInt(registry.port, 10);
@@ -991,109 +803,12 @@ var Docker = function execute(log, config) {
         }
     });
 
-    var pullImage = function (call, options, auth) {
-        var entry = {
-            host: call.data.host.id,
-            entry: options.id,
-            type: options.id ? 'image' : 'docker',
-            name: 'pull'
-        };
-        Docker.createClient(call, call.data.host, function (error, client) {
-            if (error) {
-                return putToAudit(call, entry, options, error, true);
-            }
-            client.createImage(options, function (err, req) {
-                if (err) {
-                    return putToAudit(call, entry, options, err, true);
-                }
-                if (auth) {
-                    req.setHeader('X-Registry-Auth', auth);
-                }
-                var error;
-                req.on('result', function (error, res) {
-                    if (error) {
-                        return putToAudit(call, entry, options, error, true);
-                    }
-
-                    var layersMap = {};
-                    jsonStreamParser(res, function (chunk) {
-                        if (chunk.id) {
-                            var oldChunk = layersMap[chunk.id];
-                            if (!oldChunk ||
-                                oldChunk.status !== chunk.status ||
-                                chunk.progressDetail && oldChunk.progressDetail &&
-                                    chunk.progressDetail.current - oldChunk.progressDetail.current > 5000000) {
-                                call.update(null, chunk);
-                                layersMap[chunk.id] = chunk;
-                            }
-                        } else {
-                            if (chunk.error) {
-                                error = chunk.errorDetail;
-                            }
-                            call.update(null, chunk);
-                        }
-                    });
-
-                    res.on('end', function () {
-                        putToAudit(call, entry, options, error, true);
-                    });
-                    res.on('error', function (error) {
-                        putToAudit(call, entry, options, error, true);
-                    });
-                });
-                req.end();
-            });
-        });
-    };
-
-    var getImageInfo = function (call, registryId, image, callback) {
-        var registry = Docker.registriesCache.getItem(call, registryId);
-        var infoOptions = {registry: registry, name: image.name, tag: image.tag};
-        Docker.getImageInfo(call, infoOptions, callback);
-    };
-
     server.onCall('DockerPull', {
         verify: function (data) {
-            return data && data.host && data.host.primaryIp
-                && data.options && data.options.fromImage;
+            return data && data.host && data.host.primaryIp && data.options && data.options.fromImage;
         },
         handler: function (call) {
-            var options = call.data.options;
-            var registryId = options.registryId;
-            var entry = {
-                host: call.data.host.id,
-                entry: options.id,
-                type: options.id ? 'image' : 'docker',
-                name: 'pull'
-            };
-            call.data.authNotRequired = call.data.host.isSdc;
-            if (!registryId || registryId === 'local') {
-                return pullImage(call, options);
-            }
-            Docker.getRegistry(call, registryId, function (error, registryRecord) {
-                if (error) {
-                    if (error.statusCode !== 404) {
-                        return call.done(error.message);
-                    }
-                }
-                if (!registryRecord && registryId === 'default') {
-                    return putToAudit(call, entry, options, 'Please fill authentication information for the registry.', true);
-                }
-
-                registryRecord = registryRecord || {};
-                var auth = registryRecord.auth || new Buffer(JSON.stringify({auth: '', email: ''})).toString('base64');
-
-                getImageInfo(call, registryId, {name: call.data.options.fromImage, tag: call.data.options.tag}, function (err, result) {
-                    if (err) {
-                        if (err.statusCode === 400 && !err.message) {
-                            err.message = MESSAGE_WRONG_IMAGE_NAME;
-                        }
-                        return putToAudit(call, entry, options, err, true);
-                    }
-                    call.update(null, {totalSize: result.size});
-                    pullImage(call, options, auth);
-                });
-            });
+            DockerHandler.pull(call);
         }
     });
 
@@ -1102,70 +817,7 @@ var Docker = function execute(log, config) {
             return data && data.registryId;
         },
         handler: function (call) {
-            var registryId = call.data.registryId;
-            var searchQuery = {};
-            function updateImagesInfo(images) {
-                vasync.forEachParallel({
-                    inputs: images,
-                    func: function (image, callback) {
-                        getImageInfo(call, registryId, {name: image.name}, function (err, result) {
-                            image.info = result;
-                            call.update(null, image);
-                            callback();
-                        });
-                    }
-                }, function (vasyncError) {
-                    if (vasyncError) {
-                        var cause = vasyncError['jse_cause'] || vasyncError['ase_errors'];
-                        if (Array.isArray(cause)) {
-                            cause = cause[0];
-                        } else {
-                            return call.done(vasyncError);
-                        }
-                        return call.done(cause, cause instanceof Docker.DockerHostUnreachable);
-                    }
-
-                    call.done(null);
-                });
-            }
-            Docker.getRegistry(call, registryId, function (error, registryRecord) {
-                if (error || !registryRecord  && registryId !== 'default') {
-                    return call.done('Registry not found.');
-                }
-                registryRecord = registryRecord || {};
-                if (registryRecord.type === 'remote' || registryRecord.type === 'global' || registryId === 'default') {
-                    if (!registryRecord.username) {
-                        return call.done(null, {images: []});
-                    }
-                    searchQuery.q = registryRecord.username;
-                } else if (registryRecord.type === 'local') {
-                    Docker.privateRegistryImages(call, searchQuery.q, function (error, records) {
-                        if (error) {
-                            return call.done(error);
-                        }
-
-                        call.update(error, {images: records});
-                        updateImagesInfo(records);
-                    });
-                    return;
-                }
-
-                Docker.createRegistryClient(call, registryRecord, function (error, registryClient) {
-                    registryClient.searchImage(searchQuery, function (error, response) {
-                        if (error || !(response && response.results)) {
-                            return call.done(error, {images: []});
-                        }
-                        var results = response.results;
-                        if (registryRecord.host === Docker.DOCKER_HUB_HOST) {
-                            results = results.filter(function (image) {
-                                return image.name.indexOf(registryRecord.username) === 0;
-                            });
-                        }
-                        call.update(null, {images: results});
-                        updateImagesInfo(results);
-                    });
-                });
-            });
+            DockerHandler.getRegistryImages(call);
         }
     });
 
@@ -1174,26 +826,7 @@ var Docker = function execute(log, config) {
             return data && data.registryId && data.name;
         },
         handler: function (call) {
-            var registryId = call.data.registryId;
-            Docker.getRegistry(call, registryId, function (error, registryRecord) {
-                if (error) {
-                    return call.done(error.message || error);
-                }
-
-                registryRecord = registryRecord || {};
-                var opts = {registry: registryRecord, image: call.data.name, access: 'DELETE'};
-                if (registryRecord.type === 'local') {
-                    opts.access = 'GET';
-                }
-                Docker.createIndexClient(call, opts, function (error, clients) {
-                    if (error) {
-                        return call.done(error.message || error, true);
-                    }
-                    clients.registry.removeImage({name: call.data.name}, function (error) {
-                        call.done(error && error !== '""' && error || null);
-                    });
-                });
-            });
+            DockerHandler.removeRegistryImage(call);
         }
     });
 
@@ -1202,188 +835,17 @@ var Docker = function execute(log, config) {
             return data && data.registryId && data.action && data.options.name && data.options.tagName && data.options.layoutId;
         },
         handler: function (call) {
-            Docker.getRegistry(call, call.data.registryId, function (error, registryRecord) {
-                if (error) {
-                    return call.done(error.message || error);
-                }
-
-                registryRecord = registryRecord || {};
-                var opts = {registry: registryRecord, image: call.data.options.name, access: 'POST'};
-                if (registryRecord.type === 'local') {
-                    opts.access = 'GET';
-                } else if (registryRecord.type === 'remote' && call.data.action === 'addImageTag') {
-                    opts.access = 'PUT';
-                }
-                Docker.createIndexClient(call, opts, function (error, clients) {
-                    if (error) {
-                        return call.done(error.message || error, true);
-                    }
-
-                    clients.registry[call.data.action]({name: call.data.options.name, tag: call.data.options.tagName, forceRaw: true}, function (error, req) {
-                        if (error) {
-                            return call.done(error.message || error, true);
-                        }
-                        if (call.data.action === 'addImageTag') {
-                            req.useChunkedEncodingByDefault = false;
-                            req.setSocketKeepAlive(false);
-                            req.setHeader('Content-type', 'text/plain');
-                            req.setHeader('Content-length', call.data.options.layoutId.length);
-                        }
-                        req.write(call.data.options.layoutId);
-                        req.on('result', function (err, res) {
-                            if (err) {
-                                return call.done(err.message || err.body.code || err);
-                            }
-                            res.on('data', function () {});
-                            res.on('error', call.done.bind(call));
-                            res.on('end', call.done.bind(call));
-                        });
-                        req.end();
-                    });
-                });
-            });
+            DockerHandler.tagRegistryImage(call);
         }
     });
 
     server.onCall('DockerUploadImage', {
         verify: function (data) {
-            return data && data.host && data.host.primaryIp
-                && data.options && data.options.image && data.options.image.Id && data.options.registry && data.options.name;
+            return data && data.host && data.host.primaryIp &&
+                data.options && data.options.image && data.options.image.Id && data.options.registry && data.options.name;
         },
         handler: function (call) {
-            var options = call.data.options;
-            var imageId = options.image.Id;
-            var registry = options.registry;
-            var name = options.name;
-            var parsedTag = parseTag(name);
-            var pipeline = [];
-            var registryUrl = url.parse(registry.host).hostname + ':' + registry.port;
-            var taggedName = parsedTag.repository + '/' + parsedTag.name;
-            var entry = {
-                host: call.data.host.id,
-                entry: imageId,
-                type: 'image',
-                name: 'push'
-            };
-            if ((registryUrl === 'index.docker.io:443' || registry.type === 'global') && !parsedTag.repository) {
-                taggedName = registry.username + '/' + parsedTag.name;
-            } else if (registryUrl !== 'index.docker.io:443') {
-                registry.type = registry.type || 'local';
-                registryUrl = registry.type === 'local' ? 'localhost:5000' : registryUrl;
-                taggedName = registryUrl + '/' + parsedTag.fullname;
-            }
-
-            pipeline.push(function createClient(collector, callback) {
-                Docker.createClient(call, call.data.host, function (error, client) {
-                    collector.client = client;
-                    callback(error);
-                });
-            });
-
-            pipeline.push(function getRegistry(collector, callback) {
-                if (registry.type === 'local') {
-                    collector.registryAuth = new Buffer(JSON.stringify({auth: '', email: ''})).toString('base64');
-                    return callback();
-                }
-                Docker.getRegistry(call, registry.id, function (error, registryRecord) {
-                    if (error || !registryRecord) {
-                        return callback('Registry not found!');
-                    }
-                    if (registryRecord.auth) {
-                        collector.registryAuth = registryRecord.auth;
-                    }
-
-                    callback();
-                });
-            });
-
-            pipeline.push(function addTag(collector, callback) {
-                collector.client.tagImage({
-                    name: imageId,
-                    repo: taggedName,
-                    tag: (parsedTag.tag || 'latest'),
-                    force: true
-                }, callback);
-            });
-
-            pipeline.push(function getImageSlices(collector, callback) {
-                collector.client.historyImage({id: imageId}, function (error, slices) {
-                    collector.slices = slices;
-                    callback(error);
-                });
-            });
-
-            pipeline.push(function pushImage(collector, callback) {
-                var images = {};
-                var total = 0;
-                var buffer = 0;
-                collector.slices.forEach(function (slice) {
-                    total += slice.Size;
-                    images[slice.Id.substr(0, 12)] = slice;
-                });
-                var uploaded = total;
-                collector.client.pushImage({
-                    tag: parsedTag.tag || 'latest',
-                    name: taggedName
-                }, function (error, req) {
-                    if (error) {
-                        return callback(error);
-                    }
-                    if (collector.registryAuth) {
-                        req.setHeader('X-Registry-Auth', collector.registryAuth);
-                    }
-
-                    req.on('result', function (error, res) {
-                        if (error) {
-                            return callback(error);
-                        }
-                        res.on('error', callback);
-                        res.on('end', callback);
-                        jsonStreamParser(res, function (chunk) {
-                            var currentImage = images[chunk.id];
-                            if (chunk.error) {
-                                return call.update(chunk.error);
-                            }
-                            if (!chunk.id || !currentImage) {
-                                return call.update(null, {status: chunk.status});
-                            }
-
-                            if (chunk.status === 'Image already pushed, skipping') {
-                                uploaded -= currentImage.Size;
-                            } else if (chunk.progressDetail) {
-                                var progressDetail = chunk.progressDetail;
-                                if (chunk.status === 'Pushing') {
-                                    uploaded -= progressDetail.current || 0;
-                                } else if (chunk.status === 'Buffering to disk') {
-                                    buffer += progressDetail.current || 0;
-                                }
-                            }
-
-                            var result = {
-                                status: chunk.status,
-                                total: total,
-                                uploaded: total - uploaded,
-                                percents: Math.floor((total - uploaded) * 100 / total),
-                                buffer: buffer
-                            };
-                            call.update(null, result);
-                        });
-                    });
-                    req.end();
-                });
-            });
-            vasync.pipeline({
-                funcs: pipeline,
-                arg: {}
-            }, function (error) {
-                if (error) {
-                    if (error.statusCode === 500 && !error.message) {
-                        error.message = 'Private local registry is corrupted';
-                    }
-                    return putToAudit(call, entry, options, error, true);
-                }
-                putToAudit(call, entry, options, null, true);
-            });
+            DockerHandler.uploadImage(call);
         }
     });
 
@@ -1392,61 +854,7 @@ var Docker = function execute(log, config) {
             return data && data.options && data.options.id && data.host && data.host.primaryIp;
         },
         handler: function (call) {
-            var dockerClient;
-            var image;
-            var imageShortId = call.data.options.id.substr(0, 12);
-            vasync.waterfall([
-                function (callback) {
-                    Docker.createClient(call, call.data.host, callback);
-                },
-                function (client, callback) {
-                    dockerClient = client;
-                    client.images(function (imagesErr, images) {
-                        callback(imagesErr, images);
-                    });
-                },
-                function (images, callback) {
-                    image = images.find(function (img) {
-                        return img.Id.substr(0, 12) === imageShortId;
-                    });
-                    if (!image) {
-                        return callback('Image "' + imageShortId + '" not found', true);
-                    }
-                    dockerClient.containers({all: true}, function (containersErr, containers) {
-                        callback(containersErr, containers);
-                    });
-                },
-                function (containers, callback) {
-                    var usedByContainer = containers.find(function (container) {
-                        return container.Image.substr(0, 12) === imageShortId || image.RepoTags && image.RepoTags.indexOf(container.Image) !== -1;
-                    });
-                    if (usedByContainer) {
-                        callback('Image "' + imageShortId + '" is used by container "' + usedByContainer.Id.substr(0, 12) + '" and cannot be deleted');
-                    } else {
-                        callback();
-                    }
-                },
-                function (callback) {
-                    var tags = image.RepoTags || [image.Id];
-                    var tagsMap = {};
-                    tags.forEach(function (tag) {
-                        var tagRepository = tag.split(':')[0];
-                        tagsMap[tagRepository] = true;
-                    });
-                    var tagsCount = Object.keys(tagsMap).length;
-                    var funcs = [];
-                    for (var i = 0; i < tagsCount; i++) {
-                        funcs.push(function (callback) {
-                            dockerClient.removeImage({id: image.Id, force: true}, function (error) {
-                                callback(error);
-                            });
-                        });
-                    }
-                    vasync.parallel({
-                        funcs: funcs
-                    }, callback);
-                }
-            ], call.done.bind(call));
+            DockerHandler.forceRemoveImage(call);
         }
     });
 
@@ -1464,20 +872,16 @@ var Docker = function execute(log, config) {
                 return call.done();
             }
             call.data.authNotRequired = true;
-            Docker.createRegistryClient(call, registry, function (error, client) {
-                if (error) {
-                    return call.done(error);
-                }
-                client.imageTags(call.data.options, function (err, result) {
-                    call.done(err, result);
-                });
+            var createRegistryClient = Docker.createRegistryClient(call, registry);
+            createRegistryClient.imageTags(call.data.options, function (err, result) {
+                call.done(err, result);
             });
         }
     });
 
     server.onCall('DockerSearchImage', {
         verify: function (data) {
-            return data && data.options && typeof (data.options.q) === 'string' && data.registry;
+            return data && data.options && typeof data.options.q === 'string' && data.registry;
         },
         handler: function (call) {
             if (call.data.registry === 'local') {
@@ -1489,13 +893,9 @@ var Docker = function execute(log, config) {
                 return call.done();
             }
             call.data.authNotRequired = true;
-            Docker.createRegistryClient(call, registry, function (error, client) {
-                if (error) {
-                    return call.done(error);
-                }
-                client.searchImage(call.data.options, function (err, result) {
-                    call.done(err, result);
-                });
+            var createRegistryClient = Docker.createRegistryClient(call, registry);
+            createRegistryClient.searchImage(call.data.options, function (err, result) {
+                call.done(err, result);
             });
         }
     });
@@ -1505,133 +905,7 @@ var Docker = function execute(log, config) {
             return data && data.host && data.host.primaryIp;
         },
         handler: function (call) {
-            var mantaClient = MantaClient.createClient(call);
-            var pipeline = [];
-            var installConfig = config.docker || {};
-            var hostConfig = {
-                ExposedPorts: {'5000/tcp': {}},
-                Binds: ['/root/.ssh:/root/.ssh:ro'],
-                PortBindings: {
-                    '5000/tcp': [{HostIp: '127.0.0.1', HostPort: '5000'}]
-                },
-                RestartPolicy: {Name: 'always', MaximumRetryCount: 0}
-            };
-
-            pipeline.push(function getFingerprint(collector, callback) {
-                mantaClient.getFileContents('~~/stor/.joyent/docker/private.key', function (error, privateKey) {
-                    if (error) {
-                        return callback(error);
-                    }
-                    var key = ursa.createPrivateKey(privateKey);
-                    collector.fingerprint = key.toPublicSshFingerprint('hex').replace(/([a-f0-9]{2})/gi, '$1:').slice(0, -1);
-                    callback();
-                });
-            });
-
-            pipeline.push(function createClient(collector, callback) {
-                Docker.createClient(call, call.data.host, function (error, client) {
-                    collector.client = client;
-                    callback(error);
-                });
-            });
-
-            pipeline.push(function pullRegistryImage(collector, callback) {
-                collector.client.createImage({fromImage: 'registry', tag: (installConfig.registryVersion || 'latest')}, function (err, req) {
-                    if (err) {
-                        return callback(err);
-                    }
-                    req.on('result', function (error, res) {
-                        if (error) {
-                            return callback(error);
-                        }
-
-                        res.on('data', function () {
-                            // this event should exist
-                        });
-                        res.on('error', callback);
-                        res.on('end', callback);
-                    });
-                    req.end();
-                });
-            });
-
-            pipeline.push(function createPrivateRegistryContainer(collector, callback) {
-                var startupScript = 'if [ ! -f /.installed ];then apt-get update && apt-get install python-pip python-dev && ' +
-                    'pip install docker-registry docker-registry-driver-joyent_manta' + (installConfig.registryDriverVersion ? '==' + installConfig.registryDriverVersion : '') + ' && ' +
-                    'echo "' + registryConfig.replace(/\n/g, '\n').replace(/ {4}/g, '\t') + '" | sed -e \'s/\t/    /g\'>/config.yml;' +
-                    'touch /.installed;else docker-registry;fi';
-                collector.client.create({
-                    name: 'private-registry',
-                    Image: 'registry:' + (installConfig.registryVersion || 'latest'),
-                    Env: [
-                        'MANTA_KEY_ID=' + collector.fingerprint,
-                        'MANTA_PRIVATE_KEY=/root/.ssh/user_id_rsa',
-                        'MANTA_USER=' + mantaClient.user,
-                        'MANTA_SUBUSER=' + Docker.SUBUSER_REGISTRY_LOGIN,
-                        'SETTINGS_FLAVOR=dev',
-                        'SEARCH_BACKEND=',
-                        'DOCKER_REGISTRY_CONFIG=/config.yml',
-                        'REGISTRY_PORT=5000',
-                        'STARTUP_SCRIPT=' + startupScript
-                    ],
-                    Cmd: ['/bin/bash', '-c', 'printenv STARTUP_SCRIPT | /bin/bash'],
-                    Volumes: {
-                        '/root/.ssh': {}
-                    },
-                    AttachStderr: true,
-                    AttachStdin: true,
-                    AttachStdout: true,
-                    OpenStdin: true,
-                    StdinOnce: true,
-                    Tty: true,
-                    HostConfig: hostConfig
-                }, function (error, registry) {
-                    collector.registry = registry;
-                    callback(error);
-                });
-            });
-
-            pipeline.push(function installRegistryDriver(collector, callback) {
-                collector.client.start(util._extend({id: collector.registry.Id}, hostConfig), callback);
-            });
-
-            pipeline.push(function waitInstalling(collector, callback) {
-                collector.client.logs({id: collector.registry.Id, follow: true}, callback);
-            });
-
-            vasync.pipeline({
-                funcs: pipeline,
-                arg: {}
-            }, function (error) {
-                var host = 'https://' + call.data.host.primaryIp;
-                if (error) {
-                    return Docker.deleteRegistry(call, 'host', host, function (err) {
-                        return call.done(error);
-                    });
-                }
-                Docker.getRegistries(call, mantaClient, function (error, list) {
-                    var registry;
-                    list = list.map(function (item) {
-                        if (item.host === host) {
-                            delete item.actionInProgress;
-                            registry = item;
-                        }
-                        return item;
-                    });
-                    if (!registry || !registry.id) {
-                        registry = {
-                            id: uuid.v4(),
-                            api: 'v1',
-                            host: host,
-                            port: '5000',
-                            type: 'local'
-                        };
-                        list.push(registry);
-                    }
-                    Docker.registriesCache.put(call, registry.id, registry);
-                    Docker.saveRegistries(call, list, mantaClient);
-                });
-            });
+            DockerHandler.createRegistry(call);
         }
     });
 
@@ -1640,11 +914,10 @@ var Docker = function execute(log, config) {
             return data;
         },
         handler: function (call) {
-
             var event = call.data.event || {type: 'docker'};
-            var mantaClient = MantaClient.createClient(call);
-            var auditor = new Auditor(call, mantaClient);
+            var auditor = new Auditor(call);
             auditor.search(event.type, event.host, event.entry, function (err, data) {
+                var suppressErrors = [];
                 if (!data || err) {
                     if (err.statusCode === 404) {
                         return call.done(null, []);
@@ -1657,7 +930,6 @@ var Docker = function execute(log, config) {
                 if (!call.data.params) {
                     return call.done(null, data);
                 }
-                var suppressErrors = [];
                 vasync.forEachParallel({
                     inputs: data,
                     func: function (item, callback) {
@@ -1699,8 +971,7 @@ var Docker = function execute(log, config) {
         },
         handler: function (call) {
             var event = call.data.event;
-            var mantaClient = MantaClient.createClient(call);
-            var auditor = new Auditor(call, mantaClient);
+            var auditor = new Auditor(call);
             event.date = new Date(event.npDate);
             auditor.get(event, function (err, data) {
                 if (err && err.statusCode !== 404) {
@@ -1712,8 +983,7 @@ var Docker = function execute(log, config) {
     });
 
     server.onCall('DockerAuditPing', function (call) {
-        var mantaClient = MantaClient.createClient(call);
-        var auditor = new Auditor(call, mantaClient);
+        var auditor = new Auditor(call);
         auditor.ping(function (err, data) {
             if (err && err.statusCode !== 404) {
                 return call.done(err);
@@ -1728,16 +998,12 @@ var Docker = function execute(log, config) {
         },
         handler: function (call) {
             var data = call.data;
-            Docker.createClient(call, data.machine, function (error, client) {
-                if (error) {
-                    return call.done(error);
-                }
-                if (!data.machine.isSdc) {
-                    client = client.usePort(Docker.DOCKER_TCP_PORT);
-                }
-                client.ping(function (err, result) {
-                    call.done(err, result);
-                });
+            var client = Docker.createClient(call, data.machine);
+            if (!data.machine.isSdc) {
+                client = client.usePort(Docker.DOCKER_TCP_PORT);
+            }
+            client.ping(function (err, result) {
+                call.done(err, result);
             });
         }
     });
@@ -1749,13 +1015,12 @@ var Docker = function execute(log, config) {
         handler: function (call) {
             var host = call.data.host;
             var execOpts = call.data.options;
-            Docker.createClient(call, host, function (error, client) {
-                client.exec(util._extend({id: execOpts.Container}, execOpts), function (error, result) {
-                    if (error) {
-                        return call.done(error);
-                    }
-                    call.done(null, '/main/docker/exec/' + result.Id);
-                });
+            var client = Docker.createClient(call, host);
+            client.exec(util._extend({id: execOpts.Container}, execOpts), function (error, result) {
+                if (error) {
+                    return call.done(error);
+                }
+                call.done(null, DOCKER_EXEC_PATH + result.Id);
             });
         }
     });
