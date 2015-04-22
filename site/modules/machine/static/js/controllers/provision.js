@@ -1084,7 +1084,7 @@
                 if (!$scope.filterModel.searchText) {
                     return true;
                 }
-                var props = ['name', 'description'];
+                var props = ['id', 'name', 'description'];
                 var term = $scope.filterModel.searchText.toLowerCase();
                 return props.some(function (prop) {
                     return item[prop] && item[prop].toLowerCase().indexOf(term) !== -1;
