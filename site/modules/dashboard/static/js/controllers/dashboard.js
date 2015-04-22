@@ -14,6 +14,7 @@
             var tritonDatacenter = window.JP.get('tritonDatacenter') || '';
 
             // populate all datasources
+            var INITIAL_COUNT_VALUE = '-';
             $scope.account = {};
             $scope.slbFeatureEnabled = $rootScope.features.slb === 'enabled';
             $scope.usageDataFeatureEnabled = $rootScope.features.usageData === 'enabled';
@@ -50,6 +51,7 @@
                 $q.when(Machine.machine())
             ];
             if ($rootScope.features.docker === 'enabled') {
+                $scope.runningContainers = $scope.otherContainers = INITIAL_COUNT_VALUE;
                 dashboardOperations = dashboardOperations.concat([
                     $q.when(Storage.pingManta(function () {
                         Docker.getContainersCount().then(function (containers) {
@@ -107,6 +109,9 @@
 
             // count running/not running machines
             $scope.$watch('machines', function (machines) {
+                if ($scope.loading) {
+                    return;
+                }
                 var runningcount = 0;
                 var othercount = 0;
 
@@ -126,8 +131,7 @@
                 }
             }, true);
 
-            $scope.runningcount = 0;
-            $scope.othercount = 0;
+            $scope.runningcount = $scope.othercount = INITIAL_COUNT_VALUE;
 
             if ($scope.features.usageData === 'enabled') {
                 var now = new Date();

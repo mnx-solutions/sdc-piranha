@@ -39,7 +39,7 @@
                         <div class="left-column">
                             <a data-ng-href="{{'#!/docker/containers/running'}}" data-ng-disabled="!runningContainers">
                                 <div class="number">
-                                    {{runningContainers || '0'}}
+                                    {{runningContainers}}
                                 </div>
                                 <div class="info">
                                     running
@@ -48,7 +48,7 @@
                         </div>
                         <div class="right-column">
                             <div class="number">
-                                {{otherContainers || '0'}}
+                                {{otherContainers}}
                             </div>
                             <div class="info">
                                 stopped
