@@ -301,3 +301,8 @@ input
 {
     padding-top: 15px;
 }
+.note-text
+{
+    margin: 5px 0 0 155px;
+    font-size: 12px;
+}
