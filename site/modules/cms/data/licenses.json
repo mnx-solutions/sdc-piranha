@@ -1,62 +1,62 @@
 {
     "License Portfolio": [
         {
-            "API Name": "stm-500L-10",
+            "API Name": "steelapp-500L-10",
             "Pan-Instance Price Uplift": 0.108,
             "URN": "sdc:jpc:stingray-500L"
         },
         {
-            "API Name": "stm-500M-200",
+            "API Name": "steelapp-500M-200",
             "Pan-Instance Price Uplift": 0.226,
             "URN": "sdc:jpc:stingray-500M"
         },
         {
-            "API Name": "stm-1000M",
+            "API Name": "steelapp-1000M",
             "Pan-Instance Price Uplift": 0.612,
             "URN": "sdc:jpc:stingray-100M"
         },
         {
-            "API Name": "stm-1000M-SAF",
+            "API Name": "steelapp-1000M-SAF",
             "Pan-Instance Price Uplift": 1.28,
             "URN": "sdc:jpc:stingray-100M-SAF"
         },
         {
-            "API Name": "stm-1000H",
+            "API Name": "steelapp-1000H",
             "Pan-Instance Price Uplift": 0.932,
             "URN": "sdc:jpc:stingray-1000H"
         },
         {
-            "API Name": "stm-2000L",
+            "API Name": "steelapp-2000L",
             "Pan-Instance Price Uplift": 1.374,
             "URN": "sdc:jpc:stingray-2000L"
         },
         {
-            "API Name": "stm-2000L-SAF",
+            "API Name": "steelapp-2000L-SAF",
             "Pan-Instance Price Uplift": 2.362,
             "URN": "sdc:jpc:stingray-2000L-SAF"
         },
         {
-            "API Name": "stm-2000L-SAF-STX",
+            "API Name": "steelapp-2000L-SAF-STX",
             "Pan-Instance Price Uplift": 3.104,
             "URN": "sdc:jpc:stingray-2000L-SAF-STX"
         },
         {
-            "API Name": "stm-2000L-STX",
+            "API Name": "steelapp-2000L-STX",
             "Pan-Instance Price Uplift": 2.112,
             "URN": "sdc:jpc:stingray-2000L-STX"
         },
         {
-            "API Name": "stm-2000M-SAF-STX",
+            "API Name": "steelapp-2000M-SAF-STX",
             "Pan-Instance Price Uplift": 3.864,
             "URN": "sdc:jpc:stingray-2000M-SAF-STX"
         },
         {
-            "API Name": "stm-2000M-STX",
+            "API Name": "steelapp-2000M-STX",
             "Pan-Instance Price Uplift": 2.88,
             "URN": "sdc:jpc:stingray-2000M-STX"
         },
         {
-            "API Name": "stm-4000L",
+            "API Name": "steelapp-4000L",
             "Pan-Instance Price Uplift": 2.586,
             "URN": "sdc:jpc:stingray-4000L"
         },
