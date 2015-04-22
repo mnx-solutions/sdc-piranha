@@ -1,20 +1,19 @@
-(function (ng, app) {
-    'use strict';
-    app.factory('Machine', [
-        'serverTab',
-        '$rootScope',
-        '$q',
-        '$timeout',
-        'localization',
-        'Package',
-        'Image',
-        'util',
-        'PopupDialog',
-        'Account',
-        '$location',
-        'ErrorService',
-        'notification',
-        function (serverTab, $rootScope, $q, $timeout, localization, Package, Dataset, util, PopupDialog, Account, $location, ErrorService, notification) {
+'use strict';
+(function (ng, app) { app.factory('Machine', [
+    'serverTab',
+    '$rootScope',
+    '$q',
+    '$timeout',
+    'localization',
+    'Package',
+    'Image',
+    'util',
+    'PopupDialog',
+    'Account',
+    '$location',
+    'ErrorService',
+    'notification',
+    function (serverTab, $rootScope, $q, $timeout, localization, Package, Dataset, util, PopupDialog, Account, $location, ErrorService, notification) {
 
         var service = {};
         var machines = {job: null, index: {}, list: [], search: {}};
@@ -50,7 +49,7 @@
             machines = machines || [];
             isDeletedDockerMachine = isDeletedDockerMachine || false;
             var dockerMachine = machines.find(function (machine) {
-                return machine.tags.hasOwnProperty('JPC_tag') && machine.tags.JPC_tag === 'DockerHost';
+                return machine.tags.hasOwnProperty('JPC_tag') && machine.tags['JPC_tag'] === 'DockerHost';
             });
             if (isDeletedDockerMachine && !dockerMachine) {
                 $rootScope.dockerHostsAvailable = false;
@@ -63,13 +62,13 @@
         function wrapMachine (machine) {
             var p = null;
             var i = null;
-            if(!machine._Package && !machine._Dataset) {
+            if (!machine._Package && !machine._Dataset) {
                 Object.defineProperties(machine, {
                     _Package: {
                         get: function () {
-                            if(!p) {
+                            if (!p) {
                                 p = {};
-                                if(machine.package) {
+                                if (machine.package) {
                                     $q.when(Package.package(machine.package), function (pack) {
                                         Object.keys(pack).forEach(function (k) {
                                             p[k] = pack[k];
@@ -83,9 +82,9 @@
                     },
                     _Dataset: {
                         get: function () {
-                            if(!i) {
+                            if (!i) {
                                 i = {};
-                                if(machine.image) {
+                                if (machine.image) {
                                     Image.image(machine.image).then(function (dataset) {
                                         Object.keys(dataset).forEach(function (k) {
                                             i[k] = dataset[k];
@@ -106,7 +105,7 @@
 
             machine = wrapMachine(machine);
             machine.publicIps = machine.privateIps = [];
-            if(ng.isArray(machine.ips)) {
+            if (ng.isArray(machine.ips)) {
                 machine.publicIps = machine.ips.filter(function (ip) {
                     return !util.isPrivateIP(ip);
                 });
@@ -187,7 +186,7 @@
                                             null,
                                             'machine',
                                             'Unable to retrieve instances from datacenter {{name}}.',
-                                            { name: chunk.name }
+                                            {name: chunk.name}
                                         )
                                     );
                                 }
@@ -196,7 +195,7 @@
 
                             ErrorService.flushErrors('dcUnreachable', chunk.name);
 
-                            if(chunk.machines) {
+                            if (chunk.machines) {
                                 chunk.machines.forEach(handleChunk);
                             }
                         }
@@ -208,7 +207,7 @@
                         }
                     },
 
-                    done: function(err) {
+                    done: function() {
                         Object.keys(machines.search).forEach(function (id) {
                             if (!machines.index[id] && machines.search[id]) {
                                 machines.search[id].forEach(function (r) {
@@ -239,7 +238,7 @@
             $timeout(function () {
                 serverTab.call({
                     name: 'MachineState',
-                    data: { states: mapStates() },
+                    data: {states: mapStates()},
 
                     done: function (err, job) {
                         var data = job.__read();
@@ -368,7 +367,7 @@
                     promise.then(
                         function (result) {
                             if (result && typeof result === 'object') {
-                                Object.keys(result).forEach(function (k){
+                                Object.keys(result).forEach(function (k) {
                                     machine[k] = result[k];
                                 });
                             }
@@ -399,7 +398,7 @@
                                 ), message
                             );
                         });
-                    return  promise;
+                    return promise;
                 }
 
                 var d = $q.defer();
@@ -456,11 +455,11 @@
             notification.popup(false, err, instancesPath, null, notificationMessage);
         }
 
-        service.startMachine = changeState({ name: 'MachineStart' });
+        service.startMachine = changeState({name: 'MachineStart'});
 
-        service.stopMachine = changeState({ name: 'MachineStop' });
+        service.stopMachine = changeState({name: 'MachineStop'});
 
-        service.rebootMachine = changeState({ name: 'MachineReboot' });
+        service.rebootMachine = changeState({name: 'MachineReboot'});
 
         service.deleteMachine = changeState({
             name: 'MachineDelete',
@@ -487,11 +486,6 @@
                 data: {
                     machineId: machine.id,
                     datacenter: machine.datacenter
-                },
-                done: function(err) {
-                    if (err) {
-                        return;
-                    }
                 }
             });
 
@@ -579,7 +573,7 @@
                     var result = job.__read();
                     result.datacenter = data.datacenter;
                     showNotification(err, job);
-                    if (result.tags.JPC_tag === 'DockerHost') {
+                    if (result.tags['JPC_tag'] === 'DockerHost') {
                         $rootScope.$emit('clearDockerCache', result);
                     }
                     handleChunk(result);
@@ -613,116 +607,116 @@
             return jobCall;
         };
 
-            function bindCollectionCRUD(collectionName) {
-                var upperCollectionName = collectionName.charAt(0).toUpperCase() + collectionName.slice(1);
+        function bindCollectionCRUD(collectionName) {
+            var upperCollectionName = collectionName.charAt(0).toUpperCase() + collectionName.slice(1);
 
-                function createData(machine, data) {
-                    var out = {uuid: machine.id, datacenter: machine.datacenter};
-                    if (data) {
-                        out[collectionName] = data;
-                    }
-                    return out;
+            function createData(machine, data) {
+                var out = {uuid: machine.id, datacenter: machine.datacenter};
+                if (data) {
+                    out[collectionName] = data;
                 }
+                return out;
+            }
 
-                function done(machine, d, deleteReadJob) {
-                    return function (error, job) {
-                        if (error) {
-                            if (error.message.indexOf('listmachinemetadata') === -1 &&
-                                error.message.indexOf('listmachinetags') === -1) {
-                                showNotification(error, job, true);
-                            }
-                            return d.reject(error);
-                        }
-
-                        var data = job.__read();
-                        var oldCredentials = machine[collectionName].credentials;
-                        machine[collectionName] = data;
-                        if (oldCredentials) {
-                            data.credentials = oldCredentials;
-                        }
-                        if (job.name.indexOf('List') === -1) {
+            function done(machine, d, deleteReadJob) {
+                return function (error, job) {
+                    if (error) {
+                        if (error.message.indexOf('listmachinemetadata') === -1 &&
+                            error.message.indexOf('listmachinetags') === -1) {
                             showNotification(error, job, true);
                         }
-                        d.resolve(data);
-                        if (deleteReadJob) {
-                            delete machine[collectionName + 'ReadJob'];
-                        }
-                    };
-                }
+                        return d.reject(error);
+                    }
 
-                function getMachine(id, callback) {
-                    var machine = service.machine(id);
-                    $q.when(machine).then(callback);
-                }
-
-                function create(machineId, items) {
-                    var d = $q.defer();
-                    getMachine(machineId, function (machine) {
-                        var currentItems = machine[collectionName];
-                        var newItems = {};
-                        Object.keys(items).forEach(function (key) {
-                            if (!currentItems.hasOwnProperty(key)) {
-                                newItems[key] = items[key];
-                            }
-                        });
-                        serverTab.call({
-                            name: 'Machine' + upperCollectionName + 'Create',
-                            data: createData(machine, newItems),
-                            done: done(machine, d),
-                            error: done(machine, d)
-                        });
-                    });
-                    return d.promise;
-                }
-                function read(machineId) {
-                    var d = $q.defer();
-                    getMachine(machineId, function (machine) {
-                        if (machine[collectionName + 'ReadJob']) {
-                            return machine[collectionName + 'ReadJob'];
-                        }
-
-                        serverTab.call({
-                            name: 'Machine' + upperCollectionName + 'List',
-                            data: createData(machine),
-                            done: done(machine, d),
-                            error: done(machine, d)
-                        });
-                    });
-                    return d.promise;
-                }
-                function update(machineId, keyToUpdate, item) {
-                    var d = $q.defer();
-                    getMachine(machineId, function (machine) {
-                        var data = createData(machine, item);
-                        data.keyToUpdate = keyToUpdate;
-                        serverTab.call({
-                            name: 'Machine' + upperCollectionName + 'Update',
-                            data: data,
-                            done: done(machine, d),
-                            error: done(machine, d)
-                        })
-                    });
-                    return d.promise;
-                }
-                function remove(machineId, item) {
-                    var d = $q.defer();
-                    getMachine(machineId, function (machine) {
-                        serverTab.call({
-                            name: 'Machine' + upperCollectionName + 'Delete',
-                            data: createData(machine, item),
-                            done: done(machine, d),
-                            error: done(machine, d)
-                        });
-                    });
-                    return d.promise;
-                }
-                service[collectionName] = {
-                    create: create,
-                    read: read,
-                    update: update,
-                    delete: remove
+                    var data = job.__read();
+                    var oldCredentials = machine[collectionName].credentials;
+                    machine[collectionName] = data;
+                    if (oldCredentials) {
+                        data.credentials = oldCredentials;
+                    }
+                    if (job.name.indexOf('List') === -1) {
+                        showNotification(error, job, true);
+                    }
+                    d.resolve(data);
+                    if (deleteReadJob) {
+                        delete machine[collectionName + 'ReadJob'];
+                    }
                 };
             }
+
+            function getMachine(id, callback) {
+                var machine = service.machine(id);
+                $q.when(machine).then(callback);
+            }
+
+            function create(machineId, items) {
+                var d = $q.defer();
+                getMachine(machineId, function (machine) {
+                    var currentItems = machine[collectionName];
+                    var newItems = {};
+                    Object.keys(items).forEach(function (key) {
+                        if (!currentItems.hasOwnProperty(key)) {
+                            newItems[key] = items[key];
+                        }
+                    });
+                    serverTab.call({
+                        name: 'Machine' + upperCollectionName + 'Create',
+                        data: createData(machine, newItems),
+                        done: done(machine, d),
+                        error: done(machine, d)
+                    });
+                });
+                return d.promise;
+            }
+            function read(machineId) {
+                var d = $q.defer();
+                getMachine(machineId, function (machine) {
+                    if (machine[collectionName + 'ReadJob']) {
+                        return machine[collectionName + 'ReadJob'];
+                    }
+
+                    serverTab.call({
+                        name: 'Machine' + upperCollectionName + 'List',
+                        data: createData(machine),
+                        done: done(machine, d),
+                        error: done(machine, d)
+                    });
+                });
+                return d.promise;
+            }
+            function update(machineId, keyToUpdate, item) {
+                var d = $q.defer();
+                getMachine(machineId, function (machine) {
+                    var data = createData(machine, item);
+                    data.keyToUpdate = keyToUpdate;
+                    serverTab.call({
+                        name: 'Machine' + upperCollectionName + 'Update',
+                        data: data,
+                        done: done(machine, d),
+                        error: done(machine, d)
+                    })
+                });
+                return d.promise;
+            }
+            function remove(machineId, item) {
+                var d = $q.defer();
+                getMachine(machineId, function (machine) {
+                    serverTab.call({
+                        name: 'Machine' + upperCollectionName + 'Delete',
+                        data: createData(machine, item),
+                        done: done(machine, d),
+                        error: done(machine, d)
+                    });
+                });
+                return d.promise;
+            }
+            service[collectionName] = {
+                create: create,
+                read: read,
+                update: update,
+                delete: remove
+            };
+        }
 
         bindCollectionCRUD('tags');
         bindCollectionCRUD('metadata');

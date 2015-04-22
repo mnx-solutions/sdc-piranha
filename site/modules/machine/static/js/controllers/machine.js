@@ -1,7 +1,7 @@
 'use strict';
 
 (function (app, ng) {
-    app.controller('Machine.DetailsController',[
+    app.controller('Machine.DetailsController', [
         '$scope',
         '$rootScope',
         'requestContext',
@@ -61,7 +61,7 @@
             };
 
             var reloadPackages = function (currentPackageName, datacenter) {
-                $q.all([Package.package({datacenter: datacenter}), Package.package(currentPackageName)]).then(function (results) {
+                $q.all([Package.package({datacenter: datacenter}), Package.getPackage(datacenter, currentPackageName)]).then(function (results) {
                     $scope.package = results[1];
                     $scope.packages = results[0].filter(function (item) {
                         if ($scope.package && item.type && item.type === 'smartos' && item.memory > $scope.package.memory) {
@@ -228,17 +228,18 @@
                     getHostContainers(m);
                 }
 
-                $scope.dataset = Image.image({datacenter: m.datacenter, id: m.image});
+                $scope.dataset = Image.getImage(m.datacenter, m.image);
                 reloadPackages(m.package, m.datacenter);
 
                 $scope.dataset.then(function (ds) {
+                    $scope.dataset = ds;
                     $scope.imageCreateNotSupported = ds.imageCreateNotSupported || m.imageCreateNotSupported;
-                    if (ds.tags && ds.tags.default_user) {
-                        $scope.defaultSshUser = ds.tags.default_user;
+                    if (ds.tags && ds.tags['default_user']) {
+                        $scope.defaultSshUser = ds.tags['default_user'];
                     } else if (!ds.public && ds.origin) {
                         Image.image({datacenter: m.datacenter, id: ds.origin}).then(function (dataset) {
-                            if (dataset.tags && dataset.tags.default_user) {
-                                $scope.defaultSshUser = dataset.tags.default_user;
+                            if (dataset.tags && dataset.tags['default_user']) {
+                                $scope.defaultSshUser = dataset.tags['default_user'];
                             }
                         }, function (error) {
                             PopupDialog.errorObj(error);
@@ -262,12 +263,8 @@
 
                     $scope.datasetType = type;
                 }, function () {
-                    Image.getImage(m.datacenter, m.image).then(function (image) {
-                        $scope.dataset = {name: image.name, version: image.version};
-                    }, function () {
-                        $scope.dataset = {name: 'Image deleted'};
-                        $scope.imageCreateNotSupported = 'Instances without images are not supported by the image API.';
-                    });
+                    $scope.dataset = {name: 'Image deleted'};
+                    $scope.imageCreateNotSupported = 'Instances without images are not supported by the image API.';
                 });
             }, function () {
                 locationReplace();
@@ -520,7 +517,7 @@
                             }
                             Machine.gotoDockerDashboard($scope.machines, isDeletedDockerMachine);
                         };
-                        if ($scope.machine.tags && $scope.machine.tags.JPC_tag === 'DockerHost') {
+                        if ($scope.machine.tags && $scope.machine.tags['JPC_tag'] === 'DockerHost') {
                             Machine.deleteDockerMachine($scope.machine).then(function () {
                                 resolvedDeleteAction(machineid, true);
                             });
@@ -581,10 +578,10 @@
                 $q.when($scope.account).then(function (account) {
                     var contactSupportParams = ng.copy($scope.zenboxParams);
                     if (obj) {
-                        contactSupportParams.request_description = 'API Name: ' + obj.name;
+                        contactSupportParams['request_description'] = 'API Name: ' + obj.name;
                     }
                     contactSupportParams.dropboxID = contactSupportParams.dropboxOrderPackageId || contactSupportParams.dropboxID;
-                    contactSupportParams.request_subject = 'I want to resize instance ' + $scope.machine.id;
+                    contactSupportParams['request_subject'] = 'I want to resize instance ' + $scope.machine.id;
                     loggingService.log('info', 'User is ordering instance package from support', obj);
                     Zenbox.show(null, contactSupportParams);
                 });
@@ -596,7 +593,7 @@
             if ($scope.features.firewall === 'enabled') {
                 if ($scope.features.manta === 'enabled') {
                     $scope.gridUserConfig = Account.getUserConfig().$child('firewall-details');
-                        }
+                }
                 $scope.gridOrder = [];
                 $scope.gridProps = [
                     {
@@ -656,16 +653,16 @@
                 ];
 
                 $scope.firewallChangeable = function() {
-                    return $scope.machine.firewall_supported && $scope.machine.hasOwnProperty('firewall_enabled');
+                    return $scope.machine['firewall_supported'] && $scope.machine.hasOwnProperty('firewall_enabled');
                 };
 
                 $scope.toggleFirewallEnabled = function () {
                     $scope.machine.fireWallActionRunning = true;
-                    var fn = $scope.machine.firewall_enabled ? 'disable' : 'enable';
-                    var expected = !$scope.machine.firewall_enabled;
+                    var fn = $scope.machine['firewall_enabled'] ? 'disable' : 'enable';
+                    var expected = !$scope.machine['firewall_enabled'];
                     firewall[fn]($scope.machineid, function (err) {
-                        if(!err) {
-                            $scope.machine.firewall_enabled = expected;
+                        if (!err) {
+                            $scope.machine['firewall_enabled'] = expected;
                         }
                         $scope.machine.fireWallActionRunning = false;
                     });
@@ -753,4 +750,3 @@
 
     ]);
 }(window.JP.getModule('Machine'), window.angular));
-

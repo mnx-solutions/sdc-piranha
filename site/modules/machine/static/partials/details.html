@@ -250,8 +250,7 @@
                                         <div class="loading-medium-tr pull-right" data-ng-show="isResizing"></div>
                                     </div>
                                 </div>
-                                <div data-ng-show="features.zendesk == 'enabled'"
-                                        data-ng-show="(package.selectedMaxAutomaticPackage || package.selectedMaxPackage)"
+                                <div data-ng-show="features.zendesk == 'enabled' && (package.selectedMaxAutomaticPackage || package.selectedMaxPackage)"
                                         class="pull-left resize-block">You currently have maximum possible size of the instance<!--
                                  --><span data-ng-show="package.selectedMaxAutomaticPackage && !package.selectedMaxPackage"> which can be handled automatically</span>.<!--
                                  --></span><span data-ng-show="package.selectedMaxPackage || (package.selectedMaxAutomaticPackage && features.createdBySupportPackages == 'disabled')">&nbsp;<a data-href="#" data-ng-click="contactSupport()">Click here</a> to contact support if you want larger instance.</span>
