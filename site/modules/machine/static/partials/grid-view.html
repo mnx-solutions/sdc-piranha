@@ -73,7 +73,7 @@
                         />
                 <label for="filter{{$index}}" class="grid-tab">{{filter}}</label>
             </span>
-            <select data-select-two id="dcSelect2" data-ng-model="tabFilter" data-select="tabFilter" data-fn="unSelectAllCheckbox" class="select-datacenter no-search-box" data-ng-options="filter for filter in tabFilters"></select>
+            <select data-select-two id="dcSelect2" data-ng-model="tabFilter" data-select="tabFilter" data-ng-change="unSelectAllCheckbox()" class="select-datacenter no-search-box" data-ng-options="filter for filter in tabFilters"></select>
         </div>
             <table class="table table-striped table-bordered table-hover table-full-width"
                    data-ng-class="{'grid-view-table': tabFilterField}"
