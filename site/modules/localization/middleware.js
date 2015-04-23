@@ -33,9 +33,6 @@ var middleware = function localizationMiddleware(req, res, next) {
 };
 
 module.exports = [
-    function (req, res, next) {
-        next();
-    }
 /*
 // After getting rid of express-modulizer, localization not supported and should be adapted or removed
     localization.getLocaleParser(),
