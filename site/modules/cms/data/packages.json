@@ -1376,7 +1376,8 @@
           "group": "Standard",
           "description": "Standard 0.125 GB RAM 1/16 vCPUs 3 GB Disk",
           "price": "0.0032",
-          "price_month": "2.336"
+          "price_month": "2.336",
+          "vcpus": "0.0625"
       },
       "t4-standard-256M": {
           "short_name": "Standard 0.25",
@@ -1384,7 +1385,8 @@
           "group": "Standard",
           "description": "Standard 0.25 GB RAM 1/8 vCPUs 6 GB Disk",
           "price": "0.0065",
-          "price_month": "4.745"
+          "price_month": "4.745",
+          "vcpus": "0.125"
       },
       "t4-standard-512M": {
           "short_name": "Standard 0.5",
@@ -1392,7 +1394,8 @@
           "group": "Standard",
           "description": "Standard 0.5 GB RAM 1/4 vCPUs 12 GB Disk",
           "price": "0.0131",
-          "price_month": "9.563"
+          "price_month": "9.563",
+          "vcpus": "0.25"
       },
       "t4-standard-1G": {
           "short_name": "Standard 1",
@@ -1400,7 +1403,8 @@
           "group": "Standard",
           "description": "Standard 1 GB RAM 1/2 vCPUs 25 GB Disk",
           "price": "0.0262",
-          "price_month": "19.126"
+          "price_month": "19.126",
+          "vcpus": "0.5"
       },
       "t4-standard-2G": {
           "short_name": "Standard 2",
@@ -1408,7 +1412,8 @@
           "group": "Standard",
           "description": "Standard 2 GB RAM 1 vCPUs 50 GB Disk",
           "price": "0.0525",
-          "price_month": "38.325"
+          "price_month": "38.325",
+          "vcpus": "1"
       },
       "t4-standard-4G": {
           "short_name": "Standard 4",
@@ -1416,7 +1421,8 @@
           "group": "Standard",
           "description": "Standard 4 GB RAM 2 vCPUs 100 GB Disk",
           "price": "0.105",
-          "price_month": "76.65"
+          "price_month": "76.65",
+          "vcpus": "2"
       },
       "t4-standard-8G": {
           "short_name": "Standard 8",
@@ -1424,7 +1430,8 @@
           "group": "Standard",
           "description": "Standard 8 GB RAM 4 vCPUs 200 GB Disk",
           "price": "0.21",
-          "price_month": "153.3"
+          "price_month": "153.3",
+          "vcpus": "4"
       },
       "t4-standard-16G": {
           "short_name": "Standard 16",
@@ -1432,7 +1439,8 @@
           "group": "Standard",
           "description": "Standard 16 GB RAM 8 vCPUs 400 GB Disk",
           "price": "0.42",
-          "price_month": "306.6"
+          "price_month": "306.6",
+          "vcpus": "8"
       },
       "t4-standard-32G": {
           "short_name": "Standard 32",
@@ -1440,7 +1448,8 @@
           "group": "Standard",
           "description": "Standard 32 GB RAM 16 vCPUs 800 GB Disk",
           "price": "0.84",
-          "price_month": "613.2"
+          "price_month": "613.2",
+          "vcpus": "16"
       },
       "t4-standard-64G": {
           "short_name": "Standard 64",
@@ -1448,7 +1457,8 @@
           "group": "Standard",
           "description": "Standard 64 GB RAM 32 vCPUs 1600 GB Disk",
           "price": "1.68",
-          "price_month": "1226.4"
+          "price_month": "1226.4",
+          "vcpus": "32"
       }
   }
 }
