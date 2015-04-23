@@ -434,6 +434,9 @@ function applyModule(options, complete) {
 
     if (index) {
         options.app.get('/', normalizeMiddleware(appMiddleware, function (req, res) {
+            if (req.originalUrl.substr(-1) !== '/') {
+                return res.redirect(req.originalUrl + '/');
+            }
             res.render(index);
         }));
     }
