@@ -14,6 +14,7 @@ var os = require('os');
 var EventEmitter = require('events').EventEmitter;
 var certMgmt = require('../../../lib/certificates');
 var Auditor = require('./libs/auditor.js');
+var utils = require('../../../lib/utils');
 var cache = require('lru-cache')({
     max: 1000,
     maxAge: 10 * 60
@@ -68,7 +69,7 @@ function formatUrl(url, params) {
     });
 }
 
-function createCallback(scope, dockerInstance, opts, auditParams, callback) {
+function createCallback(dockerInstance, opts, auditParams, callback) {
     //noinspection JSLint
     return function (error, req, res, data) {
         if (error) {
@@ -116,7 +117,7 @@ function createCallback(scope, dockerInstance, opts, auditParams, callback) {
     };
 }
 
-function createMethod(scope, opts, selfName) {
+function createMethod(log, opts, selfName) {
     return function (params, callback) {
         if (!callback) {
             callback = params;
@@ -139,7 +140,7 @@ function createMethod(scope, opts, selfName) {
             path = '/v2' + path;
         }
         var options = {
-            log: scope.log,
+            log: log,
             path: formatUrl(path, params),
             method: opts.method || 'GET',
             retries: opts.retries || false,
@@ -179,25 +180,24 @@ function createMethod(scope, opts, selfName) {
         if (raw) {
             args.push(callback);
         } else {
-            args.push(createCallback(scope, self, opts, auditParams, callback));
+            args.push(createCallback(self, opts, auditParams, callback));
         }
 
         client[requestMap[options.method]].apply(client, args);
     };
 }
 
-function createApi(scope, map, container) {
+function createApi(log, map, container) {
     var name;
     for (name in map) {
         if (map.hasOwnProperty(name)) {
-            container[name] = createMethod(scope, map[name], name);
+            container[name] = createMethod(log, map[name], name);
         }
     }
 }
 
-module.exports = function execute(scope, register) {
+exports.init = function execute(log, config, done) {
     var disableTls = Boolean(config.docker && config.docker.disableTls);
-    var utils = scope.get('utils');
     var queuedRequests = {};
     var api = {};
 
@@ -501,7 +501,7 @@ module.exports = function execute(scope, register) {
 
     function Docker(options, call) {
         this.options = options;
-        var mantaClient = scope.api('MantaClient').createClient(call);
+        var mantaClient = require('../storage').MantaClient.createClient(call);
         this.auditor = new Auditor(call, mantaClient);
     }
 
@@ -513,11 +513,11 @@ module.exports = function execute(scope, register) {
         this.options = options;
     }
 
-    createApi(scope, dockerAPIMethods, Docker.prototype);
+    createApi(log, dockerAPIMethods, Docker.prototype);
 
-    createApi(scope, registryAPIMethods, Registry.prototype);
+    createApi(log, registryAPIMethods, Registry.prototype);
 
-    createApi(scope, indexAPIMethods, Index.prototype);
+    createApi(log, indexAPIMethods, Index.prototype);
     /**
      * Authorize, and get token
      * curl -i -H'X-Docker-Token: true' https://index.docker.io/v1/repositories/google/cadvisor/images
@@ -775,7 +775,7 @@ module.exports = function execute(scope, register) {
     }
 
     function getKeyPair(call, callback) {
-        var client = scope.api('MantaClient').createClient(call);
+        var client = require('../storage').MantaClient.createClient(call);
         var key;
 
         if (call.req.session.privateKey) {
@@ -892,7 +892,7 @@ module.exports = function execute(scope, register) {
     }
 
     function setupManta(call, setupCallback) {
-        var client = scope.api('MantaClient').createClient(call);
+        var client = require('../storage').MantaClient.createClient(call);
         var dockerPath = '/' + call.req.session.userName + '/stor/.joyent/docker';
         var registryPath = dockerPath + '/registry';
         vasync.waterfall([
@@ -1094,7 +1094,7 @@ module.exports = function execute(scope, register) {
         vasync.parallel({
             funcs: [
                 function (callback) {
-                    var client = scope.api('MantaClient').createClient(call);
+                    var client = require('../storage').MantaClient.createClient(call);
                     client.putFileContents(SDC_DOCKER_PATH + '/private.key', keyPair.privateKey, callback);
                 },
                 function (callback) {
@@ -1107,8 +1107,8 @@ module.exports = function execute(scope, register) {
     api.createHost = function (call, options, callback) {
         delete options.specification;
         // not declared in header, because both modules depend on each other
-        var Machine = scope.api('Machine');
-        var mantaClient = scope.api('MantaClient').createClient(call);
+        var Machine = require('../machine').Machine;
+        var mantaClient = require('../storage').MantaClient.createClient(call);
 
         options.metadata = options.metadata || {};
         options.metadata['user-script'] = startupScript;
@@ -1173,7 +1173,7 @@ module.exports = function execute(scope, register) {
             });
             return;
         }
-        var client = scope.api('MantaClient').createClient(call);
+        var client = require('../storage').MantaClient.createClient(call);
         client.getFileContents(SDC_DOCKER_PATH + '/.status-' + machineId, function (error, result) {
             var status = 'initializing';
             if (!error) {
@@ -1384,7 +1384,7 @@ module.exports = function execute(scope, register) {
         if (typeof (client) === 'function') {
             fromCache = callback;
             callback = client;
-            client = scope.api('MantaClient').createClient(call);
+            client = require('../storage').MantaClient.createClient(call);
         }
 
         if (typeof (fromCache) === 'boolean' && fromCache && Object.keys(api.registriesCache).length) {
@@ -1424,7 +1424,7 @@ module.exports = function execute(scope, register) {
             client = null;
         }
         callback = callback || call.done;
-        client = client || scope.api('MantaClient').createClient(call);
+        client = client || require('../storage').MantaClient.createClient(call);
         client.putFileContents(SDC_DOCKER_PATH + '/registries.json', JSON.stringify(data), function (error) {
             return callback(error && error.message, true);
         });
@@ -1553,5 +1553,6 @@ module.exports = function execute(scope, register) {
     api.SUBUSER_LOGIN = SUBUSER_LOGIN;
     api.SUBUSER_REGISTRY_LOGIN = SUBUSER_REGISTRY_LOGIN;
 
-    register('Docker', api);
+    exports.Docker = api;
+    done();
 };

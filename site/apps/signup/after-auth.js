@@ -2,7 +2,7 @@
 
 var metadata = require('../../modules/account/lib/metadata');
 
-module.exports = function (req, res, next) {
+module.exports = function signupAfterAuthMiddleware(req, res, next) {
     if (!req.session.signupStep) {
         req.session.signupStep = 'start';
         req.session.save();

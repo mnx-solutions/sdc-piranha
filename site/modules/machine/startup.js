@@ -3,17 +3,17 @@
 var config = require('easy-config');
 var vasync = require('vasync');
 
-module.exports = function execute(scope) {
-    var server = scope.api('Server');
-    var info = scope.api('Info');
-    var utils = scope.get('utils');
-    var machine = scope.api('Machine');
-    var metadata = scope.api('Metadata');
+module.exports = function execute(log, config) {
+    var server = require('../server').Server;
+    var info = require('../cms').Info;
+    var utils = require('../../../lib/utils');
+    var machine = require('./').Machine;
+    var metadata = require('../account').Metadata;
 
     var langs = {};
     var oldLangs = {};
 
-    scope.config.localization.locales.forEach(function (lng) {
+    config.localization.locales.forEach(function (lng) {
         langs[lng] = {};
     });
 
@@ -24,7 +24,7 @@ module.exports = function execute(scope) {
             }
 
             if (typeof info.images.data[id].description === 'string') {
-                langs[scope.config.localization.defaultLocale][id] = info.images.data[id].description;
+                langs[config.localization.defaultLocale][id] = info.images.data[id].description;
             } else {
                 Object.keys(info.images.data[id].description).forEach(function (lng) {
                     langs[lng][id] = info.images.data[id].description[lng];
@@ -124,8 +124,8 @@ module.exports = function execute(scope) {
             var keys = Object.keys(datacenters || {});
             keys.forEach(function (name) {
                 var url = datacenters[name];
-                var index = scope.config.cloudapi.urls ?
-                    scope.config.cloudapi.urls.indexOf(url) : -1;
+                var index = config.cloudapi.urls ?
+                    config.cloudapi.urls.indexOf(url) : -1;
 
                 datacenterList.push({
                     name: name,
@@ -408,10 +408,9 @@ module.exports = function execute(scope) {
         });
     });
 
-
     /* Images */
 
-    if(!config.features || config.features.imageCreate !== 'disabled') {
+    if (!config.features || config.features.imageCreate !== 'disabled') {
 
         /* CreateImage */
         server.onCall('ImageCreate', {

@@ -5,9 +5,9 @@ var manta = require('manta');
 var vasync = require('vasync');
 var util = require('util');
 
-module.exports = function (scope, app) {
-    var Manta = scope.api('MantaClient');
-    var Docker = scope.api('Docker');
+module.exports = function (app) {
+    var Manta = require('../storage').MantaClient;
+    var Docker = require('../docker').Docker;
 
     var getFile = function (req, res, action) {
         var messageError;

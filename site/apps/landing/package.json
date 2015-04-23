@@ -1,7 +1,5 @@
 {
-	"em": {
-		"route": "/",
-		"modules": ["localization", "landing", "tracking", "cms", "tfa", "server", "storage", "feature-flags"],
-        "auth": true
-	}
+  "route": "/",
+  "modules": ["localization", "landing", "tracking", "cms", "tfa", "server", "storage", "feature-flags"],
+  "auth": true
 }

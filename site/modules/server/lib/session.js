@@ -61,7 +61,7 @@ Session.get = function (req, res, next) {
     if (!req.session || !req.session.id) {
         var err = new Error('Session is missing');
         err.code = 500;
-        req.scope.log(err);
+        req.log.error(err);
         next(err);
         return;
     }
@@ -69,8 +69,8 @@ Session.get = function (req, res, next) {
     if (sessions[req.session.id]) {
         req._session = sessions[req.session.id];
     } else {
-        var lifespan = req.scope.config.session && req.scope.config.session.lifespan ?
-                req.scope.config.session.lifespan * 60 * 1000 : 2 * 60 * 60 * 1000;
+        var lifespan = req.config.session && req.config.session.lifespan ?
+                req.config.session.lifespan * 60 * 1000 : 2 * 60 * 60 * 1000;
         req._session = new Session({
             id: req.session.id,
             log: req.log,
@@ -78,7 +78,7 @@ Session.get = function (req, res, next) {
         });
 
         // Proper user ip taking reverse proxy / load balancer into account
-        var headerClientIpKey = req.scope.config.server.headerClientIpKey;
+        var headerClientIpKey = req.config.server.headerClientIpKey;
         var headerUserIp;
 
         if (headerClientIpKey) {

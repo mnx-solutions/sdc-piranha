@@ -1,14 +1,11 @@
 'use strict';
 
-var config = require('easy-config');
-
-module.exports = function execute(scope) {
+module.exports = function execute(log, config) {
+    var server = require('../server').Server;
 
     if (config.features.downloadSdc !== 'enabled') {
         return;
     }
-
-    var server = scope.api('Server');
 
     server.onCall('getSdcInfo', function (call) {
         call.done(null, config.downloadSdc);

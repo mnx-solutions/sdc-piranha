@@ -12,7 +12,7 @@ options.user = config.zuora.user;
 var zuora = require('zuora-rest').create(options);
 var zuoraSoap = require('./zuora');
 var moment = require('moment');
-var noCopyFields = ['lastName','firstName', 'workPhone', 'promoCode'];
+var noCopyFields = ['lastName', 'firstName', 'workPhone', 'promoCode'];
 
 var errorsFile = path.join(process.cwd(), '/var/errors.json');
 
@@ -36,7 +36,9 @@ function init(zuoraInit, callback) {
                 zuoraErrors = {};
             }
         }
-        callback();
+        if (typeof callback === 'function') {
+            callback();
+        }
     });
 }
 
@@ -49,7 +51,7 @@ function notFound(resp) {
 
 module.exports.notFound = notFound;
 
-function updateErrorList(scope, resp, callback) {
+function updateErrorList(log, resp, callback) {
 
     var newErr = false;
     if (resp && resp.reasons) {
@@ -62,7 +64,7 @@ function updateErrorList(scope, resp, callback) {
         if (newErr) {
             fs.writeFile(errorsFile, JSON.stringify(zuoraErrors, null, 2), 'utf8', function (err) {
                 if (err) {
-                    scope.log.error('Failed to update zuora error file', err);
+                    log.error('Failed to update zuora error file', err);
                 }
                 callback();
             });
@@ -82,13 +84,13 @@ function composeCreditCardObject(call, cb) {
     };
     // Copy all properties except first and last name
     Object.keys(call.data).forEach(function (k) {
-        if (noCopyFields.indexOf(k) === -1){
+        if (noCopyFields.indexOf(k) === -1) {
             data[k] = call.data[k];
         }
     });
     // Check if both first and last name are set
     var preErr = null;
-    if (!call.data.firstName || call.data.firstName.trim() === ''){
+    if (!call.data.firstName || call.data.firstName.trim() === '') {
         preErr = {
             firstName: 'String is empty'
         };
@@ -194,7 +196,7 @@ function composeZuoraAccount(call, cb) {
                     accountNumber: accountData.id,
                     currency: 'USD',
                     paymentTerm: 'Due Upon Receipt',
-                    Category__c: 'Credit Card',
+                    'Category__c': 'Credit Card',
                     billCycleDay: 1,
                     name: accountData.companyName || ((accountData.firstName || call.data.firstName) + ' ' + (accountData.lastName || call.data.lastName)),
                     invoiceCollect: false,
@@ -239,7 +241,6 @@ function composeZuoraAccount(call, cb) {
                     zuoraSkus.push(codeSku);
                 }
             });
-
 
             // Find the trial product
             function findZuoraProductId(ratePlans) {
@@ -322,7 +323,7 @@ function composeZuoraAccount(call, cb) {
 
 module.exports.composeZuoraAccount = composeZuoraAccount;
 
-function getPaymentMethods(call, cb){
+function getPaymentMethods(call, cb) {
     zuora.payment.get(call.req.session.userId, function (err, pms) {
         if (err) {
             if (notFound(pms)) {
@@ -383,15 +384,19 @@ module.exports.deleteAllButDefaultPaymentMethods = deleteAllButDefaultPaymentMet
 
 function createZuoraAccount(call, cb) {
     //User not found so create one
-    composeZuoraAccount(call, call.log.noErr('Unable to compose Account', cb, function (obj, user) {
+    composeZuoraAccount(call, function (error, obj, user) {
+        if (error) {
+            error = error['ase_errors'] ? error['ase_errors'].map(function (err) {return err.message;}).join(';') : error;
+            return cb({error: error.message || error}, 'Unable to compose Account');
+        }
         obj.creditCard = {};
         Object.keys(call.data).forEach(function (k) {
             if (noCopyFields.indexOf(k) !== -1) {
                 return;
             }
             var key = ((k === 'creditCardType' && 'cardType')
-                || (k === 'creditCardNumber' && 'cardNumber')
-                || k);
+            || (k === 'creditCardNumber' && 'cardNumber')
+            || k);
             obj.creditCard[key] = call.data[k];
         });
         zuora.account.create(obj, function (accErr, accResp) {
@@ -403,14 +408,14 @@ function createZuoraAccount(call, cb) {
             call.log.debug('Zuora account creation succeeded');
             cb(null, accResp, user);
         });
-    }));
+    });
 }
 
 module.exports.createZuoraAccount = createZuoraAccount;
 
-var getInvoiceFromCache = function (scope, req, invoiceId, callback) {
+var getInvoiceFromCache = function (req, invoiceId, callback) {
     if (config.features.manta === 'enabled') {
-        var MantaClient = scope.api('MantaClient');
+        var MantaClient = require('../../storage').MantaClient;
         var client = MantaClient.createClient({req: req});
         var invoiceFolder = '/' + req.session.userName + '/stor/.joyent/invoices/' + req.params.id;
         var invoiceFound = false;
@@ -442,17 +447,17 @@ var getInvoiceFromCache = function (scope, req, invoiceId, callback) {
     }
 };
 
-var addInvoiceToCache = function (scope, req, invoiceId, fileName, fileData) {
+var addInvoiceToCache = function (req, invoiceId, fileName, fileData) {
     if (config.features.manta === 'enabled') {
-        var MantaClient = scope.api('MantaClient');
+        var MantaClient = require('../../storage').MantaClient;
         var MemoryStream = require('memorystream');
         var client = MantaClient.createClient({req: req});
         var folderPath = '/' + req.session.userName + '/stor/.joyent/invoices/' + invoiceId;
         client.mkdirp(folderPath, function () {
             var fullPath = folderPath + '/' + fileName;
             var stream = new MemoryStream();
-            client.put(fullPath, stream, { size: fileData.length }, function (putErr) {
-                scope.log.warn({err: putErr}, 'Error while putting invoice in cache');
+            client.put(fullPath, stream, {size: fileData.length}, function (putErr) {
+                req.log.warn({err: putErr}, 'Error while putting invoice in cache');
             });
             stream.end(fileData);
         });
@@ -460,15 +465,14 @@ var addInvoiceToCache = function (scope, req, invoiceId, fileName, fileData) {
 };
 
 function getInvoicePDF(req, res, next) {
-    var scope = this;
-    getInvoiceFromCache(scope, req, req.params.id, function (cacheErr, cacheResult) {
+    getInvoiceFromCache(req, req.params.id, function (cacheErr, cacheResult) {
         if (cacheErr) {
             zuoraSoap.queryPDF(req.params.account, req.params.id, function (err, data) {
                 if (err) {
                     next(err);
                     return;
                 }
-                var buffer = new Buffer(data.Body,'base64');
+                var buffer = new Buffer(data.Body, 'base64');
                 var invoiceFileName = 'Joyent_Invoice_' + data.InvoiceNumber + '_' +
                     moment(data.InvoiceDate).format('MMM_YYYY') + '.pdf';
                 res.set({
@@ -478,7 +482,7 @@ function getInvoicePDF(req, res, next) {
                     'Content-Type': 'application/pdf'
                 });
                 res.send(buffer);
-                addInvoiceToCache(scope, req, req.params.id, invoiceFileName, buffer);
+                addInvoiceToCache(req, req.params.id, invoiceFileName, buffer);
             });
             return;
         }
@@ -488,9 +492,6 @@ function getInvoicePDF(req, res, next) {
         });
         cacheResult.stream.pipe(res);
     });
-
-
 }
 module.exports.zSoap = zuoraSoap;
-
 module.exports.getInvoicePDF = getInvoicePDF;

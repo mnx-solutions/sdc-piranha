@@ -1,8 +1,6 @@
 
 'use strict';
 
-var crypto = require('crypto');
-var config = require('easy-config');
 var fs = require('fs');
 var countryCodes = require('./data/country-codes');
 var exec = require('child_process').exec;
@@ -10,8 +8,7 @@ var os = require('os');
 var uuid = require('../../static/vendor/uuid/uuid.js');
 var ursa = require('ursa');
 var jobs = {};
-var express = require('express');
-
+var multer = require('multer');
 /**
  * @ngdoc service
  * @name account.service:api
@@ -20,9 +17,8 @@ var express = require('express');
  * @description
  * Account module API
  */
-module.exports = function execute(scope, app) {
-
-    var SignupProgress = scope.api('SignupProgress');
+module.exports = function execute(app, log, config) {
+    var SignupProgress = require('../account').SignupProgress;
 
     app.get('/countryCodes', function (req, res) {
         var data = countryCodes.getArray(config.zuora.rest.validation.countries);
@@ -39,7 +35,7 @@ module.exports = function execute(scope, app) {
     if (config.features.allowSkipBilling === 'enabled') {
         app.get('/signup/skipBilling', function (req, res) {
             SignupProgress.setMinProgress(req, 'billing', function () {
-                scope.log.info('User skipped Billing and SSH step');
+                log.info('User skipped Billing and SSH step');
                 SignupProgress.setMinProgress(req, 'ssh', function () {
                     res.json({success: true});
                 });
@@ -49,14 +45,14 @@ module.exports = function execute(scope, app) {
     // TODO: let's combine skipSsh and passSsh routes in one
     app.get('/signup/skipSsh', function (req, res) {
         SignupProgress.setMinProgress(req, 'ssh', function () {
-            scope.log.info('User skipped SSH step');
+            log.info('User skipped SSH step');
             SignupProgress.sendSshResponse(req, res);
         });
     });
 
     app.get('/signup/passSsh', function (req, res) {
         SignupProgress.setMinProgress(req, 'ssh', function () {
-            scope.log.info('User passed SSH step');
+            log.info('User passed SSH step');
             SignupProgress.sendSshResponse(req, res);
         });
     });
@@ -121,7 +117,7 @@ module.exports = function execute(scope, app) {
         res.send(key.privateKey);
     });
 
-    app.post('/upload', [express.multipart()], function (req, res, next) {
+    app.post('/upload', [multer()], function (req, res, next) {
         var files = req.files && req.files.uploadInput;
         var subUser = req.query.userId;
         var perform;
@@ -165,7 +161,7 @@ module.exports = function execute(scope, app) {
                 }
             } catch (error) {
                 res.json({
-                    error: "The file you've uploaded is not a public key.",
+                    error: 'The file you\'ve uploaded is not a public key.',
                     status: 422
                 });
             }
@@ -188,6 +184,6 @@ module.exports = function execute(scope, app) {
         }
 
         req.log[logLevel]({userInfo: req.body.userInfo, args: req.body.args}, req.body.message);
-        res.send(200);
+        res.sendStatus(200).send('OK');
     });
 };

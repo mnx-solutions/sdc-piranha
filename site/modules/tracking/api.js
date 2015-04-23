@@ -2,6 +2,7 @@
 
 var marketo = require('./lib/marketo');
 
-module.exports = function execute(scope, register) {
-    register('Marketo', marketo);
+exports.init = function execute(log, config, done) {
+    exports.Marketo = marketo;
+    done();
 };

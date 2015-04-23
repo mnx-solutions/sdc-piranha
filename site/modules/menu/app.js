@@ -1,8 +1,6 @@
 'use strict';
 
-var config = require('easy-config');
-
-module.exports = function execute(scope, app) {
+module.exports = function execute(app, log, config) {
     app.get('/skinChange', function (req, res) {
         var baseUrl = config && config.skinChange && config.skinChange.url || 'https://betaportal.joyent.com';
         var buffer = new Buffer(baseUrl + '/main/#!/dashboard', 'binary');

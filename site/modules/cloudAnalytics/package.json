@@ -1,5 +1,3 @@
 {
-	"em": {
-        "auth": true
-    }
+  "auth": true
 }

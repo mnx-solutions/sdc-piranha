@@ -28,26 +28,12 @@
   }
 , "assets": {
     "js": {
-      "concat": [
-        "use-strict-rm"
-      ]
-    , "cache": "all"
-    , "ext": "js"
-    , "transform": [
-        "use-strict-add"
-      , "uglify-js"
-      , "gzip"
-      ]
-    }
-  , "css": {
-      "concat": true
-    , "cache": "all"
-    , "ext": "css"
-    , "transform": [
-        "less"
-      , "sqwish"
-      , "gzip"
-      ]
+      "minify": true,
+      "gzip": true
+    },
+    "css": {
+      "minify": true,
+      "gzip": true
     }
   }
 , "zuora": {

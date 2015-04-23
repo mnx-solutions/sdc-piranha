@@ -1,8 +1,8 @@
-"use strict";
+'use strict';
 
 var fastly = require('fastly');
 
-module.exports = function execute(scope, register) {
+exports.init = function execute(log, config, done) {
     function createClient(call) {
         return fastly(call.data.key);
     }
@@ -10,7 +10,7 @@ module.exports = function execute(scope, register) {
     var constructUrl = function (type, data) {
         var result = '/service';
         if (type !== 'service') {
-            result += '/' + data.service_id + '/version/' + data.version + '/' + type;
+            result += '/' + data['service_id'] + '/version/' + data.version + '/' + type;
         }
         return result;
     };
@@ -46,7 +46,7 @@ module.exports = function execute(scope, register) {
 
     function createBackend(call, callback) {
         var opts = {
-            service: call.data.service_id,
+            service: call.data['service_id'],
             address: call.data.backend,
             name: 'Manta',
             port: 80
@@ -61,13 +61,13 @@ module.exports = function execute(scope, register) {
             action: 'set',
             dst: 'url',
             src: '"/' + call.req.session.userName + call.data.directory + '"',
-            ignore_if_set: 0
+            'ignore_if_set': 0
         };
         request(call, 'POST', constructUrl('header', call.data), opts, callback);
     }
 
     function deleteService(call, callback) {
-        request(call, 'DELETE', constructUrl('service') + '/' + call.data.service_id, callback);
+        request(call, 'DELETE', constructUrl('service') + '/' + call.data['service_id'], callback);
     }
 
     function listServices(call, callback) {
@@ -86,6 +86,6 @@ module.exports = function execute(scope, register) {
     api.createService = createService;
     api.createDomain = createDomain;
     api.createHeader = createHeader;
-    register('CdnClient', api);
+    exports.CdnClient = api;
+    done();
 };
-

@@ -1,11 +1,9 @@
 'use strict';
 
-var https = require('https');
-var config = require('easy-config');
 var restify = require('restify');
 
-module.exports = function execute(scope) {
-    var server = scope.api('Server');
+module.exports = function execute(log, config) {
+    var server = require('../server').Server;
 
     server.onCall('ListFreeTierOptions', function (call) {
         call.done(null, config.ns['free-tier']);

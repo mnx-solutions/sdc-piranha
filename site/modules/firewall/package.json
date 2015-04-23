@@ -1,6 +1,4 @@
 {
-    "em": {
-        "route": "/firewall",
-        "auth": true
-    }
+  "route": "/firewall",
+  "auth": true
 }

@@ -3,12 +3,11 @@
 var crypto = require('crypto');
 var fs = require('fs');
 
-module.exports = function execute(scope, app, callback) {
-    var config = scope.config.sso;
+module.exports = function execute(app, log, config) {
     var privateKey = null;
 
-    if (!config) {
-        scope.log.fatal('SSO config missing');
+    if (!config.sso) {
+        log.fatal('SSO config missing');
         process.exit();
     }
 
@@ -24,29 +23,29 @@ module.exports = function execute(scope, app, callback) {
         var baseUrl = new Buffer(protocol + '://' + req.headers.host + redirectUrl).toString('base64');
         baseUrl = baseUrl.replace(/\//g, '-');
         var returnUrl = protocol + '://' + req.headers.host + '/tfa/saveToken/' + baseUrl + '/';
-        var ssoUrl = config.url + '/' + method;
+        var ssoUrl = config.sso.url + '/' + method;
 
         var date = new Date().toUTCString();
         var nonce = Math.random().toString(36).substring(7);
 
-        var brandingEnabled = scope.config.features.useBrandingOrange === 'enabled';
-        var phoneVerificationDisabled = scope.config.features.phoneVerification !== 'enabled';
+        var brandingEnabled = config.features.useBrandingOrange === 'enabled';
+        var phoneVerificationDisabled = config.features.phoneVerification !== 'enabled';
 
         // build the query string
         campaignId = typeof (campaignId) !== 'undefined' ? campaignId : req.cookies.campaignId;
         var querystring =
-            (brandingEnabled && scope.config.features.allowSkipBilling === 'enabled' ? 'allowSkipBilling=true&' : '') +
+            (brandingEnabled && config.features.allowSkipBilling === 'enabled' ? 'allowSkipBilling=true&' : '') +
             (brandingEnabled ? 'branding=orange&' : '') +
             (campaignId ? 'cid=' + campaignId + '&' : '') +
             (brandingEnabled && phoneVerificationDisabled ? 'hideVerify=true&' : '') +
-            'keyid=' + encodeURIComponent(config.keyId) + '&' +
+            'keyid=' + encodeURIComponent(config.sso.keyId) + '&' +
             'nonce=' + encodeURIComponent(nonce) + '&' +
             'now=' + encodeURIComponent(date) + '&' +
             'permissions=' + encodeURIComponent(JSON.stringify({'cloudapi': ['/my/*']})) + '&' +
             'returnto=' + encodeURIComponent(returnUrl);
 
         var signer = crypto.createSign('sha256');
-        signer.update(encodeURIComponent(ssoUrl +'?' + querystring));
+        signer.update(encodeURIComponent(ssoUrl + '?' + querystring));
         var signature = signer.sign(privateKey, 'base64');
         querystring += '&sig=' + encodeURIComponent(signature);
 
@@ -61,7 +60,7 @@ module.exports = function execute(scope, app, callback) {
 
     function getRedirectCampaignId(campaignId, deep) {
         deep = deep || 0;
-        var campaign = scope.config.ns['campaigns'][campaignId];
+        var campaign = config.ns['campaigns'][campaignId];
         if (campaign && typeof (campaign['redirect']) !== 'undefined' && deep < 10) {
             deep += 1;
             return getRedirectCampaignId(campaign['redirect'], deep);
@@ -77,9 +76,9 @@ module.exports = function execute(scope, app, callback) {
         var redirectUrl = '/main/';
 
         if (campaignId) {
-            var campaignDetails =  scope.config.ns['campaigns'][campaignId];
+            var campaignDetails =  config.ns['campaigns'][campaignId];
             if (campaignDetails && campaignDetails.redirect) {
-                campaignDetails =  scope.config.ns['campaigns'][campaignDetails.redirect];
+                campaignDetails =  config.ns['campaigns'][campaignDetails.redirect];
             }
             if (campaignDetails && campaignDetails.signupRedirectUrl) {
                 redirectUrl = campaignDetails.signupRedirectUrl;
@@ -91,7 +90,7 @@ module.exports = function execute(scope, app, callback) {
             // set campaign id to the cookie
             req.log.debug({campaignId: campaignId}, 'campaignId cookie set for user');
             if (campaignId) {
-                res.cookie('campaignId', campaignId, { maxAge: 900000, httpOnly: false});
+                res.cookie('campaignId', campaignId, {maxAge: 900000, httpOnly: false});
             } else {
                 res.clearCookie('campaignId');
             }
@@ -123,7 +122,7 @@ module.exports = function execute(scope, app, callback) {
     });
 
     app.get('/changepassword/:uuid', function(req, res) {
-        res.redirect(config.url +'/changepassword/'+ req.params.uuid);
+        res.redirect(config.sso.url + '/changepassword/' + req.params.uuid);
     });
 
     app.get('/saveToken/:url', function(req, res) {
@@ -138,12 +137,11 @@ module.exports = function execute(scope, app, callback) {
         res.redirect(redirectUrl);
     });
 
-    fs.readFile(config.keyPath,function(err, data) {
-        if(err) {
-            scope.log.fatal('Failed to read private key', err);
+    fs.readFile(config.sso.keyPath, function(err, data) {
+        if (err) {
+            log.fatal('Failed to read private key', err);
             process.exit();
         }
         privateKey = data;
-        callback();
     });
 };

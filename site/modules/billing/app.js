@@ -1,10 +1,9 @@
 'use strict';
 
 var zuora = require('zuora-rest');
-var config = require('easy-config');
 var zuoraHelpers = require('./lib/zuora-helpers');
 
-module.exports = function execute(scope, app) {
+module.exports = function execute(app, log, config) {
     var campaignPromoMap = {};
     var campaigns = [];
     if (config.features.promocode !== 'disabled' && config.ns['promo-codes']) {
@@ -86,8 +85,8 @@ module.exports = function execute(scope, app) {
         var promo = getPromoDetail(req.cookies.campaignId);
         var amount = promo && promo.amount ? promo.amount : 0;
         req.log.debug({campaignId: req.cookies.campaignId, amount: amount}, 'Requested default promocode amount');
-        res.send(200, String(amount));
+        res.sendStatus(200).send(String(amount));
     });
 
-    app.get('/invoice/:account/:id', zuoraHelpers.getInvoicePDF.bind(scope));
+    app.get('/invoice/:account/:id', zuoraHelpers.getInvoicePDF);
 };

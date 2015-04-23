@@ -30,13 +30,13 @@ function formatUrl(url, params) {
     });
 }
 
-module.exports = function execute(scope, register) {
+exports.init = function execute(log, config, done) {
     var api = {};
-    var MantaClient = scope.api('MantaClient');
+    var MantaClient = require('../storage').MantaClient;
 
     api.createHost = function (call, options, callback) {
         delete options.specification;
-        var Machine = scope.api('Machine');
+        var Machine = require('../machine').Machine;
         var certificates = call.req.session.dtrace;
         var mantaClient = MantaClient.createClient(call);
 
@@ -65,7 +65,7 @@ module.exports = function execute(scope, register) {
         });
     };
 
-    function createMethod(scope, opts) {
+    function createMethod(opts) {
         return function (params, callback) {
             if (!callback) {
                 callback = params;
@@ -79,7 +79,7 @@ module.exports = function execute(scope, register) {
             }
 
             var options = {
-                log: scope.log,
+                log: log,
                 path: formatUrl(opts.path, params),
                 method: opts.method || 'GET',
                 retries: false,
@@ -96,11 +96,11 @@ module.exports = function execute(scope, register) {
         };
     }
 
-    function createApi(scope, map, container) {
+    function createApi(map, container) {
         var name;
         for (name in map) {
             if (map.hasOwnProperty(name)) {
-                container[name] = createMethod(scope, map[name]);
+                container[name] = createMethod(map[name]);
             }
         }
     }
@@ -124,7 +124,7 @@ module.exports = function execute(scope, register) {
         this.options = options;
     }
 
-    createApi(scope, dtraceAPIMethods, Dtrace.prototype);
+    createApi(dtraceAPIMethods, Dtrace.prototype);
 
     api.createClient = function (call, machine, callback) {
         var certificates = call.req.session.dtrace;
@@ -146,5 +146,6 @@ module.exports = function execute(scope, register) {
         }, call));
     };
     api.DTRACE_CERT_PATH = DTRACE_CERT_PATH;
-    register('Dtrace', api);
+    exports.Dtrace = api;
+    done();
 };

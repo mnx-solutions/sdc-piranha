@@ -1,25 +1,22 @@
 'use strict';
 
-var config = require('easy-config');
 var moment = require('moment');
 var zHelpers = require('./lib/zuora-helpers');
 
-var isProduction = config.isProduction();
-
-module.exports = function execute(scope, callback) {
+module.exports = function execute(log, config) {
     var options = config.extend(config.zuora.rest, {
         url: config.zuora.rest.endpoint,
-        log: scope.log,
+        log: log,
         password: config.zuora.password,
         user: config.zuora.user
     });
 
     var zuora = require('zuora-rest').create(options);
 
-    var server = scope.api('Server');
-    var SignupProgress = scope.api('SignupProgress');
-    var Metadata = scope.api('Metadata');
-    var MaxMind = scope.api('MaxMind');
+    var server = require('../server').Server;
+    var Metadata = require('../account').Metadata;
+    var SignupProgress = require('../account').SignupProgress;
+    var MaxMind = require('../maxmind').MaxMind;
 
     server.onCall('listPaymentMethods', function (call) {
         zHelpers.getPaymentMethods(call, call.done.bind(call));
@@ -134,7 +131,7 @@ module.exports = function execute(scope, callback) {
 
         call.log[lvl](logObj, msg || 'Failed to save to zuora');
 
-        zHelpers.updateErrorList(scope, resp, function () {
+        zHelpers.updateErrorList(log, resp, function () {
             err.zuora = err.zuora || resp;
             call.done(err, true);
         });
@@ -444,7 +441,7 @@ module.exports = function execute(scope, callback) {
             },
 
             handler: function (call) {
-                zuora.subscription.create( {
+                zuora.subscription.create({
                     termType: 'EVERGREEN',
                     accountKey: call.req.session.userId,
                     invoiceCollect: call.data.invoiceCollect,
@@ -467,8 +464,8 @@ module.exports = function execute(scope, callback) {
                     zHelpers.zSoap.soap.query(queryString, function (queryErr, queryRes) {
                         if (queryRes && queryRes[0]) {
                             var acc = queryRes[0];
-                            if (acc.Category__c === 'Credit Card' || acc.Category__c === 'Invoice') {
-                                var batch = (acc.Category__c === 'Credit Card') ? 'Batch15' : 'Batch16';
+                            if (acc['Category__c'] === 'Credit Card' || acc['Category__c'] === 'Invoice') {
+                                var batch = (acc['Category__c'] === 'Credit Card') ? 'Batch15' : 'Batch16';
                                 if (batch !== acc.Batch) {
                                     var updateData = {
                                         Id: acc.Id,
@@ -548,9 +545,5 @@ module.exports = function execute(scope, callback) {
         });
     }
 
-    zHelpers.init(zuora, function (err, errType) {
-        callback();
-    });
+    zHelpers.init(zuora);
 };
-
-

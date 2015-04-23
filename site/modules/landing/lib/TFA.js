@@ -1,6 +1,6 @@
 'use strict';
-var metadata = require('../../modules/account/lib/metadata');
-var tfaProvider = require('./TFAProvider');
+var metadata = require('../../account/lib/metadata');
+var tfaProvider = require('../../tfa/lib/TFAProvider');
 var util = require('util');
 
 /**
@@ -41,7 +41,7 @@ var showInstructions = function (req, res, next) {
         return next();
     }
     res.render(
-        util.view("account/twofactorInstructions.ejs"),
+        util.view('account/twofactorInstructions.ejs'),
         {
             locals: {
                 qrcodeurl: getQRcode(req.session.visibleSecretKey, req.session.username)
@@ -55,7 +55,9 @@ var checkExampleCode = function (req, res, next) {
 
     var secretkey = req.session.visibleSecretKey;
     var testpass  = req.body.otpass;
-    if (!secretkey || !testpass) return next();
+    if (!secretkey || !testpass) {
+        return next();
+    }
 
     // if passes, then make it real..
     tfaProvider.generateOTP(secretkey, function(err, onetimepass) {
@@ -99,7 +101,7 @@ var isVerified = function(req, res, next) {
 var showChallenge = function (req, res, next) {
     var sess = req.session;
     if (sess.username && sess.tfaEnabled && !sess.tfaVerified) {
-        return res.render(util.view("account/twofactor.ejs"), {layout: util.view('layouts/layout_unauth')});
+        return res.render(util.view('account/twofactor.ejs'), {layout: util.view('layouts/layout_unauth')});
     }
     next();
 };
@@ -125,7 +127,6 @@ var verifyChallenge = function (req, res, next) {
         next();
     }
 };
-
 
 var generateOTP =  tfaProvider.generateOTP;
 var getQRcode =    tfaProvider.getQRcode;

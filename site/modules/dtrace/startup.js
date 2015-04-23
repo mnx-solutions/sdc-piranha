@@ -2,11 +2,10 @@
 
 var config = require('easy-config');
 
-var dtrace = function execute(scope) {
-    var Dtrace = scope.api('Dtrace');
-    var mantaClient = scope.api('MantaClient');
-    var server = scope.api('Server');
-    var httpServer = scope.get('httpServer');
+var dtrace = function execute() {
+    var Dtrace = require('../dtrace').Dtrace;
+    var mantaClient = require('../storage').MantaClient;
+    var server = require('../server').Server;
     var WebSocket = require('ws');
 
     var SCRIPTS_FILE_PATH = '~~/stor/.joyent/dtrace/scripts.json';

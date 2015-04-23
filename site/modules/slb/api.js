@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 var vasync = require('vasync');
 var restify = require('restify');
@@ -11,7 +11,7 @@ var sscInitialPingTimeout = 90 * 1000;
 var sscRegularPingTimeout = 20 * 1000;
 var sscOperationTimeout = 5 * 60 * 1000;
 var SSCMachineNotFound = 'SSC machine not found';
-module.exports = function execute(scope, register) {
+exports.init = function execute(log, config, done) {
     var api = {};
 
     api.init = function (mdata) {
@@ -29,8 +29,8 @@ module.exports = function execute(scope, register) {
     };
     var getMachinesList = api.getMachinesList = function getMachinesList(call, cb) {
         var cloud = call.cloud || call.req.cloud;
-        var datacenter = config.slb.ssc_datacenter || 'us-west-1';
-        cloud.separate(datacenter).listMachines({ credentials: true }, function (err, machines) {
+        var datacenter = config.slb['ssc_datacenter'] || 'us-west-1';
+        cloud.separate(datacenter).listMachines({credentials: true}, function (err, machines) {
             machines = (machines && machines.length) ? machines : [];
             machines.forEach(function (machine) {
                 machine.datacenter = datacenter;
@@ -66,7 +66,7 @@ module.exports = function execute(scope, register) {
             }
             var sscMachine = sscMachines[0];
             if (sscMachine.state === 'stopped') {
-                var machineApi = scope.api('Machine');
+                var machineApi = require('../machine').Machine;
                 var options = {
                     uuid: sscMachine.id,
                     datacenter: sscMachine.datacenter
@@ -126,7 +126,7 @@ module.exports = function execute(scope, register) {
                 var now = new Date().getTime();
                 var updated = new Date(sscMachine.updated).getTime();
                 if (sscMachine.state === 'running' && now - updated > 5 * 60 * 1000) {
-                    var machineApi = scope.api('Machine');
+                    var machineApi = require('../machine').Machine;
                     var options = {
                         uuid: sscMachine.id,
                         datacenter: sscMachine.datacenter
@@ -190,7 +190,7 @@ module.exports = function execute(scope, register) {
 
             call.req.log.info({fingerprint: result.fingerprint, primaryIp: result.primaryIp}, 'Creating SLBAPI client');
 
-            var sscUrl = config.slb.ssc_protocol + '://' + result.primaryIp + ':' + config.slb.ssc_port;
+            var sscUrl = config.slb['ssc_protocol'] + '://' + result.primaryIp + ':' + config.slb['ssc_port'];
             var sscClient = new SscJsonClient({
                 url: sscUrl,
                 rejectUnauthorized: false,
@@ -208,5 +208,6 @@ module.exports = function execute(scope, register) {
         });
     };
 
-    register('SLB', api);
+    exports.SLB = api;
+    done();
 };

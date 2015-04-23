@@ -8,8 +8,8 @@ var express = require('express');
 var vasync = require('vasync');
 var formidable = require('formidable');
 
-module.exports = function (scope, app) {
-    var Manta = scope.api('MantaClient');
+module.exports = function (app) {
+    var Manta = require('./').MantaClient;
 
     var filesInProgress = {};
     var waitCallbacks = {};
@@ -163,7 +163,7 @@ module.exports = function (scope, app) {
                             res.json({status: 'error', message: error.message});
                             return;
                         }
-                        res.send(error.statusCode || 500, error.message);
+                        res.sendStatus(error.statusCode || 500).send(error.message);
                         return;
                     }
                     handleFinishedDownload(fullPath);

@@ -1,5 +1,6 @@
 'use strict';
 
-module.exports = function execute(scope, register) {
-    register('TFA', require('../../modules/account/lib/metadata'));
+exports.init = function execute(log, config, done) {
+    exports.TFA = require('../../modules/account/lib/metadata');
+    done();
 };
