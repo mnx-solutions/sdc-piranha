@@ -1,4 +1,5 @@
 'use strict';
+var config = require('easy-config');
 
 module.exports = function dashboardMiddleware(req, res, next) {
     res.locals.currentYear = new Date().getFullYear();

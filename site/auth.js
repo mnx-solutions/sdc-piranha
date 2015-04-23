@@ -4,7 +4,8 @@ var additionalDatacenters = {};
 if (config.features.sdcDocker === 'enabled' && config.sdcDocker.fullDataCenter) {
     additionalDatacenters[config.sdcDocker.datacenter] = 'https://' + config.sdcDocker.datacenter + '.api.joyentcloud.com';
 }
-var SmartCloud = require('../lib/smartcloud');
+var SmartCloudLib = require('../lib/smartcloud');
+var smartCloud;
 
 module.exports = function mainAuthMiddleware(req, res, next) {
     //req.log.info({url: req.url, locals: res.locals.js}, 'Entering auth middleware');
@@ -44,7 +45,7 @@ module.exports = function mainAuthMiddleware(req, res, next) {
 
     // we have a token, create a new cloudapi object with this
     if (!req.cloud) {
-        var smartCloud = new SmartCloud({
+        smartCloud = smartCloud || new SmartCloudLib({
             log: req.log,
             api: config.cloudapi
         });

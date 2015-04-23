@@ -1,5 +1,7 @@
 var server = require('./lib/http-server');
 var loadAPIs = require('./lib/api');
+var version = require('./lib/version');
+
 var gulp = require('gulp');
 var fs = require('fs');
 var path = require('path');
@@ -182,7 +184,6 @@ function normalizeMiddleware(middleware) {
         .filter(function (middleware) {
             return typeof middleware === 'function';
         });
-
 }
 
 function loadDir(root, dir, out) {
@@ -387,8 +388,9 @@ function registerCache(options) {
     };
     return sync(function (cache, done) {
         var filename = path.join.apply(path, [].concat(cachePath, path.basename(cache.path)));
+        filename = path.join('/', filename);
         var localName = path.extname(filename).substr(1);
-        options.app.get('/' + filename, function (req, res) {
+        options.app.get(filename, function (req, res) {
             res.set('Content-Type', contentTypes[localName]);
             if (config.assets[localName].gzip) {
                 res.set('Content-Encoding', 'gzip');
@@ -398,7 +400,7 @@ function registerCache(options) {
         });
 
         options.app.locals[localName].push({
-            _url: filename
+            _url: path.join(options.config.route, filename)
         });
         done();
     });
