@@ -51,7 +51,6 @@ module.exports = function mainAuthMiddleware(req, res, next) {
         });
         smartCloud.cloud({token: req.session.token,
             userId: req.session.userId,
-            subId: req.session.subId,
             additionalDatacenters: additionalDatacenters
         }, function (err, cloud) {
             // Ignore authorization error for sub-user
