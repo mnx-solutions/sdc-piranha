@@ -1,0 +1,19 @@
+<div class="change-package" data-ng-click="choosePackage()">Change</div>
+<div class="package-widget">
+    <div class="price-info">
+        <div data-ng-show="pkg.price_month"><span class="package-price month-price">{{pkg.price_month | currencyFormat}}</span> / mo</div>
+        <div data-ng-show="pkg.price"><span class="package-price">{{pkg.price | currencyFormat:true}}</span> / hour</div>
+    </div>
+    <div class="detail-info-column">
+        <div>{{pkg.memory | sizeFormat}}</div>
+        ram
+    </div>
+    <div class="detail-info-column">
+        <div>{{pkg.disk | sizeFormat}}</div>
+        disk
+    </div>
+    <div class="detail-info-column">
+        <div>{{pkg.vcpus}}</div>
+        vcpus
+    </div>
+</div>

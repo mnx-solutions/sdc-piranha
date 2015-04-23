@@ -1,0 +1,47 @@
+<div class="modal-dialog modal-dialog-choose-package">
+    <div class="modal-content">
+        <div tabindex="-1" data-backdrop="static" data-focus-on="button">
+            <div class="modal-header message">
+                <h5><i class="glyphicon glyphicon-info-sign"></i><b>Choose package</b></h5>
+            </div>
+            <div class="modal-body">
+                <div class="accordion-container">
+                    <div class="accordion-package-title">
+                        <span class="span-name">NAME</span>
+                        <span class="span-specification">SPECIFICATION</span>
+                        <span class="span-price">PRICE</span>
+                    </div>
+                    <div class="panel-group accordion-package-select" id="packagesAccordion">
+                        <div class="panel panel-default" data-ng-repeat="packageType in packageTypes">
+                            <div class="panel-heading">
+                                <a class="accordion-toggle toggle-icon" data-toggle="collapse" data-parent="#packagesAccordion"
+                                   data-target="#collapse_{{$index}}">
+                                    {{packageType}}
+                                    <span class="accordion-package-count">{{(packages | filter:filterPackages(packageType)).length}}</span>
+                                </a>
+                            </div>
+                            <div id="collapse_{{$index}}" class="panel-collapse collapse" data-ng-class="{'in': selectedPackage.group == packageType}">
+                                <div class="panel-body">
+                                    <div class="package-info" data-ng-repeat="package in (packages | filter:filterPackages(packageType) | orderBy:sortPackages)"
+                                         data-ng-click="selectPackage(package.id)"
+                                         data-ng-checked="selectedPackage.id == package.id"
+                                         data-ng-class="{active: selectedPackage.id == package.id}">
+                                        <div class="short-name">{{package.short_name}}</div>
+                                        <div class="memory"><p data-ng-show="package.memory < 1024">Micro </p> {{package.memory | sizeFormat}} RAM</div>
+                                        <div class="cpu">{{package.vcpus}} vCPUs</div>
+                                        <div class="disk">{{package.disk | sizeFormat}} Disk</div>
+                                        <div class="price" data-ng-show="package.full_price || package.price">${{package.full_price || package.price}} <p data-translate>per hour</p></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button data-ng-click="close()" data-button-focus="false" data-label="Cancel" class="btn grey-new effect-orange-button">Cancel</button>
+                <button data-ng-click="choose()" data-button-focus="true" data-label="Choose" class="btn orange">Choose</button>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1808,6 +1808,24 @@ var Docker = function execute(log, config) {
             });
         }
     });
+
+    server.onCall('SdcPackageList', function (call) {
+        if (!config.sdcDocker.packagePrefix) {
+            return call.done(null, []);
+        }
+        var options = {
+            datacenter: config.sdcDocker.datacenter
+        };
+        machine.PackageList(call, options, function (error, list) {
+            if (error) {
+                return call.done(error);
+            }
+            list = list.filter(function (pkg) {
+                return pkg.name.indexOf(config.sdcDocker.packagePrefix) !== -1;
+            });
+            call.done(null, list);
+        });
+    });
 };
 
 if (!config.features || config.features.docker !== 'disabled') {
