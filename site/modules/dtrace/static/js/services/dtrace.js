@@ -76,33 +76,6 @@
                 }).promise;
             };
 
-            service.execute = function (data) {
-                var deferred = $q.defer();
-                serverTab.call({
-                    name: 'DtraceExecute',
-                    data: {host: data.host, dtraceObj: data.dtraceObj},
-                    done: function (err, job) {
-                        if (err) {
-                            deferred.reject(err);
-                        } else {
-                            var data = job.__read();
-                            var a = document.createElement('a');
-                            a.href = data.path;
-                            a.protocol = a.protocol === 'http:' ? 'ws:' : 'wss:';
-                            deferred.resolve({id: data.id, path: a.href});
-                        }
-                    }
-                });
-                return deferred.promise;
-            };
-
-            service.close = function (data) {
-                return serverTab.call({
-                    name: 'DtraceClose',
-                    data: data,
-                }).promise;
-            };
-
             service.reportError = function (errMessage, logMessage) {
                 logMessage = logMessage || errMessage;
                 PopupDialog.errorObj(errMessage);
