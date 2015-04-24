@@ -20,7 +20,7 @@
             $scope.usageDataFeatureEnabled = $rootScope.features.usageData === 'enabled';
             $scope.mantaEnabled = $rootScope.features.manta === 'enabled';
             $scope.dockerEnabled = $rootScope.features.docker === 'enabled';
-            $scope.mantaMemory = {};
+            $scope.mantaMemory = {value: ''};
             $scope.systemStatusTopics = [];
 
             $scope.forums = {
@@ -66,6 +66,7 @@
                 $scope.account = result[0] || {};
                 var tasks = [];
                 if ($scope.account.provisionEnabled) {
+                    $scope.mantaMemory = {value: INITIAL_COUNT_VALUE};
                     if ($rootScope.features.support === 'enabled') {
                         $scope.supportTile = [];
                         Support.support(function (error, supportPackages) {
@@ -75,7 +76,9 @@
                         });
                     }
                     $scope.machines = result[2] || [];
-
+                    if ($scope.machines.length === 0) {
+                        $scope.runningcount = $scope.othercount = 0;
+                    }
 
                     if ($scope.slbFeatureEnabled) {
                         tasks.push($q.when(slbService.getBalancers()));
