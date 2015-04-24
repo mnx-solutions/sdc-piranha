@@ -59,6 +59,13 @@
             }
         };
 
+        service.getMachineType = function (machine, image) {
+            if (machine.image === image.id && image.name === 'docker-layer') {
+                machine.type = 'Docker Container';
+            }
+            return machine.type;
+        };
+
         function wrapMachine (machine) {
             var p = null;
             var i = null;
