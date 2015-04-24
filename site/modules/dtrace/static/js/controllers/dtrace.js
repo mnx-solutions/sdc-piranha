@@ -28,7 +28,7 @@
                             ' self->syscall_entry_ts[probefunc] ) / 1000, 0, 63, 2);self->syscall_entry_ts[probefunc] = 0;}';
                     },
                     'flamegraph': function (script) {
-                        return "-n 'profile-97 /" + (script.pid ? (script.execname ? 'execname == /"' + script.pid + '/"'  : 'pid == ' + script.pid) : 'arg1') + " / { @[jstack(150, 8000)] = count(); } tick-60s { exit(0); }'"
+                        return "-n 'profile-97 /" + (script.pid ? (script.execname ? 'execname == "' + script.pid + '"'  : 'pid == ' + script.pid) : 'arg1') + "/ { @[jstack(150, 8000)] = count(); } tick-60s { exit(0); }'"
                     }
                 };
 
@@ -43,7 +43,6 @@
                 var EXECNAME_PATTERN = /\$EXECNAME/g;
                 var FLAME_GRAPH_TITLE = 'Flame Graph';
                 var FLAME_GRAPH_SCRIPT_NAME = 'syscall for process';
-                var dtraceId;
                 var websocket;
                 var type;
 
@@ -155,12 +154,9 @@
                 };
 
                 function closeWebsocket() {
-                    if (dtraceId && $scope.options.hostIp) {
+                    if (websocket) {
                         $scope.processing = true;
-                        DTrace.close({host: $scope.options.hostIp, id: dtraceId}).then(function () {}, function (err) {
-                            DTrace.reportError(err);
-                            $scope.processing = false;
-                        });
+                        websocket.close();
                     }
                     $scope.isRunning = false;
                     $scope.options.loading = false;
@@ -194,46 +190,54 @@
                         $scope.isRunning = $scope.processing = true;
 
                         $scope.options.loading = true;
-                        DTrace.execute({
-                            host: $scope.options.hostIp,
-                            dtraceObj: JSON.stringify({type: type, message: script.body || getDscript()})
-                        }).then(function (data) {
-                            websocket = new WebSocket(data.path);
-                            dtraceId = data.id;
-                            $scope.data = '';
 
-                            websocket.onclose = function () {
-                                if (websocket && websocket.readyState !== WebSocket.CLOSED) {
-                                    websocket.close();
-                                }
-                                $scope.$apply(function () {
-                                    $scope.processing = false;
-                                });
-                            };
+                        var link = document.createElement('a');
+                        link.href = '/main/dtrace/exec/' + window.uuid.v4() + '/' + $scope.options.hostIp;
 
-                            websocket.onerror = function (error) {
-                                DTrace.reportError(error, 'websocket error: ' + error);
-                                closeWebsocket();
-                            };
+                        // Magical setting protocol for the href.
+                        link.protocol = link.protocol === 'http:' ? 'ws:' : 'wss:';
 
-                            websocket.onmessage = function (event) {
-                                if (event.data !== 'ping') {
-                                    if (event.data !== 'started') {
-                                        $scope.$apply(function () {
-                                            $scope.options.loading = false;
-                                            $scope.data = event.data;
-                                        });
+                        websocket = new WebSocket(link.href);
+
+                        $scope.data = '';
+
+                        websocket.onclose = function () {
+                            if (websocket && websocket.readyState !== WebSocket.CLOSED) {
+                                websocket.close();
+                            }
+                            $scope.$apply(function () {
+                                $scope.processing = false;
+                            });
+                        };
+
+                        websocket.onerror = function (error) {
+                            console.log(error);
+                            DTrace.reportError(error, 'websocket error: ' + error);
+                            closeWebsocket();
+                        };
+
+                        websocket.onmessage = function (event) {
+                            var message = JSON.stringify({type: type, message: script.body || getDscript()});
+                            if (event.data === 'connection') {
+                                return websocket.send(message);
+                            }
+                            if (event.data !== 'ping') {
+                                if (event.data !== 'started') {
+                                    $scope.$apply(function () {
+                                        $scope.options.loading = false;
+                                        $scope.data = event.data;
+                                    });
+                                    if (type === 'flamegraph') {
+                                        websocket.send(message);
                                     }
-                                    if ($scope.isRunning) {
-                                        $scope.$apply(function () {
-                                            $scope.processing = false;
-                                        });
-                                    }
                                 }
-                            };
-                        }, function (err) {
-                            DTrace.reportError(err, 'websocket error: ' + err);
-                        });
+                                if ($scope.isRunning) {
+                                    $scope.$apply(function () {
+                                        $scope.processing = false;
+                                    });
+                                }
+                            }
+                        };
                     }
                 };
 

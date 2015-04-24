@@ -115,12 +115,6 @@ exports.init = function execute(log, config, done) {
         },
         listProcesses: {
             path: '/process-list'
-        },
-        setup: {
-            path: '/setup/:uuid'
-        },
-        close: {
-            path: '/close/:uuid'
         }
     };
 
