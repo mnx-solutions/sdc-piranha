@@ -60,8 +60,12 @@ exports.init = function execute(log, config, done) {
                 return callback(error);
             }
             call.req.session.dtrace = certificates;
-            call.req.session.save();
-            done(certificates);
+            call.req.session.save(function (error) {
+                if (error) {
+                    return call.done(error);
+                }
+                done(certificates);
+            });
         });
     };
 

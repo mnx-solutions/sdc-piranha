@@ -1160,8 +1160,12 @@ exports.init = function execute(log, config, done) {
                     return callback(error);
                 }
                 call.req.session.docker = certificates;
-                call.req.session.save();
-                done(certificates);
+                call.req.session.save(function (error) {
+                    if (error) {
+                        return call.done(error);
+                    }
+                    done(certificates);
+                });
             });
         });
     };
@@ -1197,8 +1201,8 @@ exports.init = function execute(log, config, done) {
             });
             return;
         }
-        var client = scope.api('MantaClient').createClient(call);
-        client.safePutFileContents(SDC_DOCKER_PATH + '/.status-' + machineId, JSON.stringify({status: status}), function (error) {
+        var client = require('../storage').MantaClient.createClient(call);
+        client.safePutFileContents(SDC_DOCKER_PATH + '/.status-' + machineId, JSON.stringify({status: status}), function () {
             return callback();
         });
     };

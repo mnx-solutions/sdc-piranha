@@ -79,7 +79,7 @@ server.use(bodyParser.json());
 server.use(cookieParser());
 
 server.use(session({
-    resave: true,
+    resave: false,
     saveUninitialized: true,
     store: new RedisStore({
         host: config.redis.host,
