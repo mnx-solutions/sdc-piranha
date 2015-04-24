@@ -693,6 +693,7 @@ span.btn-success
 #collapse_exec .terminal {
     margin-top: 5px;
     width: 578px;
+    height: auto;
 }
 .toggle-graf-width
 {
