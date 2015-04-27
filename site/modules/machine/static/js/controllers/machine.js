@@ -231,13 +231,14 @@
                 $scope.dataset = Image.getImage(m.datacenter, m.image);
                 reloadPackages(m.package, m.datacenter);
 
-                $scope.dataset.then(function (ds) {
-                    $scope.dataset = ds;
-                    $scope.imageCreateNotSupported = ds.imageCreateNotSupported || m.imageCreateNotSupported;
-                    if (ds.tags && ds.tags['default_user']) {
-                        $scope.defaultSshUser = ds.tags['default_user'];
-                    } else if (!ds.public && ds.origin) {
-                        Image.image({datacenter: m.datacenter, id: ds.origin}).then(function (dataset) {
+                $scope.dataset.then(function (image) {
+                    $scope.dataset = image;
+                    $scope.machine.type = Machine.getMachineType($scope.machine, image);
+                    $scope.imageCreateNotSupported = image.imageCreateNotSupported || m.imageCreateNotSupported;
+                    if (image.tags && image.tags['default_user']) {
+                        $scope.defaultSshUser = image.tags['default_user'];
+                    } else if (!image.public && image.origin) {
+                        Image.image({datacenter: m.datacenter, id: image.origin}).then(function (dataset) {
                             if (dataset.tags && dataset.tags['default_user']) {
                                 $scope.defaultSshUser = dataset.tags['default_user'];
                             }
@@ -246,9 +247,9 @@
                         });
                     }
 
-                    var type = ds.type;
+                    var type = image.type;
 
-                    switch (ds.type) {
+                    switch (image.type) {
                         case 'virtualmachine':
                             type = 'kvm';
                             break;
