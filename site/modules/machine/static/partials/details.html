@@ -209,10 +209,13 @@
                                 It may not always be possible to resize based on the constraints of your current server location.
                             </p>
 
-                            <p data-ng-show="datasetType != 'smartos' && machine.type != 'smartmachine' " data-translate>
+                            <p data-ng-show="datasetType == 'kvm'" data-translate>
                                 To resize Linux or Windows instances, you will need to create a instance, migrate and then stop the old instance.
                             </p>
-                            <div data-ng-show="datasetType == 'smartos' || machine.type == 'smartmachine' " class="row">
+                            <p data-ng-show="machine.type == 'Docker Container'" data-translate>
+                                Resize of Docker Container instances presently is not supported.
+                            </p>
+                            <div data-ng-show="machine.type != 'Docker Container' && datasetType == 'smartos' || machine.type == 'smartmachine'" class="row">
                                 <div class="row" data-ng-show="package">
                                     <div>
                                         <p data-translate><b>Current Instance type</b></p>
