@@ -42,16 +42,25 @@
                         );
                     }
 
-                    function getKeyErrorMessage(sshKey) {
+                    function getKeyErrorMessage(keyData, keyName) {
                         var sshKeyExists = false;
+                        var sshKeyNameExists = false;
                         var message = "The key you've imported is not a public key.";
                         if ($scope.keys.length) {
                             sshKeyExists = $scope.keys.some(function (keyData) {
-                                return sshKey === keyData.key.replace(/[\r\n]/g, '');
+                                return keyData === keyData.key.replace(/[\r\n]/g, '');
                             });
+                            if (!sshKeyExists) {
+                                sshKeyNameExists = $scope.keys.some(function (keyData) {
+                                    return keyName === keyData.name;
+                                });
+                            }
                         }
+
                         if (sshKeyExists) {
                             message = 'This key already exists.';
+                        } else if (sshKeyNameExists) {
+                            message = 'The ssh key named "' + keyName + '" already exists.'
                         }
                         return message;
                     }
@@ -167,7 +176,7 @@
                                                 errorCallback(message);
                                                 return;
                                             }
-                                            message = getKeyErrorMessage(result.data.keyData);
+                                            message = getKeyErrorMessage(result.data.keyData, result.data.keyName);
                                             errorCallback(message + additionalMessage);
                                         });
                                     } else {
@@ -226,7 +235,7 @@
                                     showPopupDialog('error', 'Error', message);
                                     return;
                                 }
-                                message = getKeyErrorMessage(key.data);
+                                message = getKeyErrorMessage(key.data, key.name);
                                 showPopupDialog('error', 'Error', message + additionalMessage);
                             }
                         );
