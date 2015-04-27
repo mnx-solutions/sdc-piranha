@@ -15,7 +15,14 @@
                     var opts = {
                         host: $scope.options.machine,
                         options: {
-                            id: $scope.options.containerId,
+                            User: '',
+                            Privileged: false,
+                            Tty: true,
+                            Container: $scope.options.containerId,
+                            AttachStdin: true,
+                            AttachStderr: true,
+                            AttachStdout: true,
+                            Detach: false,
                             Cmd: Docker.parseCmd($scope.execCmd)
                         }
                     };
@@ -33,7 +40,12 @@
                         a.href = wsPath;
                         a.protocol = a.protocol === 'http:' ? 'ws:' : 'wss:';
                         var socket = new WebSocket(a.href);
+
                         socket.onmessage = function (event) {
+                            if (event.data === 'ready') {
+                                socket.send(JSON.stringify(opts));
+                                return;
+                            }
                             terminal.write(event.data);
                         };
                         terminal.on('data', function (data) {
@@ -47,11 +59,13 @@
                         };
                     });
                 };
+
                 $scope.pressEnter = function (keyEvent) {
                     if (keyEvent.which === 13 && $scope.execCmd) {
                         $scope.execute();
                     }
                 };
+
                 $scope.$watch('options', function (opts) {
                     if (opts) {
                         Docker.terminalPing(opts).then(function () {
@@ -61,11 +75,9 @@
                         });
                     }
                 });
+
                 $scope.$watch('options.containerState', function (containerState) {
-                    $scope.isContainerRunning = false;
-                    if (containerState === 'running') {
-                        $scope.isContainerRunning = true;
-                    }
+                    $scope.isContainerRunning = containerState === 'running';
                 });
             }
         };

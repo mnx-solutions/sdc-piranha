@@ -20,6 +20,8 @@ var cache = require('lru-cache')({
     maxAge: 10 * 60
 });
 
+var DOCKER_TCP_PORT = 4240;
+var DOCKER_HUB_HOST = 'https://index.docker.io';
 var SUBUSER_LOGIN = 'docker';
 var SUBUSER_REGISTRY_LOGIN = SUBUSER_LOGIN + '_registry';
 var SUBUSER_OBJ_NAME = 'docker';
@@ -288,7 +290,13 @@ exports.init = function execute(log, config, done) {
         execStart: {
             method: 'POST',
             path: '/exec/:id/start',
-            raw: true
+            raw: true,
+            headers: {
+                'User-Agent': 'Docker-Client/1.6.0',
+                Connection: 'Upgrade',
+                'Content-Type': 'text/plain',
+                Upgrade: 'tcp'
+            }
         },
         kill         : {
             auditType: 'container',
@@ -1556,7 +1564,8 @@ exports.init = function execute(log, config, done) {
 
     api.SUBUSER_LOGIN = SUBUSER_LOGIN;
     api.SUBUSER_REGISTRY_LOGIN = SUBUSER_REGISTRY_LOGIN;
-
+    api.DOCKER_TCP_PORT = DOCKER_TCP_PORT;
+    api.DOCKER_HUB_HOST = DOCKER_HUB_HOST;
     exports.Docker = api;
     done();
 };

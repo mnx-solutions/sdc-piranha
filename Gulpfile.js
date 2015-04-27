@@ -496,7 +496,7 @@ function error(err, req, res, next) {
     } else if (err.statusCode === 403 && err.message && err.message.indexOf('getuser') !== -1) {
         logger.info('Not authorized to access this path', err);
     } else {
-        logger.error('Request ended with error', err);
+        logger.error({message: err.message, stack: err.stack}, 'Request ended with error');
     }
     displayError(err, req, res, next);
 }

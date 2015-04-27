@@ -840,7 +840,7 @@ var Docker = function execute(log, config) {
         var defaultRegistry = {
             id: 'default',
             api: 'v1',
-            host: DOCKER_HUB_HOST,
+            host: Docker.DOCKER_HUB_HOST,
             port: '443',
             username: '',
             type: 'global'
@@ -1117,7 +1117,7 @@ var Docker = function execute(log, config) {
                             return call.done(error, {images: []});
                         }
                         var results = response.results;
-                        if (registryRecord.host === DOCKER_HUB_HOST) {
+                        if (registryRecord.host === Docker.DOCKER_HUB_HOST) {
                             results = results.filter(function (image) {
                                 return image.name.indexOf(registryRecord.username) === 0;
                             });
@@ -1714,7 +1714,7 @@ var Docker = function execute(log, config) {
                 if (!data.machine.isSdc) {
                     var dockerUrl = client.options.url;
                     var parsedUrl = url.parse(dockerUrl);
-                    parsedUrl.port = DOCKER_TCP_PORT;
+                    parsedUrl.port = Docker.DOCKER_TCP_PORT;
                     delete parsedUrl.host;
                     client.options.url = url.format(parsedUrl);
                 }
@@ -1727,83 +1727,17 @@ var Docker = function execute(log, config) {
 
     server.onCall('DockerExecute', {
         verify: function (data) {
-            return data && data.host && data.host.primaryIp && data.options && data.options.Cmd && data.options.id;
+            return data && data.host && data.host.primaryIp && data.options;
         },
         handler: function (call) {
-            var data = call.data;
-            var execOpts = {
-                User: '',
-                Privileged: false,
-                Container: data.options.id,
-                Detach: false,
-                AttachStdin: true,
-                AttachStdout: true,
-                AttachStderr: true,
-                Tty: true,
-                Cmd: data.options.Cmd
-            };
-            Docker.createClient(call, data.host, function (error, client) {
-                if (error) {
-                    return call.done(error);
-                }
-                client.exec(util._extend({id: data.options.id}, execOpts), function (error, result) {
+            var host = call.data.host;
+            var execOpts = call.data.options;
+            Docker.createClient(call, host, function (error, client) {
+                client.exec(util._extend({id: execOpts.Container}, execOpts), function (error, result) {
                     if (error) {
                         return call.done(error);
                     }
                     call.done(null, '/main/docker/exec/' + result.Id);
-                    var wss = new WebSocket.Server({
-                        server: httpServer,
-                        path: '/main/docker/exec/' + result.Id
-                    });
-                    wss.once('connection', function (socket) {
-                        function closeSocket() {
-                            socket.close();
-                            wss.close();
-                        }
-                        var dockerUrl = client.options.url;
-                        var parsedUrl = url.parse(dockerUrl);
-                        parsedUrl.port = DOCKER_TCP_PORT;
-                        delete parsedUrl.host;
-                        client.options.url = url.format(parsedUrl);
-                        client.execStart(util._extend({id: result.Id}, execOpts), function (error, req) {
-                            client.options.url = dockerUrl;
-                            if (error) {
-                                socket.send(error.message);
-                                closeSocket();
-                                return;
-                            }
-                            req.on('result', function (err, execRes) {
-                                if (err) {
-                                    socket.send(error.message);
-                                    closeSocket();
-                                    return;
-                                }
-                                socket.on('message', function (message) {
-                                    req.connection.write(message.toString('ascii'));
-                                });
-                                socket.on('error', closeSocket);
-                                execRes.on('data', function (data) {
-                                    socket.send(data.toString());
-                                });
-                                execRes.on('error', function (error) {
-                                    socket.send(error.message);
-                                    closeSocket();
-                                });
-                                execRes.on('end', closeSocket);
-                            });
-                            req.write(JSON.stringify({
-                                User: '',
-                                Privileged: false,
-                                Container: data.options.id,
-                                Detach: false,
-                                AttachStdin: true,
-                                AttachStdout: true,
-                                AttachStderr: true,
-                                Tty: true,
-                                Cmd: data.options.Cmd
-                            }));
-                        });
-                    });
                 });
             });
         }
