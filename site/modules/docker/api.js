@@ -21,6 +21,10 @@ var cache = require('lru-cache')({
     maxAge: 10 * 60
 });
 
+var mantaPrivateKey;
+if (config.manta.privateKey) {
+    mantaPrivateKey = fs.readFileSync(config.manta.privateKey, 'utf-8');
+}
 var DOCKER_TCP_PORT = 4240;
 var DOCKER_HUB_HOST = 'https://index.docker.io';
 var SUBUSER_LOGIN = 'docker';
@@ -105,7 +109,8 @@ function createCallback(dockerInstance, opts, auditParams, callback) {
             auditParams.error = true;
             auditParams.errorMessage = error.body && error.body.error || error.message || error;
         }
-        if (dockerInstance.auditor && (opts.auditType === 'docker' || (opts.auditType && opts.auditType !== 'docker' && (auditParams.id || auditParams.Id)))) {
+        if (!auditParams.silent && dockerInstance.auditor && (opts.auditType === 'docker' ||
+            (opts.auditType && opts.auditType !== 'docker' && (auditParams.id || auditParams.Id)))) {
             if (!(dockerInstance.options.host && dockerInstance.options.host.id)) {
                 req.log.warn({opts: opts, dockerOpts: dockerInstance.options}, 'Host not defined');
             } else {
@@ -144,6 +149,10 @@ function createMethod(log, opts, selfName) {
 
         var self = this;
         var auditParams = JSON.parse(JSON.stringify(params));
+        if (params.silent) {
+            auditParams.silent = true;
+            delete params.silent;
+        }
         var path = opts.path;
         if (this.options.isSdc && path !== '/_ping') {
             path = '/v2' + path;
@@ -207,7 +216,6 @@ function createApi(log, map, container) {
 
 exports.init = function execute(log, config, done) {
     var disableTls = Boolean(config.docker && config.docker.disableTls);
-    var queuedRequests = {};
     var api = {};
 
     // http://docs.docker.com/reference/api/docker_remote_api_v1.14/

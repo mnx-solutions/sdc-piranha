@@ -60,24 +60,24 @@
             };
 
             var statsTimerControl = function (start) {
+                clearInterval(timerUpdateStats);
                 if (!start) {
-                    clearInterval(timerUpdateStats);
                     return;
                 }
 
                 timerUpdateStats = setInterval(function () {
                     if ($scope.machine && $scope.container && $scope.container.infoId && ($location.path() === '/docker/container/' + hostId + '/' + container.Id)) {
-                        Docker.inspectContainer(container).then(function (info) {
+                        Docker.inspectContainer(container, {silent: true}).then(function (info) {
                             $scope.container.state = Docker.getContainerState(info);
-                        }, function (err) {
-                            PopupDialog.errorObj(err);
                         });
-                        updateContainerStats({host: $scope.machine, options: {'num_stats': 2, id: $scope.container.infoId}}, function (error) {
-                            if (error === 'CAdvisor unavailable') {
-                                $scope.cadvisorUnavailable = true;
-                                clearInterval(timerUpdateStats);
-                            }
-                        });
+                        if (!$scope.machine.isSdc) {
+                            updateContainerStats({host: $scope.machine, options: {'num_stats': 2, id: $scope.container.infoId}}, function (error) {
+                                if (error === 'CAdvisor unavailable') {
+                                    $scope.cadvisorUnavailable = true;
+                                    clearInterval(timerUpdateStats);
+                                }
+                            });
+                        }
                     } else {
                         clearInterval(timerUpdateStats);
                     }

@@ -5,6 +5,11 @@ var manta = require('manta');
 var fs = require('fs');
 var MemoryStream = require('memorystream');
 var vasync = require('vasync');
+var apiKey = fs.readFileSync(config.cloudapi.keyPath, 'utf8');
+var mantaPrivateKey;
+if (config.manta.privateKey) {
+    mantaPrivateKey = fs.readFileSync(config.manta.privateKey, 'utf8');
+}
 
 exports.init = function execute(log, config, done) {
     function safeMkdirp(directory, opts, callback) {
@@ -220,7 +225,7 @@ exports.init = function execute(log, config, done) {
 
         var options = {
             sign: manta.privateKeySigner({
-                key: fs.readFileSync(config.cloudapi.keyPath, 'utf8'),
+                key: apiKey,
                 keyId: config.cloudapi.keyId,
                 user: config.cloudapi.username
             }),
@@ -240,9 +245,9 @@ exports.init = function execute(log, config, done) {
             options.user = call.req.session.userName;
         }
 
-        if (config.manta.privateKey) {
+        if (mantaPrivateKey) {
             options.sign = manta.privateKeySigner({
-                key: fs.readFileSync(config.manta.privateKey, 'utf8'),
+                key: mantaPrivateKey,
                 keyId: config.manta.keyId,
                 user: config.manta.user,
                 subuser: config.manta.subuser

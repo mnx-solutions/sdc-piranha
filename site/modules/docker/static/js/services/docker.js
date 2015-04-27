@@ -379,11 +379,11 @@
         };
 
         containerActions.forEach(function (action) {
-            service[action + 'Container'] = function (container) {
+            service[action + 'Container'] = function (container, opts) {
                 var options = {
                     direct: true,
                     host: {primaryIp: container.primaryIp, id: container.hostId, isSdc: container.isSdc},
-                    options: container.options || {id: container.Id}
+                    options: angular.extend({}, container.options || {id: container.Id}, opts)
                 };
                 if (action === 'remove') {
                     options.container = container;
@@ -879,7 +879,7 @@
                     }
                 });
             }
-            return  ports.length ? ports.join(', ') : '';
+            return ports.join(', ');
         };
 
         service.getContainersCount = function (tritonOnly) {
