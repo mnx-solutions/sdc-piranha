@@ -35,7 +35,7 @@
             </select>
         </div>
         <div class="btn-group btn-group-filter" data-ng-show="filterModel.key != 'No filter'">
-            <select type="hidden" data-select-two id="filterPropertyValue" class="filter-select" data-item="prop" data-select="filterModel.value" data-fn="selectFilterValue">
+            <select type="hidden" data-select-two id="filterPropertyValue" class="filter-select" data-item="prop" data-select="formatFilterValue(filterModel.value)" data-fn="selectFilterValue">
                 <option data-ng-repeat="prop in filterValues[filterModel.key]" value="{{prop}}">
                     {{formatFilterValue(prop)}}
                 </option>
