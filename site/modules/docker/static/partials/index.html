@@ -3,10 +3,17 @@
         <h3 class="page-title">Docker Dashboard
             <span class="preview-sticker">Preview</span>
         </h3>
-        <div class="page-title-btn icons tooltip-hover" data-placement="top" data-html="true" data-toggle="tooltip" data-original-title="Not implemented.">
-            <span class="pricing"></span>
-            <span class="terminal"></span>
-            <span class="faq"></span>
+        <div class="page-title-btn icons tooltip-hover" data-placement="top" data-html="true">
+            <a href="https://www.joyent.com/public-cloud/pricing" target="_blank" title="Pricing">
+                <span class="pricing"></span></a>
+            <a href="https://github.com/joyent/sdc-docker/blob/master/docs/troubleshooting.md" target="_blank" title="Pricing" data-ng-hide="!isTritonTab">
+                <span class="terminal"></span></a>
+            <a href="https://docs.joyent.com/jpc/managing-docker-containers/access-your-jpc-docker-hosts-from-the-docker-cli" target="_blank" title="Pricing" data-ng-hide="isTritonTab">
+                <span class="terminal"></span></a>
+            <a href="https://gist.github.com/misterbisson/e9bfeacc6a41185b4f49" target="_blank" title="Pricing" data-ng-hide="!isTritonTab">
+                <span class="faq"></span></a>
+            <a href="https://docs.joyent.com/jpc/managing-docker-containers" target="_blank" title="Pricing" data-ng-hide="isTritonTab">
+                <span class="faq"></span></a>
         </div>
     </div>
     <div class="loading-large" data-ng-show="loading"></div>
