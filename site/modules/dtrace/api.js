@@ -12,6 +12,7 @@ var startupScript = fs.readFileSync(__dirname + '/data/startup.sh', 'utf8');
 
 var DTRACE_PORT = 8000;
 var DTRACE_CERT_PATH = '~~/stor/.joyent/dtrace';
+var UNAUTHORIZED_ERROR = 'UnauthorizedError';
 
 var requestMap = {
     GET: 'get',
@@ -93,7 +94,8 @@ exports.init = function execute(log, config, done) {
             var client = restify.createJsonClient(this.options);
             client[requestMap[options.method]](options, function(err, req, res, data) {
                 if (err && err.statusCode !== 200) {
-                    return callback(new Error(err.message || 'DTrace host is Unreachable'));
+                    var message = err.name === UNAUTHORIZED_ERROR ? err.toString() : err.message || 'DTrace host is Unreachable';
+                    return callback(new Error(message));
                 }
                 callback(err, data);
             });

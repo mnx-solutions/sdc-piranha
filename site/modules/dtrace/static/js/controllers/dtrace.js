@@ -43,12 +43,21 @@
                 var EXECNAME_PATTERN = /\$EXECNAME/g;
                 var FLAME_GRAPH_TITLE = 'Flame Graph';
                 var FLAME_GRAPH_SCRIPT_NAME = 'syscall for process';
+                var UNAUTHORIZED_ERROR = 'UnauthorizedError';
                 var websocket;
                 var type;
 
                 var errorCallback = function (err) {
-                    $scope.loading = false;
-                    PopupDialog.errorObj(err);
+                    var message = err;
+                    if ($scope.host) {
+                        var host = JSON.parse($scope.host);
+                        message = 'DTrace Instance "' + host.name + '" is currently unreachable.';
+                        if (err.indexOf(UNAUTHORIZED_ERROR) !== -1 || err.indexOf('401') !== -1) {
+                            message = 'DTrace certificates are invalid for Instance "' + host.name + '".';
+                        }
+                    }
+                    DTrace.reportError(message, 'websocket error: ' + err);
+                    $scope.loadingHostProcesses = $scope.processing = $scope.loading = false;
                 };
 
                 var getScriptsListType = 'all';
@@ -94,7 +103,7 @@
                 };
                 var updateScripts = function () {
                     $scope.processes = null;
-                    if ($scope.loadingHostProcesses || !$scope.scriptName) {
+                    if (!$scope.scriptName) {
                         $scope.loadingHostProcesses = false;
                         return;
                     }
@@ -124,19 +133,6 @@
                 if ($scope.title === FLAME_GRAPH_TITLE) {
                     getScriptsListType = 'default';
                 }
-
-                $q.all([DTrace.listHosts(), DTrace.getScriptsList(getScriptsListType)]).then(function (result) {
-                    Storage.pingManta();
-                    $scope.hosts = result[0] || [];
-                    $scope.scripts = result[1] || [];
-                    $scope.scriptName = $scope.scripts ? $scope.scripts[0].name : '';
-                    $scope.host = JSON.stringify($scope.hosts[0]);
-                    if ($scope.title === FLAME_GRAPH_TITLE) {
-                        $scope.scriptName = FLAME_GRAPH_SCRIPT_NAME;
-                    }
-                    updateScripts();
-                    $scope.loading = false;
-                }, errorCallback);
 
                 $scope.changeHost = function () {
                     if ($scope.host) {
@@ -169,7 +165,7 @@
                         if (script && script.body && $scope.pid) {
                             script.body = script.body.replace(EXECNAME_PATTERN, '\"' + $scope.pid + '\"');
                             script.body = script.body.replace(PID_PATTERN, $scope.pid);
-                        } else if (script && script.pid) {
+                        } else if (script && script.pid && $scope.processes) {
                             script.execname = $scope.processes.some(function (process) {
                                 return process.execname === $scope.pid;
                             });
@@ -182,7 +178,7 @@
                             start: true
                         };
 
-                        if ($scope.pid) {
+                        if ($scope.pid && $scope.processes) {
                             $scope.options.selectedProcessName = script.execname ? 'EXECNAME: ' + $scope.pid : $scope.processes.find(function (process) {
                                 return process.pid === $scope.pid;
                             }).name;
@@ -211,7 +207,6 @@
                         };
 
                         websocket.onerror = function (error) {
-                            console.log(error);
                             DTrace.reportError(error, 'websocket error: ' + error);
                             closeWebsocket();
                         };
@@ -223,6 +218,11 @@
                             }
                             if (event.data !== 'ping') {
                                 if (event.data !== 'started') {
+                                    var data = JSON.parse(event.data);
+                                    if (data.error) {
+                                        $scope.options.loading = $scope.isRunning = false;
+                                        return errorCallback(data.error);
+                                    }
                                     $scope.$apply(function () {
                                         $scope.options.loading = false;
                                         $scope.data = event.data;
