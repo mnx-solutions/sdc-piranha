@@ -157,6 +157,14 @@
                     });
                 }
             },
+            images: function (err, data) {
+                if (data && data.length) {
+                    data = data.filter(function (image) {
+                        return image.ParentId || image.isSdc;
+                    });
+                }
+                return data;
+            },
             createRegistry: function (err, data, options) {
                 var cache = service.cache['registriesList'];
                 service.cache['containers'].reset();
@@ -190,9 +198,17 @@
             },
             forceRemoveImage: function (err, data, options) {
                 var cache = service.cache['topImages'];
+                var imageId = options.options.id;
                 if (!err && cache) {
                     service.cache['images'].reset();
+                    cache.remove(imageId);
                     cache.reset();
+                } else if (cache) {
+                    var cacheImage = cache.get(imageId);
+                    if (cacheImage) {
+                        delete cacheImage.isRemoving;
+                        cache.put(cacheImage);
+                    }
                 }
             },
             commit: function (err) {
@@ -385,18 +401,31 @@
                     host: {primaryIp: container.primaryIp, id: container.hostId, isSdc: container.isSdc},
                     options: container.options || {id: container.Id}
                 };
+                var cache = service.cache.containers;
+                var cacheContainer = cache.get(container.Id);
                 if (action === 'remove') {
                     options.container = container;
                     options.options.force = true;
+                    container.isRemoving = true;
+                    if (cacheContainer) {
+                        cacheContainer.isRemoving = true;
+                        cache.put(cacheContainer);
+                    }
                 }
                 var job = serverTab.call({
                     name: 'Docker' + capitalize(action),
                     data: options,
                     done: function (err, job) {
                         if (err) {
+                            if (action === 'remove') {
+                                delete container.isRemoving;
+                                if (cacheContainer) {
+                                    delete cacheContainer.isRemoving;
+                                    cache.put(cacheContainer);
+                                }
+                            }
                             return false;
                         }
-                        var cache = service.cache['containers'];
                         if (containerDoneHandler[action] && cache) {
                             containerDoneHandler[action](cache, options.options.id);
                         }
@@ -507,8 +536,20 @@
             return createCall('RegistryImages', {registryId: registryId}, onProgress);
         };
 
+        function setRemoveProp(id) {
+            var cache = service.cache.topImages;
+            var cacheImage = cache.get(id);
+            if (cacheImage) {
+                cacheImage.isRemoving = true;
+                cache.put(cacheImage);
+            }
+        }
+
         imageActions.forEach(function (action) {
             service[action + 'Image'] = function (image) {
+                if (action === 'remove') {
+                    setRemoveProp(image.Id);
+                }
                 return createCall(action + 'Image', {host: {primaryIp: image.primaryIp, id: image.hostId}, options: image.options || {id: image.Id}});
             };
         });
@@ -779,6 +820,7 @@
         };
 
         service.forceRemoveImage = function (options) {
+            setRemoveProp(options.options.id);
             return createCall('forceRemoveImage', ng.extend({}, options, {direct: true}));
         };
 

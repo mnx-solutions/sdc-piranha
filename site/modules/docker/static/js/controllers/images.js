@@ -209,6 +209,7 @@
                                 var currentData = image;
                                 var currentAction = action;
                                 if (action === 'remove' && !image.isSdc && image.RepoTags && image.RepoTags.length > 0) {
+                                    image.isRemoving = true;
                                     currentAction = 'forceRemove';
                                     currentData = {host: {primaryIp: image.primaryIp, id: image.hostId}, options: {id: image.Id}};
                                 }
@@ -218,6 +219,9 @@
                                     deferred.reject(err);
                                     image.actionInProgress = false;
                                     image.checked = false;
+                                    if (image.isRemoving) {
+                                        delete image.isRemoving;
+                                    }
                                     errorCallback(err);
                                 });
                                 promises.push(deferred.promise);

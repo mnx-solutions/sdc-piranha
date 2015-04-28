@@ -130,7 +130,11 @@
                         active: true,
                         type: 'html',
                         _getter: function (container) {
-                            return '<a href="#!/docker/container/' + container.hostId + '/' + container.Id + '" style="min-width: 140px;">' + container.ShortId + '</a>';
+                            var html = '<a href="#!/docker/container/' + container.hostId + '/' + container.Id + '" style="min-width: 140px;">' + container.ShortId + '</a>';
+                            if (container.isRemoving) {
+                                html = container.ShortId;
+                            }
+                            return html;
                         }
                     },
                     {
