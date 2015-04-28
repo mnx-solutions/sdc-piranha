@@ -8,8 +8,8 @@ var dtrace = function execute() {
     var server = require('../server').Server;
     var WebSocket = require('ws');
 
-    var SCRIPTS_FILE_PATH = '~~/stor/.joyent/dtrace/scripts.json';
-    var FLAMEGRAPH_PATH = '~~/stor/.joyent/dtrace/flameGraph';
+    var SCRIPTS_FILE_PATH = '~~/stor/.joyent/devtools/scripts.json';
+    var FLAMEGRAPH_PATH = '~~/stor/.joyent/devtools/flameGraph';
 
     var uuid = require('../../static/vendor/uuid/uuid.js');
     var DTRACE_PORT = 8000;

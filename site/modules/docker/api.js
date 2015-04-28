@@ -8,11 +8,12 @@ var vasync = require('vasync');
 var fs = require('fs');
 var path = require('path');
 var config = require('easy-config');
-var ursa = require('ursa');
 var exec = require('child_process').exec;
 var os = require('os');
 var EventEmitter = require('events').EventEmitter;
 var certMgmt = require('../../../lib/certificates');
+var subuser = require('../../../lib/subuser');
+var keys = require('../../../lib/keys');
 var Auditor = require('./libs/auditor.js');
 var utils = require('../../../lib/utils');
 var cache = require('lru-cache')({
@@ -26,9 +27,16 @@ var SUBUSER_LOGIN = 'docker';
 var SUBUSER_REGISTRY_LOGIN = SUBUSER_LOGIN + '_registry';
 var SUBUSER_OBJ_NAME = 'docker';
 var SUBUSER_OBJ_NAME_REGISTRY = SUBUSER_OBJ_NAME + '-registry';
+var SUBUSER_LIST_RULES = ['can putobject', 'can putdirectory'];
+var SUBUSER_LIST_RULES_REGISTRY = SUBUSER_LIST_RULES.concat([
+    'can getobject',
+    'can getdirectory',
+    'can deleteobject',
+    'can deletedirectory'
+]);
 var SDC_DOCKER_ID = '00000000-0000-0000-0000-000000000000';
 var SDC_DOCKER_PATH = '~~/stor/.joyent/docker';
-var SDC_DOCKER = config.features.sdcDocker === 'enabled' ?
+var sdcDockerConfig = config.features.sdcDocker === 'enabled' ?
     {
         id: SDC_DOCKER_ID,
         name: config.sdcDocker.name,
@@ -37,7 +45,6 @@ var SDC_DOCKER = config.features.sdcDocker === 'enabled' ?
         isSdc: true,
         prohibited: false
     } : null;
-var CERTIFICATES_KEYS = ['ca', 'server-cert', 'server-key'];
 
 var requestMap = {
     'GET': 'get',
@@ -680,7 +687,7 @@ exports.init = function execute(log, config, done) {
     api.listHosts = function (call, callback) {
         var hostId = call.data && call.data.id;
         if (hostId === SDC_DOCKER_ID) {
-            return verifySDCDockerAvailability(call, SDC_DOCKER, function (error, host) {
+            return verifySDCDockerAvailability(call, sdcDockerConfig, function (error, host) {
                 callback(null, host);
             });
         }
@@ -707,7 +714,7 @@ exports.init = function execute(log, config, done) {
                 if (errors) {
                     return callback(errors);
                 }
-                verifySDCDockerAvailability(call, SDC_DOCKER, function (error, availableHost) {
+                verifySDCDockerAvailability(call, sdcDockerConfig, function (error, availableHost) {
                     var hosts = [].concat.apply(availableHost || [], operations.successes);
                     if (hostId) {
                         var host = hosts.find(function(host) {
@@ -774,342 +781,42 @@ exports.init = function execute(log, config, done) {
         getHostStatus();
     };
 
-    function createKeyPairObject(key) {
-        return {
-            privateKey: key.toPrivatePem('utf8'),
-            publicKey: 'ssh-rsa ' + key.toPublicSsh('base64') + ' docker-portal',
-            fingerprint: key.toPublicSshFingerprint('hex').replace(/([a-f0-9]{2})/gi, '$1:').slice(0, -1)
-        };
-    }
-
-    function getKeyPair(call, callback) {
+    function uploadKeysAndSetupSubusers(call, keyPair, uploadCallback) {
         var client = require('../storage').MantaClient.createClient(call);
-        var key;
 
-        if (call.req.session.privateKey) {
-            key = ursa.createPrivateKey(call.req.session.privateKey);
-            return callback(createKeyPairObject(key));
-        }
-        client.getFileContents(SDC_DOCKER_PATH + '/private.key', function (error, privateKey) {
-            if (error && config.manta && config.manta.privateKey) {
-                privateKey = fs.readFileSync(config.manta.privateKey, 'utf-8');
+        function setup(subuserLogin, subuserObjName, path, listRules, callback) {
+            var options = {
+                keyPair: keyPair,
+                subuserLogin: subuserLogin,
+                subuserObjName: subuserObjName,
+                path: path,
+                listRules: listRules
             }
-            if (!privateKey) {
-                key = ursa.generatePrivateKey();
-            } else {
-                key = ursa.createPrivateKey(privateKey);
-            }
-
-            callback(createKeyPairObject(key));
-        });
-    }
-
-    function keyPoller(call, subId, keyExists, callback) {
-        var start = new Date();
-        return function (error) {
-            if (error) {
-                return callback(error);
-            }
-
-            function retry() {
-                if (new Date() - start > config.polling.sshCreateKeyTimeout) {
-                    return callback(new Error('Poller error: SSH ' + (keyExists ? 'create' : 'delete') + ' key timeout'));
-                }
-                setTimeout(function () {
-                    keyPoller(call, subId, keyExists, callback);
-                }, config.polling.sshCreateKey);
-            }
-
-            function isDockerKeyExists(keys) {
-                return keys.some(function (key) {
-                    return key.name === SUBUSER_OBJ_NAME;
-                });
-            }
-
-            call.cloud.listUserKeys(subId, function (error, keys) {
-                if (!error && Array.isArray(keys) && isDockerKeyExists(keys) === keyExists) {
-                    callback();
-                    return;
-                }
-                retry();
-            }, true);
-        };
-    }
-
-    function deleteSubAccount(call, subId, name, deleteCallback) {
-        function deleteRolePolicy(action, rolePolicyList, callback) {
-            var rolePolicyNames = [SUBUSER_OBJ_NAME, SUBUSER_OBJ_NAME_REGISTRY];
-            if (name) {
-                rolePolicyNames = [name];
-            }
-            vasync.forEachPipeline({
-                inputs: rolePolicyNames,
-                func: function (rolePolicyName, pipeCallback) {
-                    var dockerRolePolicy = rolePolicyList.find(function (item) { return item.name === rolePolicyName; });
-                    if (dockerRolePolicy) {
-                        call.cloud[action](dockerRolePolicy.id, pipeCallback);
-                    } else {
-                        pipeCallback();
-                    }
-                }
-            }, callback);
-        }
-        vasync.waterfall([
-            function (callback) {
-                if (!subId) {
-                    return callback(null, null);
-                }
-                call.cloud.listUserKeys(subId, function (listErr, keys) {
-                    callback(listErr, keys);
-                });
-            },
-            function (keys, callback) {
-                if (!keys) {
-                    return callback(null, null);
-                }
-                vasync.forEachPipeline({
-                    inputs: keys,
-                    func: function (key, pipeCallback) {
-                        call.cloud.deleteUserKey(subId, key.fingerprint, pipeCallback);
-                    }
-                }, callback);
-            },
-            function (_, callback) {
-                call.cloud.listRoles(function (listErr, roles) {
-                    callback(listErr, roles);
-                });
-            },
-            function (roles, callback) {
-                deleteRolePolicy('deleteRole', roles, callback);
-            },
-            function (_, callback) {
-                call.cloud.listPolicies(function (listErr, policies) {
-                    callback(listErr, policies);
-                });
-            },
-            function (policies, callback) {
-                deleteRolePolicy('deletePolicy', policies, callback);
-            },
-            function (_, callback) {
-                if (!subId) {
-                    return callback();
-                }
-                call.cloud.deleteUser(subId, callback);
-            }
-        ], deleteCallback);
-    }
-
-    function setupManta(call, setupCallback) {
-        var client = require('../storage').MantaClient.createClient(call);
-        var dockerPath = '/' + call.req.session.userName + '/stor/.joyent/docker';
-        var registryPath = dockerPath + '/registry';
-        vasync.waterfall([
-            function (callback) {
-                client.safeMkdirp(registryPath, {}, function (mkdirErr) {
-                    callback(mkdirErr);
-                });
-            },
-            function (callback) {
-                var overallTimeout = Date.now() + 5 * 60 * 1000;
-                var trySettingRoleTag = function (cb) {
-                    client.setRoleTags(dockerPath, [SUBUSER_OBJ_NAME], false, function () {
-                        client.getRoleTags(dockerPath, function (getErr, roles) {
-                            if (roles.length === 1) {
-                                cb(null);
-                            } else if (Date.now() > overallTimeout) {
-                                cb('Cannot set role tags for docker folder');
-                            } else {
-                                trySettingRoleTag(cb);
-                            }
-                        });
-                    });
-                };
-                trySettingRoleTag(callback);
-            },
-            function (callback) {
-                client.setRoleTags(dockerPath, [SUBUSER_OBJ_NAME], true, function (setErr) {
-                    callback(setErr);
-                });
-            },
-            function (callback) {
-                client.setRoleTags(registryPath, [SUBUSER_OBJ_NAME_REGISTRY], true, function (setRegErr) {
-                    callback(setRegErr);
-                });
-            }
-        ], setupCallback);
-    }
-
-    function setupSubAccounts(call, keyPair, setupCallback) {
-        var dockerUser;
-        var dockerRegistryUser;
-        vasync.waterfall([
-            function (callback) {
-                call.cloud.getAccount(function (accountErr, acccount) {
-                    callback(accountErr, acccount);
-                });
-            },
-            function (account, callback) {
-                var emailParts = account.email.split('@');
-                emailParts[0] += '+' + SUBUSER_REGISTRY_LOGIN;
-                var userData = {
-                    lastName: SUBUSER_REGISTRY_LOGIN,
-                    email: emailParts.join('@'),
-                    login: SUBUSER_REGISTRY_LOGIN,
-                    password: (Math.random().toString(36) + 'ABC123').substr(2)
-                };
-                call.cloud.createUser(userData, function (error, user) {
-                    dockerRegistryUser = user;
-                    callback(error, account);
-                });
-            },
-            function (account, callback) {
-                var emailParts = account.email.split('@');
-                emailParts[0] += '+' + SUBUSER_LOGIN;
-                var userData = {
-                    lastName: SUBUSER_LOGIN,
-                    email: emailParts.join('@'),
-                    login: SUBUSER_LOGIN,
-                    password: (Math.random().toString(36) + 'ABC123').substr(2)
-                };
-                call.cloud.createUser(userData, callback);
-            },
-            function (user, callback) {
-                dockerUser = user;
-                call.cloud.createPolicy({
-                    name: SUBUSER_OBJ_NAME,
-                    rules: ['can putobject', 'can putdirectory']
-                }, function () {
-                    callback();
-                });
-            },
-            function (callback) {
-                call.cloud.createRole({
-                    name: SUBUSER_OBJ_NAME,
-                    policies: [SUBUSER_OBJ_NAME],
-                    members: [dockerUser.login],
-                    'default_members': [dockerUser.login]
-                }, function () {
-                    callback();
-                });
-            },
-            function (callback) {
-                call.cloud.createPolicy({
-                    name: SUBUSER_OBJ_NAME_REGISTRY,
-                    rules: ['can putobject', 'can putdirectory', 'can getobject', 'can getdirectory', 'can deleteobject', 'can deletedirectory']
-                }, function () {
-                    callback();
-                });
-            },
-            function (callback) {
-                call.cloud.createRole({
-                    name: SUBUSER_OBJ_NAME_REGISTRY,
-                    policies: [SUBUSER_OBJ_NAME_REGISTRY],
-                    members: [dockerRegistryUser.login],
-                    'default_members': [dockerRegistryUser.login]
-                }, function () {
-                    callback();
-                });
-            },
-            function (callback) {
-                setupManta(call, callback);
-            },
-            function (callback) {
-                call.cloud.uploadUserKey(dockerUser.id, {
-                    name: SUBUSER_OBJ_NAME,
-                    key: keyPair.publicKey
-                }, callback);
-            },
-            function (_, callback) {
-                keyPoller(call, dockerUser.id, true, function (error) {
-                    callback(error);
-                })();
-            },
-            function (callback) {
-                call.cloud.uploadUserKey(dockerRegistryUser.id, {
-                    name: SUBUSER_OBJ_NAME,
-                    key: keyPair.publicKey
-                }, callback);
-            },
-            function (_, callback) {
-                keyPoller(call, dockerRegistryUser.id, true, callback)();
-            }
-        ], setupCallback);
-    }
-
-    function checkAndCreateSubAccount(call, keyPair, callback) {
-        call.cloud.listUsers(function (listErr, users) {
-            if (listErr) {
-                return callback(listErr);
-            }
-            var dockerUser = users.find(function (user) {
-                return user.login === SUBUSER_LOGIN;
+            subuser.setupSubuserForManta(call, client, options, function (err) {
+                callback(err);
             });
-            var dockerRegistryUser = users.find(function (user) {
-                return user.login === SUBUSER_REGISTRY_LOGIN;
-            });
-            var deleteRegUserAndSetup = function () {
-                if (dockerRegistryUser) {
-                    deleteSubAccount(call, dockerRegistryUser.id, SUBUSER_OBJ_NAME_REGISTRY, function (deleteRegErr) {
-                        if (deleteRegErr) {
-                            return callback(deleteRegErr);
-                        }
-                        setupSubAccounts(call, keyPair, callback);
-                    });
-                } else {
-                    deleteSubAccount(call, null, null, function (deleteError) {
-                        if (deleteError) {
-                            return callback(deleteError);
-                        }
-                        setupSubAccounts(call, keyPair, callback);
-                    });
-                }
-            };
-            if (dockerUser) {
-                var isFirstCheck = true;
-                var checkDockerKey = function () {
-                    call.cloud.listUserKeys(dockerUser.id, function (listErr, keys) {
-                        if (listErr) {
-                            return callback(listErr);
-                        }
-                        var dockerKey = keys.find(function (key) {
-                            return key.name === SUBUSER_OBJ_NAME && keyPair.fingerprint === key.fingerprint;
-                        });
-                        if (dockerKey) {
-                            setupManta(call, callback);
-                        } else {
-                            if (isFirstCheck) {
-                                isFirstCheck = false;
-                                setTimeout(checkDockerKey, 10000);
-                                return;
-                            }
-                            deleteSubAccount(call, dockerUser.id, SUBUSER_OBJ_NAME, function (deleteErr) {
-                                if (deleteErr) {
-                                    return callback(deleteErr);
-                                }
-                                deleteRegUserAndSetup();
-                            });
-                        }
-                    });
-                };
-                checkDockerKey();
-            } else {
-                deleteRegUserAndSetup();
-            }
-        });
-    }
-
-    function uploadKeys(call, keyPair, uploadCallback) {
-        vasync.parallel({
-            funcs: [
+        }
+        vasync.waterfall(
+            [
                 function (callback) {
-                    var client = require('../storage').MantaClient.createClient(call);
-                    client.putFileContents(SDC_DOCKER_PATH + '/private.key', keyPair.privateKey, callback);
+                    client.putFileContents(SDC_DOCKER_PATH + '/private.key', keyPair.privateKey, function (err) {
+                        callback(err);
+                    });
                 },
                 function (callback) {
-                    checkAndCreateSubAccount(call, keyPair, callback);
+                    client.safeMkdirp(SDC_DOCKER_PATH + '/registry', {}, function (err) {
+                        callback(err);
+                    });
+                },
+                function (callback) {
+                    setup(SUBUSER_LOGIN, SUBUSER_OBJ_NAME, SDC_DOCKER_PATH, SUBUSER_LIST_RULES, callback);
+                },
+                function (callback) {
+                    var path = SDC_DOCKER_PATH + '/registry';
+                    setup(SUBUSER_REGISTRY_LOGIN, SUBUSER_OBJ_NAME_REGISTRY, path, SUBUSER_LIST_RULES_REGISTRY, callback)
                 }
-            ]
-        }, uploadCallback);
+            ],
+        uploadCallback);
     }
 
     api.createHost = function (call, options, callback) {
@@ -1131,7 +838,7 @@ exports.init = function execute(log, config, done) {
         }
 
         function uploadKeysAndCreateMachine(keyPair, options) {
-            uploadKeys(call, keyPair, function (error) {
+            uploadKeysAndSetupSubusers(call, keyPair, function (error) {
                 if (error) {
                     return callback(error);
                 }
@@ -1139,27 +846,21 @@ exports.init = function execute(log, config, done) {
             });
         }
 
-        getKeyPair(call, function (keyPair) {
+        keys.getKeyPair(mantaClient, call, SDC_DOCKER_PATH + '/private.key', 'docker-portal', function (keyPair) {
             call.req.session.privateKey = keyPair.privateKey;
-            options.metadata['private-key'] = keyPair.privateKey;
-            options.metadata['public-key'] = keyPair.publicKey;
-            options.metadata['manta-account'] = mantaClient.user;
-            options.metadata['manta-subuser'] = SUBUSER_LOGIN;
-            options.metadata['manta-url'] = mantaClient._url;
             options.metadata['docker-version'] = config.docker.dockerVersion;
             options.metadata['cadvisor-version'] = config.docker.cadvisorVersion;
 
-            var certificates = call.req.session.docker;
+            var certificates = call.req.session.dockerCerts;
+
             function done(certificates) {
-                CERTIFICATES_KEYS.forEach(function (key) {
-                    options.metadata[key] = certificates[key];
-                });
+                options.metadata = certMgmt.setMetadata(options.metadata, certificates);
+                options.metadata = subuser.setMetadata(options.metadata, keyPair,
+                    SUBUSER_LOGIN, mantaClient.user, mantaClient._url);
                 uploadKeysAndCreateMachine(keyPair, options);
             }
-            var someCertificatesMissing = CERTIFICATES_KEYS.some(function (key) {
-                return !certificates[key];
-            });
-            if (!someCertificatesMissing) {
+
+            if (!certMgmt.checkCertificates(certificates)) {
                 return done(certificates);
             }
 
@@ -1167,7 +868,7 @@ exports.init = function execute(log, config, done) {
                 if (error) {
                     return callback(error);
                 }
-                call.req.session.docker = certificates;
+                call.req.session.dockerCerts = certificates;
                 call.req.session.save(function (error) {
                     if (error) {
                         return call.done(error);
@@ -1218,7 +919,7 @@ exports.init = function execute(log, config, done) {
     function createClient(call, Service, opts, callback) {
         var cacheKey = Service.name + opts.url;
         var cachedClient = cache.get(cacheKey);
-        var certificates = call.req.session.docker;
+        var certificates = call.req.session.dockerCerts;
         if (cachedClient) {
             return callback(null, cachedClient);
         }

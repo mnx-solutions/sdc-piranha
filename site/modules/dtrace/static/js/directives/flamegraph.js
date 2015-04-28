@@ -15,13 +15,6 @@
             },
             link: function ($scope, element, attrs) {
                 function getFlamegraph(svg) {
-                    try {
-                        svg = JSON.parse(svg);
-                    } catch (ex) {
-                        svg = '';
-                        var message = 'Error parsing json for flamegraph';
-                        DTrace.reportError(message + '.', message);
-                    }
                     if (svg) {
                         ng.element(element).html(svg).promise().done(function () {
                             init();

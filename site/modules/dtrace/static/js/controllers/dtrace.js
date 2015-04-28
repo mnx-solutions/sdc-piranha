@@ -32,6 +32,12 @@
                     }
                 };
 
+                var TITLES = {
+                    heatmap: 'Heatmap',
+                    flamegraph: 'Flame Graph',
+                    coreDump: 'Core Dump'
+                }
+
                 $scope.loading = true;
                 $scope.processing = false;
                 $scope.options = {};
@@ -41,9 +47,9 @@
                 var EXECNAME_PLACEHOLDER = '$EXECNAME';
                 var PID_PATTERN = /\$PID/g;
                 var EXECNAME_PATTERN = /\$EXECNAME/g;
-                var FLAME_GRAPH_TITLE = 'Flame Graph';
                 var FLAME_GRAPH_SCRIPT_NAME = 'syscall for process';
                 var UNAUTHORIZED_ERROR = 'UnauthorizedError';
+                var getScriptsListType = 'all';
                 var websocket;
                 var type;
 
@@ -59,17 +65,13 @@
                     DTrace.reportError(message, 'websocket error: ' + err);
                     $scope.loadingHostProcesses = $scope.processing = $scope.loading = false;
                 };
-
-                var getScriptsListType = 'all';
-                if ($scope.title === FLAME_GRAPH_TITLE) {
-                    getScriptsListType = 'default';
-                    type = 'flamegraph';
-                } else if ($scope.title === 'Heatmap') {
+                
+                if ($scope.title === TITLES.heatmap) {
                     type = 'heatmap';
+                } else if ($scope.title === TITLES.flamegraph || $scope.title === TITLES.coreDump) {
+                    getScriptsListType = 'default';
+                    type = $scope.title === TITLES.flamegraph ? 'flamegraph' : 'coreDump';
                 }
-                var getDscript = function () {
-                    return DTRACE_SCRIPTS[type]($scope.options.script);
-                };
 
                 Account.getAccount(true).then(function (account) {
                     $scope.provisionEnabled = account.provisionEnabled;
@@ -80,7 +82,7 @@
                                 $scope.scripts = result[1] || [];
                                 $scope.scriptName = $scope.scripts ? $scope.scripts[0].name : '';
                                 $scope.host = JSON.stringify($scope.hosts[0]);
-                                if ($scope.title === FLAME_GRAPH_TITLE) {
+                                if ($scope.title !== TITLES.heatmap) {
                                     $scope.scriptName = FLAME_GRAPH_SCRIPT_NAME;
                                 }
                                 updateScripts();
@@ -97,9 +99,13 @@
                 });
 
                 var getCurrentScript = function () {
-                    return $scope.scripts.find(function (script) {
+                    var script = $scope.scripts.find(function (script) {
                         return script.name === $scope.scriptName;
                     });
+                    if ($scope.title === TITLES.coreDump) {
+                        script.execname = false;
+                    }
+                    return script;
                 };
                 var updateScripts = function () {
                     $scope.processes = null;
@@ -115,7 +121,7 @@
                         $scope.loadingHostProcesses = false;
                     } else if (!$scope.processes) {
                         if ($scope.host) {
-                            var host = JSON.parse($scope.host);
+                            var host = typeof $scope.host === 'string' ? JSON.parse($scope.host) : $scope.host;
                             DTrace.listProcesses({primaryIp: host.primaryIp}).then(function (list) {
                                 $scope.pid = $scope.hasExecname ? list[0].execname :list[0].pid;
                                 list.forEach(function (process) {
@@ -130,7 +136,7 @@
                 };
 
                 var getScriptsListType = 'all';
-                if ($scope.title === FLAME_GRAPH_TITLE) {
+                if ($scope.title === TITLES.flamegraph) {
                     getScriptsListType = 'default';
                 }
 
@@ -185,6 +191,10 @@
                         }
                         $scope.isRunning = $scope.processing = true;
 
+                        function getDscript() {
+                            return DTRACE_SCRIPTS[type](script);
+                        };
+
                         $scope.options.loading = true;
 
                         var link = document.createElement('a');
@@ -212,22 +222,35 @@
                         };
 
                         websocket.onmessage = function (event) {
-                            var message = JSON.stringify({type: type, message: script.body || getDscript()});
+                            var message = JSON.stringify({
+                                type: type, 
+                                message: type === 'coreDump' ? $scope.pid : script.body || getDscript()
+                            });
                             if (event.data === 'connection') {
                                 return websocket.send(message);
                             }
                             if (event.data !== 'ping') {
                                 if (event.data !== 'started') {
-                                    var data = JSON.parse(event.data);
-                                    if (data.error) {
-                                        $scope.options.loading = $scope.isRunning = false;
-                                        return errorCallback(data.error);
+                                    var parsedResult;
+                                    var errorMessage;
+                                    try {
+                                        parsedResult = JSON.parse(event.data);
+                                    } catch (ex) {
+                                        errorMessage = 'Error parsing json for ' + $scope.title + '.';
                                     }
-                                    $scope.$apply(function () {
-                                        $scope.options.loading = false;
-                                        $scope.data = event.data;
-                                    });
-                                    if (type === 'flamegraph') {
+                                    if (parsedResult.error || errorMessage) {
+                                        var err = parsedResult.error || errorMessage;
+                                        $scope.options.loading = $scope.isRunning = false;
+                                        return errorCallback(err);
+                                    } else {
+                                        $scope.$apply(function () {
+                                            $scope.options.loading = false;
+                                            $scope.data = parsedResult;
+                                        });
+                                    }
+                                    if (type === 'coreDump') {
+                                        closeWebsocket();
+                                    } else if (type === 'flamegraph') {
                                         websocket.send(message);
                                     }
                                 }
@@ -237,7 +260,7 @@
                                     });
                                 }
                             }
-                        };
+                        }
                     }
                 };
 

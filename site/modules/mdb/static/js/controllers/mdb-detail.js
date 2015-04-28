@@ -25,6 +25,14 @@
             if ($scope.features.manta === 'enabled') {
                 $scope.gridUserConfig = Account.getUserConfig().$child('mdb');
             }
+
+            if ($scope.gridUserConfig.inputFile) {
+                $scope.inputFile = $scope.gridUserConfig.inputFile;
+                delete $scope.gridUserConfig.inputFile;
+                $scope.gridUserConfig.dirty(true);
+                $scope.gridUserConfig.$save();
+            }
+
             $scope.gridOrder = ['objects'];
             $scope.gridProps = [
                 {

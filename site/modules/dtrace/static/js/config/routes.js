@@ -16,6 +16,9 @@ window.JP.main.config(['routeProvider', function (routeProvider) {
         }).when('/devtools/dtrace/flamegraph', {
             title: 'Flame Graph',
             action: 'dtrace.flamegraph'
+        }).when('/devtools/dtrace/coreDump', {
+            title: 'Core Dump',
+            action: 'dtrace.coreDump'
         }).when('/devtools/dtrace/scripts', {
             title: 'Scripts',
             action: 'dtrace.scripts'

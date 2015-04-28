@@ -189,6 +189,14 @@
                             <span class="selected-sub"></span>
                         </a>
                     </li>
+                    <li left-list-item class="sub" 
+                        data-ng-class="{active: location.path().search('devtools/dtrace/coreDump') == 1}"
+                        data-ng-show="features.dtrace == 'enabled'">
+                        <a href="#!/devtools/dtrace/coreDump">
+                            <span class="titles" data-translate>Core Dump</span>
+                            <span class="selected-sub"></span>
+                        </a>
+                    </li>
                 </ul>
             </li>
             <li class="nested" data-ng-show="features.usageData == 'enabled'" data-ng-class="{active: location.path().search('usage') == 1, open: location.path().search('/currentspend') > 1 || location.path().search('/compute') > 1 || location.path().search('/bandwidth') > 1 || location.path().search('/manta') > 1}">

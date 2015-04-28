@@ -10,15 +10,15 @@
         <div data-ng-hide="loading || !hosts.length" class="heatmap-wrapper">
             <table class="heatmap-controls">
                 <tr>
-                    <td class="medium" data-ng-class="{triple: !processes}">
-                        <select ui-select2="{minimumResultsForSearch: -1, width: '100%'}" id="hostSelect" data-ng-model="host" data-ng-change="changeHost()" data-select2-disabled="loadingHostProcesses">
+                    <td class="medium" data-ng-class="{triple: !processes || title === 'Core Dump'}">
+                        <select ui-select2="{minimumResultsForSearch: -1, width: '100%'}" id="hostSelect" data-ng-model="host" data-ng-change="changeHost()" data-select2-disabled="loadingHostScripts" >
                             <option data-ng-repeat="host in hosts" value="{{host}}">
                                 {{host.name}}
                             </option>
                         </select>
                     </td>
-                    <td class="medium" data-ng-class="{triple: !processes}" data-ng-show="title !== 'Flame Graph'">
-                        <select ui-select2="{minimumResultsForSearch: -1, width: '100%'}" id="scriptSelect" data-ng-model="scriptName" data-ng-change="changeScript()" data-select2-disabled="loadingHostProcesses">
+                    <td class="medium" data-ng-class="{triple: !processes}" data-ng-show="title === 'Heatmap'">
+                        <select ui-select2="{minimumResultsForSearch: -1, width: '100%'}" id="scriptSelect" data-ng-model="scriptName" data-ng-change="changeScript()" data-select2-disabled="loadingHostScripts">
                             <option data-ng-repeat="script in scripts" value="{{script.name}}">
                                 {{script.name}}
                             </option>
@@ -52,6 +52,9 @@
         </div>
         <div class="heatmap-wrapper" data-ng-show="!loading" data-ng-if="title === 'Flame Graph'">
             <flamegraph data-options="options" data-data="data"></flamegraph>
+        </div>
+        <div class="heatmap-wrapper" data-ng-if="!loading && title === 'Core Dump'">
+            <core-dump data-options="options" data-data="data"></core-dump>
         </div>
     </div>
 </div>
