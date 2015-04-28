@@ -1,32 +1,32 @@
 {
   "server": {
-    "port": 3000
-  , "headerClientIpKey": "x-forwarded-for"
-  }
-, "session": {
+    "port": 3000,
+    "headerClientIpKey": "x-forwarded-for"
+  },
+  "session": {
     "lifespan": 120
-  }
-, "log": {
-    "name": "piranha"
-  , "level": "debug"
-  }
-, "cloudapi": {
+  },
+  "log": {
+    "name": "piranha",
+    "level": "debug"
+  },
+  "cloudapi": {
     "DCCallTimeout": 5000
-  }
-, "localization": {
-    "defaultLocale": "en"
-  , "locales": [
+  },
+  "localization": {
+    "defaultLocale": "en",
+    "locales": [
       "en"
     ]
-  }
-, "redis": {
-    "host": "redis-gtint.piranha.ee"
-  , "port": 6379
-  , "db": 1
-  , "signupDB": 5
-  , "password": ""
-  }
-, "assets": {
+  },
+  "redis": {
+    "host": "redis-gtint.piranha.ee",
+    "port": 6379,
+    "db": 1,
+    "signupDB": 5,
+    "password": ""
+  },
+  "assets": {
     "js": {
       "minify": true,
       "gzip": true
@@ -35,219 +35,227 @@
       "minify": true,
       "gzip": true
     }
-  }
-, "zuora": {
-    "tenantId": "11333"
-  , "user": "piranha-api-test@joyent.com"
-  , "password": "ZvPpggpdRMB8U8uLEWTAaxRCaFqc"
-  , "rest": {
-      "endpoint": "https://apisandbox-api.zuora.com"
-    , "validation": {
+  },
+  "zuora": {
+    "tenantId": "11333",
+    "user": "piranha-api-test@joyent.com",
+    "password": "ZvPpggpdRMB8U8uLEWTAaxRCaFqc",
+    "rest": {
+      "endpoint": "https://apisandbox-api.zuora.com",
+      "validation": {
         "countries": {
-          "type": "deny"
-        , "name": "iso3"
-        , "list": [
-            "CUB"
-          , "IRN"
-          , "SYR"
-          , "SDN"
-          , "PRK"
+          "type": "deny",
+          "name": "iso3",
+          "list": [
+            "CUB",
+            "IRN",
+            "SYR",
+            "SDN",
+            "PRK"
           ]
         }
       }
-    }
-  , "soap": {
+    },
+    "soap": {
       "endpoint": "https://apisandbox.zuora.com"
     }
-  }
-, "billing": {
+  },
+  "billing": {
+    "url": "",
+    "noUpdate": true
+  },
+  "googleAnalytics": {
+    "identifier": "",
+    "t2identifier": "",
+    "domain": "joyentcloud.com"
+  },
+  "zendesk": {
+    "account": "jaan.oras@joyent.com/token",
+    "token": "fRopSquyImEk77yw9ha46MVBcxALPrwOf4Mws2gQ",
+    "host": "https://help.joyent.com",
+    "forumsPath": "/api/v2/categories/20066858/forums.json",
+    "systemStatusPath": "/api/v2/forums/20715782/topics.json",
+    "packageUpdatePath": "/api/v2/forums/21147498/topics.json",
+    "zenboxInit": {
+      "dropboxID": "20078915",
+      "url": "https://joyentcloud.zendesk.com",
+      "tabTooltip": "Contact Support",
+      "tabImageURL": "/main/static/img/tab_support.png",
+      "tabColor": "#ccc",
+      "tabPosition": "Right",
+      "dropboxOrderPackageId": ""
+    }
+  },
+  "marketo": {
+    "apikey": "401aabe96a7ca81004e722db0ce7576753436fb8",
+    "accountId": "879-GQM-314",
+    "soap": {
+      "endpoint": "https://879-GQM-314.mktoapi.com/soap/mktows/2_2",
+      "clientId": "joyentsandbox21_5362614052A036B1885021",
+      "secret": ""
+    }
+  },
+  "polling": {
+    "machineTags": 5000,
+    "machineTagsTimeout": 120000,
+    "machineMetadata": 5000,
+    "machineMetadataTimeout": 120000,
+    "machineState": 10000,
+    "packageChange": 1000,
+    "firewallRule": 2000,
+    "firewallRuleCreateTimeout": 20000,
+    "firewallRuleUpdateTimeout": 90000,
+    "firewallRuleDeleteTimeout": 90000,
+    "mantaJob": 1000,
+    "dockerHost": 5000,
+    "dockerHostTimeout": 900000,
+    "sshCreateKey": 1000,
+    "sshCreateKeyTimeout": 300000
+  },
+  "capishim": {
+    "username": "",
+    "password": "",
     "url": ""
-  , "noUpdate": true
-  }
-, "googleAnalytics": {
-    "identifier": ""
-  , "t2identifier": ""
-  , "domain": "joyentcloud.com"
-  }
-, "zendesk": {
-    "account": "jaan.oras@joyent.com/token"
-  , "token": "fRopSquyImEk77yw9ha46MVBcxALPrwOf4Mws2gQ"
-  , "host": "https://help.joyent.com"
-  , "forumsPath": "/api/v2/categories/20066858/forums.json"
-  , "systemStatusPath": "/api/v2/forums/20715782/topics.json"
-  , "packageUpdatePath": "/api/v2/forums/21147498/topics.json"
-  , "zenboxInit": {
-      "dropboxID":   "20078915"
-    , "url":         "https://joyentcloud.zendesk.com"
-    , "tabTooltip":  "Contact Support"
-    , "tabImageURL": "/main/static/img/tab_support.png"
-    , "tabColor":    "#ccc"
-    , "tabPosition": "Right"
-    , "dropboxOrderPackageId": ""
-    }
-   }
-, "marketo": {
-    "apikey": "401aabe96a7ca81004e722db0ce7576753436fb8"
-  , "accountId": "879-GQM-314"
-  , "soap": {
-        "endpoint": "https://879-GQM-314.mktoapi.com/soap/mktows/2_2"
-      , "clientId": "joyentsandbox21_5362614052A036B1885021"
-      , "secret": ""
-    }
-  }
-, "polling": {
-    "machineTags": 5000
-  , "machineTagsTimeout": 120000
-  , "machineMetadata": 5000
-  , "machineMetadataTimeout": 120000
-  , "machineState": 10000
-  , "packageChange": 1000
-  , "firewallRule": 2000
-  , "firewallRuleCreateTimeout": 20000
-  , "firewallRuleUpdateTimeout": 90000
-  , "firewallRuleDeleteTimeout": 90000
-  , "mantaJob": 1000
-  , "dockerHost": 5000
-  , "dockerHostTimeout": 900000
-  , "sshCreateKey": 1000
-  , "sshCreateKeyTimeout": 300000
-  }
-, "capishim": {
-    "username": ""
-  , "password": ""
-  , "url": ""
-  }
-, "maxmind": {
-    "phoneApiUrl": "https://api.maxmind.com"
-  , "fraudApiUrl": "https://minfraud.maxmind.com"
-  , "licenseId": "bQg6oKXwLfWj"
-  , "limits": {
-      "calls": 3
-    , "serviceFails": 3
-    , "pinTries": 3
-    }
-  , "riskScoreFraudLimit": 20
-  }
-, "slb": {
-    "slb_code_url": "https://us-east.manta.joyent.com/mriou/public/slbapi-20140512.tgz"
-  , "ssc_image": "7eec9dfc-5c59-11e3-a3e4-0b8030348bec"
-  , "ssc_package": "g3-standard-1-kvm"
-  , "ssc_datacenter": "us-west-1"
-  , "ssc_protocol": "https"
-  , "ssc_port": 443
-}
-, "images": {
+  },
+  "maxmind": {
+    "phoneApiUrl": "https://api.maxmind.com",
+    "fraudApiUrl": "https://minfraud.maxmind.com",
+    "licenseId": "bQg6oKXwLfWj",
+    "limits": {
+      "calls": 3,
+      "serviceFails": 3,
+      "pinTries": 3
+    },
+    "riskScoreFraudLimit": 20
+  },
+  "slb": {
+    "slb_code_url": "https://us-east.manta.joyent.com/mriou/public/slbapi-20140512.tgz",
+    "ssc_image": "7eec9dfc-5c59-11e3-a3e4-0b8030348bec",
+    "ssc_package": "g3-standard-1-kvm",
+    "ssc_datacenter": "us-west-1",
+    "ssc_protocol": "https",
+    "ssc_port": 443
+  },
+  "images": {
     "types": {
-    "apache": "14.1.0"
-    , "base": "13.3.0"
-    , "base64": "13.3.0"
-    , "cassandra": "14.1.0"
-    , "centos-6": "2.5.0"
-    , "debian-7": "20140729"
-    , "elasticsearch": "14.1.0"
-    , "freebsd-10": "20141115"
-    , "ghost": "13.4.2"
-    , "hadoop": "13.3.1"
-    , "java": "14.1.0"
-    , "mongodb": "14.1.0"
-    , "nginx": "14.1.0"
-    , "nodejs": "14.1.0"
-    , "percona": "14.1.0"
-    , "postgresql": "14.1.0"
-    , "standard": "14.1.0"
-    , "standard64": "14.1.0"
-    , "ubuntu-12.04": "2.4.2"
-    , "ubuntu-certified-12.04": "20140219"
-    , "ubuntu-certified-13.10": "20140219"
-    , "ubuntu-certified-14.04": "20140416"
-    , "ubuntu-certified-14.10": "20141022.3"
-    }
-  , "earliest_date": "2013-12-18"
-}
-, "manta": {
+      "apache": "14.1.0",
+      "base": "13.3.0",
+      "base-32": "15.1.0",
+      "base-32-lts": "14.4.0",
+      "base-64": "15.1.0",
+      "base-64-lts": "14.4.0",
+      "base64": "13.3.0",
+      "cassandra": "14.1.0",
+      "centos-6": "2.5.0",
+      "debian-7": "20140729",
+      "elasticsearch": "14.1.0",
+      "freebsd-10": "20141115",
+      "ghost": "13.4.2",
+      "hadoop": "13.3.1",
+      "java": "14.1.0",
+      "minimal-32": "15.1.0",
+      "minimal-32-lts": "14.4.0",
+      "minimal-64": "15.1.0",
+      "minimal-64-lts": "14.4.0",
+      "mongodb": "14.1.0",
+      "nginx": "14.1.0",
+      "nodejs": "14.1.0",
+      "percona": "14.1.0",
+      "postgresql": "14.1.0",
+      "standard": "14.1.0",
+      "standard64": "14.1.0",
+      "ubuntu-12.04": "2.4.2",
+      "ubuntu-certified-12.04": "20140219",
+      "ubuntu-certified-13.10": "20140219",
+      "ubuntu-certified-14.04": "20140416",
+      "ubuntu-certified-14.10": "20141022.3"
+    },
+    "earliest_date": "2013-12-18"
+  },
+  "manta": {
     "url": "https://us-east.manta.joyent.com"
-}
-, "twitter": {
+  },
+  "twitter": {
     "signupTag": ""
-}
-, "mdb": {
+  },
+  "mdb": {
     "processor": "/dbqp/public/manta-mdb-node-report.sh"
-}
-, "downloadSdc": {
+  },
+  "downloadSdc": {
     "fullSdc": "",
     "coalSdc": "",
     "eula": ""
-}
-, "docker": {
-    "dockerVersion": "1.3.2"
-    , "cadvisorVersion": "0.5.0"
-    , "registryVersion": "0.9.0"
-    , "registryDriverVersion": "0.0.19"
-}
-, "sdcDocker": {
-    "ip": "165.225.168.25"
-    , "name": "Triton: East 3B"
-    , "datacenter": "us-east-3b"
-    , "fullDataCenter": true
-    , "packagePrefix": "t4-"
-}
-, "subUserDenied" : [
-    "slb"
-    , "provisioningLimits"
-    , "usageData"
-    , "support"
-    , "rbac"
-    , "mdb"
-    , "cloudAnalytics"
-    , "cdn"
-    , "docker"
-    , "dtrace"
-]
-, "features": {
-    "privateSdc": "disabled"
-  , "fullVersion": "enabled"
-  , "instanceRename": "enabled"
-  , "instanceTagging": "enabled"
-  , "instanceMetadata": "enabled"
-  , "promocode": "enabled"
-  , "invoices": "enabled"
-  , "imageUse": "enabled"
-  , "imageCreate": "enabled"
-  , "firewall": "enabled"
-  , "skinChange": "disabled"
-  , "useBrandingOrange": "enabled"
-  , "promoBillingConfirmation": "disabled"
-  , "phoneVerification": "disabled"
-  , "freetier": "enabled"
-  , "manta": "enabled"
-  , "usageData": "enabled"
-  , "support": "enabled"
-  , "slb": "enabled"
-  , "createdBySupportPackages": "enabled"
-  , "uploadSshKey": "enabled"
-  , "systemStatusTile": "enabled"
-  , "devCenterNewsTile": "disabled"
-  , "allowSkipBilling": "enabled"
-  , "mantaJobs": "enabled"
-  , "recentInstances": "enabled"
-  , "provisioningLimits": "enabled"
-  , "mdb": "enabled"
-  , "rbac": "enabled"
-  , "cloudAnalytics": "enabled"
-  , "downloadSdc": "no"
-  , "limitedSlb": "yes"
-  , "cdn": "yes"
-  , "docker": "yes"
-  , "dockerMemoryLimit": "yes"
-  , "dockerExec": "no"
-  , "zendesk": "yes"
-  , "feedback": "yes"
-  , "blogEntries": "yes"
-  , "marketo": "yes"
-  , "twitter": "yes"
-  , "googleAnalytics": "yes"
-  , "billing": "yes"
-  , "sdcDocker": "no"
-  , "dtrace": "yes"
+  },
+  "docker": {
+    "dockerVersion": "1.3.2",
+    "cadvisorVersion": "0.5.0",
+    "registryVersion": "0.9.0",
+    "registryDriverVersion": "0.0.19"
+  },
+  "sdcDocker": {
+    "ip": "165.225.168.25",
+    "name": "Triton: East 3B",
+    "datacenter": "us-east-3b",
+    "fullDataCenter": true,
+    "packagePrefix": "t4-"
+  },
+  "subUserDenied": [
+    "slb",
+    "provisioningLimits",
+    "usageData",
+    "support",
+    "rbac",
+    "mdb",
+    "cloudAnalytics",
+    "cdn",
+    "docker",
+    "dtrace"
+  ],
+  "features": {
+    "privateSdc": "disabled",
+    "fullVersion": "enabled",
+    "instanceRename": "enabled",
+    "instanceTagging": "enabled",
+    "instanceMetadata": "enabled",
+    "promocode": "enabled",
+    "invoices": "enabled",
+    "imageUse": "enabled",
+    "imageCreate": "enabled",
+    "firewall": "enabled",
+    "skinChange": "disabled",
+    "useBrandingOrange": "enabled",
+    "promoBillingConfirmation": "disabled",
+    "phoneVerification": "disabled",
+    "freetier": "enabled",
+    "manta": "enabled",
+    "usageData": "enabled",
+    "support": "enabled",
+    "slb": "enabled",
+    "createdBySupportPackages": "enabled",
+    "uploadSshKey": "enabled",
+    "systemStatusTile": "enabled",
+    "devCenterNewsTile": "disabled",
+    "allowSkipBilling": "enabled",
+    "mantaJobs": "enabled",
+    "recentInstances": "enabled",
+    "provisioningLimits": "enabled",
+    "mdb": "enabled",
+    "rbac": "enabled",
+    "cloudAnalytics": "enabled",
+    "downloadSdc": "no",
+    "limitedSlb": "yes",
+    "cdn": "yes",
+    "docker": "yes",
+    "dockerMemoryLimit": "yes",
+    "dockerExec": "no",
+    "zendesk": "yes",
+    "feedback": "yes",
+    "blogEntries": "yes",
+    "marketo": "yes",
+    "twitter": "yes",
+    "googleAnalytics": "yes",
+    "billing": "yes",
+    "sdcDocker": "no",
+    "dtrace": "yes"
   }
 }
