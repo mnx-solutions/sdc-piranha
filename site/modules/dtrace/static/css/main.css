@@ -24,6 +24,14 @@
     font-weight: bold;
     font-size: 16px;
 }
+.dtrace-wrapper .name p {
+    overflow: hidden;
+    width: 200px;
+    height: 23px;
+    vertical-align: top;
+    text-overflow: ellipsis;
+    word-wrap: break-word;
+}
 .dtrace-wrapper .info-status {
     line-height: 30px;
 }
