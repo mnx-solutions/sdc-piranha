@@ -1984,6 +1984,13 @@ a
     width: 410px;
 }
 
+.modal-dialog-ssh .ssh-key-name,
+.modal-dialog-ssh .ssharea
+{
+    min-width: 368px;
+}
+
+.modal-dialog-ssh .form-group,
 .control-group-ssh
 {
     margin-bottom: 0;
