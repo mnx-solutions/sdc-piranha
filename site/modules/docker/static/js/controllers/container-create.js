@@ -54,7 +54,11 @@
                             <strong>bridge</strong>: creates a new network stack for the container on the docker bridge<br />\
                             <strong>none</strong>: no networking for this container<br /> \
                             <strong>container:&#60name|id&#62</strong>: reuses another container network stack<br /> \
-                            <strong>host</strong>: use the host network stack inside the container. Note: the host mode gives the container full access to local system services such as D-bus and is therefore considered insecure.'
+                            <strong>host</strong>: use the host network stack inside the container. Note: the host mode gives the container full access to local system services such as D-bus and is therefore considered insecure.',
+                    tag: 'Tag an image into a repository.',
+                    repository: 'Enter Repository',
+                    message: 'Commit message',
+                    author: 'Author'
                 };
 
                 var isArrayNotEmpty = function (data) {
