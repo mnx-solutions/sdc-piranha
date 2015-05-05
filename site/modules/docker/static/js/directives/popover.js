@@ -1,41 +1,47 @@
 'use strict';
 
 (function (ng, app) {
-    app.directive('imageIdPopover', ['$timeout', function ($timeout) {
+    app.directive('imageIdPopover', [function () {
         return {
             scope: {
                 object: '='
             },
-            template: '<span data-toggle="popover" id="{{id}}" data-placement="right" data-html="true" data-content="{{content}}"><a href="{{link}}" style="min-width: 140px;">{{object.ShorId}}</a></span>',
+            template: '<span data-toggle="popover" id="{{id}}" data-placement="right" data-html="true" data-content="{{content}}" data-ng-bind-html="htmlLink"></span>',
 
             link: function (scope, element) {
+                var IMAGE_PATH = '<a href="#!/docker/image/';
+                scope.$watch('object.actionInProgress', function () {
+                    scope.htmlLink = '<a style="min-width: 140px;">' + scope.object.ShorId + '</a>';
+                    var content = ['<span>This image is on several hosts</span><br/>'];
+                    if (scope.object.hostIds) {
+                        scope.id = scope.object.ShorId;
+                        scope.object.hostIds.forEach(function (hostId, index) {
+                            var htmlLink = IMAGE_PATH + hostId + '/' + scope.object.Id + '">' + scope.object.hostNames[index] + '</a><br/>';
+                            if (scope.object.isRemoving) {
+                                htmlLink = scope.object.hostNames[index] + '<br/>';
+                            }
+                            content.push(htmlLink);
+                        });
+                    } else {
+                        scope.id = null;
+                        scope.htmlLink = IMAGE_PATH + scope.object.hostId + '/' + scope.object.Id + '" style="min-width: 140px;">' + scope.object.ShorId + '</a>';
+                        if (scope.object.isRemoving) {
+                            scope.htmlLink = scope.object.ShorId;
+                        }
+                    }
 
-                var content = ['<span>This image is on several hosts</span><br/>'];
-                if (scope.object.hostIds) {
-                    scope.id = scope.object.ShorId;
-                    scope.object.hostIds.forEach(function (hostId, index) {
-                        content.push('<a href="#!/docker/image/' + hostId + '/' + scope.object.Id + '">' + scope.object.hostNames[index] + '</a><br/>');
-                    });
-                } else {
-                    scope.id = null;
-                    scope.link = '#!/docker/image/' + scope.object.hostId + '/' + scope.object.Id;
-                }
+                    scope.content = content.join('');
 
-                scope.content = content.join('');
-
-                if (scope.id) {
-                    element.popover({
-                        html : true,
-                        trigger : 'hover',
-                        placement : 'right',
-                        selector: '[data-toggle]',
-                        delay: {show: 50, hide: 400}
-                    });
-
-                    $timeout(function () {
-                        $('#' + scope.id).find('a').removeAttr("href");
-                    }, 500);
-                }
+                    if (scope.id) {
+                        element.popover({
+                            html : true,
+                            trigger : 'hover',
+                            placement : 'right',
+                            selector: '[data-toggle]',
+                            delay: {show: 50, hide: 400}
+                        });
+                    }
+                });
             }
 
         };
