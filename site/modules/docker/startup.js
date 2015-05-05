@@ -1099,6 +1099,30 @@ var Docker = function execute(log, config) {
         handler: function (call) {
             var registryId = call.data.registryId;
             var searchQuery = {};
+            function updateImagesInfo(images) {
+                vasync.forEachParallel({
+                    inputs: images,
+                    func: function (image, callback) {
+                        getImageInfo(call, registryId, {name: image.name}, function (err, result) {
+                            image.info = result;
+                            call.update(null, image);
+                            callback();
+                        });
+                    }
+                }, function (vasyncError) {
+                    if (vasyncError) {
+                        var cause = vasyncError['jse_cause'] || vasyncError['ase_errors'];
+                        if (Array.isArray(cause)) {
+                            cause = cause[0];
+                        } else {
+                            return call.done(vasyncError);
+                        }
+                        return call.done(cause, cause instanceof Docker.DockerHostUnreachable);
+                    }
+
+                    call.done(null);
+                });
+            }
             Docker.getRegistry(call, registryId, function (error, registryRecord) {
                 if (error || !registryRecord  && registryId !== 'default') {
                     return call.done('Registry not found.');
@@ -1109,6 +1133,16 @@ var Docker = function execute(log, config) {
                         return call.done(null, {images: []});
                     }
                     searchQuery.q = registryRecord.username;
+                } else if (registryRecord.type === 'local') {
+                    Docker.privateRegistryImages(call, searchQuery.q, function (error, records) {
+                        if (error) {
+                            return call.done(error);
+                        }
+
+                        call.update(error, {images: records});
+                        updateImagesInfo(records);
+                    });
+                    return;
                 }
 
                 Docker.createRegistryClient(call, registryRecord, function (error, registryClient) {
@@ -1123,28 +1157,7 @@ var Docker = function execute(log, config) {
                             });
                         }
                         call.update(null, {images: results});
-                        vasync.forEachParallel({
-                            inputs: results,
-                            func: function (image, callback) {
-                                getImageInfo(call, registryId, {name: image.name}, function (err, result) {
-                                    image.info = result;
-                                    call.update(null, image);
-                                    callback();
-                                });
-                            }
-                        }, function (vasyncError) {
-                            if (vasyncError) {
-                                var cause = vasyncError['jse_cause'] || vasyncError['ase_errors'];
-                                if (Array.isArray(cause)) {
-                                    cause = cause[0];
-                                } else {
-                                    return call.done(vasyncError);
-                                }
-                                return call.done(cause, cause instanceof Docker.DockerHostUnreachable);
-                            }
-
-                            call.done(null);
-                        });
+                        updateImagesInfo(results);
                     });
                 });
             });
