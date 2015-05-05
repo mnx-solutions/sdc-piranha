@@ -18,8 +18,8 @@
             require: ['ngModel'],
             link: function (scope, element, attrs, ctrls) {
                 // process attributes and watch for changes
-                scope.min = scope.min || 0;
-                scope.max = scope.max || 100;
+                scope.min = parseInt(scope.min, 10) || 0;
+                scope.max = parseInt(scope.max, 10) || 100;
                 scope.step = parseInt(attrs.step, 10) || 5;
                 scope.showLimit = attrs.hasOwnProperty('showLimit');
                 scope.showValue = attrs.hasOwnProperty('showValue');
