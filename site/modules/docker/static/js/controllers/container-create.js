@@ -174,7 +174,7 @@
                     if (isArrayNotEmpty(environments)) {
                         output = [];
                         environments.forEach(function (string) {
-                            if (string.length > 3 && string.indexOf('=') > 0) {
+                            if (string.length > 2 && string.indexOf('=') > 0) {
                                 var envValue = string.split('=');
                                 string = envValue[0] + '=';
                                 if (envValue[1]) {
