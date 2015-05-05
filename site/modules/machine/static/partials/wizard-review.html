@@ -9,14 +9,8 @@
                     <div class="dataset-desc crop text-wrap">{{selectedDataset.description}}</div>
 
                     <p data-ng-show="manyVersions[selectedDataset.visibility][selectedDataset.name]">INSTANCE VERSION:</p>
-                    <div class="text-small image-container" data-ng-show="manyVersions[selectedDataset.visibility][selectedDataset.name]">
-                        <div class="btn-group pull-left">
-                            <select data-select-two id="selectVersion" data-item="version" data-select="selectedDataset.version" data-width="200px" data-fn="selectVersion" data-ng-show="selectedDataset || selectedVersions[selectedDataset.name]">
-                                <option data-ng-repeat="version in filteredVersions" value="{{version}}">
-                                    {{version.version}}
-                                </option>
-                            </select>
-                        </div>
+                    <div class="text-small image-container" data-ng-if="manyVersions[selectedDataset.visibility][selectedDataset.name]">
+                        <div data-versions class="btn-group pull-left"></div>
                     </div>
                 </div>
             </td>
