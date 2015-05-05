@@ -56,10 +56,9 @@
                 var errorCallback = function (err) {
                     var message = err;
                     if ($scope.host) {
-                        var host = JSON.parse($scope.host);
-                        message = 'DTrace Instance "' + host.name + '" is currently unreachable.';
+                        message = 'DTrace Instance "' + $scope.host.name + '" is currently unreachable.';
                         if (err.indexOf(UNAUTHORIZED_ERROR) !== -1 || err.indexOf('401') !== -1) {
-                            message = 'DTrace certificates are invalid for Instance "' + host.name + '".';
+                            message = 'DTrace certificates are invalid for Instance "' + $scope.host.name + '".';
                         }
                     }
                     DTrace.reportError(message, 'websocket error: ' + err);
@@ -81,7 +80,7 @@
                                 $scope.hosts = result[0] || [];
                                 $scope.scripts = result[1] || [];
                                 $scope.scriptName = $scope.scripts ? $scope.scripts[0].name : '';
-                                $scope.host = JSON.stringify($scope.hosts[0]);
+                                $scope.host = $scope.hosts[0];
                                 if ($scope.title !== TITLES.heatmap) {
                                     $scope.scriptName = FLAME_GRAPH_SCRIPT_NAME;
                                 }
@@ -121,13 +120,12 @@
                         $scope.loadingHostProcesses = false;
                     } else if (!$scope.processes) {
                         if ($scope.host) {
-                            var host = typeof $scope.host === 'string' ? JSON.parse($scope.host) : $scope.host;
-                            DTrace.listProcesses({primaryIp: host.primaryIp}).then(function (list) {
+                            DTrace.listProcesses({primaryIp: $scope.host.primaryIp}).then(function (list) {
                                 $scope.pid = $scope.hasExecname ? list[0].execname :list[0].pid;
                                 list.forEach(function (process) {
                                     process.name = ' PID: ' + process.pid + ' CMD: ' + process.cmd;
                                 });
-                                processes[host.primaryIp] = list;
+                                processes[$scope.host.primaryIp] = list;
                                 $scope.processes = list;
                                 $scope.loadingHostProcesses = false;
                             }, errorCallback);
@@ -142,9 +140,8 @@
 
                 $scope.changeHost = function () {
                     if ($scope.host) {
-                        var host = JSON.parse($scope.host);
-                        if (processes[host.primaryIp]) {
-                            $scope.processes = processes[host.primaryIp];
+                        if (processes[$scope.host.primaryIp]) {
+                            $scope.processes = processes[$scope.host.primaryIp];
                         } else {
                             updateScripts();
                         }
@@ -166,7 +163,6 @@
 
                 $scope.start = function () {
                     if ($scope.host) {
-                        var host = JSON.parse($scope.host);
                         var script = ng.copy(getCurrentScript());
                         if (script && script.body && $scope.pid) {
                             script.body = script.body.replace(EXECNAME_PATTERN, '\"' + $scope.pid + '\"');
@@ -179,8 +175,8 @@
                         }
                         $scope.options = {
                             script: script,
-                            hostIp: host.primaryIp,
-                            hostId: host.id,
+                            hostIp: $scope.host.primaryIp,
+                            hostId: $scope.host.id,
                             start: true
                         };
 

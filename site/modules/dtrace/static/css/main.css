@@ -40,6 +40,10 @@
     display: inline-block;
     vertical-align: bottom;
 }
+.dtrace-loading-processes {
+    padding-left: 5px;
+    line-height: 34px;
+}
 .full-width-form
 {
     font-size: 16px;
