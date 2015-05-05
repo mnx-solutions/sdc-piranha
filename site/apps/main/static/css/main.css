@@ -5382,7 +5382,12 @@ a.orange-link
     min-height: 30px;
     background-position: 100% 50%;
 }
-.current-path-info
+.info-table tr td.current-path-info
+{
+    font-size: 14px;
+    line-height: 20px;
+}
+.current-path-info input
 {
     margin-right: 5px;
     padding: 0 5px;
