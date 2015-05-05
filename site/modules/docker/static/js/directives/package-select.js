@@ -51,17 +51,14 @@
                                     $scope.selectedPackage = $scope.packages.find(function (pkg) {
                                         return id === pkg.id
                                     });
+                                    parentScope.pkg = $scope.selectedPackage;
+                                    $scope.close();
                                 };
 
                                 $scope.filterPackages = function (packageType) {
                                     return function (item) {
                                         return !packageType || packageType === item.group;
                                     };
-                                };
-
-                                $scope.choose = function () {
-                                    parentScope.pkg = $scope.selectedPackage;
-                                    $scope.close();
                                 };
 
                                 $scope.close = function () {
