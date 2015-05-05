@@ -12,7 +12,8 @@
         '$location',
         '$timeout',
         'adviserGraph',
-        function ($scope, Docker, Machine, PopupDialog, $q, requestContext, localization, $location, $timeout, adviserGraph) {
+        'util',
+        function ($scope, Docker, Machine, PopupDialog, $q, requestContext, localization, $location, $timeout, adviserGraph, util) {
             localization.bind('docker', $scope);
             requestContext.setUpRenderContext('docker.details', $scope, {
                 title: localization.translate(null, 'docker', 'View Joyent Container Details')
@@ -24,18 +25,18 @@
                 Id: containerId
             };
             var timerUpdateStats = 0;
-
-            $scope.graphs = null;
-            $scope.loading = true;
-            $scope.actionInProgress = false;
-            $scope.loading = true;
-            $scope.cadvisorUnavailable = false;
-            $scope.execCmd = '';
+            $scope.tabs = ['Summary', 'Infrastructure Summary'];
+            $scope.activeTab = $scope.tabs[0];
 
             var errorCallback = function () {
                 $scope.loading = false;
                 $scope.actionInProgress = false;
             };
+
+            $scope.graphs = null;
+            $scope.actionInProgress = false;
+            $scope.loading = true;
+            $scope.cadvisorUnavailable = false;
 
             var updateContainerStats = function (options, callback) {
                 if ($scope.container && $scope.container.state !== 'running' && !$scope.actionInProgress) {
@@ -84,73 +85,45 @@
                 }, 1000);
             };
 
-            var getDockerInspectContainer = function () {
+            var getDockerInspectContainer = function (machine) {
+                container.primaryIp = machine.primaryIp;
+                container.hostId = machine.id;
+                container.isSdc = machine.isSdc;
+                $scope.machine = machine;
+
+                Docker.inspectContainer(container).then(function (info) {
+                    var containerCmd = info.Config.Cmd;
+                    if (Array.isArray(containerCmd)) {
+                        containerCmd = info.Config.Cmd.join(' ');
+                    }
+                    var containerState = Docker.getContainerState(info);
+                    $scope.container = {
+                        name: info.Name.substring(1),
+                        image: info.Config.Image,
+                        state: containerState,
+                        infoId: info.Id,
+                        isSdc: machine.isSdc,
+                        Uuid: util.idToUuid(container.Id)
+                    };
+                    $scope.actionInProgress = false;
+                    $scope.loading = false;
+                    if (containerState === 'running') {
+                        $timeout(function () {
+                            statsTimerControl(true);
+                        });
+                    }
+                }, errorCallback);
+            };
+
+            var getDockerHost = function () {
                 var host = $q.when(Docker.listHosts({id:hostId}));
                 host.then(function (machine) {
-                    container.primaryIp = machine.primaryIp;
-                    container.hostId = machine.id;
-                    container.isSdc = machine.isSdc;
-                    $scope.machine = machine;
-                    $scope.termOpts = {
-                        machine: $scope.machine,
-                        containerId: containerId,
-                        isSdc: machine.isSdc
-                    };
-                    Docker.inspectContainer(container).then(function (info) {
-                        var containerCmd = info.Config.Cmd;
-                        if (Array.isArray(containerCmd)) {
-                            containerCmd = info.Config.Cmd.join(' ');
-                        }
-                        var containerState = Docker.getContainerState(info);
-                        $scope.termOpts.containerState = containerState;
-                        $scope.container = {
-                            name: info.Name.substring(1),
-                            cmd: containerCmd,
-                            entrypoint: info.Config.Entrypoint,
-                            Ports: info.Config.ExposedPorts,
-                            hostname: info.Config.Hostname,
-                            image: info.Config.Image,
-                            memory: info.Config.Memory,
-                            cpuShares: info.Config.CpuShares,
-                            created: info.Created,
-                            state: containerState,
-                            infoId: info.Id,
-                            ipAddress: info.NetworkSettings.IPAddress,
-                            isSdc: machine.isSdc,
-                            Uuid: Docker.idToUuid(container.Id)
-                        };
-                        $scope.actionInProgress = false;
-                        $scope.loading = false;
-                        if (containerState === 'running') {
-                            $timeout(function () {
-                                statsTimerControl(true);
-                            });
-                        }
-                    }, errorCallback);
-                    Docker.logsContainer(container).then(function (logs) {
-                        $scope.containerLogs = [];
-                        if (logs && typeof (logs) === 'string') {
-                            logs = logs.split(/[\r\n]+/);
-                            if (Array.isArray(logs)) {
-                                logs.forEach(function (str) {
-                                    $scope.containerLogs.push(str);
-                                });
-                            } else {
-                                $scope.containerLogs.push(logs);
-                            }
-                        }
-                    }, errorCallback);
-                    Docker.getAuditInfo({event: {type: 'container', host: hostId, entry: containerId}, params: true}).then(function(info) {
-                        $scope.audit = info || [];
-                        $scope.audit.forEach(function (event) {
-                            event.hostName = machine.name || machine.id;
-                        });
-                    }, errorCallback);
+                    getDockerInspectContainer(machine);
                 }, function () {
                     $location.path('/docker/containers');
                 });
             };
-            getDockerInspectContainer();
+            getDockerHost();
 
             function capitalize(string) {
                 return string.charAt(0).toUpperCase() + string.slice(1);
@@ -171,7 +144,7 @@
                         if (action === 'remove') {
                             $location.path('/docker/containers');
                         } else {
-                            getDockerInspectContainer();
+                            getDockerHost();
                         }
                     }, errorCallback);
                 }

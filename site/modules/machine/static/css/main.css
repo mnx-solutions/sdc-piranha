@@ -29,40 +29,6 @@
     margin-bottom: 20px;
 }
 
-.create-images .loading-medium
-{
-    display: inline-block;
-
-    margin-right: -10px;
-
-    vertical-align: -13px;
-}
-
-.create-images input
-{
-    padding-left: 6px;
-}
-
-.create-images input,
-.create-images textarea
-{
-    width: 394px;
-    height: 30px;
-    margin-bottom: 10px;
-}
-
-.create-images textarea
-{
-    height: 180px;
-
-    resize: vertical;
-}
-
-.create-images button
-{
-    font-size: 16px;
-}
-
 .item label p.name
 {
     font-weight: bold;
@@ -105,11 +71,6 @@
 .machine-details-title
 {
     min-width: 1060px;
-}
-
-.tag.editable
-{
-    margin-top: 10px;
 }
 
 .label-margin-fix
@@ -299,39 +260,6 @@
 .grid-view-pagination
 {
     margin: 0;
-}
-
-.key
-{
-    margin-left: 0;
-
-    text-align: left;
-
-    color: #888;
-}
-
-.value
-{
-    text-align: left !important;
-}
-
-.key.error,
-.value.error
-{
-    color: #b94a48;
-    border-bottom: 1px solid #b94a48;
-}
-
-.key,
-.value
-{
-    padding: 0;
-}
-
-.tag.editable input
-{
-    padding-left: 4px;
-    height: 31px;
 }
 
 .tag.editable .key,
@@ -643,15 +571,6 @@ span.btn-success
     background-position: -264px -72px;
 }
 
-.accordion-max-width .value-container
-{
-    display: inline-block;
-
-    padding-right: 10px;
-
-    vertical-align: top;
-}
-
 .create-tags .key-container
 {
     width: 133px;
@@ -670,45 +589,6 @@ span.btn-success
     height: 80px;
 }
 
-.key-width,
-.value-width
-{
-    display: inline-block;
-    overflow: hidden;
-}
-
-.detail-tags .key-width,
-.detail-mdata .key.key-width
-{
-    width: 165px;
-}
-
-.detail-tags .value-width
-{
-    width: 225px;
-}
-
-.detail-tags .key-container input
-{
-    width: 160px;
-    margin-right: 5px;
-}
-
-.detail-mdata .value.value-width,
-.detail-tags .value.value-width
-{
-    width: 270px;
-}
-
-.detail-tags .value-container textarea,
-.create-tags .value-container textarea,
-.detail-mdata .value-container input,
-.create-mdata .value-container input,
-.create-mdata .loading-medium.item-button,
-.create-tags .loading-medium.item-button
-{
-    display: none;
-}
 
 .create-tags .value-width
 {
@@ -732,67 +612,14 @@ span.btn-success
     width: 156px;
 }
 
-.create-tags .key-width,
-.create-mdata .key.key-width,
-.create-tags .value-width,
-.create-mdata .value.value-width,
-.detail-tags .key-width,
-.detail-mdata .key.key-width,
-.detail-tags .value-width,
-.detail-mdata .value.value-width
-{
-    height: 20px;
-
-    vertical-align: middle;
-}
-
-.metadata .editable .value-width,
-.metadata .editable .key-width
-{
-    min-width: 395px;
-    max-width: 395px;
-}
-
 .metadata .editable .key-width
 {
     margin-bottom: 10px;
 }
 
-.tags-title
-{
-    font-size: 14px;
-    font-weight: 300;
-    line-height: 15px;
-
-    margin-top: 10px;
-
-    color: #5d80a7;
-}
-
-.tag-add-btn
-{
-    width: 62px;
-    height: 31px;
-    padding-top: 5px;
-    padding-bottom: 7px;
-
-    vertical-align: top;
-}
-
 .create-images .form-fields .error
 {
     margin-top: -10px;
-}
-
-.controls
-{
-    line-height: 20px;
-
-    width: 100%;
-    padding-top: 5px;
-    padding-bottom: 5px;
-
-    border-bottom: 1px solid #ddd;
 }
 
 .simple-image:hover
@@ -2268,12 +2095,6 @@ span.btn-success
     min-height: 34px;
 }
 
-.accordion-max-width
-{
-    min-width: 507px;
-    max-width: 465px;
-}
-
 .progress-small {
     margin-right: 5px;
 }
@@ -2310,18 +2131,6 @@ span.btn-success
 .ssh-button-container
 {
     margin-top: 20px;
-}
-
-.id-section td:first-child
-{
-    width: 140px;
-}
-
-.id-section td:last-child
-{
-    font-weight: bold;
-
-    color: #333 !important;
 }
 
 .checkbox
@@ -2426,8 +2235,6 @@ span.btn-success
     text-align: right;
     letter-spacing: -.1px;
 }
-
-
 
 .left-part
 {

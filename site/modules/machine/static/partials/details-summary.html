@@ -1,0 +1,524 @@
+<div class="panel-group" id="machine-accordion">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <a class="accordion-toggle toggle-icon" data-toggle="collapse" data-parent="#machine-accordion"
+               data-target="#collapse_machine_summary">
+                Summary
+            </a>
+        </div>
+        <div id="collapse_machine_summary" class="panel-collapse collapse in">
+            <div class="panel-body">
+                <table>
+                    <tr class="id-section">
+                        <td>UUID</td>
+                        <td>{{machine.id}}</td>
+                    </tr>
+                    <tr>
+                        <td>Type</td>
+                        <td>{{dataset && machine.type}}</td>
+                    </tr>
+                    <tr>
+                        <td>CN UUID</td>
+                        <td>{{machine.compute_node}}</td>
+                    </tr>
+                    <tr>
+                        <td>Image UUID</td>
+                        <td>{{machine.image}}</td>
+                    </tr>
+                    <tr>
+                        <td>Image</td>
+                        <td data-ng-show="dataset.name == 'Image deleted'" class="tooltip-hover" data-toggle="tooltip" data-original-title="The image is no longer accessible because the image has been deleted, is inactive, or access privileges have been removed.">{{dataset.name}} <span class="glyphicon glyphicon-question-sign"></span></td>
+                        <td data-ng-show="dataset.name != 'Image deleted'" >{{dataset.name}}</td>
+                    </tr>
+                    <tr data-ng-show="dataset.version">
+                        <td>Image version</td>
+                        <td>{{dataset.version}}</td>
+                    </tr>
+                    <tr>
+                        <td>Package</td>
+                        <td>{{machine.package}}</td>
+                    </tr>
+                    <tr>
+                        <td>Package UUID</td>
+                        <td>{{package.id}}</td>
+                    </tr>
+                    <tr>
+                        <td>Memory</td>
+                        <td>{{machine.memory && (machine.memory | sizeFormat)}}</td>
+                    </tr>
+                    <tr>
+                        <td>Disk</td>
+                        <td>{{machine.disk && (machine.disk | sizeFormat)}}</td>
+                    </tr>
+                    <tr>
+                        <td>IP addresses</td>
+                        <td>
+                            <span data-ng-repeat="ip in machine.ips">{{ip}}{{{true: '', false: ', '}[$last]}}</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Created</td>
+                        <td>{{machine.created | date:'yyyy-MM-dd HH:mm'}}</td>
+                    </tr>
+                    <tr>
+                        <td>Datacenter</td>
+                        <td>{{machine.datacenter}}</td>
+                    </tr>
+                    <tr data-ng-show="machine.primaryIp && dataset.name && (dataset.name != 'Image deleted')">
+                        <td>Login</td>
+                        <td data-ng-show="dataset.os && (dataset.os != 'windows')">ssh {{defaultSshUser}}@{{machine.primaryIp}}</td>
+                        <td data-ng-show="dataset.os && (dataset.os == 'windows')">Use Microsoft Remote Desktop (RDP) to connect to {{machine.primaryIp}}. See Credentials section below.</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="panel panel-default" data-ng-show="machine.metadata.credentials">
+        <div class="panel-heading">
+            <a class="accordion-toggle collapsed toggle-icon" data-toggle="collapse" data-parent="#machine-accordion"
+               data-target="#collapse_credentials">
+                Credentials
+            </a>
+        </div>
+        <div id="collapse_credentials" class="panel-collapse collapse">
+            <div class="panel-body" data-ng-show="machine.metadata.credentials">
+                <div class="accordion-line">
+                    <table data-ng-repeat="(key,credential) in machine.metadata.credentials">
+                        <tr>
+                            <td class="system-field">System</td>
+                            <td class="credentials">{{credential.system}}</td>
+                        </tr>
+                        <tr>
+                            <td>Username</td>
+                            <td class="credentials">{{credential.username}}</td>
+                        </tr>
+                        <tr>
+                            <td>Password</td>
+                            <td class="pass-field"><span data-ng-show="isPasswordVisible(key)">************</span><span data-ng-hide="isPasswordVisible(key)" class="credentials">{{credential.password}}</span></td>
+                            <td nowrap>
+                                <a class="btn light show-hide margin-bottom-5 effect-orange-button" data-translate data-ng-click="togglePassword(key)" data-ng-show="isPasswordVisible(key)">Show</a>
+                                <a class="btn light show-hide margin-bottom-5 effect-orange-button" data-translate data-ng-click="togglePassword(key)" data-ng-show="!isPasswordVisible(key)">Hide</a>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+            <div class="panel-body" data-ng-hide="machine.metadata.credentials">
+                <p>There is no credentials for this instance.</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <a class="accordion-toggle collapsed toggle-icon" data-toggle="collapse" data-parent="#machine-accordion"
+               data-target="#collapse_networks">
+                Networks
+            </a>
+        </div>
+        <div id="collapse_networks" class="panel-collapse collapse">
+            <div class="panel-body overflow-accordion">
+                <table class="table table-striped table-hover table-full-width">
+                    <thead>
+                    <tr class="grid-small-font">
+                        <th>#</th>
+                        <th>Name</th>
+                        <th>ID</th>
+                        <th>Public</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr data-ng-repeat="network in networks" data-ng-show="network.id" class="ng-scope network">
+                        <td class="ng-binding">{{ $index + 1 }}</td>
+                        <td class="ng-binding">{{ network.name }}</td>
+                        <td class="ng-binding">{{ network.id }}</td>
+                        <td class="ng-binding">{{ network.public }}</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <a class="accordion-toggle collapsed toggle-icon" data-toggle="collapse" data-parent="#machine-accordion"
+               data-target="#collapse_tags">
+                Tags
+            </a>
+        </div>
+        <div id="collapse_tags" class="panel-collapse collapse">
+            <div class="panel-body">
+                <p>
+                    Add tags for convenient instance searching
+                    Tags are metadata stored as key-value pairs to make it easier for you to find, sort, and
+                    identify your instances.
+                </p>
+                <div data-machine-collection
+                     data-collection="tagsArray"
+                     data-collection-name="'tags'"
+                     data-machine-id="machineid"
+                     class="accordion-max-width detail-tags"
+                     data-ng-if="machineid">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="panel panel-default metadata" data-ng-show="instanceMetadataEnabled ">
+        <div class="panel-heading">
+            <a class="accordion-toggle collapsed toggle-icon" data-toggle="collapse" data-parent="#machine-accordion"
+               data-target="#collapse_metadata">
+                Metadata
+            </a>
+        </div>
+        <div id="collapse_metadata" class="panel-collapse collapse">
+            <div class="panel-body">
+                <div data-machine-collection
+                     data-collection="metadataArray"
+                     data-collection-name="'metadata'"
+                     data-machine-id="machineid"
+                     class="accordion-max-width detail-mdata"
+                     data-ng-if="machineid">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="panel panel-default" data-ng-show="machine">
+        <div class="panel-heading">
+            <a class="accordion-toggle collapsed toggle-icon" data-toggle="collapse" data-parent="#accordion1"
+               data-target="#collapse_resize">
+                Resize Instance
+            </a>
+        </div>
+        <div id="collapse_resize" class="panel-collapse collapse">
+            <div class="panel-body">
+                <p data-translate>
+                    It may not always be possible to resize based on the constraints of your current server location.
+                </p>
+
+                <p data-ng-show="datasetType == 'kvm'" data-translate>
+                    To resize Linux or Windows instances, you will need to create a instance, migrate and then stop the old instance.
+                </p>
+                <p data-ng-show="machine.type == 'Docker Container'" data-translate>
+                    Resize of Docker Container instances presently is not supported.
+                </p>
+                <div data-ng-show="machine.type != 'Docker Container' && datasetType == 'smartos' || machine.type == 'smartmachine'" class="row">
+                    <div class="row" data-ng-show="package">
+                        <div>
+                            <p data-translate><b>Current Instance type</b></p>
+                            <div data-ng-show="package.group">
+                                <div  data-ng-show="package.description">{{package.description}}</div>
+                                <span data-translate>Type</span>:
+                                <span>{{package.group}}</span>
+                            </div>
+                            <div>
+                                <span data-translate>Memory</span>:
+                                <span>{{package.memory | sizeFormat}}</span>
+                            </div>
+                            <div>
+                                <span data-translate>Disk</span>:
+                                <span>{{package.disk | sizeFormat}}</span>
+                            </div>
+                            <div>
+                                <span data-ng-show="package.vcpus" data-translate>vCPUs</span>:
+                                <span data-ng-show="package.vcpus">{{package.vcpus}}</span><span data-ng-show="datasetType == 'smartos'"> and bursting</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div data-ng-hide="packages.length == 0 || package.selectedMaxPackage" class="resize-block">
+                        <p class="control-label" data-translate>Resize Instance type</p>
+                        <select name="resize" ui-select2="{width: 375}" data-ng-model="selectedPackage">
+                            <option data-ng-show="machine" data-ng-repeat="package in packages"
+                                    value="{{package}}" class="text-medium">
+                                Mem: {{package.memory | sizeFormat}}
+                                Disk: {{package.disk | sizeFormat}}
+                                <span data-ng-show="package.vcpus">VCPU: {{package.vcpus}}</span><span data-ng-show="datasetType == 'smartos'"> and bursting</span>
+                            </option>
+                        </select>
+                        <div class="form-group resize-button">
+                            <button class="btn light pull-right effect-orange-button" type="submit" data-ng-click="clickResize()" data-ng-disabled="!selectedPackage || isResizing" data-translate>Resize</button>
+                            <div class="loading-medium-tr pull-right" data-ng-show="isResizing"></div>
+                        </div>
+                    </div>
+                    <div data-ng-show="features.zendesk == 'enabled' && (package.selectedMaxAutomaticPackage || package.selectedMaxPackage)"
+                         class="pull-left resize-block">You currently have maximum possible size of the instance<!--
+                                 --><span data-ng-show="package.selectedMaxAutomaticPackage && !package.selectedMaxPackage"> which can be handled automatically</span>.<!--
+                                 --></span><span data-ng-show="package.selectedMaxPackage || (package.selectedMaxAutomaticPackage && features.createdBySupportPackages == 'disabled')">&nbsp;<a data-href="#" data-ng-click="contactSupport()">Click here</a> to contact support if you want larger instance.</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <a class="accordion-toggle collapsed toggle-icon" data-toggle="collapse" data-parent="#machine-accordion"
+               data-target="#collapse_images">
+                Images
+            </a>
+        </div>
+        <div id="collapse_images" class="panel-collapse create-images collapse" data-ng-show="machine && features.imageCreate == 'enabled'">
+            <div class="panel-body">
+                <p>
+                    <span class="font-size16" data-translate>Create Image</span>
+                </p>
+
+                <p class="" data-ng-show="imageCreateNotSupported">
+                    {{imageCreateNotSupported}}
+                </p>
+                <div class="clearfix"></div>
+                <div>
+                    <form name="imageForm">
+                        <div>
+                            <div class="form-fields" data-ng-hide="imageCreateNotSupported">
+                                <div class="dbl-inline">
+                                    <input type="text"
+                                           placeholder="Image name"
+                                           name="imageName"
+                                           data-ng-model="imageName"
+                                           data-ng-disabled="imageJob && !imageJob.finished"
+                                           data-machine-name="'image'"
+                                           value=""
+                                           class="key-width"/>
+                                </div>
+                                <div class="error"
+                                     data-ng-show="imageForm.imageName.$error.imageName"
+                                     data-translate>
+                                    Image name&nbsp;can contain only letters, digits and signs like '.' and '-'.
+                                </div>
+                                <div>
+                                    <input type="text"
+                                           placeholder="Image version"
+                                           name="imageVersion"
+                                           data-ng-model="imageVersion"
+                                           data-ng-disabled="imageJob && !imageJob.finished"
+                                           data-machine-name="'image'"
+                                           value=""
+                                           class="key-width image-version"/>
+
+                                </div>
+                                <div class="error"
+                                     data-ng-show="imageForm.imageVersion.$error.imageName"
+                                     data-translate>
+                                    Image version&nbsp;can contain only letters, digits and signs like '.' and '-'.
+                                </div>
+                                <div>
+                                    <textarea type="text"
+                                              placeholder="Description (optional)"
+                                              name="imageDescription"
+                                              data-ng-model="imageDescription"
+                                              data-ng-disabled="imageJob && !imageJob.finished"
+                                              class="value-width"></textarea>
+                                </div>
+                            </div>
+                            <div class="pull-right">
+
+                                <div class="loading-medium spiner-height" data-ng-show="(imageJob && !imageJob.finished) || creatingImage"></div>
+
+                                <a class="btn light margin-top-10 dpl-inline effect-orange-button" href="#!/images">My Images List</a>
+                                <button class="btn orange dpl-inline margin-top-10 image-form-btn"
+                                        data-ng-click="clickCreateImage()"
+                                        data-ng-hide="imageCreateNotSupported"
+                                        data-translate
+                                        data-ng-disabled="(imageJob && !imageJob.finished) || (machine.job && !machine.job.finished) || creatingImage">
+                                    Create Image
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                    <br />
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="panel panel-default" data-ng-show="features.firewall != 'disabled' && machine">
+        <div class="panel-heading">
+            <a class="accordion-toggle collapsed toggle-icon" data-toggle="collapse" data-parent="#machine-accordion"
+               data-target="#collapse_firewall">
+                Cloud Firewall
+            </a>
+        </div>
+        <div id="collapse_firewall" class="panel-collapse collapse">
+            <div class="panel-body">
+                <div>
+                                <span data-ng-switch="features.firewall">
+                                    <fieldset data-ng-switch-when="enabled">
+                                        <div data-ng-hide="machine.firewall_supported">
+                                            <div class="item-list-container">
+                                                This {{machine.type}} instance is not yet supported by the FWAPI.
+                                            </div>
+                                        </div>
+                                        <div data-ng-show="machine.firewall_supported">
+                                            <div class="item-list-container">
+                                                ICMP 8:0 is always open. With Firewall Rules enabled:
+                                                <ul>
+                                                    <li>Block all inbound traffic</li>
+                                                    <li>Allow all outbound traffic</li>
+                                                </ul>
+                                                The default rules are overridden by your own rules. There is no ordering to your own rules. For incoming traffic, the least restrictive rule wins. For outgoing traffic, the most restrictive rule wins.
+                                            </div>
+                                        </div>
+                                        <div data-ng-show="firewallRules.length >= 1">
+                                            <div data-grid-view
+                                                 data-user-config="gridUserConfig"
+                                                 data-props="gridProps"
+                                                 data-items="firewallRules"
+                                                 data-paginated="false"
+                                                 data-controls="false"
+                                                 data-order="gridOrder"
+                                                 data-items-type="firewall"
+                                                 data-special-width="'detailsPage'"
+                                                 data-search-form="searchForm"
+                                                 data-export-fields="exportFields"
+                                                 data-multisort="false"
+                                                 class="grid-small-font indent"></div>
+                                        </div>
+                                        <div data-ng-show="firewallRules.length < 1"><br/>
+                                            <div data-translate>You have no firewall rules that would apply to this machine</div>
+                                        </div>
+                                        <div class="pull-right">
+                                            <div class="loading-medium loading-30 margin-top-10" data-ng-show="machine.fireWallActionRunning"></div>
+                                            <a class="btn light margin-top-10 effect-orange-button" href="#!/firewall">Edit</a>
+                                            <button class="btn orange margin-top-10"
+                                                    data-ng-disabled="machine.fireWallActionRunning || machine.state == 'provisioning'"
+                                                    data-ng-show="firewallChangeable()"
+                                                    data-ng-click="toggleFirewallEnabled()"
+                                                    data-translate-value>{{machine.firewall_enabled && 'Disable' || 'Enable'}}</button>
+                                        </div>
+                                    </fieldset>
+                                </span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="panel panel-default" data-ng-if="features.docker != 'disabled' && isDockerCompleteHost">
+        <div class="panel-heading">
+            <a class="accordion-toggle collapsed toggle-icon" data-toggle="collapse" data-parent="#machine-accordion"
+               data-target="#collapse_docker">
+                Docker
+            </a>
+        </div>
+        <div id="collapse_docker" class="panel-collapse collapse">
+            <div class="panel-body">
+                <div class="preview-sticker tab">Preview</div>
+                <table>
+                    <tr class="id-section">
+                        <td><a data-ng-click="navigateContainersImages('containers', machineid)">Containers</a></td>
+                        <td>{{dockerHostInfo.containers}}</td>
+                    </tr>
+                    <tr>
+                        <td>Debug</td>
+                        <td>{{dockerHostInfo.debug}}</td>
+                    </tr>
+                    <tr>
+                        <td>Storage Driver</td>
+                        <td>{{dockerHostInfo.driver}}</td>
+                    </tr>
+                    <tr>
+                        <td>Execution Driver</td>
+                        <td>{{dockerHostInfo.executionDriver}}</td>
+                    </tr>
+                    <tr>
+                        <td>IPv4Forwarding</td>
+                        <td>{{dockerHostInfo.iPv4Forwarding}}</td>
+                    </tr>
+                    <tr>
+                        <td>Images</td>
+                        <td>
+                                        <span class="tooltip-hover"
+                                              data-toggle="tooltip"
+                                              data-placement="top"
+                                              data-html="true"
+                                              data-original-title="all images">
+                                            <a data-ng-click="navigateContainersImages('images', machineid, 'all')">{{dockerHostInfo.images}}</a>
+                                        </span>
+                            <span data-ng-show="topImages">&nbsp;/&nbsp;</span>
+                                        <span class="tooltip-hover"
+                                              data-toggle="tooltip"
+                                              data-placement="top"
+                                              data-html="true"
+                                              data-original-title="top images">
+                                            <a data-ng-click="navigateContainersImages('images', machineid, 'top')">{{topImages}}</a>
+                                        </span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>IndexServerAddress</td>
+                        <td>{{dockerHostInfo.indexServerAddress}}</td>
+                    </tr>
+                    <tr>
+                        <td>InitPath</td>
+                        <td>{{dockerHostInfo.initPath}}</td>
+                    </tr>
+                    <tr>
+                        <td>InitSha1</td>
+                        <td>{{dockerHostInfo.initSha1}}</td>
+                    </tr>
+                    <tr>
+                        <td>KernelVersion</td>
+                        <td>{{dockerHostInfo.kernelVersion}}</td>
+                    </tr>
+                    <tr>
+                        <td>MemoryLimit</td>
+                        <td>{{dockerHostInfo.memoryLimit}}</td>
+                    </tr>
+                    <tr>
+                        <td>NEventsListener</td>
+                        <td>{{dockerHostInfo.nEventsListener}}</td>
+                    </tr>
+                    <tr>
+                        <td>NFd</td>
+                        <td>{{dockerHostInfo.nfd}}</td>
+                    </tr>
+                    <tr>
+                        <td>NGoroutines</td>
+                        <td>{{dockerHostInfo.nGoroutines}}</td>
+                    </tr>
+                    <tr>
+                        <td>SwapLimit</td>
+                        <td>{{dockerHostInfo.swapLimit}}</td>
+                    </tr>
+                    <tr>
+                        <td>Version</td>
+                        <td>{{dockerVersion}}</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="panel panel-default" data-ng-if="features.docker != 'disabled' && isDockerCompleteHost">
+        <div class="panel-heading">
+            <a class="accordion-toggle collapsed toggle-icon" data-toggle="collapse" data-parent="#machine-accordion"
+               data-target="#collapse_docker_containers">
+                Docker Containers
+            </a>
+        </div>
+        <div id="collapse_docker_containers" class="panel-collapse collapse">
+            <div class="panel-body">
+                <div class="preview-sticker tab">Preview</div>
+                <div data-ng-show="containers.length >= 1">
+                    <div data-grid-view
+                         data-user-config="gridUserConfigDocker"
+                         data-props="gridPropsDocker"
+                         data-items="containers"
+                         data-paginated="true"
+                         data-controls="true"
+                         data-order="gridOrderDocker"
+                         data-items-type="container"
+                         data-special-width="'detailsPage'"
+                         data-search-form="searchFormDocker"
+                         data-export-fields="exportFieldsDocker"
+                         data-tab-filter-field="tabFilterField"
+                         data-tab-filter-default="tabFilterDefault"
+                         data-multisort="false"
+                         class="grid-small-font indent"></div>
+                </div>
+                <div data-ng-show="containers.length < 1"><br/>
+                    <p>There is no containers for this instance.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

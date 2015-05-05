@@ -5656,6 +5656,7 @@ a.orange-link
 {
     pointer-events: none;
 }
+
 .dtrace-wrapper .name .label,
 .docker-wrapper .name .label
 {
@@ -5676,4 +5677,144 @@ a.orange-link
     font-size: 12px;
     line-height: 1;
     cursor: pointer;
+}
+
+.grid-tab.dashboard {
+    margin: 0 2px -1px 0;
+}
+.nav-tabs.details {
+    margin-bottom: 5px;
+}
+
+.tags-title {
+    font-size: 14px;
+    font-weight: 300;
+    line-height: 15px;
+    margin-top: 10px;
+    color: #5d80a7;
+}
+.tag.editable {
+    margin-top: 10px;
+}
+.detail-tags .key-container input {
+    width: 160px;
+    margin-right: 5px;
+}
+.tag.editable input {
+    padding-left: 4px;
+    height: 31px;
+}
+.detail-tags .value-width {
+    width: 225px;
+}
+.accordion-max-width .value-container {
+    display: inline-block;
+    padding-right: 10px;
+    vertical-align: top;
+}
+.key-width,
+.value-width {
+    display: inline-block;
+    overflow: hidden;
+}
+.detail-tags .value-container textarea,
+.create-tags .value-container textarea,
+.detail-mdata .value-container input,
+.create-mdata .value-container input,
+.create-mdata .loading-medium.item-button,
+.create-tags .loading-medium.item-button {
+    display: none;
+}
+.tag-add-btn {
+    width: 62px;
+    height: 31px;
+    padding-top: 5px;
+    padding-bottom: 7px;
+    vertical-align: top;
+}
+.controls {
+    line-height: 20px;
+    width: 100%;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    border-bottom: 1px solid #ddd;
+}
+.accordion-max-width {
+    min-width: 507px;
+    max-width: 465px;
+}
+
+.metadata .editable .value-width,
+.metadata .editable .key-width {
+    min-width: 395px;
+    max-width: 395px;
+}
+.create-images input,
+.create-images textarea {
+    width: 394px;
+    height: 30px;
+    margin-bottom: 10px;
+}
+.create-images textarea {
+    height: 180px;
+    resize: vertical;
+}
+.create-images input {
+    padding-left: 6px;
+}
+.create-images .loading-medium {
+    display: inline-block;
+    margin-right: -10px;
+    vertical-align: -13px;
+}
+.create-images button {
+    font-size: 16px;
+}
+.create-tags .key-width,
+.create-mdata .key.key-width,
+.create-tags .value-width,
+.create-mdata .value.value-width,
+.detail-tags .key-width,
+.detail-mdata .key.key-width,
+.detail-tags .value-width,
+.detail-mdata .value.value-width {
+    height: 20px;
+    vertical-align: middle;
+}
+.detail-tags .key-width,
+.detail-mdata .key.key-width {
+    width: 165px;
+}
+.detail-mdata .value.value-width,
+.detail-tags .value.value-width {
+    width: 270px;
+}
+.key,
+.value {
+    padding: 0;
+}
+.key {
+    margin-left: 0;
+    text-align: left;
+    color: #888;
+}
+.value {
+    text-align: left !important;
+}
+.key.error,
+.value.error {
+    color: #b94a48;
+    border-bottom: 1px solid #b94a48;
+}
+.pass-field {
+    min-width: 260px;
+}
+.system-field,
+.id-section td:first-child,
+.name-section td:first-child {
+    width: 140px;
+}
+.id-section td:last-child {
+    font-weight: bold;
+    color: #333;
 }

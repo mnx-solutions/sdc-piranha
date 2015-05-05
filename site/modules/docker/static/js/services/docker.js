@@ -850,14 +850,6 @@
             service.getRegistriesList({cache: true});
         });
 
-        service.idToUuid = function (dockerId) {
-            return dockerId.substr(0, 8) + '-'
-                + dockerId.substr(8, 4) + '-'
-                + dockerId.substr(12, 4) + '-'
-                + dockerId.substr(16, 4) + '-'
-                + dockerId.substr(20, 12);
-        };
-
         service.getContainerState = function (containerInfo) {
             var containerState = 'stopped';
             if (containerInfo.State.Paused) {
