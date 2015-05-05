@@ -69,6 +69,8 @@ var RedisStore = require('connect-redis')(session);
 var lifespan = config.session && config.session.lifespan ? config.session.lifespan : 120; // minutes
 
 server.set('view engine', 'jade');
+server.enable('view cache');
+
 server.use(function (req, res, next) {
     req.log = logger;
     req.config = config;
