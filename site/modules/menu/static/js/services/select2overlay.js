@@ -24,6 +24,7 @@
             var drop = ng.element('#select2-drop');
             var zenbox = ng.element('#zenbox_tab');
             var leftMenu  = ng.element('.left-side-menu');
+            var header = ng.element('.header');
             var rightTabsBorder = 3;
             var leftPadding = 45;
             if ((drop.offset().left - wnd.scrollLeft() - 20) < leftMenu.width()) {
@@ -52,7 +53,10 @@
             });
             wnd.bind('scroll', function (e) {
                 if (!autoScroll) {
-                    mask.mousedown();
+                    if (drop.length && (header.offset().top >= drop.offset().top - header.height() ||
+                        header.offset().left >= drop.offset().left - leftMenu.width())) {
+                        mask.mousedown();
+                    }
                 }
             });
             e.preventDefault();
