@@ -116,9 +116,10 @@
 
             $scope.freeTierOptions = [];
 
-            $scope.data = {};
-            $scope.data.tags = {};
-            $scope.data.metadata = {};
+            $scope.data = {
+                tags: {},
+                metadata: {}
+            };
             $scope.selectedDataset = null;
             $scope.selectedPackage = null;
             $scope.selectedNetworks = [];
@@ -1069,11 +1070,11 @@
                 });
             };
 
-            $scope.selectVersion = function (version) {
-                if (typeof (version) === 'string') {
-                    version = JSON.parse(version);
+            $scope.selectVersion = function (versionId) {
+                if (!versionId) {
+                    versionId = $scope.data.dataset;
                 }
-                $scope.selectDataset(version.id, true);
+                $scope.selectDataset(versionId, true);
             };
 
             $scope.selectPackageType = function (packageType) {
@@ -1351,7 +1352,7 @@
 
                 if ($scope.preSelectedImage) {
                     $scope.preSelectedImage.then(function (image) {
-                        $scope.selectVersion(image);
+                        $scope.selectVersion(image.id);
                     });
                 }
                 $scope.datasetsLoading = false;
