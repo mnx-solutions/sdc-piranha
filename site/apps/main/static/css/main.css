@@ -5656,3 +5656,24 @@ a.orange-link
 {
     pointer-events: none;
 }
+.dtrace-wrapper .name .label,
+.docker-wrapper .name .label
+{
+    position: relative;
+    top: -2px;
+    display: inline-block;
+    padding: 0 .6em .3em;
+    outline: none;
+    border: none;
+    border-radius: .25em;
+    background-color: #f7f8f9;
+    color: #020001;
+    vertical-align: baseline;
+    text-align: center;
+    text-shadow: none;
+    white-space: nowrap;
+    font-weight: 700;
+    font-size: 12px;
+    line-height: 1;
+    cursor: pointer;
+}

@@ -54,25 +54,6 @@
     color: #2a6496;
     text-decoration: underline;
 }
-.docker-wrapper .name .label {
-    font-size: 12px;
-    font-weight: 700;
-    line-height: 1;
-    position: relative;
-    top: -2px;
-    display: inline-block;
-    padding: 0 .6em .3em;
-    cursor: pointer;
-    text-align: center;
-    vertical-align: baseline;
-    white-space: nowrap;
-    color: #020001;
-    border: none;
-    border-radius: .25em;
-    outline: none;
-    background-color: #f7f8f9;
-    text-shadow: none;
-}
 .docker-wrapper .info {
     overflow: hidden;
     padding: 0 15px;
