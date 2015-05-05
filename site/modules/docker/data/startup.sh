@@ -23,14 +23,9 @@ DOCKER_PORT=4243
 DOCKER_TCP_PORT=4240
 REGISTRY_PORT=5000
 
-if [ ! -z "${DOCKER_VERSION}" ];then
-    DOCKER_VERSION="-${DOCKER_VERSION}"
-fi
-if [ ! -z "${CADVISOR_VERSION}" ];then
-    CADVISOR_VERSION=":${CADVISOR_VERSION}"
-else
-    CADVISOR_VERSION=":latest"
-fi
+DOCKER_VERSION="${DOCKER_VERSION:-1.6.0}"
+CADVISOR_VERSION=":${CADVISOR_VERSION:-latest}"
+
 KEYS_PATH=/root/.docker
 MANTA_DOCKER_PATH=/${MANTA_USER}/stor/.joyent/docker
 DOCKER_DIR=/mnt/docker
@@ -70,16 +65,8 @@ function writeStage {
 }
 
 function installDocker {
-    if [ ! -e /usr/lib/apt/methods/https ]; then
-        apt-get update
-        apt-get install -y apt-transport-https
-    fi
-    
-    apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 36A1D7869245C8950F966E92D8576A8BA88D21E9;
-    echo "deb https://get.docker.io/ubuntu docker main" > /etc/apt/sources.list.d/docker.list
-    apt-get update;
-    apt-get install -y lxc-docker${DOCKER_VERSION};
-    
+    wget -c https://get.docker.com/ubuntu/pool/main/l/lxc-docker-${DOCKER_VERSION}/lxc-docker-${DOCKER_VERSION}_${DOCKER_VERSION}_amd64.deb
+    dpkg -i lxc-docker-${DOCKER_VERSION}_${DOCKER_VERSION}_amd64.deb
     local STATE=true
     while ${STATE} ; do
         if pgrep mkfs.ext3  >/dev/null; then
@@ -100,9 +87,10 @@ function installDocker {
 
 function createBalancer {
     cat ${KEYS_PATH}/server-cert.pem ${KEYS_PATH}/server-key.pem >${KEYS_PATH}/server.pem
-    add-apt-repository -y ppa:vbernat/haproxy-1.5
-    apt-get update
-    apt-get install -y haproxy
+    wget -c http://joyent.archive.ubuntu.com/ubuntu/pool/main/h/haproxy/haproxy_1.5.10-1_amd64.deb
+    wget -c http://joyent.archive.ubuntu.com/ubuntu/pool/main/i/init-system-helpers/init-system-helpers_1.20ubuntu3_all.deb
+    dpkg -i init-system-helpers_1.20ubuntu3_all.deb haproxy_1.5.10-1_amd64.deb
+
     cat <<END >>/etc/haproxy/haproxy.cfg
 
 frontend registry
@@ -178,7 +166,8 @@ ${DOCKER_DIR}/containers/*/*json.log {
     endscript 
 }
 END
-    apt-get install -y logrotate
+    wget -c http://joyent.archive.ubuntu.com/ubuntu/pool/main/l/logrotate/logrotate_3.8.7-1ubuntu1_amd64.deb
+    dpkg -i logrotate_3.8.7-1ubuntu1_amd64.deb
 }
 
 writeStage "installing docker"
@@ -203,4 +192,3 @@ docker run \
     -d --name=cAdvisor google/cadvisor${CADVISOR_VERSION}
 
 writeStage "completed"
-

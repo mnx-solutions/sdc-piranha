@@ -187,9 +187,9 @@
     "eula": ""
   },
   "docker": {
-    "dockerVersion": "1.3.2",
-    "cadvisorVersion": "0.5.0",
-    "registryVersion": "0.9.0",
+    "dockerVersion": "1.6.0",
+    "cadvisorVersion": "0.10.1",
+    "registryVersion": "0.9.1",
     "registryDriverVersion": "0.0.19"
   },
   "sdcDocker": {

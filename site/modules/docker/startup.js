@@ -1283,7 +1283,8 @@ var Docker = function execute(log, config) {
                 collector.client.tagImage({
                     name: imageId,
                     repo: taggedName,
-                    tag: (parsedTag.tag || 'latest')
+                    tag: (parsedTag.tag || 'latest'),
+                    force: true
                 }, callback);
             });
 
@@ -1433,13 +1434,9 @@ var Docker = function execute(log, config) {
 
     server.onCall('DockerImageTags', {
         verify: function (data) {
-            return data && data.options && typeof (data.options.name) === 'string' && data.registry;
+            return data && data.options && typeof data.options.name === 'string' && data.registry;
         },
         handler: function (call) {
-            if (call.data.registry === 'local') {
-                Docker.searchPrivateImageTags(call, call.data.options.name, call.done.bind(call));
-                return;
-            }
             var registry = Docker.registriesCache[call.data.registry];
             if (!registry) {
                 return call.done();
