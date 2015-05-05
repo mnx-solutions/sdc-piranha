@@ -58,7 +58,10 @@
                     tag: 'Tag an image into a repository.',
                     repository: 'Enter Repository',
                     message: 'Commit message',
-                    author: 'Author'
+                    author: 'Author',
+                    AttachStdin: 'Boolean value, attaches to stdin.',
+                    AttachStdout: 'Boolean value, attaches to stdout.',
+                    AttachStderr: 'Boolean value, attaches to stderr.'
                 };
 
                 var isArrayNotEmpty = function (data) {
