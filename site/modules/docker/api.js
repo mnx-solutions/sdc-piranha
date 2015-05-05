@@ -40,6 +40,7 @@ var SUBUSER_LIST_RULES_REGISTRY = SUBUSER_LIST_RULES.concat([
 ]);
 var SDC_DOCKER_ID = '00000000-0000-0000-0000-000000000000';
 var SDC_DOCKER_PATH = '~~/stor/.joyent/docker';
+var SDC_DOCKER_REGISTRY_PATH = SDC_DOCKER_PATH + '/registry';
 var sdcDockerConfig = config.features.sdcDocker === 'enabled' ?
     {
         id: SDC_DOCKER_ID,
@@ -216,6 +217,7 @@ function createApi(log, map, container) {
 
 exports.init = function execute(log, config, done) {
     var disableTls = Boolean(config.docker && config.docker.disableTls);
+    var Manta = require('../storage').MantaClient;
     var api = {};
 
     // http://docs.docker.com/reference/api/docker_remote_api_v1.14/
@@ -552,6 +554,44 @@ exports.init = function execute(log, config, done) {
      *
      */
 
+    api.privateRegistryImages = function (call, term, callback) {
+        var client = Manta.createClient(call);
+        // term = google/cadvisor
+        // repo = google
+        // name = cadvisor
+        // else full search
+        var repo = path.dirname(term);
+        var opts = {
+            type: 'd',
+            mindepth: 1,
+            maxdepth: 2
+        };
+        var result = [];
+        var search = path.join(SDC_DOCKER_REGISTRY_PATH, 'repositories');
+        if (repo !== '.') {
+            search = path.join(search, repo);
+            delete opts.mindepth;
+            opts.maxdepth = 1;
+            opts.name = new RegExp(path.basename(term) + '.*');
+        }
+
+        client.ftw(search, opts, function (err, res) {
+            res.on('entry', function (obj) {
+                var name = path.join(path.basename(obj.parent), obj.name);
+                if (!term || name.indexOf(term) !== -1) {
+                    result.push({
+                        description: null,
+                        name: name
+                    });
+                }
+            });
+            res.on('end', function () {
+                callback(null, result);
+            });
+            res.on('error', callback);
+        });
+    };
+
     Index.prototype.getAuthToken = function getAuthToken(name, access, callback) {
         var opts = {name: name, forceRaw: true, type: ''};
         if (!callback && typeof (access) === 'function') {
@@ -812,7 +852,7 @@ exports.init = function execute(log, config, done) {
                     });
                 },
                 function (callback) {
-                    client.safeMkdirp(SDC_DOCKER_PATH + '/registry', {}, function (err) {
+                    client.safeMkdirp(SDC_DOCKER_REGISTRY_PATH, {}, function (err) {
                         callback(err);
                     });
                 },
@@ -820,8 +860,7 @@ exports.init = function execute(log, config, done) {
                     setup(SUBUSER_LOGIN, SUBUSER_OBJ_NAME, SDC_DOCKER_PATH, SUBUSER_LIST_RULES, callback);
                 },
                 function (callback) {
-                    var path = SDC_DOCKER_PATH + '/registry';
-                    setup(SUBUSER_REGISTRY_LOGIN, SUBUSER_OBJ_NAME_REGISTRY, path, SUBUSER_LIST_RULES_REGISTRY, callback)
+                    setup(SUBUSER_REGISTRY_LOGIN, SUBUSER_OBJ_NAME_REGISTRY, SDC_DOCKER_REGISTRY_PATH, SUBUSER_LIST_RULES_REGISTRY, callback)
                 }
             ],
         uploadCallback);
@@ -1187,44 +1226,14 @@ exports.init = function execute(log, config, done) {
 
     // search on all hosts
     api.searchPrivateImage = function searchPrivateImage(call, term, callback) {
-        api.getRegistries(call, function (error, registries) {
+        api.privateRegistryImages(call, term, function (error, images) {
             if (error) {
                 return callback(error);
             }
-            vasync.forEachParallel({
-                inputs: registries.filter(function (registry) {
-                    return registry.type === 'local';
-                }),
-                func: function (registry, callback) {
-                    api.createRegistryClient(call, registry, function (error, client) {
-                        if (error) {
-                            return callback(null, []);
-                        }
-                        client.ping(function(err) {
-                            if (err) {
-                                return callback(null, []);
-                            }
-                            client.searchImage({q: term}, callback);
-                        });
-                    });
-                }
-            }, function (errors, operations) {
-                var results = [],
-                    names = {};
-                [].concat.apply([], operations.successes).map(function (response) {
-                    response.results.forEach(function (item) {
-                        if (names[item.name]) {
-                            return;
-                        }
-                        names[item.name] = true;
-                        results.push(item);
-                    });
-                });
-                callback(null, {
-                    'num_results': results.length,
-                    query: term,
-                    results: results
-                });
+            callback(null, {
+                'num_results': images.length,
+                query: term,
+                results: images
             });
         });
     };
