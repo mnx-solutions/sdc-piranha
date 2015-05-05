@@ -100,6 +100,7 @@
                                    name="tag"
                                    data-ng-model="container.tag"
                                    data-ng-pattern="/^[A-Za-z0-9_\.\-]{2,30}$/"
+                                   data-ng-focus="setNotation('tag')"
                                    data-auto-focus/>
                         </span>
                         <div class="edit-error" data-ng-show="isFormSubmited || containerCreateForm.tag.$dirty">
@@ -117,7 +118,7 @@
                                    name="repo"
                                    data-ng-model="container.repo"
                                    data-ng-pattern="/^[a-z0-9_]{4,30}$/"
-                                    />
+                                   data-ng-focus="setNotation('repository')" />
                         </span>
                         <div class="edit-error" data-ng-show="isFormSubmited || containerCreateForm.repo.$dirty">
                             <div class="error"
@@ -146,7 +147,7 @@
                             <input type="text"
                                    name="message"
                                    data-ng-model="container.m"
-                                    />
+                                   data-ng-focus="setNotation('message')" />
                         </span>
                     </div>
                     <div data-ng-show="createImage" class="form-group">
@@ -155,7 +156,7 @@
                             <input type="text"
                                    name="author"
                                    data-ng-model="container.author"
-                                    />
+                                   data-ng-focus="setNotation('author')" />
                         </span>
                     </div>
                     <div data-ng-hide="createImage" class="form-group">
