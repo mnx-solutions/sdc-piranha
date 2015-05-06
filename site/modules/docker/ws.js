@@ -1,6 +1,7 @@
 'use strict';
 var util = require('util');
 var url = require('url');
+var WebSocket = require('ws');
 
 module.exports = function (app) {
     var Docker = require('./').Docker;
@@ -33,7 +34,9 @@ module.exports = function (app) {
                 });
                 socket.on('error', close);
                 clientSocket.on('data', function (data) {
-                    socket.send(data.toString());
+                    if (socket.readyState === WebSocket.OPEN) {
+                        socket.send(data.toString());
+                    }
                 });
                 clientSocket.on('error', close);
                 clientSocket.on('end', close);
@@ -48,7 +51,9 @@ module.exports = function (app) {
                 });
                 socket.on('error', close);
                 execRes.on('data', function (data) {
-                    socket.send(data.toString());
+                    if (socket.readyState === WebSocket.OPEN) {
+                        socket.send(data.toString());
+                    }
                 });
                 execRes.on('error', close);
                 execRes.on('end', close);
@@ -59,12 +64,16 @@ module.exports = function (app) {
     }
 
     app.ws('/exec/:id', function (socket, req) {
-        socket.send('ready');
+        if (socket.readyState === WebSocket.OPEN) {
+            socket.send('ready');
+        }
         socket.once('message', function (data) {
             try {
                 data = JSON.parse(data);
             } catch (e) {
-                socket.send('Failed to parse data');
+                if (socket.readyState === WebSocket.OPEN) {
+                    socket.send('Failed to parse data');
+                }
                 return socket.close();
             }
             Docker.createClient({log: req.log, req: req}, data.host, function (error, client) {
