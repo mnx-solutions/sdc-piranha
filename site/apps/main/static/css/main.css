@@ -4887,6 +4887,7 @@ label.checkbox.folder-name-form-checkbox
     width: 416px;
 }
 
+.key-name-form .ssh-key-name,
 .modal-dialog-pass
 {
     width: 418px;
