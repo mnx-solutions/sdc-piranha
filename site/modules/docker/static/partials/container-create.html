@@ -35,7 +35,7 @@
                         </div>
                     </div>
                     <div data-ng-hide="createImage" class="form-group">
-                        <div class="group-label orange-asterix">Datacenter &amp; Host</div>
+                        <div class="group-label">Datacenter &amp; Host</div>
                         <div class="edit-value">
                             <div class="datacenter-info-wrapper dropdown-select" ng-click="setNotation('host')">
                                 <div class="datacenter-info datacenter-name">{{host.datacenter}} / {{host.name}}</div>
@@ -71,7 +71,7 @@
                         </div>
                     </div>
                     <div data-ng-show="createImage" class="form-group">
-                        <span class="orange-asterix edit-image edit-label">DC &amp; Host</span>
+                        <span class="edit-image edit-label">DC &amp; Host</span>
                         <span class="edit-value">
                             <select ui-select2="{minimumResultsForSearch: -1, width: '100%'}" id="hostSelect" data-ng-model="ip" ng-change="changeHost()" data-ng-disabled="loadingHostDetails">
                                 <option data-ng-repeat="host in hosts" value="{{host.primaryIp}}">
@@ -81,7 +81,7 @@
                         </span>
                     </div>
                     <div data-ng-if="createImage" class="form-group">
-                        <span class="orange-asterix edit-image edit-label">Container</span>
+                        <span class="edit-image edit-label">Container</span>
                         <span class="edit-value">
                             <select data-ng-disabled="!containers.length" ui-select2="{minimumResultsForSearch: -1, width: '100%'}" id="containerSelect" data-ng-model="container.container" data-ng-change="changeContainer()" required>
                                 <option data-ng-repeat="container in containers" value="{{container.Id}}">
@@ -160,7 +160,7 @@
                         </span>
                     </div>
                     <div data-ng-hide="createImage" class="form-group">
-                        <div class="group-label orange-asterix">Image</div>
+                        <div class="group-label">Image</div>
                         <div class="edit-value">
                             <select data-ng-disabled="!images.length" ui-select2="{minimumResultsForSearch: -1, width: '100%'}" id="image" data-ng-model="container.Image" on-opening="setNotation('image')" required>
                                 <option data-ng-repeat="image in images" value="{{image.name}}">
@@ -319,7 +319,6 @@
                     </div>
                     <hr data-ng-show="!loading" />
                     <div class="row btn-bottom-block" data-ng-show="!loading">
-                        <span class="orange-asterix-left">required fields</span>
                         <div class="pull-right">
                             <button class="btn light effect-orange-button" data-ng-disabled="creating" data-ng-click="cancel()">Cancel</button>
                             <button class="btn orange effect-orange-button" data-ng-disabled="containerCreateForm.$invalid || creating" data-ng-click="create()">Start</button>
