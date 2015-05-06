@@ -295,7 +295,7 @@
                         <span class="edit-label">Attach</span>
                         <div class="attaches" data-ng-repeat="attach in attaches">
                             <input data-ng-model="container['Attach' + attach]" type="checkbox" />
-                            <label class="attach-name checkbox-label" data-ng-click="container['Attach' + attach]=!container['Attach' + attach]">{{attach}}</label>
+                            <label class="attach-name checkbox-label" data-ng-click="container['Attach' + attach]=!container['Attach' + attach]; setNotation('Attach' + attach)" data-ng-mouseenter="setNotation('Attach' + attach)">{{attach}}</label>
                         </div>
                         <span class="edit-label">Other</span>
                         <div class="attaches">
