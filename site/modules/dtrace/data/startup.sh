@@ -28,6 +28,11 @@ export MANTA_SUBUSER=$(/usr/sbin/mdata-get manta-subuser)
 
 echo "cloning repository"
 /opt/local/bin/curl -sS ${REPOSITORY} | /opt/local/bin/tar --strip-components=1 -xzf -
+export HOME=${HOME:-/tmp}
+if [[ ! -e /opt/local/bin/make ]]; then
+    /opt/local/bin/pkgin -y in gmake
+fi
+/opt/local/bin/npm install
 
 echo "setup node-server-manifest"
 cat ${LOCALFOLDER}/node-server-manifest.xml.templ | \
