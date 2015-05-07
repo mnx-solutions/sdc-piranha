@@ -168,7 +168,8 @@
       "ubuntu-certified-12.04": "20140219",
       "ubuntu-certified-13.10": "20140219",
       "ubuntu-certified-14.04": "20140416",
-      "ubuntu-certified-14.10": "20141022.3"
+      "ubuntu-certified-14.10": "20141022.3",
+      "ubuntu-certified-15.04": "20150422"
     },
     "earliest_date": "2013-12-18"
   },
