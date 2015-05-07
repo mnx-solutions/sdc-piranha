@@ -594,11 +594,17 @@ span.btn-success
     font-size: 14px;
     line-height: 20px;
 }
+.images-graph
+{
+    padding-right: 50px;
+    min-width: 1208px;
+}
 .graph-title
 {
-    font-size: 28px;
-    font-weight: 200;
+    clear: left;
     text-align: center;
+    font-weight: 200;
+    font-size: 28px;
 }
 #images-graph
 {
