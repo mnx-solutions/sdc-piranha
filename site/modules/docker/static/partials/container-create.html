@@ -23,7 +23,7 @@
                                    data-ng-model="container.name"
                                    data-ng-pattern="/^[a-zA-Z0-9\.\_\-]*$/"
                                    data-auto-focus
-                                   ng-focus="setNotation('name')"
+                                   ng-focus="setNotation('NAME')"
                                     />
                          </div>
                         <div class="edit-error" data-ng-show="isFormSubmited || containerCreateForm.name.$dirty">
@@ -37,7 +37,7 @@
                     <div data-ng-hide="createImage" class="form-group">
                         <div class="group-label">Datacenter &amp; Host</div>
                         <div class="edit-value">
-                            <div class="datacenter-info-wrapper dropdown-select" ng-click="setNotation('host')">
+                            <div class="datacenter-info-wrapper dropdown-select" ng-click="setNotation('HOST')">
                                 <div class="datacenter-info datacenter-name">{{host.datacenter}} / {{host.name}}</div>
                                 <div class="datacenter-info datacenter-statistic">
                                      <div data-ng-hide="host.stats || host.cadvisorUnavailable">
@@ -100,7 +100,7 @@
                                    name="tag"
                                    data-ng-model="container.tag"
                                    data-ng-pattern="/^[A-Za-z0-9_\.\-]{2,30}$/"
-                                   data-ng-focus="setNotation('tag')"
+                                   data-ng-focus="setNotation('TAG')"
                                    data-auto-focus/>
                         </span>
                         <div class="edit-error" data-ng-show="isFormSubmited || containerCreateForm.tag.$dirty">
@@ -118,7 +118,7 @@
                                    name="repo"
                                    data-ng-model="container.repo"
                                    data-ng-pattern="/^[a-z0-9_]{4,30}$/"
-                                   data-ng-focus="setNotation('repository')" />
+                                   data-ng-focus="setNotation('REPOSITORY')" />
                         </span>
                         <div class="edit-error" data-ng-show="isFormSubmited || containerCreateForm.repo.$dirty">
                             <div class="error"
@@ -131,7 +131,7 @@
                     <div data-ng-show="createImage" class="form-group">
                         <span class="edit-ports edit-label">Exposed Ports</span>
                         <span class="edit-value">
-                            <tags-input name="exposedPorts" ng-model="input.exposedPorts" data-on-focus-fn="setNotation('exposedPorts')" regexp-validate="^{{portPattern}}$"></tags-input>
+                            <tags-input name="exposedPorts" ng-model="input.exposedPorts" data-on-focus-fn="setNotation('EXPOSED_PORTS')" regexp-validate="^{{portPattern}}$"></tags-input>
                         </span>
                         <div class="edit-error" data-ng-show="isFormSubmited || containerCreateForm.exposedPorts.$error.pattern">
                             <div class="error"
@@ -147,7 +147,7 @@
                             <input type="text"
                                    name="message"
                                    data-ng-model="container.m"
-                                   data-ng-focus="setNotation('message')" />
+                                   data-ng-focus="setNotation('MESSAGE')" />
                         </span>
                     </div>
                     <div data-ng-show="createImage" class="form-group">
@@ -156,13 +156,13 @@
                             <input type="text"
                                    name="author"
                                    data-ng-model="container.author"
-                                   data-ng-focus="setNotation('author')" />
+                                   data-ng-focus="setNotation('AUTHOR')" />
                         </span>
                     </div>
                     <div data-ng-hide="createImage" class="form-group">
                         <div class="group-label">Image</div>
                         <div class="edit-value">
-                            <select data-ng-disabled="!images.length" ui-select2="{minimumResultsForSearch: -1, width: '100%'}" id="image" data-ng-model="container.Image" on-opening="setNotation('image')" required>
+                            <select data-ng-disabled="!images.length" ui-select2="{minimumResultsForSearch: -1, width: '100%'}" id="image" data-ng-model="container.Image" on-opening="setNotation('IMAGE')" required>
                                 <option data-ng-repeat="image in images" value="{{image.name}}">
                                     {{image.name}}
                                 </option>
@@ -178,13 +178,13 @@
                             <div class="form-group">
                                 <span class="edit-memory edit-label">Memory</span>
                                 <span class="edit-value">
-                                   <slider ng-model="input.Memory" min="0" max="{{host.memory}}" step="1" show-limit show-value data-measure="{{input.Memory > 0 && ' Mb' || ''}}" ng-mousedown="setNotation('memory')"></slider>
+                                   <slider ng-model="input.Memory" min="0" max="{{host.memory}}" step="1" show-limit show-value data-measure="{{input.Memory > 0 && ' Mb' || ''}}" ng-mousedown="setNotation('MEMORY')"></slider>
                                 </span>
                             </div>
                             <div class="form-group">
                                 <span class="edit-memoreswap edit-label">MemorySwap</span>
                                 <span class="edit-value">
-                                   <slider ng-model="input.MemorySwap" min="{{input.Memory}}" max="{{host.memory * 2}}" step="1" show-limit show-value data-measure="{{input.MemorySwap > 0 && ' Mb' || ''}}" ng-mousedown="setNotation('memorySwap')"></slider>
+                                   <slider ng-model="input.MemorySwap" min="{{input.Memory}}" max="{{host.memory * 2}}" step="1" show-limit show-value data-measure="{{input.MemorySwap > 0 && ' Mb' || ''}}" ng-mousedown="setNotation('MEMORY_SWAP')"></slider>
                                 </span>
                             </div>
                         </div>
@@ -193,14 +193,14 @@
                     <div data-ng-hide="createImage" data-ng-if="containers" class="form-group volume-section">
                         <span class="edit-label">From</span><!--
                             --><span class="edit-value">
-                           <dropdown-select output="NamesStr" result="NamesStr" multiple on-focus="setNotation('volumesFrom')"
+                           <dropdown-select output="NamesStr" result="NamesStr" multiple on-focus="setNotation('VOLUMES_FROM')"
                                             data-preselected-items="container.HostConfig.VolumesFrom" data-dropdown-data="containers"></dropdown-select>
                         </span>
                     </div>
                     <div class="form-group volume-section" data-ng-if="!host.isSdc">
                         <span class="edit-label">Volumes</span><!--
                             --><span class="edit-value">
-                            <dropdown-select multiple tags-available data-preselected-items="input.Volumes" on-focus="setNotation('volumes')"></dropdown-select>
+                            <dropdown-select multiple tags-available data-preselected-items="input.Volumes" on-focus="setNotation('VOLUMES')"></dropdown-select>
                         </span>
                     </div>
                     <div class="group-label">Runtime Configuration</div>
@@ -210,7 +210,7 @@
                               <input type="text"
                                      name="entrypoint"
                                      data-ng-model="input.Entrypoint"
-                                     ng-focus="setNotation('entrypoint')"
+                                     ng-focus="setNotation('ENTRYPOINT')"
                                       />
                         </span>
                     </div>
@@ -220,20 +220,20 @@
                             <input type="text"
                                    name="commands"
                                    data-ng-model="input.Cmd"
-                                   ng-focus="setNotation('cmd')"
+                                   ng-focus="setNotation('CMD')"
                                     />
                         </span>
                     </div>
                     <div class="form-group">
                         <span class="edit-env edit-label">Env</span>
                         <span class="edit-value">
-                            <tags-input ng-model="input.Env" data-on-focus-fn="setNotation('env')"></tags-input>
+                            <tags-input ng-model="input.Env" data-on-focus-fn="setNotation('ENV')"></tags-input>
                         </span>
                     </div>
                     <div data-ng-hide="createImage" class="form-group">
                         <span class="edit-ports edit-label">Container Ports</span>
                         <span class="edit-value">
-                            <tags-input name="ports" ng-model="input.PortsBinding" data-on-focus-fn="setNotation('ports')" regexp-validate="^{{exposedPattern}}$"></tags-input>
+                            <tags-input name="ports" ng-model="input.PortsBinding" data-on-focus-fn="setNotation('PORTS')" regexp-validate="^{{exposedPattern}}$"></tags-input>
                         </span>
                         <div class="edit-error" data-ng-show="isFormSubmited || containerCreateForm.ports.$error.pattern">
                             <div class="error"
@@ -246,7 +246,7 @@
                     <div class="form-group">
                         <span class="edit-label">Network</span>
                         <span class="edit-value restart-name">
-                            <select ui-select2="{minimumResultsForSearch: -1, width: '157px'}" id="network" data-ng-model="input.NetworkMode" on-opening="setNotation('network')">
+                            <select ui-select2="{minimumResultsForSearch: -1, width: '157px'}" id="network" data-ng-model="input.NetworkMode" on-opening="setNotation('NETWORK')">
                                 <option data-ng-repeat="type in networkTypes" value="{{type}}">
                                     {{type}}
                                 </option>
@@ -254,7 +254,7 @@
                         </span>
                         <span data-ng-show="input.NetworkMode == 'container'" class="max-restart-wrapper">
                             <span class="edit-value networkContainer">
-                                <select ui-select2="{minimumResultsForSearch: -1, width: '318px'}" id="networkContainer" data-ng-model="input.networkContainer" on-opening="setNotation('network')">
+                                <select ui-select2="{minimumResultsForSearch: -1, width: '318px'}" id="networkContainer" data-ng-model="input.networkContainer" on-opening="setNotation('NETWORK')">
                                     <option data-ng-repeat="container in containers" value="{{container.NamesStr}}">
                                         {{container.NamesStr}}
                                     </option>
@@ -265,7 +265,7 @@
                     <div class="form-group">
                         <span class="edit-label">Restart</span>
                         <span class="edit-value restart-name">
-                            <select ui-select2="{minimumResultsForSearch: -1, width: '157px'}" id="restartPolicy" data-ng-model="container.HostConfig.RestartPolicy.Name" on-opening="setNotation('restartPolicy')">
+                            <select ui-select2="{minimumResultsForSearch: -1, width: '157px'}" id="restartPolicy" data-ng-model="container.HostConfig.RestartPolicy.Name" on-opening="setNotation('RESTART_POLICY')">
                                 <option data-ng-repeat="option in restartOptions" value="{{option}}">
                                     {{option}}
                                 </option>
@@ -290,31 +290,39 @@
                              </div>
                         </span>
                     </div>
-                    <div class="group-label">Mics</div>
+                    <div class="group-label">Misc</div>
                     <div class="form-group">
                         <span class="edit-label">Attach</span>
-                        <div class="attaches" data-ng-repeat="attach in attaches">
-                            <input data-ng-model="container['Attach' + attach]" type="checkbox" />
-                            <label class="attach-name checkbox-label" data-ng-click="container['Attach' + attach]=!container['Attach' + attach]; setNotation('Attach' + attach)" data-ng-mouseenter="setNotation('Attach' + attach)">{{attach}}</label>
+                        <div class="misc-checkboxes" data-ng-repeat="attach in attaches">
+                            <div class="tooltip-hover" data-toggle="tooltip" data-html="true" data-original-title="{{tooltips['ATTACH_' + attach.toUpperCase()]}}" data-trigger="hover">
+                                <input data-ng-model="container['Attach' + attach]" type="checkbox" />
+                                <label class="attach-name checkbox-label" data-ng-click="container['Attach' + attach]=!container['Attach' + attach]">{{attach}}</label>
+                            </div>
                         </div>
                         <span class="edit-label">Other</span>
-                        <div class="attaches">
-                            <input data-ng-model="container.HostConfig.PublishAllPorts" type="checkbox" />
-                            <label class="attach-name checkbox-label" data-ng-click="container.HostConfig.PublishAllPorts=!container.HostConfig.PublishAllPorts; setNotation('PublishAllPorts')" data-ng-mouseenter="setNotation('PublishAllPorts')">
-                                Publish All Ports
-                            </label>
+                        <div class="misc-checkboxes">
+                            <div class="tooltip-hover" data-toggle="tooltip" data-html="true" data-original-title="{{tooltips[isSdc && 'SDC_PUBLISH_ALL_PORTS' || 'PUBLISH_ALL_PORTS']}}" data-trigger="hover">
+                                <input data-ng-model="container.HostConfig.PublishAllPorts" type="checkbox" />
+                                <label class="attach-name checkbox-label" data-ng-click="container.HostConfig.PublishAllPorts=!container.HostConfig.PublishAllPorts">
+                                    Publish All Ports
+                                </label>
+                            </div>
                         </div><!--
-                        --><div class="attaches">
-                            <input data-ng-model="container.HostConfig.Privileged" type="checkbox" />
-                            <label class="attach-name checkbox-label" data-ng-click="container.HostConfig.Privileged=!container.HostConfig.Privileged; setNotation('Privileged')" data-ng-mouseenter="setNotation('Privileged')">
-                                Privileged
-                            </label>
+                        --><div class="misc-checkboxes">
+                            <div class="tooltip-hover" data-toggle="tooltip" data-html="true" data-original-title="{{tooltips.PRIVILEGED}}" data-trigger="hover">
+                                <input data-ng-model="container.HostConfig.Privileged" type="checkbox" />
+                                <label class="attach-name checkbox-label" data-ng-click="container.HostConfig.Privileged=!container.HostConfig.Privileged">
+                                    Privileged
+                                </label>
+                            </div>
                         </div><!--
-                        --><div class="attaches">
-                            <input data-ng-model="container.NetworkDisabled" type="checkbox" />
-                            <label class="attach-name checkbox-label" data-ng-click="container.NetworkDisabled=!container.NetworkDisabled; setNotation('NetworkDisabled')" data-ng-mouseenter="setNotation('NetworkDisabled')">
-                                Network Disabled
-                            </label>
+                        --><div class="misc-checkboxes">
+                            <div class="tooltip-hover" data-toggle="tooltip" data-html="true" data-original-title="{{tooltips.NETWORK_DISABLED}}" data-trigger="hover">
+                                <input data-ng-model="container.NetworkDisabled" type="checkbox" />
+                                <label class="attach-name checkbox-label" data-ng-click="container.NetworkDisabled=!container.NetworkDisabled">
+                                    Network Disabled
+                                </label>
+                            </div>
                         </div>
                     </div>
                     <hr data-ng-show="!loading" />

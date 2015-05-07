@@ -783,7 +783,7 @@ span.btn-success
     position: absolute;
     left: 35px;
 }
-.attaches,
+.misc-checkboxes,
 .checker,
 .details-info,
 .price-info {
@@ -793,8 +793,14 @@ span.btn-success
     width: 25px;
     vertical-align: top;
 }
-.attaches {
+.misc-checkboxes {
     width: 24%;
+}
+.misc-checkboxes .tooltip-hover {
+    display: inline;
+}
+.misc-checkboxes .tooltip {
+    min-width: 200px;
 }
 .advanced-info {
     width: 270px;

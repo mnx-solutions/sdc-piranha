@@ -24,44 +24,46 @@
                 var containers = {};
                 var hostsStats = {};
                 var notations = {
-                    name: 'Enter Container Name (optional)',
-                    image: 'Image to use for the container.',
-                    memory: 'Memory limit in MB',
-                    memorySwap: 'Total memory usage (memory + swap)',
-                    host: 'Choose datacenter & host where you create container',
-                    volumesFrom: 'A list of volumes to inherit from another container.',
-                    entrypoint: 'Overwrite the default ENTRYPOINT of the image. Use space as delimiter.',
-                    cmd: 'Command to run specified',
-                    PublishAllPorts: 'Allocates a random host port for all of a container\'s exposed ports.',
-                    sdcPublishAllPorts: 'Allocates a random host port for all of a container\'s exposed ports.<br /> \
-                            PublishAllPorts is the way the SDC-Docker knows to assign a public IP address to the container, without that you can not get to the container from the internet.',
-                    Privileged: 'Gives the container full access to the host.',
-                    NetworkDisabled: 'Boolean value, when true disables neworking for the container',
-                    env: 'A list of environment variables in the form of <strong>VAR=value</strong> or <strong>VAR="value"</strong><br />Press <strong>Enter</strong> button for adding value.',
-                    exposedPorts: 'Ports accessible from the host by default',
-                    ports: 'Publish a container\'s port to the host. Format: <strong>ip:hostPort:containerPort</strong> | <strong> ip::containerPort</strong> | <strong>hostPort:containerPort</strong> |  <strong>containerPort</strong> \
+                    NAME: 'Enter Container Name (optional)',
+                    IMAGE: 'Image to use for the container.',
+                    MEMORY: 'Memory limit in MB',
+                    MEMORY_SWAP: 'Total memory usage (memory + swap)',
+                    HOST: 'Choose datacenter & host where you create container',
+                    VOLUMES_FROM: 'A list of volumes to inherit from another container.',
+                    ENTRYPOINT: 'Overwrite the default ENTRYPOINT of the image. Use space as delimiter.',
+                    CMD: 'Command to run specified',
+                    ENV: 'A list of environment variables in the form of <strong>VAR=value</strong> or <strong>VAR="value"</strong><br />Press <strong>Enter</strong> button for adding value.',
+                    EXPOSED_PORTS: 'Ports accessible from the host by default',
+                    PORTS: 'Publish a container\'s port to the host. Format: <strong>ip:hostPort:containerPort</strong> | <strong> ip::containerPort</strong> | <strong>hostPort:containerPort</strong> |  <strong>containerPort</strong> \
                             <br />Press <strong>Enter</strong> button for adding value.',
-                    volumesImage: 'A mount point with the specified name and marks it as holding externally mounted volumes from native host or other containers',
-                    volumes: 'Mountpoint paths (strings) inside the container<br /> \
+                    VOLUMES_IMAGE: 'A mount point with the specified name and marks it as holding externally mounted volumes from native host or other containers',
+                    VOLUMES: 'Mountpoint paths (strings) inside the container<br /> \
                             <strong>container_path</strong> to create a new volume for the container,<br /> \
                             <strong>host_path:container_path</strong> to bind-mount a host path into the container,<br /> \
                             <strong>host_path:container_path:&#60ro|rw&#62</strong> to make the bind-mount &#60read-only|read-write&#62 inside the container.',
-                    restartPolicy: 'The behavior to apply when the container exits. The value is an object with a Name property of either \
+                    RESTART_POLICY: 'The behavior to apply when the container exits. The value is an object with a Name property of either \
                             <strong>"always"</strong> to always restart or <strong>"on-failure"</strong> to restart only when the container exit code is non-zero. \
                             If <strong>on-failure</strong> is used, <strong>MaximumRetryCount</strong> controls the number of times to retry before giving up. The default is not to restart. \
                             (optional) An ever increasing delay (double the previous delay, starting at 100mS) is added before each restart to prevent flooding the server.',
-                    network: 'Set the Network mode for the container<br /> \
+                    NETWORK: 'Set the Network mode for the container<br /> \
                             <strong>bridge</strong>: creates a new network stack for the container on the docker bridge<br />\
                             <strong>none</strong>: no networking for this container<br /> \
                             <strong>container:&#60name|id&#62</strong>: reuses another container network stack<br /> \
                             <strong>host</strong>: use the host network stack inside the container. Note: the host mode gives the container full access to local system services such as D-bus and is therefore considered insecure.',
-                    tag: 'Tag an image into a repository.',
-                    repository: 'Enter Repository',
-                    message: 'Commit message',
-                    author: 'Author',
-                    AttachStdin: 'Boolean value, attaches to stdin.',
-                    AttachStdout: 'Boolean value, attaches to stdout.',
-                    AttachStderr: 'Boolean value, attaches to stderr.'
+                    TAG: 'Tag an image into a repository.',
+                    REPOSITORY: 'Enter Repository',
+                    MESSAGE: 'Commit message',
+                    AUTHOR: 'Author'
+                };
+                $scope.tooltips = {
+                    ATTACH_STDIN: 'Boolean value, attaches to stdin.',
+                    ATTACH_STDOUT: 'Boolean value, attaches to stdout.',
+                    ATTACH_STDERR: 'Boolean value, attaches to stderr.',
+                    PUBLISH_ALL_PORTS: 'Allocates a random host port for all of a container\'s exposed ports.',
+                    SDC_PUBLISH_ALL_PORTS: 'Allocates a random host port for all of a container\'s exposed ports.<br /> \
+                            PublishAllPorts is the way the SDC-Docker knows to assign a public IP address to the container, without that you can not get to the container from the internet.',
+                    PRIVILEGED: 'Gives the container full access to the host.',
+                    NETWORK_DISABLED: 'Boolean value, when true disables neworking for the container'
                 };
 
                 var isArrayNotEmpty = function (data) {
@@ -242,11 +244,8 @@
 
                 $scope.setNotation = function (name) {
                     $scope.notation = notations[name] || '';
-                    if ($scope.isSdc && notations['sdc' + name]) {
-                        $scope.notation = notations['sdc' + name];
-                    }
-                    if ($scope.createImage && notations[name + 'Image']) {
-                        $scope.notation = notations[name + 'Image'];
+                    if ($scope.createImage && notations[name + '_IMAGE']) {
+                        $scope.notation = notations[name + '_IMAGE'];
                     }
                 };
 
