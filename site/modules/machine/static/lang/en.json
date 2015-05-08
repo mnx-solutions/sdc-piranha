@@ -40,7 +40,7 @@
     "vCPUs": "vCPUs",
     "Create instance": "Create instance",
     "Create an instance": "Create an instance",
-    "To resize Linux or Windows instances, you will need to create a instance, migrate and then stop the old instance.": "To resize Linux or Windows instances, you will need to create a instance, migrate and then stop the old instance.",
+    "To resize Linux or Windows instances, you will need to create an instance, migrate and then stop the old instance.": "To resize Linux or Windows instances, you will need to create an instance, migrate and then stop the old instance.",
     "I see you have no instances configured.": "You do not have any instances. To launch an instance, click \"Create Instance\"",
     "Memory: {{machine.memory | sizeFormat}}": "Memory: {{machine.memory | sizeFormat}}",
     "Disk: {{machine.disk | sizeFormat}}": "Disk: {{machine.disk | sizeFormat}}",
