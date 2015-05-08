@@ -104,14 +104,14 @@
                             }
                         }, true);
                     } else {
+                        BillingService.getAccountPaymentInfo().then(function (accountPaymentInfo) {
+                            $scope.user.address = accountPaymentInfo.address1;
+                            $scope.user.city = accountPaymentInfo.city;
+                            $scope.user.state = accountPaymentInfo.state;
+                            $scope.user.postalCode = accountPaymentInfo.zipCode;
+                        });
                         $scope.loading = false;
                     }
-                });
-                BillingService.getAccountPaymentInfo().then(function (accountPaymentInfo) {
-                    $scope.user.address = accountPaymentInfo.address1;
-                    $scope.user.city = accountPaymentInfo.city;
-                    $scope.user.state = accountPaymentInfo.state;
-                    $scope.user.postalCode = accountPaymentInfo.zipCode;
                 });
                 service.listRoles().then(function (roles) {
                     $scope.roles = roles || [];
