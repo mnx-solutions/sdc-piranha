@@ -1,7 +1,7 @@
 'use strict';
 
 (function (app) {
-    app.directive('filemanUpload', ['PopupDialog', 'http', 'notification', function (PopupDialog, http, notification) {
+    app.directive('filemanUpload', ['PopupDialog', 'http', function (PopupDialog, http) {
         return {
             restrict: 'EA',
             scope: {
@@ -10,13 +10,17 @@
                 existingFiles: '='
             },
             link: function (scope, element) {
-                var FILE_MANAGER_PATH = '/manta/files';
 
                 function uploadFiles(files) {
                     http.uploadFiles('storage/upload', scope.filemanUpload, files, function (error, data) {
                         scope.$apply(function () {
                             if (error || data.status === 'error') {
-                                PopupDialog.error(null, data && data.message || error);
+                                var errorMessage = data && data.message || error && error.message || error;
+                                var message = 'None of your active roles are present on the resource';
+                                if (errorMessage && errorMessage.indexOf(message) !== -1) {
+                                    errorMessage = message + ' \'~~' + data.path + '\'.';
+                                }
+                                PopupDialog.error(null, errorMessage);
                                 scope.$parent.$emit('uploadReady', data.id, true, data.path);
                             } else if (data.status === 'uploadWaiting') {
                                 scope.$parent.$emit('uploadWaiting', data.progress);
