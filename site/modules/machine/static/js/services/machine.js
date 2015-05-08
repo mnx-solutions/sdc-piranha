@@ -20,11 +20,10 @@
         var createInstancePageConfig = null;
         var INSTANCES_PATH = '/compute';
         var cacheErrors = [];
-        if ($rootScope.features && $rootScope.features.manta === 'enabled') {
-            Account.getUserConfig().$child('createInstancePage').$load(function (error, config) {
-                createInstancePageConfig = config;
-            });
-        }
+
+        service.initCreateInstancePageConfig = function (config) {
+            createInstancePageConfig = config;
+        },
         service.setCreateInstancePage = function (page) {
             if (createInstancePageConfig && createInstancePageConfig.loaded()) {
                 createInstancePageConfig.page = page;

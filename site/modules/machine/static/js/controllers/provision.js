@@ -32,6 +32,11 @@
             requestContext.setUpRenderContext('machine.provision', $scope, {
                 title: localization.translate(null, 'machine', 'Create Instances on Joyent')
             });
+            if ($rootScope.features && $rootScope.features.manta === 'enabled') {
+                Account.getUserConfig().$child('createInstancePage').$load(function (error, config) {
+                    Machine.initCreateInstancePageConfig(config);
+                });
+            }
             var CHOOSE_IMAGE_STEP = 0;
             var SELECT_PACKAGE_STEP = 1;
             var REVIEW_STEP = 2;
