@@ -208,10 +208,12 @@
                                 var deferred = $q.defer();
                                 var currentData = image;
                                 var currentAction = action;
-                                if (action === 'remove' && !image.isSdc && image.RepoTags && image.RepoTags.length > 0) {
+                                if (action === 'remove') {
                                     image.isRemoving = true;
-                                    currentAction = 'forceRemove';
-                                    currentData = {host: {primaryIp: image.primaryIp, id: image.hostId}, options: {id: image.Id}};
+                                    if (!image.isSdc && image.RepoTags && image.RepoTags.length > 0) {
+                                        currentAction = 'forceRemove';
+                                        currentData = {host: {primaryIp: image.primaryIp, id: image.hostId}, options: {id: image.Id}};
+                                    }
                                 }
                                 Docker[currentAction + 'Image'](currentData).then(function (response) {
                                     deferred.resolve(response);
