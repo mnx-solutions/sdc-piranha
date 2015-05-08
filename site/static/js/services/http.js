@@ -162,8 +162,8 @@
                         try {
                             responseObj = JSON.parse(xhr.responseText);
                         } catch (e) {}
-                        if (responseObj && responseObj.error) {
-                            return cb(responseObj);
+                        if (responseObj && (responseObj.error || responseObj.status === 'error')) {
+                            return cb(responseObj, {status: 'error', id: chunkId, path: path});
                         }
                         cb(null, {status: 'success', id: chunkId, path: path});
                     } else {
