@@ -184,6 +184,7 @@ sleep 5;
 
 writeStage "installing CAdvisor"
 docker run \
+    -v /:/rootfs:ro \
     -v /var/run/docker.sock:/var/run/docker.sock:rw \
     -v /sys:/sys:ro \
     -v ${DOCKER_DIR}/:/var/lib/docker:ro \

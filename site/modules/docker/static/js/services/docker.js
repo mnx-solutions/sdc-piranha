@@ -1,9 +1,9 @@
 'use strict';
 
 (function (ng, app) {app.factory('Docker', ['serverTab', '$rootScope', 'errorContext', 'EventBubble', 'Machine',
-    'PopupDialog', 'localization', '$q', '$location', 'DockerCacheProvider', 'Storage',
+    'PopupDialog', 'localization', '$q', '$location', 'DockerCacheProvider', 'Storage', 'util',
     function (serverTab, $rootScope, errorContext, EventBubble, Machine, PopupDialog,
-              localization, $q, $location, DockerCacheProvider, Storage) {
+              localization, $q, $location, DockerCacheProvider, Storage, util) {
 
         if ($rootScope.features.docker !== 'enabled') {
             return;
@@ -453,6 +453,32 @@
                 return createCachedCall('images', {host: 'All', cache: true, options: ng.extend(defaultParams, params || {})}, params.all ? 'images' : 'topImages');
             }
             return createCall('images', {host: 'All', options: ng.extend(defaultParams, params || {})});
+        };
+
+        service.getContainerStats = function (options, progressCallback) {
+            var url = util.rewriteUrl({
+                href: '/main/docker/stats/' + options.containerId,
+                isWS: true
+            });
+            var socket = new WebSocket(url.href);
+            socket.onopen = function () {
+                socket.send(JSON.stringify(options));
+            };
+
+            socket.onmessage = function (message) {
+                if (message.data === 'ready') {
+                    return;
+                }
+                try {
+                    message = JSON.parse(message.data);
+                } catch (e) {
+                    return;
+                }
+
+                progressCallback(message);
+            };
+
+            return socket;
         };
 
         service.containerUtilization = function (options) {

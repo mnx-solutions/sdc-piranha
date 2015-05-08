@@ -342,6 +342,10 @@ exports.init = function execute(log, config, done) {
                 run      : '='
             }
         },
+        stats: {
+            raw: true,
+            path: '/containers/:id/stats'
+        },
         export       : {
             auditType: 'container',
             method: 'GET',
@@ -526,9 +530,23 @@ exports.init = function execute(log, config, done) {
 
     function Docker(options, call) {
         this.options = options;
-        var mantaClient = require('../storage').MantaClient.createClient(call);
-        this.auditor = new Auditor(call, mantaClient);
+        if (call) {
+            var mantaClient = require('../storage').MantaClient.createClient(call);
+            this.auditor = new Auditor(call, mantaClient);
+        }
     }
+
+    Docker.prototype.usePort = function (port) {
+        var options = JSON.parse(JSON.stringify(this.options));
+        var parsedUrl = url.parse(options.url);
+        parsedUrl.port = port;
+        delete parsedUrl.host;
+        options.url = url.format(parsedUrl);
+
+        var service = new Docker(options);
+        service.auditor = this.auditor;
+        return service;
+    };
 
     function Registry(options) {
         this.options = options;

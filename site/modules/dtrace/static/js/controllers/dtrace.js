@@ -12,7 +12,8 @@
             'localization',
             'PopupDialog',
             '$route',
-            function ($scope, Account, DTrace, Storage, $q, requestContext, localization, PopupDialog, $route) {
+            'util',
+            function ($scope, Account, DTrace, Storage, $q, requestContext, localization, PopupDialog, $route, util) {
                 localization.bind('dtrace', $scope);
                 requestContext.setUpRenderContext('dtrace.script', $scope, {
                     title: localization.translate(null, 'dtrace', 'See my Joyent DTrace Heatmap')
@@ -24,11 +25,13 @@
                     'heatmap': function (script) {
                         return 'syscall:::entry' + (script.pid ? '/' + (script.execname ? 'execname == "' + script.pid + '"'  : 'pid == ' + script.pid) + '/' : '') +
                             '{self->syscall_entry_ts[probefunc] = vtimestamp;}' +
-                            'syscall:::return/self->syscall_entry_ts[probefunc]/{@time[probefunc] = lquantize((vtimestamp -' +
-                            ' self->syscall_entry_ts[probefunc] ) / 1000, 0, 63, 2);self->syscall_entry_ts[probefunc] = 0;}';
+                            'syscall:::return/self->syscall_entry_ts[probefunc]/{@time[probefunc] = lquantize((vtimestamp - ' +
+                            'self->syscall_entry_ts[probefunc] ) / 1000, 0, 63, 2);self->syscall_entry_ts[probefunc] = 0;}';
                     },
                     'flamegraph': function (script) {
-                        return "-n 'profile-97 /" + (script.pid ? (script.execname ? 'execname == "' + script.pid + '"'  : 'pid == ' + script.pid) : 'arg1') + "/ { @[jstack(150, 8000)] = count(); } tick-60s { exit(0); }'"
+                        return '-n \'profile-97 /' +
+                            (script.pid ? (script.execname ? 'execname == "' + script.pid + '"'  : 'pid == ' + script.pid) : 'arg1') +
+                            '/ { @[jstack(150, 8000)] = count(); } tick-60s { exit(0); }\''
                     }
                 };
 
@@ -64,7 +67,7 @@
                     DTrace.reportError(message, 'websocket error: ' + err);
                     $scope.loadingHostProcesses = $scope.processing = $scope.loading = false;
                 };
-                
+
                 if ($scope.title === TITLES.heatmap) {
                     type = 'heatmap';
                 } else if ($scope.title === TITLES.flamegraph || $scope.title === TITLES.coreDump) {
@@ -121,7 +124,7 @@
                     } else if (!$scope.processes) {
                         if ($scope.host) {
                             DTrace.listProcesses({primaryIp: $scope.host.primaryIp}).then(function (list) {
-                                $scope.pid = $scope.hasExecname ? list[0].execname :list[0].pid;
+                                $scope.pid = $scope.hasExecname ? list[0].execname : list[0].pid;
                                 list.forEach(function (process) {
                                     process.name = ' PID: ' + process.pid + ' CMD: ' + process.cmd;
                                 });
@@ -187,19 +190,17 @@
                         }
                         $scope.isRunning = $scope.processing = true;
 
-                        function getDscript() {
+                        var getDScript = function () {
                             return DTRACE_SCRIPTS[type](script);
                         };
 
                         $scope.options.loading = true;
 
-                        var link = document.createElement('a');
-                        link.href = '/main/dtrace/exec/' + window.uuid.v4() + '/' + $scope.options.hostIp;
-
-                        // Magical setting protocol for the href.
-                        link.protocol = link.protocol === 'http:' ? 'ws:' : 'wss:';
-
-                        websocket = new WebSocket(link.href);
+                        var url = util.rewriteUrl({
+                            href: '/main/dtrace/exec/' + window.uuid.v4() + '/' + $scope.options.hostIp,
+                            isWS: true
+                        });
+                        websocket = new WebSocket(url.href);
 
                         $scope.data = '';
 
@@ -219,12 +220,14 @@
 
                         websocket.onmessage = function (event) {
                             var message = JSON.stringify({
-                                type: type, 
-                                message: type === 'coreDump' ? $scope.pid : script.body || getDscript()
+                                type: type,
+                                message: type === 'coreDump' ? $scope.pid : script.body || getDScript()
                             });
+
                             if (event.data === 'connection') {
                                 return websocket.send(message);
                             }
+
                             if (event.data !== 'ping') {
                                 if (event.data !== 'started') {
                                     var parsedResult;
@@ -250,6 +253,7 @@
                                         websocket.send(message);
                                     }
                                 }
+
                                 if ($scope.isRunning) {
                                     $scope.$apply(function () {
                                         $scope.processing = false;

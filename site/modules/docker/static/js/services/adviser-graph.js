@@ -3,6 +3,7 @@
 (function (ng, app) {
     app.factory('adviserGraph', ['$rootScope', 'util', function ($rootScope, util) {
         var defaultMetrics = ['cpuTotal', 'memory', 'network'];
+        var prevs = {};
         return {
             init: function (metrics) {
                 var defaultSettings = {
@@ -79,7 +80,7 @@
                 };
 
                 metrics = metrics || defaultMetrics;
-                metrics = typeof (metrics) === 'string' ? [metrics] : metrics;
+                metrics = typeof metrics === 'string' ? [metrics] : metrics;
                 if (Array.isArray(metrics)) {
                     var init = {};
                     metrics.forEach(function (metric) {
@@ -90,51 +91,40 @@
             },
             updateValues: function (metrics, containerStats) {
                 function getInterval(current, previous) {
-                    // ms -> ns.
-                    return (new Date(current).getTime() - new Date(previous).getTime()) * 1000000;
+                    return new Date(current).getTime() - new Date(previous).getTime();
                 }
 
-                function hasResource(containerStats, resource) {
-                    return containerStats.stats.length > 0 && containerStats.stats[0][resource];
-                }
-
-                function getResource(metric) {
-                    if (metric.indexOf('cpu') !== -1) {
-                        return 'cpu';
-                    }
-                    if (metric.indexOf('memory') !== -1) {
-                        return 'memory';
-                    }
-                    return 'network';
-                }
-
-                var pushData = function (containerStats, metric, resource) {
-                    if (containerStats.spec['has_' + resource] && !hasResource(containerStats, resource)) {
-                        return;
-                    }
+                var pushData = function (containerStats, metric) {
                     var data = [];
                     var usage = [];
                     var usageSecond = [];
                     var y;
                     var y2;
-                    for (var i = 1; i < containerStats.stats.length; i++) {
+                    for (var i = 0; i < containerStats.stats.length; i++) {
                         var cur = containerStats.stats[i];
-                        var prev = containerStats.stats[i - 1];
-                        var intervalInNs = getInterval(cur.timestamp, prev.timestamp);
-                        var intervalInSec = intervalInNs / 1000000000;
-
+                        var prev = prevs[metric];
+                        if (!prev) {
+                            prevs[metric] = cur;
+                            continue;
+                        }
+                        var intervalInMs = getInterval(cur.read, prev.read);
+                        var intervalInSec = intervalInMs / 1000;
+                        if (intervalInSec <= 0) {
+                            continue;
+                        }
+                        // jscs:disable requireCamelCaseOrUpperCaseIdentifiers
                         switch (metric) {
                             case 'cpuBreakdown':
-                                y = (cur.cpu.usage.user - prev.cpu.usage.user) / intervalInNs;
-                                y2 = (cur.cpu.usage.system - prev.cpu.usage.system) / intervalInNs;
+                                y = (cur.cpu_stats.cpu_usage.usage_in_usermode - prev.cpu_stats.cpu_usage.usage_in_usermode) / intervalInMs;
+                                y2 = (cur.cpu_stats.system_cpu_usage - prev.cpu_stats.system_cpu_usage) / intervalInMs;
                                 break;
                             case 'memory':
-                                var currentMemoryUsage = util.getReadableFileSize(cur.memory.usage);
-                                var currentMemoryWorkingSet = util.getReadableFileSize(cur.memory.working_set);
+                                var currentMemoryUsage = util.getReadableFileSize(cur.memory_stats.usage);
+                                var currentMemoryWorkingSet = util.getReadableFileSize(cur.memory_stats.limit);
                                 var memoryAbbreviation = currentMemoryWorkingSet.measure;
                                 y = currentMemoryUsage.value;
                                 y2 = currentMemoryWorkingSet.value;
-                                if (cur.memory.usage < cur.memory.working_set) {
+                                if (cur.memory_stats.usage < cur.memory_stats.limit) {
                                     memoryAbbreviation = currentMemoryUsage.measure;
                                 }
                                 metrics.memory.options.type = {abbr: memoryAbbreviation};
@@ -152,16 +142,19 @@
                                 y2 = (cur.network.rx_errors - prev.network.rx_errors) / intervalInSec;
                                 break;
                             default:
-                                y = (cur.cpu.usage.total - prev.cpu.usage.total) / intervalInNs;
+                                y = ((cur.cpu_stats.cpu_usage.total_usage - prev.cpu_stats.cpu_usage.total_usage) / intervalInMs) / 1000;
                                 break;
                         }
+                        // jscs:enable requireCamelCaseOrUpperCaseIdentifiers
 
                         usage.push({x: i, y: y});
 
-                        if (typeof (y2) !== "undefined") {
+                        if (typeof y2 !== 'undefined') {
                             usageSecond.push({x: i, y: y2});
                         }
+                        prevs[metric] = cur;
                     }
+
                     data.push(usage);
                     if (usageSecond.length) {
                         data.push(usageSecond);
@@ -184,21 +177,21 @@
                         metrics.data = chartsArray;
                     } else {
                         stats.forEach(function (stat, index) {
-                            var arrayWithCurrentData = metrics.data[index];
-                            if (arrayWithCurrentData) {
+                            var currentData = metrics.data[index];
+                            if (currentData && currentData.length && stat.length) {
                                 var newStatsData = stat[stat.length - 1];
-                                var lastXAxisPosition = arrayWithCurrentData[arrayWithCurrentData.length - 1].x;
-                                arrayWithCurrentData.shift();
+                                var lastXAxisPosition = currentData[currentData.length - 1].x;
+                                currentData.shift();
                                 newStatsData.x = lastXAxisPosition + 1;
-                                arrayWithCurrentData.push(newStatsData);
+                                currentData.push(newStatsData);
                             }
                         });
                     }
                 };
 
-                if (typeof (metrics) === 'object' && Object.keys(metrics).length !== 0) {
+                if (typeof metrics === 'object' && Object.keys(metrics).length !== 0) {
                     Object.keys(metrics).forEach(function (metric) {
-                        updateStats(metrics[metric], pushData(containerStats, metric, getResource(metric)));
+                        updateStats(metrics[metric], pushData(containerStats, metric));
                     });
                 }
                 return metrics;

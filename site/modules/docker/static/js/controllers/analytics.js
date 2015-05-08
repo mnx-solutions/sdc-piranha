@@ -20,7 +20,7 @@
             var containerId = requestContext.getParam('containerid');
             var hostId = requestContext.getParam('hostid');
             var containerAnalysys = null;
-            var hostAnalysys = null;
+            var hostStats = null;
             $scope.cadvisorUnavailable = false;
 
             $scope.hostId = hostId;
@@ -128,14 +128,14 @@
                 if (id) {
                     data.options.id = id;
                 }
-                if (id !== containerAnalysys || data.host.primaryIp !== hostAnalysys) {
+                if (id !== containerAnalysys || data.host.primaryIp !== hostStats) {
                     return false;
                 }
                 Docker[id ? 'containerUtilization' : 'hostUtilization'](data).then(function (containerStats) {
                     if (containerStats.spec && containerStats.stats && containerStats.stats.length && $scope.canDelete()) {
-                       if (id === containerAnalysys && data.host.primaryIp === hostAnalysys) {
+                        if (id === containerAnalysys && data.host.primaryIp === hostStats) {
                             $scope.graphs = adviserGraph.updateValues($scope.graphs, containerStats);
-                       }
+                        }
                     }
                     callback();
                 }, function (err) {
@@ -156,14 +156,13 @@
                     clearGraphs();
                 }
                 containerAnalysys = $scope.current.container;
-                hostAnalysys = $scope.current.host;
+                hostStats = $scope.current.host;
                 timerUpdateStats = setInterval(function () {
                     if ($scope.current.host && ($location.path().search('/docker/analytics') !== -1) && !$scope.deleted && $scope.canDelete()) {
-                        updateContainerStats({host: {primaryIp: $scope.current.host, state: 'running'}, options: {num_stats: 2}}, $scope.current.container, function (error) {
+                        updateContainerStats({host: {primaryIp: $scope.current.host, state: 'running'}, options: {'num_stats': 2}}, $scope.current.container, function (error) {
                             if (error === 'CAdvisor unavailable') {
                                 clearGraphs();
                                 $scope.cadvisorUnavailable = true;
-                                return;
                             }
                         });
                     } else {
@@ -172,12 +171,11 @@
                 }, 1000);
             };
 
-
             $scope.createDefault = function () {
                 $scope.cadvisorUnavailable = false;
-                if (timerUpdateStats && (containerAnalysys !== $scope.current.container || hostAnalysys !== $scope.current.host)) {
+                if (timerUpdateStats && (containerAnalysys !== $scope.current.container || hostStats !== $scope.current.host)) {
                     containerAnalysys = $scope.current.container;
-                    hostAnalysys = $scope.current.host;
+                    hostStats = $scope.current.host;
                     clearGraphs();
                     setTimeout($scope.createDefault);
                     return;
@@ -200,9 +198,9 @@
             };
 
             $scope.create = function () {
-                if (timerUpdateStats && (containerAnalysys !== $scope.current.container || hostAnalysys !== $scope.current.host)) {
+                if (timerUpdateStats && (containerAnalysys !== $scope.current.container || hostStats !== $scope.current.host)) {
                     containerAnalysys = $scope.current.container;
-                    hostAnalysys = $scope.current.host;
+                    hostStats = $scope.current.host;
                     clearGraphs();
                     setTimeout($scope.create);
                     return;
