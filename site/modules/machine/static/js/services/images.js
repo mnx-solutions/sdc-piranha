@@ -443,7 +443,6 @@
             service.updateImage = function (image, callback) {
                 var oldState = image.state;
                 image.state = 'updating'; // Override state manually
-                handleChunk(image);
                 var job = serverTab.call({
                     name: 'ImageUpdate',
                     data: { uuid: image.id,
