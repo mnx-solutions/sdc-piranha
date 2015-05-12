@@ -171,7 +171,7 @@ exports.init = function execute(log, config, done) {
             return;
         }
 
-        call.log.info({obj: options}, 'Creating machine %s', options.name);
+        call.log.info({obj: options}, 'Creating machine %s', options.name || 'with no name.');
 
         var cloud = call.cloud.separate(options.datacenter);
 
