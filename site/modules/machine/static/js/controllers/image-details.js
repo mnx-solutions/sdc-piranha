@@ -35,7 +35,7 @@
             loadImage();
             $scope.updateImage = function () {
                 $scope.loading = true;
-                Image.updateImage($scope.currentImage, function () {}).promise.then(function () {
+                Image.updateImage(ng.copy($scope.currentImage), function () {}).promise.then(function () {
                     $scope.loading = false;
                     $scope.oldImageData = ng.copy($scope.currentImage);
                 }, function () {
