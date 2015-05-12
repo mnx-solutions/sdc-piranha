@@ -12,8 +12,6 @@ var registryConfig = fs.readFileSync(__dirname + '/data/registry-config.yml', 'u
 var Auditor = require(__dirname + '/libs/auditor.js');
 var WebSocket = require('ws');
 
-var DOCKER_TCP_PORT = 4240;
-var DOCKER_HUB_HOST = 'https://index.docker.io';
 var DOCKER_SSL_ERROR = 'routines:SSL3_READ_BYTES';
 
 var Docker = function execute(log, config) {
@@ -1722,11 +1720,7 @@ var Docker = function execute(log, config) {
                     return call.done(error);
                 }
                 if (!data.machine.isSdc) {
-                    var dockerUrl = client.options.url;
-                    var parsedUrl = url.parse(dockerUrl);
-                    parsedUrl.port = Docker.DOCKER_TCP_PORT;
-                    delete parsedUrl.host;
-                    client.options.url = url.format(parsedUrl);
+                    client = client.usePort(Docker.DOCKER_TCP_PORT);
                 }
                 client.ping(function (err, result) {
                     call.done(err, result);

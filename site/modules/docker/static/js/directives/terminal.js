@@ -1,7 +1,7 @@
 'use strict';
 
 (function (ng, app) {
-    app.directive('terminal', ['Docker', function (Docker) {
+    app.directive('terminal', ['Docker', 'util', function (Docker, util) {
         return {
             templateUrl: 'docker/static/partials/terminal-accordion.html',
             restrict: 'E',
@@ -36,10 +36,11 @@
                     termElem.innerHTML = '';
                     terminal.open(termElem);
                     Docker.execute(opts).then(function (wsPath) {
-                        var a = document.createElement('a');
-                        a.href = wsPath;
-                        a.protocol = a.protocol === 'http:' ? 'ws:' : 'wss:';
-                        var socket = new WebSocket(a.href);
+                        var url = util.rewriteUrl({
+                            href: wsPath,
+                            isWS: true
+                        });
+                        var socket = new WebSocket(url.href);
 
                         socket.onmessage = function (event) {
                             if (event.data === 'ready') {

@@ -11,8 +11,8 @@
             'Storage',
             'localization',
             '$location',
-
-            function ($scope, $q, Docker, Account, PopupDialog, Storage, localization, $location) {
+            'util',
+            function ($scope, $q, Docker, Account, PopupDialog, Storage, localization, $location, util) {
 
                 $scope.loading = true;
                 $scope.newRegistryDialogOpening = false;
@@ -164,7 +164,6 @@
                                 var hosts = {};
                                 var availableHosts = result[0];
                                 var registries = result[1];
-                                var parser = document.createElement('a');
                                 availableHosts.forEach(function (host) {
                                     if (host.memory >= 1024) {
                                         hosts[host.primaryIp] = host;
@@ -178,8 +177,7 @@
 
                                 registries.forEach(function (registry) {
                                     if (registry.type === 'local') {
-                                        parser.href = registry.host;
-                                        delete hosts[parser.hostname];
+                                        delete hosts[util.rewriteUrl({href: registry.host}).hostname];
                                     }
                                 });
 

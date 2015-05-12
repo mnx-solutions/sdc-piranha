@@ -295,9 +295,7 @@
                 };
 
                 function getHostname(address) {
-                    var a = document.createElement('a');
-                    a.href = address;
-                    return a.hostname;
+                    return util.rewriteUrl({href: address}).hostname;
                 }
 
                 function getSelectedRegistry(scope) {
