@@ -184,7 +184,13 @@ var Docker = function execute(log, config) {
 
     function saveLogsToManta(call, logPath, logs, callback) {
         var mantaclient = MantaClient.createClient(call);
-        mantaclient.safePutFileContents(logPath, JSON.stringify(logs), function (error) {
+        // Fix to replace the unicode characters to their codes
+        // Needs cause client tail log may contain raw unicode characters
+        var fixedLogsString = JSON.stringify(logs).replace(/[\u007f-\uffff]/g,
+            function (char) {
+                return '\\u' + ('0000' + char.charCodeAt(0).toString(16)).slice(-4);
+            });
+        mantaclient.safePutFileContents(logPath, fixedLogsString, function (error) {
             return callback(error && error.message, true);
         });
     }
