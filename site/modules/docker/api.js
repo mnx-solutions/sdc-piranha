@@ -594,6 +594,12 @@ exports.init = function execute(log, config, done) {
         }
 
         client.ftw(search, opts, function (err, res) {
+            if (err) {
+                if (err.statusCode === 404) {
+                    return callback(null, []);
+                }
+                return callback(err);
+            }
             res.on('entry', function (obj) {
                 var name = path.join(path.basename(obj.parent), obj.name);
                 if (!term || name.indexOf(term) !== -1) {
