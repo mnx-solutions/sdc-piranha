@@ -783,9 +783,6 @@ exports.init = function execute(log, config, done) {
                     });
                 }
             }, function (errors, operations) {
-                if (errors) {
-                    return callback(errors);
-                }
                 verifySDCDockerAvailability(call, sdcDockerConfig, function (error, availableHost) {
                     var hosts = [].concat.apply(availableHost || [], operations.successes);
                     if (hostId) {
