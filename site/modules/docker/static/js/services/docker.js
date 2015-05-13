@@ -402,7 +402,7 @@
                     options: angular.extend({}, container.options || {id: container.Id}, opts)
                 };
                 var cache = service.cache.containers;
-                var cacheContainer = cache.get(container.Id);
+                var cacheContainer = cache && cache.get(container.Id);
                 if (action === 'remove') {
                     options.container = container;
                     options.options.force = true;
