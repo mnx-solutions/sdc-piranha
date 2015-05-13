@@ -1066,6 +1066,7 @@ var Docker = function execute(log, config) {
                 type: options.id ? 'image' : 'docker',
                 name: 'pull'
             };
+            call.data.authNotRequired = call.data.host.isSdc;
             if (!registryId || registryId === 'local') {
                 return pullImage(call, options);
             }
@@ -1458,6 +1459,7 @@ var Docker = function execute(log, config) {
             if (!registry) {
                 return call.done();
             }
+            call.data.authNotRequired = true;
             Docker.createRegistryClient(call, registry, function (error, client) {
                 if (error) {
                     return call.done(error);
@@ -1482,6 +1484,7 @@ var Docker = function execute(log, config) {
             if (!registry) {
                 return call.done();
             }
+            call.data.authNotRequired = true;
             Docker.createRegistryClient(call, registry, function (error, client) {
                 if (error) {
                     return call.done(error);
