@@ -169,7 +169,7 @@
                         var data = job.__read();
                         function handleResponse(chunk) {
                             if (chunk.status === 'error') {
-                                if (!authorizationErrorDisable && $location.path() !== INSTANCES_PATH && chunk.error && chunk.error.message.indexOf('permission') > 0) {
+                                if (!authorizationErrorDisable && $location.path() !== INSTANCES_PATH && chunk.error && chunk.error.message && chunk.error.message.indexOf('permission') > 0) {
                                     cacheErrors.push(chunk.error.message);
                                     return;
                                 }
