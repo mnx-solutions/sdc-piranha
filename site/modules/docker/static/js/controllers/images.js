@@ -371,6 +371,7 @@
                             var image = Docker.parseTag($scope.term);
                             var foundImages =  $scope.foundImages = [];
                             var parentScope = $scope;
+                            image.tag = image.tag || 'latest';
                             $scope.pulling = true;
                             PopupDialog.custom({
                                 templateUrl: 'docker/static/partials/select-tag.html',
