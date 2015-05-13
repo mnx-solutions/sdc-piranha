@@ -13,10 +13,12 @@
                     <td class="medium" data-ng-class="{triple: !processes || title === 'Core Dump'}">
                         <select ui-select2="{minimumResultsForSearch: -1, width: '100%'}"
                                 id="hostSelect"
-                                data-ng-model="host"
+                                data-ng-model="selectedHostIndex"
                                 data-ng-change="changeHost()"
-                                data-select2-disabled="loadingHostProcesses"
-                                data-ng-options="host.name for host in hosts">
+                                data-select2-disabled="loadingHostProcesses">
+                            <option data-ng-repeat="host in hosts" value="{{$index}}">
+                                {{host.name}}
+                            </option>
                         </select>
                     </td>
                     <td class="medium" data-ng-class="{triple: !processes}" data-ng-show="title === 'Heatmap'">
@@ -28,12 +30,12 @@
                     </td>
                     <td data-ng-show="processes && processes.length" class="big">
                         <select ui-select2="{minimumResultsForSearch: -1, width: '100%'}" id="pidSelect" data-ng-model="pid" >
-                            <optgroup data-ng-show="hasExecname" label="execname">
+                            <optgroup data-ng-if="hasExecname" label="execname">
                                 <option data-ng-repeat="process in processes" value="{{process.execname}}">
                                     {{process.execname}}
                                 </option>
                             </optgroup>
-                            <optgroup data-ng-show="hasPid" label="pid">
+                            <optgroup data-ng-if="hasPid" label="pid">
                                 <option data-ng-repeat="process in processes" value="{{process.pid}}">
                                     {{process.name}}
                                 </option>
