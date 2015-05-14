@@ -45,6 +45,7 @@
                 $scope.processing = false;
                 $scope.options = {};
                 $scope.data = '';
+                $scope.selectedHostIndex = 0;
                 var processes = {};
                 var PID_PLACEHOLDER = '$PID';
                 var EXECNAME_PLACEHOLDER = '$EXECNAME';
@@ -142,6 +143,7 @@
                 }
 
                 $scope.changeHost = function () {
+                    $scope.host = $scope.hosts[$scope.selectedHostIndex];
                     if ($scope.host) {
                         if (processes[$scope.host.primaryIp]) {
                             $scope.processes = processes[$scope.host.primaryIp];
