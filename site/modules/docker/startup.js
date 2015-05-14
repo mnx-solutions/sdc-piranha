@@ -299,7 +299,7 @@ var Docker = function execute(log, config) {
                             }
                         });
                         if (matchingRegistryId) {
-                            delete Docker.registriesCache[matchingRegistryId];
+                            Docker.registriesCache.delete(call, matchingRegistryId);
                             return Docker.saveRegistries(call, list, function (errSave) {
                                 if (errSave) {
                                     call.log.warn(errSave);
@@ -850,7 +850,7 @@ var Docker = function execute(log, config) {
             type: 'global'
         };
         Docker.getRegistries(call, function (error, list) {
-            Docker.registriesCache['default'] = defaultRegistry;
+            Docker.registriesCache.put(call, 'default', defaultRegistry);
             if (error) {
                 if (error.statusCode === 404) {
                     return call.done(null, [defaultRegistry]);
@@ -862,7 +862,7 @@ var Docker = function execute(log, config) {
             }
             var checkDefaultRegistry = false;
             list.forEach(function (registry) {
-                Docker.registriesCache[registry.id] = util._extend({}, registry);
+                Docker.registriesCache.put(call, registry.id, util._extend({}, registry));
                 if (registry.auth) {
                     registry.auth = null;
                 }
@@ -909,7 +909,7 @@ var Docker = function execute(log, config) {
                 if (!edited) {
                     list.push(savedRegistry);
                 }
-                Docker.registriesCache[savedRegistry.id] = savedRegistry;
+                Docker.registriesCache.put(call, savedRegistry.id, savedRegistry);
                 Docker.saveRegistries(call, list, function (errSave) {
                     if (errSave) {
                         return call.done(errSave);
@@ -1047,7 +1047,7 @@ var Docker = function execute(log, config) {
     };
 
     var getImageInfo = function (call, registryId, image, callback) {
-        var registry = Docker.registriesCache[registryId];
+        var registry = Docker.registriesCache.getItem(call, registryId);
         var infoOptions = {registry: registry, name: image.name, tag: image.tag};
         Docker.getImageInfo(call, infoOptions, callback);
     };
@@ -1454,7 +1454,7 @@ var Docker = function execute(log, config) {
             return data && data.options && typeof data.options.name === 'string' && data.registry;
         },
         handler: function (call) {
-            var registry = Docker.registriesCache[call.data.registry];
+            var registry = Docker.registriesCache.getItem(call, call.data.registry);
             if (!registry) {
                 return call.done();
             }
@@ -1478,7 +1478,7 @@ var Docker = function execute(log, config) {
                 Docker.searchPrivateImage(call, call.data.options.q, call.done.bind(call));
                 return;
             }
-            var registry = Docker.registriesCache[call.data.registry];
+            var registry = Docker.registriesCache.getItem(call, call.data.registry);
             if (!registry) {
                 return call.done();
             }
@@ -1621,7 +1621,7 @@ var Docker = function execute(log, config) {
                         };
                         list.push(registry);
                     }
-                    Docker.registriesCache[registry.id] = registry;
+                    Docker.registriesCache.put(call, registry.id, registry);
                     Docker.saveRegistries(call, list, mantaClient);
                 });
             });

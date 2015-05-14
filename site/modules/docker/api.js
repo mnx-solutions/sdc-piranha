@@ -20,6 +20,7 @@ var cache = require('lru-cache')({
     max: 1000,
     maxAge: 10 * 60
 });
+var apiMethods = require(__dirname + '/data/api-methods');
 
 var mantaPrivateKey;
 if (config.manta.privateKey) {
@@ -220,308 +221,31 @@ exports.init = function execute(log, config, done) {
     var Manta = require('../storage').MantaClient;
     var api = {};
 
-    // http://docs.docker.com/reference/api/docker_remote_api_v1.14/
-    var dockerAPIMethods = {
-        containers   : {
-            auditType: 'docker',
-            path: '/containers/json',
-            params: {
-                size   : '=',
-                all    : '='
-            }
+    api.registriesCache = {
+        getCache: function (call) {
+            var userId = call && call.req.session.userId;
+            return registriesCache[userId] || {};
         },
-        list         : {
-            auditType: 'docker',
-            path: '/containers/json',
-            params: {
-                all    : true
-            }
+        getItem: function (call, registryId) {
+            var cache = this.getCache(call);
+            return cache[registryId];
         },
-        inspect      : {
-            auditType: 'container',
-            path: '/containers/:id/json'
+        length: function (call) {
+            var cache = this.getCache(call);
+            return Object.keys(cache).length;
         },
-        logs         : {
-            auditType: 'container',
-            path: '/containers/:id/logs',
-            noParse: true,
-            params: {
-                stdout     : true,
-                stderr     : true,
-                timestamps : true,
-                tail       : 100,
-                follow     : 0
-            }
+        list: function (call) {
+            var cache = this.getCache(call);
+            return Object.keys(cache).map(function (key) {return cache[key];})
         },
-        top          : {
-            auditType: 'container',
-            path: '/containers/:id/top',
-            params: {
-                'ps_args': '='
-            }
+        put: function (call, id, registry) {
+            var cache = this.getCache(call);
+            cache[id] = registry;
+            return cache;
         },
-        create       : {
-            method: 'POST',
-            path: '/containers/create',
-            params: {
-                name   : '='
-            }
-        },
-        startImmediate : {
-            method: 'POST',
-            path: '/containers/:id/start'
-        },
-        changes      : {
-            auditType: 'container',
-            path: '/containers/:id/changes'
-        },
-        start        : {
-            auditType: 'container',
-            method: 'POST',
-            path: '/containers/:id/start'
-        },
-        stop         : {
-            auditType: 'container',
-            method: 'POST',
-            path: '/containers/:id/stop'
-        },
-        pause        : {
-            auditType: 'container',
-            method: 'POST',
-            path: '/containers/:id/pause'
-        },
-        unpause         : {
-            auditType: 'container',
-            method: 'POST',
-            path: '/containers/:id/unpause'
-        },
-        restart      : {
-            auditType: 'container',
-            method: 'POST',
-            path: '/containers/:id/restart'
-        },
-        exec: {
-            path: '/containers/:id/exec',
-            method: 'POST'
-        },
-        execStart: {
-            method: 'POST',
-            path: '/exec/:id/start',
-            raw: true,
-            headers: {
-                'User-Agent': 'Docker-Client/1.6.0',
-                Connection: 'Upgrade',
-                'Content-Type': 'text/plain',
-                Upgrade: 'tcp'
-            }
-        },
-        kill         : {
-            auditType: 'container',
-            method: 'POST',
-            path: '/containers/:id/kill'
-        },
-        remove     : {
-            auditType: 'container',
-            method: 'DELETE',
-            path: '/containers/:id',
-            params: {
-                v: '=',
-                force: '='
-            }
-        },
-        commit      : {
-            auditType: 'docker',
-            method: 'POST',
-            path: '/commit',
-            params: {
-                container: '=',
-                repo     : '=',
-                tag      : '=',
-                m        : '=',
-                author   : '=',
-                run      : '='
-            }
-        },
-        stats: {
-            raw: true,
-            path: '/containers/:id/stats'
-        },
-        export       : {
-            auditType: 'container',
-            method: 'GET',
-            path: '/containers/:id/export'
-        },
-        containerUtilization: {
-            method: 'POST',
-            path: '/utilization/docker/:id',
-            timeout: 3000,
-            params: {
-                'num_stats': 60,
-                'num_samples': 0
-            }
-        },
-        hostUtilization: {
-            method: 'POST',
-            path: '/utilization/',
-            timeout: 3000,
-            params: {
-                'num_stats': 60,
-                'num_samples': 0
-            }
-        },
-        images       : {
-            auditType: 'docker',
-            path: '/images/json',
-            params: {
-                all    : '='
-            }
-        },
-        inspectImage : {
-            auditType: 'image',
-            path: '/images/:id/json'
-        },
-        tagImage: {
-            auditType: 'image',
-            method: 'POST',
-            path: '/images/:name/tag',
-            params: {
-                repo: '=',
-                tag: '=',
-                force: '='
-            }
-        },
-        pushImage : {
-            auditType: 'image',
-            raw: true,
-            method: 'POST',
-            path: '/images/:name/push',
-            params: {
-                tag: '='
-            }
-        },
-        createImage : {
-            auditType: 'docker',
-            raw: true,
-            method: 'POST',
-            path: '/images/create',
-            params: {
-                fromImage: '=',
-                tag: '=',
-                registry: '=',
-                repo: '='
-            }
-        },
-        pullImage : {
-            method: 'POST',
-            path: '/images/create',
-            params: {
-                fromImage: '=',
-                tag: '=',
-                registry: '=',
-                repo: '='
-            }
-        },
-        buildImage: {
-            auditType: 'docker',
-            method: 'POST',
-            path: '/build',
-            raw: true,
-            params: {
-                t: '=',         // repository name (and optionally a tag) to be applied to the resulting image in case of success
-                rm: '=',        // remove intermediate containers after a successful build (default behavior)
-                nocache: '=',   // do not use the cache when building the image
-                q: '='          // suppress verbose build output
-            }
-        },
-        historyImage : {
-            auditType: 'image',
-            method: 'GET',
-            path: '/images/:id/history'
-        },
-        removeImage  : {
-            auditType: 'image',
-            method: 'DELETE',
-            path: '/images/:id',
-            params: {
-                force: '=',
-                noprune: '='
-            }
-        },
-        getInfo         : {
-            auditType: 'docker',
-            method: 'GET',
-            path: '/info'
-        },
-        getVersion      : {
-            auditType: 'docker',
-            method: 'GET',
-            path: '/version'
-        },
-        auth         : {
-            auditType: 'docker',
-            method: 'POST',
-            path: '/auth'
-        },
-        ping         : {
-            retries: false,
-            timeout: 3000,
-            path: '/_ping'
-        }
-    };
-
-    var registryAPIMethods = {
-        searchImage  : {
-            method: 'GET',
-            path: '/v1/search',
-            params: {
-                q   : '='
-            }
-        },
-        removeImage: {
-            method: 'DELETE',
-            path: '/v1/repositories/:name/'
-        },
-        imageTags  : {
-            method: 'GET',
-            path: '/v1/repositories/:name/tags'
-        },
-        removeImageTag  : {
-            method: 'DELETE',
-            path: '/v1/repositories/:name/tags/:tag'
-        },
-        addImageTag  : {
-            method: 'PUT',
-            raw: true,
-            path: '/v1/repositories/:name/tags/:tag'
-        },
-        imageTagId: {
-            path: '/v1/repositories/:name/tags/:tag'
-        },
-        ancestry: {
-            path: '/v1/images/:id/ancestry'
-        },
-        inspect: {
-            path: '/v1/images/:id/json'
-        },
-        ping: {
-            method: 'GET',
-            retries: false,
-            timeout: 3000,
-            path: '/v1/_ping'
-        }
-    };
-
-    var indexAPIMethods = {
-        images: {
-            method: 'GET',
-            path: '/v1/repositories/:name/images'
-        },
-        tokenRequest: {
-            method: 'GET',
-            headers: {
-                'X-Docker-Token': true
-            },
-            path: '/v1/repositories/:name/:type'
+        delete: function (call, id) {
+            var cache = this.getCache(call);
+            delete cache[id];
         }
     };
 
@@ -556,11 +280,11 @@ exports.init = function execute(log, config, done) {
         this.options = options;
     }
 
-    createApi(log, dockerAPIMethods, Docker.prototype);
+    createApi(log, apiMethods.docker, Docker.prototype);
 
-    createApi(log, registryAPIMethods, Registry.prototype);
+    createApi(log, apiMethods.registry, Registry.prototype);
 
-    createApi(log, indexAPIMethods, Index.prototype);
+    createApi(log, apiMethods.index, Index.prototype);
     /**
      * Authorize, and get token
      * curl -i -H'X-Docker-Token: true' https://index.docker.io/v1/repositories/google/cadvisor/images
@@ -733,7 +457,7 @@ exports.init = function execute(log, config, done) {
     };
 
     api.getMethods = function () {
-        return Object.keys(dockerAPIMethods);
+        return Object.keys(apiMethods.docker);
     };
 
     function verifySDCDockerAvailability(call, host, callback) {
@@ -1159,7 +883,6 @@ exports.init = function execute(log, config, done) {
         return logs;
     };
 
-    api.registriesCache = registriesCache;
     api.getRegistries = function (call, client, callback, fromCache) {
 
         if (typeof (client) === 'function') {
@@ -1168,8 +891,8 @@ exports.init = function execute(log, config, done) {
             client = require('../storage').MantaClient.createClient(call);
         }
 
-        if (typeof (fromCache) === 'boolean' && fromCache && Object.keys(api.registriesCache).length) {
-            return callback(null, Object.keys(api.registriesCache).map(function (key) {return api.registriesCache[key];}));
+        if (fromCache && api.registriesCache.length(call)) {
+            return callback(null, api.registriesCache.list(call));
         }
         client.getFileJson(SDC_DOCKER_PATH + '/registries.json', function (error, list) {
             if (error) {
@@ -1237,7 +960,7 @@ exports.init = function execute(log, config, done) {
                 return !condition;
             });
             if (id) {
-                delete api.registriesCache[id];
+                api.registriesCache.delete(call, id);
                 return updateRegistriesList(call, list, callback);
             } else {
                 callback(null);
