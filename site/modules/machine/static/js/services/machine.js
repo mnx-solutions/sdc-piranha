@@ -48,7 +48,7 @@
             machines = machines || [];
             isDeletedDockerMachine = isDeletedDockerMachine || false;
             var dockerMachine = machines.find(function (machine) {
-                return machine.tags.hasOwnProperty('JPC_tag') && machine.tags['JPC_tag'] === 'DockerHost';
+                return machine.tags && machine.tags.hasOwnProperty('JPC_tag') && machine.tags['JPC_tag'] === 'DockerHost';
             });
             if (isDeletedDockerMachine && !dockerMachine) {
                 $rootScope.dockerHostsAvailable = false;
