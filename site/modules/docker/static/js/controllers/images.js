@@ -377,7 +377,7 @@
                                 templateUrl: 'docker/static/partials/select-tag.html',
                                 openCtrl: function ($scope, dialog, Docker) {
                                     $scope.name = image.name;
-                                    $scope.tag = 'all';
+                                    $scope.tag = 'latest';
                                     $scope.hideTags = true;
                                     $scope.loading = true;
                                     getHosts(parentScope).then(function (hosts) {
@@ -562,7 +562,6 @@
                                         $scope.hosts = result[0] && result[0].length ? removeUnreachableHosts(result[0]) : [];
                                         $scope.tags = result[1] || [];
                                         $scope.tag = $scope.tags[0].name || null;
-                                        $scope.tags.push({name: 'all'});
                                         $scope.loading = false;
                                     });
 
@@ -572,7 +571,7 @@
                                             return false;
                                         }
                                         $scope.close();
-                                        image.tag = $scope.tag === 'all' ? '' : $scope.tag;
+                                        image.tag = $scope.tag;
 
                                         setRegistryHost(parentScope, image);
                                         image.pullProcesses = {};
