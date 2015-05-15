@@ -224,7 +224,8 @@ exports.init = function execute(log, config, done) {
     api.registriesCache = {
         getCache: function (call) {
             var userId = call && call.req.session.userId;
-            return registriesCache[userId] || {};
+            registriesCache[userId] = registriesCache[userId] || {};
+            return registriesCache[userId];
         },
         getItem: function (call, registryId) {
             var cache = this.getCache(call);
