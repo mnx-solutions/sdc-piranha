@@ -63,6 +63,10 @@
                 }, 50);
             }
 
+            $scope.isDockerLocation = function () {
+                return $location.path().indexOf('/docker') !== -1;
+            };
+
             $scope.toggleOpenRuleForm = function () {
                 $scope.openRuleForm = !$scope.openRuleForm;
                 if ($scope.openRuleForm) {

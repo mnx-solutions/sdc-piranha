@@ -53,6 +53,12 @@
                             <span class="selected-sub"></span>
                         </a>
                     </li>
+                    <li class="sub" data-ng-class="{active: location.path().search('docker/firewall?') == 1}" data-ng-show="features.firewall != 'disabled'">
+                        <a href="#!/docker/firewall">
+                            <span class="titles" data-translate>Firewall</span>
+                            <span class="selected-sub"></span>
+                        </a>
+                    </li>
                     <li left-list-item class="sub" data-ng-show="provisionEnabled" data-ng-class="{active: location.path().search('docker/registr?') == 1}">
                         <a href="#!/docker/registries">
                             <span class="titles" data-translate>Registries</span>

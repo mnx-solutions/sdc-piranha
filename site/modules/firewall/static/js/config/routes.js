@@ -9,6 +9,10 @@ window.JP.main.config([
                 title: 'Cloud Firewall',
                 action: 'firewall.index',
                 parent: 'machine.index'
+            }).when('/docker/firewall', {
+                title: 'Cloud Firewall',
+                action: 'firewall.index',
+                parent: 'machine.index'
             });
         }
     }]);
