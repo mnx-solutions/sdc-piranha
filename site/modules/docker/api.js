@@ -731,7 +731,7 @@ exports.init = function execute(log, config, done) {
             serviceConfig.headers = util._extend(serviceConfig.headers, {
                 'X-Auth-Token': call.req.session.token || call.req.cloud._token
             });
-        } else {
+        } else if (!call.data || !call.data.authNotRequired) {
             if (!certificates.ca) {
                 return callback('Certificates were lost. Cannot connect to docker.');
             }
