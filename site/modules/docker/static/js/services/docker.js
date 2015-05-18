@@ -959,6 +959,25 @@
             });
         };
 
+        service.getHostFilter = function (hostId, hosts) {
+            if (hostId) {
+                var hostFilter;
+                hosts.some(function (host) {
+                    if (host.id === hostId) {
+                        hostFilter = host;
+                        return true;
+                    }
+                });
+                if (hostFilter) {
+                    return {
+                        host: hostFilter.isSdc ? '' : 'KVM host',
+                        name: hostFilter.name
+                    };
+                }
+            }
+            return false;
+        };
+
         return service;
     }]);
 }(window.angular, window.JP.getModule('docker')));

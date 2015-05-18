@@ -69,13 +69,19 @@
                 var imagesWithoutGrouping = [];
                 var listAllImages = function (all) {
                     topImages = all ? topImages : [];
-                    Docker.listAllImages(all ? {all: true, cache: true} : {cache: true}).then(function (images) {
+                    $q.all([
+                        Docker.listAllImages(all ? {all: true, cache: true} : {cache: true}),
+                        Docker.listHosts({prohibited: true})
+                    ]).then(function (result) {
+                        var images = result[0] || [];
+                        var hosts = result[1] || [];
                         images = images.filter(function (image) {
                             if (image.suppressErrors) {
                                 $scope.unreachableHosts = image.suppressErrors;
                             }
                             return !image.suppressErrors && (!hostId || hostId === image.hostId);
                         });
+                        $scope.imagesFilter = Docker.getHostFilter(hostId, hosts);
                         images.forEach(function (image) {
                             image.ShorId = image.Id.slice(0, 12);
                             if (all) {
