@@ -635,7 +635,21 @@ exports.init = function execute(log, config, done) {
                 if (error) {
                     return callback(error);
                 }
-                Machine.Create(call, options, callback);
+                Machine.Create(call, options, function (err, result) {
+                    if (!err && result && result.id && result.state === 'running') {
+                        var cloud = call.cloud.separate(call.data.datacenter);
+                        cloud.createFwRule({
+                            enabled: true,
+                            rule: 'FROM any TO vm ' + result.id + ' ALLOW tcp (PORT 4242 AND PORT 4243 AND PORT 5000)',
+                            description: 'Default Docker Host rule'
+                        }, function (err) {
+                            if (err) {
+                                call.log.error(err);
+                            }
+                        });
+                    }
+                    callback(err, result);
+                });
             });
         }
 
