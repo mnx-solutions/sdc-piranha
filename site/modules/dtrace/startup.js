@@ -109,9 +109,16 @@ var dtrace = function execute() {
                 if (error) {
                     return call.done(error);
                 }
+                // Will make a 5 attempts if host status is unreachable
+                // When host just created, it needs some time to be available via ping
+                var attemptsCount = 5;
                 var pingHost = function () {
                     client.ping(function (err) {
                         if (err) {
+                            if (attemptsCount > 0) {
+                                attemptsCount -= 1;
+                                return setTimeout(pingHost, 5000);
+                            }
                             return call.done(null, 'unreachable');
                         }
                         call.done(null, 'completed');
