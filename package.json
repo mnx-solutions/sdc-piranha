@@ -49,7 +49,11 @@
     "ws": "^0.7.1",
     "zuora-rest": "^0.1.7"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "gulp-csslint": "^0.1.4",
+    "gulp-csscomb": "^3.0.0-4",
+    "gulp-savefile": "^0.1.1"
+  },
   "optionalDependencies": {},
   "engines": {
     "node": ">=0.10.0"
