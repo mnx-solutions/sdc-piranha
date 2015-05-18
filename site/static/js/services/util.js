@@ -153,6 +153,15 @@ window.JP.main.service('util', ['$rootScope',
             }
             return a;
         };
+
+        service.getNr = function (el) {
+            el = String(el).replace(/,/g, '');
+            if (!el || isNaN(el)) {
+                return false;
+            }
+            return Number(el);
+        }
+
         return service;
     }]
 );

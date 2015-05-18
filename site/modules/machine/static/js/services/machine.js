@@ -613,6 +613,21 @@
             return jobCall;
         };
 
+        service.waitForCreatingMachinesToFinish = function (callback) {
+            service.listAllMachines().then(function (machines) {
+                var hasCreating = machines.some(function (machine) {
+                    return machine.state === 'creating';
+                });
+                if (hasCreating) {
+                    setTimeout(function () {
+                        service.waitForCreatingMachinesToFinish(callback);
+                    }, 1000);
+                } else {
+                    callback(machines);
+                }
+            });
+        };
+
         function bindCollectionCRUD(collectionName) {
             var upperCollectionName = collectionName.charAt(0).toUpperCase() + collectionName.slice(1);
 

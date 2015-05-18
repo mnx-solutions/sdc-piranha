@@ -383,7 +383,7 @@
                                                 function () {
                                                     var provisionBundle = $rootScope.commonConfig('provisionBundle');
                                                     if (provisionBundle) {
-                                                        provisionBundle.allowCreate = true;
+                                                        provisionBundle.ready = true;
                                                     }
                                                     returnCb(true);
                                                 }

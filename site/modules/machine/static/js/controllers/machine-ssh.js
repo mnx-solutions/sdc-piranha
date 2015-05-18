@@ -18,7 +18,7 @@
             $scope.createInstance = function () {
                 var provisionBundle = $rootScope.commonConfig('provisionBundle');
                 if (provisionBundle) {
-                    provisionBundle.allowCreate = true;
+                    provisionBundle.ready = true;
                 }
                 $location.path('/compute/create/simple');
             };
