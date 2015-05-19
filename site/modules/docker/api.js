@@ -937,16 +937,13 @@ exports.init = function execute(log, config, done) {
 
     var timeout = api.timeout;
 
-    function updateRegistriesList(call, data, callback) {
+    function updateRegistriesList(call, callback) {
         setImmediate(callback);
 
         clearTimeout(timeout);
         timeout = setTimeout(function () {
             timeout = null;
-            data = data.filter(function (item) {
-                return api.registriesCache.hasOwnProperty(item.id);
-            });
-            api.saveRegistries(call, data, function () {});
+            api.saveRegistries(call, api.registriesCache.list(call), function () {});
         }, 500);
     }
 
@@ -962,7 +959,7 @@ exports.init = function execute(log, config, done) {
             });
             if (id) {
                 api.registriesCache.delete(call, id);
-                return updateRegistriesList(call, list, callback);
+                return updateRegistriesList(call, callback);
             } else {
                 callback(null);
             }
