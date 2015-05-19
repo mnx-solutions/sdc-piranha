@@ -235,7 +235,11 @@ var dockerAPIMethods = {
     getVersion: {
         auditType: 'docker',
         method: 'GET',
-        path: '/version'
+        path: '/version',
+        params: {
+            retries: '=',
+            timeout: '='
+        }
     },
     auth: {
         auditType: 'docker',
