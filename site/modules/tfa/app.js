@@ -66,7 +66,7 @@ module.exports = function execute(app, log, config) {
         req.params.url = req.params.url.replace(/\-/g, '/');
         // redirect to this url after we're done with the token
         var redirectUrl = (new Buffer(req.params.url, 'base64')).toString('ascii');
-        smartCloud.cloud({token: token, log: req.log}, function (error, cloud) {
+        smartCloud.cloud({token: token, log: req.log, session: req.session}, function (error, cloud) {
             var saveSessionToken = function (userObj, signupStep, tfaSecret) {
                 req.session.userId = userObj.id;
                 req.session.userName = userObj.login;
