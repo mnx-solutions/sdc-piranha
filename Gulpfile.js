@@ -14,9 +14,6 @@ var concat = require('gulp-concat');
 var uglify = require('gulp-uglify');
 var cssmin = require('gulp-cssmin');
 var gzip = require('gulp-gzip');
-var cssLint = require('gulp-csslint');
-var cssComb = require('gulp-csscomb');
-var saveFile = require('gulp-savefile');
 
 var config = require('easy-config');
 var bunyan = require('bunyan');
@@ -538,6 +535,9 @@ gulp.task('serve', startHttpServer);
 
 gulp.task('precommit', function (done) {
     exec('git diff-index --name-only --diff-filter=AM HEAD -- | grep \'\.css$\'', function (error, result) {
+        var cssLint = require('gulp-csslint');
+        var cssComb = require('gulp-csscomb');
+        var saveFile = require('gulp-savefile');
         var files = result.split(/\n/).slice(0, -1);
 
         es.merge(
