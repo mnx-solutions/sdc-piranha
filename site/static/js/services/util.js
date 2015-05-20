@@ -1,8 +1,7 @@
 'use strict';
 
-window.JP.main.service('util', [
-
-    function () {
+window.JP.main.service('util', ['$rootScope',
+    function ($rootScope) {
         var service = {};
 
         service.isPrivateIP = function isPrivateIP(ip) {
@@ -148,6 +147,9 @@ window.JP.main.service('util', [
             angular.extend(a, params);
             if (isWS) {
                 a.protocol = a.protocol === 'http:' ? 'ws:' : 'wss:';
+                if ($rootScope.features.production === 'enabled') {
+                    a.port = params.port || $rootScope.wsPort;
+                }
             }
             return a;
         };
