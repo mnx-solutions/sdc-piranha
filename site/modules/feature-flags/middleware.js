@@ -19,6 +19,10 @@ module.exports = function featureFlagsMiddleware(req, res, next) {
         currentFeatures.slb = 'disabled';
     }
 
+    if (config.isProduction()) {
+        currentFeatures.production = 'enabled';
+        res.locals.jss.push('window.JP.set("wsPort", ' + (config.wsPort || 8443) + ')');
+    }
     res.locals.jss.push('window.JP.set("features", ' + JSON.stringify(currentFeatures || {}) + ')');
 
     return next();

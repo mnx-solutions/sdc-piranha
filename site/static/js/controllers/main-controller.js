@@ -16,6 +16,7 @@
 
         function ($scope, $rootScope, $route, $routeParams, $window, $$track, requestContext, $location, errorContext, localization, $http) {
             $rootScope.features = window.JP.get('features') || {};
+            $rootScope.wsPort = window.JP.get('wsPort') || 8443;
 
             $scope.windowTitle = 'Joyent Cloud';
 
