@@ -122,8 +122,8 @@
                                 var currentMemoryUsage = util.getReadableFileSize(cur.memory_stats.usage);
                                 var currentMemoryWorkingSet = util.getReadableFileSize(cur.memory_stats.limit);
                                 var memoryAbbreviation = currentMemoryWorkingSet.measure;
-                                y = currentMemoryUsage.value;
-                                y2 = currentMemoryWorkingSet.value;
+                                y = Number(currentMemoryUsage.value);
+                                y2 = Number(currentMemoryWorkingSet.value);
                                 if (cur.memory_stats.usage < cur.memory_stats.limit) {
                                     memoryAbbreviation = currentMemoryUsage.measure;
                                 }

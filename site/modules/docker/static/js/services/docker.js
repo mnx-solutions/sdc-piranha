@@ -523,8 +523,8 @@
                 var machineCores = machineInfo.cores || 1;
                 if (hostStats.spec['has_cpu'] && stats.length >= 2) {
                     var previousStats = stats[stats.length - 2];
-                    var rawUsage = currentStats.cpu.usage.total - previousStats.cpu.usage.total;
-                    var intervalInNs = (new Date(currentStats.timestamp) - new Date(previousStats.timestamp)) * 1000000;
+                    var rawUsage = currentStats.cpu_stats.cpu_usage.total_usage - previousStats.cpu_stats.cpu_usage.total_usage;
+                    var intervalInNs = (new Date(currentStats.read) - new Date(previousStats.read)) * 1000000;
 
                     cpuUsage = Math.round(((rawUsage / intervalInNs) / machineCores) * 100);
                     if (cpuUsage > 100) {
@@ -540,7 +540,7 @@
                         limit = machineMemory;
                     }
 
-                    memoryUsage = Math.round((currentStats.memory.usage / limit) * 100);
+                    memoryUsage = Math.round((currentStats.memory_stats.usage / limit) * 100);
                 }
             }
 
