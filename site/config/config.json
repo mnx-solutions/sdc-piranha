@@ -248,7 +248,6 @@
     "cdn": "yes",
     "docker": "yes",
     "dockerMemoryLimit": "yes",
-    "dockerExec": "no",
     "zendesk": "yes",
     "feedback": "yes",
     "blogEntries": "yes",
@@ -256,7 +255,8 @@
     "twitter": "yes",
     "googleAnalytics": "yes",
     "billing": "yes",
-    "sdcDocker": "no",
+    "dockerExec": "yes",
+    "sdcDocker": "yes",
     "dtrace": "yes"
   }
 }
