@@ -283,15 +283,11 @@ dialogModule.provider("$dialog", function(){
             window.addEventListener("popstate", function (e) {
                 dlg.close();
             });
-          if (typeof _gaq !== 'undefined') {
-            _gaq.push(["_trackEvent", "Dialog", "Open " + title]);
-          }
+          window.gaSend('event', 'Dialog', 'Open ' + title);
           return _originalOpen.apply(this, arguments);
         };
         dlg.close = function () {
-          if (typeof _gaq !== 'undefined') {
-            _gaq.push(["_trackEvent", "Dialog", "Close " + title]);
-          }
+          window.gaSend('event', 'Dialog', 'Close ' + title);
           return _originalClose.apply(this, arguments);
         };
         return dlg;

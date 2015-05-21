@@ -5,14 +5,10 @@
 
         return {
             event: function (category, action, label) {
-                if (typeof window._gaq !== 'undefined') {
-                    window._gaq.push(["_trackEvent", category, action, label || ""]);
-                }
+                window.gaSend('event', category, action, label || '');
             },
             page: function () {
-                if (typeof window._gaq !== 'undefined') {
-                    window._gaq.push(['_trackPageview', (window.location.pathname + '#!' + $location.path()).replace(/\/\//,"/")]);
-                }
+                window.gaSend('pageview', (window.location.pathname + '#!' + $location.path()).replace(/\/\//,"/"));
                 window.mktoMunchkinFunction(
                     'visitWebPage',
                     {
@@ -22,9 +18,7 @@
                 );
             },
             timing: function (category, variable, time) {
-                if (typeof window._gaq !== 'undefined') {
-                    window._gaq.push(['_trackTiming', category, variable, time]);
-                }
+                window.gaSend('timing', category, variable, time);
             },
             //create marketing lead in marketo
             marketing_lead: function (account) {

@@ -164,9 +164,7 @@
                         $rootScope.zenboxParams.requester_name = name;
                         window.Zenbox.init($rootScope.zenboxParams);
                         window.angular.element("#zenbox_tab").click(function () {
-                            if (typeof(window._gaq) !== "undefined") {
-                                window._gaq.push(["_trackEvent", "Window Open", "Zenbox Support"]);
-                            }
+                            window.gaSend('event', 'Window Open', 'Zenbox Support');
                         });
                     }
                 };
