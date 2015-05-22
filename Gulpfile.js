@@ -79,7 +79,7 @@ function startHttpServer(done) {
         next();
     });
     server.use(bodyParser.urlencoded({extended: false}));
-    server.use(bodyParser.json());
+    server.use(bodyParser.json({limit: '3mb'}));
     server.use(cookieParser());
 
     server.use(session({

@@ -31,7 +31,7 @@
                     'flamegraph': function (script) {
                         return '-n \'profile-97 /' +
                             (script.pid ? (script.execname ? 'execname == "' + script.pid + '"'  : 'pid == ' + script.pid) : 'arg1') +
-                            '/ { @[jstack(150, 8000)] = count(); } tick-60s { exit(0); }\''
+                            '/ { @[jstack(150, 8000)] = count(); } tick-30s { exit(0); }\''
                     }
                 };
 
@@ -53,6 +53,7 @@
                 var EXECNAME_PATTERN = /\$EXECNAME/g;
                 var FLAME_GRAPH_SCRIPT_NAME = 'syscall for process';
                 var UNAUTHORIZED_ERROR = 'UnauthorizedError';
+                var DTRACE_ERROR = 'DTrace error';
                 var getScriptsListType = 'all';
                 var websocket;
                 var type;
@@ -63,6 +64,9 @@
                         message = 'DTrace Instance "' + $scope.host.name + '" is currently unreachable.';
                         if (err.indexOf(UNAUTHORIZED_ERROR) !== -1 || err.indexOf('401') !== -1) {
                             message = 'DTrace certificates are invalid for Instance "' + $scope.host.name + '".';
+                        }
+                        if (err.indexOf(DTRACE_ERROR) !== -1) {
+                            message = err;
                         }
                     }
                     DTrace.reportError(message, 'websocket error: ' + err);
@@ -239,8 +243,8 @@
                                     } catch (ex) {
                                         errorMessage = 'Error parsing json for ' + $scope.title + '.';
                                     }
-                                    if (parsedResult.error || errorMessage) {
-                                        var err = parsedResult.error || errorMessage;
+                                    if (errorMessage || parsedResult.error) {
+                                        var err =  errorMessage || parsedResult.error;
                                         $scope.options.loading = $scope.isRunning = false;
                                         return errorCallback(err);
                                     } else {
