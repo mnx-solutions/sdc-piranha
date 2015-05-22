@@ -471,7 +471,7 @@ exports.init = function execute(log, config, done) {
             if (error) {
                 return callback(error, host);
             }
-            client.ping(function (error) {
+            client.getVersion({retries: false, timeout: 3000}, function (error) {
                 if (error &&
                     String(error.message || error).indexOf('Forbidden (This service') === 0) {
                     host.prohibited = true;
