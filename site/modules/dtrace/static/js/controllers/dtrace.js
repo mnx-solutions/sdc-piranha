@@ -88,7 +88,7 @@
                                 if ($scope.title !== TITLES.heatmap) {
                                     $scope.scriptName = FLAME_GRAPH_SCRIPT_NAME;
                                 }
-                                updateScripts();
+                                updateProcesses();
                                 $scope.loading = false;
                             }, function (error) {
                                 $scope.hosts = [];
@@ -110,7 +110,7 @@
                     }
                     return script;
                 };
-                var updateScripts = function () {
+                var updateProcesses = function () {
                     $scope.processes = null;
                     if (!$scope.scriptName) {
                         $scope.loadingHostProcesses = false;
@@ -142,19 +142,26 @@
                     getScriptsListType = 'default';
                 }
 
+                $scope.refreshScripts = function () {
+                    if ($scope.isRunning) {
+                        $scope.stop();
+                    }
+                    updateProcesses();
+                };
+
                 $scope.changeHost = function () {
                     $scope.host = $scope.hosts[$scope.selectedHostIndex];
                     if ($scope.host) {
                         if (processes[$scope.host.primaryIp]) {
                             $scope.processes = processes[$scope.host.primaryIp];
                         } else {
-                            updateScripts();
+                            updateProcesses();
                         }
                     }
                 };
 
                 $scope.changeScript = function () {
-                    updateScripts();
+                    updateProcesses();
                 };
 
                 function closeWebsocket() {

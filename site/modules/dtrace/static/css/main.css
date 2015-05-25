@@ -102,16 +102,25 @@
     width: 23%;
 }
 .heatmap-controls td.big {
-    width: 39.5%;
+    width: 35%;
 }
 .heatmap-controls td.triple {
-    width: 43.5%;
+    width: 40.5%;
+}
+.heatmap-controls td.smaller {
+    width: 4.5%;
+    min-width: 45px;
 }
 
 .heatmap-button {
     width: 100%;
     min-width: 100px;
     padding: 5px 0;
+}
+
+.refresh-btn {
+    padding: 6px 12px;
+    height: 30px;
 }
 
 .flamegraph svg {
