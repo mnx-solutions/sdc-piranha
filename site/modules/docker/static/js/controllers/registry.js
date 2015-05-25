@@ -79,7 +79,11 @@
                                             chunk.images.forEach(function (image) {
                                                 image.info = image.info || {};
                                                 imagesByName[image.name] = image;
-                                                Docker.getImageTags($scope.registry.id, image.name).then(function (tags) {
+                                                var registryId = $scope.registry.id;
+                                                if ($scope.registry.type === 'local') {
+                                                    registryId = $scope.registry.type;
+                                                }
+                                                Docker.getImageTags(registryId, image.name).then(function (tags) {
                                                     image.tags = tags || [];
                                                 }, function (err) {
                                                     return errorCallback(err.error || err);
@@ -91,8 +95,8 @@
                                             var image = imagesByName[chunk.name];
                                             image.loading = false;
                                             image.size = chunk.info.size;
-                                            image.layoutId = chunk.info.images[0].id;
                                             if (chunk.info.images && chunk.info.images[0]) {
+                                                image.layoutId = chunk.info.images[0].id;
                                                 image.created = new Date(chunk.info.images[0].created);
                                             }
                                         }
