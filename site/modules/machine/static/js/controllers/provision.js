@@ -859,7 +859,11 @@
                             $scope.networks.push(network);
                         }
                     });
-                    $scope.networks = $scope.networks.filter(function (e) {return e;});
+                    $scope.networks = $scope.networks.filter(function (net) {
+                        var pkg = $scope.selectedPackageInfo;
+                        return net && (pkg && pkg.name.substr(0, 3) === 't4-' || !net.hasOwnProperty('fabric') ||
+                            net.fabric !== true && net.public !== false);
+                    });
                 }
 
                 if ($scope.datacenterForNetworks === datacenter && $scope.networks.length > 0) {
