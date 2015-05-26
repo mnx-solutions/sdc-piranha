@@ -120,7 +120,8 @@
                         </div>
                     </div>
                     <div data-ng-show="!images.length && !imagesLoading">
-                        <div class="font-size16">You don't have any images</div>
+                        <div data-ng-show="registry.id != 'default' || registry.id == 'default' && registry.username.length != 0">You don't have any images</div>
+                        <div data-ng-show="registry.id == 'default' && registry.username.length == 0">Please add Docker Hub credentials to see your images.</div>
                     </div>
                 </div>
             </div>
