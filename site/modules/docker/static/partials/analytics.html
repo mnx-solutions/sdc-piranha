@@ -59,7 +59,7 @@
                  </select>
             </span>
             <p>Detailed analytics use pre-defined metrics to measure perfomance</p>
-            <button id="button-start" class="btn orange start-analytics-btn" data-ng-click="createDefault()" data-ng-disabled="!current.host || !containers.length">Start Analysis</button>
+            <button id="button-start" class="btn orange start-analytics-btn" data-ng-click="createDefault()" data-ng-disabled="!current.host || !containers.length || isSocketOpening">Start Analysis</button>
             <p class="opt-title">Analytics Options:</p>
             <button class="btn options-ctrl effect-orange-button" data-ng-click="deleteAll()" data-ng-disabled="!canDelete()">Delete All</button>
             <button class="btn options-ctrl effect-orange-button" data-ng-click="create()" data-ng-disabled="!current.metric">Create</button>

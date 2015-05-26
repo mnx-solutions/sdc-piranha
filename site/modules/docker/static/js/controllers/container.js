@@ -50,7 +50,7 @@
                 $scope.graphs = $scope.graphs || adviserGraph.init();
                 $scope.graphs = adviserGraph.updateValues($scope.graphs, {stats: [stats]});
 
-                var phase = $scope.$root.$$phase;
+                var phase = $scope.$root && $scope.$root.$$phase;
                 if (phase !== '$apply' && phase !== '$digest') {
                     $scope.$apply();
                 }

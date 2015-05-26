@@ -286,6 +286,44 @@ exports.init = function execute(log, config, done) {
     createApi(log, apiMethods.registry, Registry.prototype);
 
     createApi(log, apiMethods.index, Index.prototype);
+
+    api.convertToDockerStats = function (data) {
+        data = data.stats[0];
+        var cpuStats = data.cpu;
+        delete data.cpu;
+        var memStats = data.memory;
+        delete data.memory;
+        data.read = data.timestamp;
+        delete data.timestamp;
+
+        data['cpu_stats'] = {
+            'cpu_usage': {
+                'total_usage': cpuStats.usage.total,
+                'percpu_usage': cpuStats.usage['per_cpu_usage'],
+                'usage_in_usermode': cpuStats.usage.user
+            },
+            'system_cpu_usage': cpuStats.usage.system
+        };
+        data['memory_stats'] = {
+            'usage': memStats.usage,
+            'limit': memStats['working_set']
+        };
+        return data;
+    };
+
+    Docker.prototype._hostUtilization = Docker.prototype.hostUtilization;
+    Docker.prototype.hostUtilization = function (options, callback) {
+        this._hostUtilization(options, function (error, result) {
+            if (error) {
+                return callback(error);
+            }
+            result.stats.forEach(function (data, index, stats) {
+                stats[index] = api.convertToDockerStats({stats: [data]});
+            });
+            callback(null, result);
+        });
+    };
+
     /**
      * Authorize, and get token
      * curl -i -H'X-Docker-Token: true' https://index.docker.io/v1/repositories/google/cadvisor/images

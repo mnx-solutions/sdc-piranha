@@ -21,6 +21,7 @@
             var hostId = requestContext.getParam('hostid');
             var containerAnalysys = null;
             var hostStats = null;
+            var statsSocket;
             $scope.cadvisorUnavailable = false;
 
             $scope.hostId = hostId;
@@ -125,34 +126,41 @@
             };
 
             var updateContainerStats = function (data, id, callback) {
-                if (id) {
-                    data.options.id = id;
-                }
                 if (id !== containerAnalysys || data.host.primaryIp !== hostStats) {
                     return false;
                 }
-                Docker[id ? 'containerUtilization' : 'hostUtilization'](data).then(function (containerStats) {
-                    if (containerStats.spec && containerStats.stats && containerStats.stats.length && $scope.canDelete()) {
-                        if (id === containerAnalysys && data.host.primaryIp === hostStats) {
-                            $scope.graphs = adviserGraph.updateValues($scope.graphs, containerStats);
+                if (!id) {
+                    Docker.hostUtilization(data).then(function (containerStats) {
+                        if (containerStats.spec && containerStats.stats && containerStats.stats.length && $scope.canDelete()) {
+                            if (id === containerAnalysys && data.host.primaryIp === hostStats) {
+                                $scope.graphs = adviserGraph.updateValues($scope.graphs, {stats: [containerStats.stats[0]]});
+                            }
                         }
-                    }
-                    callback();
-                }, function (err) {
-                    callback(err);
-                });
+                        callback();
+                    }, function (err) {
+                        callback(err);
+                    });
+                }
             };
 
             var clearGraphs = function () {
                 $scope.deleted = true;
                 clearInterval(timerUpdateStats);
                 timerUpdateStats = 0;
-                $scope.graphs = null;
+                $scope.graphs = {};
                 $scope.deleted = false;
             };
 
+            function checkCadvisor(error, machine, container) {
+                if (error === 'CAdvisor unavailable' || container && container.Status.indexOf('Up') === -1 ||
+                    machine && machine.state !== 'running') {
+                    clearGraphs();
+                    $scope.cadvisorUnavailable = true;
+                }
+            }
+
             var statsTimerControl = function () {
-                if (timerUpdateStats && $scope.graphs) {
+                if (timerUpdateStats && $scope.canDelete()) {
                     clearGraphs();
                 }
                 containerAnalysys = $scope.current.container;
@@ -160,16 +168,46 @@
                 timerUpdateStats = setInterval(function () {
                     if ($scope.current.host && ($location.path().search('/docker/analytics') !== -1) && !$scope.deleted && $scope.canDelete()) {
                         updateContainerStats({host: {primaryIp: $scope.current.host, state: 'running'}, options: {'num_stats': 2}}, $scope.current.container, function (error) {
-                            if (error === 'CAdvisor unavailable') {
-                                clearGraphs();
-                                $scope.cadvisorUnavailable = true;
-                            }
+                            checkCadvisor(error);
                         });
                     } else {
                         clearGraphs();
                     }
                 }, 1000);
             };
+
+            function getContainerStats() {
+                $scope.isSocketOpening = true;
+                if (timerUpdateStats && $scope.canDelete()) {
+                    clearGraphs();
+                }
+                if (statsSocket) {
+                    statsSocket.close();
+                }
+                var machine = $scope.hosts.find(function (host) {
+                    return host.id === $scope.hostId;
+                });
+                var container = $scope.containers.find(function (container) {
+                    return container.Id === containerId;
+                });
+                checkCadvisor(null, machine, container);
+                if ($scope.cadvisorUnavailable) {
+                    $scope.isSocketOpening = false;
+                    return;
+                }
+                containerAnalysys = containerId;
+                hostStats = $scope.current.host;
+                statsSocket = Docker.getContainerStats({host: machine, containerId: containerId}, function (containerStats) {
+                    timerUpdateStats = 1;
+                    $scope.isSocketOpening = false;
+                    $scope.graphs = adviserGraph.updateValues($scope.graphs, {stats: [containerStats]});
+
+                    var phase = $scope.$root && $scope.$root.$$phase;
+                    if (phase !== '$apply' && phase !== '$digest') {
+                        $scope.$apply();
+                    }
+                });
+            }
 
             $scope.createDefault = function () {
                 $scope.cadvisorUnavailable = false;
@@ -183,7 +221,12 @@
 
                 if (!timerUpdateStats) {
                     $scope.graphs = adviserGraph.init($scope.defaultMetrics);
-                    statsTimerControl();
+
+                    if (containerId) {
+                        getContainerStats();
+                    } else {
+                        statsTimerControl();
+                    }
                 } else {
                     $scope.defaultMetrics.forEach(function (metric) {
                         if (metric && !$scope.graphs[metric]) {
@@ -211,13 +254,23 @@
                     $scope.graphs = ng.extend($scope.graphs, adviserGraph.init([metric]));
                 }
                 if (!timerUpdateStats) {
-                    statsTimerControl();
+                    if (containerId) {
+                        getContainerStats();
+                    } else {
+                        statsTimerControl();
+                    }
                 }
             };
 
             $scope.canDelete = function () {
                 return $scope.graphs && Object.keys($scope.graphs).length;
             };
+
+            $scope.$on('$destroy', function () {
+                if (statsSocket) {
+                    statsSocket.close();
+                }
+            });
         }
     ]);
 }(window.angular, window.JP.getModule('docker')));

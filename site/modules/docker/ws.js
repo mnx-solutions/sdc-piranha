@@ -106,30 +106,6 @@ module.exports = function (app) {
         socket.on('close', req.connection.destroy.bind(req.connection));
     }
 
-    function convertToDockerStats(data) {
-        data = data.stats[0];
-        var cpuStats = data.cpu;
-        delete data.cpu;
-        var memStats = data.memory;
-        delete data.memory;
-        data.read = data.timestamp;
-        delete data.timestamp;
-
-        data['cpu_stats'] = {
-            'cpu_usage': {
-                'total_usage': cpuStats.usage.total,
-                'percpu_usage': cpuStats.usage['per_cpu_usage'],
-                'usage_in_usermode': cpuStats.usage.user
-            },
-            'system_cpu_usage': cpuStats.usage.system
-        };
-        data['memory_stats'] = {
-            'usage': memStats.usage,
-            'limit': memStats['working_set']
-        };
-        return JSON.stringify(data);
-    }
-
     function processCadvisorStats(client, data, socket) {
         var errorCount = 3;
         var interval = setInterval(function () {
@@ -142,7 +118,7 @@ module.exports = function (app) {
                     return;
                 }
 
-                send(socket, convertToDockerStats(stats));
+                send(socket, JSON.stringify(Docker.convertToDockerStats(stats)));
             });
         }, 1000);
         function end() {
