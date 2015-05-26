@@ -585,7 +585,7 @@ exports.init = function execute(log, config, done) {
                 subuserObjName: subuserObjName,
                 path: path,
                 listRules: listRules
-            }
+            };
             subuser.setupSubuserForManta(call, client, options, function (err) {
                 callback(err);
             });
