@@ -24,7 +24,7 @@
         <div data-ng-repeat="(key, files) in filesTree" class="{{getColumnClass($index)}}" data-ng-class="{'column-folders': loadingFolder && (splittedCurrentPath.length == 2)}">
             <div class="files-box" data-ng-class="{'column-files': loadingFolder && (splittedCurrentPath.length == 2)}">
                 <div class="loading-medium-transparent" data-ng-show="!refreshingProgress && refreshingFolder && $last"></div>
-                <div class="files-tree">
+                <div class="files-tree" data-ng-hide="!refreshingProgress && refreshingFolder && $last">
                     <table class="upload-bar">
                         <tr data-ng-repeat="(fileId, progress) in uploads" data-ng-show="progress.filePath == key">
                             <td>
