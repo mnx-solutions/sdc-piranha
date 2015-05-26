@@ -41,10 +41,8 @@
                             </optgroup>
                         </select>
                     </td>
-                    <td class="smaller" data-ng-show="processes">
-                        <button data-ng-click="refreshScripts()" data-ng-disabled="loadingHostProcesses || processing" class="btn refresh-btn"><i class="glyphicon glyphicon-refresh"></i></button>
-                    </td>
-                    <td class="small">
+                    <td class="small" nowrap>
+                        <a class="btn light dpl-inline effect-orange-button refresh-btn" data-ng-show="processes" data-ng-disabled="loadingHostProcesses || processing" data-ng-click="refreshScripts()"><i class="glyphicon glyphicon-refresh"></i></a>
                         <button data-ng-click="start()" data-ng-disabled="loadingHostProcesses || !scriptName || processing" class="btn orange heatmap-button" data-ng-hide="isRunning">Start</button>
                         <button data-ng-click="stop()" class="btn orange heatmap-button" data-button-focus="true" data-ng-show="isRunning" data-ng-disabled="processing">Stop</button>
                     </td>

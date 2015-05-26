@@ -96,7 +96,8 @@
     padding: 0 1% 10px 0;
 }
 .heatmap-controls td.small {
-    width: 9.5%;
+    width: 13.5%;
+    font-size: 14px;
 }
 .heatmap-controls td.medium {
     width: 23%;
@@ -107,13 +108,8 @@
 .heatmap-controls td.triple {
     width: 40.5%;
 }
-.heatmap-controls td.smaller {
-    width: 4.5%;
-    min-width: 45px;
-}
 
 .heatmap-button {
-    width: 100%;
     min-width: 100px;
     padding: 5px 0;
 }
