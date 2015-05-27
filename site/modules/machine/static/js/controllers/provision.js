@@ -39,7 +39,7 @@
                 CHOOSE_IMAGE: 'Choose Image',
                 SELECT_PACKAGE: 'Select Package',
                 REVIEW: 'Review',
-                ACCOUNT: 'Account Information', 
+                ACCOUNT: 'Account Information',
                 SSH: 'SSH Key'
             };
 
@@ -299,7 +299,7 @@
                     }
 
                     if (provisionBundle) {
-                        if (!provisionBundle.simpleImage) {  
+                        if (!provisionBundle.simpleImage) {
                             PROVISION_BUNDLE_KEYS.forEach(function (key) {
                                 $scope[key] = provisionBundle[key];
                             });
@@ -578,7 +578,7 @@
                     $scope.selectedDataset = dataset;
                     $scope.filterModel.searchText = '';
                     dataset.visibility = dataset.public ? 'public' : 'custom';
-                    
+
                     if ($scope.packages && dataset['license_price']) {
                         var lPrice = util.getNr(dataset['license_price']);
                         if (lPrice !== false) {
@@ -621,14 +621,14 @@
                         var filterValues = ng.copy(FilterValues);
                         $scope.packages.forEach(function (p) {
                             if ($scope.filterPackages()(p) && p.price) {
-                                function addFilverValue(key, value) {
+                                var addFilterValue = function(key, value) {
                                     if (filterValues[key].indexOf(value) === -1) {
                                         filterValues[key].push(value);
                                     }
                                 }
-                                addFilverValue('vcpus', Number(p.vcpus));
-                                addFilverValue('memory', p.memory);
-                                addFilverValue('disk', p.disk);
+                                addFilterValue('vcpus', Number(p.vcpus));
+                                addFilterValue('memory', p.memory);
+                                addFilterValue('disk', p.disk);
                             }
                         });
                         $scope.filterValues = filterValues;

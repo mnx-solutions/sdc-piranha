@@ -31,6 +31,7 @@
             var versions;
             var selectedVersions;
             var manyVersions;
+            var limitsLoadingJob = null;
 
             function clearVersionsObjects () {
                 listVersions = ng.copy(commonVersions);
@@ -41,11 +42,15 @@
             clearVersionsObjects();
 
             var getUserLimits = function () {
-                var deferred = $q.defer();
+                if (limitsLoadingJob) {
+                    return limitsLoadingJob.promise;
+                }
+
+                limitsLoadingJob = $q.defer();
                 Limits.getUserLimits(function (error, result) {
                     if (error) {
                         PopupDialog.errorObj(error);
-                        deferred.resolve([]);
+                        limitsLoadingJob.resolve([]);
                     } else {
                         limits = result;
                         Machine.machine().forEach(function (machine) {
@@ -58,12 +63,12 @@
                                 });
                             });
                         });
-                        deferred.resolve(limits);
+                        limitsLoadingJob.resolve(limits);
                     }
                 });
 
-                return deferred.promise;
-            }
+                return limitsLoadingJob.promise;
+            };
 
             var checkLimit = function (dataset, loaded) {
                 if (limits.length || loaded) {
@@ -75,7 +80,7 @@
                         return checkLimit(dataset, true);
                     });
                 }
-            }
+            };
 
             service.getCreatedMachines = function () {
                 var deferred = $q.defer();
@@ -295,8 +300,8 @@
                         }
                     });
                     deferred.resolve(networks);
-                };
-                
+                }
+
                 if (datacenterForNetworks === datacenter && networks.length > 0) {
                     configureNetworks(networks);
                 } else {
