@@ -102,6 +102,7 @@
                                 return container.hostId === hostId;
                             });
                         }
+                        $scope.containersFilter = Docker.getHostFilter(hostId, hosts);
                         $scope.containers = containers.map(function (container) {
                             container.state = getContainerState(container, false);
                             return container;

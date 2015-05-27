@@ -796,6 +796,15 @@
             return job.promise;
         };
 
+        service.getTagFilter = function (tag, items) {
+            if (tag && items.length) {
+                return {
+                    name: tag
+                };
+            }
+            return false;
+        };
+
         return service;
     }]);
 }(window.angular, window.JP.getModule('Machine')));

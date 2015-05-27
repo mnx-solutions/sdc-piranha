@@ -1,7 +1,12 @@
 <div data-ng-controller="Machine.IndexController" class="container-fluid container-position">
     <div class="machines row" data-ng-show="machines.length || query">
         <div class="row">
-            <h3 class="page-title white-line">Instances</h3>
+            <h3 class="page-title white-line">
+                Instances
+                <span class="text-large" ng-if="machinesFilter">
+                    tagged with "{{machinesFilter.name}}"
+                </span>
+            </h3>
             <div class="page-title-btn">
                 <a data-ng-click="gotoCreatePage()">
                     <button type="button" class="btn btn-big orange text-to-left"><i class="plus-btn-icon"></i>Create

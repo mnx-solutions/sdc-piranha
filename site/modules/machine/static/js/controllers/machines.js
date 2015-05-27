@@ -26,12 +26,21 @@
             $scope.datasetsInfo = {};
 
             // Pagination
-            $scope.machines = Machine.machine();
+            function loadMachines() {
+                var type = requestContext.getParam('type') || '';
+                $scope.machines = Machine.machine();
+                if (type) {
+                    $scope.machines = $scope.machines.filter(function (machine) {
+                        return machine.tags.JPC_tag === type;
+                    });
+                    $scope.forceTabActive = 'all';
+                }
+                $scope.machinesFilter = Machine.getTagFilter(type, $scope.machines);
+            }
+            loadMachines();
+            $scope.$on('$routeChangeSuccess', loadMachines);
             $scope.packages = Package.package();
             $scope.gotoCreatePage = Machine.gotoCreatePage;
-            if (currentLocation === '/compute/dockerHost') {
-                $scope.forceTabActive = 'all';
-            }
 
             if ($scope.features.freetier === 'enabled') {
                 FreeTier.freetier().then(function (data) {
@@ -94,10 +103,6 @@
                     Machine.clearCacheErrors();
                 }
             });
-
-            if (currentLocation === '/compute/dockerHost') {
-                $scope.query = '"JPC_tag":"DockerHost"';
-            }
 
             $scope.noCheckBoxChecked = function() {
                 PopupDialog.noItemsSelectedError('instance');

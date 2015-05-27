@@ -3,7 +3,12 @@
         <ul class="breadcrumb">
             <li><a href="#!/docker">Docker</a></li>
         </ul>
-        <h3 class="page-title white-line">Docker Images</h3>
+        <h3 class="page-title white-line">
+            Docker Images
+            <span class="text-large" ng-if="imagesFilter">
+                on {{imagesFilter.host}} "{{imagesFilter.name}}"
+            </span>
+        </h3>
         <div class="page-title-btn">
             <button data-ng-disabled="pullDialogOpening" data-ng-click="searchImages()" type="button" class="btn btn-big orange text-to-left"><i class="plus-btn-icon"></i>Pull Images</button>
             <button data-ng-click="createImage()" type="button" class="btn btn-big orange text-to-left"><i class="plus-btn-icon"></i>Create Image</button>
