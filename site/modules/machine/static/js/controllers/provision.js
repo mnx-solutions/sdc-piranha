@@ -492,7 +492,7 @@
                             selectNetwork(network.id);
                         }
                     });
-                    $scope.networks = $scope.networks.filter(function (net) {
+                    $scope.networks = networks.filter(function (net) {
                         var pkg = $scope.selectedPackageInfo;
                         return net && (pkg && pkg.name.substr(0, 3) === 't4-' || !net.hasOwnProperty('fabric') ||
                                 net.fabric !== true && net.public !== false);
