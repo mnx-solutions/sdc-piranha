@@ -357,6 +357,11 @@ a.orange
 }
 
 /*end tiles*/
+.dashboard-ad iframe
+{
+    min-height: 300px;
+    width: 510px;
+}
 .promo-ad
 {
     padding: 36px 44px;

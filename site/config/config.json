@@ -95,6 +95,9 @@
       "secret": ""
     }
   },
+  "marketing": {
+    "baseAdUrl": ""
+  },
   "polling": {
     "machineTags": 5000,
     "machineTagsTimeout": 120000,

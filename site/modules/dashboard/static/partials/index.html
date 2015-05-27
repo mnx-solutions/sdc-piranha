@@ -227,7 +227,8 @@
 
         <div class="dpl-inline">
             <div class="pull-left first-column" data-ng-show="features.privateSdc != 'enabled'">
-                <div class="portlet-body promo-ad">
+                <div data-ng-show="dashboardAd" class="dashboard-ad" data-ng-bind-html="dashboardAd"></div>
+                <div data-ng-show="!dashboardAd" class="portlet-body promo-ad">
                     <h1>Introducing Triton</h1>
                     <p>Designed from the ground up to radically simplify container deployments in production, at scale, with software-defined networking, and bare-metal performance. <a href="https://www.joyent.com/" target="_blank">Learn more</a></p>
                 </div>
