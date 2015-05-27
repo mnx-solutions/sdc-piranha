@@ -1,11 +1,11 @@
 'use strict';
 
 (function (ng, app) {
-    app.controller('Dashboard.IndexController', ['$scope', '$q', 'requestContext', 'Account', 'Zendesk', 'Machine',
+    app.controller('Dashboard.IndexController', ['$scope', '$q', '$sce', 'requestContext', 'Account', 'Zendesk', 'Machine',
         'localization', '$http', '$cookies', 'slb.Service', '$rootScope', 'Support', 'fileman', 'Utilization', 'util',
         'Datacenter', 'FreeTier', '$location', 'Docker', 'Storage',
 
-        function ($scope, $q, requestContext, Account, Zendesk, Machine, localization, $http, $cookies, slbService,
+        function ($scope, $q, $sce, requestContext, Account, Zendesk, Machine, localization, $http, $cookies, slbService,
                   $rootScope, Support, fileman, Utilization, util, Datacenter, FreeTier, $location, Docker, Storage) {
             localization.bind('dashboard', $scope);
             requestContext.setUpRenderContext('dashboard.index', $scope);
@@ -37,6 +37,15 @@
 
             // get campaign id from the cookie
             $scope.campaignId = ($cookies.campaignId || 'default');
+            var marketingConfig = window.JP.get('marketing');
+            var campaignId = $scope.campaignId;
+            if (marketingConfig.campaigns.indexOf(campaignId) === -1) {
+                campaignId = 'default';
+            }
+            if (marketingConfig.baseAdUrl) {
+                var dashboardAdUrl = marketingConfig.baseAdUrl + '/' + campaignId + '.html';
+                $scope.dashboardAd = $sce.trustAsHtml('<iframe src="' + dashboardAdUrl + '"></iframe>');
+            }
 
             if ($rootScope.features.blogEntries === 'enabled') {
                 window['dashboard_rss_feed_callback'] = function (data) {
