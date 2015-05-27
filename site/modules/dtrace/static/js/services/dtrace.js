@@ -69,13 +69,6 @@
                 }).promise;
             };
 
-            service.saveFlameGraph = function (data) {
-                return serverTab.call({
-                    name: 'SaveFlameGraph',
-                    data: {svg: data.svg, id: data.id}
-                }).promise;
-            };
-
             service.reportError = function (errMessage, logMessage) {
                 logMessage = logMessage || errMessage;
                 PopupDialog.errorObj(errMessage);
