@@ -332,19 +332,6 @@
                     });
                 }
 
-                function getMessageBody(messages, containers, action) {
-                    var message = messages[containers.length > 1 ? 'plural' : 'single'];
-                    var cAdvisorMessage = '';
-                    if (containers.length === 1) {
-                        cAdvisorMessage = 'Docker analytics will be unavailable. Are you sure you want to ' + action + ' it?';
-                        message = isCAdvisorAction(containers[0], action) ? cAdvisorMessage : message;
-                    } else {
-                        cAdvisorMessage = 'Some of these containers are cAdvisor and Docker analytics will be unavailable after you ' + action + ' it. Are you sure you want to continue?';
-                        message = containers.some(function (container) { return isCAdvisorAction(container, action); }) ? cAdvisorMessage : message;
-                    }
-                    return message;
-                }
-
                 function makeContainerAction(action, messageTitle, messageBody) {
                     if ($scope.checkedItems.length) {
                         if (action === 'createImage' && $scope.checkedItems.length === 1) {
@@ -362,7 +349,7 @@
                             localization.translate(
                                 $scope,
                                 null,
-                                getMessageBody(messageBody, $scope.checkedItems, action)
+                                messageBody[$scope.checkedItems > 1 ? 'plural' : 'single']
                             ), function () {
                                 processContainerAction(action);
                             }

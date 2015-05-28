@@ -498,62 +498,6 @@
             return job.promise;
         };
 
-        service.hostUtilization = function (options) {
-            options = ng.extend({options: {'num_stats': 2}}, options);
-            var job = serverTab.call({
-                name: 'DockerHostUtilization',
-                data: options,
-                done: function (err, data) {
-                    if (err) {
-                        return false;
-                    }
-                    return data;
-                }
-            });
-            return job.promise;
-        };
-
-        function getOverallUsage(machineInfo, hostStats) {
-            var cpuUsage = 0;
-            var memoryUsage = 0;
-            var stats = hostStats && hostStats.stats;
-            if (stats && stats.length) {
-                var currentStats = stats[stats.length - 1];
-
-                var machineCores = machineInfo.cores || 1;
-                if (hostStats.spec['has_cpu'] && stats.length >= 2) {
-                    var previousStats = stats[stats.length - 2];
-                    var rawUsage = currentStats.cpu_stats.cpu_usage.total_usage - previousStats.cpu_stats.cpu_usage.total_usage;
-                    var intervalInNs = (new Date(currentStats.read) - new Date(previousStats.read)) * 1000000;
-
-                    cpuUsage = Math.round(((rawUsage / intervalInNs) / machineCores) * 100);
-                    if (cpuUsage > 100) {
-                        cpuUsage = 100;
-                    }
-                }
-
-                var machineMemory = machineInfo.memory * 1024 * 1024;
-                if (hostStats.spec['has_memory']) {
-                    // Saturate to the machine size.
-                    var limit = hostStats.spec.memory.limit;
-                    if (limit > machineMemory) {
-                        limit = machineMemory;
-                    }
-
-                    memoryUsage = Math.round((currentStats.memory_stats.usage / limit) * 100);
-                }
-            }
-
-            return {cpu: cpuUsage, memory: memoryUsage};
-        }
-
-        service.hostUsage = function (options) {
-            return service.hostUtilization(options).then(function (stats) {
-                stats = Array.isArray(stats) ? stats.slice(-1)[0] : stats;
-                return getOverallUsage(options.host, stats);
-            });
-        };
-
         service.searchImage = function (registryId, term) {
             return createCall('searchImage', {registry: registryId, options: {q: term}});
         };

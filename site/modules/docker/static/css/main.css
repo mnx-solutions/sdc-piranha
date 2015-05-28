@@ -1261,6 +1261,16 @@ span .tag-editor {
     top: 20px;
     left: 30%;
 }
+
+.chart-loading {
+    position: absolute;
+    top: 15px;
+    left: 15px;
+    width: 30px;
+    height: 30px;
+    background: url("../../../../main/static/img/icon-loading-medium-tr.gif") no-repeat 50% 50%;
+}
+
 .chart-wrapper {
     position: absolute;
     right: 20px;

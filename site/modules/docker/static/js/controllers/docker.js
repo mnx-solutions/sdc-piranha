@@ -14,8 +14,9 @@
         'Docker',
         'Account',
         'Storage',
+        'CloudAnalytics',
 
-        function ($scope, $rootScope, $q, requestContext, localization, $location, Datacenter, Image, PopupDialog, Docker, Account, Storage) {
+        function ($scope, $rootScope, $q, requestContext, localization, $location, Datacenter, Image, PopupDialog, Docker, Account, Storage, CloudAnalytics) {
             localization.bind('docker.index', $scope);
             requestContext.setUpRenderContext('docker.index', $scope, {
                 title: localization.translate(null, 'docker', 'See my Joyent Docker Instances')
@@ -89,20 +90,49 @@
                 });
             };
 
+            var loadMachineAnalytics = function (machine, retries) {
+                if (!retries) {
+                    return PopupDialog.errorObj(new Error('Error retrieving host analytics'));
+                }
+
+                CloudAnalytics.getValues({
+                    zoneId: machine.id,
+                    datacenter: $scope.data.datacenter,
+                    get start() {
+                        return Math.floor(new Date() / 1000) - 30;
+                    }
+                }, function (err, value) {
+                    function retry () {
+                        setTimeout(function () {loadMachineAnalytics(machine, retries - 1)}, 1000);
+                    }
+
+                    try {
+                        var memoryData = [value[0].value.value, value[1].value.value];
+                        memoryData.sort();
+                        machine.memoryLoad = Math.round((memoryData[0] / memoryData[1]) * 100);
+                        if (!machine.memoryLoad) {
+                            return retry();
+                        }
+                    } catch (ex) {
+                        return retry();
+                    }
+                });
+            };
+
             var getDockerHostAnalytics = function () {
                 $scope.dockerMachines.forEach(function (machine) {
-                    if (machine.prohibited) {
+                    if (machine.prohibited || machine.isSdc) {
                         return;
                     }
-                    Docker.hostUsage({host: machine, wait: true, suppressErrors: true}).then(function (usage) {
-                        usage = Array.isArray(usage) ? usage.slice(-1)[0] : usage;
-                        machine.cadvisorUnavailable = false;
-                        machine.cpuLoad = usage.cpu + '%';
-                        machine.memoryLoad = usage.memory + '%';
-                    }, function (error) {
-                        if (error === 'CAdvisor unavailable') {
-                            machine.cadvisorUnavailable = true;
+                    CloudAnalytics.describeAndCreateInstrumentation({
+                        datacenter: $scope.data.datacenter,
+                        zoneId: machine.id,
+                        configs: ['memory']
+                    }, function (err, data) {
+                        if (err) {
+                            return PopupDialog.errorObj(err);
                         }
+                        loadMachineAnalytics(machine, 10);
                     });
                 });
             };

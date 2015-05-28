@@ -117,27 +117,19 @@
                     }, errorCallback);
                 }
 
-                if ($scope.container.name === 'cAdvisor' && ['stop', 'pause', 'kill', 'remove'].indexOf(action) !== -1) {
-                    PopupDialog.confirm(
-                        'Please confirm that you want to ' + action + ' this container.',
-                        'Docker analytics will be unavailable. Are you sure you want to ' + action + ' it?',
-                        doAction
-                    );
-                } else {
-                    PopupDialog.confirm(
-                        localization.translate(
-                            $scope,
-                            null,
-                            'Confirm: ' + capitalize(action) + ' container'
-                        ),
-                        localization.translate(
-                            $scope,
-                            null,
-                            'Please confirm that you want to ' + action + ' this container.'
-                        ),
-                        doAction
-                    );
-                }
+                PopupDialog.confirm(
+                    localization.translate(
+                        $scope,
+                        null,
+                        'Confirm: ' + capitalize(action) + ' container'
+                    ),
+                    localization.translate(
+                        $scope,
+                        null,
+                        'Please confirm that you want to ' + action + ' this container.'
+                    ),
+                    doAction
+                );
             };
 
             $scope.$on('$destroy', function () {

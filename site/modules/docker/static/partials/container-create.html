@@ -40,15 +40,15 @@
                             <div class="datacenter-info-wrapper dropdown-select" ng-click="setNotation('HOST')">
                                 <div class="datacenter-info datacenter-name">{{host.datacenter}} / {{host.name}}</div>
                                 <div class="datacenter-info datacenter-statistic">
-                                     <div data-ng-hide="host.stats || host.cadvisorUnavailable">
+                                     <div data-ng-hide="host.stats || host.analyticsUnavailable">
                                         <div class="loading-medium-transparent"></div>
                                     </div>
-                                    <div data-ng-show="host.stats || host.cadvisorUnavailable">
+                                    <div data-ng-show="host.stats || host.analyticsUnavailable">
                                         <div data-ng-hide="host.isSdc" class="ubuntu-logo"></div>
-                                        <div class="progress-wrapper no-cadvisor" data-ng-show="host.cadvisorUnavailable">
-                                            <div data-ng-hide="host.isSdc">cAdvisor is unavailable</div>
+                                        <div class="progress-wrapper no-cadvisor" data-ng-show="host.analyticsUnavailable">
+                                            <div data-ng-hide="host.isSdc">Analytics unreachable</div>
                                         </div>
-                                        <div class="progress-wrapper" data-ng-hide="host.cadvisorUnavailable || host.isSdc">
+                                        <div class="progress-wrapper" data-ng-hide="host.analyticsUnavailable || host.isSdc">
                                             <div class="title">CPU</div>
                                             <div class="progress" title="{{host.cpuLoad}}">
                                                 <div class="progress-bar" ng-style="{width: host.cpuLoad}"></div>
