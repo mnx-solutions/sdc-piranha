@@ -103,7 +103,7 @@ exports.init = function execute(log, config, done) {
             });
         }
 
-        if (!certMgmt.checkCertificates(certificates)) {
+        if (!certMgmt.areCertificatesLost(certificates)) {
             return done(certificates);
         }
         certMgmt.generateCertificates(mantaClient, DEVTOOLS_MANTA_PATH, function (error, certificates) {

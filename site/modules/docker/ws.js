@@ -131,24 +131,21 @@ module.exports = function (app) {
 
     app.ws('/exec/:id', function (socket, req) {
         initConnection(socket, function (data) {
-            Docker.createClient({log: req.log, req: req}, data.host, function (error, client) {
-                data.execId = req.params.id;
-                execStart(client, data, socket);
-            });
-
+            var client = Docker.createClient({log: req.log, req: req}, data.host);
+            data.execId = req.params.id;
+            execStart(client, data, socket);
         });
     });
 
     app.ws('/stats/:id', function (socket, req) {
         initConnection(socket, function (data) {
-            Docker.createClient({log: req.log, req: req}, data.host, function (error, client) {
-                client.getVersion(function (error, info) {
-                    if (info.Version < '1.6.0') {
-                        processCadvisorStats(client, data, socket);
-                    } else {
-                        processDockerStats(client, req, data, socket);
-                    }
-                });
+            var client = Docker.createClient({log: req.log, req: req}, data.host);
+            client.getVersion(function (error, info) {
+                if (info.Version < '1.6.0') {
+                    processCadvisorStats(client, data, socket);
+                } else {
+                    processDockerStats(client, req, data, socket);
+                }
             });
         });
     });

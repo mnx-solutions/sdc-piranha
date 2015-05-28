@@ -80,25 +80,21 @@ module.exports = function (app) {
                         callback();
                     });
                 } else {
-                    Docker.createClient({req: req}, {primaryIp: ip, id: host}, function (error, client) {
+                    var dockerClient = Docker.createClient({req: req}, {primaryIp: ip, id: host});
+                    dockerClient.ping(function (error) {
                         if (error) {
-                            return callback(error);
+                            return callback(new Docker.DockerHostUnreachable({primaryIp: ip}));
                         }
-                        client.ping(function (error) {
-                            if (error) {
-                                return callback(new Docker.DockerHostUnreachable({primaryIp: ip}));
+                        dockerClient.logs({id: container, tail: 'all'}, function (err, response) {
+                            var logs = '';
+                            if (err) {
+                                return callback(err);
                             }
-                            client.logs({id: container, tail: 'all'}, function (err, response) {
-                                if (err) {
-                                    return callback(err);
-                                }
-                                var logs = '';
-                                if (response && response.length) {
-                                    logs = Docker.parseLogResponse(response);
-                                    res.write(logs);
-                                }
-                                callback();
-                            });
+                            if (response && response.length) {
+                                logs = Docker.parseLogResponse(response);
+                                res.write(logs);
+                            }
+                            callback();
                         });
                     });
                 }
