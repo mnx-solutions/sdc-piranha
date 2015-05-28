@@ -10,8 +10,9 @@
             'Docker',
             '$q',
             'PopupDialog',
+            '$filter',
             '$location',
-            function ($scope, $rootScope, requestContext, localization, Docker, $q, PopupDialog, $location) {
+            function ($scope, $rootScope, requestContext, localization, Docker, $q, PopupDialog, $filter, $location) {
                 localization.bind('docker', $scope);
                 requestContext.setUpRenderContext('docker.create', $scope, {
                     title: localization.translate(null, 'docker', 'Create Docker Container')
@@ -373,6 +374,7 @@
                                 return setImageData(image);
                             });
                             if ($scope.images.length > 0) {
+                                $scope.images = $filter('orderBy')($scope.images, 'name');
                                 $scope.container.Image = selectSource($scope.images, 'name');
                                 setTimeout(function () {
                                     window.jQuery('#imageSelect').select2('val', $scope.container.Image);
