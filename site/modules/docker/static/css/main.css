@@ -334,10 +334,6 @@ span.btn-success
     display: block;
     float: right;
     margin-top: 14px;
-    padding: 0;
-    background-color: transparent;
-    color: #333;
-    cursor: default;
 }
 
 .page .rickshaw_legend {
@@ -347,18 +343,10 @@ span.btn-success
     vertical-align: top;
 }
 
-.rickshaw_graph
+.utilization .rickshaw_graph
 {
     overflow: hidden;
     margin-bottom: 10px;
-    max-width: 485px !important;
-}
-
-.rickshaw_legend .line .swatch
-{
-    border-radius: 0 !important;
-    vertical-align: middle;
-    cursor: default;
 }
 
 .rickshaw_legend label,
@@ -404,7 +392,7 @@ span.btn-success
     float: left;
 }
 .chart-container {
-    padding: 10px;
+    padding: 10px 0;
 }
 .utilization {
     margin: 10px 0;

@@ -306,6 +306,26 @@ h4
     text-shadow: 1px 1px 1px #fff;
 }
 
+.rickshaw_graph
+{
+    max-width: 485px !important;
+}
+
+.rickshaw_legend
+{
+    padding: 0;
+    background-color: transparent;
+    color: #333;
+    cursor: default;
+}
+
+.rickshaw_legend .line .swatch
+{
+    border-radius: 0 !important;
+    vertical-align: middle;
+    cursor: default;
+}
+
 label.control-label,
 .rickshaw_legend .line,
 .rickshaw_legend label,

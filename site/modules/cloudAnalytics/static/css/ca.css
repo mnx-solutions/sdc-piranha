@@ -221,29 +221,6 @@
     margin-right: -42px;
 }
 
-.rickshaw_legend
-{
-    padding: 0;
-
-    cursor: default;
-
-    color: #333;
-    background-color: transparent;
-}
-
-.rickshaw_graph
-{
-    max-width: 485px !important;
-}
-
-.rickshaw_legend .line .swatch
-{
-    cursor: default;
-    vertical-align: middle;
-
-    border-radius: 0 !important;
-}
-
 .heatmap-pos
 {
     padding-left: 35px;
