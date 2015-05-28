@@ -14,17 +14,14 @@ MANTA_KEY_ID=$(ssh-keygen -lf /root/.ssh/user_id_rsa.pub | awk '{print $2}')
 MANTA_USER=$(/usr/sbin/mdata-get manta-account)
 MANTA_SUBUSER=$(/usr/sbin/mdata-get manta-subuser)
 DOCKER_VERSION=$(/usr/sbin/mdata-get docker-version)
-CADVISOR_VERSION=$(/usr/sbin/mdata-get cadvisor-version)
 
 DOCKER_INTERNAL_PORT=54243
-CADVISOR_INTERNAL_PORT=54242
 REGISTRY_INTERNAL_PORT=5000
 DOCKER_PORT=4243
 DOCKER_TCP_PORT=4240
 REGISTRY_PORT=5000
 
 DOCKER_VERSION="${DOCKER_VERSION:-1.6.0}"
-CADVISOR_VERSION=":${CADVISOR_VERSION:-latest}"
 
 KEYS_PATH=/root/.docker
 MANTA_DOCKER_PATH=/${MANTA_USER}/stor/.joyent/docker
@@ -99,8 +96,6 @@ $(for ip in ${IP_ADDRESSES};do echo "    bind ${ip}:${REGISTRY_PORT} ssl crt /ro
 
 frontend docker
     bind 0.0.0.0:${DOCKER_PORT} ssl crt /root/.docker/server.pem ca-file /root/.docker/ca.pem verify required
-    acl is_cadvisor url_beg /utilization/
-    use_backend cadvisor_back if is_cadvisor
     default_backend docker_back
 
 frontend docker_tcp
@@ -121,11 +116,6 @@ backend docker_back_tcp
 backend docker_back
     mode http
     server d 127.0.0.1:${DOCKER_INTERNAL_PORT}
-
-backend cadvisor_back
-    mode http
-    reqrep ^([^\ :]*)\ /utilization/(.*) \1\ /api/v1.1/containers/\2
-    server c 127.0.0.1:${CADVISOR_INTERNAL_PORT}
 
 END
     /etc/init.d/haproxy restart
@@ -181,15 +171,5 @@ installLogRotator
 
 touch /var/tmp/.docker-installed
 sleep 5;
-
-writeStage "installing CAdvisor"
-docker run \
-    -v /:/rootfs:ro \
-    -v /var/run/docker.sock:/var/run/docker.sock:rw \
-    -v /sys:/sys:ro \
-    -v ${DOCKER_DIR}/:/var/lib/docker:ro \
-    -p 127.0.0.1:${CADVISOR_INTERNAL_PORT}:8080 \
-    --restart=always \
-    -d --name=cAdvisor google/cadvisor${CADVISOR_VERSION}
 
 writeStage "completed"
