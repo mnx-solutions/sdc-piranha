@@ -478,8 +478,8 @@ module.exports = function execute(log, config) {
             return data && typeof data.uuid === 'string' && typeof data.datacenter === 'string';
         },
         handler: function (call) {
-            call.cloud.separate(call.data.datacenter).getImage(call.data.uuid, call.done.bind(call));
+            var options = call.data;
+            machine.getImage(call, options, call.done.bind(call));
         }
     });
-
 };

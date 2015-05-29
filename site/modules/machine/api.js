@@ -6,6 +6,8 @@ exports.init = function execute(log, config, done) {
 
     var api = {};
 
+    var IMAGE_CREATE_NOT_SUPPORTED = 'Image creation for %s is not currently supported';
+
     function filterFields(machine) {
         ['user-script', 'ufds_ldap_root_dn', 'ufds_ldap_root_pw'].forEach(function (f) {
             if (machine.metadata[f]) {
@@ -552,6 +554,8 @@ exports.init = function execute(log, config, done) {
                             } else if (utils.cmpVersion(img.version, leastSupportedVersion) < 0) {
                                 img.imageCreateNotSupported = 'The ' + img.name + ' image needs to be at least image version ' +
                                     leastSupportedVersion + ' to create an image.';
+                            } else if (img.os === 'other') {
+                                img.imageCreateNotSupported = IMAGE_CREATE_NOT_SUPPORTED.replace('%s', img.name);
                             }
 
                             if (img.name) {
@@ -602,6 +606,21 @@ exports.init = function execute(log, config, done) {
                 pollForObjectStateChange(cloud, call, 'firewall_enabled', false, null, null, call.data.machineId, callback);
             } else {
                 call.error(err);
+            }
+        });
+    };
+
+    api.getImage = function (call, options, callback) {
+        call.log.info('Retrieving image info for image %s', options.uuid);
+        var cloud = call.cloud.separate(options.datacenter);
+        cloud.getImage(options.uuid, function (err, image) {
+            if (!err) {
+                if (image.os === 'other') {
+                    image.imageCreateNotSupported = IMAGE_CREATE_NOT_SUPPORTED.replace('%s', image.name);
+                }
+                callback(null, image);
+            } else {
+                callback(err);
             }
         });
     };
