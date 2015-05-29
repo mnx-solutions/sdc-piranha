@@ -100,7 +100,7 @@
                     btnTitle: 'Submit and Access Fastly',
                     appendPopupMessage: 'Manta access will now be granted.'
                 };
-                Account.checkProvisioning(submitBillingInfo, null, null, Storage.getAfterBillingHandler('/manta/cdn'), false);
+                Account.checkProvisioning(submitBillingInfo, null, Storage.getAfterBillingHandler('/manta/cdn'), false);
             };
 
             scope.apiKeyAction = function (actionType) {

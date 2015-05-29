@@ -181,14 +181,13 @@
                 });
             }
 
-            service.checkProvisioning = function (submitBillingInfo, cbEnabled, cbDisabled, locationCb, showPopUp) {
+            service.checkProvisioning = function (submitBillingInfo, cbEnabled, cbDisabled, showPopUp) {
                 var defaultCb = angular.noop;
                 cbEnabled = cbEnabled || defaultCb;
                 cbDisabled = cbDisabled || defaultCb;
                 service.getAccount().then(function (provisionAccount) {
                     if (!provisionAccount.provisionEnabled) {
-                        PopupDialog.errorProvision(submitBillingInfo, locationCb, showPopUp);
-                        cbDisabled();
+                        PopupDialog.errorProvision(submitBillingInfo, cbDisabled, showPopUp);
                     } else {
                         cbEnabled();
                     }

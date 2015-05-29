@@ -95,7 +95,7 @@
                         var submitBillingInfo = {
                             btnTitle: 'Submit and Access Create User'
                         };
-                        Account.checkProvisioning(submitBillingInfo, null, null, function (isSuccess) {
+                        Account.checkProvisioning(submitBillingInfo, null, function (isSuccess) {
                             $scope.loading = false;
                             if (isSuccess) {
                                 $location.path('/accounts/user/create');

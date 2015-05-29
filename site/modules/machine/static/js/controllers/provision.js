@@ -975,7 +975,7 @@
                             'request_description': 'API Name: ' + el.name
                         });
                         loggingService.log('info', 'User is ordering instance package from support', el);
-                    }, ng.noop, function (isSuccess) {
+                    }, function (isSuccess) {
                         $location.path(returnUrl);
                         if (isSuccess) {
                             $rootScope.commonConfig('preSelectedData', {

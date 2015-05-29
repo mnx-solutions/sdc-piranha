@@ -128,7 +128,7 @@
                     var path = '/devtools/dtrace/script/create';
                     Account.checkProvisioning({btnTitle: 'Submit and Access DTrace Scripts'}, function () {
                         $location.path(path);
-                    }, null, function (isSuccess) {
+                    }, function (isSuccess) {
                         path = isSuccess ? path : '/devtools/dtrace/scripts';
                         $location.path(path);
                     }, true);

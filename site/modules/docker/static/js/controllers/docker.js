@@ -198,7 +198,7 @@
             };
 
             $scope.completeAccount = function () {
-                Account.checkProvisioning({btnTitle: 'Submit and Access Docker'}, null, null, function () {
+                Account.checkProvisioning({btnTitle: 'Submit and Access Docker'}, null, function () {
                     $location.path('/docker');
                 }, false);
             };

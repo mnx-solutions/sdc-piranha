@@ -62,7 +62,7 @@
                         btnTitle: 'Save Changes'
                     };
                     var currentPath = $location.path();
-                    Account.checkProvisioning(submitBillingInfo, null, angular.noop, function (isSuccess) {
+                    Account.checkProvisioning(submitBillingInfo, null, function (isSuccess) {
                         $location.path(isSuccess ? '/account' : currentPath);
                         if (isSuccess) {
                             $scope.account.provisionEnabled = true;
