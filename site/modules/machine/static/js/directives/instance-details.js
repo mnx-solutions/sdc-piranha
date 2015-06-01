@@ -249,6 +249,9 @@
 
                         scope.datasetType = type;
                     }, function () {
+                        if (scope.machine.tags.sdc_docker) {
+                            return scope.dataset = {name: 'Triton image'};
+                        }
                         scope.dataset = {name: 'Image deleted'};
                         scope.imageCreateNotSupported = 'Instances without images are not supported by the image API.';
                     });
