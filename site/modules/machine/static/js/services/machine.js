@@ -613,17 +613,26 @@
             return jobCall;
         };
 
-        service.waitForCreatingMachinesToFinish = function (callback) {
+        service.hasMachineCreatingInProgress = function (callback) {
             service.listAllMachines().then(function (machines) {
                 var hasCreating = machines.some(function (machine) {
                     return machine.state === 'creating';
                 });
-                if (hasCreating) {
+                callback({
+                    hasCreating: hasCreating,
+                    machines: machines
+                });
+            });
+        };
+
+        service.waitForCreatingMachinesToFinish = function (callback) {
+            service.hasMachineCreatingInProgress(function (result) {
+                if (result.hasCreating) {
                     setTimeout(function () {
                         service.waitForCreatingMachinesToFinish(callback);
                     }, 1000);
                 } else {
-                    callback(machines);
+                    callback(result.machines);
                 }
             });
         };

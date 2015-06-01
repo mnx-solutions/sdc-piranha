@@ -64,6 +64,9 @@
 
             var preSelectedData = $rootScope.popCommonConfig('preSelectedData');
             var datacenterConfig;
+
+            var PROVISION_CREATING_IN_PROGRESS = 'Another machine is being created, please let it become provisioning.';
+
             $scope.setCreateInstancePage = Machine.setCreateInstancePage;
             $scope.provisionSteps = [
                 {
@@ -367,9 +370,9 @@
                 }
             });
 
-            var selectNetwork = function (id) {
+            var selectNetwork = function (id, doToggle) {
                 if (selectedNetworks.indexOf(id) > -1) {
-                    selectedNetworks.splice(selectedNetworks.indexOf(id), 1);
+                    doToggle && selectedNetworks.splice(selectedNetworks.indexOf(id), 1);
                 } else {
                     selectedNetworks.push(id);
                 }
@@ -381,7 +384,7 @@
                         el.active = (el.active) ? false : true;
                     }
                 });
-                selectNetwork(id);
+                selectNetwork(id, true);
             };
 
             var nextStep = function (step) {
@@ -450,19 +453,31 @@
             };
 
             $scope.createSimple = function (data) {
-                if (data.freetier) {
-                    return provision(data);
-                }
-                provisionWithConfirm(data);
+                Machine.hasMachineCreatingInProgress(function (result) {
+                    if (result.hasCreating) {
+                        return PopupDialog.message('Message', PROVISION_CREATING_IN_PROGRESS);
+                    } else {
+                        if (data.freetier) {
+                            return provision(data);
+                        }
+                        provisionWithConfirm(data);
+                    }
+                });
             };
 
             $scope.createRecent = function (data) {
-                data.name = '';
-                data.datacenter = $scope.data.datacenter;
-                data.networks = $scope.networks.map(function (network) {
-                    return network.id;
+                Machine.hasMachineCreatingInProgress(function (result) {
+                    if (result.hasCreating) {
+                        return PopupDialog.message('Message', PROVISION_CREATING_IN_PROGRESS);
+                    } else {
+                        data.name = '';
+                        data.datacenter = $scope.data.datacenter;
+                        data.networks = $scope.networks.map(function (network) {
+                            return network.id;
+                        });
+                        provisionWithConfirm(data);
+                    }
                 });
-                provisionWithConfirm(data);
             };
 
             $scope.selectDatacenter = function (name) {
