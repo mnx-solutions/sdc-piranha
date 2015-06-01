@@ -696,7 +696,7 @@
                 Package.package({id: id, datacenter: $scope.data.datacenter}).then(function (pkg) {
                     $scope.selectedPackage = id;
                     $scope.selectedPackageInfo = pkg;
-
+                    setNetworks($scope.data.datacenter);
                     $scope.data.package = pkg.id;
                 });
             };
@@ -757,6 +757,7 @@
                     $scope.selectedPackageInfo = preSelectedPackageInfo;
                     $scope.selectPackage($scope.selectedPackage || $scope.selectedPackageInfo.id);
                     $scope.reviewPage();
+                    setNetworks($scope.data.datacenter);
                 } else if (!preSelectedData) {
                     var minimalPackage;
                     $scope.packages
