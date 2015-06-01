@@ -6,9 +6,13 @@ var WebSocket = require('ws');
 module.exports = function (app) {
     var Docker = require('./').Docker;
 
+    function fixNonUnicodeCharacters(input) {
+        return input.replace(/[\u007f-\uffff]/g, ' ');
+    }
+
     function send(socket, message) {
         if (socket.readyState === WebSocket.OPEN) {
-            socket.send(message);
+            socket.send(fixNonUnicodeCharacters(message.toString('UTF-8')));
         }
     }
     function close(socket, error) {
@@ -59,7 +63,7 @@ module.exports = function (app) {
 
             req.on('upgrade', function (res, clientSocket) {
                 socket.on('message', function (message) {
-                    clientSocket.write(message.toString('ascii'));
+                    clientSocket.write(message.toString('UTF-8'));
                 });
                 socket.on('error', close(socket));
                 clientSocket.on('data', function (data) {
@@ -74,7 +78,7 @@ module.exports = function (app) {
                     return close(socket, error);
                 }
                 socket.on('message', function (message) {
-                    req.connection.write(message.toString('ascii'));
+                    req.connection.write(message.toString('UTF-8'));
                 });
                 socket.on('error', close(socket));
                 execRes.on('data', function (data) {
