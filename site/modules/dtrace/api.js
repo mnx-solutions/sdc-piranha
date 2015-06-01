@@ -73,6 +73,11 @@ exports.init = function execute(log, config, done) {
                     });
                 },
                 function (callback) {
+                    mantaClient.safeMkdirp(DEVTOOLS_MANTA_PATH + '/flameGraph', {}, function (err) {
+                        callback(err);
+                    });
+                },
+                function (callback) {
                     var options = {
                         subuserLogin: SUBUSER_LOGIN,
                         subuserObjName: SUBUSER_OBJ_NAME,

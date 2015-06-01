@@ -19,12 +19,6 @@
                         ng.element(element).html(svg).promise().done(function () {
                             init();
                         });
-                        DTrace.saveFlameGraph({
-                            svg: svg,
-                            id: $scope.options.hostId
-                        }).then(function () {}, function (err) {
-                            DTrace.reportError(err, 'Error while saving flamegraph svg to manta');
-                        });
                     }
                 }
 

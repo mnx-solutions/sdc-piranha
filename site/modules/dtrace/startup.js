@@ -6,13 +6,10 @@ var dtrace = function execute() {
     var Dtrace = require('../dtrace').Dtrace;
     var mantaClient = require('../storage').MantaClient;
     var server = require('../server').Server;
-    var WebSocket = require('ws');
 
     var SCRIPTS_FILE_PATH = '~~/stor/.joyent/devtools/scripts.json';
-    var FLAMEGRAPH_PATH = '~~/stor/.joyent/devtools/flameGraph';
 
     var uuid = require('../../static/vendor/uuid/uuid.js');
-    var DTRACE_PORT = 8000;
     var DEFAULT_SCRIPT_LIST = [
         {name: 'all syscall'},
         {name: 'syscall for process', pid: true, execname: true},
@@ -146,24 +143,6 @@ var dtrace = function execute() {
                     call.done(null, list);
                 });
             });
-        }
-    });
-
-    server.onCall('SaveFlameGraph', {
-        verify: function (data) {
-            return data.id && data.svg;
-        },
-        handler: function (call) {
-            var client = mantaClient.createClient(call);
-            client.putFileContents(FLAMEGRAPH_PATH + '/' + call.data.id + '/' + new Date().toISOString() + '.svg',
-                call.data.svg,
-                function (err) {
-                    if (err) {
-                        return call.done(err);
-                    }
-                    call.done();
-                }
-            );
         }
     });
 };

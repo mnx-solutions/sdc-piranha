@@ -234,7 +234,8 @@
                         websocket.onmessage = function (event) {
                             var message = JSON.stringify({
                                 type: type,
-                                message: type === 'coreDump' ? $scope.pid : script.body || getDScript()
+                                message: type === 'coreDump' ? $scope.pid : script.body || getDScript(),
+                                hostId: $scope.options.hostId
                             });
 
                             if (event.data === 'connection') {
