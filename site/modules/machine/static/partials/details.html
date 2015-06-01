@@ -12,12 +12,12 @@
     <div data-ng-hide="loading">
         <div class="inl-table">
             <div class="left-part">
-                <tabs-selector data-ng-show="dataset.tags.docker"
+                <tabs-selector data-ng-show="containerDetailsAvailable"
                                data-tabs="tabs"
                                data-active-tab="activeTab">
                 </tabs-selector>
                 <instance-details data-ng-show="tabs[0] == activeTab"></instance-details>
-                <div data-ng-if="dataset.tags.docker">
+                <div data-ng-if="containerDetailsAvailable">
                     <container-details data-ng-show="tabs[1] == activeTab"></container-details>
                 </div>
             </div>

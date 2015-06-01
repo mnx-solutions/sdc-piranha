@@ -59,11 +59,13 @@
                 });
             }, true);
 
-            function setImageName(image) {
+            function setImageName(image, machine) {
                 var imageId = image && image.id || image;
                 var imageName = 'Image deleted';
                 if (image && typeof image !== 'string') {
                     imageName = image.name + '/' + image.version;
+                } else if (machine && machine.tags && machine.tags.sdc_docker) {
+                    imageName = 'Triton image';
                 }
                 $scope.datasetsInfo[imageId] = imageName;
             }
@@ -74,15 +76,15 @@
                         machines.forEach(function (machine) {
                             Image.image({datacenter: machine.datacenter}).then(function (datasets) {
                                 datasets.forEach(function (dataset) {
-                                    setImageName(dataset);
+                                    setImageName(dataset, machine);
                                 });
                                 var imageExists = datasets.some(function (image) { return image.id === machine.image; });
                                 if (machine.image && !imageExists && !$scope.datasetsInfo[machine.image]) {
                                     Image.getImage(machine.datacenter, machine.image).then(function (image) {
                                         machine.type = Machine.getMachineType(machine, image);
-                                        setImageName(image);
+                                        setImageName(image, machine);
                                     }, function () {
-                                        setImageName(machine.image);
+                                        setImageName(machine.image, machine);
                                     });
                                 }
                                 $scope.loading = false;
