@@ -344,7 +344,7 @@ exports.init = function execute(log, config, done) {
 
             keys.forEach(function (datacenterName) {
                 var cloud = call.cloud.separate(datacenterName);
-                call.log.debug('List machines for datacenter %s', datacenterName);
+                call.log.debug('List machines for data center %s', datacenterName);
 
                 var allMachines = [];
 
@@ -356,7 +356,7 @@ exports.init = function execute(log, config, done) {
                     };
 
                     if (err) {
-                        call.log.info('List machines failed for datacenter %s, url %s; err.message: %s', datacenterName, datacenters[datacenterName], err.message, err);
+                        call.log.info('List machines failed for data center %s, url %s; err.message: %s', datacenterName, datacenters[datacenterName], err.message, err);
                         response.status = 'error';
                         response.error = err;
                     } else {
@@ -382,7 +382,7 @@ exports.init = function execute(log, config, done) {
                         response.status = 'complete';
                         response.machines = machines;
 
-                        call.log.debug('List machines succeeded for datacenter %s', datacenterName);
+                        call.log.debug('List machines succeeded for data center %s', datacenterName);
                     }
 
                     if (progress) {
@@ -515,7 +515,7 @@ exports.init = function execute(log, config, done) {
             }
             keys.forEach(function (datacenterName) {
                 var cloud = call.cloud.separate(datacenterName);
-                call.log.debug('List images for datacenter %s', datacenterName);
+                call.log.debug('List images for data center %s', datacenterName);
 
                 cloud.listImages(function (err, images) {
                     var response = {
@@ -526,7 +526,7 @@ exports.init = function execute(log, config, done) {
 
                     if (err) {
                         var logLevel = err.restCode === 'NotAuthorized' && err.statusCode === 403 && cloud._subId ? 'info' : 'error';
-                        call.log[logLevel]('List images failed for datacenter %s, url %s; err.message: %s', datacenterName, datacenters[datacenterName], err.message, err);
+                        call.log[logLevel]('List images failed for data center %s, url %s; err.message: %s', datacenterName, datacenters[datacenterName], err.message, err);
                         response.status = 'error';
                         response.error = err;
                     } else {
@@ -574,7 +574,7 @@ exports.init = function execute(log, config, done) {
                         response.status = 'complete';
                         response.images = images;
 
-                        call.log.debug('List images succeeded for datacenter %s', datacenterName);
+                        call.log.debug('List images succeeded for data center %s', datacenterName);
                     }
                     call.update(null, response);
 

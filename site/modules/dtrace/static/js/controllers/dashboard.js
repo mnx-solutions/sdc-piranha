@@ -103,7 +103,7 @@
                                 localization.translate(
                                     $scope,
                                     null,
-                                    'This datacenter has no “smartos” image suitable for creating dtrace host'
+                                    'This data center has no “smartos” image suitable for creating dtrace host'
                                 )
                             );
                         }

@@ -110,7 +110,7 @@
                                     images.error = images.list[chunk.name].error = err || chunk.error;
                                     if (!ErrorService.getLastErrors('dcUnreachable', chunk.name)) {
                                         ErrorService.setLastError('dcUnreachable', chunk.name,
-                                            'Datacenter {{name}} is currently not available. We are working on getting this datacenter back on.',
+                                            'Data center {{name}} is currently not available. We are working on getting this data center back on.',
                                             {name: chunk.name});
 
                                         PopupDialog.error(
@@ -122,7 +122,7 @@
                                                 localization.translate(
                                                     null,
                                                     'machine',
-                                                    'Unable to retrieve images from datacenter {{name}}.',
+                                                    'Unable to retrieve images from data center {{name}}.',
                                                     { name: chunk.name }
                                                 )
                                         );
