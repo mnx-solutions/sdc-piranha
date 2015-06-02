@@ -6,11 +6,11 @@
             </div>
             <div class="modal-body">
                 <form name="folderNameForm">
-                    <p>Folder name can contain only letters, digits and signs like '.' and '-'.</p>
+                    <p>Folder name can contain only letters, digits and signs like '.', '_' and '-'.</p>
                     <input type="text"
                            id="folderName"
                            data-ng-model="folderName"
-                           data-machine-name
+                           data-ng-pattern="/^[^.\/\\]|[\w-]+$/"
                            placeholder="Enter folder name"
                            data-auto-focus />
                     <div class="error"
