@@ -14,7 +14,7 @@
                         if (error) {
                             if (!ErrorService.getLastErrors('billingUnreachable', 'billing')) {
                                 ErrorService.setLastError('billingUnreachable', 'billing',
-                                    'Billing server is currently not available. We are working on getting this datacenter back on.');
+                                    'Billing server is currently not available. We are working on getting this data center back on.');
                             }
                             callback(error);
                             return;

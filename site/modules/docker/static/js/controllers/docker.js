@@ -202,7 +202,7 @@
                                 localization.translate(
                                     $scope,
                                     null,
-                                    'This datacenter has no “ubuntu” image suitable for creating docker host'
+                                    'This data center has no “ubuntu” image suitable for creating docker host'
                                 )
                             );
                         }

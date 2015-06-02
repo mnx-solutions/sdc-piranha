@@ -265,7 +265,7 @@ var firewall = function execute (api, config) {
                 inputs: Object.keys(datacenters || {}),
                 func: function (name, callback) {
                     var cloud = call.cloud.separate(name);
-                    call.log.debug('List rules for datacenter %s', name);
+                    call.log.debug('List rules for data center %s', name);
 
                     cloud.listFwRules(function (err, rules) {
                         var response = {
@@ -276,7 +276,7 @@ var firewall = function execute (api, config) {
 
                         if (err) {
                             if (err.statusCode !== 403 || err.name !== 'NotAuthorizedError') {
-                                call.log.error('List rules failed for datacenter %s, url %s; err.message: %s', name, datacenters[name], err.message, err);
+                                call.log.error('List rules failed for data center %s, url %s; err.message: %s', name, datacenters[name], err.message, err);
                             }
                             response.status = 'error';
                             response.error = err;
@@ -300,7 +300,7 @@ var firewall = function execute (api, config) {
                                 response.rules.push(rule);
                             });
 
-                            call.log.debug('List rules succeeded for datacenter %s', name);
+                            call.log.debug('List rules succeeded for data center %s', name);
                             response.status = 'complete';
                         }
                         call.update(null, response);

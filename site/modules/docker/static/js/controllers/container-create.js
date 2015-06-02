@@ -31,7 +31,7 @@
                     IMAGE: 'Image to use for the container.',
                     MEMORY: 'Memory limit in MB',
                     MEMORY_SWAP: 'Total memory usage (memory + swap)',
-                    HOST: 'Choose datacenter & host where you create container',
+                    HOST: 'Choose data center & host where you create container',
                     VOLUMES_FROM: 'A list of volumes to inherit from another container.',
                     ENTRYPOINT: 'Overwrite the default ENTRYPOINT of the image. Use space as delimiter.',
                     CMD: 'Command to run specified',

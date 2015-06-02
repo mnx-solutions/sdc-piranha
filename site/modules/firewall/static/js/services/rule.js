@@ -80,7 +80,7 @@
                             }
                         }
                         if (result && !!result.code) {
-                            errMsg = errMsg + 'Datacenter ' + rule.datacenter + ' is currently not available. We are working on getting this datacenter back on';
+                            errMsg = errMsg + 'Data center ' + rule.datacenter + ' is currently not available. We are working on getting this data center back on';
                         }
 
                         PopupDialog.error(
@@ -294,7 +294,7 @@
                                 if (chunk.status === 'error') {
                                     if (!ErrorService.getLastErrors('dcUnreachable', chunk.name)) {
                                         ErrorService.setLastError('dcUnreachable', chunk.name,
-                                            'Datacenter {{name}} is currently not available. We are working on getting this datacenter back on.',
+                                            'Data center {{name}} is currently not available. We are working on getting this data center back on.',
                                             {name: chunk.name});
                                         rules.job = undefined;
                                         PopupDialog.error(
@@ -306,7 +306,7 @@
                                             localization.translate(
                                                 null,
                                                 'rule',
-                                                'Unable to retrieve rules from datacenter {{name}}.',
+                                                'Unable to retrieve rules from data center {{name}}.',
                                                 { name: chunk.name }
                                             )
                                         );

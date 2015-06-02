@@ -309,7 +309,7 @@
                     Network.network(datacenter).then(function (result) {
                         configureNetworks(result);
                         if (networks.length === 0) {
-                            loggingService.log('warn', 'Networks are not loaded for datacenter: ' + datacenter);
+                            loggingService.log('warn', 'Networks are not loaded for data center: ' + datacenter);
                         }
                     }, function (err) {
                         PopupDialog.errorObj(err);
