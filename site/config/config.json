@@ -96,7 +96,7 @@
     }
   },
   "marketing": {
-    "baseAdUrl": ""
+    "baseAdUrl": "https://www.joyent.com/portal"
   },
   "polling": {
     "machineTags": 5000,

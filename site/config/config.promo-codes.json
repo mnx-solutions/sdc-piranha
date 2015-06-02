@@ -77,5 +77,10 @@
         "expirationDate": "2014-12-31",
         "startDate": "2014-11-12",
         "ratePlanName": "DOCKERJOY"
+    },
+    "COUCHJOY15!": {
+        "expirationDate": "2020-12-31",
+        "startDate": "2015-05-27",
+        "ratePlanName": "COUCHJOY15!"
     }
 }
