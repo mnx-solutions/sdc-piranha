@@ -191,7 +191,7 @@
                     freeTierOptions = taskResult[1];
                     var setupTask = [setup(taskResult[0].images, networks)];
 
-                    if (freeTierOptions.length) {
+                    if (freeTierOptions.length && freeTierOptions.valid) {
                         setupTask.push(setup(freeTierOptions, networks, true));
                     }
 
