@@ -183,7 +183,7 @@ module.exports = function execute(log, config) {
                     }
                 }, function (vasyncErrors, jobs) {
                     if (vasyncErrors && vasyncErrors.jse_cause &&
-                        vasyncErrors.jse_cause.code !== 'ForbiddenError') {
+                        vasyncErrors['jse_cause'].code !== 'ForbiddenError') {
                         return call.done(vasyncErrors.message);
                     }
                     jobs = [].concat.apply([], jobs.successes);
@@ -254,16 +254,16 @@ module.exports = function execute(log, config) {
 
     server.onCall('JobCreate', {
         verify: function (data) {
-            return typeof data
-                && (data.hasOwnProperty('mapStep') || data.hasOwnProperty('reduceStep'))
-                && data.hasOwnProperty('inputs')
-                && data.inputs.every(function (input) {
+            return typeof data &&
+                (data.hasOwnProperty('mapStep') || data.hasOwnProperty('reduceStep')) &&
+                data.hasOwnProperty('inputs') &&
+                data.inputs.every(function (input) {
                     return input.charAt(0) === '/';
-                })
-                && data.assets.every(function (asset) {
+                }) &&
+                data.assets.every(function (asset) {
                     return asset.charAt(0) === '/';
-                })
-                && data.inputs.length > 0;
+                }) &&
+                data.inputs.length > 0;
         },
         handler: function (call) {
             var mapStep = call.data.mapStep;
