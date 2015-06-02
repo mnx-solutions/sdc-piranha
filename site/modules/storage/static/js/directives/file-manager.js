@@ -505,10 +505,7 @@
                 Account.getAccount().then(function (account) {
                     scope.provisionEnabled = account.provisionEnabled;
                     if (scope.provisionEnabled) {
-                        Storage.listPing().then(scope.drawFileMan, function () {
-                            $location.url('/manta/intro');
-                            $location.replace();
-                        });
+                        Storage.getAfterBillingHandler(null, scope.drawFileMan)(true);
                     } else {
                         scope.loading = false;
                     }

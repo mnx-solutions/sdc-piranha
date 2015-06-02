@@ -87,7 +87,8 @@ window.fn = [];
                 return jobRequest('StorageListPing', null, suppressError);
             };
 
-            service.getAfterBillingHandler = function (pageUrl) {
+            service.getAfterBillingHandler = function (pageUrl, callback) {
+                callback = callback || angular.noop;
                 return function (isSuccess) {
                     if (isSuccess) {
                         var fallback = function () {
@@ -96,7 +97,10 @@ window.fn = [];
                         service.listPing().then(function () {
                             service.listPing().then(function () {
                                 service.listPing().then(function () {
-                                    $location.path(pageUrl);
+                                    if (pageUrl) {
+                                        $location.path(pageUrl);
+                                    }
+                                    callback();
                                 }, fallback);
                             }, fallback);
                         }, fallback);
