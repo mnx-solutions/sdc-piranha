@@ -39,7 +39,7 @@
                     heatmap: 'Heatmap',
                     flamegraph: 'Flame Graph',
                     coreDump: 'Core Dump'
-                }
+                };
 
                 $scope.loading = true;
                 $scope.processing = false;
@@ -54,11 +54,12 @@
                 var FLAME_GRAPH_SCRIPT_NAME = 'syscall for process';
                 var UNAUTHORIZED_ERROR = 'UnauthorizedError';
                 var DTRACE_ERROR = 'DTrace error';
-                var getScriptsListType = 'all';
+                var scriptsListType = 'all';
                 var websocket;
                 var type;
 
                 var errorCallback = function (err) {
+                    var logLevel;
                     var message = err;
                     if ($scope.host) {
                         message = 'DTrace Instance "' + $scope.host.name + '" is currently unreachable.';
@@ -67,16 +68,19 @@
                         }
                         if (err.indexOf(DTRACE_ERROR) !== -1) {
                             message = err;
+                        } else if (err.indexOf('Error parsing json for Heatmap') !== -1) {
+                            message = 'Currently \'' + $scope.scriptName + '\' can\'t be executed on ' + $scope.host.name + '.';
+                            logLevel = 'info';
                         }
                     }
-                    DTrace.reportError(message, 'websocket error: ' + err);
+                    DTrace.reportError(message, 'websocket error: ' + err, logLevel);
                     $scope.loadingHostProcesses = $scope.processing = $scope.loading = false;
                 };
 
                 if ($scope.title === TITLES.heatmap) {
                     type = 'heatmap';
                 } else if ($scope.title === TITLES.flamegraph || $scope.title === TITLES.coreDump) {
-                    getScriptsListType = 'default';
+                    scriptsListType = 'default';
                     type = $scope.title === TITLES.flamegraph ? 'flamegraph' : 'coreDump';
                 }
 
@@ -84,7 +88,7 @@
                     $scope.provisionEnabled = account.provisionEnabled;
                     if ($scope.provisionEnabled) {
                         Storage.pingManta(function () {
-                            $q.all([DTrace.listHosts(), DTrace.getScriptsList(getScriptsListType)]).then(function (result) {
+                            $q.all([DTrace.listHosts(), DTrace.getScriptsList(scriptsListType)]).then(function (result) {
                                 $scope.hosts = result[0] || [];
                                 $scope.scripts = result[1] || [];
                                 $scope.scriptName = $scope.scripts ? $scope.scripts[0].name : '';
@@ -141,9 +145,9 @@
                     }
                 };
 
-                var getScriptsListType = 'all';
+                scriptsListType = 'all';
                 if ($scope.title === TITLES.flamegraph) {
-                    getScriptsListType = 'default';
+                    scriptsListType = 'default';
                 }
 
                 $scope.refreshScripts = function () {

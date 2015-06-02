@@ -69,10 +69,10 @@
                 }).promise;
             };
 
-            service.reportError = function (errMessage, logMessage) {
+            service.reportError = function (errMessage, logMessage, logLevel) {
                 logMessage = logMessage || errMessage;
                 PopupDialog.errorObj(errMessage);
-                loggingService.log('error', logMessage);
+                loggingService.log(logLevel || 'error', logMessage);
             };
 
             return service;
