@@ -123,7 +123,7 @@
             };
 
             $scope.completeAccount = function () {
-                Account.checkProvisioning({btnTitle: 'Submit and Access DTrace'}, null, null, function () {
+                Account.checkProvisioning({btnTitle: 'Submit and Access DTrace'}, null, function () {
                     $location.path('/devtools/dtrace');
                 }, false);
             };

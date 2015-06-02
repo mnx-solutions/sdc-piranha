@@ -155,7 +155,7 @@
                 var returnUrl = $location.path();
                 Account.checkProvisioning({btnTitle: 'Submit and Upgrade Support'}, function () {
                     setupPackage(supportPackage, isUpgrade);
-                }, angular.noop, function (isSuccess) {
+                }, function (isSuccess) {
                     $location.path(returnUrl);
                     if (isSuccess) {
                         $rootScope.commonConfig('supportPlanSelected', {

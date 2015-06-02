@@ -43,7 +43,6 @@
                             $location.path('/slb/list');
                         }
                     }, showErrPopupDialog);
-                }, function () {
                 }, function (isSuccess) {
                     $location.path(returnUrl);
                     if (isSuccess) {

@@ -240,7 +240,7 @@
                     var submitBillingInfo = {
                         btnTitle: 'Submit and Access Node.js Debugger'
                     };
-                    Account.checkProvisioning(submitBillingInfo, null, null, function (isSuccess) {
+                    Account.checkProvisioning(submitBillingInfo, null, function (isSuccess) {
                         $scope.loading = false;
                         if (isSuccess) {
                             $scope.provisionEnabled = true;
