@@ -30,7 +30,7 @@
                     <td data-ng-show="processes && processes.length" class="big">
                         <select ui-select2="{width: '100%'}" id="pidSelect" data-ng-model="pid" >
                             <optgroup data-ng-if="hasExecname" label="execname">
-                                <option data-ng-repeat="process in processes" value="{{process.execname}}">
+                                <option data-ng-repeat="process in processes | unique:'execname'" value="{{process.execname}}">
                                     {{process.execname}}
                                 </option>
                             </optgroup>
