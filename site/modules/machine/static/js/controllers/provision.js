@@ -537,15 +537,22 @@
                         $scope.packageType = null;
                     }
                 }
+                if ($scope.keys.length > 0) {
+                    ng.element('.carousel').on('slid.bs.carousel', function () {
+                        if ($scope.$$phase) {
+                            deleteProvisionStep(WizardSteps.SSH);
+                        } else {
+                            $scope.$apply(function () {deleteProvisionStep(WizardSteps.SSH)});
+                        }
+                        ng.element('.carousel').off('slid.bs.carousel');
+                    });
+                }
                 $scope.setCurrentStep(step);
                 $scope.slideCarousel(step);
                 if ($scope.features.instanceMetadata === 'enabled') {
                     ng.element('#metadata-configuration').fadeOut('fast');
                 }
                 ng.element('#network-configuration').fadeOut('fast');
-                if ($scope.keys.length > 0) {
-                    deleteProvisionStep(WizardSteps.SSH);
-                }
                 preSelectedData = null;
             };
 
