@@ -3,6 +3,9 @@
 (function (app) {
     app.factory('dockerPushImage', ['Docker', 'PopupDialog', function (Docker, PopupDialog) {
         return function(image) {
+            if (Docker.pushImageInProgress) {
+                return PopupDialog.message('Message', 'Another image is being pushed, please let it finish.');
+            };
             PopupDialog.custom({
                 templateUrl: 'docker/static/partials/push-image.html',
                 openCtrl: ['$scope', 'dialog', 'Docker', 'notification', function (scope, dialog, Docker, notification) {
@@ -61,6 +64,7 @@
                             });
                         }
                         PopupDialog.message(null, 'Pushing images takes some time. You can continue your work and get notification once push is completed.');
+                        Docker.pushImageInProgress = true;
                         Docker.pushImage({
                             host: {primaryIp: image.primaryIp, id: image.hostId},
                             options: {
@@ -70,12 +74,15 @@
                                 name: scope.input.name
                             }
                         }, function (error) {
+                            Docker.pushImageInProgress = false;
                             if (error) {
                                 notification.error(error.message || error);
                             }
                         }).then(function () {
+                            Docker.pushImageInProgress = false;
                             notification.success('Pushing of image "' + scope.input.name + '" is completed.');
                         }, function (error) {
+                            Docker.pushImageInProgress = false;
                             notification.error(error.message || 'InternalServerError');
                         });
                         scope.close();
