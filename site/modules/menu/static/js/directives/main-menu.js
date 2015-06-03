@@ -10,8 +10,18 @@
             controller: function ($scope, requestContext, localization, Account) {
                 localization.bind('menu', $scope);
 
+                $scope.subuserAccountName = null;
                 Account.getAccount(true).then(function (account) {
                     $scope.account = account;
+                    if (account.isSubuser) {
+                        Account.getParentAccount().then(function (parentAccount) {
+                            $scope.subuserAccountName = parentAccount.login + ' / ' + $scope.account.login;
+                        }, function (error) {
+                            if (error) {
+                                PopupDialog.errorObj(error);
+                            }
+                        });
+                    }
                 });
 
                 $scope.$on('accountUpdated', function (event, account) {

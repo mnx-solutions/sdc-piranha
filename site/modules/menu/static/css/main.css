@@ -159,6 +159,11 @@
     margin-left: -70px;
 }
 
+.navbar-container .nav .dropdown-menu-subuser
+{
+    margin-left: -15px;
+}
+
 .navbar-container .nav .dropdown-menu > li a
 {
     font-weight: normal;
