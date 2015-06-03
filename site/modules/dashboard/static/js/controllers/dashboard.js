@@ -128,6 +128,10 @@
                 var othercount = 0;
 
                 machines.forEach(function (machine) {
+                    // excluding triton SDC Docker Containers
+                    if (machine.tags && machine.tags.sdc_docker) {
+                        return;
+                    }
                     if (machine.state === 'running') {
                         runningcount += 1;
                     } else {
