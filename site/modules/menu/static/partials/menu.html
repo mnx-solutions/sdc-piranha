@@ -25,10 +25,10 @@
             <li class="loading-small load-user-name" data-ng-hide="account.login"></li>
             <li class="dropdown user" data-ng-show="account.login">
                 <a href="javascript:void(0)" class="dropdown-toggle" data-toggle="dropdown">
-                    <span class="username">{{account.login}}</span>
+                    <span class="username">{{subuserAccountName || account.login}}</span>
                     <i class="icon-arrow-down-user"></i>
                 </a>
-                <ul class="dropdown-menu dd-account">
+                <ul class="dropdown-menu dd-account" data-ng-class="{'dropdown-menu-subuser': subuserAccountName}">
                     <li><a id="link-account" href="#!/account"><span class="glyphicon glyphicon-user"></span> Account</a></li>
                     <li data-ng-show="features.provisioningLimits == 'enabled'"><a href="#!/limits"><span class="glyphicon glyphicon-tasks"></span> Provisioning Limits</a></li>
                     <li><a data-ng-click="changePassword()"><span class="glyphicon glyphicon-lock"></span> Change Password</a></li>
