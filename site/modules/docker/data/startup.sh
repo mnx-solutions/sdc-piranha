@@ -20,6 +20,7 @@ REGISTRY_INTERNAL_PORT=5000
 DOCKER_PORT=4243
 DOCKER_TCP_PORT=4240
 REGISTRY_PORT=5000
+MEMSTAT_PORT=8888
 
 DOCKER_VERSION="${DOCKER_VERSION:-1.6.0}"
 
@@ -96,6 +97,8 @@ $(for ip in ${IP_ADDRESSES};do echo "    bind ${ip}:${REGISTRY_PORT} ssl crt /ro
 
 frontend docker
     bind 0.0.0.0:${DOCKER_PORT} ssl crt /root/.docker/server.pem ca-file /root/.docker/ca.pem verify required
+    acl is_memstat url_beg /memStat/
+    use_backend memstat_back if is_memstat
     default_backend docker_back
 
 frontend docker_tcp
@@ -116,6 +119,11 @@ backend docker_back_tcp
 backend docker_back
     mode http
     server d 127.0.0.1:${DOCKER_INTERNAL_PORT}
+
+backend memstat_back
+    mode http
+    reqrep ^([^\ :]*)\ /memStat/(.*) \1\ /\2
+    server m 127.0.0.1:${MEMSTAT_PORT}
 
 END
     /etc/init.d/haproxy restart
@@ -160,6 +168,49 @@ END
     dpkg -i logrotate_3.8.7-1ubuntu1_amd64.deb
 }
 
+function installMemStat {
+    mkdir /opt/memStat
+
+    cat <<END >/opt/memStat/getMemoryUsage.sh
+#! /bin/bash
+free | grep Mem | awk '{print \$3/\$2 * 100.0}'
+END
+
+    cat <<END >/opt/memStat/getCpuUsage.sh
+#! /bin/bash
+top -b -n2 | grep 'Cpu(s)'|tail -n 1 | awk '{print \$2 + \$4}'
+END
+
+    cat <<END >/opt/memStat/memStat.py
+import subprocess
+import BaseHTTPServer
+
+class MyHandler(BaseHTTPServer.BaseHTTPRequestHandler):
+    def do_GET(s):
+        s.send_response(200)
+        s.send_header("Content-type", "application/json")
+        s.end_headers()
+        cpuUsage = subprocess.check_output("/opt/memStat/getCpuUsage.sh")
+        memoryUsage = subprocess.check_output("/opt/memStat/getMemoryUsage.sh")
+        s.wfile.write('{"memoryUsage":' + memoryUsage + ', "cpuUsage": ' + cpuUsage + '}')
+
+server_class = BaseHTTPServer.HTTPServer
+httpd = server_class(('127.0.0.1', ${MEMSTAT_PORT}), MyHandler)
+try:
+    httpd.serve_forever()
+except KeyboardInterrupt:
+    pass
+httpd.server_close()
+END
+
+    chmod 777 /opt/memStat/getMemoryUsage.sh
+    chmod 777 /opt/memStat/getCpuUsage.sh
+
+    sed -i -e '$i python /opt/memStat/memStat.py &\n' /etc/rc.local
+
+    python /opt/memStat/memStat.py &
+}
+
 writeStage "installing docker"
 installDocker
 
@@ -168,6 +219,9 @@ createBalancer
 
 writeStage "installing log rotator"
 installLogRotator
+
+writeStage "installing memStat"
+installMemStat
 
 touch /var/tmp/.docker-installed
 sleep 5;

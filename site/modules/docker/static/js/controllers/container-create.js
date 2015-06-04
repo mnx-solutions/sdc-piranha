@@ -557,17 +557,17 @@
                     } else if (host.isSdc) {
                         host.analyticsUnavailable = true;
                     } else {
-                        CloudAnalytics.describeAndCreateInstrumentation({
-                                datacenter: $scope.host.datacenter,
-                                zoneId: host.id,
-                                configs: ['memory', 'cpu']
-                            },
-                            function (err, data) {
-                                if (err) {
-                                    return PopupDialog.errorObj(err);
-                                }
-                                loadMachineAnalytics(host, data, 5);
-                            });
+                        Docker.memStat({host: host, direct: true}).then(function (data) {
+                            hostsStats[host.id] = {
+                                cadvisorUnavailable: false,
+                                cpuLoad: data.cpuUsage + '%',
+                                memoryLoad: data.memoryUsage + '%',
+                                stats: true
+                            };
+                            host = ng.extend(host, hostsStats[host.id]);
+                        }, function (err) {
+                            host.stats = host.analyticsUnavailable = true;
+                        });
                     }
                 };
 

@@ -922,6 +922,10 @@
             return false;
         };
 
+        service.memStat = function (options) {
+            return createCall('memStat', options);
+        };
+
         return service;
     }]);
 }(window.angular, window.JP.getModule('docker')));

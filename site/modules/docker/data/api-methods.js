@@ -250,6 +250,11 @@ var dockerAPIMethods = {
         retries: false,
         timeout: 3000,
         path: '/_ping'
+    },
+    memStat: {
+        auditType: 'docker',
+        method: 'GET',
+        path: '/memStat/'
     }
 };
 
