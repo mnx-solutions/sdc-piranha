@@ -1,0 +1,107 @@
+.btn,
+.btn:focus,
+.btn:active,
+.btn.active {
+    padding: 7px 14px;
+
+    cursor: pointer;
+    text-align: center;
+    vertical-align: middle;
+    text-decoration: none;
+    text-transform: capitalize;
+
+    color: #f60;
+    border: 0;
+    border-radius: 0;
+    outline: none;
+    background: #f3f3f3 none;
+    box-shadow: none;
+    text-shadow: none;
+
+    font-size: 14px;
+    font-weight: 400;
+
+    filter: none;
+}
+.btn,
+.btn:focus,
+.btn:active:focus {
+    outline: 0 none;
+}
+
+.btn.disabled,
+.btn[disabled] {
+    cursor: default;
+
+    opacity: .35;
+}
+
+.btn.small {
+    height: 20px;
+    margin-left: 10px;
+    padding: 1px 8px;
+
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.btn.big {
+    height: 43px;
+
+    font-size: 14px;
+}
+
+.btn.narrow {
+    min-width: 10px;
+    height: 34px;
+    margin-top: 1px;
+    padding: 0 6px;
+}
+
+.btn.orange,
+.btn.orange:hover,
+.btn.orange:focus,
+.btn.orange:active,
+.btn.orange.active,
+.btn:hover:not(.without-hover),
+.btn.grey:hover,
+.btn.edit:hover,
+.btn.daffodil:hover,
+.menu a.btn:hover {
+    color: white;
+    background-color: #f60;
+}
+.btn.daffodil {
+    color: #f60;
+    background-color: #fffbf2;
+}
+.btn.grey {
+    color: white;
+    background-color: #999;
+}
+
+.btn.edit {
+    padding: 2px 6px;
+}
+.grid-container .btn.grey {
+    height: 20px;
+    min-width: 70px;
+    font-size: 12px;
+}
+
+.modal-footer .btn.orange {
+    min-width: 100px;
+}
+.review .btn:not(.orange),
+.info .btn:not(.orange),
+.firewall-table .btn:not(.orange) {
+    background-color: #fffbf2;
+}
+.review .btn:hover,
+.info .btn:hover,
+.firewall-table .btn:hover {
+    background-color: #f60;
+}
+.btn-group.open .dropdown-toggle {
+    box-shadow: none;
+}

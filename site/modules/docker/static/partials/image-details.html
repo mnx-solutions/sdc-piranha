@@ -6,7 +6,7 @@
     </ul>
     <h3 class="page-title">Image Details</h3>
     <div class="page-title-btn">
-        <button data-ng-disabled="loading || pushDialogOpening" data-ng-click="pushImage()" type="button" class="btn btn-big orange text-to-left">Push Image</button>
+        <button data-ng-disabled="loading || pushDialogOpening" data-ng-click="pushImage()" type="button" class="btn big orange">Push Image</button>
     </div>
     <div class="loading-large span12" data-ng-show="loading"></div>
 
@@ -69,7 +69,7 @@
                                 </tr>
                             </table>
                             <div class="pull-right">
-                                <button class="btn light effect-orange-button" data-ng-click="removeImage()" data-ng-disabled="loading || actionInProgress">Remove</button>
+                                <button class="btn" data-ng-click="removeImage()" data-ng-disabled="loading || actionInProgress">Remove</button>
                                 <button class="btn orange" data-ng-click="createContainer()" data-ng-disabled="loading || actionInProgress">Create Container</button>
                             </div>
                             <div class="loading-medium loading-medium-inline pull-right" data-ng-show="actionInProgress"></div>
@@ -98,7 +98,7 @@
                                  data-search-form="searchForm"
                                  data-export-fields="exportFields"
                                  data-multisort="false"
-                                 class="grid-small-font indent">
+                                 class="text-medium indent-medium">
                             </div>
                         </div>
                     </div>

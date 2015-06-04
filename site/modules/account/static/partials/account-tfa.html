@@ -18,7 +18,7 @@
                     <li>
                         Type the 6-digit code from Google Authenticator to verify your configuration:<br><br>
                         <div class="form-group">
-                            <span class="edit-value-tfa"><input id="otpass" type="text" class="col-md-4" value="" data-ng-model="otpass" /></span>
+                            <span class="edit-value-tfa in-line"><input id="otpass" type="text" class="edit-value-tfa col-md-4" value="" data-ng-model="otpass" /></span>
                             <span class="edit-error-tfa" data-ng-show="tfaError" data-translate>Failed to enable TFA</span>
                         </div>
                     </li>
@@ -28,12 +28,12 @@
 
         <div class="modal-footer">
             <div class="pull-right">
-                <button data-ng-click="close()" data-button-focus="false" data-label="Cancel" class="btn grey-new effect-orange-button">Cancel</button>
+                <button data-ng-click="close()" data-button-focus="false" data-label="Cancel" class="btn grey">Cancel</button>
                 <button data-ng-show="qrImage" class="btn orange" data-ng-click="testTwoFactorAuth()" data-translate>Verify</button>
                 <button data-ng-show="!tfaEnabled && !qrImage" data-ng-click="enableTwoFactorAuth()" class="btn orange" data-translate>Enable</button>
                 <button data-ng-show="tfaEnabled" data-ng-click="disableTwoFactorAuth()" class="btn orange" data-translate>Disable</button>
             </div>
-            <div class="pull-right loading-medium-tr loading-tfa" data-ng-show="tfaLoading"></div>
+            <div class="pull-right loading-medium-transparent loading-tfa" data-ng-show="tfaLoading"></div>
         </div>
     </div>
 </div>

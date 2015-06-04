@@ -29,7 +29,7 @@
             var leftPadding = 45;
             if ((drop.offset().left - wnd.scrollLeft() - 20) < leftMenu.width()) {
                 autoScroll = true;
-                var gridTabs = ng.element('.grid-tabs-container');
+                var gridTabs = ng.element('.tabs-container');
                 var scrollContainer = ng.element('body, html');
                 var scrollPosition = drop.offset().left - ng.element('.container-position').position().left - leftPadding;
                 beginScroll(scrollContainer, scrollPosition);

@@ -8,7 +8,9 @@
                 <div class="form-group">
                     <label class="control-label">Key Name</label>
                     <div>
-                        <input type="text" class="col-md-12 ssh-key-name" data-ng-model="data.keyName" placeholder="optional"
+                        <input type="text" class="col-md-12"
+                               data-ng-model="data.keyName"
+                               placeholder="optional"
                                data-ng-disabled="loadingKeys"/>
                     </div>
                 </div>
@@ -23,18 +25,18 @@
                 </div>
             </div>
             <div class="modal-footer modal-footer-ssh">
-                <button data-button-focus="false" data-ng-disabled="loadingKeys" data-ng-click="close('cancel')" class="btn orange effect-orange-button grey-new">Cancel</button>
+                <button data-button-focus="false" data-ng-disabled="loadingKeys" data-ng-click="close('cancel')" class="btn grey">Cancel</button>
             <span data-ng-show="isUploadSshEnabled">
-                <label type="button" data-ng-disabled="loadingKeys" class="btn orange effect-orange-button grey-new upload-key-label" for="uploadInput">upload</label>
+                <label type="button" data-ng-disabled="loadingKeys" class="btn grey" for="uploadInput">upload</label>
                 <input type="file"
                        id="uploadInput"
                        name="uploadInput"
-                       style="display: none"
+                       class="hide"
                        data-ng-model="filePath"
                        onchange="angular.element(this).scope().uploadFile(uploadInput)">
             </span>
-                <button data-button-focus="true" data-ng-disabled="loadingKeys" data-ng-click="close('add')" class="btn orange effect-orange-button">Add</button>
-                <div class="loading-medium-tr" data-ng-show="loadingKeys"></div>
+                <button data-button-focus="true" data-ng-disabled="loadingKeys" data-ng-click="close('add')" class="btn orange">Add</button>
+                <div class="loading-medium-transparent" data-ng-show="loadingKeys"></div>
             </div>
         </div>
     </div>

@@ -10,7 +10,7 @@
 
     <div class="inl-table">
         <div class="left-part">
-            <div class="panel-group" id="imageDetails">
+            <div class="panel-group image-details" id="imageDetails">
                 <div class="panel panel-default">
                     <div class="panel-heading">
                         <a class="accordion-toggle toggle-icon" data-toggle="collapse" data-parent="#imageDetails"
@@ -114,8 +114,8 @@
                                 </div>
                                 <div class="pull-right">
                                     <div class="loading-medium loading-medium-inline" data-ng-show="currentImage.state == 'deleting' || loading"></div>
-                                    <button class="btn light effect-orange-button" data-ng-click="cancel()" data-ng-disabled="loading">Cancel</button>
-                                    <button class="btn light effect-orange-button" data-ng-click="deleteImage()" data-ng-disabled="currentImage.state !== 'active' || loading">Delete</button>
+                                    <button class="btn" data-ng-click="cancel()" data-ng-disabled="loading">Cancel</button>
+                                    <button class="btn" data-ng-click="deleteImage()" data-ng-disabled="currentImage.state !== 'active' || loading">Delete</button>
                                     <button class="btn orange" data-ng-click="updateImage()" data-ng-disabled="loading || imageForm.imageName.$error.required || imageForm.imageName.$error.imageName || imageForm.imageVersion.$error.required || imageForm.imageVersion.$error.imageName || currentImage.state !== 'active'">Save</button>
                                 </div>
                             </form>

@@ -1,11 +1,11 @@
-<div class="nav-tabs details">
+<div class="tabs-container">
     <span data-ng-repeat="tab in tabs">
         <input type="radio"
                name="{{tab}}"
                id="tab{{tab}}"
-               class="grid-tab-radio"
+               class="tab-radio"
                data-ng-click="setActive(tab)"
                data-ng-checked="isActive(tab)"/>
-        <label for="tab{{tab}}" class="grid-tab dashboard">{{tab}}</label>
+        <label for="tab{{tab}}" class="tabs dashboard">{{tab}}</label>
     </span>
 </div>

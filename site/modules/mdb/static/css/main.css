@@ -1,115 +1,82 @@
-.page-title-btn
-{
-    margin-top: -75px;
+.page-title-btn .btn.big {
+    width: 235px;
 }
 
-.page-title-btn .btn-big
-{
-    width: 235px !important;
-}
-
-.debugger-action-btn
-{
+.debugger-action-btn {
     width: 153px;
 }
 
-.column-container
-{
+.column-container {
     white-space: nowrap;
 }
 
-.column
-{
+.column {
     display: inline-block;
 
     vertical-align: top;
 }
 
-.mdb-column-label
-{
+.mdb-column-label {
     min-width: 383px;
 }
 
-.mdb-common-container
-{
+.mdb-common-container {
     margin-bottom: 20px;
     padding: 0 20px 0 0;
 }
 
-.mdb-counters-container
-{
+.mdb-counters-container {
     padding: 0 0 0 50px;
 
     border-left: 1px solid #ccc;
 }
 
-.mdb-common-table
-{
+.mdb-common-table {
     width: 100%;
 }
 
-.mdb-common-table td
-{
+.mdb-common-table td {
     padding: 1px 0;
 }
 
-.mdb-counter-row td
-{
+.mdb-counter-row td {
     padding-top: 7px;
     padding-right: 10px;
 }
 
-.mdb-counter-row td:first-child
-{
-    font-weight: bold;
-
+.mdb-counter-row td:first-child {
     text-align: right;
+
+    font-weight: bold;
 }
 
-.estimate-time
-{
+.estimate-time {
     height: 34px;
 }
 
-#collapse_objects,
-#collapse_modules
-{
+.collapse-objects,
+.collapse-modules {
     padding-top: 0;
     padding-bottom: 0;
 }
 
-.page-header
-{
+.page-header {
     padding-top: 7px;
 }
 
-/* TODO: move it to main.css and remove hardcode from all modules which has accordion */
-
-.panel-heading .accordion-toggle
-{
-    display: block;
-
-    padding: 8px 15px;
-
-    cursor: pointer;
-}
-
 .col-md-8,
-.col-md-4
-{
+.col-md-4 {
     padding-left: 0;
 }
 
-.file-label
-{
+.file-label {
     display: inline-flex;
     display: -ms-inline-flexbox;
 
     margin-top: 8px;
 }
 
-.file-name
-{
+.file-name {
     display: inline-block;
     overflow: hidden;
 

@@ -9,7 +9,7 @@ html(lang='en',data-ng-app='JoyentPortal',id="ng-app", data-ng-controller='MainC
   body()
     div(data-ng-switch='subview', class='ng-cloak', ng-cloak)
       each layout in layouts
-        div(data-ng-switch-when='#{layout.module}',class='modulizer-module-#{layout.module}',data-ng-controller='#{layout.module}.LayoutController')!= layout.data
+        div(data-ng-switch-when='#{layout.module}',class='module-#{layout.module}',data-ng-controller='#{layout.module}.LayoutController')!= layout.data
 
     each link in js
       script(type='text/javascript',src='#{link._url}')

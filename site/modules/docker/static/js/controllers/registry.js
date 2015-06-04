@@ -188,7 +188,7 @@
                             {
                                 label: 'Tag',
                                 getClass: function () {
-                                    return 'btn grid-mini-btn download effect-orange-button';
+                                    return 'btn small grey';
                                 },
                                 disabled: function (object) {
                                     return object.loading || object.processing || object.actionInProgress;

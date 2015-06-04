@@ -1,0 +1,59 @@
+.loading-small {
+    display: block;
+
+    width: 14px;
+    height: 14px;
+
+    background: url('../img/ajax-loader.gif') no-repeat 50% 50%;
+}
+
+.loading-medium {
+    background: url('../img/icon-loading-medium.gif') no-repeat 50% 50%;
+}
+
+.loading-medium-transparent {
+    background: transparent url('../img/spiner-transparent.gif') no-repeat 50% 50%;
+}
+
+.loading-medium,
+.loading-medium-transparent {
+    display: inline-block;
+
+    width: 30px;
+    height: 34px;
+
+    vertical-align: middle;
+}
+.loading-medium.full-width,
+.loading-medium-transparent.full-width {
+    width: 100%;
+}
+
+.docker-wrapper .loading-medium-transparent {
+    position: absolute;
+    top: 150px;
+
+    display: block;
+
+    width: 230px;
+}
+
+.loading-medium.item {
+    height: 24px;
+}
+
+.loading-large {
+    height: 100px;
+    min-height: 100px;
+
+    background: url('../img/icon-loading-large.gif') no-repeat 50% 50%;
+}
+
+.loading-tfa {
+    margin-right: 5px;
+}
+
+.loading-small.progress-small {
+    height: 20px;
+    margin-right: 12px;
+}

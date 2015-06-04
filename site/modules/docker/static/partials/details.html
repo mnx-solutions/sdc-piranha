@@ -29,7 +29,7 @@
                       data-ng-show="container.state">
                     <span class="loading-small pull-left" data-ng-show="actionInProgress"></span>
                     <i class="glyphicon glyphicon-ok" data-ng-show="container.state == 'running' && !actionInProgress"></i>
-                    <i class="warn_icon" data-ng-show="container.state == 'stopped' && !actionInProgress"></i>
+                    <i class="warn-icon" data-ng-show="container.state == 'stopped' && !actionInProgress"></i>
                     <span data-translate>{{container.state}}</span>
                 </span>
 
@@ -40,8 +40,8 @@
                         data-placement="top"
                         data-html="true"
                         data-original-title="Click here to start your container."
-                        class="state btn orange font_size tooltip-hover btn-machine-ctrl">
-                    <i class="icon-play"></i>
+                        class="state btn orange tooltip-hover btn-machine-ctrl">
+                    <i class="glyphicon glyphicon-play"></i>
                     <p data-translate>Start</p>
                 </button>
 
@@ -53,8 +53,8 @@
                         data-placement="top"
                         data-html="true"
                         data-original-title="Click here to stop your container."
-                        class="state btn orange font_size tooltip-hover btn-machine-ctrl">
-                    <i class="stop-icon"></i>
+                        class="state btn orange tooltip-hover btn-machine-ctrl">
+                    <i class="glyphicon glyphicon-stop"></i>
                     <p data-translate>Stop</p>
                 </button>
 
@@ -66,8 +66,8 @@
                         data-placement="top"
                         data-html="true"
                         data-original-title="Click here to pause your container."
-                        class="state btn orange font_size tooltip-hover btn-machine-ctrl">
-                    <i class="pause-icon"></i>
+                        class="state btn orange tooltip-hover btn-machine-ctrl">
+                    <i class="glyphicon glyphicon-pause"></i>
                     <p data-translate>Pause</p>
                 </button>
 
@@ -79,8 +79,8 @@
                         data-placement="top"
                         data-html="true"
                         data-original-title="Click here to unpause your container."
-                        class="state btn orange font_size tooltip-hover btn-machine-ctrl">
-                    <i class="icon-play"></i>
+                        class="state btn orange tooltip-hover btn-machine-ctrl">
+                    <i class="glyphicon glyphicon-play"></i>
                     <p data-translate>Unpause</p>
                 </button>
 
@@ -91,8 +91,8 @@
                         data-placement="top"
                         data-html="true"
                         data-original-title="Click here to remove your container."
-                        class="state btn orange font_size tooltip-hover btn-machine-ctrl">
-                    <i class="delete-icon"></i>
+                        class="state btn orange tooltip-hover btn-machine-ctrl">
+                    <i class="glyphicon glyphicon-ban-circle"></i>
                     <p data-translate>Remove</p>
                 </button>
             </div>
@@ -113,7 +113,7 @@
             <div data-ng-if="container.state == 'running' && !actionInProgress && !container.isSdc" data-ng-hide="cadvisorUnavailable">
                 <adviser-graph data-ng-repeat="graph in graphs" type="graph"></adviser-graph>
                 <div class="container-detailed-analytics-btn">
-                    <a id="button-detailed-analytics" href="#!/docker/analytics/{{machine.id}}/{{container.infoId}}" class="btn light pull-right effect-orange-button"><i class="chart-icon"></i>View Detailed Analytics</a>
+                    <a id="button-detailed-analytics" href="#!/docker/analytics/{{machine.id}}/{{container.infoId}}" class="btn pull-right"><i class="chart-icon"></i>View Detailed Analytics</a>
                 </div>
             </div>
             <div data-ng-show="cadvisorUnavailable && container.state == 'running'" class="container-cadvisor-unavailable">cAdvisor unavailable</div>

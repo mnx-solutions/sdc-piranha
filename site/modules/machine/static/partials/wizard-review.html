@@ -4,8 +4,8 @@
             <td>
                 <div class="left small-icon"
                      data-ng-class="selectedDataset.name | logo">
-                    <p>IMAGE:</p><button class="btn small-btn effect-orange-button" data-ng-hide="isChangeImageDenied()" data-ng-click="reconfigure(0)" data-target="#provisionCarousel" data-slide-to="0">Change</button>
-                    <span><h2>{{selectedDataset.name}}</h2></span>
+                    <p>IMAGE:</p><button class="btn small" data-ng-hide="isChangeImageDenied()" data-ng-click="reconfigure(0)" data-target="#provisionCarousel" data-slide-to="0">Change</button>
+                    <div class="section-title">{{selectedDataset.name}}</div>
                     <div class="dataset-desc crop text-wrap">{{selectedDataset.description}}</div>
 
                     <p data-ng-show="manyVersions[selectedDataset.visibility][selectedDataset.name]">IMAGE VERSION:</p>
@@ -16,7 +16,7 @@
             </td>
             <td class="separator">
                 <div class="center">
-                    <p>PACKAGE:</p><button class="btn small-btn effect-orange-button" data-ng-click="reconfigure(1)" data-slide="prev">Change</button>
+                    <p>PACKAGE:</p><button class="btn small" data-ng-click="reconfigure(1)" data-slide="prev">Change</button>
                     <div class="package">
                         <div class="name">Configuration</div>
                         <div class="value">{{selectedPackageInfo.short_name}}</div>
@@ -40,21 +40,21 @@
                     <div class="cost" data-ng-show="features.billing == 'enabled'">
                         <p>COST:</p>
                         <div class="dataset-cost">
-                            <h3>${{selectedPackageInfo.full_price || selectedPackageInfo.price}}</h3>
+                            <span class="price-current">${{selectedPackageInfo.full_price || selectedPackageInfo.price}}</span>
                             <p class="small-text-info">per hour</p>
                         </div>
                         <div class="dataset-cost">
-                            <h3>${{selectedPackageInfo.full_price_month || selectedPackageInfo.price_month}}</h3>
+                            <span class="price-current">${{selectedPackageInfo.full_price_month || selectedPackageInfo.price_month}}</span>
                             <p class="small-text-info">est. monthly</p>
                         </div>
                      </div>
                 </div>
             </td>
             <td>
-                <form name="provisionForm" id="provision-form">
+                <form name="provisionForm" id="provision-form" class="provision-form">
                     <div class="right">
                         <p class="title-box-3">OPTIONAL SETTINGS:</p>
-                        <span><h2 class="instance-name-optional">Name Instance</h2><p>(Optional)</p></span>
+                        <span><span class="section-title instance-name-optional">Name Instance</span><p>(Optional)</p></span>
                         <input name="machineName"
                                type="text"
                                data-ng-model="data.name"
@@ -86,8 +86,8 @@
                              data-translate>
                             Machine name is already in use
                         </div>
-                        <div>
-                            <h2>Networks</h2>
+                        <div class="section-title">
+                            Networks
                         </div>
                         <div class="networks-box-3">
                             <div class="clearfix" data-ng-repeat="network in networks track by $index">
@@ -102,8 +102,8 @@
                                 <span class="network-name" data-ng-click="selectNetworkCheckbox(network.id)">{{network.name}}</span>
                             </div>
                          </div>
-                        <div>
-                            <h2>Tags</h2>
+                        <div class="section-title">
+                            Tags
                         </div>
                         <p class="tags-text-p">Tags are metadata stored as key-value pairs to make it easier for you to find, sort, and identify your instances.</p>
                         <div class="create-tags ci-tags"
@@ -113,7 +113,7 @@
                              data-review="true">
                         </div>
                         <div class="metadata-section" data-ng-show="instanceMetadataEnabled">
-                            <div><h2>Metadata</h2></div>
+                            <div class="section-title">Metadata</div>
                             <div class="create-mdata ci-tags"
                                  data-machine-collection
                                  data-collection="data.metadata"
@@ -125,7 +125,7 @@
                                 data-ng-disabled="provisionForm.$invalid || provisioningInProgress"
                                 data-ng-click="clickProvision()"
                                 data-translate>{{getCreateTitle()}}</button>
-                        <div class="loading-medium-transparent indicator create-instance-btn-pos pull-right" data-ng-show="provisioningInProgress"></div>
+                        <div class="loading-medium-transparent create-instance-btn-pos pull-right" data-ng-show="provisioningInProgress"></div>
                     </div>
                 </form>
             </td>

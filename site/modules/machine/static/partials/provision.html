@@ -7,7 +7,7 @@
             <div class="wizard-steps">
                 <div data-ng-repeat="provisionStep in provisionSteps" data-ng-hide="provisionStep.hide" data-ng-class="{'firststep': $first , 'active-step': currentPageIndex == $index}">
                     <p data-ng-show="currentPageIndex >= $index + 1">
-                        <span class="breadcrumb current-step"
+                        <span class="current-step"
                               data-target="#provisionCarousel"
                               data-ng-click="reconfigure($index)"
                               data-ng-slide-to="$index">{{provisionStep.name}}</span>
@@ -18,7 +18,7 @@
             </div>
             <div class="row carousel-container">
                 <div class="col-md-8 provisioning-carousel-span">
-                    <div id="provisionCarousel" class="carousel slide dpl-inline">
+                    <div id="provisionCarousel" class="carousel slide in-line">
                         <div class="carousel-inner provisioning-carousel-inner-box advanced-table"
                              data-ng-class="{'loading-medium':reloading}">
                             <div data-ng-repeat="provisionStep in provisionSteps" data-ng-class="{'active': $first}"

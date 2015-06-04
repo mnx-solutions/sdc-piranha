@@ -944,7 +944,7 @@
                     btn: {
                         label: 'Edit',
                         getClass: function () {
-                            return 'btn-edit ci effect-orange-button';
+                            return 'btn grey';
                         },
                         disabled: function () {
                             return $scope.loading;

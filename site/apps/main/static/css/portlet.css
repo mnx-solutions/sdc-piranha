@@ -1,0 +1,90 @@
+.portlet {
+    clear: both;
+
+    margin-top: 0;
+    margin-bottom: 25px;
+    padding: 0;
+
+    text-shadow: none;
+}
+
+.portlet-title {
+    margin-bottom: 15px;
+
+    border-bottom: 1px solid #eee;
+    text-shadow: none;
+}
+
+.portlet-title:after,
+.portlet-title:before {
+    display: table;
+
+    content: '';
+
+    line-height: 0;
+}
+
+.portlet-title:after {
+    clear: both;
+}
+
+.portlet-title .caption {
+    display: inline-block;
+
+    margin: 0 0 7px 0;
+    padding: 0;
+
+    text-align: left;
+    text-transform: uppercase;
+
+    color: black;
+
+    font-size: 18px;
+    font-weight: 400;
+}
+
+.portlet-body {
+    clear: both;
+
+    padding: 0;
+
+    text-shadow: none;
+}
+
+.portlet-body.light-grey,
+.portlet.light-grey {
+    background-color: #fafafa;
+}
+
+.portlet.box .portlet-title {
+    padding: 8px 10px 2px 10px;
+
+    border-bottom: 1px solid #eee;
+}
+
+.portlet.box .portlet-body {
+    padding: 10px;
+
+    background-color: #fff;
+}
+
+.portlet.box .portlet-title {
+    margin-bottom: 0;
+}
+
+.portlet.box.light-grey .portlet-title {
+    background-color: #aaa;
+}
+
+.portlet.box.light-grey {
+    border: 1px solid #eee;
+    border-top: 0;
+}
+.portlet.box .portlet-title,
+.portlet.box.light-grey > .portlet-title .caption > i {
+    color: #fff;
+}
+
+.portlet-body.as-table.videos {
+    height: 150px;
+}

@@ -73,7 +73,7 @@
                                         {
                                             result: 'cancel',
                                             label: 'Take me out',
-                                            cssClass: 'btn pull-left grey-new effect-orange-button',
+                                            cssClass: 'btn pull-left grey',
                                             setFocus: false
                                         },
                                         {

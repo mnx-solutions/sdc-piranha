@@ -1,20 +1,19 @@
-<div class="navbar-container">
+<div class="header">
     <div class="container-fluid">
-        <a href="#!/dashboard" class="navbar-brand"></a>
-        <a class="navbar-btn collapsed" data-toggle="collapse" data-target=".navbar-collapse">
-        </a>
-        <ul class="nav navbar-nav pull-right">
-            <li class="dropdown" data-ng-show="!account.provisionEnabled && account">
-                <button data-ng-click="completeAccount()" class="btn-old-style btn-joyent-orange">Complete Account Information</button>
-            </li>
-            <li class="dropdown" data-ng-show="features.skinChange == 'enabled'">
+        <a href="#!/dashboard" class="brand"></a>
+        <span class="pull-right menu">
+            <span data-ng-show="!account.provisionEnabled && account">
+                <button data-ng-click="completeAccount()" class="btn old-style">Complete Account Information</button>
+            </span>
+            <span data-ng-show="features.skinChange == 'enabled'">
                 <button data-ng-click="skinChange()" class="old-portal">Return to the old portal</button>
-            </li>
-            <li class="dropdown" data-ng-show="features.systemStatus == 'enabled'">
+            </span>
+            
+            <span class="dropdown user" data-ng-show="features.systemStatus == 'enabled'">
                 <a href="javascript:void(0)" class="dropdown-toggle" data-toggle="dropdown">
                     <span class="glyphicon glyphicon-bell"></span>
                     <span class="username">Service Status</span>
-                    <i class="icon-arrow-down-user"></i>
+                    <i class="arrow-down"></i>
                 </a>
                 <ul class="dropdown-menu" data-ng-class="{'service-status': systemStatusTopics.length > 0}">
                     <li data-ng-repeat="topic in systemStatusTopics | limitTo:7">
@@ -25,36 +24,33 @@
                         </a>
                     </li>
                     <div class="service-status-btn-wrapper pull-right">
-                        <a class="btn light effect-orange-button" href="https://help.joyent.com/forums/21769270-Incidents-Notifications" target="_blank">View Older System Updates</a>
+                        <a class="btn" href="https://help.joyent.com/forums/21769270-Incidents-Notifications" target="_blank">View Older System Updates</a>
                     </div>
                 </ul>
-            </li>
-            <li class="dropdown" data-ng-show="features.zendesk == 'enabled'">
-                <a href="https://help.joyent.com/home" target="_blank" class="dropdown-toggle">
-                    <i class="header_icon support_icon"></i>
-                    <span class="username">Support</span>
-                </a>
-            </li>
-            <li class="dropdown">
-                <a href="http://www.joyent.com/developers" target="_blank" class="dropdown-toggle">
-                    <i class="header_icon info_icon"></i>
-                    <span class="username">DevCenter</span>
-                </a>
-            </li>
-            <li class="loading-small load-user-name" data-ng-hide="account.login"></li>
-            <li class="dropdown user" data-ng-show="account.login">
+            </span>
+            
+            <a href="https://help.joyent.com/home" target="_blank">
+                <i class="support-icon"></i>
+                <span>Support</span>
+            </a>
+            <a href="http://www.joyent.com/developers" target="_blank">
+                <i class="dev-center-icon"></i>
+                <span>DevCenter</span>
+            </a>
+            <span class="loading-small account-loading" data-ng-hide="account.login"></span>
+            <span class="dropdown user" data-ng-show="account.login">
                 <a href="javascript:void(0)" class="dropdown-toggle" data-toggle="dropdown">
                     <span class="username">{{subuserAccountName || account.login}}</span>
-                    <i class="icon-arrow-down-user"></i>
+                    <i class="arrow-down"></i>
                 </a>
-                <ul class="dropdown-menu dd-account" data-ng-class="{'dropdown-menu-subuser': subuserAccountName}">
+                <ul class="dropdown-menu dd-account">
                     <li><a id="link-account" href="#!/account"><span class="glyphicon glyphicon-user"></span> Account</a></li>
                     <li data-ng-show="features.provisioningLimits == 'enabled'"><a href="#!/limits"><span class="glyphicon glyphicon-tasks"></span> Provisioning Limits</a></li>
                     <li><a data-ng-click="changePassword()"><span class="glyphicon glyphicon-lock"></span> Change Password</a></li>
                     <li data-ng-hide="account.isSubuser"><a data-ng-click="changeTfa()"><span class="two-keys"></span> Two Factor Authentication</a></li>
-                    <li data-ng-show="trackingSuccess || features.marketo == 'disabled'"><a href="/landing/forgetToken"><span class="icon-signout"></span> Log Out</a></li>
+                    <li data-ng-show="trackingSuccess || features.marketo == 'disabled'"><a href="/landing/forgetToken"><span class="glyphicon glyphicon-off"></span> Log Out</a></li>
                 </ul>
-            </li>
-        </ul>
+            </span>
+        </span>
     </div>
 </div>

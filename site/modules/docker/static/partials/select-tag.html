@@ -4,7 +4,7 @@
             <div class="modal-header message">
                 <h5><i class="glyphicon glyphicon-info-sign"></i><b>Pull Image {{name}}</b></h5>
             </div>
-            <div class="modal-body loading-medium" data-ng-show="loading"></div>
+            <div class="loading-medium full-width indent-small" data-ng-show="loading"></div>
             <div data-ng-hide="loading" class="modal-body multi-select">
                 <form name="selectTagForm" class="selectTagForm">
                     <div class="form-group">
@@ -32,7 +32,7 @@
                 </form>
             </div>
             <div class="modal-footer">
-                <button data-ng-click="close()" data-button-focus="false" data-label="Cancel" class="btn grey-new effect-orange-button">Cancel</button>
+                <button data-ng-click="close()" data-button-focus="false" data-label="Cancel" class="btn grey">Cancel</button>
                 <button data-ng-click="pullImage()" data-button-focus="true" data-ng-disabled="selectTagForm.$invalid || !selectedHosts.length" class="btn orange">Pull</button>
             </div>
         </div>

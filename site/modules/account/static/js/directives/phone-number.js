@@ -166,17 +166,13 @@ var AREACODE_NORMALIZE_MAP = {
                     };
 
                     $scope.$watch('elWidth', function (width) {
-                        if(width) {
-                            $scope.selectStyle = {
-                                width: width + 'px'
-                            };
+                        if (width) {
+                            $scope.selectStyle = width + 'px';
                             $scope.inputStyle = {
-                                width: width - 75 + 'px'
+                                width: width - 62 + 'px'
                             };
                         } else {
-                            $scope.selectStyle = {
-                                width: '100%'
-                            };
+                            $scope.selectStyle = '100%';
                             $scope.inputStyle = {
                                 width: '91%'
                             };

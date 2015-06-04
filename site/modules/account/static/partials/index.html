@@ -1,15 +1,15 @@
 <div data-ng-controller="AccountController">
-					<div class="span1 loading-medium-after-h1" data-ng-show="loading" ></div>
-    <div class="container-fluid container-position" data-ng-show="!loading">
+    <div class="container-fluid container-position">
         <div class="page-header row">
             <h3 class="page-title">Account Summary</h3>
         </div>
-        <div class="row">
+        <div class="loading-large col-md-12" data-ng-show="loading"></div>
+        <div class="row" data-ng-hide="loading">
             <span class="account first-block pull-left">
                 <fieldset>
                     <legend>
                         <span data-translate>Your Profile</span>
-                        <a href="#!/account/edit/" class="edit-btn effect-orange-button" data-translate>Edit</a>
+                        <a href="#!/account/edit/" class="btn small" data-translate>Edit</a>
                     </legend>
 
                     <div class="row">
@@ -44,7 +44,7 @@
                 <fieldset data-ng-hide="account.isSubuser || features.billing == 'disabled'">
                     <legend>
                         <span>Billing Information</span>
-                        <a href="#!/account/payment/" class="edit-btn effect-orange-button">Edit</a>
+                        <a href="#!/account/payment/" class="btn small">Edit</a>
                     </legend>
 
                     <div class="row">

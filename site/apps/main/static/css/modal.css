@@ -1,0 +1,241 @@
+.modal {
+    display: block;
+    overflow-y: auto;
+
+    border-radius: 0;
+}
+
+.modal-body .span12 {
+    width: 100%;
+}
+.modal-dialog {
+    width: 600px;
+    margin: 30px auto;
+}
+
+.modal-header {
+    height: 59px;
+}
+
+.modal-header.message,
+.modal-header.confirm {
+    background-color: #f60;
+}
+
+.modal-header.error {
+    background-color: #f00;
+}
+
+.modal-header b {
+    display: inline-block;
+    overflow: hidden;
+
+    width: 90%;
+
+    vertical-align: top;
+}
+
+.modal-footer {
+    margin-bottom: 0;
+    padding: 14px 15px 15px;
+
+    text-align: right;
+    overflow: hidden;
+
+    border-top: 1px solid #eee;
+    -webkit-border-radius: 0;
+       -moz-border-radius: 0;
+            border-radius: 0;
+    background-color: #f5f5f5;
+    -webkit-box-shadow: inset 0 1px 0 #fff;
+       -moz-box-shadow: inset 0 1px 0 #fff;
+            box-shadow: inset 0 1px 0 #fff;
+}
+.modal-dialog .modal-ssh {
+    width: 408px;
+}
+
+.modal-dialog-ssh {
+    width: 410px;
+}
+
+.modal-dialog-ssh .ssh-key-name,
+.modal-dialog-ssh .ssharea {
+    min-width: 368px;
+}
+
+.modal-dialog-ssh .form-group,
+.control-group-ssh {
+    margin-bottom: 0;
+}
+.control-group-ssh .control-label {
+    padding-top: 5px;
+}
+
+textarea.ssharea {
+    margin-bottom: 0;
+    padding: 0 0 0 6px;
+}
+
+.modal-footer-ssh {
+    box-sizing: content-box;
+    height: 32px;
+}
+
+.modal-footer-ssh .btn {
+    margin-left: 5px;
+}
+.modal-footer-text {
+    display: inline-block;
+
+    padding: 0 10px;
+}
+.modal-body textarea {
+    resize: vertical;
+}
+
+.modal form {
+    margin: 0;
+}
+
+.modal-body.multi-select {
+    width: 485px;
+    margin: 0 auto;
+}
+.modal-dialog .file-manager {
+    width: 578px;
+}
+
+.modal-dialog-file {
+    width: 580px;
+}
+
+.modal-dialog-role-tag {
+    min-width: 540px;
+}
+
+.modal-body {
+    overflow-x: hidden;
+    overflow-y: auto;
+
+    box-sizing: content-box;
+    max-height: 400px;
+
+    word-wrap: break-word;
+}
+
+.file-manager .modal-body {
+    overflow-y: hidden;
+
+    max-height: 509px;
+
+    word-wrap: normal;
+}
+
+.modal .folder-container {
+    width: 544px;
+    padding-bottom: 0;
+}
+
+.modal-backdrop,
+.modal-backdrop.fade.in {
+    opacity: .8;
+}
+
+.modal-open .modal {
+    overflow-x: auto;
+    overflow-y: auto;
+}
+
+.modal-footer {
+    margin-top: 0;
+}
+
+.modal-header {
+    height: 59px;
+    padding: 9px 15px;
+
+    word-wrap: break-word;
+
+    color: white;
+    border-bottom: 1px solid #eee;
+}
+
+.modal-header .glyphicon {
+    vertical-align: top;
+}
+.modal-dialog .change-pass {
+    width: 416px;
+}
+.modal-dialog-pass {
+    width: 418px;
+}
+@media (min-width: 992px) {
+    .modal-dialog-find-images {
+        width: 960px;
+    }
+}
+
+.modal ~ .modal .modal-dialog {
+    z-index: 9999991;
+
+    margin-top: 110px;
+}
+
+.modal-dialog-find-images .form-group {
+    margin: 10px 0;
+}
+
+
+.modal-dialog-push-image .form-group span.edit-label,
+.modal-dialog-find-images .form-group span.edit-label {
+    display: inline-block;
+
+    width: 20%;
+    margin-right: 10px;
+
+    text-align: right;
+}
+.modal-dialog-find-images .configurationForm .edit-value {
+    width: 45%;
+
+    vertical-align: bottom;
+}
+.modal-dialog-find-images .configurationForm .edit-value input {
+    width: 91%;
+}
+.modal-dialog-find-images .configurationForm button {
+    vertical-align: top;
+}
+
+.modal-select-tag .edit-value,
+.modal-select-tag .edit-value input {
+    width: 300px;
+}
+.modal-select-tag .edit-label {
+    display: inline-block;
+
+    width: 120px;
+    margin: 0 20px 0 40px;
+}
+.modal-select-tag .edit-label.left {
+    margin: 0;
+}
+.modal-select-tag .form-group .error {
+    margin-left: 185px;
+}
+
+.modal-dialog-new-registry {
+    width: 630px;
+}
+.modal-rename-image .edit-label {
+    margin-right: 10px;
+}
+.modal-dialog-choose-package {
+    width: 800px;
+}
+.modal-select-tag {
+    overflow: auto;
+
+    min-width: 530px;
+}

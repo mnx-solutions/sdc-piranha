@@ -2,8 +2,9 @@
         <div data-ng-show="selectedPackageInfo" class="preselected pull-right">
             <div class="info small-icon"
                  data-ng-class="selectedDataset.name | logo">
-                <p>IMAGE:</p><button class="btn small-btn effect-orange-button" data-ng-hide="isChangeImageDenied()" data-ng-click="reconfigure(0)" id="prev" data-slide="prev">Change</button>
-                <span><h2>{{selectedDataset.name}}</h2></span>
+                <p>IMAGE:</p>
+                <button class="btn small" data-ng-hide="isChangeImageDenied()" data-ng-click="reconfigure(0)" id="prev" data-slide="prev">Change</button>
+                <div class="section-title">{{selectedDataset.name}}</div>
                 <div class="dataset-desc crop text-wrap">{{selectedDataset.description}}</div>
 
                 <p data-ng-show="manyVersions[selectedDataset.visibility][selectedDataset.name]">IMAGE VERSION:</p>
@@ -12,7 +13,7 @@
                 </div>
                 <div class="dataset-cost cost" data-ng-show="features.billing == 'enabled'">
                     <p>EST. MONTHLY COST:</p>
-                    <h3>${{selectedPackageInfo.full_price_month || selectedPackageInfo.price_month}}</h3>
+                    <span class="price-current">${{selectedPackageInfo.full_price_month || selectedPackageInfo.price_month}}</span>
                 </div>
                 <div class="pull-right">
                     <button type="button" id="button-review" class="btn orange review-btn" data-ng-click="reviewPage()">Next</button>
@@ -22,14 +23,14 @@
     <div class="filter-container">
         Filter:
         <div class="btn-group btn-group-filter">
-            <select type="hidden" data-select-two id="filterProperty" class="filter-select" data-item="prop" data-select="filterModel.key" data-fn="selectFilterType">
+            <select type="hidden" width="115" data-select-two id="filterProperty" class="filter-select" data-item="prop" data-select="filterModel.key" data-fn="selectFilterType">
                 <option data-ng-repeat="prop in filterProps" value="{{prop}}">
                     {{prop | uppercase}}
                 </option>
             </select>
         </div>
         <div class="btn-group btn-group-filter" data-ng-show="filterModel.key != 'No filter'">
-            <select type="hidden" data-select-two id="filterPropertyValue" class="filter-select" data-item="prop" data-select="formatFilterValue(filterModel.value)" data-fn="selectFilterValue">
+            <select type="hidden" data-select-two width="140" id="filterPropertyValue" class="filter-select" data-item="prop" data-select="formatFilterValue(filterModel.value)" data-fn="selectFilterValue">
                 <option data-ng-repeat="prop in filterValues[filterModel.key]" value="{{prop}}">
                     {{formatFilterValue(prop)}}
                 </option>

@@ -1,5 +1,5 @@
 <div class="utilization" data-ng-class="{page: showDeleteBtn, block: !showDeleteBtn}">
-    <div class="btn-group margin_btn_0 toggle-graf-width">
+    <div class="btn-group below-zero toggle-graf-width">
         <button data-ng-click="toggleGraph()" id="control_{{$id}}"
                 data-ng-class="{disabled: !ready, btn: true}"
                 class="toggle-graf-btn toggle-btn-bg">
@@ -18,7 +18,7 @@
             </div>
             <div class="legend" id="legend_{{$id}}"></div>
             <div class="graf-radio-group" data-toggle="buttons-radio">
-                <button class="btn default-margin default-margin-mini graf-radio-btn"
+                <button class="graf-radio-btn"
                         data-ng-class="{active: renderer == activeRenderer}"
                         data-ng-hide="heatmap"
                         data-ng-repeat="renderer in renderers"

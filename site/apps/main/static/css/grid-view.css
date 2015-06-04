@@ -1,0 +1,267 @@
+.grid-container {
+    float: left;
+
+    width: 100%;
+}
+.grid-container div,
+.grid-container span {
+    font-size: 12px;
+}
+.grid-container button {
+    padding: 1px 8px;
+}
+.page-row-info {
+    position: relative;
+
+    display: inline-block;
+
+    height: 34px;
+}
+.grid-view-table {
+    padding-top: 25px;
+}
+
+.tabs-container {
+    height: 30px;
+    margin-top: 5px;
+    margin-bottom: 10px;
+
+    border-bottom: 1px solid #ddd;
+}
+
+.grid-container .tabs-container {
+    margin-bottom: -1px;
+}
+
+.tabs-container .select-datacenter {
+    top: -3px;
+
+    display: none;
+}
+
+.tabs-title {
+    padding-right: 5px;
+
+    vertical-align: middle;
+    text-transform: capitalize;
+
+    line-height: 33px;
+}
+
+.tabs {
+    margin-right: 2px;
+    padding: 4px 10px;
+
+    border: 1px solid #ccc;
+    background: #ebebeb;
+
+    font-size: 14px;
+    font-weight: normal;
+}
+
+.tab-radio {
+    position: absolute;
+    left: -1000px;
+
+    visibility: hidden;
+}
+
+.tab-radio:checked + .tabs {
+    border-color: #ddd;
+    border-bottom: 1px solid #fff;
+    background: #fff;
+}
+
+@media screen and (max-width: 1220px) {
+    .item .tab-radio + .tabs {
+        display: none;
+    }
+
+    .tabs-container .select-datacenter {
+        display: inline-block;
+    }
+}
+
+.grid-no-entries {
+    margin-top: 10px;
+    padding-bottom: 20px;
+
+    font-size: 16px;
+}
+
+.grid-no-entries hr {
+    margin-top: 0;
+}
+
+.table-bordered {
+    border-collapse: separate;
+    border-top: 1px solid #ddd;
+    border-right: 0 none;
+    border-bottom: 1px solid #ddd;
+    border-left: 0 none;
+    border-radius: 0;
+}
+
+.table-bordered > tbody > tr > td,
+.table-bordered > thead > tr > th {
+    padding-right: 25px;
+    padding-left: 15px;
+
+    border: 0;
+}
+
+.table {
+    clear: both;
+    overflow: auto;
+
+    max-width: none;
+    margin-bottom: 6px;
+}
+.table th,
+.table td {
+    text-align: left;
+    vertical-align: middle;
+    white-space: nowrap;
+
+    border-top: none;
+
+    line-height: 20px;
+}
+
+.table > tbody > tr > td {
+    padding-top: 0;
+    padding-bottom: 0;
+
+    vertical-align: middle;
+}
+
+.table > thead > tr > th.active {
+    background-color: transparent;
+}
+
+.table td a {
+    text-decoration: none;
+
+    color: #238dc1;
+}
+
+.table .checkbox {
+    padding-left: 2px;
+}
+
+.table .table-title {
+    color: #666;
+}
+
+.table .table-title.active {
+    color: #000;
+}
+
+.table > thead th {
+    padding-top: 5px;
+    padding-bottom: 5px;
+}
+
+.table > thead > .text-medium th {
+    padding-top: 0;
+    padding-bottom: 5px;
+
+    border-bottom: 0;
+}
+
+.table > tbody td {
+    height: 30px;
+    padding-top: 0;
+    padding-bottom: 0;
+}
+
+.table-striped tbody > tr:nth-child(odd) > td,
+.table-striped tbody > tr:nth-child(odd) > th {
+    background-color: #f4f4f4;
+}
+
+.table-hover tbody tr:hover > td,
+.table-hover tbody tr:hover > th {
+    background-color: #f9f9f9;
+}
+input.filter-field {
+    width: 240px;
+    height: 24px;
+    padding-right: 10px;
+    padding-left: 25px;
+
+    color: #666;
+    border: 1px solid #f5f5f5;
+    border-radius: 18px;
+    outline: 0 none;
+    background: #f5f5f5 url('../img/filter-icon.png') no-repeat 7px 7px;
+    background-size: 12px;
+}
+
+input.filter-field::-ms-clear {
+    display: none;
+}
+
+.actions .btn-group .btn {
+    padding: 4px 6px 2px;
+
+    color: #6d6d6d;
+    background-color: #e5e5e5;
+    text-shadow: none;
+}
+.grid-action-btn {
+    text-align: left;
+}
+
+.grid-action-btn button {
+    width: 100px;
+
+    color: #6d6d6d;
+    border: 0;
+    border-radius: 0;
+    outline: 0 none;
+    background-color: #e5e5e5;
+}
+
+.grid-action-btn button:hover {
+    color: white;
+    background-color: #f60;
+}
+
+.grid-status-text {
+    display: inline-block;
+
+    padding-top: 2px;
+}
+
+.grid-enabled-text {
+    color: #afd46c;
+}
+
+.grid-disable-text {
+    color: #000;
+}
+.icon-sort-up,
+.icon-sort-down,
+.icon-unsorted {
+    float: left;
+
+    width: 12px;
+    height: 16px;
+    margin-top: 0;
+    margin-left: -16px;
+
+    background: no-repeat 0 1px;
+}
+
+.icon-sort-up {
+    background-image: url('../img/sort_asc.png');
+}
+
+.icon-sort-down {
+    background-image: url('../img/sort_desc.png');
+}
+
+.icon-unsorted {
+    background-image: url('../img/icon-unsorted.png');
+}

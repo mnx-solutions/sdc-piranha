@@ -2,12 +2,12 @@
 <!--<div class="{{isSignUpForm && 'row-fluid' || 'container span9'}}">-->
 <div class="account">
 
-<form name="paymentForm" novalidate="" id="paymentForm">
+<form name="paymentForm" novalidate="" class="paymentForm">
     <fieldset class="line">
         <legend>
             <a data-ng-click="skipBillingFn()"
                data-ng-show="isSignUpForm && skipBillingVisible"
-               class="btn light effect-orange-button legend-button pull-right" data-translate>Skip</a>
+               class="btn legend-button pull-right" data-translate>Skip</a>
             Credit Card Details
         </legend>
         <div class="form-group">
@@ -375,7 +375,7 @@
                                  data-country="{{phone.country}}"
                                  data-is-error="isError(field, type)"
                 data-required="phoneVisible"
-                data-el-width="220"></span>
+                data-el-width="215"></span>
         </div>
     </fieldset>
     <fieldset class="line" data-ng-show="isPromoVisible()">
@@ -412,8 +412,8 @@
 
     <div data-ng-show="isSignUpForm" class="signup-btn-group">
         <div class="pull-right">
-            <a data-ng-show="isSignUpForm" data-ng-click="signOut()" class="btn light effect-orange-button" data-translate>Cancel Signup Process</a>
-            <a data-ng-show="isSignUpForm && skipBillingVisible" data-ng-click="skipBilling()" class="btn light effect-orange-button" data-translate>Skip</a>
+            <a data-ng-show="isSignUpForm" data-ng-click="signOut()" class="btn" data-translate>Cancel Signup Process</a>
+            <a data-ng-show="isSignUpForm && skipBillingVisible" data-ng-click="skipBilling()" class="btn" data-translate>Skip</a>
             <button class="btn orange" data-ng-click="submitForm()" data-ng-disabled="loading">Complete Account Setup</button>
         </div>
         <div class="loading-medium pull-right" style="width:30px; height:30px;min-width:30px;min-height:30px;" data-ng-show="loading"></div>
@@ -428,10 +428,10 @@
             <span class="orange-asterix-left">&nbsp;required fields</span>
         </div>
         <div class="pull-right">
-            <button class="btn light effect-orange-button" data-ng-hide="!cancelVisible" data-ng-disabled="loading || accountForm.$invalid" data-ng-click="cancelForm()" data-ng-disabled="loading">Cancel</button>
-            <button class="btn orange submit-payment" data-ng-click="submitForm()" data-ng-disabled="loading">{{submitBtnTitle}}</button>
+            <button class="btn" data-ng-hide="!cancelVisible" data-ng-disabled="loading || accountForm.$invalid" data-ng-click="cancelForm()" data-ng-disabled="loading">Cancel</button>
+            <button class="btn orange" data-ng-click="submitForm()" data-ng-disabled="loading">{{submitBtnTitle}}</button>
         </div>
-        <div class="pull-right loading-medium loading-30" data-ng-show="loading"></div>
+        <div class="pull-right loading-medium" data-ng-show="loading"></div>
         <div class="fieldset-spacer"></div>
         <br>
         </div>

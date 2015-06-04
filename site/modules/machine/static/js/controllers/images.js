@@ -113,7 +113,7 @@
                             $scope.provisionInstance(object);
                         },
                         getClass: function () {
-                            return 'grid-small-font btn button ci btn-edit effect-orange-button';
+                            return 'btn gray small';
                         }
                     }
                 },

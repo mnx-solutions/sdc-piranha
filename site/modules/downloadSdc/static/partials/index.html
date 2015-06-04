@@ -9,7 +9,7 @@
         </div>
     </div>
 
-    <div class="dpl-inline">
+    <div class="in-line">
         <div class="pull-left first-column">
             <div class="portlet-body">
                 <h5>Features</h5>
@@ -45,7 +45,7 @@
         <h5>Select Version</h5>
         <form name="versionSDCForm">
             <label class="checkbox select-version">
-                <div class="radio dpl-inline">
+                <div class="radio in-line">
                         <span data-ng-class="{checked: versionSDC == 'coalSdc'}">
                             <input type="radio" name="versionSDC" data-ng-model="versionSDC" value="coalSdc" />
                         </span>
@@ -53,7 +53,7 @@
                 <div class="label-text">SDC VMware Image</div>
             </label>
             <label class="checkbox select-version">
-                <div class="radio dpl-inline">
+                <div class="radio in-line">
                         <span data-ng-class="{checked: versionSDC == 'fullSdc'}">
                             <input type="radio" name="versionSDC" data-ng-model="versionSDC" value="fullSdc" />
                         </span>
@@ -61,7 +61,7 @@
                 <div class="label-text">Full SDC software package</div>
             </label>
             <label class="checkbox select-version select-version-license">
-                <div class="checker dpl-inline">
+                <div class="checker in-line">
                         <span data-ng-class="{checked: acceptLicenseAgreement, disabled: !acceptLicenseAgreement}" data-ng-click="acceptLicense()">
                             <input type="checkbox" name="acceptLicenseAgreement" data-ng-model="acceptLicenseAgreement" data-ng-checked="acceptLicenseAgreement" />
                         </span>

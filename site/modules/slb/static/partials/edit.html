@@ -129,10 +129,10 @@
                                data-ng-change="validatePort('toPort', true)"/>
                     </span>
                 </div>
-                <table class="table table-striped table-bordered table-hover table-full-width">
+                <table class="table table-striped table-bordered table-hover">
                     <thead>
                     <tr>
-                        <th class="hidden-480"></th>
+                        <th></th>
                         <th class="table-title sortable">
                             <div class="block" data-translate>Name</div>
                         </th>
@@ -181,7 +181,7 @@
                 <span data-ng-hide="balancerId" class="ng-scope" data-translate>Create</span>
             </button>
             <button data-ng-show="balancerId" data-ng-disabled="!editForm.$valid" data-ng-click="delete()"
-                    class="btn light pull-right delete-btn-pos" data-translate="">
+                    class="btn pull-right delete-btn-pos" data-translate="">
                 <span data-translate>Delete</span>
             </button>
             <div class="pull-right loading-medium load-pos" data-ng-show="saving"></div>

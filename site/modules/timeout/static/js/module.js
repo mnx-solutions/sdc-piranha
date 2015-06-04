@@ -57,7 +57,7 @@ window.JP.createModule('timeout', [ 'notification' ])
                     {
                         result: 'cancel',
                         label: 'Log out',
-                        cssClass: 'btn orange grey-new effect-orange-button',
+                        cssClass: 'btn grey',
                         setFocus: false
                     },
                     {

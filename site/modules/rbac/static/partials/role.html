@@ -22,7 +22,7 @@
                         </div>
                         <div id="collapse_summary" class="panel-collapse collapse in">
                             <div class="panel-body">
-                                <div class="dpl-inline">
+                                <div class="in-line">
                                     <form name="roleForm">
                                         <div class="form-group" data-ng-show="role.id.length">
                                             <span class="edit-name">ID</span>
@@ -112,8 +112,8 @@
         <div class="row btn-bottom-block" data-ng-hide="loading">
             <span class="orange-asterix-left">required fields</span>
             <div class="pull-right">
-                <button class="btn light effect-orange-button" data-ng-click="cancel()">Cancel</button>
-                <button class="btn light effect-orange-button" data-ng-show="role.id" data-ng-click="deleteRole()">Delete</button>
+                <button class="btn" data-ng-click="cancel()">Cancel</button>
+                <button class="btn" data-ng-show="role.id" data-ng-click="deleteRole()">Delete</button>
                 <button class="btn orange" data-ng-click="createRole()" data-ng-hide="role.id">Create Role</button>
                 <button class="btn orange" data-ng-click="updateRole()" data-ng-show="role.id">Save Role</button>
             </div>

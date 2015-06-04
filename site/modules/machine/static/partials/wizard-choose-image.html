@@ -1,6 +1,6 @@
 <div class="container-min-width wizard-first-step">
-    <div class="dpl-inline">
-        <input type="text" class="filter-field filter-images" placeholder="Search image" data-ng-model="filterModel.searchText" data-translate="placeholder" />
+    <div class="in-line">
+        <input type="search" class="filter-images filter-field" placeholder="Search image" data-ng-model="filterModel.searchText" data-translate="placeholder" />
     </div>
     <span class="select-name">
             Data Center:
@@ -44,7 +44,7 @@
     </div>
 </div>
 <div class="advanced-table tooltip-hover">
-    <div data-ng-show="(datasets | filter:filterDatasetsByVisibility).length == 0 && !reloading" class="font-size16">
+    <div data-ng-show="(datasets | filter:filterDatasetsByVisibility).length == 0 && !reloading" class="notified">
         No {{instanceType | lowercase}} images in this data center.
     </div>
     <div data-ng-hide="reloading" data-ng-repeat="dataset in (datasets | orderBy:['type','name']) | filter:filterDatasets | filter:filterDatasetsByOS | filter:filterDatasetsByVisibility">
