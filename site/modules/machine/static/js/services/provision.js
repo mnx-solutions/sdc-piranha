@@ -343,7 +343,9 @@
                         listVersions[datasetVisibility][datasetName] || [];
                     var datasetVersions = versions[datasetVisibility][datasetName];
 
-                    operatingSystems[dataset.os] = 1;
+                    if (dataset.os) {
+                        operatingSystems[dataset.os] = 1;
+                    }
                     dataset.limit = checkLimit(dataset.id);
 
                     if (!datasetVersions) {
