@@ -16,7 +16,7 @@
             $scope.tabs = ['Summary', 'Docker Summary'];
             $scope.activeTab = $scope.tabs[0];
             $scope.machine = Machine.machine(machineid);
-            $scope.containerDetailsAvailable = $scope.machine.tags.sdc_docker && $scope.features.docker !== 'disabled' ;
+            $scope.containerDetailsAvailable = $scope.machine.tags && $scope.machine.tags.sdc_docker && $scope.features.docker !== 'disabled' ;
         }
 
     ]);
