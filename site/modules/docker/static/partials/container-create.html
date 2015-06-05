@@ -191,13 +191,19 @@
                         </div>
                     </div>
                     <div data-ng-hide="createImage" class="group-label">Volumes</div>
-                    <div data-ng-hide="createImage" data-ng-if="containers" class="form-group volume-section">
-                        <span class="edit-label">From</span><!--
-                            --><span class="edit-value">
+                    <div data-ng-hide="createImage" class="form-group volume-section">
+                        <span class="edit-label" data-ng-if="containers">From</span><!--
+                            --><span class="edit-value" data-ng-if="containers">
                            <dropdown-select output="NamesStr" result="NamesStr" multiple on-focus="setNotation('VOLUMES_FROM')"
                                             data-preselected-items="container.HostConfig.VolumesFrom" data-dropdown-data="containers"></dropdown-select>
                         </span>
+                        <span class="edit-label">"Host" volumes</span><!--
+                            --><span class="edit-value">
+                           <dropdown-select multiple tags-available validation="^(https?:\/\/?.*):(\/[^:]+)(:r[ow])?$" on-focus="setNotation('VOLUMES_URL')"
+                                            data-preselected-items="container.HostConfig.Binds"></dropdown-select>
+                        </span>
                     </div>
+
                     <div class="form-group volume-section" data-ng-if="!host.isSdc">
                         <span class="edit-label">Volumes</span><!--
                             --><span class="edit-value">

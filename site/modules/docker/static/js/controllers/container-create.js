@@ -33,6 +33,10 @@
                     MEMORY_SWAP: 'Total memory usage (memory + swap)',
                     HOST: 'Choose data center & host where you create container',
                     VOLUMES_FROM: 'A list of volumes to inherit from another container.',
+                    VOLUMES_URL: '"Host" volumes list in format <strong>http[s]://example/file:/container/file</strong> <br /> \
+                                Said file will be downloaded and writed to a new directory in \
+                                the zone\'s dataset but not in the zoneroot, and will be mounted at \
+                                container\'s /container/file.',
                     ENTRYPOINT: 'Overwrite the default ENTRYPOINT of the image. Use space as delimiter.',
                     CMD: 'Command to run specified',
                     ENV: 'A list of environment variables in the form of <strong>VAR=value</strong> or <strong>VAR="value"</strong><br />Press <strong>Enter</strong> button for adding value.',
@@ -229,7 +233,6 @@
                 }
 
                 function parseVolumes(containerVolumes) {
-                    var binds = [];
                     var volumes = null;
                     if (isArrayNotEmpty(containerVolumes)) {
                         volumes = {};
@@ -237,11 +240,10 @@
                             var parsed = volume.split(':'); // containerPath || hostPath:containerPath || hostPath:containerPath:permission
                             volumes[parsed[1] || parsed[0]] = {};
                             if (parsed[1]) {
-                                binds.push(volume);
+                                $scope.container.HostConfig.Binds.push(volume);
                             }
                         });
                     }
-                    $scope.container.HostConfig.Binds = binds;
                     return volumes;
                 }
 
@@ -651,6 +653,8 @@
                     setMemory();
                     var volumesFrom = $scope.container.HostConfig.VolumesFrom;
                     $scope.container.HostConfig.VolumesFrom = isArrayNotEmpty(volumesFrom) ? volumesFrom : null;
+                    var binds = $scope.container.HostConfig.Binds;
+                    $scope.container.HostConfig.Binds = isArrayNotEmpty(binds) ? binds : null;
                     Docker.run($scope.host, {create: $scope.container, start: $scope.container.HostConfig}).then(function () {
                         $location.path('/docker/containers');
                     }, function (err) {
