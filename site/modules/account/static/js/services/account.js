@@ -187,6 +187,10 @@
                 cbDisabled = cbDisabled || defaultCb;
                 service.getAccount().then(function (provisionAccount) {
                     if (!provisionAccount.provisionEnabled) {
+                        if (submitBillingInfo.noPopupCallback) {
+                            cbDisabled();
+                            cbDisabled = null;
+                        }
                         PopupDialog.errorProvision(submitBillingInfo, cbDisabled, showPopUp);
                     } else {
                         cbEnabled();

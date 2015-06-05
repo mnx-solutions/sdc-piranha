@@ -177,7 +177,7 @@
                 if ($scope.provisioningInProgress) {
                     return;
                 }
-                $scope.provisioningInProgress = true;
+                $scope.provisioningInProgress = submitBillingInfo.noPopupCallback = true;
                 Account.checkProvisioning(submitBillingInfo, function () {
                     $scope.account.provisionEnabled = true;
                     var finalProvision = function (data) {
@@ -194,7 +194,7 @@
                         Provision.finalProvision(data, $scope.datacenters, $scope.account, hostSpecification, function () {
                             $scope.provisioningInProgress = false;
                         });
-                    }
+                    };
                     if (machine) {
                         Provision.filterNetworks($scope.data.datacenter, machine.networks || [], function (filteredNetworks) {
                             machine.networks = filteredNetworks.length > 0 ? filteredNetworks : '';
