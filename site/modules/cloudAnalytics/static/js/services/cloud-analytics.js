@@ -453,54 +453,6 @@
                 callback();
             };
 
-            function getAnalyticsInstrumentationConfig(options) {
-                var configOpts = {
-                    decomposition: [],
-                    predicate: {eq: ['zonename', options.zoneId]},
-                    datacenter: options.datacenter
-                };
-
-                var availableConfigs = {
-                    'cpu': [
-                        ng.extend({
-                            module: 'cpu',
-                            stat: 'usage'
-                        }, configOpts)],
-                    'memory': [
-                        ng.extend({
-                            module: 'memory',
-                            stat: 'rss'
-                        }, configOpts),
-                        ng.extend({
-                            module: 'memory',
-                            stat: 'rss_limit'
-                        }, configOpts)]
-                };
-                var configs = [];
-                options.configs.forEach(function (config) {
-                    configs.push(availableConfigs[config]);
-                });
-                return [].concat.apply([], configs);
-            };
-
-            CloudAnalytics.prototype.describeAndCreateInstrumentation = function (options, callback) {
-                var self = this;
-                self.describeInstrumentations({datacenter: options.datacenter, zoneId: options.zoneId},
-                    function (data) {
-                        if (data && data.error) {
-                            return callback(data.error);
-                        }
-                        self.createInstrumentations({
-                            zoneId: options.zoneId,
-                            datacenter: options.datacenter,
-                            range: undefined,
-                            configs: getAnalyticsInstrumentationConfig(options)
-                        }, function (error, data) {
-                            callback(error, data);
-                        });
-                    });
-            };
-
             ca = new CloudAnalytics();
             ca.describeAnalytics();
             return ca;
