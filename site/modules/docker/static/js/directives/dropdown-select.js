@@ -20,6 +20,7 @@
                     scope.tags = attrs.hasOwnProperty('tagsAvailable');
                     scope.multiple = attrs.hasOwnProperty('multiple');
                     scope.volume = '';
+                    scope.validation = attrs.validation;
 
                     var getVal = function (item) {
                         return attrs.result ? item[attrs.result] : item;
@@ -52,6 +53,10 @@
                     };
 
                     scope.selectVal = function (item) {
+                        if (scope.validation && !RegExp(scope.validation).test(getVal(item))) {
+                            return;
+                        }
+
                         if (scope.multiple) {
                             scope.selectedItems.push(getVal(item));
                         } else {
