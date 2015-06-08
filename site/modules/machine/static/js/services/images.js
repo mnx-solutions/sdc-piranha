@@ -322,7 +322,7 @@
                 return d.promise;
             };
 
-            service.createImage = function (machineId, datacenter, name, description, version, locationCallback) {
+            service.createImage = function (machineId, datacenter, name, description, version, os, locationCallback) {
                 var id = window.uuid.v4();
                 var image = {
                     state: 'creating',
@@ -332,7 +332,8 @@
                     description: description,
                     datacenter: datacenter,
                     version: version,
-                    id: id
+                    id: id,
+                    os: os
                 };
 
                 handleChunk(image);
