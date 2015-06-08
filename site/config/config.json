@@ -253,7 +253,7 @@
     "dockerMemoryLimit": "yes",
     "zendesk": "yes",
     "feedback": "yes",
-    "blogEntries": "yes",
+    "blogEntries": "no",
     "marketo": "yes",
     "twitter": "yes",
     "googleAnalytics": "yes",
