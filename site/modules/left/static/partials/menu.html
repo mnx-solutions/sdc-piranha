@@ -283,6 +283,28 @@
                     <span class="selected"></span>
                 </a>
             </li>
+            <li class="nested" data-ng-class="{'open': faqOpen}" data-ng-show="features.privateSdc != 'enabled'">
+                <a data-ng-click="faqOpen = !faqOpen" class="question-icon">
+                    <span class="title">FAQ</span>
+                </a>
+                <ul class="sub-menu">
+                    <li class="sub">
+                        <a href="http://wiki.joyent.com/wiki/display/jpc2/Getting+Started+with+your+Joyent+Cloud+Account" target="_blank">
+                            <span class="titles">Getting Started</span>
+                        </a>
+                    </li>
+                    <li class="sub">
+                        <a href="http://wiki.joyent.com/wiki/display/jpc2/Joyent+Cloud+Images" target="_blank">
+                            <span class="titles" data-translate>Images Available</span>
+                        </a>
+                    </li>
+                    <li class="sub">
+                        <a href="http://wiki.joyent.com/wiki/display/jpc2/FAQs" target="_blank">
+                            <span class="titles" data-translate>Visit DevCenter</span>
+                        </a>
+                    </li>
+                </ul>
+            </li>
 
             <li>
                 <div class="sidebar-toggler" data-ng-class="{'sidebar-toggler-back': sideBarMin}" data-ng-click="toggleSideBar()"></div>

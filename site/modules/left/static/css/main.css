@@ -286,6 +286,10 @@ li.active a.dev-tools-icon
 {
     background-image: url('../img/dev-tools-orange.png') !important;
 }
+.question-icon
+{
+    background-image: url('../img/question.png');
+}
 
 .dashboard-icon,
 .compute-icon,
@@ -295,7 +299,8 @@ li.active a.dev-tools-icon
 .accounts-icon,
 .sdc-download-icon,
 .docker-icon,
-.dev-tools-icon
+.dev-tools-icon,
+.question-icon
 {
     height: 22px;
     background-position: 20px 5px;
