@@ -43,19 +43,22 @@
                     var groupedImages = [];
                     originalImages.forEach(function (origImage) {
                         var found = false;
-                        groupedImages.forEach(function (grImage) {
-                            if (origImage.Id === grImage.Id) {
-                                if (!grImage.hostIds) {
-                                    grImage.hostIds = [grImage.hostId];
+                        groupedImages.forEach(function (groupedImage) {
+                            if (origImage.Id === groupedImage.Id) {
+                                if (!groupedImage.hostIds) {
+                                    groupedImage.hostIds = [groupedImage.hostId];
                                 }
-                                if (!grImage.hostNames) {
-                                    grImage.hostNames = [grImage.hostName];
+                                if (!groupedImage.hostNames) {
+                                    groupedImage.hostNames = [groupedImage.hostName];
                                 }
-                                if (grImage.hostIds.indexOf(origImage.hostId) === -1) {
-                                    grImage.hostIds.push(origImage.hostId);
+                                if (groupedImage.hostIds.indexOf(origImage.hostId) === -1) {
+                                    groupedImage.hostIds.push(origImage.hostId);
                                 }
-                                if (grImage.hostNames.indexOf(origImage.hostName) === -1) {
-                                    grImage.hostNames.push(origImage.hostName);
+                                if (groupedImage.hostNames.indexOf(origImage.hostName) === -1) {
+                                    groupedImage.hostNames.push(origImage.hostName);
+                                }
+                                if (origImage.ParentId) {
+                                    groupedImage.ParentId = origImage.ParentId;
                                 }
                                 found = true;
                             }
@@ -195,9 +198,9 @@
                     if ($scope.checkedItems.length) {
                         var groupingImages = [];
                         $scope.checkedItems.forEach(function (image) {
-                            if (image.hostNames && image.hostNames.length) {
+                            if (image.hostIds && image.hostIds.length) {
                                 groupingImages = imagesWithoutGrouping.filter(function (item) {
-                                    return item.ParentId === image.ParentId && item.hostName !== image.hostName;
+                                    return item.ParentId === image.ParentId && item.hostId !== image.hostId;
                                 });
                             }
                         });
