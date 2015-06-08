@@ -39,6 +39,9 @@
                                 container\'s /container/file.',
                     ENTRYPOINT: 'Overwrite the default ENTRYPOINT of the image. Use space as delimiter.',
                     CMD: 'Command to run specified',
+                    PUBLISH_ALL_PORTS: 'Allocates a random host port for all of a container\'s exposed ports.',
+                    SDC_PUBLISH_ALL_PORTS: 'Allocates a random host port for all of a container\'s exposed ports.<br /> \
+                            PublishAllPorts is the way the SDC-Docker knows to assign a public IP address to the container, without that you can not get to the container from the internet.',
                     ENV: 'A list of environment variables in the form of <strong>VAR=value</strong> or <strong>VAR="value"</strong><br />Press <strong>Enter</strong> button for adding value.',
                     EXPOSED_PORTS: 'Ports accessible from the host by default',
                     PORTS: 'Publish a container\'s port to the host. Format: <strong>ip:hostPort:containerPort</strong> | <strong> ip::containerPort</strong> | <strong>hostPort:containerPort</strong> |  <strong>containerPort</strong> \
@@ -61,16 +64,6 @@
                     REPOSITORY: 'Enter Repository',
                     MESSAGE: 'Commit message',
                     AUTHOR: 'Author'
-                };
-                $scope.tooltips = {
-                    ATTACH_STDIN: 'Boolean value, attaches to stdin.',
-                    ATTACH_STDOUT: 'Boolean value, attaches to stdout.',
-                    ATTACH_STDERR: 'Boolean value, attaches to stderr.',
-                    PUBLISH_ALL_PORTS: 'Allocates a random host port for all of a container\'s exposed ports.',
-                    SDC_PUBLISH_ALL_PORTS: 'Allocates a random host port for all of a container\'s exposed ports.<br /> \
-                            PublishAllPorts is the way the SDC-Docker knows to assign a public IP address to the container, without that you can not get to the container from the internet.',
-                    PRIVILEGED: 'Gives the container full access to the host.',
-                    NETWORK_DISABLED: 'Boolean value, when true disables neworking for the container'
                 };
 
                 var isArrayNotEmpty = function (data) {
@@ -254,6 +247,11 @@
                     }
                 };
 
+                $scope.hidePackageInfo = function (isSdc) {
+                    var host = $scope.host;
+                    return $scope.createImage || !host || host && (isSdc ? host.isSdc : !host.isSdc);
+                };
+
                 $scope.preSelectedData = $rootScope.popCommonConfig('cloneDockerParams');
 
                 $scope.title = 'Start Docker Container';
@@ -300,7 +298,7 @@
                         CapAdd: [],
                         CapDrop:  [],
                         RestartPolicy:  {'Name': 'no'},
-                        PublishAllPorts: false,
+                        PublishAllPorts: true,
                         Privileged: false
                     }
                 };

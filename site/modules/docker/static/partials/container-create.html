@@ -169,11 +169,8 @@
                             </select>
                         </div>
                     </div>
-                    <div data-ng-hide="createImage || !host" class="form-group">
+                    <div data-ng-hide="hidePackageInfo(true)" class="form-group">
                         <div class="group-label">Size / Package</div>
-                        <div data-ng-show="host.isSdc">
-                            <div data-package-select data-name="{{packagePrefix}}" class="package-select" data-package="package" data-memory="{{input.Memory}}"></div>
-                        </div>
                         <div data-ng-if="!host.isSdc">
                             <div class="form-group">
                                 <span class="edit-memory edit-label">Memory</span>
@@ -188,6 +185,61 @@
                                    <!--<slider ng-model="input.MemorySwap" min="{{input.Memory}}" max="{{host.memory * 2}}" step="1" show-limit show-value data-measure="{{input.MemorySwap > 0 && ' Mb' || ''}}" ng-mousedown="setNotation('MEMORY_SWAP')"></slider>-->
                                 <!--</span>-->
                             <!--</div>-->
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="restart-policy">
+                            <div class="group-label">Restart Policy</div>
+                            <div>
+                            <span class="edit-value restart-name">
+                                <select ui-select2="{minimumResultsForSearch: -1, width: '130px'}" id="restartPolicy" data-ng-model="container.HostConfig.RestartPolicy.Name" on-opening="setNotation('RESTART_POLICY')">
+                                    <option data-ng-repeat="option in restartOptions" value="{{option}}">
+                                        {{option}}
+                                    </option>
+                                </select>
+                            </span>
+                            <span data-ng-show="container.HostConfig.RestartPolicy.Name == 'on-failure'" class="max-restart-wrapper">
+                                <span class="max-restart edit-label">MAX</span>
+                                <span class="edit-value max-retry-count">
+                                    <input type="text"
+                                           name="MaximumRetryCount"
+                                           value="5"
+                                           ata-ng-pattern="/^(\d)*$/"
+                                           data-ng-model="container.HostConfig.RestartPolicy.MaximumRetryCount" />
+                                </span>
+                                <div class="maximum-retry-error" data-ng-show="isFormSubmited || containerCreateForm.MaximumRetryCount.$dirty">
+                                    <div class="error"
+                                         data-translate
+                                         data-ng-show="containerCreateForm.MaximumRetryCount.$error.pattern">
+                                        Must contain only digits.
+                                    </div>
+                                </div>
+                            </span>
+                            </div>
+                        </div>
+                        <div class="attach-public-ip">
+                            <div class="group-label">Attach Public IP (publish-all)</div>
+                            <div class="btn-group" data-toggle="buttons" data-ng-click="setNotation(isSdc && 'SDC_PUBLISH_ALL_PORTS' || 'PUBLISH_ALL_PORTS')">
+                                <label class="btn" data-ng-class="{orange: container.HostConfig.PublishAllPorts, light: !container.HostConfig.PublishAllPorts}" data-ng-click="container.HostConfig.PublishAllPorts = true">
+                                    <input type="radio" data-ng-model="container.HostConfig.PublishAllPorts" autocomplete="off" checked> {{container.HostConfig.PublishAllPorts ? 'Yes' : ''}}
+                                </label>
+                                <label class="btn" data-ng-class="{light: container.HostConfig.PublishAllPorts, orange: !container.HostConfig.PublishAllPorts}" data-ng-click="container.HostConfig.PublishAllPorts = false">
+                                    <input type="radio" data-ng-model="container.HostConfig.PublishAllPorts" autocomplete="off"> {{container.HostConfig.PublishAllPorts ? '' : 'No'}}
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <div data-ng-hide="createImage" class="form-group volume-section">
+                        <span class="edit-label">Ports</span><!--
+                            --><span class="edit-value">
+                            <dropdown-select multiple tags-available data-preselected-items="input.PortsBinding" on-focus="setNotation('PORTS')" validation="^{{exposedPattern}}$"></dropdown-select>
+                        </span>
+                        <div class="edit-error" data-ng-show="isFormSubmited || containerCreateForm.$error.portsError">
+                            <div class="error"
+                                 data-translate
+                                 data-ng-show="containerCreateForm.$error.portsError">
+                                Must contain numbers and signs like '.', ':' and ' '. Max value for port is 65535.
+                            </div>
                         </div>
                     </div>
                     <div data-ng-hide="createImage" class="group-label">Volumes</div>
@@ -237,19 +289,6 @@
                             <tags-input ng-model="input.Env" data-on-focus-fn="setNotation('ENV')"></tags-input>
                         </span>
                     </div>
-                    <div data-ng-hide="createImage" class="form-group">
-                        <span class="edit-ports edit-label">Container Ports</span>
-                        <span class="edit-value">
-                            <tags-input name="ports" ng-model="input.PortsBinding" data-on-focus-fn="setNotation('PORTS')" regexp-validate="^{{exposedPattern}}$"></tags-input>
-                        </span>
-                        <div class="edit-error" data-ng-show="isFormSubmited || containerCreateForm.ports.$error.pattern">
-                            <div class="error"
-                                 data-translate
-                                 data-ng-show="containerCreateForm.ports.$error.pattern">
-                                Must contain numbers and signs like '.', ':' and ' '. Max value for port is 65535.
-                            </div>
-                        </div>
-                    </div>
                     <div class="form-group">
                         <span class="edit-label">Network</span>
                         <span class="edit-value restart-name">
@@ -269,69 +308,6 @@
                             </span>
                         </span>
                     </div>
-                    <div class="form-group">
-                        <span class="edit-label">Restart</span>
-                        <span class="edit-value restart-name">
-                            <select ui-select2="{minimumResultsForSearch: -1, width: '157px'}" id="restartPolicy" data-ng-model="container.HostConfig.RestartPolicy.Name" on-opening="setNotation('RESTART_POLICY')">
-                                <option data-ng-repeat="option in restartOptions" value="{{option}}">
-                                    {{option}}
-                                </option>
-                            </select>
-                        </span>
-                        <span data-ng-show="container.HostConfig.RestartPolicy.Name == 'on-failure'" class="max-restart-wrapper">
-                            <span class="max-restart edit-label">MAX</span>
-                            <span class="edit-value max-retry-count">
-                                <input type="text"
-                                    name="MaximumRetryCount"
-                                    value="5"
-                                    data-ng-pattern="/^(\d)*$/"
-                                    data-ng-model="container.HostConfig.RestartPolicy.MaximumRetryCount"
-                                     />
-                            </span>
-                             <div class="maximum-retry-error" data-ng-show="isFormSubmited || containerCreateForm.MaximumRetryCount.$dirty">
-                                 <div class="error"
-                                      data-translate
-                                      data-ng-show="containerCreateForm.MaximumRetryCount.$error.pattern">
-                                     Must contain only digits.
-                                 </div>
-                             </div>
-                        </span>
-                    </div>
-                    <div class="group-label">Misc</div>
-                    <div class="form-group">
-                        <span class="edit-label">Attach</span>
-                        <div class="misc-checkboxes" data-ng-repeat="attach in attaches">
-                            <div class="tooltip-hover" data-toggle="tooltip" data-html="true" data-original-title="{{tooltips['ATTACH_' + attach.toUpperCase()]}}" data-trigger="hover">
-                                <input data-ng-model="container['Attach' + attach]" type="checkbox" />
-                                <label class="attach-name checkbox-label" data-ng-click="container['Attach' + attach]=!container['Attach' + attach]">{{attach}}</label>
-                            </div>
-                        </div>
-                        <span class="edit-label">Other</span>
-                        <div class="misc-checkboxes">
-                            <div class="tooltip-hover" data-toggle="tooltip" data-html="true" data-original-title="{{tooltips[isSdc && 'SDC_PUBLISH_ALL_PORTS' || 'PUBLISH_ALL_PORTS']}}" data-trigger="hover">
-                                <input data-ng-model="container.HostConfig.PublishAllPorts" type="checkbox" />
-                                <label class="attach-name checkbox-label" data-ng-click="container.HostConfig.PublishAllPorts=!container.HostConfig.PublishAllPorts">
-                                    Publish All Ports
-                                </label>
-                            </div>
-                        </div><!--
-                        --><div class="misc-checkboxes">
-                            <div class="tooltip-hover" data-toggle="tooltip" data-html="true" data-original-title="{{tooltips.PRIVILEGED}}" data-trigger="hover">
-                                <input data-ng-model="container.HostConfig.Privileged" type="checkbox" />
-                                <label class="attach-name checkbox-label" data-ng-click="container.HostConfig.Privileged=!container.HostConfig.Privileged">
-                                    Privileged
-                                </label>
-                            </div>
-                        </div><!--
-                        --><div class="misc-checkboxes">
-                            <div class="tooltip-hover" data-toggle="tooltip" data-html="true" data-original-title="{{tooltips.NETWORK_DISABLED}}" data-trigger="hover">
-                                <input data-ng-model="container.NetworkDisabled" type="checkbox" />
-                                <label class="attach-name checkbox-label" data-ng-click="container.NetworkDisabled=!container.NetworkDisabled">
-                                    Network Disabled
-                                </label>
-                            </div>
-                        </div>
-                    </div>
                     <hr data-ng-show="!loading" />
                     <div class="row btn-bottom-block" data-ng-show="!loading">
                         <div class="pull-right">
@@ -341,7 +317,12 @@
                         <div class="pull-right loading-medium-transparent" data-ng-show="creating"></div>
                     </div>
                 </form>
-                <div class="advanced-info pull-right" data-ng-bind-html="notation"></div>
+                <div class="pull-right">
+                    <div data-ng-hide="hidePackageInfo()" class="advanced-info">
+                        <div data-package-select data-name="{{packagePrefix}}" class="package-select" data-datacenter="{{host.datacenter}}" data-package="package" data-memory="{{input.Memory}}"></div>
+                    </div>
+                    <div class="advanced-info" data-ng-class="{'advanced-info-nosdc': !host.isSdc || createImage}" data-ng-bind-html="notation"></div>
+                </div>
             </div>
         </div>
     </div>

@@ -7,6 +7,7 @@
                 restrict: 'EA',
                 scope: {
                     name: '@',
+                    datacenter: '@',
                     pkg: '=?package',
                     memory: '@?'
                 },

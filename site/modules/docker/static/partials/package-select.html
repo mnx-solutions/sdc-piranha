@@ -1,19 +1,34 @@
-<div class="change-package" data-ng-click="choosePackage()">Change</div>
-<div class="package-widget">
-    <div class="price-info">
-        <div data-ng-show="pkg.price_month"><span class="package-price month-price">{{pkg.price_month | currencyFormat}}</span> / mo</div>
-        <div data-ng-show="pkg.price"><span class="package-price">{{pkg.price | currencyFormat:true}}</span> / hour</div>
+<div class="center">
+    <p>PACKAGE:</p><button class="btn small-btn effect-orange-button" data-ng-click="choosePackage()">Change</button>
+    <div class="package">
+        <div class="name">Configuration</div>
+        <div class="value">{{pkg.short_name}}</div>
     </div>
-    <div class="detail-info-column">
-        <div>{{pkg.memory | sizeFormat}}</div>
-        ram
+    <div class="package">
+        <div class="name">Memory</div>
+        <div class="value">{{pkg.memory | sizeFormat}}</div>
     </div>
-    <div class="detail-info-column">
-        <div>{{pkg.disk | sizeFormat}}</div>
-        disk
+    <div class="package">
+        <div class="name">Disk</div>
+        <div class="value">{{pkg.disk | sizeFormat}}</div>
     </div>
-    <div class="detail-info-column">
-        <div>{{pkg.vcpus}}</div>
-        vcpus
+    <div class="package">
+        <div class="name">vCPUs</div>
+        <div class="value">{{pkg.vcpus}} vCPUs</div>
+    </div>
+    <div class="package">
+        <div class="name">Data Center</div>
+        <div class="value">{{datacenter}} </div>
+    </div>
+    <div class="cost" data-ng-show="pkg.price || pkg.price_month">
+        <p>COST:</p>
+        <div class="dataset-cost" data-ng-show="pkg.price">
+            <h3>${{pkg.price}}</h3>
+            <p class="small-text-info">per hour</p>
+        </div>
+        <div class="dataset-cost" data-ng-show="pkg.price_month">
+            <h3>{{pkg.price_month | currencyFormat}}</h3>
+            <p class="small-text-info">est. monthly</p>
+        </div>
     </div>
 </div>
