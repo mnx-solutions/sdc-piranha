@@ -27,6 +27,7 @@ var mantaPrivateKey;
 if (config.manta.privateKey) {
     mantaPrivateKey = fs.readFileSync(config.manta.privateKey, 'utf-8');
 }
+var DEFAULT_DH_RULE = 'FROM any TO tag JPC_tag = DockerHost ALLOW tcp (PORT 4242 AND PORT 4243 AND PORT 5000)';
 var DOCKER_TCP_PORT = 4240;
 var DOCKER_HUB_HOST = 'https://index.docker.io';
 var SUBUSER_LOGIN = 'docker';
@@ -679,13 +680,26 @@ exports.init = function execute(log, config, done) {
                 Machine.Create(call, options, function (err, result) {
                     if (!err && result && result.id && result.state === 'running') {
                         var cloud = call.cloud.separate(call.data.datacenter);
-                        cloud.createFwRule({
-                            enabled: true,
-                            rule: 'FROM any TO vm ' + result.id + ' ALLOW tcp (PORT 4242 AND PORT 4243 AND PORT 5000)',
-                            description: 'Default Docker Host rule'
-                        }, function (err) {
-                            if (err) {
-                                call.log.error(err);
+                        cloud.listFwRules(function (err, rules) {
+                            if (err || !rules) {
+                                return call.log.error(err || new Error('Error retrieving firewall rules'));
+                            }
+                            var ruleExists = false;
+                            rules.forEach(function (rule) {
+                                if (rule.rule === DEFAULT_DH_RULE) {
+                                    ruleExists = true;
+                                }
+                            });
+                            if (!ruleExists) {
+                                cloud.createFwRule({
+                                    enabled: true,
+                                    rule: DEFAULT_DH_RULE,
+                                    description: 'Default Docker Host rule'
+                                }, function (err) {
+                                    if (err) {
+                                        call.log.error(err);
+                                    }
+                                });
                             }
                         });
                     }
