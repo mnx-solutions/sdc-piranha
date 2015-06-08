@@ -7,10 +7,39 @@
                 scope.mainMenu = Menu.getMenu();
             },
 
-            controller: function ($scope, requestContext, localization, Account) {
+            controller: function ($scope, requestContext, localization, Account, Zendesk) {
                 localization.bind('menu', $scope);
 
                 $scope.subuserAccountName = null;
+                $scope.systemStatusTopics = [];
+
+                function getSystemStatusTopics () {
+                    Zendesk.getSystemStatusTopics().then(function (topics) {
+                        $scope.systemStatusTopics = $scope.systemStatusTopics.filter(function (topic) {
+                            return new Date().getTime() < (new Date(topic['created_at']).getTime() + 2 * 24 * 3600 * 1000);
+                        });
+                        $scope.systemStatusTopics.forEach(function (topic) {
+                            if (topic.title.indexOf('[RESOLVED]') === 0) {
+                                topic.title = topic.title.replace('[RESOLVED]', '');
+                                topic.resolved = true;
+                            }
+                        });
+                    });
+                }
+                if ($scope.features.zendesk === 'enabled' && $scope.features.systemStatus === 'enabled') {
+                    var updateSystemStatusTopics = setInterval(function () {
+                        $scope.$apply(function () {
+                            getSystemStatusTopics();
+                        });
+                    }, 60000);
+
+                    getSystemStatusTopics();
+
+                    $scope.$on('$destroy', function () {
+                        clearInterval(updateSystemStatusTopics);
+                    });
+                }
+
                 Account.getAccount(true).then(function (account) {
                     $scope.account = account;
                     if (account.isSubuser) {

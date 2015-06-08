@@ -154,7 +154,7 @@
     padding-right: 2px;
 }
 
-.navbar-container .nav .dropdown-menu
+.dropdown.user .dropdown-menu
 {
     margin-left: -70px;
 }
@@ -221,5 +221,27 @@
 
 .dd-account
 {
-    min-width: 215px !important;
+    min-width: 215px;
+}
+.service-status {
+    width: 350px;
+}
+.service-status-date,
+.service-status-text,
+.service-status-icon  {
+    display: inline-block;
+    overflow: hidden;
+    white-space: pre-line;
+    vertical-align: top;
+}
+.service-status-date {
+    width: 80px;
+}
+.service-status-text {
+    width: 200px;
+    margin: 0 10px;
+    word-wrap: break-word;
+}
+.service-status-btn-wrapper {
+    margin: 10px;
 }
