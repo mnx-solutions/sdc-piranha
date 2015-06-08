@@ -20,6 +20,7 @@
                     scope.tags = attrs.hasOwnProperty('tagsAvailable');
                     scope.multiple = attrs.hasOwnProperty('multiple');
                     scope.volume = '';
+                    scope.error = null;
                     scope.validation = attrs.validation;
 
                     var getVal = function (item) {
@@ -38,6 +39,9 @@
                     };
 
                     scope.add = function () {
+                        if (scope.error) {
+                            return;
+                        }
                         if (scope.volume.length && scope.selectedItems.indexOf(scope.volume) === -1) {
                             scope.selectVal(scope.volume);
                             scope.volume = '';
@@ -68,6 +72,18 @@
                         if (event.which === 13) {
                             scope.add();
                             event.preventDefault();
+                        }
+                    };
+
+                    scope.change = function () {
+                        if (scope.validation && attrs.preselectedItems &&
+                            attrs.preselectedItems.indexOf('PortsBinding') !== -1) {
+                            var containerPortsError = scope.$parent.containerCreateForm.$error;
+                            containerPortsError.portsError = false;
+                            scope.error = scope.volume.length && !RegExp(scope.validation).test(scope.volume);
+                            if (scope.error) {
+                                containerPortsError.portsError = true;
+                            }
                         }
                     };
                 }

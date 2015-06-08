@@ -5851,3 +5851,55 @@ a.orange-link
     font-weight: bold;
     color: #333;
 }
+.advanced-info .center,
+.review .left,
+.review .center,
+.review .right {
+    box-sizing: content-box;
+    padding: 0 25px;
+}
+.advanced-info .center,
+.review .center {
+    width: 245px;
+}
+.advanced-info .center .package,
+.review .center .package {
+    padding-top: 4px;
+}
+.advanced-info .center p,
+.preselected .info p,
+.review .left p,
+.review .center p,
+.review .right p {
+    display: inline-block;
+    padding-right: 5px;
+    font-weight: 300;
+    font-size: 14px;
+}
+.package .value {
+    font-weight: 500;
+    font-size: 14px;
+}
+.package .name {
+    float: left;
+    width: 100px;
+    font-weight: 300;
+    font-size: 14px;
+}
+.cost {
+    padding-top: 50px;
+}
+.dataset-cost h3 {
+    display: inline-block;
+    margin-top: 10px;
+    padding-bottom: 10px;
+    font-weight: 500;
+    font-size: 24px;
+    line-height: 0;
+}
+.small-text-info {
+    padding-left: 5px;
+    color: #000;
+    text-align: left;
+    font-size: 13px !important;
+}

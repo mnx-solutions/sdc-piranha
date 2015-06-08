@@ -760,11 +760,21 @@ span.btn-success
 .form-group .max-restart {
     width: 10%;
 }
+.container-create-form .restart-policy {
+    float: left;
+    min-width: 400px;
+}
+.container-create-form .attach-public-ip .orange,
+.container-create-form .attach-public-ip .light {
+    min-width: 90px;
+    min-height: 34px;
+}
 .container-create-form .max-retry-count,
 .container-create-form .restart-name {
-    width: 25%;
+    width: 34%;
 }
 .container-create-form .max-retry-count {
+    margin-left: 10px;
     vertical-align: middle;
 }
 .maximum-retry-error {
@@ -773,8 +783,7 @@ span.btn-success
 }
 .misc-checkboxes,
 .checker,
-.details-info,
-.price-info {
+.details-info {
     display: inline-block;
 }
 .checker {
@@ -791,54 +800,28 @@ span.btn-success
     min-width: 200px;
 }
 .advanced-info {
-    width: 270px;
-    min-height: 620px;
+    margin-bottom: 20px;
     padding: 15px 10px;
+    min-height: 150px;
+    width: 270px;
+    background-color: #fef1d2;
     word-break: break-word;
-    background-color: #fef1d2;
 }
-.package-widget {
-    height: 75px;
-    width: 100%;
-    display: table;
-    border: 1px solid #ccc;
-    background-color: #fafcfd;
+.advanced-info.advanced-info-nosdc {
+    min-height: 620px;
 }
-.price-info {
-    width: 25%;
-    height: 100%;
-    position: relative;
-    margin-right: 80px;
-    background-color: #fef1d2;
-}
-.detail-info-column,
-.price-info {
-    display: table-cell;
-    vertical-align: middle;
-    text-align: center;
-}
-.price-info .month-price {
-    font-size: 16px;
-}
-.price-info .package-price {
-    font-weight: 500;
-}
-.price-info:after {
-    position: absolute;
-    top: 0;
-    right: -25px;
-    width: 0;
-    height: 0;
-    content: '';
-    border-bottom: 75px solid transparent;
-    border-left: 25px solid #fef1d2;
+.advanced-info .small-btn {
+    display: inline-block;
+    padding: 0;
+    width: 56px !important;
+    height: 21px;
+    background-color: #fffbf2;
+    color: #f60;
+    font-weight: 400;
+    font-size: 12px;
 }
 .details-info {
     width: 60%;
-}
-.detail-info-column {
-    width: 20%;
-    text-transform: uppercase;
 }
 span .tag-editor {
     width: 100%;
@@ -847,13 +830,6 @@ span .tag-editor {
 
 .package-select {
     position: relative;
-}
-.change-package {
-    position: absolute;
-    top: -25px;
-    right: 0;
-    color: #f60;
-    cursor: pointer;
 }
 .dropdown-select {
     position: relative;
