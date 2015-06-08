@@ -253,7 +253,7 @@ You can also define configuration options using command line. ex: `$ node index.
 - `slb` Simple Load Balancer
 - `createdBySupportPackages` Display and allow to signup for larger packages
 - `uploadSshKey` Allow to upload user key
-- `systemStatusTile` Display tile on dashboard
+- `systemStatus` Display on top menu
 - `devCenterNewsTile` Display tile on dashboard
 - `allowSkipBilling` User will skip lengthy signup and will be able to fill billing later
 - `mantaJobs` Manage Manta jobs
@@ -278,7 +278,7 @@ You can also define configuration options using command line. ex: `$ node index.
 ## Feature dependencies
 
 Enabling `privateSdc` feature will disable the following: `promocode`, `invoices`, `promoBillingConfirmation`,
-`phoneVerification`, `freetier`, `slb`, `createdBySupportPackages`, `systemStatusTile`, `devCenterNewsTile`,
+`phoneVerification`, `freetier`, `slb`, `createdBySupportPackages`, `systemStatus`, `devCenterNewsTile`,
 `downloadSdc`, `usageData`, `limitedSlb`, `support`, `skinChange`, `provisioningLimits`, `zendesk`, `feedback`,
 `blogEntries`, `marketo`, `twitter`, `googleAnalytics`, `billing`. It will enable `allowSkipBilling`.
 

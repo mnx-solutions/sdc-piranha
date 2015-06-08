@@ -1,11 +1,11 @@
 'use strict';
 
 (function (ng, app) {
-    app.controller('Dashboard.IndexController', ['$scope', '$q', '$sce', 'requestContext', 'Account', 'Zendesk', 'Machine',
+    app.controller('Dashboard.IndexController', ['$scope', '$q', '$sce', 'requestContext', 'Account', 'Machine',
         'localization', '$http', '$cookies', 'slb.Service', '$rootScope', 'Support', 'fileman', 'Utilization', 'util',
         'Datacenter', 'FreeTier', '$location', 'Docker', 'Storage',
 
-        function ($scope, $q, $sce, requestContext, Account, Zendesk, Machine, localization, $http, $cookies, slbService,
+        function ($scope, $q, $sce, requestContext, Account, Machine, localization, $http, $cookies, slbService,
                   $rootScope, Support, fileman, Utilization, util, Datacenter, FreeTier, $location, Docker, Storage) {
             localization.bind('dashboard', $scope);
             requestContext.setUpRenderContext('dashboard.index', $scope);
@@ -21,7 +21,6 @@
             $scope.mantaEnabled = $rootScope.features.manta === 'enabled';
             $scope.dockerEnabled = $rootScope.features.docker === 'enabled';
             $scope.mantaMemory = {value: ''};
-            $scope.systemStatusTopics = [];
 
             $scope.machines = [];
             $scope.gotoCreatePage = Machine.gotoCreatePage;
@@ -197,37 +196,6 @@
 
             if ($scope.features.freetier === 'enabled') {
                 freeTierTileStatus();
-            }
-
-            function getSystemStatusTopics () {
-                Zendesk.getSystemStatusTopics().then(function (topics) {
-                    if ($scope.features.systemStatusTile === 'enabled') {
-                        $scope.systemStatusTopics = topics.filter(function (topic) {
-                            return new Date().getTime() < (new Date(topic['created_at']).getTime() + 2 * 24 * 3600 * 1000);
-                        });
-                        if ($scope.systemStatusTopics.length > 1) {
-                            $scope.systemStatusTopics.length = 2;
-                        }
-                    } else {
-                        $scope.systemStatusTopics = topics;
-                    }
-                    $scope.loadedSystemStatusTopics = true;
-                });
-            }
-
-            if ($scope.features.zendesk === 'enabled') {
-                var updateSystemStatusTopics = setInterval(function () {
-                    $scope.$apply(function() {
-                        getSystemStatusTopics();
-                    });
-                }, 60000);
-
-                $scope.loadedSystemStatusTopics = false;
-                getSystemStatusTopics();
-
-                $scope.$on('$destroy', function() {
-                    clearInterval(updateSystemStatusTopics);
-                });
             }
         }
     ]);

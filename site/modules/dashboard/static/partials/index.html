@@ -195,27 +195,6 @@
             </div>
         </div>
 
-        <div class="pull-left tile-wrapper" data-ng-show="features.systemStatusTile == 'enabled'">
-            <div class="tile status-bg">
-                <div class="tile-body">
-                    <div class="title">System Status</div>
-                    <div class="single-column">
-                        <div class="small-text white" data-ng-hide="loadedSystemStatusTopics">
-                            Getting system status...
-                        </div>
-                        <div class="small-text white" data-ng-show="loadedSystemStatusTopics && systemStatusTopics.length == 0">
-                            <i class="checked-icon"></i>
-                            All systems online.
-                        </div>
-                        <div class="small-text white" data-ng-repeat="topic in systemStatusTopics">
-                            <a target="_blank" href="https://help.joyent.com/entries/{{topic.id}}">{{topic.created_at | dateTime}} &nbsp;{{topic.title}}</a>
-                        </div>
-                    </div>
-                </div>
-                <a class="tile-button grey" target="_blank" href="https://help.joyent.com/forums/21769270-Incidents-Notifications">View Older System Updates</a>
-            </div>
-        </div>
-
         <div class="pull-left tile-wrapper" data-ng-show="features.devCenterNewsTile == 'enabled'">
             <div class="tile devcenter-bg">
                 <div class="tile-body devcenter">
@@ -234,15 +213,6 @@
                 </div>
             </div>
             <div class="pull-left second-column">
-                <div class="span" data-ng-show="features.systemStatusTile != 'enabled' && features.privateSdc != 'enabled'">
-                    <h5>SYSTEM STATUS</h5>
-                    <div class="separation-container separation-container-top">
-                        <div class="row" data-ng-repeat="topic in systemStatusTopics | limitTo:7">
-                            <span class="pull-left col-md-12">{{topic.created_at | dateTime}} <a target="_blank" href="https://help.joyent.com/entries/{{topic.id}}">&nbsp;{{topic.title}}</a></span>
-                        </div>
-                    </div>
-                    <a class="orange" href="https://help.joyent.com/forums/20715782-current-system-status#recent" target="_blank">View all System Updates</a>
-                </div>
                 <!-- TODO: remove blog at some point, presently the feature is disabled -->
                 <div class="span" data-ng-show="features.blogEntries == 'enabled'">
                     <h5>JOYENT BLOG</h5>

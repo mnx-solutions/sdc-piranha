@@ -237,7 +237,7 @@
     "slb": "enabled",
     "createdBySupportPackages": "enabled",
     "uploadSshKey": "enabled",
-    "systemStatusTile": "enabled",
+    "systemStatus": "enabled",
     "devCenterNewsTile": "disabled",
     "allowSkipBilling": "enabled",
     "mantaJobs": "enabled",

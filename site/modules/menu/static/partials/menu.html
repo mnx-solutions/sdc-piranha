@@ -10,6 +10,25 @@
             <li class="dropdown" data-ng-show="features.skinChange == 'enabled'">
                 <button data-ng-click="skinChange()" class="old-portal">Return to the old portal</button>
             </li>
+            <li class="dropdown" data-ng-show="features.systemStatus == 'enabled'">
+                <a href="javascript:void(0)" class="dropdown-toggle" data-toggle="dropdown">
+                    <span class="glyphicon glyphicon-bell"></span>
+                    <span class="username">Service Status</span>
+                    <i class="icon-arrow-down-user"></i>
+                </a>
+                <ul class="dropdown-menu" data-ng-class="{'service-status': systemStatusTopics.length > 0}">
+                    <li data-ng-repeat="topic in systemStatusTopics | limitTo:7">
+                        <a target="_blank" ng-href="https://help.joyent.com/entries/{{topic.id}}">
+                            <span class="service-status-date">{{topic.created_at | date: 'MMMM'/'dd'/'YYYY'}}</span>
+                            <span class="service-status-text">{{topic.title}}</span>
+                            <span class="service-status-icon glyphicon" data-ng-class="{'glyphicon-check': topic.resolved, 'glyphicon-unchecked': !topic.resolved}"></span>
+                        </a>
+                    </li>
+                    <div class="service-status-btn-wrapper pull-right">
+                        <a class="btn light effect-orange-button" href="https://help.joyent.com/forums/20715782-current-system-status#recent" target="_blank">View Older System Updates</a>
+                    </div>
+                </ul>
+            </li>
             <li class="dropdown" data-ng-show="features.zendesk == 'enabled'">
                 <a href="https://help.joyent.com/home" target="_blank" class="dropdown-toggle">
                     <i class="header_icon support_icon"></i>
