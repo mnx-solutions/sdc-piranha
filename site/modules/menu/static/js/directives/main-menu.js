@@ -15,7 +15,7 @@
 
                 function getSystemStatusTopics () {
                     Zendesk.getSystemStatusTopics().then(function (topics) {
-                        $scope.systemStatusTopics = $scope.systemStatusTopics.filter(function (topic) {
+                        $scope.systemStatusTopics = topics.filter(function (topic) {
                             return new Date().getTime() < (new Date(topic['created_at']).getTime() + 2 * 24 * 3600 * 1000);
                         });
                         $scope.systemStatusTopics.forEach(function (topic) {
