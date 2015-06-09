@@ -249,13 +249,14 @@
                            <dropdown-select output="NamesStr" result="NamesStr" multiple on-focus="setNotation('VOLUMES_FROM')"
                                             data-preselected-items="container.HostConfig.VolumesFrom" data-dropdown-data="containers"></dropdown-select>
                         </span>
-                        <span class="edit-label">"Host" volumes</span><!--
-                            --><span class="edit-value">
-                           <dropdown-select multiple tags-available validation="^(https?:\/\/?.*):(\/[^:]+)(:r[ow])?$" on-focus="setNotation('VOLUMES_URL')"
-                                            data-preselected-items="container.HostConfig.Binds"></dropdown-select>
-                        </span>
+                        <div data-ng-show="host.isSdc">
+                            <span class="edit-label">"Host" volumes</span><!--
+                         --><span class="edit-value">
+                                <dropdown-select multiple tags-available validation="^(https?:\/\/?.*):(\/[^:]+)(:r[ow])?$" on-focus="setNotation('VOLUMES_URL')"
+                                                 data-preselected-items="container.HostConfig.Binds"></dropdown-select>
+                            </span>
+                        </div>
                     </div>
-
                     <div class="form-group volume-section" data-ng-if="!host.isSdc">
                         <span class="edit-label">Volumes</span><!--
                             --><span class="edit-value">
@@ -307,6 +308,35 @@
                                 </select>
                             </span>
                         </span>
+                    </div>
+                    <div data-ng-show="host && !host.isSdc">
+                        <div class="group-label">Misc</div>
+                        <div class="form-group">
+                            <span class="edit-label">Attach</span>
+                            <div class="misc-checkboxes" data-ng-repeat="attach in attaches">
+                                <div class="tooltip-hover" data-toggle="tooltip" data-html="true" data-original-title="{{tooltips['ATTACH_' + attach.toUpperCase()]}}" data-trigger="hover">
+                                    <input data-ng-model="container['Attach' + attach]" type="checkbox" />
+                                    <label class="attach-name checkbox-label" data-ng-click="container['Attach' + attach]=!container['Attach' + attach]">{{attach}}</label>
+                                </div>
+                            </div>
+                            <span class="edit-label">Other</span>
+                            <div class="misc-checkboxes">
+                                <div class="tooltip-hover" data-toggle="tooltip" data-html="true" data-original-title="{{tooltips.PRIVILEGED}}" data-trigger="hover">
+                                    <input data-ng-model="container.HostConfig.Privileged" type="checkbox" />
+                                    <label class="attach-name checkbox-label" data-ng-click="container.HostConfig.Privileged=!container.HostConfig.Privileged">
+                                        Privileged
+                                    </label>
+                                </div>
+                            </div><!--
+                         --><div class="misc-checkboxes">
+                                <div class="tooltip-hover" data-toggle="tooltip" data-html="true" data-original-title="{{tooltips.NETWORK_DISABLED}}" data-trigger="hover">
+                                    <input data-ng-model="container.NetworkDisabled" type="checkbox" />
+                                    <label class="attach-name checkbox-label" data-ng-click="container.NetworkDisabled=!container.NetworkDisabled">
+                                        Network Disabled
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                     <hr data-ng-show="!loading" />
                     <div class="row btn-bottom-block" data-ng-show="!loading">
