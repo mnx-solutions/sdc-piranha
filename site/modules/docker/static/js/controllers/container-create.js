@@ -573,6 +573,9 @@
 
                 $scope.changeHost = function (host) {
                     host = host || Docker.getHost($scope.hosts, $scope.ip);
+                    if (!host.id || !host.primaryIp) {
+                        return;
+                    }
                     $scope.isSdc = host.isSdc;
                     $scope.host = host;
                     $scope.container.HostConfig.VolumesFrom = [];
