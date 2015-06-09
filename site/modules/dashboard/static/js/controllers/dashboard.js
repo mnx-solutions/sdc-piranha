@@ -197,6 +197,10 @@
             if ($scope.features.freetier === 'enabled') {
                 freeTierTileStatus();
             }
+
+            $scope.gotoPage = function (path) {
+                $location.path(path);
+            };
         }
     ]);
 }(window.angular, window.JP.getModule('Dashboard')));
