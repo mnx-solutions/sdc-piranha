@@ -65,6 +65,13 @@
                     MESSAGE: 'Commit message',
                     AUTHOR: 'Author'
                 };
+                $scope.tooltips = {
+                    ATTACH_STDIN: 'Boolean value, attaches to stdin.',
+                    ATTACH_STDOUT: 'Boolean value, attaches to stdout.',
+                    ATTACH_STDERR: 'Boolean value, attaches to stderr.',
+                    PRIVILEGED: 'Gives the container full access to the host.',
+                    NETWORK_DISABLED: 'Boolean value, when true disables neworking for the container'
+                };
 
                 var isArrayNotEmpty = function (data) {
                     return data && Array.isArray(data) && data.length;
