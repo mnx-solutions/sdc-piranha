@@ -84,6 +84,18 @@
             return str[0].toUpperCase() + str.substr(1);
         }
 
+        service.showUpgradeAnalyticsMessage = function (hostName) {
+            PopupDialog.message(
+                'New docker host analytics',
+                'CAdvisor analytics is no longer supported.\
+                 To upgrade host ' + hostName + ' to the new analytics, please ssh to the host and run:<br/>\
+                 <code>sudo su <br/> \
+                 wget ' + $location.protocol() + '://' + $location.host() + ':' + $location.port() + '/installMemStat.sh <br/> \
+                 . installMemStat.sh</code>',
+                function () {}
+            );
+        };
+
         service.errorCallback = function (err, callback) {
             var messageMantaUnavailable = 'Manta service is not available.';
             if ((err.message && err.message.indexOf(messageMantaUnavailable) >= 0) ||
