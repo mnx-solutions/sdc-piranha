@@ -21,6 +21,7 @@
                     scope.hasNameField = name === 'run';
                     scope.containerName = '';
                     scope.params = params;
+                    scope.loading = true;
 
                     scope.close = function () {
                         window.jQuery('#hostSelect').select2('close');
@@ -74,6 +75,7 @@
 
                     Docker.listHosts().then(function (hosts) {
                         scope.hosts = hosts || [];
+                        scope.loading = false;
                     });
 
                     scope.clone = function () {
