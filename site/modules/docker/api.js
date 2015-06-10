@@ -711,7 +711,6 @@ exports.init = function execute(log, config, done) {
         keys.getKeyPair(mantaClient, call, SDC_DOCKER_PATH + '/private.key', 'docker-portal', function (keyPair) {
             call.req.session.privateKey = keyPair.privateKey;
             options.metadata['docker-version'] = config.docker.dockerVersion;
-            options.metadata['cadvisor-version'] = config.docker.cadvisorVersion;
 
             var certificates = call.req.session.dockerCerts;
 
