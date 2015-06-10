@@ -101,20 +101,34 @@ module.exports = function execute(app, log, config) {
         });
     });
 
-    app.get('/ssh/download/:keyId', function (req, res, next) {
+    function prepareSshKeyToDownload(req, res, isPublic) {
         var keyId = req.params.keyId;
         var key = req.session.privateKeys && req.session.privateKeys[keyId];
 
         if (!key) {
             req.log.error('Invalid SSH key requested');
-            return;
+            return null;
         }
 
-        var fileName = key.name + '_id_rsa';
+        var fileName = key.name + '_id_rsa' + (isPublic ? '.pub' : '');
 
         res.set('Content-type', 'application/x-pem-file');
         res.set('Content-Disposition', 'attachment; filename="' + fileName + '"');
-        res.send(key.privateKey);
+        return key;
+    }
+
+    app.get('/ssh/download/:keyId', function (req, res, next) {
+        var key = prepareSshKeyToDownload(req, res, false);
+        if (key) {
+            res.send(key.privateKey);
+        }
+    });
+
+    app.get('/ssh/downloadPublic/:keyId', function (req, res, next) {
+        var key = prepareSshKeyToDownload(req, res, true);
+        if (key) {
+            res.send(key.publicKey);
+        }
     });
 
     app.post('/upload', [multer()], function (req, res, next) {

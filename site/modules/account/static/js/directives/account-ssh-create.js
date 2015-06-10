@@ -99,12 +99,13 @@
                                                     $scope.updateKeys(true, function (err) {
                                                         // if we are in signup, show the download right away
                                                         $scope.iframe = $sce.trustAsHtml('<iframe src="' + downloadLink + '"></iframe>');
+                                                        $scope.iframePublicKey = $sce.trustAsHtml('<iframe src="' + downloadLink.replace('download', 'downloadPublic') + '"></iframe>');
                                                         keyAdded(err);
-
                                                     });
                                                 } else {
                                                     // if we are in signup, show the download right away
                                                     $scope.iframe = $sce.trustAsHtml('<iframe src="' + downloadLink + '"></iframe>');
+                                                    $scope.iframePublicKey = $sce.trustAsHtml('<iframe src="' + downloadLink.replace('download', 'downloadPublic') + '"></iframe>');
                                                     if ($scope.nextStep) {
                                                         setTimeout(function () {
                                                             $scope.passSsh('/main/#!/account/ssh');
