@@ -2,32 +2,6 @@
     "networks": [],
     "images": [
         {
-            "name": "Node.js",
-            "className": "node-logo",
-            "datasetName": "nodejs",
-            "packageName": "g3-standard-4-smartos",
-            "description": {
-                "text": "A SmartOS 64-bit image with Node.js 0.12.0, npm 2.5.1, Git 2.2.1",
-                "memory": 4,
-                "cpu": 1,
-                "disk": 131,
-                "price": 0.128
-            }
-        },
-        {
-            "name": "SmartOS Base64",
-            "className": "smart-logo",
-            "datasetName": "base-64",
-            "packageName": "g3-standard-4-smartos",
-            "description": {
-                "text": "A 64-bit SmartOS image with just essential packages installed.",
-                "memory": 4,
-                "cpu": 1,
-                "disk": 131,
-                "price": 0.128
-            }
-        },
-        {
             "name": "Ubuntu Certified 14.04",
             "className": "ubuntu-logo",
             "datasetName": "lx-ubuntu-14.04",
@@ -38,7 +12,8 @@
                 "cpu": 1,
                 "disk": 131,
                 "price": 0.128
-            }
+            },
+            "order": 1
         },
         {
             "name": "CentOS 6.6",
@@ -51,20 +26,50 @@
                 "cpu": 1,
                 "disk": 131,
                 "price": 0.128
-            }
+            },
+            "order": 2
         },
         {
-            "name": "Windows Server",
-            "className": "windows-logo",
-            "datasetName": "ws2012std",
-            "packageName": "g3-standard-4-kvm",
+            "name": "Debian 7",
+            "className": "debian-logo",
+            "datasetName": "lx-debian-7",
+            "packageName": "g3-standard-4-smartos",
             "description": {
-                "text": "Windows Server 2012 Standard 64-bit image.",
+                "text": "Debian 7 64-bit lx-brand image.",
+                "memory": 4,
+                "cpu": 1,
+                "disk": 131,
+                "price": 0.128
+            },
+            "order": 3
+        },
+        {
+            "name": "Windows Server 2008r2",
+            "className": "windows-logo",
+            "datasetName": "ws2008ent-r2-sp1",
+            "packageName": "g3-standard-4-smartos",
+            "description": {
+                "text": "Windows Server 2008r2 Enterprise 64-bit image.",
                 "memory": 4,
                 "cpu": 1,
                 "disk": 131,
                 "price": 0.188
-            }
+            },
+            "order": 4
+        },
+        {
+            "name": "Node.js",
+            "className": "node-logo",
+            "datasetName": "nodejs",
+            "packageName": "g3-standard-4-smartos",
+            "description": {
+                "text": "A SmartOS 64-bit image with Node.js 0.12.0, npm 2.5.1, Git 2.2.1",
+                "memory": 4,
+                "cpu": 1,
+                "disk": 131,
+                "price": 0.128
+            },
+            "order": 5
         },
         {
             "name": "MongoDB",
@@ -77,20 +82,22 @@
                 "cpu": 1,
                 "disk": 131,
                 "price": 0.128
-            }
+            },
+            "order": 6
         },
         {
-            "name": "PostgreSQL",
-            "className": "postgresql-logo",
-            "datasetName": "postgresql",
+            "name": "NGinx",
+            "className": "nginx-logo",
+            "datasetName": "nginx",
             "packageName": "g3-standard-4-smartos",
             "description": {
-                "text": "A SmartOS 64-bit image pre-configured and optimized as a PostgreSQL 9.3.5 64-bit server with PgAdmin and monitoring plugins.",
+                "text": "A SmartOS 64-bit image optimized as a Nginx 1.7.4 server.",
                 "memory": 4,
                 "cpu": 1,
                 "disk": 131,
                 "price": 0.128
-            }
+            },
+            "order": 7
         }
     ]
 }
