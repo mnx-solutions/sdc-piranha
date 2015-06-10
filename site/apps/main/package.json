@@ -32,7 +32,8 @@
     "rbac",
     "downloadSdc",
     "cdn",
-    "dtrace"
+    "dtrace",
+    "faq"
   ],
   "auth": true,
   "error": true,

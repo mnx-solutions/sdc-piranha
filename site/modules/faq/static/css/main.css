@@ -1,0 +1,6 @@
+.faq-list > li {
+    padding: 5px 0;
+}
+.faq-list > li > a {
+    color: #f60;
+}
