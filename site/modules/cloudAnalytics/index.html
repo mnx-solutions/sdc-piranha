@@ -12,6 +12,9 @@
                     <span class="name-chart">Instance name</span>
                     <span class="value-chart-in">{{zoneName}}</span>
                 </div>
+                <div data-ng-show="machine.tags && machine.tags['JPC_tag'] === 'DockerHost'">
+                    To see specific Docker container analytics on this host please <a href="#!/docker/analytics/{{machineid}}">[click here]</a>
+                </div>
             </div>
             <div ng-hide="machineExists">
                 Selected instance does not exist.
