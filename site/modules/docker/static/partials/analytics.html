@@ -45,11 +45,14 @@
                      <option value="">All containers</option>
                  </select>
             </span>
+            <span data-ng-show="!current.container">
+                To see analytics for all containers go to the <a href="#!/cloudAnalytics/{{hostId}}">instance analytics</a>
+            </span>
             <span data-ng-show="current.host && !containers.length && !changingHost">
                  You don't have running containers on this host. Please select another Docker Host.
             </span>
 
-            <span data-ng-show="metrics && current.host && containers.length">
+            <span data-ng-show="metrics && current.host && containers.length && current.container">
                  <select ui-select2="{minimumResultsForSearch: -1, width: '210px', placeholder: '-- Choose Metric --'}" id="metricSelect" data-ng-model="current.metric">
                      <option></option>
                      <option data-ng-repeat="metric in metrics" value={{metric.val}}>
@@ -58,7 +61,11 @@
                  </select>
             </span>
             <p>Detailed analytics use pre-defined metrics to measure perfomance</p>
-            <button id="button-start" class="btn orange start-analytics-btn" data-ng-click="createDefault()" data-ng-disabled="!current.host || !containers.length || isSocketOpening">Start Analysis</button>
+            <button
+                    id="button-start"
+                    class="btn orange start-analytics-btn"
+                    data-ng-click="createDefault()"
+                    data-ng-disabled="!current.host || !containers.length || isSocketOpening || !current.container">Start Analysis</button>
             <p class="opt-title">Analytics Options:</p>
             <button class="btn options-ctrl effect-orange-button" data-ng-click="deleteAll()" data-ng-disabled="!canDelete()">Delete All</button>
             <button class="btn options-ctrl effect-orange-button" data-ng-click="create()" data-ng-disabled="!current.metric">Create</button>
