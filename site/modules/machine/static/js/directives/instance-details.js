@@ -259,6 +259,11 @@
                     locationReplace();
                 });
 
+                scope.isSdc = function () {
+                    var machine = scope.machine;
+                    return machine && machine.tags && machine.tags.sdc_docker;
+                };
+
                 function loadMachineNetworks() {
                     if (!Array.isArray(scope.machine.networks)) {
                         return;
