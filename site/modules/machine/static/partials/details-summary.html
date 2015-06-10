@@ -186,7 +186,7 @@
         </div>
     </div>
 
-    <div class="panel panel-default" data-ng-show="machine">
+    <div class="panel panel-default" data-ng-show="machine && !isSdc()">
         <div class="panel-heading">
             <a class="accordion-toggle collapsed toggle-icon" data-toggle="collapse" data-parent="#machine-accordion"
                data-target="#collapse_resize">
@@ -202,10 +202,7 @@
                 <p data-ng-show="datasetType == 'kvm'" data-translate>
                     To resize Linux or Windows instances, you will need to create an instance, migrate and then stop the old instance.
                 </p>
-                <p data-ng-show="machine.type == 'Docker Container'" data-translate>
-                    Resize of Docker Container instances presently is not supported.
-                </p>
-                <div data-ng-show="machine.type != 'Docker Container' && datasetType == 'smartos' || machine.type == 'smartmachine'" class="row">
+                <div data-ng-show="datasetType == 'smartos' || machine.type == 'smartmachine'" class="row">
                     <div class="row" data-ng-show="package">
                         <div>
                             <p data-translate><b>Current Instance type</b></p>
