@@ -383,9 +383,9 @@
         </div>
 
         <div class="item-list-container">
-            <div class="notice-block-wrapper pull-right">
+            <div class="notice-block-wrapper pull-left">
                 <div class="row notice-block" data-ng-show="notAffectedMachines.length > 0 || firewallDisabledMachines.length > 0 || kvmList.length > 0">
-                    Cloud Firewall is a SmartDataCenter 7.0 platform feature. <a href="https://docs.joyent.com/jpc/securing-your-infrastructure/working-with-cloud-firewall-rules" target="_blank">Click here to learn more about working with Firewall Rules</a>.
+                    <a href="https://docs.joyent.com/jpc/securing-your-infrastructure/working-with-cloud-firewall-rules" target="_blank">Click here to learn more about working with Firewall Rules</a>.
                     <br />
                 </div>
                 <div class="row notice-block" data-ng-show="notAffectedMachines.length > 0">
@@ -395,7 +395,7 @@
                     </div>
                 </div>
                 <div class="row notice-block" data-ng-show="firewallDisabledMachines.length > 0">
-                    The following instances do not have the Cloud Firewall feature enabled. You can view all of the rules that apply to each instance on their own Instance Details page. There you can also enable the Cloud Firewall or by using <a href="http://apidocs.joyent.com/cloudapi/#firewallrules">CloudAPI</a>:
+                    The following instances do not have the Cloud Firewall feature enabled. You can view all rules that apply to each instance on the Instance Details page, where you can also enable and manage firewall rules. See, <a href="http://apidocs.joyent.com/cloudapi/#firewallrules" target="_blank">CloudAPI</a> guide for details on managing firewall rules through the Cloud API.
                     <div data-ng-repeat="machine in firewallDisabledMachines">
                         <a href="#!/compute/instance/{{machine.id}}">{{$index+1}}. {{machine.name}} <span class="muted">({{machine.id}})</span></a>
                     </div>
