@@ -142,6 +142,7 @@
                                                     smallLogoClass + '-logo' : 'joyent-logo';
                                                 simpleImage.imageData.freetier = true;
                                                 simpleImage.imageData.freeTierValidUntil = simpleImages.validUntil;
+                                                simpleImage.order = 0;
                                             } else {
                                                 simpleImage = image;
                                                 simpleImage.imageData = {};
