@@ -123,7 +123,7 @@
                                                     null,
                                                     'machine',
                                                     'Unable to retrieve images from data center {{name}}.',
-                                                    { name: chunk.name }
+                                                    {name: chunk.name}
                                                 )
                                         );
                                     }
@@ -257,7 +257,7 @@
 
                 return deferred.promise;
             };
-            
+
             function showError(image, message, err) {
                 var detailMessage = (err.body && err.body.message) || err.message || String(err);
                 if (err.code === 'PrepareImageDidNotRun') {
@@ -273,7 +273,7 @@
                         null,
                         'image',
                             message + detailMessage,
-                        { name: image.name }
+                        {name: image.name}
                     )
                 );
             }
@@ -326,7 +326,7 @@
                 var id = window.uuid.v4();
                 var image = {
                     state: 'creating',
-                    published_at: Date.now(),
+                    'published_at': Date.now(),
                     machineId: machineId,
                     name: name,
                     description: description,
@@ -375,7 +375,7 @@
                         delete images.index[id];
                         image = job.initial.image;
                         image.datacenter = datacenter;
-                        image.published_at = Date.now();
+                        image['published_at'] = Date.now();
                         image.job = job.getTracker();
                         images.index[image.id] = image;
                         images.list[datacenter][index] = image;
@@ -422,7 +422,7 @@
                 handleChunk(image);
                 var job = serverTab.call({
                     name: 'ImageDelete',
-                    data: { imageId: image.id, datacenter: image.datacenter },
+                    data: {imageId: image.id, datacenter: image.datacenter},
                     done: function (err) {
                         if (!err) {
                             notification.popup(false, false, IMAGES_PATH, null, getSuccessMessage(image.name, 'deleted'));
@@ -446,7 +446,7 @@
                 image.state = 'updating'; // Override state manually
                 var job = serverTab.call({
                     name: 'ImageUpdate',
-                    data: { uuid: image.id,
+                    data: {uuid: image.id,
                             name: image.name,
                             datacenter: image.datacenter,
                             version: image.version,
