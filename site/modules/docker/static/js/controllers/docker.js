@@ -95,10 +95,16 @@
                     if (machine.prohibited || machine.isSdc) {
                         return;
                     }
-                    Docker.memStat({host: machine, direct: true}).then(function (data) {
-                        machine.memoryLoad = Math.round(data.memoryUsage);
+                    Docker.memStat({host: machine, direct: true, suppressErrors: true}).then(function (data) {
+                        machine.memoryLoad = Math.round(data.memoryUsage) + '%';
                     }, function (err) {
-                        PopupDialog.errorObj(new Error('Error retrieving host analytics'));
+                        if (err && err.indexOf('404') === 0) {
+                            machine.memoryLoad = 'N/A';
+                            Docker.showUpgradeAnalyticsMessage(machine.name);
+                        } else {
+                            machine.memoryLoad = 'N/A';
+                            PopupDialog.errorObj(new Error('Error retrieving host analytics'));
+                        }
                     });
             };
 

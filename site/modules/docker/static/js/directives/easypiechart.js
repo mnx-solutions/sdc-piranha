@@ -26,7 +26,13 @@
                 };
 
                 scope.$watch("percent", function () {
-                    $(element).easyPieChart(options).data('easyPieChart').update(scope.percent);
+                    var chart = $(element).data('easyPieChart') || $(element).easyPieChart(options).data('easyPieChart');
+                    if (scope.percent === 'N/A') {
+                        chart.options['barColor'] = 'red';
+                        chart.update(100);
+                    } else {
+                        chart.update(scope.percent);
+                    }
                 });
             }
         };

@@ -117,6 +117,21 @@ function startHttpServer(done) {
         res.send('ok');
     });
 
+    server.get('/installMemStat.sh', function (req, res, next) {
+        var filePath = path.join(__dirname, '/site/modules/docker/data/installMemStat.sh');
+        fs.stat(filePath, function (err, stat) {
+            if (err || !stat) {
+                return res.sendStatus(500).send(err || 'Internal server error');
+            }
+            res.writeHead(200, {
+                'Content-Type': 'application/x-sh',
+                'Content-Length': stat.size
+            });
+
+            fs.createReadStream(filePath).pipe(res);
+        });
+    });
+
     server.get('/version', function (req, res, next) {
 
         var ret = {};

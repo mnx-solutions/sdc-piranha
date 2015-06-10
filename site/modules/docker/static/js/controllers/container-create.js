@@ -564,7 +564,7 @@
                     } else if (host.isSdc) {
                         host.analyticsUnavailable = true;
                     } else {
-                        Docker.memStat({host: host, direct: true}).then(function (data) {
+                        Docker.memStat({host: host, direct: true, suppressErrors: true}).then(function (data) {
                             hostsStats[host.id] = {
                                 cadvisorUnavailable: false,
                                 cpuLoad: data.cpuUsage + '%',
@@ -573,6 +573,9 @@
                             };
                             host = ng.extend(host, hostsStats[host.id]);
                         }, function (err) {
+                            if (err && err.indexOf('404') === 0) {
+                                Docker.showUpgradeAnalyticsMessage(host.name);
+                            }
                             host.stats = host.analyticsUnavailable = true;
                         });
                     }

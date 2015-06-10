@@ -99,9 +99,9 @@
                         <span class="loading-small loading-images-count pull-left" data-ng-hide="machine.imagesCount || machine.imagesCount == 0"></span>
                         <span class="pull-left">{{machine.imagesCount}}</span>
                     </div>
-                    <div class="chart-wrapper" data-ng-hide="machine.isSdc" data-ng-click="navigateMachine(machine)">
+                    <div class="chart-wrapper" data-ng-hide="machine.isSdc" data-ng-click="navigateMachine(machine)" data-ng-class="{'tooltip-hover': machine.memoryLoad === 'N/A'}" data-original-title="Analytics is unavailable">
                         <easypiechart data-percent="machine.memoryLoad" data-options="chartOptions">
-                            <span class="chart-text" data-ng-show="machine.memoryLoad">{{machine.memoryLoad}}%</span>
+                            <span class="chart-text" data-ng-show="machine.memoryLoad">{{machine.memoryLoad}}</span>
                             <span class="chart-loading" data-ng-show="!machine.memoryLoad"></span>
                         </easypiechart>
                         <p class="title">Memory</p>
