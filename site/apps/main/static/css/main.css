@@ -5903,3 +5903,19 @@ a.orange-link
     text-align: left;
     font-size: 13px !important;
 }
+@media screen and (max-width: 775px) {
+    .navbar .nav.pull-right {
+        margin-right: 20px !important;
+    }
+}
+@media (max-width: 767px) {
+    .navbar-nav .open .dropdown-menu {
+        position: absolute;
+        float: none;
+        width: auto;
+        margin-top: 3px;
+        background-color: #fff;
+        border: 1px solid #ccc;
+        box-shadow: 0 6px 12px rgba(0, 0, 0, .175);
+    }
+}
