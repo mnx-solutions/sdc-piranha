@@ -290,6 +290,10 @@ li.active a.dev-tools-icon
 {
     background-image: url('../img/question.png');
 }
+li.active a.question-icon
+{
+    background-image: url('../img/question-orange.png');
+}
 
 .dashboard-icon,
 .compute-icon,
