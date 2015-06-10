@@ -1,7 +1,9 @@
 'use strict';
 (function (app, ng) {
-    app.factory('Provision', ['$rootScope', '$q', '$filter', '$location', '$$track', 'Datacenter', 'Account', 'Machine', 'Package', 'Image', 'FreeTier', 'Network', 'PopupDialog', 'Limits', 'loggingService', 'util',
-        function ($rootScope, $q, $filter, $location, $$track, Datacenter, Account, Machine, Package, Image, FreeTier, Network, PopupDialog, Limits, loggingService, util) {
+    app.factory('Provision', ['$rootScope', '$q', '$filter', '$location', '$$track', 'Datacenter', 'Account', 'Machine',
+        'Package', 'Image', 'FreeTier', 'Network', 'PopupDialog', 'Limits', 'loggingService', 'util',
+        function ($rootScope, $q, $filter, $location, $$track, Datacenter, Account, Machine,
+                  Package, Image, FreeTier, Network, PopupDialog, Limits, loggingService, util) {
             var service = {};
 
             var DOCKERHOST_MINIMUM_MEMORY = 512;
@@ -100,7 +102,7 @@
                     deferred.resolve([]);
                 }
                 return deferred.promise;
-            }
+            };
 
             service.setupSimpleImages = function (datacenters) {
                 var setup = function (simpleImages, networks, isFree) {
@@ -175,7 +177,7 @@
                         def.resolve(result);
                     }
                     return def.promise;
-                }
+                };
                 var deferred = $q.defer();
                 var task = [Machine.getSimpleImgList()];
                 if ($rootScope.features.freetier === 'enabled') {
@@ -203,7 +205,7 @@
                     }, errorTask);
                 }, errorTask);
                 return deferred.promise;
-            }
+            };
 
             service.processRecentInstances = function (recentInstances, datasets, packages) {
                 recentInstances = ng.copy(recentInstances);
@@ -344,6 +346,7 @@
                     var datasetVersions = versions[datasetVisibility][datasetName];
 
                     if (dataset.os) {
+                        dataset.os = dataset.name.substr(0, 3) === 'lx-' ? 'linux' : dataset.os;
                         operatingSystems[dataset.os] = 1;
                     }
                     dataset.limit = checkLimit(dataset.id);
@@ -390,7 +393,7 @@
                     manyVersions: manyVersions,
                     selectedVersions: selectedVersions
                 });
-            }
+            };
 
             service.filterVersions = function (dataset, hostSpecification) {
                 var datasetVisibility = dataset.public ? 'public' : 'custom';
@@ -406,13 +409,13 @@
                 });
 
                 return filteredVersions;
-            }
+            };
 
             service.getLastDatasetId = function (dataset) {
                 var datasetVisibility = dataset.public ? 'public' : 'custom';
                 var versionsByDataset = versions[datasetVisibility][dataset.name];
                 return versionsByDataset[listVersions[datasetVisibility][dataset.name].slice(-1)[0]].id;
-            }
+            };
 
             service.processPackages = function (packages, hostSpecification, callback) {
                 if (hostSpecification === 'dockerhost' && IsEnabled.dockerMemoryLimit) {
@@ -450,7 +453,7 @@
                     packageTypes: packageTypes,
                     packages: packages,
                 });
-            }
+            };
             // TODO: need review
             service.selectDatacenter = function (name, callback) {
                 Datacenter.datacenter().then(function (datacenters) {
@@ -467,7 +470,7 @@
                     }
                     callback(datacenterName);
                 });
-            }
+            };
 
             service.finalProvision = function (machine, datacenters, account, hostSpecification, callback) {
                 if (machine && !machine.dataset) {
