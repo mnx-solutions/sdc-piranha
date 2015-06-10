@@ -6,7 +6,6 @@
         <h3 class="page-title">DTrace Dashboard</h3>
         <create-dtrace-button></create-dtrace-button>
     </div>
-    <div class="preview-sticker">Preview</div>
     <div class="loading-large" data-ng-show="loading"></div>
     <div class="row" data-ng-show="dtraceMachines.length >= 1 && !loading">
         <div class="dtrace-wrapper" data-ng-repeat="machine in dtraceMachines" data-ng-click="navigateMachine(machine)">
