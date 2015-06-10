@@ -313,7 +313,7 @@
                             $scope.instanceType = 'Public';
                             $scope.reconfigure(REVIEW_STEP);
                             if (provisionBundle.ready) {
-                                provision();
+                                provision(provisionBundle.machine);
                             }
                         } else if (provisionBundle.ready) {
                             provision(provisionBundle.machine);
