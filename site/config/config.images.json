@@ -7,7 +7,7 @@
             "datasetName": "lx-ubuntu-14.04",
             "packageName": "g3-standard-4-smartos",
             "description": {
-                "text": "Ubuntu 14.04 64-bit lx-brand image.",
+                "text": "Container optimized Ubuntu 14.04 64-bit image. Built to run on containers with bare metal speed.",
                 "memory": 4,
                 "cpu": 1,
                 "disk": 131,
@@ -21,7 +21,7 @@
             "datasetName": "lx-centos-6",
             "packageName": "g3-standard-4-smartos",
             "description": {
-                "text": "CentOS 6.6 64-bit lx-brand image.",
+                "text": "Container optimized CentOS 6.6 64-bit image. Built to run on containers with bare metal speed.",
                 "memory": 4,
                 "cpu": 1,
                 "disk": 131,
@@ -35,7 +35,7 @@
             "datasetName": "lx-debian-7",
             "packageName": "g3-standard-4-smartos",
             "description": {
-                "text": "Debian 7 64-bit lx-brand image.",
+                "text": "Container optimized Debian 7 64-bit image. Built to run on containers with bare metal speed.",
                 "memory": 4,
                 "cpu": 1,
                 "disk": 131,
@@ -86,7 +86,7 @@
             "order": 6
         },
         {
-            "name": "NGinx",
+            "name": "Nginx",
             "className": "nginx-logo",
             "datasetName": "nginx",
             "packageName": "g3-standard-4-smartos",

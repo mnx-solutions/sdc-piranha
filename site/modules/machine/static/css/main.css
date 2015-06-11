@@ -1613,7 +1613,8 @@ span.btn-success
     background-image: url(../img/icons/chef.png);
 }
 
-.small-icon.debian
+.small-icon.debian,
+.denian-logo
 {
     background-image: url(../img/icons/debian.png);
 }
@@ -1771,7 +1772,8 @@ span.btn-success
 .mongodb-logo,
 .postgresql-logo,
 .scalearc-logo,
-.nginx-logo
+.nginx-logo,
+.denian-logo
 {
     background-color: #eef0f2;
     background-repeat: no-repeat;
