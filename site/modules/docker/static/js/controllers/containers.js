@@ -24,6 +24,7 @@
                 var hostId = requestContext.getParam('host') || '';
                 var updateContainersInfo;
                 $scope.loading = true;
+                $scope.permittedHosts = [];
                 if ($location.path() === '/docker/containers/running') {
                     $scope.forceTabActive = 'running';
                 }
@@ -86,10 +87,16 @@
                 var listAllContainers = function (cache) {
                     $q.all([
                         Docker.listContainers({host: 'All', cache: cache, options: {all: true}, suppressErrors: true}),
-                        Docker.listHosts({prohibited: true})
+                        Docker.listHosts({prohibited: true}),
+                        Docker.listHosts()
                     ]).then(function (result) {
                         var containers = result[0] || [];
                         var hosts = result[1] || [];
+                        $scope.permittedHosts = result[2] || [];
+                        $scope.host = $scope.permittedHosts[0];
+                        $scope.showRequestTritonBtn = hosts.find(function (host) {
+                            return host.isSdc && host.prohibited;
+                        });
                         hosts.some(function (host) {
                             if (host.isSdc) {
                                 sdcDatacenter = host.datacenter;

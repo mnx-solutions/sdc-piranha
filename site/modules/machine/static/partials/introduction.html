@@ -1,0 +1,111 @@
+<div class="container-fluid container-position" data-ng-controller="StorageController">
+    <div class="row">
+        <h3 class="page-title">Triton Infrastructure Containers and VMs</h3>
+    </div>
+    <div class="loading-large span12" data-ng-show="loading"></div>
+    <div data-ng-show="!loading">
+        <div class="portlet box light-grey">
+            <div class="portlet-title">
+                <div class="caption">
+                    <i class="icon-reorder"></i>
+                       Introduction
+                </div>
+            </div>
+            <div class="portlet-body instance-intro">
+                <p>The Triton Elastic Container Service provides three classes of compute instances:  Docker Containers, Infrastructure Containers and Virtual Machines.  Leverage this “Compute” tab to provision and manage instances of Infrastructure Containers and Virtual Machines.</p>
+                <p>Choose from provided “Container-Native Linux” os images and “Triton-Standard” compute packages to deploy your workload on Infrastructure Containers that deliver near bare metal speed, while offering all the services of a typical unix host.</p>
+                <a href="https://apidocs.joyent.com/cloudapi/" class="btn orange" target="_blank">
+                    Triton documentation
+                </a>
+            </div>
+
+            <div class="portlet box instance-intro light-grey">
+                <div class="portlet-title">
+                    <div class="caption">
+                        <i class="icon-reorder"></i>
+                        Getting Started in the Portal
+                    </div>
+                </div>
+                <div class="portlet-body">
+                    <ol class="intro-list">
+                        <li>From the Portal Dashboard, click on the orange <b>Create Compute Instance</b> button located in the grey <i>Instances</i> tile.</li>
+                        <li>Select the <b>Data Center</b> of your choice from the drop down menu located underneath the title of the page.</li>
+                        <li>Click the <i>All Public Images</i> orange link located to the right of the <i>Data Center</i> drop down menu.</li>
+                        <li>Select the <i>Image</i> that you would like to run in your container. For this example, you will use NGINX.</li>
+                        <li>Select the package which corresponds to the desired memory, disk and CPU for your container. Then click the <b>Next</b> button located on the right side of the page.</li>
+                        <li>Enter a name for the container (This is optional). Then click the <b>Next</b> button located on the right side of the page.</li>
+                        <li>Provide your billing information if you have not done so already. Then click the <b>Next</b> button located on the right side of the page.</li>
+                        <li>Create an SSH key or Import your public key if you have not done so already. Then click the <b>Create Instance</b> button.</li>
+                        <li>Once created you will notice it displayed in the grid within the <i>Instances</i> section of the <i>Compute</i> tab of the portal. You can also verify that the container is running (in this example, you created an NGINX container) by opening your browser to the address _____________.</li>
+                    </ol>
+                </div>
+            </div>
+
+            <div class="portlet box instance-intro light-grey">
+                <div class="portlet-title">
+                    <div class="caption">
+                        <i class="icon-reorder"></i>
+                        Getting Started with the CLI
+                    </div>
+                </div>
+                <div class="portlet-body">
+                    <p data-ng-hide="sshKeys.length">Please start by <a href="#!/account">adding a set of SSH keys to your account</a>.</p>
+                    <p>The Triton CloudAPI tools require Node.js. You can find the latest version of Node.js at <a href="http://nodejs.org" class="active-link" target="_blank">nodejs.org</a></p>
+                    <p>Once Node.js is installed, install the CloudAPI tools. Open a terminal window and enter the following command to install the CloudAPI tools: (If you get prompted for a password it is the password of your account on your local computer)</p>
+                    <div class="cli-intro">
+                        <p>a. If you are on a MAC, please run the following command:</p>
+                        <div class="code">
+                            <p>sudo npm -g install smartdc</p>
+                        </div>
+                        <p>b. If you are running MS-Windows, please run the following command:</p>
+                        <div class="code">
+                            <p>c:\ ASK MICKY</p>
+                        </div>
+                    </div>
+                    <div data-ng-show="sshKeys.length">
+                        <h5><b>Set environment</b></h5>
+                        <div data-ng-show="sshKeys.length > 1" class="code">
+                            <label for="keySel">You have multiple keys, please select the one you want to use:</label>
+                            <select data-select-two
+                                    id="keySel"
+                                    data-ng-model="keyId"
+                                    data-width="200"
+                                    data-select="keyName"
+                                    data-ng-options="c.fingerprint as c.name for c in sshKeys">
+                            </select>
+                        </div>
+                        <div class="btn-group" data-ng-controller="Machine.ProvisionController">
+                            <span>Data Center:</span>
+                            <div class="loading-medium loading-medium-inline" data-ng-show="datasetsLoading"></div>
+                            <select type="hidden" data-select-two id="selectDatacenter" width="110" data-ng-model="data.datacenter"
+                                    data-fn="selectDatacenter" data-select="data.datacenter" placeholder="No matches found"
+                                    data-ng-disabled="datasetsLoading">
+                                <option data-ng-repeat="datacenter in datacenters | orderBy:$index" value="{{datacenter.name}}">
+                                    {{datacenter.name}}
+                                </option>
+                            </select><br/><br/>
+                            <p>Once you have installed Node.js and the CloudAPI tools, you can copy and paste the examples below which are customized with your account information.</p>
+                            <div class="code">
+                                <p>export SDC_ACCOUNT={{account.login}};</p>
+                                <p>export SDC_KEY_ID={{keyId}};</p>
+                                <p>export SDC_URL={{getDatacenterUrl(data.datacenter)}};</p>
+                            </div>
+                        </div>
+                        <p>You are now ready to start using the CloudAPI</p>
+                        <p>To test CloudAPI, by running the following command</p>
+                        <div class="code">
+                            <p>sdc-listdatacenters</p>
+                        </div>
+                        <p>This will give you a list of Joyent Public Cloud Data Centers that are available</p>
+                        <p>To learn more about the CloudAPI please visit the detail information <a href="https://apidocs.joyent.com/cloudapi/" target="_blank">&lt;DOC LINK&gt;</a></p>
+                        <p>N.B the CloudAPI is returning data in the JSON format. There is a tool called json that can be very helpful.</p>
+                        <p>To install that you can run the following command</p>
+                        <div class="code">
+                            <p>sudo npm -g install json</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

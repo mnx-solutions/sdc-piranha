@@ -1,0 +1,169 @@
+<div class="container-fluid container-position" data-ng-controller="StorageController">
+    <div class="row">
+        <h3 class="page-title">Triton Docker Containers</h3>
+    </div>
+    <div class="loading-large span12" data-ng-show="loading"></div>
+    <div data-ng-show="!loading">
+        <div class="portlet box light-grey">
+            <div class="portlet-title">
+                <div class="caption">
+                    <i class="icon-reorder"></i>
+                       Introduction
+                </div>
+            </div>
+            <div class="portlet-body docker-intro">
+                <p>The Triton Elastic Container Service transforms each Joyent data center (e.g. us-east-1) into an easy to manage, elastic Docker host, while delivering enterprise grade networking and security to each Docker container.</p>
+                <p>No need to worry about Docker hosts. Just pull and deploy Docker images to the Joyent data center of your choice. Use the Joyent portal or the Docker client and CLI.</p>
+                <a href="https://apidocs.joyent.com/cloudapi/" class="btn orange" target="_blank">
+                    Triton Docker documentation
+                </a>
+            </div>
+
+            <div class="portlet box instance-intro light-grey">
+                <div class="portlet-title">
+                    <div class="caption">
+                        <i class="icon-reorder"></i>
+                        Getting Started in the Portal
+                    </div>
+                </div>
+                <div class="portlet-body">
+                    <ol class="intro-list">
+                        <li>From the Portal Dashboard, click on the orange <b>Create Docker Container</b> button located in the grey <i>Docker Containers</i> tile.</li>
+                        <li>Enter a name for the Docker Container (This is optional)</li>
+                        <li>Select the <b>Data Center</b> of your choice</li>
+                        <li>Click the <b>Pull Image</b> button to search and pull the image you would like to use to create the Docker container. For this example, we will use the Nginx web server.</li>
+                        <li>On the right hand side of the page, select the package which corresponds to the desired memory, disk and CPU. (The default is a 1 GB / ½ vCPU container)</li>
+                        <li>We need to map ports from the container to the internet. This can be done by entering 80:80 in the <b>Ports</b> field (The format is &lt;host port&gt;:&lt;container port&gt; similar to the Docker CLI). If you want to include port 443, you can add a second line with 443:443</li>
+                        <li>Make sure to change the <b>Restart Policy</b> to “always”. This will ensure that the container will be restarted should the physical host be rebooted.</li>
+                        <li>The “Attach Public IP” toggle should be set to <b>[Yes]</b>. This will attach a public IP to your container when it starts up.</li>
+                        <li>Click <b>Start</b> and your new container will be provisioned.</li>
+                        <li>Once created you will notice it displayed in the grid within the Docker Containers section of the portal. You can also verify that the container is running (in this example, you created an NGINX container) by opening your browser to the address _____________.</li>
+                    </ol>
+                </div>
+            </div>
+
+            <div class="portlet box instance-intro light-grey">
+                <div class="portlet-title">
+                    <div class="caption">
+                        <i class="icon-reorder"></i>
+                        Getting Started with the CLI
+                    </div>
+                </div>
+                <div class="portlet-body">
+                    <p data-ng-hide="sshKeys.length">To see this CLI example, please <a href="#!/account">add your SSH key</a> to your account.</p>
+                    <div data-ng-show="sshKeys.length > 1" class="code">
+                        <label for="keySel">You have multiple keys, please select the one you want to use:</label>
+                        <select data-select-two
+                                id="keySel"
+                                data-ng-model="keyId"
+                                data-width="200"
+                                data-select="keyName"
+                                data-ng-options="c.fingerprint as c.name for c in sshKeys">
+                        </select>
+                    </div>
+                    <div data-ng-controller="Docker.ContainersController">
+                        <div class="loading-large span12" data-ng-show="loading"></div>
+                        <p data-ng-show="sshKeys.length && permittedHosts.length == 0 && !loading">To see this CLI example, please <a href="#!/docker">create Docker instance</a>.</p>
+                        <div data-ng-show="sshKeys.length && permittedHosts.length > 0">
+                            <h5><b>Connecting to the API</b></h5>
+                            <p>Docker client applications, including the Docker CLI can connect to the SDC Docker remote API endpoint to launch and control Docker containers across an entire Triton data center.</p>
+                            <p>Connecting to the API requires an account on the Triton data center, SSH key, and the CloudAPI URL for that data center, as well as the Docker CLI or some other Docker client. Joyent provides a helper script to configure a Docker client, including the Docker CLI.</p>
+                            <h5><b>Docker version</b></h5>
+                            <p>For the Docker CLI, this includes Docker 1.6.0 and newer. You can see the version of your currently installed Docker CLI:</p>
+                            <div class="code">
+                                <p>docker --version</p>
+                                <p>Docker version 1.6.0, build 4749651</p>
+                            </div>
+                            <p>Please <a href="https://docs.docker.com/installation/#installation" target="_blank">install or upgrade</a> the Docker CLI if you do not have it or have an older version.</p>
+                            <h5><b>API endpoint</b></h5>
+                            <p>Each data center is a single Docker API endpoint. <a href="https://apidocs.joyent.com/cloudapi/" target="_blank">CloudAPI</a> is used as a helper to configure the client to connect to the Docker Remote API. Determining the correct CloudAPI URL depends on which data center you're connecting to.</p>
+                            <p>Joyent operates a number of data centers around the world, each has its own CloudAPI endpoint. Please consult the Joyent Elastic Container Service documentation for the correct URL for that service.</p>
+                            <p>Private cloud implementations will offer different CloudAPI URLs, please consult the private cloud operator for the correct URL.</p>
+                            <h5><b>User accounts, authentication, and security</b></h5>
+                            <p>User accounts in Triton require one or more SSH keys. The keys are used to identify and secure SSH access to containers and other resources in Triton.</p>
+                            <p>SDC Docker uses Docker's TLS authentication scheme both to identify the requesting user and secure the API endpoint. The SDC Docker helper script will generates a TLS certificate using your SSH key and write it to a directory in your user account.</p>
+                            <h5><b>The helper script</b></h5>
+                            <p>The 'sdc-docker-setup.sh' script will help pull everything together and configure Docker clients.</p>
+                            <p>Download the script:</p>
+                            <div class="code">
+                                <p>curl -O https://raw.githubusercontent.com/joyent/sdc-docker/master/tools/sdc-docker-setup.sh</p>
+                            </div>
+                            <p>Now execute the script, substituting the correct values:</p>
+                            <div class="code">
+                                <p>sh sdc-docker-setup.sh &lt;CLOUDAPI_URL&gt; &lt;ACCOUNT_USERNAME&gt; ~/.ssh/&lt;PRIVATE_KEY_FILE&gt;</p>
+                            </div>
+                            <div class="btn-group" data-ng-controller="Machine.ProvisionController">
+                                <span>Data Center:</span>
+                                <select type="hidden" data-select-two id="selectDatacenter" width="110" data-ng-model="data.datacenter"
+                                        data-fn="selectDatacenter" data-select="data.datacenter" placeholder="No matches found"
+                                        data-ng-disabled="datasetsLoading">
+                                    <option data-ng-repeat="datacenter in datacenters | orderBy:$index" value="{{datacenter.name}}">
+                                        {{datacenter.name}}
+                                    </option>
+                                </select>
+                                <span class="intro-host-key">Host:</span>
+                                <select type="hidden"
+                                        data-select-two
+                                        id="hostSelect"
+                                        data-width="200"
+                                        data-ng-model="host"
+                                        data-select="host.name"
+                                        data-ng-options="host as host.name for host in permittedHosts"
+                                        placeholder="No matches found">
+                                </select>
+                                <span data-ng-show="showRequestTritonBtn" class="intro-host-key">
+                                    <a href="https://www.joyent.com/lp/preview" target="_blank" type="button" class="btn orange">Request Triton Preview</a>
+                                </span><br/><br/>
+                                <p>For example, if you created an account on Joyent's Triton service with the username "{{account.login}}" and a key file "~/.ssh/sdc-docker.id_rsa", and you're connecting to the {{data.datacenter}} data center:</p>
+                                <div class="code">
+                                    <p>sh sdc-docker-setup.sh {{getDatacenterUrl(data.datacenter)}} {{account.login}} ~/.ssh/sdc-docker.id_rsa</p>
+                                </div>
+                                <p>That should output something like the following:</p>
+                                <div class="code">
+                                    <p>Setting up Docker client for SDC using:</p>
+                                    <div class="cli-intro">
+                                        <p>CloudAPI: {{getDatacenterUrl(data.datacenter)}}</p>
+                                        <p>Account:  <span class="intro-account">{{account.login}}</span></p>
+                                        <p>Key:      <span class="intro-host-key">/Users/localuser/.ssh/sdc-docker.id_rsa</span></p>
+                                    </div><br/>
+                                    <p>If you have a pass phrase on your key, the openssl command will prompt you for your pass phrase now and again later.</p><br/>
+                                    <p>Verifying CloudAPI access.</p>
+                                    <p>CloudAPI access verified.</p><br/>
+                                    <p>Generating client certificate from SSH private key.</p>
+                                    <p>writing RSA key</p>
+                                    <p>Wrote certificate files to /Users/localuser/.sdc/docker/{{account.login}}</p><br/>
+                                    <p>Get Docker host endpoint from cloudapi by running sdc-services ← please try</p>
+                                    <p>Docker service endpoint is: tcp://{{host.primaryIp}}:2376</p><br/>
+                                    <p>* * *</p>
+                                    <p>Success. Set your environment as follows:</p><br/>
+                                    <div class="cli-intro">
+                                        <p>export DOCKER_CERT_PATH=/Users/localuser/.sdc/docker/{{account.login}}</p>
+                                        <p>export DOCKER_HOST=tcp://{{host.primaryIp}}:2376</p>
+                                        <p>export DOCKER_TLS_VERIFY=1</p>
+                                    </div>
+                                </div>
+                                <p>Then you should be able to run 'docker info' and see your account name 'SDCAccount: {{account.login}}' in the output.</p>
+                                <p>Run those <span class="code intro-code">export</span> commands in your shell and you should now be able to run <span class="code intro-code">docker</span>:</p>
+                                <div class="code">
+                                    <p>docker info</p>
+                                    <p>Containers: 0</p>
+                                    <p>Images: 0</p>
+                                    <p>Storage Driver: sdc</p>
+                                    <p class="intro-account">SDCAccount: {{account.login}}</p>
+                                    <p>Execution Driver: sdc-0.1.0</p>
+                                    <p>Operating System: SmartDataCenter</p>
+                                    <p>Name: {{data.datacenter}}</p>
+                                </div>
+                                <div class="code">
+                                    <p>export DOCKER_CERT_PATH=/Users/localuser/.sdc/docker/{{account.login}}</p>
+                                    <p>export DOCKER_HOST=tcp://{{host.primaryIp}}:2376</p>
+                                    <p>export DOCKER_TLS_VERIFY=1</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

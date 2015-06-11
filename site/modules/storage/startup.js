@@ -43,7 +43,7 @@ module.exports = function execute(log, config) {
         if (error) {
             return done(error);
         }
-        return done;
+        return done();
     }
 
     function checkResponse(call, ignoreNotFound, forceDone) {
@@ -463,7 +463,7 @@ module.exports = function execute(log, config) {
                     sendError(call, {message: PING_ERROR_MESSAGE});
                     return;
                 } else if (!isActive) {
-                    return;
+                    return sendError(call);
                 }
                 pingManta();
             });
