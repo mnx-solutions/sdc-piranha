@@ -13,7 +13,7 @@
             requestContext.setUpRenderContext('machine.details', $scope, {
                 title: localization.translate(null, 'machine', 'View Joyent Instance Details')
             });
-            $scope.tabs = ['Summary', 'Docker Summary'];
+            $scope.tabs = ['Infrastructure Details', 'Docker Details'];
             $scope.activeTab = $scope.tabs[0];
             $scope.machine = Machine.machine(machineid);
             $scope.containerDetailsAvailable = $scope.machine.tags && $scope.machine.tags.sdc_docker && $scope.features.docker !== 'disabled' ;
