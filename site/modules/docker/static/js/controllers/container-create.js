@@ -657,7 +657,6 @@
                         return errorCallback('Container name should be more than one character.');
                     }
 
-                    $scope.container.HostConfig.PortBindings = parsePorts($scope.input.PortBindings);
                     $scope.container.HostConfig.Links = parseContainerLinks($scope.input.Links);
                     $scope.container.HostConfig.LxcConf = parseLxcConf($scope.input.LxcConf);
 
@@ -704,7 +703,7 @@
                     $scope.container.Env = parseEnvironments($scope.input.Env);
                     $scope.container.Volumes = parseVolumes($scope.input.Volumes);
                     $scope.container.HostConfig.NetworkMode = $scope.input.NetworkMode;
-                    $scope.container.HostConfig.PortBindings = parsePorts($scope.input.PortsBinding);
+                    $scope.container.HostConfig.PortBindings = parsePorts($scope.input.PortBinding);
 
                     if ($scope.input.NetworkMode === 'container') {
                         if ($scope.input.networkContainer) {
