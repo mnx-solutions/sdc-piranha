@@ -28,7 +28,7 @@
             var statsSocket;
             var inspectInterval;
 
-            $scope.tabs = ['Summary', 'Infrastructure Summary'];
+            $scope.tabs = ['Docker Details', 'Infrastructure Details'];
             $scope.activeTab = $scope.tabs[0];
 
             var errorCallback = function () {
