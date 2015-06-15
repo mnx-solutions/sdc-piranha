@@ -14,7 +14,13 @@
                     <span class="selected"></span>
                 </a>
                 <ul class="sub-menu">
-                    <li class="sub" data-ng-class="{active: location.path().search('compute') == 1}">
+                    <li class="sub" data-ng-class="{active: location.path().search('compute/intro') == 1}">
+                        <a href="#!/compute/intro">
+                            <span class="titles">Introduction</span>
+                            <span class="selected-sub"></span>
+                        </a>
+                    </li>
+                    <li class="sub" data-ng-class="{active: location.path().search('compute') == 1 && location.path().search('compute/') == -1}">
                         <a href="#!/compute">
                             <span class="titles">Instances</span>
                             <span class="selected-sub"></span>
@@ -47,6 +53,12 @@
                     <span class="title">Docker</span>
                 </a>
                 <ul class="sub-menu">
+                    <li class="sub" data-ng-class="{active: location.path().search('docker/intro') == 1}">
+                        <a href="#!/docker/intro">
+                            <span class="titles">Introduction</span>
+                            <span class="selected-sub"></span>
+                        </a>
+                    </li>
                     <li left-list-item class="sub" data-ng-show="provisionEnabled" data-ng-class="{active: location.path().search('docker/container?') == 1}">
                         <a href="#!/docker/containers">
                             <span class="titles" data-translate>Containers</span>

@@ -493,6 +493,11 @@ th
     text-shadow: 0 1px 0 rgba(255, 255, 255, .5);
 }
 
+.box.instance-intro
+{
+    margin-bottom: 0;
+}
+
 .box-yellow
 {
     border: 1px solid #fce6ae;
@@ -4895,6 +4900,65 @@ label.checkbox.folder-name-form-checkbox
     float: right;
 
     margin-top: -70px;
+}
+
+.instance-intro
+{
+    min-height: 170px;
+}
+
+.docker-intro
+{
+    min-height: 150px;
+}
+
+.intro-list
+{
+    padding-left: 20px;
+}
+
+.intro-list li
+{
+    padding-bottom: 5px;
+}
+
+.cli-intro
+{
+    margin-left: 20px;
+    width: 550px;
+}
+
+.intro-host-key
+{
+    padding-left: 32px;
+}
+
+.intro-account
+{
+    padding-left: 6px;
+}
+
+.code
+{
+    margin: 10px 0;
+    padding: 20px;
+    border: 2px solid #e3e3e3;
+    background: rgba(0,0,0,.07);
+}
+
+.intro-code
+{
+    margin: 0;
+    padding: 0 3px;
+}
+
+.code p
+{
+    margin: 0;
+    color: #000;
+    font-weight: bold;
+    font-size: 13px;
+    font-family: Menlo, Menlo-Regular, Inconsolata, Monaco, monospace;
 }
 
 .text-to-left

@@ -3,26 +3,6 @@ input
     text-indent: 6px;
 }
 
-.code
-{
-    margin: 10px 0;
-    padding: 20px;
-
-    border: 2px solid #e3e3e3;
-    background: rgba(0,0,0,.07);
-}
-
-.code p
-{
-    font-family: Menlo, Menlo-Regular, Inconsolata, Monaco, monospace;
-    font-size: 13px;
-    font-weight: bold;
-
-    margin: 0;
-
-    color: #000;
-}
-
 .hl
 {
     font-weight: bold;

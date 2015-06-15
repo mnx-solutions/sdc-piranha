@@ -43,6 +43,9 @@ window.JP.main.config(['routeProvider', function (routeProvider) {
             title: 'Docker',
             action: 'docker.index',
             resolve: dockerResolve
+        }).when('/docker/intro', {
+            title: 'Docker',
+            action: 'docker.introduction'
         }).when('/docker/registries', {
             title: 'Registries',
             action: 'docker.registries',
