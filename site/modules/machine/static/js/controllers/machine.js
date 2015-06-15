@@ -8,6 +8,10 @@
         'Machine',
 
         function ($scope, requestContext, localization, Machine) {
+            function setMachine(machine) {
+                $scope.machine = machine;
+                $scope.containerDetailsAvailable = $scope.machine.tags && $scope.machine.tags.sdc_docker && $scope.features.sdcDocker !== 'disabled' ;
+            }
             var machineid = requestContext.getParam('machineid') || util.idToUuid(requestContext.getParam('containerid'));
             localization.bind('machine', $scope);
             requestContext.setUpRenderContext('machine.details', $scope, {
@@ -15,8 +19,15 @@
             });
             $scope.tabs = ['Infrastructure Details', 'Docker Details'];
             $scope.activeTab = $scope.tabs[0];
-            $scope.machine = Machine.machine(machineid);
-            $scope.containerDetailsAvailable = $scope.machine.tags && $scope.machine.tags.sdc_docker && $scope.features.docker !== 'disabled' ;
+            var tryMachine = Machine.machine(machineid);
+
+            if (typeof tryMachine.then === 'function') {
+                tryMachine.then(function (machine) {
+                    setMachine(machine);
+                });
+            } else {
+                setMachine(tryMachine);
+            }
         }
 
     ]);

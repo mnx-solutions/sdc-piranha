@@ -651,7 +651,7 @@
             function done(machine, d, deleteReadJob) {
                 return function (error, job) {
                     if (error) {
-                        if (error.message.indexOf('listmachinemetadata') === -1 &&
+                        if (error.message && error.message.indexOf('listmachinemetadata') === -1 &&
                             error.message.indexOf('listmachinetags') === -1) {
                             showNotification(error, job, true);
                         }
