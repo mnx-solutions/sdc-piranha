@@ -73,6 +73,11 @@
                         num = parseInt(num, 10);
                         return num < 10 ? '0' + num : num;
                     };
+                    var doFirefoxChartFix = function () {
+                        if (navigator.userAgent.indexOf('Firefox') !== -1) {
+                            angular.element('path.domain[d="M0,4V0H570V4"]').attr('d', 'M0,4V1H570V4');
+                        }
+                    };
 
                     $scope.$watch('usage', function (data) {
                         if (!data) {
@@ -111,6 +116,7 @@
                         }
                         graph.update();
                         $scope.chartLoading = false;
+                        doFirefoxChartFix();
                     });
 
                     $scope.$on('requestContextChanged', function() {
