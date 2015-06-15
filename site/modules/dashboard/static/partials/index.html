@@ -33,29 +33,27 @@
 
         <div class="pull-left tile-wrapper" data-ng-show="dockerEnabled">
             <div class="tile docker-bg">
-                <a data-ng-href="{{'#!/docker/containers'}}">
-                    <div class="tile-body">
-                        <div class="title">Docker Containers</div>
-                        <div class="left-column">
-                            <a data-ng-href="{{'#!/docker/containers/running'}}" data-ng-disabled="!runningContainers">
-                                <div class="number">
-                                    {{runningContainers}}
-                                </div>
-                                <div class="info">
-                                    running
-                                </div>
-                            </a>
-                        </div>
-                        <div class="right-column">
+                <div data-ng-click="gotoPage('/docker/containers')" class="tile-body">
+                    <div class="title">Docker Containers</div>
+                    <div class="left-column">
+                        <div data-ng-click="gotoPage('/docker/containers/running')" data-ng-disabled="!runningContainers">
                             <div class="number">
-                                {{otherContainers}}
+                                {{runningContainers}}
                             </div>
                             <div class="info">
-                                stopped
+                                running
                             </div>
                         </div>
                     </div>
-                </a>
+                    <div class="right-column">
+                        <div class="number">
+                            {{otherContainers}}
+                        </div>
+                        <div class="info">
+                            stopped
+                        </div>
+                    </div>
+                </div>
                 <a class="tile-button" href="#!/docker/container/create">+ Create Docker Container</a>
             </div>
         </div>
@@ -143,27 +141,23 @@
 
         <div class="pull-left tile-wrapper" data-ng-show="features.support == 'enabled'">
             <div class="tile support-bg">
-                <div class="tile-body">
+                <div data-ng-click="gotoPage('/support')" class="tile-body">
                     <div class="title">Support</div>
                     <div class="left-column">
-                        <a href="#!/support">
-                            <div id="tile-support-main" class="number small">
-                                JPC
-                            </div>
-                            <div class="info">
-                                {{supportTile[0] || 'Basic'}}
-                            </div>
-                        </a>
+                        <div class="number small">
+                            JPC
+                        </div>
+                        <div class="info">
+                            {{supportTile[0] || 'Basic'}}
+                        </div>
                     </div>
-                    <div class="right-column">
-                        <a href="#!/support/cloud">
-                            <div id="tile-support-cloud" class="number small">
-                                Node.js
-                            </div>
-                            <div class="info">
-                                {{supportTile[1] || 'none'}}
-                            </div>
-                        </a>
+                    <div data-ng-click="gotoPage('/support/cloud')" class="right-column">
+                        <div class="number small">
+                            Node.js
+                        </div>
+                        <div class="info">
+                            {{supportTile[1] || 'none'}}
+                        </div>
                     </div>
                 </div>
                 <a class="tile-button" href="#!/support">View Support Upgrades</a>

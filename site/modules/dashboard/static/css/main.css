@@ -461,6 +461,8 @@ a.orange
     width: 60px;
 }
 
+.docker-bg,
+.support-bg,
 .tile.instance-bg
 {
     cursor: pointer;
