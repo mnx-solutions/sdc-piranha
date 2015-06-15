@@ -13,22 +13,28 @@
                 },
                 templateUrl: 'docker/static/partials/package-select.html',
                 link: function (scope) {
+                    // TODO: refactor and simplify!
                     var DEFAULT_PACKAGE_GROUP = 'Standard';
+                    var SDC_DOCKER_DEFAULT_MEMORY_SIZE = 1024;
                     scope.packageTypes = [];
 
                     var indexPackageTypes = {};
                     var defaultPackage;
                     var selectedPackage;
                     Docker.SdcPackage().then(function (list) {
-                         list.forEach(function (pkg) {
+                        list.forEach(function (pkg) {
                             pkg.group = pkg.group || DEFAULT_PACKAGE_GROUP;
                             defaultPackage = (!defaultPackage || (pkg.group === DEFAULT_PACKAGE_GROUP && pkg.default)) ? pkg : defaultPackage;
-                            if (scope.memory && parseInt(scope.memory, 10) === parseInt(pkg.memory, 10)) {
+                            if (pkg.memory === SDC_DOCKER_DEFAULT_MEMORY_SIZE) {
                                 selectedPackage = pkg;
-                            }
-                            if (pkg.group && !indexPackageTypes[pkg.group]) {
-                                indexPackageTypes[pkg.group] = true;
-                                scope.packageTypes.push(pkg.group);
+                            } else {
+                                if (scope.memory && parseInt(scope.memory, 10) === parseInt(pkg.memory, 10)) {
+                                    selectedPackage = pkg;
+                                }
+                                if (pkg.group && !indexPackageTypes[pkg.group]) {
+                                    indexPackageTypes[pkg.group] = true;
+                                    scope.packageTypes.push(pkg.group);
+                                }
                             }
                         });
                         scope.packages = list;
