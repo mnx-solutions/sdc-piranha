@@ -245,7 +245,9 @@ exports.init = function execute(log, config, done) {
         },
         list: function (call) {
             var cache = this.getCache(call);
-            return Object.keys(cache).map(function (key) {return cache[key];})
+            return Object.keys(cache).map(function (key) {
+                return cache[key];
+            });
         },
         put: function (call, id, registry) {
             var cache = this.getCache(call);
@@ -648,7 +650,8 @@ exports.init = function execute(log, config, done) {
                     setup(SUBUSER_LOGIN, SUBUSER_OBJ_NAME, SDC_DOCKER_PATH, SUBUSER_LIST_RULES, callback);
                 },
                 function (callback) {
-                    setup(SUBUSER_REGISTRY_LOGIN, SUBUSER_OBJ_NAME_REGISTRY, SDC_DOCKER_REGISTRY_PATH, SUBUSER_LIST_RULES_REGISTRY, callback)
+                    setup(SUBUSER_REGISTRY_LOGIN, SUBUSER_OBJ_NAME_REGISTRY, SDC_DOCKER_REGISTRY_PATH,
+                        SUBUSER_LIST_RULES_REGISTRY, callback);
                 }
             ],
         uploadCallback);

@@ -286,7 +286,7 @@
                                         notification.error('Applying role tags resulted in error: ' + setErr);
                                         return;
                                     }
-                                    notification.success('Role tags successfully applied.')
+                                    notification.success('Role tags successfully applied.');
                                 });
                             }
                             return $scope.close();
@@ -544,7 +544,7 @@
 
                 scope.cancelUpload = function (id) {
                     http.abortUploadFiles(id);
-                }
+                };
             }
         };
     }]);

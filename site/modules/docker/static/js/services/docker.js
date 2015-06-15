@@ -807,7 +807,9 @@
         };
 
         service.getHost = function(hosts, ip) {
-            var host = hosts.find(function (host) { return host.primaryIp === ip});
+            var host = hosts.find(function (host) {
+                return host.primaryIp === ip;
+            });
             return host ? host : {primaryIp: ip};
         };
 
@@ -911,7 +913,7 @@
                 return {
                     running: runningContainers.length,
                     stopped: containers.length - runningContainers.length
-                }
+                };
             });
         };
 

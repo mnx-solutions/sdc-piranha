@@ -23,7 +23,7 @@
 
         service.initCreateInstancePageConfig = function (config) {
             createInstancePageConfig = config;
-        },
+        };
         service.setCreateInstancePage = function (page) {
             if (createInstancePageConfig && createInstancePageConfig.loaded()) {
                 createInstancePageConfig.page = page;
@@ -724,7 +724,7 @@
                         data: data,
                         done: done(machine, d),
                         error: done(machine, d)
-                    })
+                    });
                 });
                 return d.promise;
             }

@@ -647,7 +647,7 @@
                                     if (filterValues[key].indexOf(value) === -1) {
                                         filterValues[key].push(value);
                                     }
-                                }
+                                };
                                 addFilterValue('vcpus', Number(p.vcpus));
                                 addFilterValue('memory', p.memory);
                                 addFilterValue('disk', p.disk);
@@ -838,10 +838,10 @@
             $scope.selectFilterType = function (name) {
                 selectFilter('key', name, function () {
                     preSelectedData = null;
-                })
+                });
             };
             $scope.selectFilterValue = function (name) {
-                selectFilter('value', name, function () {})
+                selectFilter('value', name, function () {});
             };
 
             $scope.changeSelectedPackage = function (event, packageType) {

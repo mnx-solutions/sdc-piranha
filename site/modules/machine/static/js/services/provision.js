@@ -15,7 +15,7 @@
                 recentInstances: $rootScope.features.recentInstances === 'enabled',
                 provisioningLimits: $rootScope.features.provisioningLimits === 'enabled',
                 dockerMemoryLimit: $rootScope.features.dockerMemoryLimit === 'enabled'
-            }
+            };
 
             var isDockerMemoryLimitEnable = $rootScope.features.dockerMemoryLimit === 'enabled';
 
@@ -179,13 +179,14 @@
                     }
                     return def.promise;
                 };
+
                 var deferred = $q.defer();
                 var task = [Machine.getSimpleImgList()];
                 if ($rootScope.features.freetier === 'enabled') {
                     task.push(FreeTier.freetier());
                 }
 
-                function errorTask (errr) {
+                function errorTask (error) {
                     deferred.reject(error);
                 }
 
@@ -283,7 +284,7 @@
                 return uniqueRecentInstances.filter(function (instance) {
                     return instance.memory !== undefined;
                 });
-            }
+            };
 
             service.getNetworks = function (datacenter) {
                 var deferred = $q.defer();
@@ -452,9 +453,10 @@
                 callback({
                     indexPackageTypes: indexPackageTypes,
                     packageTypes: packageTypes,
-                    packages: packages,
+                    packages: packages
                 });
             };
+
             // TODO: need review
             service.selectDatacenter = function (name, callback) {
                 Datacenter.datacenter().then(function (datacenters) {

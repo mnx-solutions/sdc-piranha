@@ -58,7 +58,7 @@
         }
 
         function getLowerCaseSting(value) {
-            var value = value || '';
+            value = value || '';
             if (value) {
                 if (ng.isNumber(value) || typeof (value) === 'boolean') {
                     value = value.toString();
