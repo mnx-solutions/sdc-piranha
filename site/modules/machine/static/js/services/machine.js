@@ -535,7 +535,7 @@
 
         function getMessage(instance, err, action) {
             action = action || 'create';
-            return 'Unable to ' + action + ' instance ' + (instance.name || '') + '. ' + (err.message || err);
+            return 'Unable to ' + action + ' instance' + (' ' + instance.name || '') + '. ' + (err.message || err);
         }
 
         service.provisionMachine = function (data) {
