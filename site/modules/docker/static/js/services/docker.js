@@ -553,6 +553,9 @@
             });
             return current;
         }
+
+        service.pullForHosts = [];
+
         service.pullImage = function (host, image, registryId) {
             image.pullProcesses[host.id] = image.pullProcesses[host.id] || {};
             image.pullProcesses[host.id].progressDetail = image.pullProcesses[host.id].progressDetail || {};
