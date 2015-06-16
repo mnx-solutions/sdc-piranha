@@ -14,7 +14,7 @@
             <div class="portlet-body instance-intro">
                 <p>The Triton Elastic Container Service provides three classes of compute instances:  Docker Containers, Infrastructure Containers and Virtual Machines.  Leverage this “Compute” tab to provision and manage instances of Infrastructure Containers and Virtual Machines.</p>
                 <p>Choose from provided “Container-Native Linux” os images and “Triton-Standard” compute packages to deploy your workload on Infrastructure Containers that deliver near bare metal speed, while offering all the services of a typical unix host.</p>
-                <a href="https://apidocs.joyent.com/cloudapi/" class="btn orange" target="_blank">
+                <a href="http://docs-stage.joyent.com/public-cloud/containers" class="btn orange" target="_blank">
                     Triton documentation
                 </a>
             </div>
@@ -36,7 +36,7 @@
                         <li>Enter a name for the container (This is optional). Then click the <b>Next</b> button located on the right side of the page.</li>
                         <li>Provide your billing information if you have not done so already. Then click the <b>Next</b> button located on the right side of the page.</li>
                         <li>Create an SSH key or Import your public key if you have not done so already. Then click the <b>Create Instance</b> button.</li>
-                        <li>Once created you will notice it displayed in the grid within the <i>Instances</i> section of the <i>Compute</i> tab of the portal. You can also verify that the container is running (in this example, you created an NGINX container) by opening your browser to the address _____________.</li>
+                        <li>Once created you will notice it displayed in the grid within the <i>Instances</i> section of the <i>Compute</i> tab of the portal. You can also verify that the container is running (in this example, you created an NGINX container) by opening your browser to the IP address for the container. For example, 165.225.170.113.</li>
                     </ol>
                 </div>
             </div>
@@ -59,7 +59,7 @@
                         </div>
                         <p>b. If you are running MS-Windows, please run the following command:</p>
                         <div class="code">
-                            <p>c:\ ASK MICKY</p>
+                            <p>c:\npm -g install smartdc</p>
                         </div>
                     </div>
                     <div data-ng-show="sshKeys.length">
@@ -97,7 +97,6 @@
                             <p>sdc-listdatacenters</p>
                         </div>
                         <p>This will give you a list of Joyent Public Cloud Data Centers that are available</p>
-                        <p>To learn more about the CloudAPI please visit the detail information <a href="https://apidocs.joyent.com/cloudapi/" target="_blank">&lt;DOC LINK&gt;</a></p>
                         <p>N.B the CloudAPI is returning data in the JSON format. There is a tool called json that can be very helpful.</p>
                         <p>To install that you can run the following command</p>
                         <div class="code">
