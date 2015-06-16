@@ -14,7 +14,8 @@
             '$location',
             'CloudAnalytics',
             'Package',
-            function ($scope, $rootScope, requestContext, localization, Docker, $q, PopupDialog, $filter, $location, CloudAnalytics, Package) {
+            'dockerPullImage',
+            function ($scope, $rootScope, requestContext, localization, Docker, $q, PopupDialog, $filter, $location, CloudAnalytics, Package, dockerPullImage) {
                 localization.bind('docker', $scope);
                 requestContext.setUpRenderContext('docker.create', $scope, {
                     title: localization.translate(null, 'docker', 'Create Docker Container')
@@ -65,6 +66,8 @@
                     MESSAGE: 'Commit message',
                     AUTHOR: 'Author'
                 };
+                var selectImageEl = ng.element('#imageSelect').eq(0);
+
                 $scope.tooltips = {
                     ATTACH_STDIN: 'Boolean value, attaches to stdin.',
                     ATTACH_STDOUT: 'Boolean value, attaches to stdout.',
@@ -386,13 +389,12 @@
                                 $scope.images = $filter('orderBy')($scope.images, 'name');
                                 $scope.container.Image = selectSource($scope.images, 'name');
                                 setTimeout(function () {
-                                    window.jQuery('#imageSelect').select2('val', $scope.container.Image);
+                                    selectImageEl.select2('val', $scope.container.Image);
                                 });
-                            } else {
-                                errorCallback('This docker host does not have images available for new container.');
                             }
                             $scope.loadingHostDetails = false;
                         }, errorCallback);
+                        ng.element(ng.element('#imageSelect option[disabled="disabled"]')[0]).removeAttr('disabled');
                     }
                 };
 
@@ -409,6 +411,9 @@
                             if (hosts.indexOf(image.hostId) === -1 && image.Id === $scope.image.Id) {
                                 hosts.push(image.hostId);
                             }
+                            if (image.suppressErrors) {
+                                $scope.unreachableHosts = image.suppressErrors;
+                            }
                         });
                         $scope.hosts = $scope.hosts.filter(function (host) {
                             return hosts.indexOf(host.id) !== -1;
@@ -417,8 +422,8 @@
                         $scope.images = [$scope.image];
                         $scope.container.Image = $scope.image.name;
                         setTimeout(function () {
-                            window.jQuery('#imageSelect').select2('val', $scope.container.Image);
-                            window.jQuery('#imageSelect').select2('disable');
+                            selectImageEl.select2('val', $scope.container.Image);
+                            selectImageEl.select2('disable');
                         });
                         $scope.loadingHostDetails = false;
                     }, errorCallback);
@@ -437,7 +442,7 @@
                             if ($scope.containers.length > 0) {
                                 $scope.container.container = selectSource($scope.containers, 'Id');
                                 setTimeout(function () {
-                                    window.jQuery('#containerSelect').select2('val', $scope.container.container);
+                                    ng.element('#containerSelect').select2('val', $scope.container.container);
                                     setDefaultValues($scope.containers[0]);
                                 });
                             } else {
@@ -465,7 +470,7 @@
                             }
                         });
                         setTimeout(function () {
-                            window.jQuery('#imageSelect').select2('val', $scope.container.Image);
+                            selectImageEl.select2('val', $scope.container.Image);
                         });
                         $scope.loadingHostDetails = false;
                     }, errorCallback);
@@ -724,6 +729,24 @@
                 $scope.cancel = function () {
                     $location.path('/docker/' + ($scope.preSelectedData ? 'audit' : $scope.type.toLowerCase()));
                 };
+
+                $scope.isPullingInProgress = Docker.pullForHosts;
+
+                function pullPolling (hostId, pullState) {
+                    $scope.isPullingInProgress[hostId] = pullState;
+                    if (!pullState) {
+                        hostImages($scope.host);
+                    }
+                }
+
+                selectImageEl.select2('enable').on('open', function() {
+                    ng.element('.select2-results .image-pull-item').on('mouseup', function(e) {
+                        dockerPullImage($scope.host, $scope.unreachableHosts, pullPolling);
+                        setTimeout(function () {
+                            selectImageEl.select2('val', '')
+                        });
+                    });
+                });
             }
         ]);
 }(window.angular, window.JP.getModule('docker')));

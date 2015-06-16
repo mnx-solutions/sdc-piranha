@@ -161,9 +161,19 @@
                     <div data-ng-hide="createImage" class="form-group">
                         <div class="group-label">Image</div>
                         <div class="edit-value">
-                            <select data-ng-disabled="!images.length" ui-select2="{minimumResultsForSearch: 1, width: '100%'}" id="image" data-ng-model="container.Image" on-opening="setNotation('IMAGE')" required>
+                            <select
+                                    ui-select2="{minimumResultsForSearch: 1, width: '100%'}"
+                                    id="imageSelect"
+                                    data-ng-model="container.Image"
+                                    on-opening="setNotation('IMAGE')" required>
                                 <option data-ng-repeat="image in images" value="{{image.name}}">
                                     {{image.name}}
+                                </option>
+                                <option disabled="disabled" data-ng-show="!isPullingInProgress[host.id]" class="image-pull-item">
+                                    Pull image...
+                                </option>
+                                <option disabled="disabled" data-ng-show="isPullingInProgress[host.id]">
+                                    Pulling image in progress
                                 </option>
                             </select>
                         </div>
