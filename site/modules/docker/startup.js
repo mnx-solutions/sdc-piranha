@@ -350,11 +350,18 @@ var Docker = function execute(log, config) {
                 func: function (host, callback) {
                     var client = Docker.createClient(call, host);
                     client.ping(function (err) {
+                        if (err && (err.indexOf(DOCKER_SSL_ERROR) !== -1 ||
+                            err.indexOf(Docker.CERTIFICATES_LOST) !== -1)) {
+                            err = Docker.CERTIFICATES_LOST.replace('r.', 'r host ') + host.primaryIp + ' (' + host.name + ').';
+                        }
                         callback(err);
                     });
                 }
             }, function (vasyncError) {
-                call.done(vasyncError);
+                if (vasyncError) {
+                    call.log.warn({errors: vasyncError['ase_errors'] || vasyncError});
+                }
+                call.done();
             });
         });
     });
