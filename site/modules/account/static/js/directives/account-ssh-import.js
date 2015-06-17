@@ -42,13 +42,13 @@
                         );
                     }
 
-                    function getKeyErrorMessage(keyData, keyName) {
+                    function getKeyErrorMessage(sshKey, keyName) {
                         var sshKeyExists = false;
                         var sshKeyNameExists = false;
                         var message = "The key you've imported is not a public key.";
                         if ($scope.keys.length) {
                             sshKeyExists = $scope.keys.some(function (keyData) {
-                                return keyData === keyData.key.replace(/[\r\n]/g, '');
+                                return sshKey === keyData.key.replace(/[\r\n]/g, '');
                             });
                             if (!sshKeyExists) {
                                 sshKeyNameExists = $scope.keys.some(function (keyData) {
