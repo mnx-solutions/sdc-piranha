@@ -196,13 +196,36 @@
     "registryVersion": "0.9.1",
     "registryDriverVersion": "0.0.19"
   },
-  "sdcDocker": {
-    "ip": "165.225.168.25",
-    "name": "Triton: East 3B",
-    "datacenter": "us-east-3b",
-    "fullDataCenter": true,
-    "packagePrefix": "t4-"
-  },
+  "sdcDocker": [
+    {
+      "id": "00000000-0000-0000-0000-000000000000",
+      "name": "Triton: Ams 1",
+      "datacenter": "eu-ams-1",
+      "fullDataCenter": true,
+      "packagePrefix": "t4-"
+    },
+    {
+      "id": "00000000-0000-0000-0000-000000000001",
+      "name": "Triton: SW 1",
+      "datacenter": "us-sw-1",
+      "fullDataCenter": true,
+      "packagePrefix": "t4-"
+    },
+    {
+      "id": "00000000-0000-0000-0000-000000000002",
+      "name": "Triton: East 1",
+      "datacenter": "us-east-1",
+      "fullDataCenter": true,
+      "packagePrefix": "t4-"
+    },
+    {
+      "id": "00000000-0000-0000-0000-000000000003",
+      "name": "Triton: East 3B",
+      "datacenter": "us-east-3b",
+      "fullDataCenter": true,
+      "packagePrefix": "t4-"
+    }
+  ],
   "subUserDenied": [
     "slb",
     "provisioningLimits",

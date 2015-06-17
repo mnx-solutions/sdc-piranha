@@ -11,7 +11,7 @@
             requestContext.setUpRenderContext('dashboard.index', $scope);
             $scope.loading = true;
 
-            var tritonDatacenter = window.JP.get('tritonDatacenter') || '';
+            var tritonDatacenters = window.JP.get('tritonDatacenters') || '';
 
             // populate all datasources
             var INITIAL_COUNT_VALUE = '-';
@@ -159,9 +159,9 @@
                 $scope.freeTierOptions = FreeTier.freetier();
                 $scope.freeTierOptions.then(function (freeImages) {
                     Datacenter.datacenter().then(function (datacenters) {
-                        if (tritonDatacenter) {
+                        if (tritonDatacenters) {
                             $scope.datacenters = datacenters.filter(function (datacenter) {
-                                return datacenter.name !== tritonDatacenter;
+                                return tritonDatacenters.indexOf(datacenter.name) === -1;
                             });
                         } else {
                             $scope.datacenters = angular.copy(datacenters);

@@ -91,21 +91,21 @@
                 });
             };
 
-           var getDockerHostAnalytics = function (machine) {
-                    if (machine.prohibited || machine.isSdc) {
-                        return;
+            var getDockerHostAnalytics = function (machine) {
+                if (machine.prohibited || machine.isSdc) {
+                    return;
+                }
+                Docker.memStat({host: machine, direct: true, suppressErrors: true}).then(function (data) {
+                    machine.memoryLoad = Math.round(data.memoryUsage) + '%';
+                }, function (err) {
+                    if (err && err.indexOf('404') === 0) {
+                        machine.memoryLoad = 'N/A';
+                        Docker.showUpgradeAnalyticsMessage(machine.name);
+                    } else {
+                        machine.memoryLoad = 'N/A';
+                        PopupDialog.errorObj(new Error('Error retrieving host analytics'));
                     }
-                    Docker.memStat({host: machine, direct: true, suppressErrors: true}).then(function (data) {
-                        machine.memoryLoad = Math.round(data.memoryUsage) + '%';
-                    }, function (err) {
-                        if (err && err.indexOf('404') === 0) {
-                            machine.memoryLoad = 'N/A';
-                            Docker.showUpgradeAnalyticsMessage(machine.name);
-                        } else {
-                            machine.memoryLoad = 'N/A';
-                            PopupDialog.errorObj(new Error('Error retrieving host analytics'));
-                        }
-                    });
+                });
             };
 
             Datacenter.datacenter().then(function (datacenters) {
@@ -129,11 +129,11 @@
                         $scope.dockerMachines.forEach(function (machine) {
                             if (!machine.prohibited) {
                                 getDockerHostInfo(machine);
+                                Docker.getContainersCount(null, machine).then(function (containers) {
+                                    machine.runningContainers = containers.running;
+                                    machine.otherContainers = containers.stopped;
+                                });
                             }
-                        });
-                        Docker.getContainersCount(true).then(function (containers) {
-                            $scope.runningContainers = containers.running;
-                            $scope.otherContainers = containers.stopped;
                         });
                     });
                 }

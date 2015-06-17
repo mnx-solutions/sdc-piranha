@@ -41,18 +41,22 @@ var SUBUSER_LIST_RULES_REGISTRY = SUBUSER_LIST_RULES.concat([
     'can deleteobject',
     'can deletedirectory'
 ]);
-var SDC_DOCKER_ID = '00000000-0000-0000-0000-000000000000';
+
 var SDC_DOCKER_PATH = '~~/stor/.joyent/docker';
 var SDC_DOCKER_REGISTRY_PATH = SDC_DOCKER_PATH + '/registry';
-var sdcDockerConfig = config.features.sdcDocker === 'enabled' ?
-    {
-        id: SDC_DOCKER_ID,
-        name: config.sdcDocker.name,
-        datacenter: config.sdcDocker.datacenter,
-        primaryIp: config.sdcDocker.ip,
-        isSdc: true,
-        prohibited: false
-    } : null;
+var sdcDockerConfigs = [];
+if (config.features.sdcDocker === 'enabled' && config.sdcDocker) {
+    [].concat(config.sdcDocker).forEach(function (sdcDocker) {
+        sdcDockerConfigs.push({
+            id: sdcDocker.id || '00000000-0000-0000-0000-000000000000',
+            name: sdcDocker.name,
+            datacenter: sdcDocker.datacenter,
+            primaryIp: sdcDocker.ip || sdcDocker.datacenter + '.docker.joyent.com',
+            isSdc: true,
+            prohibited: false
+        });
+    })
+}
 
 var requestMap = {
     'GET': 'get',
@@ -525,9 +529,17 @@ exports.init = function execute(log, config, done) {
         });
     }
 
+    function getSdcDockerConfig(hostId) {
+        return sdcDockerConfigs.find(function (config) {
+            return config.id === hostId;
+        });
+    }
+
+    api.getSdcDockerConfig = getSdcDockerConfig;
     api.listHosts = function (call, callback) {
         var hostId = call.data && call.data.id;
-        if (hostId === SDC_DOCKER_ID) {
+        var sdcDockerConfig = getSdcDockerConfig(hostId);
+        if (sdcDockerConfig) {
             return verifySDCDockerAvailability(call, sdcDockerConfig, function (error, host) {
                 callback(null, host);
             });
@@ -552,8 +564,13 @@ exports.init = function execute(log, config, done) {
                     });
                 }
             }, function (errors, operations) {
-                verifySDCDockerAvailability(call, sdcDockerConfig, function (error, availableHost) {
-                    var hosts = [].concat.apply(availableHost || [], operations.successes);
+                vasync.forEachParallel({
+                    inputs: sdcDockerConfigs,
+                    func: function (sdcDockerConfig, callback) {
+                        verifySDCDockerAvailability(call, sdcDockerConfig, callback);
+                    }
+                }, function (tritonErrors, tritonOperations) {
+                    var hosts = [].concat.apply(tritonOperations.successes, operations.successes);
                     if (hostId) {
                         var host = hosts.find(function(host) {
                             return hostId === host.id;
@@ -744,7 +761,7 @@ exports.init = function execute(log, config, done) {
     };
 
     api.getHostStatus = function (call, machineId, callback) {
-        if (machineId === SDC_DOCKER_ID) {
+        if (getSdcDockerConfig(machineId)) {
             setImmediate(function () {
                 callback(null, 'completed');
             });
@@ -768,7 +785,7 @@ exports.init = function execute(log, config, done) {
         if (!callback || typeof callback !== 'function') {
             callback = function () {};
         }
-        if (machineId === SDC_DOCKER_ID) {
+        if (getSdcDockerConfig(machineId)) {
             setImmediate(function () {
                 callback(null);
             });
@@ -820,7 +837,7 @@ exports.init = function execute(log, config, done) {
     }
 
     api.createClient = function (call, machine) {
-        var isSdc = machine.isSdc || machine.id === SDC_DOCKER_ID;
+        var isSdc = machine.isSdc || !!getSdcDockerConfig(machine.id);
         var opts = {
             url: 'https://' + machine.primaryIp + (isSdc ? ':2376' : ':4243'),
             host: machine,
@@ -930,7 +947,7 @@ exports.init = function execute(log, config, done) {
     };
 
     api.isSdcHost = function (hostId) {
-        return hostId === SDC_DOCKER_ID;
+        return !!getSdcDockerConfig(hostId);
     };
 
     api.parseLogResponse = function (response) {

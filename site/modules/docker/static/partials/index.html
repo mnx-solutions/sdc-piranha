@@ -75,12 +75,12 @@
                         </tr>
                         <tr>
                             <td><a href="" data-ng-click="navigateContainersImages('containers', machine.id)">Containers</a>:</td>
-                            <td class="num">{{runningContainers || 0}}</td>
+                            <td class="num">{{machine.runningContainers || 0}}</td>
                             <td>running</td>
                         </tr>
                         <tr>
                             <td></td> <!-- don't remove -->
-                            <td class="num">{{otherContainers || 0}}</td>
+                            <td class="num">{{machine.otherContainers || 0}}</td>
                             <td>stopped</td>
                         </tr>
                     </table>

@@ -408,7 +408,12 @@ exports.init = function execute(log, config, done) {
         }
     }
 
-    var tritonDataCenter = config.features.sdcDocker === 'enabled' ? config.sdcDocker.datacenter : '';
+    var tritonDataCenters = [];
+    if (config.features.sdcDocker === 'enabled')  {
+        tritonDataCenters = [].concat(config.sdcDocker).map(function (sdcDocker) {
+            return sdcDocker.datacenter;
+        });
+    };
 
     api.PackageList = function (call, options, callback) {
         call.log.info('Handling list packages event');
@@ -423,7 +428,7 @@ exports.init = function execute(log, config, done) {
                 datacenter = 'all';
             }
 
-            if (options.datacenter !== tritonDataCenter) {
+            if (tritonDataCenters.indexOf(options.datacenter) === -1) {
                 data = data.concat(supportPackages);
             }
 
@@ -442,7 +447,7 @@ exports.init = function execute(log, config, done) {
                     filteredPackages.push(filteredPackagesMap[packageName]);
                 }
             }
-            if (options.datacenter === tritonDataCenter) {
+            if (tritonDataCenters.indexOf(options.datacenter) !== -1) {
                 filteredPackages = filteredPackages.map(function(pkg) {
                     pkg.type = pkg.type === 'other' ? 'smartos' : pkg.type;
                     return pkg;

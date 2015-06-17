@@ -7,7 +7,7 @@
                 restrict: 'EA',
                 scope: {
                     name: '@',
-                    datacenter: '@',
+                    datacenter: '=',
                     pkg: '=?package',
                     memory: '@?'
                 },
@@ -21,24 +21,28 @@
                     var indexPackageTypes = {};
                     var defaultPackage;
                     var selectedPackage;
-                    Docker.SdcPackage().then(function (list) {
-                        list.forEach(function (pkg) {
-                            pkg.group = pkg.group || DEFAULT_PACKAGE_GROUP;
-                            defaultPackage = (!defaultPackage || (pkg.group === DEFAULT_PACKAGE_GROUP && pkg.default)) ? pkg : defaultPackage;
-                            if (pkg.memory === SDC_DOCKER_DEFAULT_MEMORY_SIZE) {
-                                selectedPackage = pkg;
-                            } else {
-                                if (scope.memory && parseInt(scope.memory, 10) === parseInt(pkg.memory, 10)) {
-                                    selectedPackage = pkg;
-                                }
-                                if (pkg.group && !indexPackageTypes[pkg.group]) {
-                                    indexPackageTypes[pkg.group] = true;
-                                    scope.packageTypes.push(pkg.group);
-                                }
-                            }
-                        });
-                        scope.packages = list;
-                        scope.pkg = selectedPackage || defaultPackage;
+                    scope.$watch('datacenter', function (value) {
+                        if (value) {
+                            Docker.SdcPackage(scope.datacenter).then(function (list) {
+                                list.forEach(function (pkg) {
+                                    pkg.group = pkg.group || DEFAULT_PACKAGE_GROUP;
+                                    defaultPackage = (!defaultPackage || (pkg.group === DEFAULT_PACKAGE_GROUP && pkg.default)) ? pkg : defaultPackage;
+                                    if (pkg.memory === SDC_DOCKER_DEFAULT_MEMORY_SIZE) {
+                                        selectedPackage = pkg;
+                                    } else {
+                                        if (scope.memory && parseInt(scope.memory, 10) === parseInt(pkg.memory, 10)) {
+                                            selectedPackage = pkg;
+                                        }
+                                        if (pkg.group && !indexPackageTypes[pkg.group]) {
+                                            indexPackageTypes[pkg.group] = true;
+                                            scope.packageTypes.push(pkg.group);
+                                        }
+                                    }
+                                });
+                                scope.packages = list;
+                                scope.pkg = selectedPackage || defaultPackage;
+                            });
+                        }
                     });
                     scope.choosePackage = function () {
                         var parentScope = scope;

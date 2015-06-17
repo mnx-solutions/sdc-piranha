@@ -1,8 +1,12 @@
 'use strict';
 var config = require('easy-config');
 var additionalDatacenters = {};
-if (config.features.sdcDocker === 'enabled' && config.sdcDocker.fullDataCenter) {
-    additionalDatacenters[config.sdcDocker.datacenter] = 'https://' + config.sdcDocker.datacenter + '.api.joyentcloud.com';
+if (config.features.sdcDocker === 'enabled' && config.sdcDocker) {
+    [].concat(config.sdcDocker).forEach(function (sdcDocker) {
+        if (sdcDocker.fullDataCenter) {
+            additionalDatacenters[sdcDocker.datacenter] = 'https://' + sdcDocker.datacenter + '.api.joyentcloud.com';
+        }
+    });
 }
 var SmartCloudLib = require('../lib/smartcloud');
 var smartCloud;

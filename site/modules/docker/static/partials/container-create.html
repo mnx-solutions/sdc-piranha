@@ -358,7 +358,7 @@
                 </form>
                 <div class="pull-right">
                     <div data-ng-hide="hidePackageInfo()" class="advanced-info">
-                        <div data-package-select data-name="{{packagePrefix}}" class="package-select" data-datacenter="{{host.datacenter}}" data-package="package" data-memory="{{input.Memory}}"></div>
+                        <div data-package-select data-name="{{packagePrefix}}" class="package-select" data-datacenter="host.datacenter" data-package="package" data-memory="{{input.Memory}}"></div>
                     </div>
                     <div class="advanced-info" data-ng-class="{'advanced-info-nosdc': !host.isSdc || createImage}" data-ng-bind-html="notation"></div>
                 </div>
