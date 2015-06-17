@@ -912,7 +912,7 @@
                     });
                 }
                 var runningContainers = containers.filter(function (container) {
-                    return container.state === 'running';
+                    return container.state === 'running' || container.Status.indexOf('Up ') === 0;
                 });
                 return {
                     running: runningContainers.length,
