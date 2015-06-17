@@ -1063,16 +1063,12 @@ exports.init = function execute(log, config, done) {
                     return registry.type === 'local';
                 }),
                 func: function (registry, callback) {
-                    api.createRegistryClient(call, registry, function (error, client) {
-                        if (error) {
+                    var createRegistryClient = api.createRegistryClient(call, registry);
+                    createRegistryClient.ping(function (err) {
+                        if (err) {
                             return callback(null);
                         }
-                        client.ping(function(err) {
-                            if (err) {
-                                return callback(null);
-                            }
-                            client.imageTags({name: name}, callback);
-                        });
+                        createRegistryClient.imageTags({name: name}, callback);
                     });
                 }
             }, function (errors, operations) {
