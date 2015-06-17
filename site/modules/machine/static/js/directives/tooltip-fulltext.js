@@ -23,7 +23,7 @@
                             element.context.innerHTML = text + label;
                         }
                         if (elm.offsetHeight < scrollHeight && elm.offsetWidth >= elm.scrollWidth) {
-                            while (text.length > 0 && element.context.scrollHeight > elm.offsetHeight) {
+                            while (text.length > 0 && element.context.scrollHeight - 1 > elm.offsetHeight) {
                                 setLabel();
                             }
                         }
