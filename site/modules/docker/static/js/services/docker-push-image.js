@@ -3,9 +3,9 @@
 (function (app) {
     app.factory('dockerPushImage', ['Docker', 'PopupDialog', function (Docker, PopupDialog) {
         return function(image) {
-            if (Docker.pushImageInProgress) {
-                return PopupDialog.message('Message', 'Another image is being pushed, please let it finish.');
-            };
+            if (!Docker.registriesPushInProgress) {
+                Docker.registriesPushInProgress = [];
+            }
             PopupDialog.custom({
                 templateUrl: 'docker/static/partials/push-image.html',
                 openCtrl: ['$scope', 'dialog', 'Docker', 'notification', function (scope, dialog, Docker, notification) {
@@ -50,6 +50,10 @@
                         scope.newRegistryForm.$setValidity('name', isValid);
                     };
                     scope.push = function () {
+                        if (Docker.registriesPushInProgress[scope.input.registryId]) {
+                            return PopupDialog.message('Message', 'Another image is being pushed to this registry, please let it finish.');
+                        }
+                        Docker.registriesPushInProgress[scope.input.registryId] = true;
                         var registry;
                         if (scope.input.registryId === 'local') {
                             registry = {
@@ -64,7 +68,6 @@
                             });
                         }
                         PopupDialog.message(null, 'Pushing images takes some time. You can continue your work and get notification once push is completed.');
-                        Docker.pushImageInProgress = true;
                         Docker.pushImage({
                             host: {primaryIp: image.primaryIp, id: image.hostId},
                             options: {
@@ -74,15 +77,15 @@
                                 name: scope.input.name
                             }
                         }, function (error) {
-                            Docker.pushImageInProgress = false;
+                            Docker.registriesPushInProgress[scope.input.registryId] = false;
                             if (error) {
                                 notification.error(error.message || error);
                             }
                         }).then(function () {
-                            Docker.pushImageInProgress = false;
+                            Docker.registriesPushInProgress[scope.input.registryId] = false;
                             notification.success('Pushing of image "' + scope.input.name + '" is completed.');
                         }, function (error) {
-                            Docker.pushImageInProgress = false;
+                            Docker.registriesPushInProgress[scope.input.registryId] = false;
                             notification.error(error.message || 'InternalServerError');
                         });
                         scope.close();
