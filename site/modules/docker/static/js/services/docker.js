@@ -852,9 +852,10 @@
             return createCall('execute', opts);
         };
 
-        service.SdcPackage = function () {
+        service.SdcPackage = function (datacenter) {
             var job = serverTab.call({
-                name: 'SdcPackageList'
+                name: 'SdcPackageList',
+                data: {datacenter: datacenter}
             });
             return job.promise;
         };
@@ -903,8 +904,8 @@
             return ports.join(', ');
         };
 
-        service.getContainersCount = function (tritonOnly) {
-            return service.listContainers({host: 'All', options: {all: true}, suppressErrors: true}).then(function (containers) {
+        service.getContainersCount = function (tritonOnly, host) {
+            return service.listContainers({host: host || 'All', options: {all: true}, suppressErrors: true}).then(function (containers) {
                 if (tritonOnly) {
                     containers = containers.filter(function (container) {
                         return container.isSdc;

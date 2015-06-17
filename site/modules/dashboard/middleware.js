@@ -8,7 +8,10 @@ module.exports = function dashboardMiddleware(req, res, next) {
     if (!res.locals.jss) {
         res.locals.jss = [];
     }
-    res.locals.jss.push('window.JP.set("tritonDatacenter", "' + config.sdcDocker.datacenter + '")');
+    var tritonDatacenters = [].concat(config.sdcDocker).map(function (sdcDocker) {
+        return sdcDocker.datacenter;
+    });
+    res.locals.jss.push('window.JP.set("tritonDatacenters", ' + JSON.stringify(tritonDatacenters) + ')');
     var campaigns = config.ns['campaigns'];
     var marketing = config.marketing;
     marketing.campaigns = [];

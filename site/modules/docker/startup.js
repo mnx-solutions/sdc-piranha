@@ -1033,18 +1033,22 @@ var Docker = function execute(log, config) {
     });
 
     server.onCall('SdcPackageList', function (call) {
-        if (!config.sdcDocker.packagePrefix) {
+        var sdcDockerConfig = [].concat(config.sdcDocker).find(function (sdcConfig) {
+            return sdcConfig.datacenter === call.data.datacenter;
+        });
+
+        if (!sdcDockerConfig || !sdcDockerConfig.packagePrefix) {
             return call.done(null, []);
         }
         var options = {
-            datacenter: config.sdcDocker.datacenter
+            datacenter: call.data.datacenter
         };
         machine.PackageList(call, options, function (error, list) {
             if (error) {
                 return call.done(error);
             }
             list = list.filter(function (pkg) {
-                return pkg.name.indexOf(config.sdcDocker.packagePrefix) !== -1;
+                return pkg.name.indexOf(sdcDockerConfig.packagePrefix) !== -1;
             });
             call.done(null, list);
         });
