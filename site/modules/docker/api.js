@@ -798,7 +798,7 @@ exports.init = function execute(log, config, done) {
     };
 
     function createClient(call, Service, opts) {
-        var cacheKey = Service.name + opts.url;
+        var cacheKey = Service.name + opts.url + '-session-' + call.req.session.userId;
         var cachedClient = cache.get(cacheKey);
         var certificates = call.req.session.dockerCerts;
         if (cachedClient) {
