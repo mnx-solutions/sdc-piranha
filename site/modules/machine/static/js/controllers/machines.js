@@ -70,9 +70,26 @@
                 $scope.datasetsInfo[imageId] = imageName;
             }
 
+            var trackDeletingMachines = function () {
+                var timeout = 1000; //ms
+                var deletingMachines = $scope.machines.filter(function (machine) {
+                    return machine.state === 'deleting';
+                });
+                if (deletingMachines.length) {
+                    setTimeout(function () {
+                        Machine.pollMachines(timeout, true);
+                        trackDeletingMachines();
+                    }, timeout);
+                }
+                if (!$scope.machines.length) {
+                    Machine.gotoCreatePage();
+                }
+            };
+
             $scope.$watch('machines.final', function (result) {
                 if (result) {
                     $q.when($scope.machines, function (machines) {
+                        var isRemoval = false;
                         machines.forEach(function (machine) {
                             Image.image({datacenter: machine.datacenter}).then(function (datasets) {
                                 datasets.forEach(function (dataset) {
@@ -92,7 +109,14 @@
                                 $scope.loading = false;
                                 PopupDialog.errorObj(err);
                             });
+                            if (machine.state === 'deleting') {
+                                machine.deleteJob = true;
+                                isRemoval = true;
+                            }
                         });
+                        if (isRemoval) {
+                            trackDeletingMachines();
+                        }
 
                         if (!$scope.machines.length) {
                             Machine.gotoCreatePage();
