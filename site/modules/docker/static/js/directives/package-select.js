@@ -17,6 +17,7 @@
                     var DEFAULT_PACKAGE_GROUP = 'Standard';
                     var SDC_DOCKER_DEFAULT_MEMORY_SIZE = 1024;
                     scope.packageTypes = [];
+                    scope.loading = true;
 
                     var indexPackageTypes = {};
                     var defaultPackage;
@@ -41,6 +42,7 @@
                                 });
                                 scope.packages = list;
                                 scope.pkg = selectedPackage || defaultPackage;
+                                scope.loading = false;
                             });
                         }
                     });

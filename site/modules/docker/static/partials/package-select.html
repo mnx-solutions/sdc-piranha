@@ -1,4 +1,4 @@
-<div class="center">
+<div class="center" data-ng-hide="loading">
     <p>PACKAGE:</p><button class="btn small-btn effect-orange-button" data-ng-click="choosePackage()">Change</button>
     <div class="package">
         <div class="name">Configuration</div>
@@ -31,4 +31,6 @@
             <p class="small-text-info">est. monthly</p>
         </div>
     </div>
+</div>
+<div class="center loading-medium-transparent" data-ng-show="loading">
 </div>
