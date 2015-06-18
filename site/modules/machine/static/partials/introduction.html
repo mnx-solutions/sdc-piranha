@@ -77,16 +77,19 @@
                         <div class="btn-group" data-ng-controller="Machine.ProvisionController">
                             <span>Data Center:</span>
                             <div class="loading-medium loading-medium-inline" data-ng-show="datasetsLoading"></div>
-                            <select type="hidden" data-select-two id="selectDatacenter" width="110" data-ng-model="data.datacenter"
-                                    data-fn="selectDatacenter" data-select="data.datacenter" placeholder="No matches found"
+                            <select type="hidden" data-select-two id="selectDatacenter" width="160" data-ng-model="data.datacenter"
+                                    data-fn="selectDatacenter" data-select="datacenters[0].name" placeholder="No matches found"
                                     data-ng-disabled="datasetsLoading">
+                                <option value=""></option>
                                 <option data-ng-repeat="datacenter in datacenters | orderBy:$index" value="{{datacenter.name}}">
                                     {{datacenter.name}}
                                 </option>
                             </select><br/><br/>
                             <p>Once you have installed Node.js and the CloudAPI tools, you can copy and paste the examples below which are customized with your account information.</p>
                             <div class="code">
-                                <p>export SDC_ACCOUNT={{account.login}};</p>
+                                <p data-ng-show="parentAccount">export SDC_ACCOUNT={{parentAccount}};</p>
+                                <p data-ng-hide="parentAccount">export SDC_ACCOUNT={{account.login}};</p>
+                                <p data-ng-show="parentAccount">export SDC_SUBUSER={{account.login}};</p>
                                 <p>export SDC_KEY_ID={{keyId}};</p>
                                 <p>export SDC_URL={{getDatacenterUrl(data.datacenter)}};</p>
                             </div>

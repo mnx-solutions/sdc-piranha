@@ -68,9 +68,9 @@
                         </div>
                         <div class="code">
                             <p>export MANTA_URL={{mantaUrl}};</p>
-                            <p data-ng-show="mantaAccountText.length">export MANTA_USER={{mantaAccountText}};</p>
-                            <p data-ng-hide="mantaAccountText.length">export MANTA_USER={{account.login}};</p>
-                            <p data-ng-show="mantaAccountText.length">export MANTA_SUBUSER={{account.login}};</p>
+                            <p data-ng-show="parentAccount">export MANTA_USER={{parentAccount}};</p>
+                            <p data-ng-hide="parentAccount">export MANTA_USER={{account.login}};</p>
+                            <p data-ng-show="parentAccount">export MANTA_SUBUSER={{account.login}};</p>
                             <p>export MANTA_KEY_ID={{keyId}};</p>
                         </div>
                         <h5>Create, list and delete objects</h5>
