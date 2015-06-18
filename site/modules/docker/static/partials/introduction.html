@@ -90,7 +90,7 @@
                             </div>
                             <p>Now execute the script, substituting the correct values:</p>
                             <div class="code">
-                                <p>sh sdc-docker-setup.sh &lt;CLOUDAPI_URL&gt; &lt;ACCOUNT_USERNAME&gt; ~/.ssh/&lt;PRIVATE_KEY_FILE&gt;</p>
+                                <p>bash sdc-docker-setup.sh &lt;CLOUDAPI_URL&gt; &lt;ACCOUNT_USERNAME&gt; ~/.ssh/&lt;PRIVATE_KEY_FILE&gt;</p>
                             </div>
                             <div class="btn-group" data-ng-controller="Machine.ProvisionController">
                                 <span>Data Center & Host:</span>
@@ -109,7 +109,7 @@
                                 </span><br/><br/>
                                 <p>For example, if you created an account on Joyent's Triton service with the username "{{account.login}}" and a key file "~/.ssh/sdc-docker.id_rsa", and you're connecting to the {{host.datacenter}} data center:</p>
                                 <div class="code">
-                                    <p>sh sdc-docker-setup.sh {{getDatacenterUrl(host.datacenter)}} {{account.login}} ~/.ssh/sdc-docker.id_rsa</p>
+                                    <p>bash sdc-docker-setup.sh {{getDatacenterUrl(host.datacenter)}} {{account.login}} ~/.ssh/sdc-docker.id_rsa</p>
                                 </div>
                                 <p>That should output something like the following:</p>
                                 <div class="code">
