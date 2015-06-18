@@ -21,7 +21,7 @@
         <div class="value">{{datacenter}} </div>
     </div>
     <div class="cost" data-ng-show="pkg.price || pkg.price_month">
-        <p>COST:</p>
+        <p>COST:<span class="footnote">Billed by the minute</span></p>
         <div class="dataset-cost" data-ng-show="pkg.price">
             <h3>${{pkg.price}}</h3>
             <p class="small-text-info">per hour</p>

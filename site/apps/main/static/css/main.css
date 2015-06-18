@@ -5953,6 +5953,10 @@ a.orange-link
 .cost {
     padding-top: 50px;
 }
+.cost p .footnote {
+    display: block;
+    font-size: 12px;
+}
 .dataset-cost h3 {
     display: inline-block;
     margin-top: 10px;
