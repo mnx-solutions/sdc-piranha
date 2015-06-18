@@ -524,6 +524,7 @@ exports.init = function execute(log, config, done) {
             if (error &&
                 String(error.message || error).indexOf(FORBIDDEN_ERROR_PART) === 0) {
                 host.prohibited = true;
+                error = null;
             }
             callback(error, (showProhibited || !host.prohibited) && host);
         });
