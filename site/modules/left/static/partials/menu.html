@@ -289,23 +289,17 @@
                     </li>
                 </ul>
             </li>
-            <li class="nested" data-ng-show="features.downloadSdc == 'enabled'" data-ng-class="{'active open': location.path().search('downloadSdc') == 1}">
+            <li class="single" data-ng-show="features.downloadSdc == 'enabled'" data-ng-class="{'active': location.path().search('downloadSdc') == 1}">
                 <a href="#!/downloadSdc" class="sdc-download-icon">
                     <span class="title sdc-download-title">Private Cloud Free Trial</span>
                     <span class="selected"></span>
                 </a>
             </li>
-            <li class="nested" data-ng-class="{'active open': location.path().search('faq') == 1}" data-ng-show="features.privateSdc != 'enabled'">
+            <li class="single" data-ng-class="{'active': location.path().search('faq') == 1}" data-ng-show="features.privateSdc != 'enabled'">
                 <a href="#!/faq" class="question-icon">
                     <span class="title">FAQ</span>
+                    <span class="selected"></span>
                 </a>
-                <ul class="sub-menu">
-                    <li class="sub">
-                        <a href="https://docs.joyent.com/public-cloud/containers/infrastructure/images" target="_blank">
-                            <span class="titles" data-translate>Images Available</span>
-                        </a>
-                    </li>
-                </ul>
             </li>
 
             <li>
@@ -327,9 +321,6 @@
             </li>
             <li class="small-menu">
                 <a href="http://www.joyent.com/company/security-and-compliance" target="_blank">Compliance</a>
-            </li>
-            <li class="small-menu">
-                <a href="http://apidocs.joyent.com/cloudapi/" target="_blank">API</a>
             </li>
         </ul>
         <div class="small-menu">&copy; {{currentYear}} Joyent, Inc.</div>
