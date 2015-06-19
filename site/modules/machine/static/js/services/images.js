@@ -241,15 +241,25 @@
                             }
                         });
 
+                        var id;
                         if (params.forceMajorVersion && versions[params.forceMajorVersion]) {
-                            resolve = imagesByName[versions[params.forceMajorVersion].slice(-1)];
+                            id = imagesByName[versions[params.forceMajorVersion].slice(-1)];
                         }
 
                         if (selectedMajor && !params.forceMajorVersion) {
-                            resolve = imagesByName[versions[selectedMajor].slice(-1)];
+                            id = imagesByName[versions[selectedMajor].slice(-1)];
                         } else if (!params.forceMajorVersion) {
-                            resolve = imagesByName[listVersions[params.name].slice(-1)];
+                            id = imagesByName[listVersions[params.name].slice(-1)];
                         }
+
+                        var imageData = data.find(function (dataItem) {
+                            return dataItem.id === id;
+                        });
+
+                        resolve = {
+                            id: id,
+                            description: imageData && imageData.description
+                        };
                     }
 
                     deferred.resolve(resolve);

@@ -127,7 +127,7 @@
                                         return;
                                     }
                                     Image.simpleImage(params).then(function (dataset) {
-                                        if (dataset) {
+                                        if (dataset && dataset.id) {
                                             var simpleImage = {};
                                             if (isFree) {
                                                 simpleImage.imageData = image;
@@ -147,11 +147,12 @@
                                                 simpleImage.order = 0;
                                             } else {
                                                 simpleImage = image;
+                                                simpleImage.description.text = dataset.description || simpleImage.description.text;
                                                 simpleImage.imageData = {};
                                                 simpleImage.imageData.package = packagesByName[simpleImage.packageName];
                                                 simpleImage.imageData.networks = networks;
                                             }
-                                            simpleImage.imageData.dataset = dataset;
+                                            simpleImage.imageData.dataset = dataset.id;
                                             simpleImage.imageData.datacenter = datacenter.name;
                                             simpleImage.imageData.name = '';
                                             delete simpleImage.packageName;
