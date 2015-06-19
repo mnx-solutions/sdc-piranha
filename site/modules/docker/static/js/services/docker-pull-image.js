@@ -234,7 +234,7 @@
                     },
                     {
                         id: 'is_trusted',
-                        name: 'Trusted',
+                        name: 'Automated',
                         sequence: 5,
                         active: true
                     },
