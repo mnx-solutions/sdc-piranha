@@ -11,8 +11,6 @@
             requestContext.setUpRenderContext('dashboard.index', $scope);
             $scope.loading = true;
 
-            var tritonDatacenters = window.JP.get('tritonDatacenters') || '';
-
             // populate all datasources
             var INITIAL_COUNT_VALUE = '-';
             $scope.account = {};
@@ -159,14 +157,10 @@
                 $scope.freeTierOptions = FreeTier.freetier();
                 $scope.freeTierOptions.then(function (freeImages) {
                     Datacenter.datacenter().then(function (datacenters) {
-                        if (tritonDatacenters) {
-                            $scope.datacenters = datacenters.filter(function (datacenter) {
-                                return tritonDatacenters.indexOf(datacenter.name) === -1;
-                            });
-                        } else {
-                            $scope.datacenters = angular.copy(datacenters);
-                        }
-
+                        // TODO: Review later: filtering for the freetier datacenters
+                        $scope.datacenters = datacenters.filter(function (datacenter) {
+                            return datacenter.name !== 'us-east-3b';
+                        });
                         if (freeImages.valid) {
                             $scope.validUntil = freeImages.validUntil;
                             $scope.validFreeTier = true;
