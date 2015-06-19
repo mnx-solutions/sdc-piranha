@@ -2152,3 +2152,8 @@ span.btn-success
 {
     top: 2px;
 }
+
+.simple-image .description span.label.tooltip-hover {
+    top: -17px;
+    left: 28px;
+}
