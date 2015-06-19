@@ -62,6 +62,9 @@
                 container.isSdc = machine.isSdc;
                 $scope.machine = machine;
                 inspectInterval = setInterval(function () {
+                    if ($scope.container && $scope.container.isRemoving) {
+                        return;
+                    }
                     Docker.inspectContainer(container, {silent: true}).then(function (info) {
                         $scope.container.state = Docker.getContainerState(info);
                     });
@@ -102,6 +105,7 @@
                 function doAction() {
                     $scope.actionInProgress = true;
                     if (action === 'remove') {
+                        $scope.container.isRemoving = true;
                         container.Image = $scope.container.image;
                         container.Names = [$scope.container.name];
                         container.hostId = $scope.machine.id;
@@ -114,7 +118,12 @@
                         } else {
                             getDockerHost();
                         }
-                    }, errorCallback);
+                    }, function () {
+                        if (action === 'remove') {
+                            delete $scope.container.isRemoving;
+                        }
+                        errorCallback();
+                    });
                 }
 
                 PopupDialog.confirm(
