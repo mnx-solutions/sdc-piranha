@@ -743,7 +743,7 @@
                     ng.element('.select2-results .image-pull-item').on('mouseup', function(e) {
                         dockerPullImage($scope.host, $scope.unreachableHosts, pullPolling);
                         setTimeout(function () {
-                            selectImageEl.select2('val', '')
+                            selectImageEl.select2('val', '').trigger('change');
                         });
                     });
                 });
