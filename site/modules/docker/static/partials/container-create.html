@@ -13,7 +13,7 @@
                 Docker hosts are not available, click to <a class="orange" href="#!/docker">Create Docker Host</a>
             </div>
             <div ng-show="hosts.length" class="edit-form">
-                <form name="containerCreateForm" class="container-create-form">
+                <form name="containerCreateForm" class="container-create-form" novalidate>
                     <div data-ng-hide="createImage" class="form-group">
                         <div class="group-label">Container Name</div>
                         <div class="edit-value">
@@ -158,7 +158,7 @@
                                    data-ng-focus="setNotation('AUTHOR')" />
                         </span>
                     </div>
-                    <div data-ng-if="!createImage" class="form-group">
+                    <div data-ng-hide="createImage" class="form-group">
                         <div class="group-label">Image</div>
                         <div class="edit-value">
                             <select
