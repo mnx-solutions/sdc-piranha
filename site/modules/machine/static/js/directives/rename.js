@@ -6,7 +6,8 @@
             restrict: 'EA',
             scope: {
                 object: '=',
-                type: '='
+                type: '=',
+                linked: '='
             },
 
             link: function (scope) {
@@ -28,7 +29,7 @@
                 };
 
                 var renameFinished = function (err) {
-                    if(err) {
+                    if (err) {
                         scope.object.name = currentName;
                     }
                     scope.renaming = false;
@@ -42,6 +43,7 @@
                 };
 
                 scope.clickRename = function () {
+                    var warningMessage = scope.linked ? 'This machine has Docker containers linked. ' : '';
                     clearTimeout(scope.clearNameTimeout);
                     scope.changingName = false;
                     if (scope.object.name === scope.newName) {
@@ -57,7 +59,7 @@
                         localization.translate(
                             scope,
                             null,
-                            'Rename this ' + scope.type
+                            warningMessage + 'Rename this ' + scope.type
                         ), function () {
                             scope.loadingNewName = true;
                             scope.changingName = false;

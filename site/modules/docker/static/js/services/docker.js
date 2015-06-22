@@ -948,6 +948,59 @@
             return createCall('memStat', options);
         };
 
+        service.getLinkedContainers = function (links) {
+            var names = links.map(function (link) {
+                return link.slice(0, link.indexOf(':'));
+            });
+            return service.listContainers({host: 'All', cache: true, options: {all: true}, suppressErrors: true}).then(function (containers) {
+                var linkedContainers = [];
+                containers.forEach(function (container) {
+                    names.forEach(function (name) {
+                        if (container.Names.indexOf(name) !== -1) {
+                            linkedContainers.push({
+                                id: container.Id,
+                                name: name.substring(1, name.length),
+                                hostId: container.hostId
+                            });
+                        }
+                    });
+                });
+                return linkedContainers;
+            });
+        };
+
+        service.hasLinkedContainers = function (machine) {
+            return service.listContainers({host: 'All', cache: true, options: {all: true}, suppressErrors: true}).then(function (containers) {
+                var listNames = containers.map(function (container) {
+                    return container.NamesStr;
+                });
+                var sdcContainer = containers.find(function (container) {
+                    return util.idToUuid(container.Id) === machine.id;
+                });
+                return service.inspectContainer(sdcContainer).then(function (info) {
+                    if (info.HostConfig.Links) {
+                        return true;
+                    }
+                    if (sdcContainer.Names.length > 1) {
+                        return sdcContainer.Names.forEach(function (name, i) {
+                            if (i > 0) {
+                                return listNames.some(function (listName) {
+                                    if (name.indexOf(listName) !== -1) {
+                                        return true;
+                                    }
+                                });
+                            }
+                        });
+                    }
+                    return false;
+                }, function (err) {
+                    PopupDialog.errorObj(err);
+                });
+            }, function (err) {
+                PopupDialog.errorObj(err);
+            });
+        };
+
         return service;
     }]);
 }(window.angular, window.JP.getModule('docker')));

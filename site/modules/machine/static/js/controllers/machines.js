@@ -16,7 +16,8 @@
         '$rootScope',
         'Account',
         'FreeTier',
-        function ($scope, $$track, $q, requestContext, Machine, Image, Package, localization, PopupDialog, $location, firewall, $rootScope, Account, FreeTier) {
+        'Docker',
+        function ($scope, $$track, $q, requestContext, Machine, Image, Package, localization, PopupDialog, $location, firewall, $rootScope, Account, FreeTier, Docker) {
             localization.bind('machine', $scope);
             requestContext.setUpRenderContext('machine.index', $scope, {
                 title: localization.translate(null, 'machine', 'See my Joyent Instances')
@@ -58,13 +59,16 @@
                     machine.label = machine.name || machine.id;
                 });
             }, true);
+            var isSdc = function (machine) {
+                return machine && machine.tags && machine.tags.sdc_docker;
+            };
 
             function setImageName(image, machine) {
                 var imageId = image && image.id || image;
                 var imageName = 'Image deleted';
                 if (image && typeof image !== 'string') {
                     imageName = image.name + '/' + image.version;
-                } else if (machine && machine.tags && machine.tags.sdc_docker) {
+                } else if (isSdc(machine)) {
                     imageName = 'Triton image';
                 }
                 $scope.datasetsInfo[imageId] = imageName;
@@ -102,6 +106,11 @@
                                         setImageName(image, machine);
                                     }, function () {
                                         setImageName(machine.image, machine);
+                                    });
+                                }
+                                if (isSdc(machine)) {
+                                    Docker.hasLinkedContainers(machine).then(function (res) {
+                                        machine.isLinkedContainer = res;
                                     });
                                 }
                                 $scope.loading = false;
@@ -151,10 +160,14 @@
             };
 
             function makeMachineAction(action, messageTitle, messageBody) {
+                var linkedContainerMessage = '';
                 if ($scope.checkedInstances.length) {
                     var checkedFreeMachines = true;
                     var checkedMachines = $scope.machines.filter(function (machine) {
                         if (machine.checked) {
+                            if ((action === 'stop' || action === 'delete') && machine.isLinkedContainer) {
+                                linkedContainerMessage = 'Instance has Docker containers linked. ';
+                            }
                             if (!machine.freetier) {
                                 checkedFreeMachines = false;
                             }
@@ -198,10 +211,10 @@
                             null,
                             (function () {
                                 var showFreeMessage = checkedFreeMachines || $scope.features.billing === 'disabled';
-                                var result = messageBody.single;
+                                var result = linkedContainerMessage + messageBody.single;
                                 if ($scope.checkedInstances.length > 1) {
                                     result = showFreeMessage && messageBody.freetier_plural ?
-                                        messageBody.freetier_plural : messageBody.plural;
+                                        messageBody.freetier_plural : linkedContainerMessage + messageBody.plural;
                                 } else if (showFreeMessage && messageBody.freetier_single) {
                                     result = messageBody.freetier_single;
                                 }
