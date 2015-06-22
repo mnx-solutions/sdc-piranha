@@ -334,7 +334,7 @@
                         }
 
                         if (!hasContainersInProgress()) {
-                            listAllContainers(true);
+                            listAllContainers(false);
                         }
                     });
                 }
