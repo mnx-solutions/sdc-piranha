@@ -1,9 +1,9 @@
 'use strict';
 
 (function (ng, app) {app.factory('Docker', ['serverTab', '$rootScope', 'errorContext', 'EventBubble', 'Machine',
-    'PopupDialog', 'localization', '$q', '$location', 'DockerCacheProvider', 'Storage', 'util',
+    'PopupDialog', 'localization', '$q', '$location', 'DockerCacheProvider', 'Storage', 'util', 'Account',
     function (serverTab, $rootScope, errorContext, EventBubble, Machine, PopupDialog,
-              localization, $q, $location, DockerCacheProvider, Storage, util) {
+              localization, $q, $location, DockerCacheProvider, Storage, util, Account) {
 
         if ($rootScope.features.docker !== 'enabled') {
             return;
@@ -876,8 +876,12 @@
             });
         };
 
-        Storage.pingManta(function () {
-            service.getRegistriesList({cache: true});
+        Account.getAccount().then(function (account) {
+            if (account.provisionEnabled) {
+                Storage.pingManta(function () {
+                    service.getRegistriesList({cache: true});
+                });
+            }
         });
 
         service.getContainerState = function (containerInfo) {
