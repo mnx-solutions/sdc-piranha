@@ -2,7 +2,7 @@
     "networks": [],
     "images": [
         {
-            "name": "Ubuntu Certified 14.04",
+            "name": "Ubuntu 14.04",
             "className": "ubuntu-logo",
             "datasetName": "ubuntu-14.04",
             "packageName": "g3-standard-4-smartos",
@@ -15,7 +15,7 @@
             "order": 1
         },
         {
-            "name": "CentOS 6.6",
+            "name": "CentOS 6",
             "className": "centos-logo",
             "datasetName": "centos-6",
             "packageName": "g3-standard-4-smartos",
