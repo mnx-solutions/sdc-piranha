@@ -578,7 +578,7 @@
                     }
                     var result = job.__read();
                     result.datacenter = data.datacenter;
-                    showNotification(err, {machine: result});
+                    showNotification(err, {machine: job.initial && job.initial.machine || result});
                     if (result.tags['JPC_tag'] === 'DockerHost') {
                         $rootScope.$emit('clearDockerCache', result);
                     }
