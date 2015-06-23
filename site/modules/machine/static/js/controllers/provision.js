@@ -258,6 +258,8 @@
                 $scope.datacenters = [];
 
                 if (!datacentersResult.error && ($scope.account.error || keysResult.error)) {
+                    $scope.datacenters = datacentersResult;
+                    $scope.data.datacenter = datacentersResult[0].name;
                     $scope.loading = false;
                     return PopupDialog.errorObj(keysResult.error ? keysResult.error :
                         {error: 'SDC call timed out. Please refresh the page.'});
@@ -325,6 +327,7 @@
                 }
 
                 if (datacentersResult.error) {
+                    $scope.loading = false;
                     PopupDialog.errorObj(datacentersResult.error);
                 } else {
                     $scope.datacenters = datacentersResult;
