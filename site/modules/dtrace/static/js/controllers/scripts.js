@@ -59,9 +59,29 @@
                         active: true
                     },
                     {
+                        id: 'owner',
+                        name: 'Owner',
+                        sequence: 2,
+                        type: 'html',
+                        _getter: function (script) {
+                            return script.owner || $scope.scriptOwner;
+                        },
+                        active: true
+                    },
+                    {
+                        id: 'type',
+                        name: 'Affiliations',
+                        sequence: 3,
+                        type: 'html',
+                        _getter: function (script) {
+                            return script.type || DTrace.SCRIPT_TYPES.private;
+                        },
+                        active: true
+                    },
+                    {
                         id: 'created',
                         name: 'Created',
-                        sequence: 2,
+                        sequence: 4,
                         type: 'date',
                         active: true
 
@@ -69,7 +89,7 @@
                     {
                         id: 'body',
                         name: 'Body',
-                        sequence: 3,
+                        sequence: 5,
                         active: true
                     }
                 ];
@@ -100,15 +120,24 @@
                                     gridMessages.delete[$scope.checkedItems.length > 1 ? 'plural' : 'single']
                                 ),
                                 function () {
-                                    var scriptsId = $scope.checkedItems.map(function (script) {
-                                        script.actionInProgress = true;
-                                        script.checked = false;
-                                        return script.id;
+                                    var selectedScripts = $scope.checkedItems.filter(function (script) {
+                                        if (script.type === DTrace.SCRIPT_TYPES.remote) {
+                                            script.checked = false;
+                                            PopupDialog.message(null, 'Note: remote scripts can\'t be deleted.');
+                                        }
+                                        return script.type !== DTrace.SCRIPT_TYPES.remote;
                                     });
-                                    $scope.checkedItems = [];
-                                    DTrace.removeScript(scriptsId).then(function () {
-                                        loadList();
-                                    }, errorCallback);
+                                    if (selectedScripts.length) {
+                                        var scriptsId = selectedScripts.map(function (script) {
+                                            script.actionInProgress = true;
+                                            script.checked = false;
+                                            return script.id;
+                                        });
+                                        $scope.checkedItems = [];
+                                        DTrace.removeScript(scriptsId).then(function () {
+                                            loadList();
+                                        }, errorCallback);
+                                    }
                                 }
                             );
                         },
@@ -135,6 +164,7 @@
                 };
 
                 Account.getAccount(true).then(function (account) {
+                    $scope.scriptOwner = account.login;
                     $scope.provisionEnabled = account.provisionEnabled;
                     if ($scope.provisionEnabled) {
                         Storage.pingManta(function () {

@@ -221,8 +221,10 @@ exports.init = function execute(log, config, done) {
         });
     }
 
-    function createClient(call) {
-
+    function createClient(call, opts) {
+        var privateKey = opts && opts.privateKey || mantaPrivateKey;
+        var userConfig = opts || config.manta;
+        var session = call && call.req.session;
         var options = {
             sign: manta.privateKeySigner({
                 key: apiKey,
@@ -234,27 +236,29 @@ exports.init = function execute(log, config, done) {
             insecure: true,
             rejectUnauthorized: false
         };
-        if (call.req.session.parentAccountError) {
-            options.sign = function (str, callback) {
-                callback(call.req.session.parentAccountError);
-            };
-        } else if (call.req.session.parentAccount) {
-            options.subuser = call.req.session.userName + '/' + call.req.session.parentAccount;
-            options.user = call.req.session.parentAccount;
-        } else {
-            options.user = call.req.session.userName;
+        if (session) {
+            if (session.parentAccountError) {
+                options.sign = function (str, callback) {
+                    callback(session.parentAccountError);
+                };
+            } else if (session.parentAccount) {
+                options.subuser = session.userName + '/' + session.parentAccount;
+                options.user = session.parentAccount;
+            } else {
+                options.user = session.userName;
+            }
         }
 
-        if (mantaPrivateKey) {
+        if (privateKey) {
             options.sign = manta.privateKeySigner({
-                key: mantaPrivateKey,
-                keyId: config.manta.keyId,
-                user: config.manta.user,
-                subuser: config.manta.subuser
+                key: privateKey,
+                keyId: userConfig.keyId,
+                user: userConfig.user,
+                subuser: userConfig.subuser
             });
             options.subuser = config.manta.subuser;
         } else {
-            options.headers['X-Auth-Token'] = call.req.session.token || call.req.cloud._token;
+            options.headers['X-Auth-Token'] = session.token || call.req.cloud._token;
         }
         var client = manta.createClient(options);
         client.getFileContents = getFileContents;

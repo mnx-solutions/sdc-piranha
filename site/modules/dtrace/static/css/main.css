@@ -79,6 +79,23 @@
     padding: 0 10px;
     background-color: #fafcfd;
 }
+.full-width-form td .script-owner {
+    background-color: #eee;
+}
+.full-width-form td .script-shared-checkbox {
+    width: 190px;
+}
+.full-width-form td .script-shared-checkbox.copy-remote-script {
+    width: 205px;
+}
+.full-width-form td .script-shared-checkbox input {
+    margin: 0;
+    width: 15px;
+    height: 15px;
+}
+.full-width-form td .script-shared-checkbox label {
+    margin: 0;
+}
 .heatmap-wrapper {
     margin-top: 15px;
 }

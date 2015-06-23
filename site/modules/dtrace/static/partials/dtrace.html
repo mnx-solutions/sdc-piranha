@@ -21,9 +21,21 @@
                     </td>
                     <td class="medium" data-ng-class="{triple: !processes}" data-ng-show="title === 'Heatmap'">
                         <select ui-select2="{width: '100%'}" id="scriptSelect" data-ng-model="scriptName" data-ng-change="changeScript()" data-select2-disabled="loadingHostProcesses">
-                            <option data-ng-repeat="script in scripts" value="{{script.name}}">
-                                {{script.name}}
-                            </option>
+                            <optgroup label="private">
+                                <option data-ng-repeat="script in scripts | filter:'!shared' | filter:'!remote'" value="{{script.name}}">
+                                    {{script.name}}
+                                </option>
+                            </optgroup>
+                            <optgroup label="shared">
+                                <option data-ng-repeat="script in scripts | filter:'shared'" value="{{script.name}}">
+                                    {{script.name}}
+                                </option>
+                            </optgroup>
+                            <optgroup label="remote">
+                                <option data-ng-repeat="script in scripts | filter:'remote'" value="{{script.name}}">
+                                    {{script.owner + ' / ' + script.name}}
+                                </option>
+                            </optgroup>
                         </select>
                     </td>
                     <td data-ng-show="processes && processes.length" class="big">
