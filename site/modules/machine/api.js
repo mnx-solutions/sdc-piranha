@@ -409,7 +409,7 @@ exports.init = function execute(log, config, done) {
     }
 
     var tritonDataCenters = [];
-    if (config.features.sdcDocker === 'enabled')  {
+    if (config.features.sdcDocker === 'enabled') {
         tritonDataCenters = [].concat(config.sdcDocker).map(function (sdcDocker) {
             return sdcDocker.datacenter;
         });
@@ -428,7 +428,7 @@ exports.init = function execute(log, config, done) {
                 datacenter = 'all';
             }
 
-            if (tritonDataCenters.indexOf(options.datacenter) === -1) {
+            if (tritonDataCenters.indexOf(options.datacenter) !== -1) {
                 data = data.concat(supportPackages);
             }
 

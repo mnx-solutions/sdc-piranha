@@ -1,6 +1,6 @@
 'use strict';
 
-(function (app) {app.directive('instanceDetails', [
+(function (app, ng) {app.directive('instanceDetails', [
     '$rootScope', 'requestContext', 'Machine', 'Package', 'Network', 'firewall',
     'Docker', '$filter', '$$track', 'localization', '$q', '$location', 'PopupDialog', 'Image', 'FreeTier',
     'Account', 'loggingService', 'util',
@@ -745,4 +745,4 @@
             templateUrl: 'machine/static/partials/details-summary.html'
         };
     }]);
-}(window.JP.getModule('Machine')));
+}(window.JP.getModule('Machine'), window.angular));
