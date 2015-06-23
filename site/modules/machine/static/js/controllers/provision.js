@@ -870,9 +870,16 @@
                 }
             };
 
+            var unreachableDatacenters = [];
+
             var switchToOtherDatacenter = function (datacenter, err) {
+                if (unreachableDatacenters.indexOf(datacenter) === -1) {
+                    unreachableDatacenters.push(datacenter);
+                }
                 if ($scope.datacenters && $scope.datacenters.length > 0) {
-                    var firstNonSelected = $scope.datacenters.find(function (dc) { return dc.name != datacenter; });
+                    var firstNonSelected = $scope.datacenters.find(function (dc) {
+                        return unreachableDatacenters.indexOf(dc.name) === -1;
+                    });
                     if (firstNonSelected) {
                         PopupDialog.error(
                             localization.translate(
