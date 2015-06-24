@@ -321,7 +321,7 @@
                     } else if (!$scope.data.opsys) {
                         $scope.data.opsys = 'All';
                     }
-                    $scope.loading = provisionBundle && provisionBundle.simpleImage && provisionBundle.ready;
+                    $scope.loading = provisionBundle && provisionBundle.machine && provisionBundle.ready;
                 }
 
                 if (datacentersResult.error) {
