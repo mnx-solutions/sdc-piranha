@@ -117,26 +117,40 @@ function createCallback(dockerInstance, opts, auditParams, callback) {
             auditParams.error = true;
             auditParams.errorMessage = error.body && error.body.error || error.message || error;
         }
-        if (!auditParams.silent && dockerInstance.auditor && (opts.auditType === 'docker' ||
-            (opts.auditType && opts.auditType !== 'docker' && (auditParams.id || auditParams.Id)))) {
-            if (!(dockerInstance.options.host && dockerInstance.options.host.id)) {
-                req.log.warn({opts: opts, dockerOpts: dockerInstance.options}, 'Host not defined');
-            } else {
-                setImmediate(function () {
-                    dockerInstance.auditor.put({
-                        host: dockerInstance.options.host.id,
-                        entry: auditParams.Id || auditParams.id,
-                        type: opts.auditType,
-                        name: dockerInstance.options.methodName
-                    }, auditParams);
-                });
+        checkAccountBilling(dockerInstance, function () {
+            if (dockerInstance.billingAvailable && !auditParams.silent && dockerInstance.auditor && (opts.auditType === 'docker' ||
+                (opts.auditType && opts.auditType !== 'docker' && (auditParams.id || auditParams.Id)))) {
+                if (!(dockerInstance.options.host && dockerInstance.options.host.id)) {
+                    req.log.warn({opts: opts, dockerOpts: dockerInstance.options}, 'Host not defined');
+                } else {
+                    setImmediate(function () {
+                        dockerInstance.auditor.put({
+                            host: dockerInstance.options.host.id,
+                            entry: auditParams.Id || auditParams.id,
+                            type: opts.auditType,
+                            name: dockerInstance.options.methodName
+                        }, auditParams);
+                    });
+                }
             }
-        }
-        if (opts.noParse) {
-            data = res.body.toString();
-        }
-        callback(auditParams.errorMessage, data);
+            if (opts.noParse) {
+                data = res.body.toString();
+            }
+            callback(auditParams.errorMessage, data);
+        });
     };
+}
+
+function checkAccountBilling(dockerInstance, callback) {
+    if (typeof dockerInstance.billingAvailable === 'undefined') {
+        var Billing = require('../account').Billing;
+        Billing.isActive(dockerInstance.userId, function (err, isActive) {
+            dockerInstance.billingAvailable = !err && isActive;
+            callback();
+        });
+    } else {
+        callback();
+    }
 }
 
 function createMethod(log, opts, selfName) {
@@ -270,6 +284,7 @@ exports.init = function execute(log, config, done) {
     function Docker(options, call) {
         this.options = options;
         if (call) {
+            this.userId = call.req.session.userId;
             this.auditor = new Auditor(call);
         }
     }
