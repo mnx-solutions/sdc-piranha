@@ -61,7 +61,7 @@
                             <div class="memory"><p data-ng-show="package.memory < 1024">Micro </p> {{package.memory | sizeFormat}} RAM</div>
                             <div class="cpu">{{package.vcpus}} vCPUs</div>
                             <div class="disk">{{package.disk | sizeFormat}} Disk</div>
-                            <div class="price" data-ng-show="features.billing == 'eanbled'">${{package.full_price || package.price}} <p data-translate>per hour</p></div>
+                            <div class="price" data-ng-show="features.billing == 'enabled'">${{package.full_price || package.price}} <p data-translate>per hour</p></div>
                         </div>
                     </div>
                 </div>
