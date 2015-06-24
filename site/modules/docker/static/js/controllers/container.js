@@ -56,11 +56,21 @@
                 }
             };
 
+            var clearInspectInterval = function () {
+                if (inspectInterval) {
+                    clearInterval(inspectInterval);
+                }
+            };
+
             var getDockerInspectContainer = function (machine) {
+                if ($scope.destroyed) {
+                    return;
+                }
                 container.primaryIp = machine.primaryIp;
                 container.hostId = machine.id;
                 container.isSdc = machine.isSdc;
                 $scope.machine = machine;
+                clearInspectInterval();
                 inspectInterval = setInterval(function () {
                     if ($scope.container && $scope.container.isRemoving) {
                         return;
@@ -145,9 +155,8 @@
                 if (statsSocket) {
                     statsSocket.close();
                 }
-                if (inspectInterval) {
-                    clearInterval(inspectInterval);
-                }
+                clearInspectInterval();
+                $scope.destroyed = true;
             });
         }
     ]);
