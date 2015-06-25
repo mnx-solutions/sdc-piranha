@@ -10,7 +10,7 @@
         function ($scope, requestContext, localization, Machine) {
             function setMachine(machine) {
                 $scope.machine = machine;
-                $scope.containerDetailsAvailable = $scope.machine.tags && $scope.machine.tags.sdc_docker && $scope.features.sdcDocker !== 'disabled' ;
+                $scope.containerDetailsAvailable = $scope.machine.tags && $scope.machine.tags.sdc_docker && $scope.features.sdcDocker !== 'disabled' && $scope.features.docker === 'enabled';
             }
             var machineid = requestContext.getParam('machineid') || util.idToUuid(requestContext.getParam('containerid'));
             localization.bind('machine', $scope);
