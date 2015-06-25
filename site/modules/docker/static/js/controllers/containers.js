@@ -112,6 +112,7 @@
                         $scope.containersFilter = Docker.getHostFilter(hostId, hosts);
                         $scope.containers = containers.map(function (container) {
                             container.state = getContainerState(container, false);
+                            container.actionInProgress = container.isRemoving;
                             return container;
                         });
                         $scope.loading = false;
