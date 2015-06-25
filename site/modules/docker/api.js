@@ -67,6 +67,7 @@ var requestMap = {
 };
 
 var registriesCache = {};
+var forceNewConnectionMethods = ['exec', 'execStart'];
 
 // read sync startup script for Docker
 var startupScript = fs.readFileSync(__dirname + '/data/startup.sh', 'utf8');
@@ -214,7 +215,12 @@ function createMethod(log, opts, selfName) {
             }
         }
         options.path += qs.stringify(query) ? '?' + qs.stringify(query) : '';
-        var client = raw ? restify.createClient(this.options) : restify.createJsonClient(this.options);
+        var client;
+        if (forceNewConnectionMethods.indexOf(selfName) !== -1) {
+            client = raw ? restify.createClient(this.options) : restify.createJsonClient(this.options);
+        } else {
+            client = raw ? self.rawClient : self.jsonClient;
+        }
         var args = [options];
         if ((options.method === 'POST' || options.method === 'PUT') && !raw) {
             args.push(params);
@@ -281,12 +287,18 @@ exports.init = function execute(log, config, done) {
     api.DockerHostUnreachable = DockerHostUnreachable;
     api.CAdvisorUnreachable = CAdvisorUnreachable;
 
+    function addClient(service) {
+        service.jsonClient = restify.createJsonClient(service.options);
+        service.rawClient = restify.createClient(service.options);
+    }
+
     function Docker(options, call) {
         this.options = options;
         if (call) {
             this.userId = call.req.session.userId;
             this.auditor = new Auditor(call);
         }
+        addClient(this);
     }
 
     Docker.prototype.usePort = function (port) {
@@ -303,10 +315,12 @@ exports.init = function execute(log, config, done) {
 
     function Registry(options) {
         this.options = options;
+        addClient(this);
     }
 
     function Index(options) {
         this.options = options;
+        addClient(this);
     }
 
     createApi(log, apiMethods.docker, Docker.prototype);

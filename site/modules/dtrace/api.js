@@ -146,8 +146,7 @@ exports.init = function execute(log, config, done) {
                 connectTimeout: 5000
             };
 
-            var client = restify.createJsonClient(this.options);
-            client[requestMap[options.method]](options, function(err, req, res, data) {
+            this.jsonClient[requestMap[options.method]](options, function(err, req, res, data) {
                 if (err && err.statusCode !== 200) {
                     var message = err.name === UNAUTHORIZED_ERROR ? err.toString() : err.message || 'DTrace host is Unreachable';
                     return callback(new Error(message));
@@ -177,6 +176,7 @@ exports.init = function execute(log, config, done) {
 
     function Dtrace(options) {
         this.options = options;
+        this.jsonClient = restify.createJsonClient(this.options);
     }
 
     createApi(dtraceAPIMethods, Dtrace.prototype);
