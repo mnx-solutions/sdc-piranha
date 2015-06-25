@@ -356,7 +356,7 @@
                             localization.translate(
                                 $scope,
                                 null,
-                                messageBody[$scope.checkedItems > 1 ? 'plural' : 'single']
+                                messageBody[$scope.checkedItems.length > 1 ? 'plural' : 'single']
                             ), function () {
                                 processContainerAction(action);
                             }
