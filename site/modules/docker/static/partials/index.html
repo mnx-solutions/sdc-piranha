@@ -120,7 +120,11 @@
         </div>
     </div>
     <div data-ng-show="!loading && (!isTritonTab && !kvmMachines.length || isTritonTab && !provisionEnabled)">
-        <p class="page-heading">Welcome to <span data-ng-hide="isTritonTab">KVM </span>Docker<span data-ng-hide="features.privateSdc == 'enabled'"> on the Joyent Public Cloud</span></p>
+        <p class="page-heading">Welcome to
+            <span data-ng-hide="isTritonTab">KVM</span>
+            <span data-ng-hide="!isTritonTab">Triton</span>
+            Docker
+            <span data-ng-hide="features.privateSdc == 'enabled'">on the Joyent Public Cloud</span></p>
         <div data-ng-hide="provisionEnabled">
             <span class="page-subheading active-link" data-ng-click="completeAccount()">Complete your Account Information</span><span class="page-subheading"> in order to begin using <span data-ng-hide="isTritonTab">KVM </span>Docker on the Joyent Public Cloud</span>
         </div>
