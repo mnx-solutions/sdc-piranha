@@ -427,10 +427,7 @@ exports.init = function execute(log, config, done) {
             if (!info.packages.data[datacenter]) {
                 datacenter = 'all';
             }
-
-            if (tritonDataCenters.indexOf(options.datacenter) !== -1) {
-                data = data.concat(supportPackages);
-            }
+            data = data.concat(supportPackages);
 
             var filteredPackagesMap = {};
             data.forEach(function (p) {
