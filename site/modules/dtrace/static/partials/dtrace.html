@@ -54,7 +54,7 @@
         </div>
         <div class="loading-large col-md-12" data-ng-show="loading || options.loading"></div>
         <div data-ng-show="!loading && !hosts.length" class="grid-no-entries">You do not have any DTrace hosts.</div>
-        <div data-ng-show="!options.loading" class="heatmap-wrapper" data-ng-if="title === 'Heatmap'">
+        <div data-ng-show="!options.loading && isRunning" class="heatmap-wrapper" data-ng-if="title === 'Heatmap'">
             <heatmap data-options="options" data-data="data"></heatmap>
         </div>
         <div class="heatmap-wrapper" data-ng-show="!loading" data-ng-if="title === 'Flame Graph'">
