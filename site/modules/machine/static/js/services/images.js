@@ -233,11 +233,14 @@
                                 versions[newMajor] = [];
                             }
                             versions[newMajor].push(version);
-                            if (versionType.length > 0) {
-                                lastMajor = newMajor;
+                            if (versionType.length > 1) {
                                 if (selectedMajor < lastMajor) {
                                     selectedMajor = lastMajor;
                                 }
+                                lastMajor = newMajor;
+                            }
+                            if (newMajor.length > 7) {
+                                selectedMajor = newMajor;
                             }
                         });
 
