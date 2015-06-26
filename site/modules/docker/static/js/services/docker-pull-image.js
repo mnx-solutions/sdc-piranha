@@ -3,11 +3,11 @@
 // TODO: review all
 (function (ng, app) {
     app.factory('dockerPullImage', ['Docker', 'PopupDialog', '$q', 'util', function (Docker, PopupDialog, $q, util) {
-        return function(givenHost, unreachableHosts, pullPollingParent, pullDialogOpeningStatus, finalCallback) {
-            function pullPolling (hostId, state) {
-                if (typeof pullPollingParent === 'function') {
+        return function(givenHost, unreachableHosts, progressHandler, pullDialogOpeningStatus, finalCallback) {
+            function setPullProgress(hostId, state, image) {
+                if (typeof progressHandler === 'function') {
                     Docker.pullForHosts[hostId] = state;
-                    pullPollingParent(hostId, state);
+                    progressHandler(hostId, state, image);
                 }
             }
 
@@ -134,7 +134,7 @@
                                 setRegistryHost(parentScope, image);
                                 $scope.selectedHosts.forEach(function (selectedHost) {
                                     var host = Docker.getHost($scope.hosts, selectedHost.primaryIp);
-                                    pullPolling(host.id, true);
+                                    setPullProgress(host.id, true);
                                     image.pullProcesses[host.id] = {
                                         host: host,
                                         processing: true,
@@ -153,10 +153,10 @@
                                         if (image.pullProcesses[host.id].progressDetail) {
                                             delete image.pullProcesses[host.id].progressDetail;
                                         }
-                                        pullPolling(host.id, false);
+                                        setPullProgress(host.id, false, image);
                                         doFinalCallback();
                                     }, function (err) {
-                                        pullPolling(host.id, false);
+                                        setPullProgress(host.id, false);
                                         foundImages.splice(0, 1);
                                         if (!err.message) {
                                             if (err.statusCode === 404) {
@@ -330,7 +330,7 @@
                                         processing: true,
                                         processStatus: 'Preparing'
                                     };
-                                    pullPolling(host.id, true);
+                                    setPullProgress(host.id, true);
                                     parentScope.processing = true;
 
                                     Docker.pullImage(host, image, parentScope.registryId).then(function (chunk) {
@@ -344,10 +344,10 @@
                                         if (image.pullProcesses[host.id].progressDetail) {
                                             delete image.pullProcesses[host.id].progressDetail;
                                         }
-                                        pullPolling(host.id, false);
+                                        setPullProgress(host.id, false, image);
                                         doFinalCallback();
                                     }, function (err) {
-                                        pullPolling(host.id, false);
+                                        setPullProgress(host.id, false);
                                         errorCallback(err, $scope);
                                     });
                                 });
