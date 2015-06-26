@@ -2,7 +2,7 @@
 
 // TODO: review all
 (function (ng, app) {
-    app.factory('dockerPullImage', ['Docker', 'PopupDialog', '$q', function (Docker, PopupDialog, $q) {
+    app.factory('dockerPullImage', ['Docker', 'PopupDialog', '$q', 'util', function (Docker, PopupDialog, $q, util) {
         return function(givenHost, unreachableHosts, pullPollingParent, pullDialogOpeningStatus, finalCallback) {
             function pullPolling (hostId, state) {
                 if (typeof pullPollingParent === 'function') {
