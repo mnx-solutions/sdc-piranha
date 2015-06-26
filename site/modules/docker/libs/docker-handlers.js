@@ -493,7 +493,7 @@ var createRegistry = function (call) {
     });
 
     pipeline.push(function createPrivateRegistryContainer(collector, callback) {
-        var startupScript = 'if [ ! -f /.installed ];then apt-get update && apt-get install python-pip python-dev && ' +
+        var startupScript = 'if [ ! -f /.installed ];then apt-get update && apt-get install -y python-pip python-dev && ' +
             'pip install docker-registry docker-registry-driver-joyent_manta' + (installConfig.registryDriverVersion ? '==' + installConfig.registryDriverVersion : '') + ' && ' +
             'echo "' + registryConfig.replace(/\n/g, '\n').replace(/ {4}/g, '\t') + '" | sed -e \'s/\t/    /g\'>/config.yml;' +
             'touch /.installed;else docker-registry;fi';
