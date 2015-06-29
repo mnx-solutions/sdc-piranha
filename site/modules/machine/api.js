@@ -398,6 +398,7 @@ exports.init = function execute(log, config, done) {
     };
 
     var supportPackages = [];
+    var DATACENTERS_WITHOUT_SUPPORT_PACKAGES = ['us-east-3b'];
 
     if (config.features.createdBySupportPackages === 'enabled') {
         for (var name in info.packages.data.all) {
@@ -427,7 +428,9 @@ exports.init = function execute(log, config, done) {
             if (!info.packages.data[datacenter]) {
                 datacenter = 'all';
             }
-            data = data.concat(supportPackages);
+            if (DATACENTERS_WITHOUT_SUPPORT_PACKAGES.indexOf(datacenter.toLowerCase()) === -1) {
+                data = data.concat(supportPackages);
+            }
 
             var filteredPackagesMap = {};
             data.forEach(function (p) {
