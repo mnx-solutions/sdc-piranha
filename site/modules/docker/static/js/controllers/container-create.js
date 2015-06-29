@@ -364,18 +364,23 @@
                     $scope.commands = values.Command || '';
                 };
 
-                var selectSource = function (items, id) {
+                var selectSource = function (items, id, defaultSelectedImage) {
                     var defaultItem;
                     if (sourceId && Array.isArray(items)) {
                         defaultItem = items.filter(function (item) {
                             return item.Id === sourceId;
                         });
                     }
-                    defaultItem = (defaultItem && defaultItem[0]) || items[0];
+                    if (typeof defaultSelectedImage === 'string') {
+                        defaultItem = items.find(function (item) {
+                            return item.name === defaultSelectedImage;
+                        });
+                    }
+                    defaultItem = defaultItem || items[0];
                     return id ? defaultItem[id] : defaultItem;
                 };
 
-                var hostImages = function (host) {
+                var loadHostImages = function (host, defaultSelectedImage) {
                     if (host && host.primaryIp) {
                         $scope.loadingHostDetails = true;
                         $scope.images = [];
@@ -387,7 +392,7 @@
                             });
                             if ($scope.images.length > 0) {
                                 $scope.images = $filter('orderBy')($scope.images, 'name');
-                                $scope.container.Image = selectSource($scope.images, 'name');
+                                $scope.container.Image = selectSource($scope.images, 'name', defaultSelectedImage);
                                 setTimeout(function () {
                                     selectImageEl.select2('val', $scope.container.Image);
                                 });
@@ -398,7 +403,7 @@
                     }
                 };
 
-                var imageHosts = function (imageId) {
+                var loadImageHosts = function (imageId) {
                     $scope.loadingHostDetails = true;
                     $scope.images = [];
                     $scope.container.container = 'base';
@@ -604,9 +609,9 @@
                     } else {
                         getHostStats($scope.host);
                         if (sourceId) {
-                            imageHosts(sourceId);
+                            loadImageHosts(sourceId);
                         } else {
-                            hostImages(host);
+                            loadHostImages(host);
                         }
                     }
                 };
@@ -732,16 +737,16 @@
 
                 $scope.isPullingInProgress = Docker.pullForHosts;
 
-                function pullPolling (hostId, pullState) {
+                function pullImageProgressHandler(hostId, pullState, pulledImage) {
                     $scope.isPullingInProgress[hostId] = pullState;
                     if (!pullState) {
-                        hostImages($scope.host);
+                        loadHostImages($scope.host, pulledImage.name + ':' + pulledImage.tag);
                     }
                 }
 
                 selectImageEl.select2('enable').on('open', function() {
                     ng.element('.select2-results .image-pull-item').on('mouseup', function(e) {
-                        dockerPullImage($scope.host, $scope.unreachableHosts, pullPolling);
+                        dockerPullImage($scope.host, $scope.unreachableHosts, pullImageProgressHandler);
                         setTimeout(function () {
                             selectImageEl.select2('val', '').trigger('change');
                         });
