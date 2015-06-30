@@ -428,7 +428,7 @@ exports.init = function execute(log, config, done) {
             if (!info.packages.data[datacenter]) {
                 datacenter = 'all';
             }
-            if (DATACENTERS_WITHOUT_SUPPORT_PACKAGES.indexOf(datacenter.toLowerCase()) === -1) {
+            if (options && options.datacenter && DATACENTERS_WITHOUT_SUPPORT_PACKAGES.indexOf(options.datacenter.toLowerCase()) === -1) {
                 data = data.concat(supportPackages);
             }
 
