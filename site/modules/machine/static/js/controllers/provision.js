@@ -184,11 +184,15 @@
                         $scope.provisioningInProgress = true;
                         // we can return this back when make ssh not required for windows
                         if ($scope.keys.length === 0) {
-                            $rootScope.commonConfig('provisionBundle', {
+                            var bundleData = {
                                 simpleImage: false,
                                 ready: false,
                                 machine: machine
+                            };
+                            PROVISION_BUNDLE_KEYS.forEach(function (key) {
+                                bundleData[key] = $scope[key];
                             });
+                            $rootScope.commonConfig('provisionBundle', bundleData);
                             return $location.path('/compute/ssh');
                         }
                         Provision.finalProvision(data, $scope.datacenters, $scope.account, hostSpecification, function () {
