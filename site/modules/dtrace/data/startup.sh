@@ -16,15 +16,29 @@ set -x
 set -e
 
 /opt/local/bin/mkdir -p ${LOCALFOLDER} && cd $_
-/usr/sbin/mdata-get ca > ca.pem
-/usr/sbin/mdata-get server-cert > server-cert.pem
-/usr/sbin/mdata-get server-key > server-key.pem
-/usr/sbin/mdata-get private-key > /root/.ssh/user_id_rsa
-/usr/sbin/mdata-get public-key > /root/.ssh/user_id_rsa.pub
+cat <<'END' >ca.pem
+%__ca__%
+END
 
-export MANTA_URL=$(/usr/sbin/mdata-get manta-url | sed -e 's/[]\/$*.^|[]/\\&/g')
-export MANTA_USER=$(/usr/sbin/mdata-get manta-account)
-export MANTA_SUBUSER=$(/usr/sbin/mdata-get manta-subuser)
+cat <<'END' >server-cert.pem
+%__server-cert__%
+END
+
+cat <<'END' >server-key.pem
+%__server-key__%
+END
+
+cat <<'END' >/root/.ssh/user_id_rsa
+%__private-key__%
+END
+
+cat <<'END' >/root/.ssh/user_id_rsa.pub
+%__public-key__%
+END
+
+export MANTA_URL=$(echo %__manta-url__% | sed -e 's/[]\/$*.^|[]/\\&/g')
+export MANTA_USER=%__manta-account__%
+export MANTA_SUBUSER=%__manta-subuser__%
 
 echo "cloning repository"
 /opt/local/bin/curl -sS ${REPOSITORY} | /opt/local/bin/tar --strip-components=1 -xzf -
@@ -44,8 +58,6 @@ cat ${LOCALFOLDER}/node-server-manifest.xml.templ | \
 /opt/local/bin/touch ${MARKER}
 echo "complete"
 
-for key in $(echo "user-script private-key public-key manta-account manta-url manta-subuser ca server-key server-cert");do
-    /usr/sbin/mdata-delete ${key} &
-done
+/usr/sbin/mdata-delete user-script &
 
 exit 0
