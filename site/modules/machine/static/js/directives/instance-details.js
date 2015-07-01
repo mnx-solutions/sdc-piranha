@@ -212,10 +212,15 @@
                         getHostContainers(m);
                     }
 
-                    scope.dataset = Image.getImage(m.datacenter, m.image);
                     reloadPackages(m.package, m.datacenter);
 
-                    scope.dataset.then(function (image) {
+                    Image.image({datacenter: m.datacenter, id: m.image}).then(function (image) {
+                        if (scope.machine.tags.sdc_docker) {
+                            return scope.dataset = {name: 'Triton image'};
+                        }
+                        if (!image) {
+                            return scope.dataset = {name: 'N/A'};
+                        }
                         scope.dataset = image;
                         scope.machine.type = Machine.getMachineType(scope.machine, image);
                         scope.imageCreateNotSupported = image.imageCreateNotSupported || m.imageCreateNotSupported;
