@@ -56,7 +56,6 @@ exports.init = function execute(log, config, done) {
         var mantaClient = MantaClient.createClient(call);
 
         options.metadata = options.metadata || {};
-        options.metadata['user-script'] = startupScript;
         options.tags = options.tags || {};
         options.tags['JPC_tag'] = 'DTraceHost';
 
@@ -95,9 +94,7 @@ exports.init = function execute(log, config, done) {
         function done(certificates) {
             keys.getKeyPair(mantaClient, call, DEVTOOLS_MANTA_PATH + '/private.key', 'dtrace', function (keyPair) {
                 call.req.session.privateKey = keyPair.privateKey;
-                options.metadata = certMgmt.setMetadata(options.metadata, certificates);
-                options.metadata = subuser.setMetadata(options.metadata, keyPair,
-                    SUBUSER_LOGIN, mantaClient.user, mantaClient._url);
+                options.metadata['user-script'] = certMgmt.applyVariablesToScript(startupScript, certificates, keyPair, mantaClient, SUBUSER_LOGIN);;
 
                 uploadKeysAndSetupSubuser(call, keyPair, function (error) {
                     if (error) {

@@ -6,13 +6,20 @@ fi
 exec 3>&1 4>&2 1>/var/log/docker-install.log 2>&1
 set -x
 
-/usr/sbin/mdata-get private-key > /root/.ssh/user_id_rsa
-/usr/sbin/mdata-get public-key > /root/.ssh/user_id_rsa.pub
-DISABLE_TLS=$(/usr/sbin/mdata-get disable-tls)
-MANTA_URL=$(/usr/sbin/mdata-get manta-url)
+cat <<'END' >/root/.ssh/user_id_rsa
+%__private-key__%
+END
+
+cat <<'END' >/root/.ssh/user_id_rsa.pub
+%__public-key__%
+END
+
+
+DISABLE_TLS=%__disable-tls__%
+MANTA_URL=%__manta-url__%
 MANTA_KEY_ID=$(ssh-keygen -lf /root/.ssh/user_id_rsa.pub | awk '{print $2}')
-MANTA_USER=$(/usr/sbin/mdata-get manta-account)
-MANTA_SUBUSER=$(/usr/sbin/mdata-get manta-subuser)
+MANTA_USER=%__manta-account__%
+MANTA_SUBUSER=%__manta-subuser__%
 DOCKER_VERSION=$(/usr/sbin/mdata-get docker-version)
 
 DOCKER_INTERNAL_PORT=54243
@@ -33,14 +40,19 @@ IP_ADDRESSES=$(ip a s | grep 'inet ' | awk '{print $2}' | grep -v 127.0.0.1 | aw
 if [ ! -e ${KEYS_PATH} ];then
     mkdir -p ${KEYS_PATH}
 fi
-mdata-get ca > ${KEYS_PATH}/ca.pem
-mdata-get server-key > ${KEYS_PATH}/server-key.pem
-mdata-get server-cert > ${KEYS_PATH}/server-cert.pem
+cat <<'END' >${KEYS_PATH}/ca.pem
+%__ca__%
+END
 
-for key in $(echo "user-script private-key public-key manta-account manta-url disable-tls ca server-key server-cert");do
-    /usr/sbin/mdata-delete ${key} &
-done
+cat <<'END' >${KEYS_PATH}/server-key.pem
+%__server-key__%
+END
 
+cat <<'END' >${KEYS_PATH}/server-cert.pem
+%__server-cert__%
+END
+
+/usr/sbin/mdata-delete user-script &
 
 function manta {
     local alg=rsa-sha256

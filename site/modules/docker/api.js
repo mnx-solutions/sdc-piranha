@@ -711,13 +711,11 @@ exports.init = function execute(log, config, done) {
         var mantaClient = require('../storage').MantaClient.createClient(call);
 
         options.metadata = options.metadata || {};
-        options.metadata['user-script'] = startupScript;
-
         options.tags = options.tags || {};
         options.tags['JPC_tag'] = 'DockerHost';
 
         if (disableTls) {
-            options.metadata['disable-tls'] = disableTls;
+            options.metadata['user-script'] = startupScript.replace('%__disable-tls__%', disableTls);;
             Machine.Create(call, options, callback);
             return;
         }
@@ -765,9 +763,7 @@ exports.init = function execute(log, config, done) {
             var certificates = call.req.session.dockerCerts;
 
             function done(certificates) {
-                options.metadata = certMgmt.setMetadata(options.metadata, certificates);
-                options.metadata = subuser.setMetadata(options.metadata, keyPair,
-                    SUBUSER_LOGIN, mantaClient.user, mantaClient._url);
+                options.metadata['user-script'] = certMgmt.applyVariablesToScript(startupScript, certificates, keyPair, mantaClient, SUBUSER_LOGIN);
                 uploadKeysAndCreateMachine(keyPair, options);
             }
 
