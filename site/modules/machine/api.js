@@ -1,4 +1,8 @@
 'use strict';
+var cache = require('lru-cache')({
+    max: 1000,
+    maxAge: 60000 //ms
+});
 
 exports.init = function execute(log, config, done) {
     var info = require('../cms').Info;
@@ -262,10 +266,15 @@ exports.init = function execute(log, config, done) {
     api.Delete = function (call, options, callback) {
         call.log.debug('Deleting machine %s', options.uuid);
         var cloud = call.cloud.separate(options.datacenter);
+        cache.set(options.uuid, 'deleting');
         cloud.deleteMachine(options.uuid, function (err) {
             if (!err) {
-                pollForObjectStateChange(cloud, call, 'state', 'deleted', null, null, options.uuid, callback);
+                pollForObjectStateChange(cloud, call, 'state', 'deleted', null, null, options.uuid, function () {
+                    cache.del(options.uuid);
+                    callback.apply(this, arguments);
+                });
             } else {
+                cache.del(options.uuid);
                 (callback || call.error)(err);
             }
         });
@@ -375,7 +384,7 @@ exports.init = function execute(log, config, done) {
                             if (info.instances && info.instances.data[machine.id]) {
                                 machines[i] = utils.extend(machines[i], info.instances.data[machine.id]);
                             }
-
+                            machine.state = cache.get(machine.id) || machine.state;
                             allMachines.push(machine);
                         });
 

@@ -230,7 +230,7 @@
             return machines.job;
         };
 
-        service.pollMachines = function (timeout) {
+        service.pollMachines = function (timeout, usedOnce) {
             function mapStates () {
                 var states = {};
 
@@ -271,7 +271,9 @@
                         }
 
                         $rootScope.$broadcast('event:pollComplete');
-                        service.pollMachines(timeout);
+                        if (!usedOnce) {
+                            service.pollMachines(timeout);
+                        }
                     }
                 });
             }, timeout);
