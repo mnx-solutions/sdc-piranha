@@ -1,4 +1,4 @@
-<div class="container-fluid dash-container-position" data-ng-controller="Dashboard.IndexController">
+<div class="container-fluid container-position" data-ng-controller="Dashboard.IndexController">
     <div class="container-min-width row-fluid">
         <div class="row-fluid">
             <h3 class="page-title">Dashboard</h3>
@@ -83,10 +83,10 @@
                     <div class="tile-body">
                         <div class="title">Manta Storage</div>
                         <div class="single-column">
-                            <div class="number dpl-inline">
+                            <div class="number in-line">
                                 {{mantaMemory.value}}
                             </div>
-                            <div class="info dpl-inline">
+                            <div class="info in-line">
                                 {{mantaMemory.measure || ((account.provisionEnabled && 'GB') || '')}}
                             </div>
                         </div>
@@ -102,10 +102,10 @@
                     <div class="tile-body">
                         <div class="title">Current Usage</div>
                         <div class="single-column" data-ng-show="utilization">
-                            <div class="number medium dpl-inline">
+                            <div class="number medium in-line">
                                 ${{currentspend}}
                             </div>
-                            <div class="info dpl-inline">
+                            <div class="info in-line">
                                 Spent
                             </div>
                         </div>
@@ -198,21 +198,21 @@
             </div>
         </div>
 
-        <div class="dpl-inline">
+        <div class="in-line">
             <div class="pull-left first-column" data-ng-show="features.privateSdc != 'enabled'">
                 <div data-ng-show="dashboardAd" class="dashboard-ad" data-ng-bind-html="dashboardAd"></div>
                 <div data-ng-show="!dashboardAd" class="portlet-body promo-ad">
-                    <h1>Introducing Triton</h1>
+                    <span class="title">Introducing Triton</span>
                     <p>Designed from the ground up to radically simplify container deployments in production, at scale, with software-defined networking, and bare-metal performance. <a href="https://www.joyent.com/" target="_blank">Learn more</a></p>
                 </div>
             </div>
             <div class="pull-left second-column">
                 <!-- TODO: remove blog at some point, presently the feature is disabled -->
                 <div class="span" data-ng-show="features.blogEntries == 'enabled'">
-                    <h5>JOYENT BLOG</h5>
+                    <span class="ad-title">JOYENT BLOG</span>
                     <div class="separation-container separation-container-top">
                         <div class="row" data-ng-repeat="entry in rssentries">
-                            <div class="blog-date dpl-inline">{{entry.publishedDate | dateTime}}</div>
+                            <div class="blog-date in-line">{{entry.publishedDate | dateTime}}</div>
                             <a target="_blank" href="{{entry.link}}">&nbsp;<b>{{entry.title}}</b></a>
                         </div>
                     </div>

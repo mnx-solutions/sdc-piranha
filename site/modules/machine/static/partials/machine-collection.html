@@ -31,13 +31,13 @@
             </span>
 
             <div class="pull-right">
-                <button class="btn light tag-add-btn effect-orange-button"
+                <button class="btn tag-add-btn"
                         data-ng-click="addItem(item)"
                         data-translate
                         data-ng-disabled="saving || !item.dirtyVal || !item.dirtyKey || item.saving">{{item.isNew &&
                     'Add' || 'Save'}}
                 </button>
-                <div class="loading-medium item-button" ng-style="{visibility: item.saving && 'visible' || 'hidden'}"></div>
+                <div class="loading-medium" ng-style="{visibility: item.saving && 'visible' || 'hidden'}"></div>
             </div>
             <span class="value-container">
                 <input type="text"

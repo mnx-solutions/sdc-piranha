@@ -4,12 +4,12 @@
           data-ng-show="object.state.length">
         <span class="loading-small pull-left" data-ng-show="(object.job && !object.job.finished) || object.actionInProgress"></span>
         <i class="glyphicon glyphicon-ok pull-left" data-ng-show="(object.state == 'running' && !object.job && !object.actionInProgress) || (object.state == 'running' && object.job.finished)"></i>
-        <i class="warn_icon" data-ng-show="(object.state == 'stopped' && !object.job && !object.actionInProgress) || (object.state == 'stopped' && object.job.finished) || (object.state == 'paused' && !object.actionInProgress)"></i>
+        <i class="warn-icon" data-ng-show="(object.state == 'stopped' && !object.job && !object.actionInProgress) || (object.state == 'stopped' && object.job.finished) || (object.state == 'paused' && !object.actionInProgress)"></i>
         <span data-translate>{{object.state}}</span>
     </span>
 
     <span class="status label label-info pull-right"
-          data-ng-class="btn-danger"
+          data-ng-class="btn-default"
           data-ng-show="object.job && object.job.err">
         <i class="glyphicon glyphicon-warning-sign" data-ng-show="object.job.err"></i>
         <span data-translate>error</span>

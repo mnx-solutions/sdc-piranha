@@ -1,13 +1,11 @@
-.utilization
-{
+.utilization {
     display: inline-table;
 
     width: 100%;
     margin-bottom: 30px;
 }
 
-.utilization .tile
-{
+.utilization .tile {
     display: table-cell;
 
     width: 200px;
@@ -18,125 +16,106 @@
 }
 
 .container-details .utilization .tile,
-.container-details .chart-container
-{
+.container-details .chart-container {
     cursor: auto;
 }
 
-.utilization .tile h4
-{
-    font-size: 16px;
-    font-weight: 300;
-
+.utilization .tile .title {
     padding: 15px 15px 0;
 
     color: white;
+
+    font-size: 16px;
+    font-weight: 300;
 }
 
 .utilization .tile .total-usage,
 .utilization .tile .left-block,
-.utilization .tile .right-block
-{
-    line-height: 20px;
-
+.utilization .tile .right-block {
     max-width: 100%;
     padding-right: 5px;
     padding-left: 15px;
+
+    line-height: 20px;
 }
 
 .utilization .tile .left-block,
-.utilization .tile .right-block
-{
-    display: inline-block;
+.utilization .tile .right-block {
     float: left;
 
     margin-top: 15px;
 }
 
-.utilization .tile .right-block
-{
+.utilization .tile .right-block {
     max-width: 43%;
 }
 
-.utilization .tile .left-block.has-right-block
-{
+.utilization .tile .left-block.has-right-block {
     max-width: 49%;
 }
 
 .utilization .tile .left-block .desc,
-.utilization .tile .right-block .desc
-{
-    font-size: 14px;
-    font-weight: 300;
-    line-height: 17px;
-
+.utilization .tile .right-block .desc {
     padding-bottom: 10px;
 
     text-align: left;
+
+    font-size: 14px;
+    font-weight: 300;
+    line-height: 17px;
 }
 
-.desc.small
-{
-    font-size: 12px !important;
+.desc.small {
+    font-size: 12px;
 }
 
-.right-block
-{
+.right-block {
     color: #333;
 }
 
 .utilization,
-.utilization .tile
-{
+.utilization .tile {
     max-height: 250px;
 }
 
-.utilization .tile.orange
-{
+.utilization .tile.orange {
     background-color: #f60;
 }
 
-.utilization .tile.blue
-{
+.utilization .tile.blue {
     background-color: #589dbe;
 }
 
-.sub-line
-{
+.sub-line {
     border-left: solid 1px white;
 }
 
 .left-block .num,
 .total-usage .num,
 .left-block .desc,
-.total-usage .desc
-{
+.total-usage .desc {
     color: white;
 }
 
-.tile.orange .right-block .num
-{
+.tile.orange .right-block .num {
     color: #333;
 }
 
-.num
-{
-    font-size: 20px;
-    font-weight: 500;
-
+.num {
     padding-bottom: 10px;
 
     word-wrap: break-word;
+
+    font-size: 20px;
+    font-weight: 500;
 }
 
 .left-block .num.small,
-.right-block .num.small
-{
-    font-size: 14px !important;
+.right-block .num.small {
+    font-size: 14px;
 }
 
-.chart .chart-line
-{
+.chart .chart-line {
     display: inline-block;
 
     width: 10px;
@@ -147,19 +126,16 @@
     background-color: #f60;
 }
 
-.orange-chart
-{
+.orange-chart {
     background: url('../img/orange-chart.png') no-repeat;
 }
 
-.blue-chart
-{
+.blue-chart {
     background: url('../img/blue-chart.png') no-repeat;
 }
 
 .orange-chart,
-.blue-chart
-{
+.blue-chart {
     width: 416px;
     height: 224px;
     margin-left: 47px;
@@ -167,10 +143,7 @@
     background-size: 323px 224px;
 }
 
-.chart-nums
-{
-    font-size: 12px;
-
+.chart-nums {
     display: inline-block;
 
     width: 12px;
@@ -179,10 +152,11 @@
     text-align: center;
 
     opacity: .5;
+
+    font-size: 12px;
 }
 
-.top-line
-{
+.top-line {
     position: relative;
     top: 10px;
     left: 50px;
@@ -192,11 +166,7 @@
     border-top: solid 1px #ccc;
 }
 
-.top-line .text
-{
-    font-size: 12px;
-    line-height: 15px;
-
+.top-line .text {
     position: relative;
     top: 5px;
 
@@ -206,55 +176,53 @@
     height: 45px;
 
     color: #999;
+
+    font-size: 12px;
+    line-height: 15px;
 }
 
-.btn-group-chart
-{
+.btn-group-chart {
     padding-bottom: 10px;
 }
 
-.grid-holder
-{
+.grid-holder {
     width: 100%;
     height: auto;
 }
 
-.grid-title
-{
-    font-size: 16px;
-
+.grid-title {
     padding: 10px;
 
     background-color: #fef1d2;
+
+    font-size: 16px;
 }
 
-.grid-holder .container-grid
-{
+.grid-holder .grid-container {
     padding: 10px 0 0;
 }
 
-.back-btn
-{
+.back-btn {
     margin-bottom: 30px;
 }
 
-.chart-container
-{
+.chart-container {
     display: table-cell;
     overflow: hidden;
-    padding: 20px 0 0 20px;
+
     height: 230px;
-    background-color: #f5f5f5;
+    padding: 20px 0 0 20px;
+
     cursor: pointer;
+
+    background-color: #f5f5f5;
 }
 
-.rickshaw_graph
-{
+.rickshaw_graph {
     display: table-cell;
 }
 
-.y-axis
-{
+.y-axis {
     display: table-cell;
 
     max-width: 100px;
@@ -262,33 +230,30 @@
     vertical-align: top;
 }
 
-.y-axis svg
-{
+.y-axis svg {
     height: 230px;
 }
 
-.x-axis
-{
+.x-axis {
     float: left;
+
+    width: 570px;
     margin-top: -35px;
     padding-left: 100px;
-    width: 570px;
+
     background-color: transparent;
 }
 
-.x-axis svg
-{
-    height: 20px !important;
+.x-axis svg {
+    height: 20px;
 }
 
-.separator-block
-{
+.separator-block {
     padding-right: 5px;
     padding-left: 5px;
 }
 
-.rickshaw_legend
-{
+.rickshaw_legend {
     float: left;
 
     margin-top: -250px;
@@ -296,22 +261,19 @@
 
     vertical-align: top;
 
-    color: #000 !important;
-    background: inherit !important;
+    color: #000;
+    background: inherit;
 }
 
-.rickshaw_legend .line
-{
+.rickshaw_legend .line {
     padding-right: 0;
 }
 
-.loading-medium-transparent
-{
+.loading-medium-transparent {
     min-width: 760px;
     height: 230px;
 }
 
-.container-fluid
-{
+.container-fluid {
     min-height: 750px;
 }

@@ -2,7 +2,7 @@
     <span class="edit-value">
         <input type="text" class="input-value" data-ng-model="execCmd" data-ng-keypress="pressEnter($event)" data-ng-pattern="/.+/"/>
     </span>
-    <button data-ng-click="execCmd && execute()" class="btn light effect-orange-button">Exec</button>
+    <button data-ng-click="execCmd && execute()" class="btn">Exec</button>
     <div id="terminal"></div>
 </div>
 <p data-ng-show="!isHostAccessible">

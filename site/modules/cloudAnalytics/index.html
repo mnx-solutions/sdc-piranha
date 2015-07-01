@@ -34,7 +34,7 @@
 
                 <graph data-ng-repeat="i in graphs" options="i"></graph>
                 <div class="separator-line"></div>
-                <a href="#!/compute{{ machineExists && '/instance/' + selectedInstance || '' }}" class="btn grey effect-orange-button pull-right">
+                <a href="#!/compute{{ machineExists && '/instance/' + selectedInstance || '' }}" class="btn grey pull-right">
                     <b>{{ machineExists && 'Back to Instance Details' || 'Back to Instances' }}</b>
                 </a>
 
@@ -63,10 +63,10 @@
                 <p>Detailed analytics use pre-defined metrics to measure perfomance</p>
                 <button id="button-start" class="btn orange start-analytics-btn" data-ng-click="createDefaultInstrumentations()" data-ng-disabled="!selectedInstance">Start Analysis</button>
                 <p class="opt-title">Analytics Options:</p>
-                <button class="btn icon-zoom-in options-ctrl effect-orange-button" data-ng-click="zoom(1)" data-ng-disabled="!graphs.length || zoomInDisable"></button>
-                <button class="btn icon-zoom-out options-ctrl effect-orange-button" data-ng-click="zoom(-1)" data-ng-disabled="!graphs.length || zoomOutDisable"></button>
-                <button class="btn options-ctrl effect-orange-button" data-ng-click="deleteAllInstrumentations()" data-ng-disabled="!graphs.length">Delete All</button>
-                <button class="btn options-ctrl effect-orange-button" data-ng-click="createInstrumentation()" data-ng-disabled="!canCreate()">Create</button>
+                <button class="btn icon-zoom-in daffodil narrow" data-ng-click="zoom(1)" data-ng-disabled="!graphs.length || zoomInDisable"></button>
+                <button class="btn icon-zoom-out daffodil narrow" data-ng-click="zoom(-1)" data-ng-disabled="!graphs.length || zoomOutDisable"></button>
+                <button class="btn daffodil narrow" data-ng-click="deleteAllInstrumentations()" data-ng-disabled="!graphs.length">Delete All</button>
+                <button class="btn daffodil narrow" data-ng-click="createInstrumentation()" data-ng-disabled="!canCreate()">Create</button>
             </div>
         </div>
     </div>

@@ -229,10 +229,10 @@
                         <div class="attach-public-ip">
                             <div class="group-label">Attach Public IP (publish-all)</div>
                             <div class="btn-group" data-toggle="buttons" data-ng-click="setNotation(isSdc && 'SDC_PUBLISH_ALL_PORTS' || 'PUBLISH_ALL_PORTS')">
-                                <label class="btn" data-ng-class="{orange: container.HostConfig.PublishAllPorts, light: !container.HostConfig.PublishAllPorts}" data-ng-click="container.HostConfig.PublishAllPorts = true">
+                                <label class="btn without-hover" data-ng-class="{orange: container.HostConfig.PublishAllPorts}" data-ng-click="container.HostConfig.PublishAllPorts = true">
                                     <input type="radio" data-ng-model="container.HostConfig.PublishAllPorts" autocomplete="off" checked> {{container.HostConfig.PublishAllPorts ? 'Yes' : ''}}
                                 </label>
-                                <label class="btn" data-ng-class="{light: container.HostConfig.PublishAllPorts, orange: !container.HostConfig.PublishAllPorts}" data-ng-click="container.HostConfig.PublishAllPorts = false">
+                                <label class="btn without-hover" data-ng-class="{orange: !container.HostConfig.PublishAllPorts}" data-ng-click="container.HostConfig.PublishAllPorts = false">
                                     <input type="radio" data-ng-model="container.HostConfig.PublishAllPorts" autocomplete="off"> {{container.HostConfig.PublishAllPorts ? '' : 'No'}}
                                 </label>
                             </div>
@@ -350,8 +350,8 @@
                     <hr data-ng-show="!loading" />
                     <div class="row btn-bottom-block" data-ng-show="!loading">
                         <div class="pull-right">
-                            <button class="btn light effect-orange-button" data-ng-disabled="creating" data-ng-click="cancel()">Cancel</button>
-                            <button class="btn orange effect-orange-button" data-ng-disabled="containerCreateForm.$invalid || creating" data-ng-click="create()">Start</button>
+                            <button class="btn" data-ng-disabled="creating" data-ng-click="cancel()">Cancel</button>
+                            <button class="btn orange" data-ng-disabled="containerCreateForm.$invalid || creating" data-ng-click="create()">Start</button>
                         </div>
                         <div class="pull-right loading-medium-transparent" data-ng-show="creating"></div>
                     </div>

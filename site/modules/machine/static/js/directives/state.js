@@ -1,7 +1,7 @@
 'use strict';
 
 (function (app) {
-    app.directive('objectState', [ 'localization', function (localization) {
+    app.directive('objectState', ['localization', function (localization) {
         return {
             restrict: 'EA',
             replace: true,
@@ -24,7 +24,7 @@
                         switch (state) {
                             case 'provisioning':
                             case 'pausing':
-                                return 'btn-warning';
+                                return 'btn-default';
 
                             case 'running':
                                 return 'btn-success';
@@ -33,19 +33,19 @@
                                 return '';
 
                             default:
-                                return 'btn-danger';
+                                return 'btn-default';
                         }
                     } else if (scope.type === 'container') {
                         switch (state) {
                             case 'stopped':
                             case 'paused':
-                                return 'btn-warning';
+                                return 'btn-default';
 
                             case 'running':
                                 return 'btn-success';
 
                             default:
-                                return 'btn-danger';
+                                return 'btn-default';
                         }
                     } else {
                         switch (state) {

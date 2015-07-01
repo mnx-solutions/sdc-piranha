@@ -1,146 +1,54 @@
-.navbar-container
-{
-    border-radius: 0;
-    box-shadow: 0 1px 4px rgba(0, 0, 0, .065);
-}
+.header {
+    position: fixed;
+    z-index: 99999;
+    top: 0;
 
-.main-nav
-{
-    float: left;
-
-    width: 650px;
-    margin-top: 10px;
-}
-
-.main-nav a
-{
-    margin-right: 30px;
-}
-
-.main-nav a.active
-{
-    color: #666;
-}
-
-.navbar-inner .container
-{
-    padding: 10px;
-}
-
-.navbar-inverse,
-.navbar-container
-{
-    height: 54px;
-
-    color: #375775;
-    background-color: #dee4e9 !important;
-}
-
-.navbar-container .top-menu span
-{
-    font-size: 12px;
-
-    padding-right: 10px;
-    padding-left: 10px;
-
-    text-transform: uppercase;
-
-    border-right: 1px solid #375775;
-}
-
-.navbar-container .top-menu span.last
-{
-    border: none;
-}
-
-.navbar-container .top-menu span a,
-.navbar-inner .top-menu span a
-{
-    color: #375775;
-}
-
-.tiny-link-text
-{
-    font-size: 10px;
-
-    text-decoration: none;
-
-    color: #666;
-}
-
-.tiny-link-text:hover
-{
-    text-decoration: underline;
-}
-
-/*new styles*/
-
-.navbar-container
-{
     width: 100%;
+    min-width: 955px;
     height: 53px;
-    padding: 0;
-    /*margin: 0 0 0 110px;*/
 
-    border: 0;
-    background-color: #ededed !important;
-    background-image: none !important;
-    box-shadow: none;
-
-    filter: none !important;
+    background-color: #ededed;
 }
+.brand {
+    position: fixed;
+    left: 0;
 
-.navbar-container .container-fluid
-{
-    padding-left: 0;
-}
-
-.navbar-container .navbar-brand
-{
     width: 175px;
     height: 53px;
-    margin-right: 0;
 
     background: #f60 url('../img/logo-orange.png') no-repeat center left;
 }
-
-.navbar-container .navbar-brand img
-{
-    margin-left: -20px;
+.menu {
+    margin: 15px 15px 0;
 }
+.menu a:not(.btn) {
+    padding-right: 15px;
 
-.nav > li.dropdown > a
-{
+    text-decoration: none;
+
     color: #333;
-    text-shadow: none !important;
 }
-
-.header_icon
-{
-    position: relative;
-    left: -4px;
-
-    float: left;
+.support-icon,
+.dev-center-icon {
+    display: inline-block;
 
     width: 15px;
-    height: 14px;
-    margin-top: 3px;
+    height: 16px;
+
+    vertical-align: middle;
 
     background-repeat: no-repeat;
 }
 
-.support_icon
-{
+.support-icon {
     background-image: url('../img/question_icon.png');
 }
 
-.info_icon
-{
+.dev-center-icon {
     background-image: url('../img/exclamation_icon.png');
 }
 
-.icon-arrow-down-user
-{
+.arrow-down {
     display: inline-block;
 
     width: 20px;
@@ -149,76 +57,25 @@
     background: transparent url('../img/user_arrow.png') no-repeat 0 0;
 }
 
-.navbar-container .nav > li.dropdown:last-child
-{
-    padding-right: 2px;
+.dropdown-menu {
+    top: 30px;
+
+    margin-left: -100px;
 }
 
-.dropdown.user .dropdown-menu
-{
-    margin-left: -70px;
+.account-loading {
+    display: inline-block;
+
+    vertical-align: middle;
 }
 
-.navbar-container .nav .dropdown-menu-subuser
-{
-    margin-left: -15px;
-}
-
-.navbar-container .nav .dropdown-menu > li a
-{
-    font-weight: normal;
-    line-height: 18px;
-
-    display: block;
-    clear: both;
-
-    padding: 6px 0 6px 13px;
-
-    white-space: nowrap;
-    text-decoration: none;
-
-    color: #333 !important;
-}
-
-.navbar-container .nav .dropdown-menu > li > a:hover > [class^='icon-']
-{
-    background-image: url(../../../../static/vendor/bootstrap/img/glyphicons-halflings.png) !important;
-}
-
-.navbar-container .nav .dropdown.open .dropdown-toggle
-{
-    color: #333;
-    background-color: #ededed !important;
-}
-
-.navbar-container .nav .dropdown-menu li > a:hover,
-.navbar-container .nav .dropdown-menu .active > a,
-.navbar-container .nav .dropdown-menu .active > a:hover
-{
-    text-decoration: none;
-
-    color: #333;
-    background-color: #eee;
-    background-image: none;
-
-    filter: none;
-}
-
-.load-user-name
-{
-    margin-top: 18px;
-}
-
-.old-portal
-{
-    margin-top: 10px;
-    margin-left: 15px;
+.old-portal {
+    margin-right: 10px;
 
     color: #57879e;
     border: 2px solid #57879e;
     background-color: transparent;
 }
-
 .dd-account
 {
     min-width: 215px;
@@ -235,7 +92,7 @@
     vertical-align: top;
 }
 .service-status-date {
-    width: 80px;
+    width: 83px;
 }
 .service-status-text {
     width: 200px;

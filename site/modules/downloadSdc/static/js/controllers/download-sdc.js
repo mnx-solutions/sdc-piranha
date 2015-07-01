@@ -36,7 +36,7 @@
                             {
                                 result: 'cancel',
                                 label: 'No',
-                                cssClass: 'btn grey-new effect-orange-button',
+                                cssClass: 'btn grey',
                                 setFocus: false
                             },
                             {

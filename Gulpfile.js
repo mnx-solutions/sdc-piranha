@@ -299,7 +299,7 @@ function startHttpServer(done) {
 
             if (!isVendor && isModule) {
                 var moduleName = data.path.substr(defaults.modules.length + 1).split('/')[0];
-                less.render('.modulizer-module-' + moduleName + '{' + contents + '}', function (error, contents) {
+                less.render('.module-' + moduleName + '{' + contents + '}', function (error, contents) {
                     if (error) {
                         logger.error({error: error, module: moduleName, path: data.path}, 'Less compilation error');
                         return done(null, data);
@@ -560,7 +560,16 @@ gulp.task('precommit', function (done) {
                 .pipe(cssComb())
                 .pipe(saveFile()),
             gulp.src(files)
-                .pipe(cssLint())
+                .pipe(cssLint(
+                    {
+                        'unqualified-attributes': false,
+                        'overqualified-elements': false,
+                        'adjoining-classes': false,
+                        'fallback-colors': false,
+                        'box-model': false,
+                        'box-sizing': false
+                    }
+                ))
                 .pipe(cssLint.reporter())
         ).on('end', done);
     });

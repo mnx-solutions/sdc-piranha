@@ -1,70 +1,52 @@
 .modal-header.message,
-.modal-header.confirm
-{
+.modal-header.confirm {
     background-color: #f60;
 }
 
-.item .title
-{
+.item .title {
     padding: 10px;
 }
 
-.item .key
-{
+.item .key {
     padding-left: 10px;
 
     color: #888;
     border-bottom: 1px solid #ddd;
 }
 
-.item .value
-{
+.item .value {
     min-width: 300px;
     padding: 0 10px 0 10px;
 
-    text-align: left !important;
+    text-align: left;
 
     border-bottom: 1px solid #ddd;
 }
 
-.modal-header.error
-{
+.modal-header.error {
     background-color: #f00;
 }
 
-.modal-header
-{
+.modal-header {
     padding: 9px 15px;
 
     color: white;
     border-bottom: 1px solid #eee;
 }
 
-.breadcrumb
-{
-    margin-top: 20px;
-    margin-bottom: 10px!important;
-    padding: 0;
-
-    background-color: transparent!important;
+.select2-container .select2-choice {
+    background-color: #fafcfd;
 }
 
-.select2-container .select2-choice
-{
-    background-color: #fafcfd !important;
-}
-
-.select2-container .select2-choice div b
-{
-    background-color: #fafcfd !important;
+.select2-container .select2-choice div b {
+    background-color: #fafcfd;
     box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
 }
 
 .select2-container-active .select2-choice,
-.select2-container-multi.select2-container-active .select2-choices
-{
+.select2-container-multi.select2-container-active .select2-choices {
     border: 1px solid #52a8ec;
-    outline: none;
+    outline: 0 none;
     -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075), 0 0 8px rgba(82, 168, 236, .6);
        -moz-box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075), 0 0 8px rgba(82, 168, 236, .6);
             box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075), 0 0 8px rgba(82, 168, 236, .6);
@@ -72,8 +54,11 @@
 .form-group {
     margin-bottom: 17px;
 }
-.form-group .edit-error
-{
+.form-group > .edit-error {
     display: block;
+
     margin-right: 115px;
+}
+.form-group > .dual > .edit-error {
+    margin-right: 0;
 }

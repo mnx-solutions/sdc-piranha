@@ -11,21 +11,21 @@
         </div>
     </div>
     <div class="loading-large" data-ng-show="loading"></div>
-    <div class="nav-tabs" data-ng-show="!loading">
+    <div class="tabs-container" data-ng-show="!loading">
         <span>Filter:&nbsp</span>
         <span data-ng-repeat="tab in tabs">
             <input type="radio"
                    name="tab"
                    id="tab{{$index}}"
-                   class="grid-tab-radio"
+                   class="tab-radio"
                    data-ng-click="setActive(tab)"
                    data-ng-checked="isChecked(tab)"
                     />
-            <label for="tab{{$index}}" class="grid-tab dashboard">{{tab}}</label>
+            <label for="tab{{$index}}" class="tabs dashboard">{{tab}}</label>
         </span>
         <div class="page-title-btn" data-ng-hide="isTritonTab">
             <div class="control-panel">
-                <span>Data Center:</span>
+                <span class="middle">Data Center:</span>
                 <div class="provisioning-header-left-button btn-group">
                     <select type="hidden" data-select-two id="selectDockerDatacenter" width="110" data-ng-model="data.datacenter" data-select="data.datacenter" placeholder="No matches found">
                         <option value=""></option>
@@ -35,7 +35,7 @@
                     </select>
                 </div>
             </div>
-            <button data-ng-disabled="!data.imageId" data-ng-click="createDocker()" type="button" class="btn btn-big orange text-to-left"><i class="plus-btn-icon"></i>Create KVM-Docker Host</button>
+            <button data-ng-disabled="!data.imageId" data-ng-click="createDocker()" type="button" class="btn big orange"><i class="plus-btn-icon"></i>Create KVM-Docker Host</button>
         </div>
     </div>
     <div class="row dockers-wrapper" data-ng-show="dockerMachines.length >= 1 && !loading">
@@ -60,11 +60,11 @@
                 <div class="info" data-ng-hide="states[machine.id] == 'completed' || machine.prohibited">
                     <span>Status: </span>
                     <span>{{states[machine.id] || 'initializing'}}</span>
-                    <div class="loading-medium-tr" data-ng-hide="states[machine.id] == 'unreachable' || machine.prohibited"></div>
+                    <div class="loading-medium-transparent" data-ng-hide="states[machine.id] == 'unreachable' || machine.prohibited"></div>
                 </div>
             </div>
             <div class="info" data-ng-hide="states[machine.id] == 'completed' || machine.prohibited || !machine.isSdc">
-                <div class="loading-medium-tr" data-ng-hide="states[machine.id] == 'unreachable' || machine.prohibited"></div>
+                <div class="loading-medium-transparent" data-ng-hide="states[machine.id] == 'unreachable' || machine.prohibited"></div>
             </div>
             <div data-ng-show="states[machine.id] == 'completed' && !machine.prohibited">
                 <div data-ng-show="machine.isSdc && !machine.prohibited">
@@ -98,7 +98,7 @@
                     <div class="chart-wrapper" data-ng-hide="machine.isSdc" data-ng-click="navigateMachine(machine)" data-ng-class="{'tooltip-hover': machine.memoryLoad === 'N/A'}" data-original-title="Analytics is unavailable">
                         <easypiechart data-percent="machine.memoryLoad" data-options="chartOptions">
                             <span class="chart-text" data-ng-show="machine.memoryLoad">{{machine.memoryLoad}}</span>
-                            <span class="chart-loading" data-ng-show="!machine.memoryLoad"></span>
+                            <span class="loading-medium-transparent chart-loading" data-ng-show="!machine.memoryLoad"></span>
                         </easypiechart>
                         <p class="title">Memory</p>
                     </div>
@@ -107,15 +107,14 @@
                     <button data-ng-show="!machine.prohibited"
                             data-ng-click="createContainer(machine)"
                             type="button"
-                            class="btn btn-big orange text-to-left"
-                            data-ng-class="{'triton-btn': machine.isSdc, 'kvm-btn': !machine.isSdc}">
+                            class="btn big orange triton-btn">
                         <i class="plus-btn-icon"></i>
                         Start new Docker container
                     </button>
                 </div>
             </div>
             <div data-ng-show="machine.prohibited" class="btn-wrapper">
-                <a href="https://www.joyent.com/lp/preview" target="_blank" type="button" class="btn btn-big orange triton-btn req">Request Triton Preview</a>
+                <a href="https://www.joyent.com/lp/preview" target="_blank" type="button" class="btn big orange triton-btn req">Request Triton Preview</a>
             </div>
         </div>
     </div>

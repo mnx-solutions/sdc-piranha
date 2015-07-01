@@ -20,7 +20,7 @@
                               class="file-name">{{(file.filePath | name) || 'Not selected'}}</span>
                     </td>
                     <td>
-                        <button class="btn effect-orange-button orange debugger-action-btn" data-ng-class="{'light' : objects.length || inputFile.length != 0}" data-select-file data-objects="inputFile" data-ng-click="selectFile()">Select File</button>
+                        <button class="btn debugger-action-btn" data-ng-class="{'orange' : !objects.length || inputFile.length == 0}" data-select-file data-objects="inputFile" data-ng-click="selectFile()">Select File</button>
                     </td>
                 </tr>
                 <tr>
@@ -31,12 +31,12 @@
                                 data-ng-click="process()">Process Now</button>
                     </td>
                     <td data-ng-if="jobId && !objects.length">
-                        <button class="btn orange effect-orange-button debugger-action-btn"
-                                data-ng-class='{"grey-new": inputFile.length == 0}'
+                        <button class="btn grey debugger-action-btn"
+                                data-ng-class='{"orange": inputFile.length != 0}'
                                 data-ng-click="cancel()">Cancel</button>
                     </td>
                     <td data-ng-if="objects.length">
-                        <button class="btn orange effect-orange-button debugger-action-btn"
+                        <button class="btn orange debugger-action-btn"
                                 data-ng-class='{"disabled": inputFile.length == 0}'
                                 data-ng-click="process()">Re-Process</button>
                     </td>
@@ -44,7 +44,7 @@
                 <tr><td colspan="2"><div class="estimate-time">Estimating processed time: {{estimateTime}} minutes</div></td></tr>
                 <tr data-ng-show="supportStatus">
                     <td class="mdb-column-label">Node.js support status: {{supportStatus}}</td>
-                    <td><button class="btn orange effect-orange-button grey-new debugger-action-btn" data-ng-click="clickSignup()">Signup for Node.js</button></td>
+                    <td><button class="btn grey debugger-action-btn" data-ng-click="clickSignup()">Signup for Node.js</button></td>
                 </tr>
 
             </table>
@@ -68,7 +68,7 @@
                             Debug Objects
                         </span>
                     </div>
-                    <div id="collapse_objects" class="panel-collapse collapse in">
+                    <div id="collapse_objects" class="collapse-objects panel-collapse collapse in">
                         <div class="panel-body">
                             <div class="row">
                                 <div data-grid-view
@@ -99,7 +99,7 @@
                             Modules Tree
                         </span>
                     </div>
-                    <div id="collapse_modules" class="panel-collapse collapse in" data-ng-show="!processing">
+                    <div id="collapse_modules" class="collapse-modules panel-collapse collapse in" data-ng-show="!processing">
                         <div class="panel-body">
                             <div data-tree data-objects="modules" data-array-name="'name'" data-no-checkbox></div>
                         </div>

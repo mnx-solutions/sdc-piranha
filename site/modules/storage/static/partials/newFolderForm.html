@@ -9,6 +9,7 @@
                     <p>Folder name can contain only letters, digits and signs like '.', '_' and '-'.</p>
                     <input type="text"
                            id="folderName"
+                           class="folder-name"
                            data-ng-model="folderName"
                            data-ng-pattern="/^[^.\/\\]|[\w-]+$/"
                            placeholder="Enter folder name"
@@ -21,7 +22,7 @@
                 </form>
             </div>
             <div class="modal-footer">
-                <button data-ng-click="close()" data-button-focus="false" data-label="Cancel" class="btn grey-new effect-orange-button">Cancel</button>
+                <button data-ng-click="close()" data-button-focus="false" data-label="Cancel" class="btn grey">Cancel</button>
                 <button data-ng-click="createFolder()" data-button-focus="false" data-ng-disabled="folderNameForm.$invalid || folderNameForm.$pristine || folderName.length == 0" data-label="Cancel" class="btn orange">Ok</button>
             </div>
         </div>

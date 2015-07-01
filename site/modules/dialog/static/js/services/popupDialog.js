@@ -60,7 +60,7 @@
                 {
                     result: 'cancel',
                     label: 'No',
-                    cssClass: 'btn grey-new effect-orange-button',
+                    cssClass: 'btn grey',
                     datatabindex: "1",
                     setFocus: false
                 },

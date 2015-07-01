@@ -1,17 +1,16 @@
-<div class="container-grid">
-<div class="loading-large row" data-ng-show="loading"></div>
-<div data-ng-hide="loading">
-    <div class="row">
+<div class="grid-container">
+    <div class="loading-large row" data-ng-show="loading"></div>
+    <div data-ng-hide="loading">
         <div class="page-row-info" data-ng-show="paginated">
-            <span class="grid-small-font">
+            <span>
                 Showing <span data-ng-hide="pageNumFirst == pageNumLast || pageNumSum == 0"> {{pageNumFirst}} -</span> {{pageNumLast}} of {{pageNumSum}} entries
             </span>
-            <form class="grid-small-font" data-ng-show="searchForm">
+            <form data-ng-show="searchForm">
                 <div class="search-field">
                 <input type="search"
                        name="search"
                        id="search"
-                       class="filter-field"
+                       class="filter-field text-large"
                        placeholder="{{placeHolderText}}"
                        data-ng-model="filterAll"
                        data-translate="placeholder"
@@ -21,66 +20,65 @@
         </div>
         <div class="actions pull-right" data-ng-show="controls && pageNumSum" data-ng-class="{'actions-down': tabFilterField}" ng-init="actionButtonsList = getActionButtons(object)">
             <div class="btn-group" ng-if="actionButtonsList.length > 1">
-                <span id="button-actions" class="btn btn-default dropdown-toggle grid-small-font" data-toggle="dropdown">
+                <span id="button-actions" class="btn dropdown-toggle text-medium" data-toggle="dropdown">
                     Actions
                     <i class="icon-drop-down"></i>
                 </span>
                 <ul id="option-list-actions" class="dropdown-menu grid-action-btn">
                     <li data-ng-repeat="btn in actionButtonsList | orderBy:'sequence'" class="clearfix">
-                        <a data-action-button data-action-fn="btn.action" data-show-fn="btn.show" data-label="btn.label" data-object="object" class="grid-action-btn grid-small-font"></a>
+                        <a data-action-button data-action-fn="btn.action" data-show-fn="btn.show" data-label="btn.label" data-object="object" class="grid-action-btn text-medium"></a>
                     </li>
                 </ul>
             </div>
             <div class="btn-group" ng-if="actionButtonsList.length == 1">
-                <a data-action-button data-action-fn="actionButtonsList[0].action" data-show-fn="actionButtonsList[0].show" data-label="actionButtonsList[0].label" data-object="object" class="btn btn-default grid-small-font btn-original-text"></a>
+                <a data-action-button data-action-fn="actionButtonsList[0].action" data-show-fn="actionButtonsList[0].show" data-label="actionButtonsList[0].label" data-object="object" class="btn text-medium btn-original-text"></a>
             </div>
             <div class="btn-group">
-                <button type="button" class="btn btn-default grid-small-font btn-original-text" data-ng-disabled="!pageNumSum || exportInProgress" data-ng-hide="hideExport" data-ng-click="export('csv')">Export.csv</button>
-                <div style="display:none;" data-ng-bind-html="exportIframe"></div>
+                <button type="button" class="btn text-medium btn-original-text" data-ng-disabled="!pageNumSum || exportInProgress" data-ng-hide="hideExport" data-ng-click="export('csv')">Export.csv</button>
+                <div class="hide" data-ng-bind-html="exportIframe"></div>
             </div>
             <div class="btn-group" data-ng-show="areColumnsEnabled()">
-                <span id="button-columns" class="btn btn-default grid-small-font" data-toggle="dropdown" data-ng-click="noClose()">
+                <span id="button-columns" class="btn text-medium" data-toggle="dropdown" data-ng-click="noClose()">
                     Columns
                     <i class="icon-drop-down"></i>
                 </span>
                 <div id="checkbox-list-columns" class="dropdown-menu hold-on-click dropdown-checkboxes pull-right">
                     <div data-ng-repeat="prop in props | orderBy:'sequence'" class="dropdown-checkboxes-item">
-                        <label class="dpl-inline">
+                        <label class="in-line">
                             <div class="checker" data-ng-class="{hover:show}" data-ng-mouseenter="show = true" data-ng-mouseleave="show = false">
                             <span data-ng-class="{checked: prop.active}">
                                 <input data-ng-click="selectColumnsCheckbox(prop.id)" type="checkbox" checked="" data-column="prop">
                             </span>
                             </div>
                         </label>
-                        <div class="grid-small-font dpl-inline">{{prop.name}}</div>
+                        <div class="text-medium in-line">{{prop.name}}</div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
 
-    <div class="item header machine-list-item item-list-container">
-        <div class="grid-tabs-container" data-ng-show="tabFilterField">
-            <span class="grid-tabs-title">{{tabFilterField === 'datacenter' ? 'Data center' : tabFilterField}}:</span>
-            <span data-ng-repeat="filter in tabFilters | orderBy:$index track by $index">
-                <input type="radio"
-                       name="filter"
-                       id="filter{{$index}}"
-                       class="grid-tab-radio"
-                       data-ng-model="$parent.tabFilter"
-                       data-ng-change="unSelectAllCheckbox()"
-                       value="{{filter}}"
-                        />
-                <label for="filter{{$index}}" class="grid-tab">{{filter}}</label>
-            </span>
-            <select data-select-two id="dcSelect2" data-ng-model="tabFilter" data-select="tabFilter" data-ng-change="unSelectAllCheckbox()" class="select-datacenter no-search-box" data-ng-options="filter for filter in tabFilters"></select>
-        </div>
-            <table class="table table-striped table-bordered table-hover table-full-width"
+        <div class="item-list-container item">
+            <div class="tabs-container" data-ng-show="tabFilterField">
+                <span class="tabs-title">{{tabFilterField === 'datacenter' ? 'Data center' : tabFilterField}}:</span>
+                <span data-ng-repeat="filter in tabFilters | orderBy:$index track by $index">
+                    <input type="radio"
+                           name="filter"
+                           id="filter{{$index}}"
+                           class="tab-radio"
+                           data-ng-model="$parent.tabFilter"
+                           data-ng-change="unSelectAllCheckbox()"
+                           value="{{filter}}"
+                            />
+                    <label for="filter{{$index}}" class="tabs">{{filter}}</label>
+                </span>
+                <select data-select-two id="dcSelect2" data-ng-model="tabFilter" data-select="tabFilter" data-ng-change="unSelectAllCheckbox()" class="select-datacenter no-search-box" data-ng-options="filter for filter in tabFilters"></select>
+            </div>
+            <table class="table table-striped table-bordered table-hover"
                    data-ng-class="{'grid-view-table': tabFilterField}"
                    data-ng-show="pageNumSum"
                    id="insTable">
                 <thead>
-                    <th class="hidden-480" data-ng-show="enabledCheckboxes">
+                    <th data-ng-show="enabledCheckboxes">
                         <label class="checkbox" >
                             <div class="checker" data-ng-class="{hover:shows}" data-ng-mouseenter="shows = true" data-ng-mouseleave="shows = false">
                                     <span data-ng-click="selectAllCheckbox()" data-ng-class="{checked: checkedAllCheckBox}" data-ng-disabled="isCheckedAllCheckBoxDisabled">
@@ -119,11 +117,11 @@
                         <td data-ng-repeat="prop in props | orderBy:'sequence' | filter:{active:true}" data-ng-switch="prop.id" data-ng-class="prop.columnClass">
                             <span data-ng-show="object.maintenanceStartTime && !object.compute_node" class="tooltip-hover warn-sign" data-toggle="tooltip" data-placement="right" data-html="true" data-original-title="This instance has been scheduled for <br />maintenance on <b>{{object.maintenanceStartTime}}</b>"><i class="warn-yellow"></i></span>
                             <span data-ng-switch-when="state" data-ng-click="toggleDetails(object.id)">
-                                <div data-object-state data-object="object" data-type="{{itemsType}}" class="grid-small-font"></div>
+                                <div data-object-state data-object="object" data-type="{{itemsType}}"></div>
                             </span>
                             <span data-ng-switch-when="actionButtons">
                                 <div data-ng-show="getActionButtons(object).length && imageButtonShow">
-                                    <div class="grid-small-font" data-ng-repeat="btn in getActionButtons(object) | orderBy:sequence">
+                                    <div data-ng-repeat="btn in getActionButtons(object) | orderBy:sequence">
                                         <div data-action-button data-action-fn="btn.action" data-class-fn="btn.getClass" data-show-fn="btn.show" data-disabled-fn="btn.disabled" data-label="btn.label" data-tooltip-text="btn.tooltip" data-object="object"></div>
                                     </div>
                                 </div>
@@ -133,10 +131,10 @@
                             </span>
                             <span data-ng-switch-default data-ng-switch="prop.type">
                                 <span data-ng-switch-when="button">
-                                    <div class="grid-small-font" data-action-button data-label-fn="prop.btn.getLabel" data-action-fn="prop.btn.action" data-class-fn="prop.btn.getClass" data-show-fn="prop.btn.show" data-disabled-fn="prop.btn.disabled" data-label="prop.btn.label" data-tooltip-text="prop.btn.tooltip" data-object="object" data-tooltip-fn="prop.btn.getTooltip"></div>
+                                    <div data-action-button data-label-fn="prop.btn.getLabel" data-action-fn="prop.btn.action" data-class-fn="prop.btn.getClass" data-show-fn="prop.btn.show" data-disabled-fn="prop.btn.disabled" data-label="prop.btn.label" data-tooltip-text="prop.btn.tooltip" data-object="object" data-tooltip-fn="prop.btn.getTooltip"></div>
                                 </span>
                                 <span data-ng-switch-when="buttons">
-                                    <span class="grid-small-font" data-ng-repeat="btn in prop.buttons | orderBy:sequence">
+                                    <span data-ng-repeat="btn in prop.buttons | orderBy:sequence">
                                         <div data-action-button data-action-fn="btn.action" data-class-fn="btn.getClass" data-show-fn="btn.show" data-disabled-fn="btn.disabled" data-label="btn.label" data-tooltip-text="btn.tooltip" data-object="object"></div>
                                     </span>
                                 </span>
@@ -182,16 +180,16 @@
         </div>
 
         <div class="row pagination-container" data-ng-show="paginated && pageNumSum">
-            <div class="pull-left select-position grid-small-font">
+            <div class="pull-left select-position">
                 <select ui-select2="{minimumResultsForSearch: -1}" data-ng-model="perPage" value="25" class="no-search-box" style="width: 65px !important;">
                     <option data-ng-repeat="size in pageSizes" value="{{size.value}}">{{size.name}}</option>
                 </select>
-                <span class="grid-small-font">&nbsp;records per page</span>
+                <span>&nbsp;records per page</span>
             </div>
-            <div class="pagination-right grid-small-font">
+            <div class="pagination-right">
                 <div class="grid-view-pagination" data-pagination data-num-pages="lastPage" data-current-page="page" data-max-size="showPages" data-on-select-page="changePage(page)"></div>
             </div>
         </div>
-        <div style="display:none;" data-ng-bind-html="iframe"></div>
+        <div class="hide" data-ng-bind-html="iframe"></div>
     </div>
 </div>

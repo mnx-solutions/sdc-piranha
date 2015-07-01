@@ -14,7 +14,7 @@
                                 <td data-ng-click="!tag.actionInProgress && editTag(tag)" data-ng-disabled="tag.actionInProgress">{{tag.name}}</td>
                                 <td>
                                     <span class="remove-icon delete pull-right" data-ng-click="!tag.actionInProgress && removeTag(tag)" data-ng-disabled="isRegistryTypeRemote" data-ng-show="!isRegistryTypeRemote && !saving && !tag.actionInProgress"></span>
-                                    <div class="loading-medium-tr loading-medium-tags" data-ng-show="tag.actionInProgress"></div>
+                                    <div class="loading-medium-transparent full-width" data-ng-show="tag.actionInProgress"></div>
                                 </td>
                             </tr>
                             <tr data-ng-show="tag.edit" class="tag-row">
@@ -23,7 +23,7 @@
                                            data-ng-pattern="/^[A-Za-z0-9_\.\-]+$/" data-ng-minlength="2" data-ng-maxlength="30"/></td>
                                 <td>
                                     <div class="btn orange" data-ng-click="saveTag(tag, $index)" data-ng-disabled="isRegistryTypeRemote || tag.name.length == 0 || editTags.$invalid" data-ng-hide="tag.actionInProgress">Save</div>
-                                    <div class="loading-medium-tr loading-medium-tags" data-ng-show="tag.actionInProgress"></div>
+                                    <div class="loading-medium-transparent full-width" data-ng-show="tag.actionInProgress"></div>
                                 </td>
                             </tr>
                         </table>
@@ -40,13 +40,13 @@
                             </td>
                             <td>
                                 <div class="btn orange" data-ng-hide="newTagInProgress" data-ng-click="addTag()" data-ng-disabled="newTag.length == 0 || editTags.$invalid">Add</div>
-                                <div class="loading-medium-tr loading-medium-tags" data-ng-show="newTagInProgress"></div>
+                                <div class="loading-medium-transparent full-width" data-ng-show="newTagInProgress"></div>
                             </td>
                         </tr>
                     </table>
                 </div>
                 <div class="modal-footer">
-                    <div data-ng-click="close()" data-button-focus="false" data-label="Close" class="btn grey-new effect-orange-button">Close</div>
+                    <div data-ng-click="close()" data-button-focus="false" data-label="Close" class="btn grey">Close</div>
                 </div>
             </div>
         </form>

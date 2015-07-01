@@ -285,7 +285,7 @@
                 $scope.instrumentation.onupdate = updateGraph;
             },
             template: '<div class="chart-padding">\
-                            <div class="btn-group margin_btn_0 toggle-graf-width">\
+                            <div class="btn-group below-zero toggle-graf-width">\
                                 <button data-ng-click="toggleGraph()" id="control_{{$id}}"\
                                         data-ng-class="{disabled: !ready, btn: true}" \
                                         class="toggle-graf-btn toggle-btn-bg">\
@@ -308,7 +308,7 @@
                                     </div>\
                                     <div data-ng-hide="heatmap" id="legend_{{$id}}" class="heatmap-pos"></div>\
                                     <div class="graf-radio-group" data-toggle="buttons-radio">\
-                                        <button class="btn default-margin default-margin-mini graf-radio-btn" \
+                                        <button class="graf-radio-btn" \
                                             data-ng-class="{active: renderer == activeRenderer}" \
                                             data-ng-hide="heatmap" \
                                             data-ng-repeat="renderer in renderers" \

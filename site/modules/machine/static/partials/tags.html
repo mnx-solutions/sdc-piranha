@@ -20,7 +20,7 @@
 
 
                 <div class="form-group">
-                    <div class="dpl-inline">
+                    <div class="in-line">
                         <input type="text"
                                placeholder="Key"
                                data-translate="placeholder"
@@ -29,7 +29,7 @@
                                data-ng-disabled="saving"
                                class="key-width">
                     </div>
-                    <div class="dpl-inline">
+                    <div class="in-line">
                         <input type="text"
                                placeholder="Value"
                                data-translate="placeholder"
@@ -39,7 +39,7 @@
                                class="value-width"/>
                     </div>
                     <div class="spacer-input"></div>
-                    <button class="btn light tag-add-btn"
+                    <button class="btn tag-add-btn"
                             data-ng-click="addTag()"
                             data-translate
                             data-ng-disabled="!tag.val || !tag.key || saving">{{tag.isNew && 'Add' || 'Save'}}</button>

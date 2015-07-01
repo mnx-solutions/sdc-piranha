@@ -28,7 +28,7 @@
                           data-ng-show="machine.state.length">
                         <span class="loading-small pull-left" data-ng-show="machine.job && !machine.job.finished"></span>
                         <i class="glyphicon glyphicon-ok" data-ng-show="(machine.state == 'running' && !machine.job) || (machine.state == 'running' && machine.job.finished)"></i>
-                        <i class="warn_icon" data-ng-show="(machine.state == 'stopped' && !machine.job) || (machine.state == 'stopped' && machine.job.finished)"></i>
+                        <i class="warn-icon" data-ng-show="(machine.state == 'stopped' && !machine.job) || (machine.state == 'stopped' && machine.job.finished)"></i>
                         <span data-translate>{{machine.state}}</span>
                     </span>
 
@@ -39,9 +39,8 @@
                             data-placement="top"
                             data-html="true"
                             data-original-title="Instance configuration and data is preserved when instances are stopped. Use start to restart your instance."
-
-                            class="state btn orange font_size tooltip-hover btn-machine-ctrl">
-                        <i class="icon-play"></i>
+                            class="state btn orange tooltip-hover btn-machine-ctrl">
+                        <i class="glyphicon glyphicon-play"></i>
                         <p data-translate>Start</p>
                     </button>
 
@@ -53,23 +52,20 @@
                             data-placement="top"
                             data-html="true"
                             data-original-title="{{buttonTooltipText.stop(machine)}}"
-                            data-ng-class="{'btn-danger': !((machine.job && !machine.job.finished) || machine.state != 'running')}"
-                            class="state btn orange font_size tooltip-hover btn-machine-ctrl">
-                        <i class="stop-icon"></i>
+                            class="state btn orange tooltip-hover btn-machine-ctrl">
+                        <i class="glyphicon glyphicon-stop"></i>
                         <p data-translate>Stop</p>
                     </button>
 
                     <button data-ng-disabled="(machine.job && !machine.job.finished) || machine.state != 'running'"
-                                    data-ng-click="clickReboot(machine.id)"
-                                    data-toggle="modal"
+                            data-ng-click="clickReboot(machine.id)"
                             data-translate-attributes="data-original-title"
                             data-toggle="tooltip"
                             data-placement="top"
                             data-html="true"
-                                    data-original-title="Click here to reboot your instance."
-                                    data-ng-class="{'btn-warning': !((machine.job && !machine.job.finished) || machine.state != 'running')}"
-                            class="state btn orange font_size tooltip-hover btn-machine-ctrl">
-                        <i class="reboot-icon"></i>
+                            data-original-title="Click here to reboot your instance."
+                            class="state btn orange tooltip-hover btn-machine-ctrl">
+                        <i class="glyphicon glyphicon-refresh"></i>
                         <p data-translate>Reboot</p>
                     </button>
 
@@ -80,9 +76,8 @@
                             data-placement="top"
                             data-html="true"
                             data-original-title="{{buttonTooltipText.delete(machine)}}"
-                            data-ng-class="{'btn-danger': !((machine.job && !machine.job.finished) || !isDeleteEnabled(machine.state))}"
-                            class="state btn orange font_size tooltip-hover btn-machine-ctrl">
-                        <i class="delete-icon"></i>
+                            class="state btn orange tooltip-hover btn-machine-ctrl">
+                        <i class="glyphicon glyphicon-ban-circle"></i>
                         <p data-translate>Delete</p>
                     </button>
                 </div>
@@ -99,7 +94,7 @@
                             <graph data-ng-repeat="graph in nicGraphs" options="graph"></graph>
                         </div>
                         <div class="vda-btn">
-                            <a id="button-detailed-analytics" href="#!/cloudAnalytics/{{machine.id}}" class="btn light pull-right effect-orange-button"><i class="chart-icon"></i>View Detailed Analytics</a>
+                            <a id="button-detailed-analytics" href="#!/cloudAnalytics/{{machine.id}}" class="btn pull-right"><i class="chart-icon"></i>View Detailed Analytics</a>
                         </div>
                     </div>
                 </div>

@@ -182,7 +182,7 @@
                         btn: {
                             label: 'Clone',
                             getClass: function () {
-                                return 'btn-edit ci effect-orange-button';
+                                return 'btn small grey';
                             },
                             disabled: function () {
                                 return $scope.loading;

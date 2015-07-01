@@ -50,7 +50,7 @@
                     <p class="description">There is no ordering to your own rules. For incoming traffic, the least restrictive rule wins. For outgoing traffic, the most restrictive rule wins. ICMP 8:0 is always open to support echo requests using <code class="plain">ping.</code></p>
                 </div>
 
-                <legend data-ng-show="data.uuid" class="margin-top-10" id="edit-rule">Edit rule {{data.uuid}}</legend>
+                <legend data-ng-show="data.uuid" class="indent-medium" id="edit-rule">Edit rule {{data.uuid}}</legend>
                 <table class="firewall-table">
                 <thead class="create-rule-header">
                 <tr>
@@ -119,10 +119,10 @@
                                            data-ng-model="current.type" />
                                 </div>
 
-                                <label class="fw-control-label margin-top-10">
+                                <label class="fw-control-label indent-medium">
                                     <span>Code:</span>
                                 </label>
-                                <div class="fw-controls fw-port-controls margin-top-10">
+                                <div class="fw-controls fw-port-controls indent-medium">
                                     <input type="text"
                                            name="code"
                                            class="port"
@@ -132,16 +132,16 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="margin-top-10 pull-right" data-ng-show="data.parsed.protocol.name && data.parsed.protocol.name != 'icmp'">
-                            <button class="btn light effect-orange-button" data-ng-click="useAllPorts()">Use All</button>
+                        <div class="indent-medium pull-right" data-ng-show="data.parsed.protocol.name && data.parsed.protocol.name != 'icmp'">
+                            <button class="btn" data-ng-click="useAllPorts()">Use All</button>
                             <button class="btn orange"
                                     data-ng-disabled="!protocolForm.port.$dirty || protocolForm.port.$error.range"
                                     data-ng-click="addPort()">Add</button>
                         </div>
 
                         <div class="warning" data-ng-show="data.parsed.protocol.name && data.parsed.protocol.name == 'icmp'">
-                            <div class="margin-top-10 pull-right">
-                                <button class="btn light effect-orange-button"
+                            <div class="indent-medium pull-right">
+                                <button class="btn"
                                         data-ng-disabled="!protocolForm.type.$valid || !protocolForm.code.$valid"
                                         data-ng-click="addType()">Add</button>
                             </div>
@@ -177,7 +177,7 @@
                                                 <div class="fw-controls">
                                                     <input type="text" data-ng-model="current.from.text" required/>
                                                 </div>
-                                                <div data-ng-show="current.from.text.length" class="row margin-top-10">
+                                                <div data-ng-show="current.from.text.length" class="row indent-medium">
                                                     <label class="fw-control-label">Value</label>
                                                     <div class="fw-controls">
                                                         <input type="text" data-ng-model="current.from.value" />
@@ -192,7 +192,7 @@
                                                         <div class="fw-controls">
                                                             <input  type="text" name="fromValue" data-ng-model="fromSubnet.address" data-ip required/>
                                                         </div>
-                                                        <div data-ng-show="current.from.text.length" class="row margin-top-10">
+                                                        <div data-ng-show="current.from.text.length" class="row indent-medium">
                                                             <label class="fw-control-label">CIDR</label>
                                                             <div class="fw-controls">
                                                                 <select data-ng-options="c for c in CIDRs" data-ng-model="fromSubnet.CIDR"> </select>
@@ -220,23 +220,23 @@
                                         <span data-ng-switch-when="wildcard">
                                             <span>
                                                 <span class="row">
-                                                    <div class="margin-top-10">
-                                                        <button class="btn light pull-right effect-orange-button" data-ng-disabled="current.from.text != 'vmall' && current.from.text != 'any'" data-ng-click="addFrom()">Add</button>
+                                                    <div class="indent-medium">
+                                                        <button class="btn pull-right" data-ng-disabled="current.from.text != 'vmall' && current.from.text != 'any'" data-ng-click="addFrom()">Add</button>
                                                     </div>
                                                 </span>
                                             </span>
                                         </span>
                                         <span data-ng-switch-when="tag">
                                             <span class="row">
-                                                <div class="margin-top-10">
-                                                    <button class="btn light pull-right effect-orange-button" data-ng-click="addFrom()" data-ng-disabled="fromForm.$invalid || fromForm.$pristine">Add</button>
+                                                <div class="indent-medium">
+                                                    <button class="btn pull-right" data-ng-click="addFrom()" data-ng-disabled="fromForm.$invalid || fromForm.$pristine">Add</button>
                                                 </div>
                                             </span>
                                         </span>
                                         <span data-ng-switch-default>
                                             <span class="row">
-                                                <div class="margin-top-10">
-                                                    <button class="btn light pull-right effect-orange-button" data-ng-click="addFrom()" data-ng-disabled="fromForm.$invalid || fromForm.$pristine">Add</button>
+                                                <div class="indent-medium">
+                                                    <button class="btn pull-right" data-ng-click="addFrom()" data-ng-disabled="fromForm.$invalid || fromForm.$pristine">Add</button>
                                                 </div>
                                             </span>
                                         </span>
@@ -285,7 +285,7 @@
                                             <div class="fw-controls">
                                                 <input type="text" data-ng-model="current.to.text" required />
                                             </div>
-                                            <div data-ng-show="current.to.text.length" class="row margin-top-10">
+                                            <div data-ng-show="current.to.text.length" class="row indent-medium">
                                                 <label class="fw-control-label">Value</label>
                                                 <div class="fw-controls">
                                                     <input type="text" data-ng-model="current.to.value" />
@@ -300,7 +300,7 @@
                                                     <div class="fw-controls">
                                                         <input type="text" name="toValue" data-ng-model="toSubnet.address" data-ip required />
                                                     </div>
-                                                    <div data-ng-show="current.to.text.length" class="row margin-top-10">
+                                                    <div data-ng-show="current.to.text.length" class="row indent-medium">
                                                         <label class="fw-control-label">CIDR</label>
                                                         <div class="fw-controls">
                                                             <select data-ng-options="c for c in CIDRs" data-ng-model="toSubnet.CIDR"> </select>
@@ -329,23 +329,23 @@
                                         <span data-ng-switch-when="wildcard">
                                             <span>
                                                 <span class="row">
-                                                    <div class="margin-top-10">
-                                                        <button class="btn light pull-right effect-orange-button" data-ng-disabled="current.to.text != 'vmall' && current.to.text != 'any'" data-ng-click="addTo()">Add</button>
+                                                    <div class="indent-medium">
+                                                        <button class="btn pull-right" data-ng-disabled="current.to.text != 'vmall' && current.to.text != 'any'" data-ng-click="addTo()">Add</button>
                                                     </div>
                                                 </span>
                                             </span>
                                         </span>
                                         <span data-ng-switch-when="tag">
                                             <span class="row">
-                                                <div class="margin-top-10">
-                                                    <button class="btn light pull-right effect-orange-button" data-ng-click="addTo()" data-ng-disabled="toForm.$invalid || toForm.$pristine">Add</button>
+                                                <div class="indent-medium">
+                                                    <button class="btn pull-right" data-ng-click="addTo()" data-ng-disabled="toForm.$invalid || toForm.$pristine">Add</button>
                                                 </div>
                                             </span>
                                         </span>
                                         <span data-ng-switch-default>
                                             <span class="row">
-                                                <div class="margin-top-10">
-                                                    <button class="btn light pull-right effect-orange-button" data-ng-click="addTo()" data-ng-disabled="toForm.$invalid || toForm.$pristine">Add</button>
+                                                <div class="indent-medium">
+                                                    <button class="btn pull-right" data-ng-click="addTo()" data-ng-disabled="toForm.$invalid || toForm.$pristine">Add</button>
                                                 </div>
                                             </span>
                                         </span>
@@ -372,8 +372,8 @@
                 <tfoot>
                 <tr>
                     <td>
-                        <button class="btn light effect-orange-button" data-ng-show="data.uuid" data-ng-click="deleteRule(data)">Delete</button>
-                        <button class="btn light effect-orange-button" data-ng-click="cancelRule()" data-translate-value>Cancel</button>
+                        <button class="btn" data-ng-show="data.uuid" data-ng-click="deleteRule(data)">Delete</button>
+                        <button class="btn" data-ng-click="cancelRule()" data-translate-value>Cancel</button>
                         <button class="btn orange" data-ng-click="saveRule()" data-translate-value>{{data.uuid && 'Update Rule' || 'Create Rule'}}</button>
                     </td>
                 </tr>

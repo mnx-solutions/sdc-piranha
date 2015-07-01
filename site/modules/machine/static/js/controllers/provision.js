@@ -597,8 +597,6 @@
 
                     ng.element('#next').trigger('click');
                     ng.element('#step-configuration').fadeIn('fast');
-                    ng.element('#pricing').removeClass('alert-muted');
-                    ng.element('#pricing').addClass('alert-info');
 
                     $scope.data.dataset = dataset.id;
                     $scope.selectedDataset = dataset;

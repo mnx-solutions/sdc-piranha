@@ -4,7 +4,7 @@
             <div class="modal-header message">
                 <h5><i class="glyphicon glyphicon-info-sign"></i><b>Create new Docker Registry</b></h5>
             </div>
-            <div class="modal-body loading-medium" data-ng-show="loading"></div>
+            <div class="modal-body loading-medium full-width" data-ng-show="loading"></div>
             <div class="modal-body registry-form" data-ng-hide="loading">
                 <form name="newRegistryForm">
                     <div class="form-group clearfix" data-ng-show="hosts.length">
@@ -32,7 +32,7 @@
                 <div data-ng-show="hasDockerHost" class="registry-note">Please note, to create new registry, your Docker host VM should have at least 1 Gb of RAM.</div>
             </div>
             <div class="modal-footer">
-                <button data-ng-click="close()" data-button-focus="false" data-label="Cancel" class="btn grey-new effect-orange-button">Cancel</button>
+                <button data-ng-click="close()" data-button-focus="false" data-label="Cancel" class="btn grey">Cancel</button>
                 <button data-ng-click="create()" data-button-focus="true" data-label="Create" class="btn orange" 
                         data-ng-disabled="loading || !hosts.length || registry.host.versionMismatch">Create</button>
             </div>

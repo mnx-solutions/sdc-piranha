@@ -88,7 +88,7 @@
             </div>
             <div class="form-group">
                 <span class="edit-name" data-translate>Phone</span>
-                <div data-phone-number data-number="account.phone" data-country="{{account.country}}"
+                <div data-phone-number data-el-width="215" data-number="account.phone" data-country="{{account.country}}"
                      data-is-error="isError(field, type)" data-required="true"></div>
             </div>
         </fieldset>
@@ -96,14 +96,14 @@
         <hr data-ng-show="currentStep" />
         <a data-ng-show="currentStep" data-ng-click="signOut()" class="pull-left note text-small" data-translate>Click here to return to homepage</a>
 		<button class="btn orange"  data-ng-show="currentStep" data-ng-click="submitForm()" data-ng-disabled="loading || accountForm.$invalid" data-translate>Save changes</button>
-        <div class="pull-right loading-medium" style="width:30px; height:30px;min-width:30px;min-height:30px;" data-ng-show="loading && currentStep"></div>
+        <div class="pull-right loading-medium" data-ng-show="loading && currentStep"></div>
     </form>
 
     <div class="pull-right">
-        <a class="btn light effect-orange-button"  data-ng-disabled="loading" data-ng-click="cancelChanges()" data-translate>Cancel</a>
-        <button class="btn dpl-inline orange submit-payment" data-ng-show="!currentStep" data-ng-click="submitForm()" data-ng-disabled="loading" data-translate>Save Changes</button>
+        <a class="btn"  data-ng-disabled="loading" data-ng-click="cancelChanges()" data-translate>Cancel</a>
+        <button class="btn in-line orange" data-ng-show="!currentStep" data-ng-click="submitForm()" data-ng-disabled="loading" data-translate>Save Changes</button>
     </div>
-    <div class="pull-right loading-medium-tr" data-ng-show="loading && !currentStep"></div>
+    <div class="pull-right loading-medium-transparent" data-ng-show="loading && !currentStep"></div>
     <div class="fieldset-spacer"></div>
 
 </div>

@@ -3,7 +3,7 @@
         <div class="modal-header message">
             <h5><i class="glyphicon glyphicon-info-sign"></i><b>Pull Images</b></h5>
         </div>
-        <div class="modal-body loading-medium" data-ng-show="loading"></div>
+        <div class="modal-body loading-medium full-width" data-ng-show="loading"></div>
         <div data-ng-hide="loading" class="modal-body">
             <form name="configurationForm" class="configurationForm">
                 <div>Note: Docker Hub private images are not included into search results.</div>
@@ -28,12 +28,12 @@
                                    required
                                     />
                         </span>
-                    <button data-ng-disabled="configurationForm.$invalid || searching" type="button" data-ng-click="pull()" class="btn grey-new effect-orange-button">Pull</button>
+                    <button data-ng-disabled="configurationForm.$invalid || searching" type="button" data-ng-click="pull()" class="btn grey">Pull</button>
                     <button data-ng-disabled="configurationForm.$invalid || searching" type="submit" data-ng-click="findImages()" class="btn orange" data-button-focus="true">Search</button>
                 </div>
             </form>
             <div class="result-content">
-                <div data-ng-show="searching" class="loading-medium"></div>
+                <div data-ng-show="searching" class="loading-medium full-width"></div>
                 <div data-ng-show="showResult || pulling">
                     <div data-ng-show="foundImages.length">
                         <div data-grid-view
@@ -58,13 +58,13 @@
                         </div>
                     </div>
                     <div data-ng-show="!foundImages.length && !pulling">
-                        <div class="font-size16 margin-top-10">No images found</div>
+                        <div class="font-size16 indent-medium">No images found</div>
                     </div>
                 </div>
             </div>
         </div>
         <div class="modal-footer">
-            <button data-ng-click="close()" class="btn grey-new effect-orange-button">Close</button>
+            <button data-ng-click="close()" class="btn grey">Close</button>
         </div>
     </div>
 </div>

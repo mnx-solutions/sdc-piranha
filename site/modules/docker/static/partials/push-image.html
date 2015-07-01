@@ -4,7 +4,7 @@
             <div class="modal-header message">
                 <h5><i class="glyphicon glyphicon-info-sign"></i><b>Push image {{ imageName }}</b></h5>
             </div>
-            <div class="modal-body loading-medium" data-ng-show="loading"></div>
+            <div class="modal-body loading-medium full-width" data-ng-show="loading"></div>
             <div class="modal-body registry-form" data-ng-hide="loading || registries && !registries.length">
                 <form name="newRegistryForm" class="configurationForm">
                     <div class="form-group">
@@ -43,7 +43,7 @@
                 No registries found suitable for pushing images.
             </div>
             <div class="modal-footer">
-                <button data-ng-click="close()" data-button-focus="false" data-label="Cancel" class="btn grey-new effect-orange-button">Cancel</button>
+                <button data-ng-click="close()" data-button-focus="false" data-label="Cancel" class="btn grey">Cancel</button>
                 <button data-ng-click="push()" data-button-focus="true" data-label="Push" class="btn orange" data-ng-disabled="loading || !input.name || errorMessage || registries && !registries.length">Push</button>
             </div>
         </div>

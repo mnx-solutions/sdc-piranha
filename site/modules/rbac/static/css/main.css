@@ -1,195 +1,101 @@
-input[disabled]
-{
-    background-color: #eee !important;
-}
-
-select
-{
-    line-height: 20px;
-    width: 340px !important;
-    padding: 4px 6px;
-}
-
-input
-{
-    width: 328px;
+input {
+    width: 100%;
 
     text-overflow: ellipsis;
 }
 
-form
-{
+form {
     margin: 0 0 10px;
 }
 
-h4
-{
-    padding: 0 0 10px 0;
+.edit-value {
+    width: 328px;
+}
+.edit-value.dual {
+    width: 340px;
+}
+.new-rule .edit-value {
+    width: 100%;
 }
 
-.edit-value
-{
-    width: auto;
-}
-
-.edit-value-double
-{
-    width: 341px!important;
-}
-
-.edit-value-double .input-prepend input
-{
-    width: 100px !important;
-}
-
-.edit-value-double select
-{
-    width: 123px !important;
-    padding-right: 22px;
-}
-
-.edit-value-double .select2-container
-{
-    width: 151px !important;
-}
-
-.btn-bottom-block
-{
+.btn-bottom-block {
     margin-bottom: 30px;
     padding-top: 20px;
 
     border-top: 1px solid #ccc;
 }
 
-/*TODO Move*/
-
-.panel .panel-default
-{
-    margin-bottom: 5px;
-
-    border: 0 none;
-}
-
-.panel-heading
-{
-    border-bottom: 0;
-    background: #f5f5f5;
-}
-
-.panel-body
-{
+.panel-body {
     padding: 9px 0;
-
-    border-top: 0 !important;
 }
 
-.panel-heading .accordion-toggle
-{
-    display: block;
-
-    padding: 8px 15px;
-
-    cursor: pointer;
-}
-
-.panel-heading a
-{
-    font-size: 16px;
-    font-weight: 500;
-
-    text-decoration: none;
-
-    color: black;
-}
-
-/*end*/
-
-label.name
-{
-    font-size: 16px;
-
+label.name {
     height: 25px;
     padding-right: 10px;
 
     vertical-align: middle;
+
+    font-size: 16px;
 }
 
-.policy label.name
-{
+.policy label.name {
     width: 125px;
 
     text-align: right;
 }
 
-.role label.name
-{
+.role label.name {
     box-sizing: content-box;
     width: 45px;
 }
 
 .rules .edit-name,
 .new-rule .edit-name,
-.rule-edit .edit-name
-{
+.rule-edit .edit-name {
     width: 65px;
 }
 
-.rules label.name
-{
+.rules label.name {
     height: 16px;
 }
 
-.rule-edit label.name
-{
+.rule-edit label.name {
     height: 25px;
 }
 
-.rule-edit
-{
+.rule-edit {
     padding-top: 10px;
 }
 
 .role .form-group .edit-name,
-.policy .form-group .edit-name
-{
+.policy .form-group .edit-name {
     width: 100px;
 }
 
-.role-name
-{
+.role-name {
     width: 360px;
 }
 
-.edit-error
-{
+.edit-error {
     letter-spacing: -.1px;
 }
 
-input.policy-form
-{
+input.policy-form {
     width: 352px;
 }
 
 .rule-edit input.policy-form,
-.new-rule input.policy-form
-{
+.new-rule input.policy-form {
     width: 330px;
 }
 
-.rule-edit input.policy-form
-{
+.rule-edit input.policy-form {
     margin-bottom: 10px;
 }
 
-select.policy-form
-{
-    width: 345px !important;
-}
-
-.add-btn
-{
+.add-btn {
     min-width: 62px;
-    height: 30px;
+    height: 28px;
     margin-left: 8px;
     padding: 5px 0 7px 0;
 
@@ -197,20 +103,15 @@ select.policy-form
 }
 
 .controls,
-.rule-edit
-{
+.rule-edit {
     border-bottom: 1px solid #e9e9e9;
 }
 
-.controls
-{
+.controls {
     height: 30px;
 }
 
-.controls div.policy-form
-{
-    line-height: 30px;
-
+.controls div.policy-form {
     display: inline-block;
     overflow: hidden;
 
@@ -220,89 +121,72 @@ select.policy-form
     vertical-align: middle;
     white-space: nowrap;
     text-overflow: ellipsis;
+
+    line-height: 30px;
 }
 
-.new-rule
-{
+.new-rule {
     margin-top: 10px;
 }
 
-.edit-name
-{
+.edit-name {
     width: 142px;
     padding-right: 7px;
+
+    vertical-align: middle;
+
+    line-height: 26px;
 }
 
-.remove-icon
-{
+.remove-icon {
     margin-top: 10px;
 }
 
-.policy-form-error
-{
+.policy-form-error {
     width: 476px;
 }
 
-.filter-field
-{
-    font-size: 14px;
-
+.filter-field {
     width: 190px;
+
+    font-size: 14px;
 }
 
-.container-position
-{
+.container-position {
     padding-bottom: 25px;
 }
 
-.container-min-width
-{
+.container-min-width {
     box-sizing: content-box;
 }
 
-label
-{
-    font-weight: normal;
-
+label {
     white-space: nowrap;
+
+    font-weight: normal;
 }
 
-input
-{
-    height: 30px;
-
-    text-indent: 4px;
-
-    color: #555;
-}
-
-.sub-account-form .edit-value-double .input-group input
-{
-    width: 113px !important;
-}
-
-.rbac-column:first-child
-{
+.rbac-column:first-child {
     margin-right: 10px;
 }
 
-.rbac-column
-{
+.rbac-column {
     padding-right: 0;
     padding-left: 0;
 }
 
-.col-md-6.rbac-column
-{
+.col-md-6.rbac-column {
     width: 495px;
 }
 
-.btn-bottom-block .rbac-doc
-{
+.btn-bottom-block .rbac-doc {
     padding-top: 15px;
 }
-.note-text
-{
+.note-text {
     margin: 5px 0 0 155px;
+
     font-size: 12px;
+}
+select.policy-form {
+    width: 345px;
 }
