@@ -1,6 +1,10 @@
 'use strict';
 
 var config = require('easy-config');
+var manta = require('manta');
+var path = require('path');
+var utils = require('../../../lib/utils');
+var vasync = require('vasync');
 
 var dtrace = function execute() {
     var Dtrace = require('../dtrace').Dtrace;
@@ -8,6 +12,10 @@ var dtrace = function execute() {
     var server = require('../server').Server;
 
     var SCRIPTS_FILE_PATH = '~~/stor/.joyent/devtools/scripts.json';
+    var SHARED_SCRIPTS_DIR_PATH = '/' + config.dtraceScripts.user + '/stor/dtraceScripts';
+    var SCRIPT_NAME_DELIMITER = '@';
+
+    var mantaSharedScriptsClient = mantaClient.createClient(null, config.dtraceScripts);
 
     var uuid = require('../../static/vendor/uuid/uuid.js');
     var DEFAULT_SCRIPT_LIST = [
@@ -20,6 +28,11 @@ var dtrace = function execute() {
         {name: 'read-write block', body: 'plockstat$PID:::rw-block { self->ts[probefunc] = vtimestamp; } plockstat$PID:::rw-acquire /self->ts[probefunc]/ { @time[probefunc] = lquantize((vtimestamp - self->ts[probefunc]), 0, 63, 2); self->ts[probefunc] = 0; }'},
         {name: 'mutex block', body: 'plockstat$PID:::mutex-block { self->ts[probefunc] = vtimestamp; } plockstat$PID:::mutex-acquire /self->ts[probefunc]/ { @time[probefunc] = lquantize((vtimestamp - self->ts[probefunc]), 0, 63, 2); self->ts[probefunc] = 0; }'}
     ];
+    var SCRIPT_TYPES = {shared: 'shared', remote: 'remote'};
+
+    function getScriptFilePath(call, scriptName) {
+        return path.join(SHARED_SCRIPTS_DIR_PATH, call.req.session.userName + SCRIPT_NAME_DELIMITER + scriptName);
+    }
 
     function getScriptsList(call, client, type, callback) {
         if (type === 'default') {
@@ -37,7 +50,35 @@ var dtrace = function execute() {
             if (type === 'all') {
                 scriptsList = [].concat(DEFAULT_SCRIPT_LIST, scripts || []);
             }
-            callback(error, scriptsList);
+            mantaSharedScriptsClient.listDirectory(SHARED_SCRIPTS_DIR_PATH, function (err, sharedScriptFiles) {
+                if (err) {
+                    if (err.statusCode === 404) {
+                        return mantaSharedScriptsClient.safeMkdirp(SHARED_SCRIPTS_DIR_PATH, {}, function (error) {
+                            callback(error, scriptsList);
+                        });
+                    }
+                    return callback(err, scriptsList);
+                }
+                vasync.forEachParallel({
+                    inputs: sharedScriptFiles,
+                    func: function (sharedScript, callback) {
+                        mantaSharedScriptsClient.getFileJson(path.join(SHARED_SCRIPTS_DIR_PATH, sharedScript.name), callback);
+                    }
+                }, function (errors, operations) {
+                    if (errors) {
+                        return callback(errors, scriptsList);
+                    }
+                    var sharedScripts = [].concat.apply([], operations.successes);
+                    var scriptIds = scriptsList.map(function (script) {
+                        return script.id;
+                    });
+                    sharedScripts = sharedScripts.filter(function (sharedScript) {
+                        return scriptIds.indexOf(sharedScript.id) === -1;
+                    });
+                    scriptsList = [].concat(scriptsList, sharedScripts);
+                    callback(error, scriptsList);
+                });
+            });
         });
     }
 
@@ -52,25 +93,73 @@ var dtrace = function execute() {
                 if (error) {
                     return call.done(error, true);
                 }
-                var targetScript = list.find(function (script) {
-                    return script.id === scriptToSave.id;
-                });
+                function findScriptIndex(scriptsList) {
+                    for (var index = 0; index < scriptsList.length; index++) {
+                        if (scriptsList[index].id === scriptToSave.id) {
+                            return index;
+                        }
+                    }
+                    return -1;
+                }
+                var targetScriptIndex = findScriptIndex(list);
+                var oldSharedScript = {};
                 var action = 'Updating';
-                if (targetScript) {
-                    targetScript.name = scriptToSave.name;
-                    targetScript.body = scriptToSave.body;
+                if (targetScriptIndex !== -1) {
+                    oldSharedScript = utils.clone(list[targetScriptIndex]);
+                    list[targetScriptIndex] = utils.clone(scriptToSave);
                 } else {
                     scriptToSave.created = new Date();
                     list.push(scriptToSave);
                     action = 'Creating';
                 }
+                list = list.filter(function (script) {
+                    return script.type !== SCRIPT_TYPES.remote;
+                });
                 call.log.info({script: scriptToSave}, action + ' user dtrace script');
                 client.putFileContents(SCRIPTS_FILE_PATH, list, function (error) {
+                    if (!error) {
+                        if (scriptToSave.type === SCRIPT_TYPES.shared) {
+                            var putSharedScriptsContent = function () {
+                                var scriptFilePath = getScriptFilePath(call, scriptToSave.name);
+                                scriptToSave.type = SCRIPT_TYPES.remote;
+                                mantaSharedScriptsClient.safePutFileContents(scriptFilePath, scriptToSave, function (err) {
+                                    call.done(err && err.message, true);
+                                });
+                            };
+                            if (oldSharedScript.name) {
+                                return deleteSharedScripts(call, [oldSharedScript], function (error) {
+                                    if (error) {
+                                        return call.done(err && err.message, true);
+                                    }
+                                    putSharedScriptsContent();
+                                });
+                            }
+                            return putSharedScriptsContent();
+                        } else if (oldSharedScript.type === SCRIPT_TYPES.shared) {
+                            return deleteSharedScripts(call, [oldSharedScript], function (error) {
+                                call.done(error && error.message, true);
+                            });
+                        }
+                    }
                     call.done(error && error.message, true);
                 });
             });
         }
     });
+
+    function deleteSharedScripts(call, sharedScriptFiles, callback) {
+        vasync.forEachParallel({
+            inputs: sharedScriptFiles,
+            func: function (sharedScript, callback) {
+                mantaSharedScriptsClient.unlink(getScriptFilePath(call, sharedScript.name), function (error) {
+                    if (error && error.statusCode !== 404) {
+                        return callback(error.message, true);
+                    }
+                    callback();
+                });
+            }
+        }, callback);
+    }
 
     server.onCall('DeleteScripts', {
         verify: function (data) {
@@ -83,9 +172,19 @@ var dtrace = function execute() {
                     return call.done(error, true);
                 }
                 var itemsToPreserve = list.filter(function (el) {
-                    return call.data.ids.indexOf(el.id) === -1;
+                    return call.data.ids.indexOf(el.id) === -1 && el.type !== SCRIPT_TYPES.remote;
                 });
                 client.putFileContents(SCRIPTS_FILE_PATH, itemsToPreserve, function (error) {
+                    if (!error) {
+                        var sharedScriptsToRemove = list.filter(function (el) {
+                            return call.data.ids.indexOf(el.id) !== -1 && el.type === SCRIPT_TYPES.shared;
+                        });
+                        if (sharedScriptsToRemove.length) {
+                            return deleteSharedScripts(call, sharedScriptsToRemove, function (error) {
+                                call.done(error && error.message, true);
+                            });
+                        }
+                    }
                     call.done(error && error.message, true);
                 });
             });

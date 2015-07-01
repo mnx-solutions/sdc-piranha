@@ -12,6 +12,8 @@
 
             var service = {};
 
+            service.SCRIPT_TYPES = {private: 'private', shared: 'shared', remote: 'remote'};
+
             service.devToolsLink = function () {
                 var devToolsLink = '';
                 if ($rootScope.features.mdb === 'enabled') {

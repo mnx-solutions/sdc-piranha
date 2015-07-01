@@ -9,8 +9,9 @@
             'requestContext',
             'localization',
             'PopupDialog',
+            'Account',
             '$location',
-            function ($scope, DTrace, Storage, requestContext, localization, PopupDialog, $location) {
+            function ($scope, DTrace, Storage, requestContext, localization, PopupDialog, Account, $location) {
                 localization.bind('dtrace', $scope);
                 requestContext.setUpRenderContext('dtrace.script', $scope, {
                     title: localization.translate(null, 'dtrace', 'See my Joyent DTrace Script Details')
@@ -19,6 +20,7 @@
                 $scope.loading = true;
                 $scope.scriptId = requestContext.getParam('id') === 'create' ? false : requestContext.getParam('id');
                 $scope.devToolsPath = DTrace.devToolsLink();
+                $scope.scriptShared = $scope.copyRemoteScript = false;
 
                 var errorCallback = function (err) {
                     $scope.loading = false;
@@ -32,7 +34,8 @@
                 var newScript = function () {
                     $scope.script = {
                         name: '',
-                        body: ''
+                        body: '',
+                        type: DTrace.SCRIPT_TYPES.private
                     };
                 };
 
@@ -47,12 +50,19 @@
                         });
                         if ($scope.script) {
                             $scope.scriptName = oldScriptName = $scope.script.name;
+                            $scope.scriptShared = $scope.script.type === DTrace.SCRIPT_TYPES.shared;
                         } else {
                             newScript();
                         }
                     } else {
                         newScript();
                     }
+                    Account.getAccount(true).then(function (account) {
+                        $scope.scriptOwner = account.login;
+                        if ($scope.script.type !== DTrace.SCRIPT_TYPES.remote) {
+                            $scope.script.owner = $scope.scriptOwner;
+                        }
+                    });
                     $scope.loading = false;
                 }, function (error) {
                     PopupDialog.error(null, error);
@@ -77,9 +87,19 @@
                     $scope.loading = true;
                     $scope.script.id = $scope.script.id || uuid();
                     $scope.script.name = $scope.scriptName;
+                    if ($scope.copyRemoteScript) {
+                        $scope.script.id = uuid();
+                        $scope.script.owner = $scope.scriptOwner;
+                        $scope.script.type = DTrace.SCRIPT_TYPES.private;
+                        delete $scope.script.created;
+                    }
                     DTrace.createScript($scope.script).then(function () {
                         indexPage();
                     }, errorCallback);
+                };
+
+                $scope.setScriptType = function () {
+                    $scope.script.type = $scope.scriptShared ? DTrace.SCRIPT_TYPES.shared : DTrace.SCRIPT_TYPES.private;
                 };
 
             }

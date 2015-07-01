@@ -35,6 +35,34 @@
                     </td>
                 </tr>
                 <tr>
+                    <td>Owner</td>
+                    <td>
+                        <div>
+                            <input name="scriptOwner"
+                                   type="text"
+                                   class="script-owner"
+                                   data-ng-model="script.owner"
+                                   data-ng-disabled="script.owner" />
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        <div class="script-shared-checkbox" data-ng-show="script.type !== 'remote'">
+                            <input id="script-shared" data-ng-model="scriptShared" data-ng-change="setScriptType()" type="checkbox" />
+                            <label for="script-shared" class="attach-name checkbox-label">
+                                Shared script
+                            </label>
+                        </div>
+                        <div class="script-shared-checkbox copy-remote-script" data-ng-show="script.type === 'remote'">
+                            <input id="copy-remote-script" data-ng-model="copyRemoteScript" type="checkbox" />
+                            <label for="copy-remote-script" class="attach-name checkbox-label">
+                                Copy and Save
+                            </label>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
                     <td class="orange-asterix">Body</td>
                     <td>
                         <textarea name="scriptBody" data-code-mirror ng-model="script.body" regex-validate="^[\u0000-\u007F]+$"></textarea>
@@ -51,7 +79,7 @@
         <span class="orange-asterix-left">required fields</span>
         <div class="pull-right">
             <a href="#!/devtools/dtrace/scripts" class="btn grey">Cancel</a>
-            <button data-ng-click="saveScript()" class="btn orange" data-ng-disabled="!script.body.length || !scriptName.length || !scriptForm.$valid">Save</button>
+            <button data-ng-click="saveScript()" class="btn orange" data-ng-disabled="!script.body.length || !scriptName.length || !scriptForm.$valid || script.type === 'remote' && !copyRemoteScript">Save</button>
         </div>
     </div>
 </div>
