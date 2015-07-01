@@ -9,7 +9,8 @@
             </div>
             <div id="collapse_summary" class="panel-collapse collapse in">
                 <div class="panel-body">
-                    <table>
+                    <div class="loading-large col-md-12" data-ng-show="loading"></div>
+                    <table data-ng-show="!loading">
                         <tr class="name-section">
                             <td>Name</td>
                             <td>{{container.name}}</td>
@@ -53,6 +54,15 @@
                         <tr>
                             <td>State</td>
                             <td>{{container.state}}</td>
+                        </tr>
+                        <tr>
+                            <td>Links</td>
+                            <td>
+                                <span data-ng-show="!linkedContainers" class="loading-small"></span>
+                                <span data-ng-hide="!linkedContainers" data-ng-repeat="linkedContainer in linkedContainers">
+                                    <a data-ng-click="goTo(linkedContainer)">{{linkedContainer.name}}{{{true: '', false: ', '}[$last]}}</a>
+                                </span>
+                            </td>
                         </tr>
                     </table>
                 </div>

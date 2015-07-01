@@ -64,7 +64,8 @@
                     TAG: 'Tag an image into a repository.',
                     REPOSITORY: 'Enter Repository',
                     MESSAGE: 'Commit message',
-                    AUTHOR: 'Author'
+                    AUTHOR: 'Author',
+                    LINKS: 'Add link to another container (name:alias)'
                 };
                 var selectImageEl = ng.element('#imageSelect').eq(0);
 
@@ -209,7 +210,7 @@
                 function parseContainerLinks(links) {
                     var output = [];
                     if (isArrayNotEmpty(links)) {
-                        links.match(/(?:[^\s"]+|"[^"]*")+/g).forEach(function (string) {
+                        links.forEach(function (string) {
                             if (string && string.indexOf(':') === -1) {
                                 string += ':' + string;
                             }
@@ -316,7 +317,8 @@
                     Memory: 0,
                     MemorySwap: 0,
                     Env: [],
-                    NetworkMode: 'bridge'
+                    NetworkMode: 'bridge',
+                    Links: []
                 };
 
                 if ($scope.preSelectedData) {

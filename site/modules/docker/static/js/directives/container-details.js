@@ -26,6 +26,21 @@
                     Id: containerId
                 };
                 scope.isUnreachable = false;
+                scope.linkedContainers = null;
+                scope.goTo = function (linkedContainer) {
+                    containerId = linkedContainer.id;
+                    hostId = linkedContainer.hostId;
+                    container = {
+                        Id: containerId
+                    };
+                    if ($location.path().indexOf('compute') !== -1) {
+                        $location.path('/docker/container/' + hostId + '/' + containerId);
+                    } else {
+                        scope.$parent.goTo(linkedContainer);
+                        scope.loading = true;
+                        getDockerHost();
+                    }
+                };
 
                 var errorCallback = function () {
                     scope.loading = false;
@@ -76,31 +91,46 @@
                     machine.then(function (instanceMachine) {
                         machineIpAddresses = instanceMachine.ips.join(', ');
                     });
-                    Docker.inspectContainer(container).then(function (info) {
-                        var containerCmd = info.Config.Cmd;
+                    Docker.inspectContainer(container).then(function (containerInfo) {
+                        var containerCmd = containerInfo.Config.Cmd;
                         if (Array.isArray(containerCmd)) {
-                            containerCmd = info.Config.Cmd.join(' ');
+                            containerCmd = containerInfo.Config.Cmd.join(' ');
                         }
-                        var containerState = Docker.getContainerState(info) || 'process';
+                        var containerState = Docker.getContainerState(containerInfo) || 'process';
                         scope.termOpts.containerState = containerState;
                         scope.container = {
-                            name: info.Name.substring(1),
+                            name: containerInfo.Name.substring(1),
                             cmd: containerCmd,
-                            entrypoint: info.Config.Entrypoint,
-                            Ports: info.Config.ExposedPorts,
-                            hostname: info.Config.Hostname,
-                            image: info.Config.Image,
-                            memory: info.Config.Memory,
-                            cpuShares: info.Config.CpuShares,
-                            created: info.Created,
+                            entrypoint: containerInfo.Config.Entrypoint,
+                            Ports: containerInfo.Config.ExposedPorts,
+                            hostname: containerInfo.Config.Hostname,
+                            image: containerInfo.Config.Image,
+                            memory: containerInfo.Config.Memory,
+                            cpuShares: containerInfo.Config.CpuShares,
+                            created: containerInfo.Created,
                             state: containerState,
-                            infoId: info.Id,
-                            ipAddress: machineIpAddresses || info.NetworkSettings.IPAddress,
+                            infoId: containerInfo.Id,
+                            ipAddress: machineIpAddresses || containerInfo.NetworkSettings.IPAddress,
                             isSdc: host.isSdc,
                             Uuid: util.idToUuid(container.Id)
                         };
+                        if (containerInfo.HostConfig.Links) {
+                            Docker.getLinkedContainers(containerInfo.HostConfig.Links).then(function (linkedContainers) {
+                                scope.linkedContainers = linkedContainers;
+                            });
+                        } else {
+                            scope.linkedContainers = [];
+                        }
                         scope.loading = false;
                     }, errorCallback);
+
+                    Docker.getAuditInfo({event: {type: 'container', host: hostId, entry: containerId}, params: true}).then(function (audit) {
+                        scope.audit = audit || [];
+                        scope.audit.forEach(function (event) {
+                            event.hostName = host.name || host.id;
+                        });
+                    }, errorCallback);
+
                     Docker.logsContainer(container).then(function (logs) {
                         scope.containerLogs = [];
                         if (logs && typeof (logs) === 'string') {
@@ -114,15 +144,10 @@
                             }
                         }
                     }, errorCallback);
-                    Docker.getAuditInfo({event: {type: 'container', host: hostId, entry: containerId}, params: true}).then(function(info) {
-                        scope.audit = info || [];
-                        scope.audit.forEach(function (event) {
-                            event.hostName = host.name || host.id;
-                        });
-                    }, errorCallback);
                 };
 
                 var getDockerHost = function () {
+                    scope.linkedContainers = null;
                     var host = $q.when(Docker.listHosts({id:hostId}));
                     host.then(function (host) {
                         getDockerInspectContainer(host);

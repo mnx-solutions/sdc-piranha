@@ -27,6 +27,17 @@
             var timerUpdateStats = 0;
             var statsSocket;
             var inspectInterval;
+            $scope.goTo = function (linkedContainer) {
+                $scope.loading = true;
+                containerId = linkedContainer.id;
+                hostId = linkedContainer.hostId;
+                container = {
+                    Id: containerId
+                };
+                $location.path('/docker/container/' + hostId + '/' + containerId);
+                init();
+                getDockerHost();
+            };
 
             $scope.tabs = ['Docker Details', 'Infrastructure Details'];
             $scope.activeTab = $scope.tabs[0];
@@ -36,11 +47,14 @@
                 $scope.actionInProgress = false;
             };
 
-            $scope.graphs = null;
-            $scope.actionInProgress = false;
-            $scope.loading = true;
-            $scope.cadvisorUnavailable = false;
+            var init = function () {
+                $scope.graphs = null;
+                $scope.actionInProgress = false;
+                $scope.loading = true;
+                $scope.cadvisorUnavailable = false;
+            };
 
+            init();
             var updateContainerStats = function (stats) {
                 if ($scope.container && $scope.container.state !== 'running' && !$scope.actionInProgress ||
                     $scope.machine && $scope.machine.state !== 'running') {
@@ -75,8 +89,12 @@
                     if ($scope.container && $scope.container.isRemoving) {
                         return;
                     }
-                    Docker.inspectContainer(container, {silent: true}).then(function (info) {
-                        $scope.container.state = Docker.getContainerState(info);
+                    $timeout(function () {
+                        if (container.Id && container.hostId && container.primaryIp) {
+                            Docker.inspectContainer(container, {silent: true}).then(function (info) {
+                                $scope.container.state = Docker.getContainerState(info);
+                            });
+                        }
                     });
                 }, 5000);
                 Docker.inspectContainer(container).then(function (info) {

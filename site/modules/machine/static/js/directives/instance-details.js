@@ -178,23 +178,33 @@
                     }
                 );
 
-                scope.$on(
-                    'event:pollComplete',
-                    function () {
-                        $q.when(Machine.machine(machineid)).then(function (machine) {
-                            scope.machine = machine;
-                        }, function () {
-                            locationReplace();
-                        });
-                    }
-                );
+                var reloadMachine = function () {
+                    $q.when(Machine.machine(machineid)).then(function (machine) {
+                        scope.machine = machine;
+                    }, function () {
+                        locationReplace();
+                    });
+                };
+
+                scope.$on('event:pollComplete', reloadMachine);
 
                 scope.machines = Machine.machine();
 
+                if ($location.path().indexOf('compute') === -1) {
+                    scope.$parent.$watch('loading', function (loading) {
+                        if (!loading) {
+                            machineid = scope.$parent.container.Uuid;
+                            reloadMachine();
+                        }
+                    });
+                }
+
                 scope.firewallRules = [];
+                var linkedContainerMessage;
 
                 $q.when(scope.machine, function (m) {
                     scope.machine = m;
+                    linkedContainerMessage = scope.machine.isLinkedContainer ? 'Instance has Docker containers linked. ' : '';
                     if (!scope.machine.image) {
                         locationReplace();
                     }
@@ -332,7 +342,7 @@
                         localization.translate(
                             scope,
                             null,
-                            machineMessages.stopMessage
+                            linkedContainerMessage + machineMessages.stopMessage
                         ), function () {
                             Machine.stopMachine(machineid);
                             $$track.event('machine', 'stop');
@@ -487,7 +497,7 @@
                         localization.translate(
                             scope,
                             null,
-                            machineMessages.deleteMessage
+                            linkedContainerMessage + machineMessages.deleteMessage
                         ), function () {
                             $$track.event('machine', 'delete');
 

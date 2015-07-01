@@ -6,11 +6,17 @@
         'requestContext',
         'localization',
         'Machine',
+        'Docker',
 
-        function ($scope, requestContext, localization, Machine) {
+        function ($scope, requestContext, localization, Machine, Docker) {
             function setMachine(machine) {
                 $scope.machine = machine;
                 $scope.containerDetailsAvailable = $scope.machine.tags && $scope.machine.tags.sdc_docker && $scope.features.sdcDocker !== 'disabled' && $scope.features.docker === 'enabled';
+                if ($scope.machine.tags && $scope.machine.tags.sdc_docker) {
+                    Docker.hasLinkedContainers($scope.machine).then(function (res) {
+                        $scope.isLinkedContainer = res;
+                    });
+                }
             }
             var machineid = requestContext.getParam('machineid') || util.idToUuid(requestContext.getParam('containerid'));
             localization.bind('machine', $scope);
