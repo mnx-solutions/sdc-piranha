@@ -82,6 +82,13 @@ function Call(opts) {
         }
     }
 
+    // This needed when we have a duplicate call request,
+    // will update a response for an existing call to
+    // response from the new duplicated request
+    self.setNewResponse = function (newResponse) {
+        opts.res = newResponse;
+    };
+
     Object.defineProperties(self, wrapEnum({
         id: {
             value: opts.id

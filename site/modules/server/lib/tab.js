@@ -36,16 +36,19 @@ function Tab(opts) {
 
 util.inherits(Tab, events.EventEmitter);
 
+Tab.prototype.checkForExistingCall = function (opts) {
+    var existingCall = this._calls[opts.id];
+    if (existingCall) {
+        this.log.child({req_id: opts.id, call: opts.name}).error('Call id already in Tab, ignoring', opts);
+        // In case of duplicate call, update a response object for the existing call
+        existingCall.setNewResponse(opts.res);
+    }
+    return existingCall !== undefined;
+};
+
 Tab.prototype.call = function (opts) {
     var self = this;
-    var logger = self.log.child({req_id: opts.id, call: opts.name});
-
-    if (self._calls[opts.id]) {
-        logger.error('Call id already in Tab, ignoring', opts);
-        return false;
-    }
-
-    opts.log = logger;
+    opts.log = self.log.child({req_id: opts.id, call: opts.name});
     opts.tab = self;
     opts.remove = function (c) {
         //self._history.push(c);
