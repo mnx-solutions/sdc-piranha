@@ -29,6 +29,10 @@ function Session(opts) {
 
 util.inherits(Session, events.EventEmitter);
 
+Session.prototype.checkForExistingCall = function (id, opts) {
+    return this.getTab(id).checkForExistingCall(opts);
+};
+
 Session.prototype.call = function (id, opts) {
     return this.getTab(id).call(opts);
 };

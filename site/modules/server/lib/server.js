@@ -67,6 +67,14 @@ Server.prototype.call = function () {
     return function (req, res) {
         var query = req.body;
         var id = req.query.tab;
+        query.cloud = req.cloud;
+        query.handler = self._handlers[query.name];
+        query.res = res;
+        query.req = req;
+
+        if (req._session.checkForExistingCall(id, query)) {
+            return;
+        }
 
         if ('object' !== typeof query || !query.id || !query.name || !id) {
             req.log.warn('Invalid call format', query);
@@ -88,16 +96,9 @@ Server.prototype.call = function () {
             return;
         }
 
-        var opts = query;
-        opts.cloud = req.cloud;
-        opts.handler = self._handlers[query.name];
-        opts.res = res;
-        opts.req = req;
-
-        var call = req._session.call(id, opts);
-
+        var call = req._session.call(id, query);
         if (!call.immediate) {
-            res.sendStatus(202).send('ACCEPTED');
+            return res.sendStatus(202).send('ACCEPTED');
         }
     };
 };
