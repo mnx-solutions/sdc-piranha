@@ -10,12 +10,12 @@
         "package": "9fcd9ab7-bd07-cb3c-9f9a-ac7ec3aa934e"
     },
     {
-        "name": "Ubuntu Certified 14.04",
-        "datasetName": "ubuntu-certified-14.04",
+        "name": "Ubuntu 14.04",
+        "datasetName": "ubuntu-14.04",
         "package": "4dad8aa6-2c7c-e20a-be26-c7f4f1925a9a"
     },
     {
-        "name": "CentOS 6.5",
+        "name": "CentOS 6",
         "datasetName": "centos-6",
         "package": "4dad8aa6-2c7c-e20a-be26-c7f4f1925a9a"
     }
