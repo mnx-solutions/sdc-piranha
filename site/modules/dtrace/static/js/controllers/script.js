@@ -69,17 +69,22 @@
                     indexPage();
                 });
 
-                $scope.$watch('scriptName', function (name) {
+                $scope.checkScriptNameUniqueness = function (name) {
                     if (scriptsList.length) {
                         var script = scriptsList.find(function (script) {
-                            return script.name === name;
+                            return script.name === name && script.type !== DTrace.SCRIPT_TYPES.remote;
                         });
-                        if (script && oldScriptName !== name) {
+                        if (script && (oldScriptName !== name || $scope.copyRemoteScript &&
+                            oldScriptName === name)) {
                             $scope.scriptForm.$setValidity('unique', false);
                         } else {
                             $scope.scriptForm.$setValidity('unique', true);
                         }
                     }
+                };
+
+                $scope.$watch('scriptName', function (name) {
+                    $scope.checkScriptNameUniqueness(name);
                 });
 
                 $scope.saveScript = function () {
