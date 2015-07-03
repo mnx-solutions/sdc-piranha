@@ -191,10 +191,10 @@
                                     return 'btn small grey';
                                 },
                                 disabled: function (object) {
-                                    return object.loading || object.processing || object.actionInProgress;
+                                    return object.loading || object.actionInProgress;
                                 },
                                 action: function (object) {
-                                    object.processing = true;
+                                    ng.element('.btn.small.grey').blur();
                                     PopupDialog.custom({
                                         templateUrl: 'docker/static/partials/image-add-tag.html',
                                         openCtrl: function ($scope, dialog) {
@@ -277,7 +277,6 @@
                                                 if ($scope.tags.length) {
                                                     $scope.focusOut();
                                                 }
-                                                object.processing = false;
                                                 dialog.close();
                                             };
                                         }
