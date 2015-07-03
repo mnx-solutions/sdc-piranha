@@ -12,7 +12,7 @@
             function setMachine(machine) {
                 $scope.machine = machine;
                 $scope.containerDetailsAvailable = $scope.machine.tags && $scope.machine.tags.sdc_docker && $scope.features.sdcDocker !== 'disabled' && $scope.features.docker === 'enabled';
-                if ($scope.machine.tags && $scope.machine.tags.sdc_docker) {
+                if ($scope.containerDetailsAvailable) {
                     Docker.hasLinkedContainers($scope.machine).then(function (res) {
                         $scope.isLinkedContainer = res;
                     });

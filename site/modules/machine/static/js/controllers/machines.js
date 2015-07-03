@@ -108,7 +108,7 @@
                                         setImageName(machine.image, machine);
                                     });
                                 }
-                                if (isSdc(machine)) {
+                                if (isSdc(machine) && $scope.features.docker === 'enabled') {
                                     Docker.hasLinkedContainers(machine).then(function (res) {
                                         machine.isLinkedContainer = res;
                                     });
