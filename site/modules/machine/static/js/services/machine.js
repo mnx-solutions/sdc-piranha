@@ -19,6 +19,7 @@
         var machines = {job: null, index: {}, list: [], search: {}};
         var createInstancePageConfig = null;
         var INSTANCES_PATH = '/compute';
+        var DOCKER_CONTAINER_PATH = '/docker/container/';
         var cacheErrors = [];
 
         service.initCreateInstancePageConfig = function (config) {
@@ -439,6 +440,9 @@
                 }
             } else if (job.data && (job.data.tags || job.data.metadata)) {
                 instancesPath += '/instance';
+                if ($location.path().indexOf(DOCKER_CONTAINER_PATH) !== -1) {
+                    instancesPath = DOCKER_CONTAINER_PATH;
+                }
                 if (err) {
                     notificationMessage = err.message || err;
                 } else {
