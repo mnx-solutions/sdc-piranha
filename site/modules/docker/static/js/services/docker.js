@@ -910,6 +910,9 @@
 
         service.getContainersCount = function (tritonOnly, host) {
             return service.listContainers({host: host || 'All', options: {all: true}, suppressErrors: true}).then(function (containers) {
+                if (!Array.isArray(containers)) {
+                    containers = [];
+                }
                 if (tritonOnly) {
                     containers = containers.filter(function (container) {
                         return container.isSdc;
