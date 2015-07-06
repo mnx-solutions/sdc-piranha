@@ -49,7 +49,7 @@
                 </div>
             </div>
         </div>
-        <div class="finder-column" data-ng-class="{'finder-column-loader': switchLoaderPosition}" data-ng-show="loadingFolder">
+        <div class="finder-column" data-ng-class="{'finder-column-loader': switchLoaderPosition && splittedCurrentPath.length == 2}" data-ng-show="loadingFolder">
             <div class="files-box" data-ng-class="{'column-folders column-files': splittedCurrentPath.length == 2}">
                 <div class="loading-medium-transparent"></div>
             </div>
