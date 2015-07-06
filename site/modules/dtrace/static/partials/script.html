@@ -55,7 +55,7 @@
                             </label>
                         </div>
                         <div class="script-shared-checkbox copy-remote-script" data-ng-show="script.type === 'remote'">
-                            <input id="copy-remote-script" data-ng-model="copyRemoteScript" type="checkbox" />
+                            <input id="copy-remote-script" data-ng-model="copyRemoteScript" data-ng-change="checkScriptNameUniqueness(scriptName)" type="checkbox" />
                             <label for="copy-remote-script" class="attach-name checkbox-label">
                                 Copy and Save
                             </label>
