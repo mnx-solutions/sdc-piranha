@@ -23,12 +23,10 @@
     <div class="cost" data-ng-show="pkg.price || pkg.price_month">
         <p>COST:<span class="footnote">Billed by the minute</span></p>
         <div class="dataset-cost" data-ng-show="pkg.price">
-            <h3>${{pkg.price}}</h3>
-            <p class="small-text-info">per hour</p>
+            <h3>${{pkg.price}}<span class="small-text-info">per hour</span></h3>
         </div>
         <div class="dataset-cost" data-ng-show="pkg.price_month">
-            <h3>{{pkg.price_month | currencyFormat}}</h3>
-            <p class="small-text-info">est. monthly</p>
+            <h3>{{pkg.price_month | currencyFormat}}<span class="small-text-info">est. monthly</span></h3>
         </div>
     </div>
 </div>

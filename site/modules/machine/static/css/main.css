@@ -953,17 +953,6 @@
     width: 100px;
 }
 
-.small-text-info
-{
-    font-size: 13px !important;
-
-    padding-left: 5px;
-
-    text-align: left;
-
-    color: #000;
-}
-
 .cost
 {
     padding-top: 50px;
