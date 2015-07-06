@@ -444,7 +444,7 @@ module.exports = function execute(log, config) {
                         if (retries > 0) {
                             retries -= 1;
                             call.req.log.debug(error, 'Ping manta storage');
-                            setTimeout(pingManta, 1000);
+                            setTimeout(pingManta, 2000);
                             return;
                         }
                         error = {message: PING_ERROR_MESSAGE};
