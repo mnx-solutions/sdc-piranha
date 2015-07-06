@@ -40,12 +40,14 @@
                     <div class="cost" data-ng-show="features.billing == 'enabled'">
                         <p>COST:</p>
                         <div class="dataset-cost">
-                            <span class="price-current">${{selectedPackageInfo.full_price || selectedPackageInfo.price}}</span>
-                            <p class="small-text-info">per hour</p>
+                            <h3 class="price-current">
+                                ${{selectedPackageInfo.full_price || selectedPackageInfo.price}}<span class="small-text-info">per hour</span>
+                            </h3>
                         </div>
                         <div class="dataset-cost">
-                            <span class="price-current">${{selectedPackageInfo.full_price_month || selectedPackageInfo.price_month}}</span>
-                            <p class="small-text-info">est. monthly</p>
+                            <h3 class="price-current">
+                                ${{selectedPackageInfo.full_price_month || selectedPackageInfo.price_month}}<span class="small-text-info">est. monthly</span>
+                            </h3>
                         </div>
                      </div>
                 </div>
