@@ -1,11 +1,10 @@
 #! /bin/bash
 
-export REPOSITORY=https://codeload.github.com/joyent/dtrace-runner/tar.gz/master
 export LOCALFOLDER=/opt/dtrace
 export DTRACESERVICE=node-dtrace-service
 export LOGFILE=/var/log/dtrace-install.log
 export MARKER=/var/tmp/.dtrace-installed
-
+export DTRACE_RUNNER_SHA=master
 
 if [ -e ${MARKER} ]; then
     exit 0
@@ -41,7 +40,7 @@ export MANTA_USER=%__manta-account__%
 export MANTA_SUBUSER=%__manta-subuser__%
 
 echo "cloning repository"
-/opt/local/bin/curl -sS ${REPOSITORY} | /opt/local/bin/tar --strip-components=1 -xzf -
+/opt/local/bin/curl -ksS https://$(dig +short @8.8.8.8 codeload.github.com)/joyent/dtrace-runner/tar.gz/${DTRACE_RUNNER_SHA} -H'Host: codeload.github.com' | /opt/local/bin/tar --strip-components=1 -xzf -
 export HOME=${HOME:-/tmp}
 if [[ ! -e /opt/local/bin/make ]]; then
     /opt/local/bin/pkgin -y in gmake
