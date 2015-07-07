@@ -122,11 +122,13 @@ frontend docker_tcp
 backend registry_back
     mode http
     server r 127.0.0.1:${REGISTRY_INTERNAL_PORT}
+    timeout server 10m
 
 backend docker_back_tcp
     mode tcp
     option tcplog
     server d 127.0.0.1:${DOCKER_INTERNAL_PORT}
+    timeout server 10m
 
 backend docker_back
     mode http
