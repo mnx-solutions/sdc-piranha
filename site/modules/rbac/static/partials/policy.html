@@ -87,10 +87,12 @@
                                     </div>
                                     <div class="rule-edit" data-ng-show="rule.edit">
                                         <span class="edit-name">Rule {{$index + 1}}</span>
-                                        <span class="edit-value">
-                                            <input type="text" class="policy-form" data-ng-model="rule.rule"/>
-                                            <button class="btn orange add-btn" data-ng-click="saveRule(rule, $index)" data-ng-disabled="rule.rule.length == 0">Save</button>
-                                        </span>
+                                        <div class="in-line">
+                                            <span class="edit-value">
+                                                <input type="text" class="policy-form" data-ng-model="rule.rule"/>
+                                                <button class="btn orange add-btn" data-ng-click="saveRule(rule, $index)" data-ng-disabled="rule.rule.length == 0">Save</button>
+                                            </span>
+                                        </div>
                                     </div>
                                 </div>
 

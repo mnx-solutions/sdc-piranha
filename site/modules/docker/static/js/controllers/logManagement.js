@@ -307,7 +307,7 @@
                             {
                                 label: 'View',
                                 getClass: function () {
-                                    return 'btn small grey';
+                                    return 'btn grey';
                                 },
                                 action: function (object) {
                                     $scope.viewLog(object, 'show');
@@ -319,7 +319,7 @@
                             {
                                 label: 'Download',
                                 getClass: function () {
-                                    return 'btn small grey';
+                                    return 'btn grey';
                                 },
                                 action: function (object) {
                                     $scope.viewLog(object, 'download');

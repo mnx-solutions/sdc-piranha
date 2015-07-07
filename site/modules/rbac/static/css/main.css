@@ -14,7 +14,8 @@ form {
 .edit-value.dual {
     width: 340px;
 }
-.new-rule .edit-value {
+.new-rule .edit-value,
+.rule-edit .edit-value {
     width: 100%;
 }
 

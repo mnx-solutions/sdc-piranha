@@ -188,13 +188,13 @@
                             {
                                 label: 'Tag',
                                 getClass: function () {
-                                    return 'btn small grey';
+                                    return 'btn grey';
                                 },
                                 disabled: function (object) {
                                     return object.loading || object.actionInProgress;
                                 },
                                 action: function (object) {
-                                    ng.element('.btn.small.grey').blur();
+                                    ng.element('.btn.grey').blur();
                                     PopupDialog.custom({
                                         templateUrl: 'docker/static/partials/image-add-tag.html',
                                         openCtrl: function ($scope, dialog) {
