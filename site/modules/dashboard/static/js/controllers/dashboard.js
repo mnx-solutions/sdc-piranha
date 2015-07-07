@@ -117,7 +117,7 @@
 
                 machines.forEach(function (machine) {
                     // excluding triton SDC Docker Containers
-                    if (machine.tags && machine.tags.sdc_docker) {
+                    if (machine.tags && machine.tags.sdc_docker && !$scope.account.isSubuser) {
                         return;
                     }
                     if (machine.state === 'running') {
