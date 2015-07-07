@@ -85,6 +85,9 @@
                 container.isSdc = machine.isSdc;
                 $scope.machine = machine;
                 clearInspectInterval();
+                if ($scope.machine.state === 'deleting') {
+                    return Docker.goToDockerContainers();
+                }
                 inspectInterval = setInterval(function () {
                     if ($scope.container && $scope.container.isRemoving) {
                         return;
@@ -118,10 +121,26 @@
             var getDockerHost = function () {
                 var host = $q.when(Docker.listHosts({id:hostId}));
                 host.then(function (machine) {
+                    if (machine.isSdc) {
+                        return $q.all([
+                            Docker.listContainers({host: 'All', cache: true, options: {all: true}, suppressErrors: true}),
+                            Machine.machine(util.idToUuid(containerId))
+                        ]).then(function (result) {
+                            var containers = result[0] || [];
+                            var sdcInstance = result[1];
+                            var container = containers.find(function (container) {
+                                return container.primaryIp === machine.primaryIp;
+                            });
+                            if (container && sdcInstance) {
+                                machine.state = sdcInstance.state;
+                            } else {
+                                machine.state = 'deleting';
+                            }
+                            getDockerInspectContainer(machine);
+                        }, Docker.goToDockerContainers);
+                    }
                     getDockerInspectContainer(machine);
-                }, function () {
-                    $location.path('/docker/containers');
-                });
+                }, Docker.goToDockerContainers);
             };
             getDockerHost();
 
@@ -142,7 +161,7 @@
                     }
                     Docker[action + 'Container'](container).then(function () {
                         if (action === 'remove') {
-                            $location.path('/docker/containers');
+                            Docker.goToDockerContainers();
                         } else {
                             getDockerHost();
                         }

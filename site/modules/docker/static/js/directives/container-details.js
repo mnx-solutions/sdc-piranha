@@ -87,63 +87,73 @@
                     };
                     machineId = machineId || util.idToUuid(containerId);
                     var machineIpAddresses = null;
-                    var machine = $q.when(Machine.machine(machineId));
-                    machine.then(function (instanceMachine) {
-                        machineIpAddresses = instanceMachine.ips.join(', ');
-                    });
-                    Docker.inspectContainer(container).then(function (containerInfo) {
-                        var containerCmd = containerInfo.Config.Cmd;
-                        if (Array.isArray(containerCmd)) {
-                            containerCmd = containerInfo.Config.Cmd.join(' ');
-                        }
-                        var containerState = Docker.getContainerState(containerInfo) || 'process';
-                        scope.termOpts.containerState = containerState;
-                        scope.container = {
-                            name: containerInfo.Name.substring(1),
-                            cmd: containerCmd,
-                            entrypoint: containerInfo.Config.Entrypoint,
-                            Ports: containerInfo.Config.ExposedPorts,
-                            hostname: containerInfo.Config.Hostname,
-                            image: containerInfo.Config.Image,
-                            memory: containerInfo.Config.Memory,
-                            cpuShares: containerInfo.Config.CpuShares,
-                            created: containerInfo.Created,
-                            state: containerState,
-                            infoId: containerInfo.Id,
-                            ipAddress: machineIpAddresses || containerInfo.NetworkSettings.IPAddress,
-                            isSdc: host.isSdc,
-                            Uuid: util.idToUuid(container.Id)
-                        };
-                        if (containerInfo.HostConfig.Links) {
-                            Docker.getLinkedContainers(containerInfo.HostConfig.Links).then(function (linkedContainers) {
-                                scope.linkedContainers = linkedContainers;
-                            });
-                        } else {
-                            scope.linkedContainers = [];
-                        }
-                        scope.loading = false;
-                    }, errorCallback);
-
-                    Docker.getAuditInfo({event: {type: 'container', host: hostId, entry: containerId}, params: true}).then(function (audit) {
-                        scope.audit = audit || [];
-                        scope.audit.forEach(function (event) {
-                            event.hostName = host.name || host.id;
-                        });
-                    }, errorCallback);
-
-                    Docker.logsContainer(container).then(function (logs) {
-                        scope.containerLogs = [];
-                        if (logs && typeof (logs) === 'string') {
-                            logs = logs.split(/[\r\n]+/);
-                            if (Array.isArray(logs)) {
-                                logs.forEach(function (str) {
-                                    scope.containerLogs.push(str);
+                    if (host.isSdc) {
+                        var machine = $q.when(Machine.machine(machineId));
+                        machine.then(function (instanceMachine) {
+                            machineIpAddresses = instanceMachine.ips.join(', ');
+                            if (host.isSdc && instanceMachine.state === 'deleting') {
+                                return Docker.goToDockerContainers();
+                            }
+                            inspectContainer();
+                        }, Docker.goToDockerContainers);
+                    } else {
+                        inspectContainer();
+                    }
+                    function inspectContainer() {
+                        Docker.inspectContainer(container).then(function (containerInfo) {
+                            var containerCmd = containerInfo.Config.Cmd;
+                            if (Array.isArray(containerCmd)) {
+                                containerCmd = containerInfo.Config.Cmd.join(' ');
+                            }
+                            var containerState = Docker.getContainerState(containerInfo) || 'process';
+                            scope.termOpts.containerState = containerState;
+                            scope.container = {
+                                name: containerInfo.Name.substring(1),
+                                cmd: containerCmd,
+                                entrypoint: containerInfo.Config.Entrypoint,
+                                Ports: containerInfo.Config.ExposedPorts,
+                                hostname: containerInfo.Config.Hostname,
+                                image: containerInfo.Config.Image,
+                                memory: containerInfo.Config.Memory,
+                                cpuShares: containerInfo.Config.CpuShares,
+                                created: containerInfo.Created,
+                                state: containerState,
+                                infoId: containerInfo.Id,
+                                ipAddress: machineIpAddresses || containerInfo.NetworkSettings.IPAddress,
+                                isSdc: host.isSdc,
+                                Uuid: util.idToUuid(container.Id)
+                            };
+                            if (containerInfo.HostConfig.Links) {
+                                Docker.getLinkedContainers(containerInfo.HostConfig.Links).then(function (linkedContainers) {
+                                    scope.linkedContainers = linkedContainers;
                                 });
                             } else {
-                                scope.containerLogs.push(logs);
+                                scope.linkedContainers = [];
                             }
-                        }
-                    }, errorCallback);
+                            scope.loading = false;
+                        }, errorCallback);
+
+                        Docker.getAuditInfo({event: {type: 'container', host: hostId, entry: containerId}, params: true}).then(function (audit) {
+                            scope.audit = audit || [];
+                            scope.audit.forEach(function (event) {
+                                event.hostName = host.name || host.id;
+                            });
+                        }, errorCallback);
+
+                        Docker.logsContainer(container).then(function (logs) {
+                            scope.containerLogs = [];
+                            if (logs && typeof (logs) === 'string') {
+                                logs = logs.split(/[\r\n]+/);
+                                if (Array.isArray(logs)) {
+                                    logs.forEach(function (str) {
+                                        scope.containerLogs.push(str);
+                                    });
+                                } else {
+                                    scope.containerLogs.push(logs);
+                                }
+                            }
+                        }, errorCallback);
+                    }
                 };
 
                 var getDockerHost = function () {

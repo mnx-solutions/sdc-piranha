@@ -487,6 +487,9 @@
                 }
 
                 machines.list.splice(machines.list.indexOf(job.machine), 1);
+                if (job.machine.tags && job.machine.tags.sdc_docker) {
+                    $rootScope.$emit('clearDockerCache');
+                }
                 delete machines.index[job.machine.id];
                 showNotification(err, job);
             }
