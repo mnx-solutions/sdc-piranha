@@ -217,6 +217,7 @@ var uploadImage = function (call) {
             images[slice.Id.substr(0, 12)] = slice;
         });
         var uploaded = total;
+        client = client.usePort(Docker.DOCKER_TCP_PORT);
         client.pushImage({
             tag: parsedTag.tag || 'latest',
             name: taggedName
