@@ -7,6 +7,7 @@
             var service = {};
 
             var DOCKERHOST_MINIMUM_MEMORY = 512;
+            var DTRACE_MINIMUM_HDD = 6144;
             var MAX_DTRACE_VERSION = '14.4.0';
             var QUOTA_EXCEEDED_HEADER = 'QuotaExceeded: ';
 
@@ -14,10 +15,9 @@
                 manta: $rootScope.features.manta === 'enabled',
                 recentInstances: $rootScope.features.recentInstances === 'enabled',
                 provisioningLimits: $rootScope.features.provisioningLimits === 'enabled',
-                dockerMemoryLimit: $rootScope.features.dockerMemoryLimit === 'enabled'
+                dockerMemoryLimit: $rootScope.features.dockerMemoryLimit === 'enabled',
+                dtraceHDDLimit: $rootScope.features.dtraceHDDLimit === 'enabled'
             };
-
-            var isDockerMemoryLimitEnable = $rootScope.features.dockerMemoryLimit === 'enabled';
 
             var datacenterForNetworks = '';
             var networks = [];
@@ -424,6 +424,10 @@
                 if (hostSpecification === 'dockerhost' && IsEnabled.dockerMemoryLimit) {
                     packages = packages.filter(function (p) {
                         return p.memory >= DOCKERHOST_MINIMUM_MEMORY;
+                    });
+                } else if (hostSpecification === 'dtracehost') {
+                    packages = packages.filter(function (p) {
+                        return p.disk >= DTRACE_MINIMUM_HDD;
                     });
                 }
                 var indexPackageTypes = {};
