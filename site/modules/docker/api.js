@@ -705,6 +705,9 @@ exports.init = function execute(log, config, done) {
     }
 
     api.createHost = function (call, options, callback) {
+        // Sending response to the client cause preparing of the docker host takes a lot of time,
+        // otherwise load balancer will close connection after 1 minute of silence.
+        call.immediate(null, {machine: options});
         delete options.specification;
         // not declared in header, because both modules depend on each other
         var Machine = require('../machine').Machine;

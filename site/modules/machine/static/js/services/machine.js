@@ -557,6 +557,19 @@
             machines.list.push(machine);
             machines.index[id] = machine;
 
+            function setNewMachine(newMachine) {
+                var oldIndex = machines.list.indexOf(machine);
+                if (newMachine) {
+                    machine = newMachine;
+                }
+                delete machines.index[id];
+                if (oldIndex !== -1) {
+                    machines.list[oldIndex] = machine;
+                }
+                machines.index[machine.id] = machine;
+
+            }
+
             var jobCall = serverTab.call({
                 name: 'MachineCreate',
                 data: data,
@@ -566,13 +579,14 @@
                         return;
                     }
 
-                    var index = machines.list.indexOf(machine);
-                    delete machines.index[id];
-                    machine = job.initial.machine;
+                    var initialMachine = job.initial.machine;
+                    if (!initialMachine.id) {
+                        return;
+                    }
+
+                    setNewMachine(initialMachine);
                     machine.datacenter = data.datacenter;
                     machine.job = job.getTracker();
-                    machines.index[machine.id] = machine;
-                    machines.list[index] = machine;
                 },
 
                 done: function (err, job) {
@@ -584,7 +598,13 @@
                     }
                     var result = job.__read();
                     result.datacenter = data.datacenter;
-                    showNotification(err, {machine: job.initial && job.initial.machine || result});
+
+                    if (machine.id !== result.id) {
+                        machine.id = result.id;
+                        setNewMachine();
+                    }
+
+                    showNotification(err, {machine: result});
                     if (result.tags['JPC_tag'] === 'DockerHost') {
                         $rootScope.$emit('clearDockerCache', result);
                     }

@@ -268,6 +268,7 @@ function Call(opts) {
 
                     _noEmit = false;
                     self.immediate = null;
+                    self.wasImmediate = true;
                 };
 
                 return self.immediate;
