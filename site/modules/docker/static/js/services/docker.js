@@ -110,6 +110,10 @@
             return callback();
         };
 
+        service.goToDockerContainers = function () {
+            $location.path('/docker/containers');
+        }
+
         service.getAuditButtonLabel = function (event) {
             var isAction = event.parsedParams && (event.action || event.parsedParams.error);
             return isAction ? (event.parsedParams.error ? 'Error' : 'Clone') : '';
