@@ -1,8 +1,8 @@
 'use strict';
 
-(function (app) {
+(function (ng, app) {
     app.factory('dockerPushImage', ['Docker', 'PopupDialog', function (Docker, PopupDialog) {
-        return function(image) {
+        return function (image) {
             if (!Docker.registriesPushInProgress) {
                 Docker.registriesPushInProgress = [];
             }
@@ -18,6 +18,7 @@
                         registryId: '',
                         name: parsedTag.name || ''
                     };
+                    scope.image = image;
 
                     Docker.getRegistriesList({aggregate: true}, image.primaryIp).then(function (result) {
                         scope.registries = result.short;
@@ -26,7 +27,7 @@
                     });
 
                     scope.close = function () {
-                        window.jQuery('#registrySelect').select2('close');
+                        ng.element('#registrySelect').select2('close');
                         dialog.close();
                     };
                     scope.validateName = function () {
@@ -67,7 +68,17 @@
                                 return registry.id === scope.input.registryId;
                             });
                         }
-                        PopupDialog.message(null, 'Pushing images takes some time. You can continue your work and get notification once push is completed.');
+                        var logElement = ng.element('div.push-image-log');
+                        var isScrolledDown = true;
+                        scope.$on('LastRepeaterElement', function () {
+                            if (isScrolledDown) {
+                                logElement.scrollTop(999999);
+                            }
+                        });
+                        logElement.bind('scroll', function () {
+                            isScrolledDown = logElement.scrollTop() + logElement.innerHeight() >= logElement[0].scrollHeight;
+                        });
+                        image.progress = ['Pushing of image "' + scope.input.name + '" started...'];
                         Docker.pushImage({
                             host: {primaryIp: image.primaryIp, id: image.hostId},
                             options: {
@@ -83,15 +94,19 @@
                             }
                         }).then(function () {
                             Docker.registriesPushInProgress[scope.input.registryId] = false;
-                            notification.success('Pushing of image "' + scope.input.name + '" is completed.');
+                            var completedMessage = 'Pushing of image "' + scope.input.name + '" is completed.';
+                            if (dialog && dialog.isOpen()) {
+                                image.progress.push(completedMessage);
+                            } else {
+                                notification.success(completedMessage);
+                            }
                         }, function (error) {
                             Docker.registriesPushInProgress[scope.input.registryId] = false;
                             notification.error(error.message || 'InternalServerError');
                         });
-                        scope.close();
                     };
                 }]
             });
         }
     }]);
-}(window.JP.getModule('docker')));
+}(window.angular, window.JP.getModule('docker')));
