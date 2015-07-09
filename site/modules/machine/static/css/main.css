@@ -565,7 +565,7 @@
 }
 
 .description p {
-    height: 65px;
+    height: 50px;
 }
 
 .advaced-instance-btn {
@@ -1039,10 +1039,6 @@
 
 .btn:hover .chart-icon {
     background-image: url('../img/icon-chart-white.png');
-}
-
-.btn.grey {
-    margin-top: 20px;
 }
 
 .small-icon.apache,
@@ -1557,9 +1553,4 @@
 
 .tooltip-hover span.glyphicon {
     top: 2px;
-}
-
-.simple-image .description span.label.tooltip-hover {
-    top: -17px;
-    left: 28px;
 }

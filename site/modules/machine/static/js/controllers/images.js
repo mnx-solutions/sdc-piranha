@@ -113,7 +113,7 @@
                             $scope.provisionInstance(object);
                         },
                         getClass: function () {
-                            return 'btn gray small';
+                            return 'btn grey';
                         }
                     }
                 },

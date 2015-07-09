@@ -247,7 +247,7 @@
                         btn: {
                             label: 'Pull',
                             getClass: function () {
-                                return 'btn grid-mini-btn effect-orange-button';
+                                return 'btn grey';
                             },
                             action: function (object) {
                                 $scope.pullImage(object);

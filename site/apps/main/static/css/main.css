@@ -700,11 +700,6 @@ textarea.error {
     text-align: right;
 }
 
-.gray {
-    border: 1px solid #ddd;
-    background-color: #eee;
-}
-
 .carousel-inner {
     overflow: visible;
 
@@ -3063,7 +3058,8 @@ a.orange-link {
 .btn-success {
     cursor: default;
 }
-.btn-default {
+.btn-default,
+.btn-default:hover {
     color: white;
     background-color: #999;
 }

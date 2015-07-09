@@ -7,7 +7,7 @@
               width="{{selectStyle}}"
               data-ng-model="country"
               data-search-box="true"
-              data-ng-change="$parent.phone.country"
+              data-ng-change="changeCountry(country)"
               data-ng-options="country as (country.name + ' (+' + country.areaCode + ')') group by country.group for country in countryCodes | filter:filterUndefinedAreas | orderBy: ['-group','name']">
       </select>
       <span class="input-group input-group-inline">

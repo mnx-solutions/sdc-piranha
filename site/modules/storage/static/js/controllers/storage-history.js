@@ -182,7 +182,7 @@
                         btn: {
                             label: 'Clone',
                             getClass: function () {
-                                return 'btn small grey';
+                                return 'btn grey';
                             },
                             disabled: function () {
                                 return $scope.loading;
@@ -190,13 +190,13 @@
                             action: function (object) {
                                 Storage.getJob(object.id).then(function (result) {
                                     Storage.getInput(object.id).then(function (inputs) {
-                                            var job = {
-                                                name: result.name,
-                                                phases: result.phases,
-                                                inputs: inputs
-                                            };
-                                            $rootScope.commonConfig('cloneJob', job);
-                                            $location.path('/manta/builder');
+                                        var job = {
+                                            name: result.name,
+                                            phases: result.phases,
+                                            inputs: inputs
+                                        };
+                                        $rootScope.commonConfig('cloneJob', job);
+                                        $location.path('/manta/builder');
                                     });
                                 });
 

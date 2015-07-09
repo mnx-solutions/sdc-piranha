@@ -227,7 +227,7 @@
     background-color: #e9eff4;
 }
 
-.loading-medium {
+.loading-medium:not(.item) {
     min-height: 35px;
 }
 .registry-form .api-version {
@@ -1184,4 +1184,7 @@ span .tag-editor {
 }
 .btn-wrapper .cadvisor-unavailable {
     margin-top: -10px;
+}
+.metadata .editable .key-width {
+    margin-bottom: 10px;
 }

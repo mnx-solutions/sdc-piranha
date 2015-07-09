@@ -38,44 +38,48 @@ var AREACODE_NORMALIZE_MAP = {
                     $scope.plainNumber = '';
                     $scope.areaCode = '';
 
-                    $scope.$watch('plainNumber', function (plainNumber) {
-                        if(plainNumber) {
-                            $scope.number = $scope.areaCode + plainNumber;
-                        }
-                    });
-                    $scope.$watch('country', function (country) {
-                        if(typeof country === 'string' && $scope.countryCodes) {
+                    $scope.changeCountry = function (country) {
+                        if (typeof country === 'string' && $scope.countryCodes) {
                             $scope.country = isoToObj(country);
                             return;
                         }
 
-                        if(country) {
+                        if (country) {
                             $scope.areaCode = '+' + country.areaCode;
-                            if($scope.plainNumber) {
+                            if ($scope.plainNumber) {
                                 $scope.number = $scope.areaCode + $scope.plainNumber;
                             }
                         } else {
                             $scope.areaCode = '';
                         }
+                    };
+
+                    $scope.$watch('plainNumber', function (plainNumber) {
+                        if (plainNumber) {
+                            $scope.number = $scope.areaCode + plainNumber;
+                        }
                     });
-                    /*var numberWatcher = */$scope.$watch('number', function (number) {
-                        if(!number) {
+
+                    $scope.$watch('country', function (country) {
+                        $scope.changeCountry(country);
+                    });
+
+                    $scope.$watch('number', function (number) {
+                        if (!number) {
                             return;
                         }
 
-//                        numberWatcher();
-
                         var tempNumber = number.replace(/[^0-9\+]/g, '');
-                        if(tempNumber !== number) {
+                        if (tempNumber !== number) {
                             $scope.number = tempNumber;
                         }
-                        if(!$scope.countryCodes) {
+                        if (!$scope.countryCodes) {
                             return;
                         }
                         matchCountry(number);
                     });
                     function matchCountry(number) {
-                        if(number.indexOf('+') !== 0) {
+                        if (number.indexOf('+') !== 0) {
                             var country = isoToObj($scope.country);
                             $scope.plainNumber = number;
                             $scope.areaCode = '+' + country.areaCode;
@@ -87,12 +91,12 @@ var AREACODE_NORMALIZE_MAP = {
                         var i = 1;
                         var areaCode = pureNr.substr(0, i);
                         var found = false;
-                        while(i < 4) {
+                        while (i < 4) {
                             var countries = areaCodeMap[areaCode];
-                            if(countries) {
+                            if (countries) {
                                 $scope.areaCode = '+' + areaCode;
                                 $scope.plainNumber = pureNr.substr(i);
-                                if(countries.length === 1 || countries.indexOf($scope.country) === -1) {
+                                if (countries.length === 1 || countries.indexOf($scope.country) === -1) {
                                     $scope.country = areaCode == 1 ? $scope.country = isoToObj('USA') : countries[0];
                                 }
                                 found = true;
@@ -101,7 +105,7 @@ var AREACODE_NORMALIZE_MAP = {
                             i++;
                             areaCode = pureNr.substr(0, i);
                         }
-                        if(!found) {
+                        if (!found) {
                             console.error('Couldn\'t find country for nr:', number);
                         }
                     }
@@ -109,7 +113,7 @@ var AREACODE_NORMALIZE_MAP = {
                     var areaCodeMap = {};
                     function createAreaCodeMap() {
                         $scope.countryCodes.filter($scope.filterUndefinedAreas).forEach(function (country) {
-                            if(!areaCodeMap[country.areaCode]) {
+                            if (!areaCodeMap[country.areaCode]) {
                                 areaCodeMap[country.areaCode] = [country];
                             } else {
                                 areaCodeMap[country.areaCode].push(country);
@@ -135,16 +139,16 @@ var AREACODE_NORMALIZE_MAP = {
                             return true;
                         });
                         createAreaCodeMap();
-                        if(typeof $scope.country === 'string') {
+                        if (typeof $scope.country === 'string') {
                             $scope.country = isoToObj($scope.country);
                         }
-                        if($scope.number) {
+                        if ($scope.number) {
                             matchCountry($scope.number);
                         }
                     });
 
                     function isoToObj(iso) {
-                        if (!$scope.countryCodes){
+                        if (!$scope.countryCodes) {
                             return;
                         }
 
@@ -156,7 +160,7 @@ var AREACODE_NORMALIZE_MAP = {
                                 usa = el;
                             }
 
-                            if(el.iso3 === iso) {
+                            if (el.iso3 === iso) {
                                 selected = el;
                                 return true;
                             }

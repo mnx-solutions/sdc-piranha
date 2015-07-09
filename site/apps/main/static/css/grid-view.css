@@ -7,7 +7,8 @@
 .grid-container span {
     font-size: 12px;
 }
-.grid-container button {
+.grid-container button,
+.grid-container button:active {
     padding: 1px 8px;
 }
 .page-row-info {
@@ -214,7 +215,7 @@ input.filter-field::-ms-clear {
 }
 
 .grid-action-btn button {
-    width: 100px;
+    width: 101px;
 
     color: #6d6d6d;
     border: 0;
