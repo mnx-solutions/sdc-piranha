@@ -201,6 +201,10 @@
     "registryVersion": "0.9.1",
     "registryDriverVersion": "0.0.19"
   },
+  "domains": {
+    "api": ".api.joyent.com",
+    "docker": ".docker.joyent.com"
+  },
   "sdcDocker": [
     {
       "id": "00000000-0000-0000-0000-000000000000",

@@ -45,13 +45,13 @@ var SUBUSER_LIST_RULES_REGISTRY = SUBUSER_LIST_RULES.concat([
 var SDC_DOCKER_PATH = '~~/stor/.joyent/docker';
 var SDC_DOCKER_REGISTRY_PATH = SDC_DOCKER_PATH + '/registry';
 var sdcDockerConfigs = [];
-if (config.features.sdcDocker === 'enabled' && config.sdcDocker) {
+if (config.features.sdcDocker === 'enabled' && config.sdcDocker && config.domains) {
     [].concat(config.sdcDocker).forEach(function (sdcDocker) {
         sdcDockerConfigs.push({
             id: sdcDocker.id || '00000000-0000-0000-0000-000000000000',
             name: sdcDocker.name,
             datacenter: sdcDocker.datacenter,
-            primaryIp: sdcDocker.ip || sdcDocker.datacenter + '.docker.joyent.com',
+            primaryIp: sdcDocker.ip || sdcDocker.datacenter + config.domains.docker,
             isSdc: true,
             prohibited: false
         });

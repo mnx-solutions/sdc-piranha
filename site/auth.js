@@ -1,10 +1,10 @@
 'use strict';
 var config = require('easy-config');
 var additionalDatacenters = {};
-if (config.features.sdcDocker === 'enabled' && config.sdcDocker) {
+if (config.features.sdcDocker === 'enabled' && config.sdcDocker && config.domains) {
     [].concat(config.sdcDocker).forEach(function (sdcDocker) {
         if (sdcDocker.fullDataCenter) {
-            additionalDatacenters[sdcDocker.datacenter] = 'https://' + sdcDocker.datacenter + '.api.joyentcloud.com';
+            additionalDatacenters[sdcDocker.datacenter] = 'https://' + sdcDocker.datacenter + config.domains.api;
         }
     });
 }
