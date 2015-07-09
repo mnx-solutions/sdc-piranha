@@ -359,12 +359,13 @@
                         lastSelectedActive = false;
                     }
 
+                    if (scope.files) {
+                        scope.switchLoaderPosition = scope.files.indexOf(obj) === -1 && lastSelectedFile &&
+                            lastSelectedFile.type !== 'object' || fullPath.split(/\//).length === 2;
+                    }
+
                     lastSelectedFile = obj;
                     lastSelectedActive = true;
-
-                    if (scope.files) {
-                        scope.switchLoaderPosition = scope.files.indexOf(obj) === -1;
-                    }
 
                     if ((!obj.type || obj.type === 'directory') && userAction !== 'delete') {
                         scope.loadingFolder = true;
