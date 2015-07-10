@@ -166,7 +166,8 @@ exports.init = function execute(log, config, done) {
     }
 
     api.Create = function (call, options, callback) {
-        if (call.getImmediate) {
+        // Not using immediate for dockerHost creation to prevent haproxy timeout
+        if (call.getImmediate && options.specification !== 'dockerhost') {
             call.getImmediate();
         }
 
