@@ -97,7 +97,7 @@ Server.prototype.call = function () {
         }
 
         var call = req._session.call(id, query);
-        if (!call.immediate && !call.wasImmediate) {
+        if (!call.immediate) {
             return res.sendStatus(202).send('ACCEPTED');
         }
     };
