@@ -428,8 +428,10 @@
                     }
 
                     if (scope.imageCreateNotSupported || scope.machine.state !== 'stopped') {
+                        var link = '<a class="orange-link" href="https://docs.joyent.com/public-cloud/containers/infrastructure/images/creating" target="_blank">"Considerations and Limitations"</a>';
                         var message = scope.imageCreateNotSupported ||
-                            'This instance will be stopped as the first step in creating an image from it.';
+                            'Note: Image creation is subject to limitations and requires a reboot of the source instance.' +
+                            ' Please review the section ' + link + ' on this page before proceeding.';
                     }
                     if (!scope.imageCreateNotSupported) {
                         if (scope.machine.state === 'stopped') {
