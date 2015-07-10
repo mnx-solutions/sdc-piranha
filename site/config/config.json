@@ -11,7 +11,10 @@
     "level": "debug"
   },
   "cloudapi": {
-    "DCCallTimeout": 5000
+    "DCCallTimeout": 5000,
+    "limitedAccessDatacenters": [
+      "us-east-3b"
+    ]
   },
   "localization": {
     "defaultLocale": "en",
