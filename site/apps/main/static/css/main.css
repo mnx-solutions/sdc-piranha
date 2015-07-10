@@ -117,31 +117,30 @@ h4 {
     background-size: 100% 2px;
 }
 
-.rickshaw_graph
-{
+.rickshaw_graph {
     max-width: 600px !important;
 }
 
-.rickshaw_legend
-{
+.rickshaw_legend {
     padding: 0;
-    background-color: transparent;
+
+    cursor: default;
+
     color: #333;
-    cursor: default;
+    background-color: transparent;
 }
 
-.rickshaw_legend .line .swatch
-{
-    border-radius: 0 !important;
+.rickshaw_legend .line .swatch {
+    cursor: default;
     vertical-align: middle;
-    cursor: default;
+
+    border-radius: 0 !important;
 }
 
 label.control-label,
 .rickshaw_legend .line,
 .rickshaw_legend label,
-.rickshaw_legend .label
-{
+.rickshaw_legend .label {
     cursor: text !important;
 }
 
@@ -149,16 +148,11 @@ label.control-label,
 label.control-label,
 .rickshaw_legend .line,
 .rickshaw_legend label,
-.rickshaw_legend .label
-{
+.rickshaw_legend .label {
     cursor: text !important;
 }
 
-.label
-{
-    font-size: 11px;
-    font-weight: normal;
-
+.label {
     display: block;
 
     width: auto;
@@ -166,10 +160,12 @@ label.control-label,
     padding: 5px;
 
     text-align: center;
+
+    font-size: 11px;
+    font-weight: normal;
 }
 
-.state-label
-{
+.state-label {
     text-align: left;
     text-indent: -7px;
 
@@ -305,8 +301,7 @@ textarea.error {
     border-color: #f60;
 }
 
-.ssh-download-link
-{
+.ssh-download-link {
     float: left;
 
     width: 380px;
@@ -784,6 +779,7 @@ a {
 
 .accordion-ssh-keys .panel.panel-default {
     margin: 0;
+
     border: 1px solid #ddd;
     border-top: none;
 }
@@ -2304,9 +2300,9 @@ label.checkbox.folder-name-form-checkbox {
 }
 
 .jquery-notific8-notification {
-    width: 24.5em;
-    height: 6em;
-    max-height: 6em;
+    width: 24.5em !important;
+    height: 6em !important;
+    max-height: 6em !important;
 }
 .jquery-notific8-notification.success {
     color: #020001;
@@ -3110,39 +3106,49 @@ a.orange-link {
 .review .center p,
 .review .right p {
     display: inline-block;
+
     padding-right: 5px;
-    font-weight: 300;
+
     font-size: 14px;
+    font-weight: 300;
 }
 .package .value {
-    font-weight: 500;
     font-size: 14px;
+    font-weight: 500;
 }
 .package .name {
     float: left;
+
     width: 100px;
-    font-weight: 300;
+
     font-size: 14px;
+    font-weight: 300;
 }
 .cost {
     padding-top: 50px;
 }
 .cost p .footnote {
     display: block;
+
     font-size: 12px;
 }
 .dataset-cost h3 {
     display: inline-block;
+
     margin-top: 10px;
     padding-bottom: 10px;
-    font-weight: 500;
+
     font-size: 24px;
+    font-weight: 500;
     line-height: 0;
 }
 .small-text-info {
     padding-left: 10px;
-    color: #000;
+
     text-align: left;
+
+    color: #000;
+
     font-size: 13px !important;
 }
 @media screen and (max-width: 775px) {
@@ -3153,70 +3159,65 @@ a.orange-link {
 @media (max-width: 767px) {
     .navbar-nav .open .dropdown-menu {
         position: absolute;
+
         float: none;
+
         width: auto;
         margin-top: 3px;
-        background-color: #fff;
+
         border: 1px solid #ccc;
+        background-color: #fff;
         box-shadow: 0 6px 12px rgba(0, 0, 0, .175);
     }
 }
-.instance-intro
-{
+.instance-intro {
     min-height: 170px;
 }
 
-.docker-intro
-{
+.docker-intro {
     min-height: 150px;
 }
 
-.intro-list
-{
+.intro-list {
     padding-left: 20px;
 }
 
-.intro-list li
-{
+.intro-list li {
     padding-bottom: 5px;
 }
 
-.cli-intro
-{
-    margin-left: 20px;
+.cli-intro {
     width: 550px;
+    margin-left: 20px;
 }
 
-.intro-host-key
-{
+.intro-host-key {
     padding-left: 32px;
 }
 
-.intro-account
-{
+.intro-account {
     padding-left: 6px;
 }
 
-.code
-{
+.code {
     margin: 10px 0;
     padding: 20px;
+
     border: 2px solid #e3e3e3;
     background: rgba(0,0,0,.07);
 }
 
-.intro-code
-{
+.intro-code {
     margin: 0;
     padding: 0 3px;
 }
 
-.code p
-{
+.code p {
     margin: 0;
-    color: #000;
-    font-weight: bold;
-    font-size: 13px;
-    font-family: Menlo, Menlo-Regular, Inconsolata, Monaco, monospace;
-}
 
+    color: #000;
+
+    font-family: Menlo, Menlo-Regular, Inconsolata, Monaco, monospace;
+    font-size: 13px;
+    font-weight: bold;
+}

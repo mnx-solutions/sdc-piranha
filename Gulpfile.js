@@ -336,25 +336,32 @@ function startHttpServer(done) {
         }
     }
 
-    function getStaticScripts(options, type) {
+    function getStaticScripts(options, type, isVendor) {
         var config = options.config.static;
         var scripts = config ? config[type] : [];
+        scripts = scripts.filter(function (script) {
+            return isVendor ? script.indexOf('vendor') !== -1 : script.indexOf('vendor') === -1;
+        });
         return [].concat(scripts).map(normalizePath(options.path, 'static'));
     }
 
     function prepareCache(options) {
         var optsCopy = options;
+        var vendorJs = [];
         var js = [];
         var vendorCss = [];
         var css = [];
         var modules;
+        var moduleVendorJs;
         var moduleJs;
         var moduleVendorCss;
         var moduleCss;
 
         function collectScripts(folder) {
+            moduleVendorJs = moduleVendorJs.concat(
+                path.resolve(folder, 'vendor', '**/*.js')
+            );
             moduleJs = moduleJs.concat(
-                path.resolve(folder, 'vendor', '**/*.js'),
                 path.resolve(folder, 'js', '*.js'),
                 path.resolve(folder, 'js', '**/*.js')
             );
@@ -368,6 +375,7 @@ function startHttpServer(done) {
 
         do {
             modules = options.config.modules || [];
+            moduleVendorJs = getStaticScripts(options, 'js', true);
             moduleJs = getStaticScripts(options, 'js');
             moduleVendorCss = [];
             moduleCss = getStaticScripts(options, 'css');
@@ -379,21 +387,27 @@ function startHttpServer(done) {
                     collectScripts(staticDir);
                 }
             });
+            vendorJs = vendorJs.concat(moduleVendorJs.reverse());
             js = js.concat(moduleJs.reverse());
             vendorCss = vendorCss.concat(moduleVendorCss.reverse());
             css = css.concat(moduleCss.reverse());
             options = options.parent;
         } while (options);
 
-        js = js.reverse().filter(function (str) {
-            return str;
-        });
+        function reverseArray(array) {
+            return array.reverse().filter(function (str) {
+                return str;
+            });
+        }
 
-        css = [].concat(vendorCss.reverse(), css.reverse()).filter(function (str) {
-            return str;
-        });
+        js = reverseArray(js);
+        vendorJs = reverseArray(vendorJs);
+        vendorCss = reverseArray(vendorCss);
+        css = reverseArray(css);
 
         return es.merge(
+            gulp.src(vendorJs),
+            gulp.src(vendorCss),
             compileJs(js),
             compileCss(optsCopy, css)
         );
