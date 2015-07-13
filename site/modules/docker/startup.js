@@ -430,7 +430,7 @@ var Docker = function execute(log, config) {
             vasync.forEachPipeline({
                 func: function (removedContainerLog, callback) {
                     getRemovedContainersList(call, function (error, removedContainers) {
-                        var path = path.join(DOCKER_LOGS_PATH, removedContainerLog.hostId, removedContainerLog.Id);
+                        var logPath = path.join(DOCKER_LOGS_PATH, removedContainerLog.hostId, removedContainerLog.Id);
                         var hostRemovedContainersCount;
                         if (error) {
                             return callback(error.message, true);
@@ -442,9 +442,9 @@ var Docker = function execute(log, config) {
                             return removedContainer.Id !== removedContainerLog.Id;
                         });
                         if (removedContainerLog.hostState === 'removed' && hostRemovedContainersCount === 1) {
-                            path = path.join(DOCKER_LOGS_PATH, removedContainerLog.hostId);
+                            logPath = path.join(DOCKER_LOGS_PATH, removedContainerLog.hostId);
                         }
-                        client.rmr(path, function (error) {
+                        client.rmr(logPath, function (error) {
                             if (error && error.statusCode !== 404) {
                                 return callback(error.message, true);
                             }
