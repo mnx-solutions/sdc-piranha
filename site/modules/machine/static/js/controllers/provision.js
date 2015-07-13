@@ -278,53 +278,63 @@
                     addProvisionStep(WizardSteps.SSH, 'machine/static/partials/wizard-ssh-key.html');
                 }
 
+                function selectDatacenterByImage(imageId) {
+                    Image.image({
+                        id: imageId, datacenter: $rootScope.commonConfig('datacenter')
+                    }).then(function (image) {
+                        var datacenter = image && image.datacenter;
+                        if (datacenter) {
+                            $scope.selectDatacenter(datacenter);
+                        } else {
+                            $location.url('/compute/create');
+                            $location.replace();
+                            setDatacenter();
+                        }
+                    });
+                }
+
+                function processProvisionBundle(bundle) {
+                    if (!bundle.simpleImage) {
+                        PROVISION_BUNDLE_KEYS.forEach(function (key) {
+                            $scope[key] = bundle[key];
+                        });
+                        $scope.data = bundle.machine;
+                        $scope.selectedPackage = $scope.data.package;
+                        selectedNetworks = $scope.data.networks;
+
+                        $scope.instanceType = 'Public';
+                        $scope.reconfigure(REVIEW_STEP);
+                    }
+                    if (bundle.ready) {
+                        provision(bundle.machine);
+                    }
+                }
+
+                function selectDatacenterByUserConfig() {
+                    // TODO: Handle all other DC drop-downs
+                    $scope.userConfig = Account.getUserConfig().$child('datacenter');
+                    $scope.userConfig.$load(function (error, config) {
+                        if (config.value && !$scope.data.datacenter && !preSelectedImageId) {
+                            $scope.selectDatacenter(config.value);
+                        }
+                        datacenterConfig = config;
+                    });
+                }
+
                 function completeSetup() {
                     if ($scope.isMantaEnabled && !$scope.data.datacenter) {
-                        // TODO: Handle all other DC drop-downs
-                        $scope.userConfig = Account.getUserConfig().$child('datacenter');
-                        $scope.userConfig.$load(function (error, config) {
-                            if (config.value && !$scope.data.datacenter && !preSelectedImageId) {
-                                $scope.selectDatacenter(config.value);
-                            }
-                            datacenterConfig = config;
-                        });
+                        selectDatacenterByUserConfig();
                     }
                     if (externalInstanceParams) {
                         $scope.selectDatacenter(requestContext.getParam('dc'));
                     } else if (preSelectedImageId) {
-                        Image.image({
-                            id: preSelectedImageId, datacenter: $rootScope.commonConfig('datacenter')
-                        }).then(function (image) {
-                            var datacenter = image && image.datacenter;
-                            if (datacenter) {
-                                $scope.selectDatacenter(datacenter);
-                            } else {
-                                $location.url('/compute/create');
-                                $location.replace();
-                                setDatacenter();
-                            }
-                        });
+                        selectDatacenterByImage(preSelectedImageId);
                     } else {
                         setDatacenter();
                     }
 
                     if (provisionBundle) {
-                        if (!provisionBundle.simpleImage) {
-                            PROVISION_BUNDLE_KEYS.forEach(function (key) {
-                                $scope[key] = provisionBundle[key];
-                            });
-                            $scope.data = provisionBundle.machine;
-                            $scope.selectedPackage = $scope.data.package;
-                            selectedNetworks = $scope.data.networks;
-
-                            $scope.instanceType = 'Public';
-                            $scope.reconfigure(REVIEW_STEP);
-                            if (provisionBundle.ready) {
-                                provision(provisionBundle.machine);
-                            }
-                        } else if (provisionBundle.ready) {
-                            provision(provisionBundle.machine);
-                        }
+                        processProvisionBundle(provisionBundle);
                     } else if (!$scope.data.opsys) {
                         $scope.data.opsys = 'All';
                     }
@@ -589,6 +599,67 @@
                 selectDataset(datasetId);
             };
 
+            function setPackagesPrice(dataset) {
+                if ($scope.packages && dataset['license_price']) {
+                    var lPrice = util.getNr(dataset['license_price']);
+                    if (lPrice !== false) {
+                        $scope.packages.forEach(function (p) {
+                            if (p.price) {
+                                p['full_price'] = lPrice + util.getNr(p.price);
+                                p['full_price'] = p['full_price'].toFixed(3);
+                            }
+
+                            if (p['price_month']) {
+                                p['full_price_month'] = util.getNr(p['price_month']) + (lPrice * 730);
+                                p['full_price_month'] = p['full_price_month'].toFixed(2);
+                            }
+                        });
+                    }
+                } else if (!dataset['license_price']) {
+                    $scope.packages.forEach(function (p) {
+                        delete(p['full_price']);
+                        delete(p['full_price_month']);
+                    });
+                }
+            }
+
+            function setFreeTierHidden(freeTierOptions) {
+                if ($scope.features.freetier === 'enabled') {
+                    $scope.packages.forEach(function (p) {
+                        p.freeTierHidden = freeTierOptions.some(function (option) {
+                            var packageMatches = p.id === option.package;
+                            var datacenterMatches = option.datacenters.length > 0 &&
+                                option.datacenters.indexOf($scope.data.datacenter) >= -1;
+                            return packageMatches && !datacenterMatches;
+                        });
+                    });
+                }
+            }
+
+            function setFilterValues(values) {
+                var filterValues = ng.copy(values);
+                $scope.packages.forEach(function (p) {
+                    if ($scope.filterPackages()(p) && p.price) {
+                        var addFilterValue = function(key, value) {
+                            if (filterValues[key].indexOf(value) === -1) {
+                                filterValues[key].push(value);
+                            }
+                        };
+                        addFilterValue('vcpus', Number(p.vcpus));
+                        addFilterValue('memory', p.memory);
+                        addFilterValue('disk', p.disk);
+                    }
+                });
+                $scope.filterValues = filterValues;
+                $scope.filterProps.forEach(function (prop) {
+                    $scope.filterValues[prop].sort(function (a, b) {
+                        return a - b;
+                    });
+                });
+                $scope.filterModel.key = $scope.filterProps[0];
+                $scope.onFilterChange($scope.filterModel.key);
+            }
+
             var selectDataset = function (id, changeDataset) {
                 Image.image({id: id, datacenter: $scope.data.datacenter}).then(function (dataset) {
                     if (dataset.type === 'virtualmachine') {
@@ -607,38 +678,8 @@
                     $scope.filterModel.searchText = '';
                     dataset.visibility = dataset.public ? 'public' : 'custom';
 
-                    if ($scope.packages && dataset['license_price']) {
-                        var lPrice = util.getNr(dataset['license_price']);
-                        if (lPrice !== false) {
-                            $scope.packages.forEach(function (p) {
-                                if (p.price) {
-                                    p['full_price'] = lPrice + util.getNr(p.price);
-                                    p['full_price'] = p['full_price'].toFixed(3);
-                                }
-
-                                if (p['price_month']) {
-                                    p['full_price_month'] = util.getNr(p['price_month']) + (lPrice * 730);
-                                    p['full_price_month'] = p['full_price_month'].toFixed(2);
-                                }
-                            });
-                        }
-                    } else if (!dataset['license_price']) {
-                        $scope.packages.forEach(function (p) {
-                            delete(p['full_price']);
-                            delete(p['full_price_month']);
-                        });
-                    }
-
-                    if ($scope.features.freetier === 'enabled') {
-                        $scope.packages.forEach(function (p) {
-                            p.freeTierHidden = freeTierOptions.some(function (option) {
-                                var packageMatches = p.id === option.package;
-                                var datacenterMatches = option.datacenters.length > 0 &&
-                                        option.datacenters.indexOf($scope.data.datacenter) >= -1;
-                                return packageMatches && !datacenterMatches;
-                            });
-                        });
-                    }
+                    setPackagesPrice(dataset);
+                    setFreeTierHidden(freeTierOptions);
 
                     if (!changeDataset) {
                         $scope.setCurrentStep(SELECT_PACKAGE_STEP);
@@ -646,27 +687,7 @@
                     }
 
                     if ($scope.packages && !externalInstanceParams) {
-                        var filterValues = ng.copy(FilterValues);
-                        $scope.packages.forEach(function (p) {
-                            if ($scope.filterPackages()(p) && p.price) {
-                                var addFilterValue = function(key, value) {
-                                    if (filterValues[key].indexOf(value) === -1) {
-                                        filterValues[key].push(value);
-                                    }
-                                };
-                                addFilterValue('vcpus', Number(p.vcpus));
-                                addFilterValue('memory', p.memory);
-                                addFilterValue('disk', p.disk);
-                            }
-                        });
-                        $scope.filterValues = filterValues;
-                        $scope.filterProps.forEach(function (prop) {
-                            $scope.filterValues[prop].sort(function (a, b) {
-                                return a - b;
-                            });
-                        });
-                        $scope.filterModel.key = $scope.filterProps[0];
-                        $scope.onFilterChange($scope.filterModel.key);
+                        setFilterValues(FilterValues);
                     }
                     $scope.filteredVersions = Provision.filterVersions(dataset, hostSpecification).reverse();
                 });
@@ -747,11 +768,6 @@
                             }
                         }
                     }
-
-                    if (packageType && packageType !== item.group) {
-                        result = false;
-                    }
-
                     return result;
                 };
             };
