@@ -412,6 +412,9 @@
 
         containerActions.forEach(function (action) {
             service[action + 'Container'] = function (container, opts) {
+                if (!container) {
+                    return;
+                }
                 var options = {
                     direct: true,
                     host: {primaryIp: container.primaryIp, id: container.hostId, isSdc: container.isSdc},
@@ -441,6 +444,9 @@
                                 }
                             }
                             return false;
+                        }
+                        if (container.isSdc && action === 'remove') {
+                            Machine.removeSdcFromInstancesList(util.idToUuid(container.Id));
                         }
                         if (containerDoneHandler[action] && cache) {
                             containerDoneHandler[action](cache, options.options.id);
@@ -990,6 +996,9 @@
                 var sdcContainer = containers.find(function (container) {
                     return util.idToUuid(container.Id) === machine.id;
                 });
+                if (!sdcContainer || sdcContainer.isRemoving) {
+                    return;
+                }
                 return service.inspectContainer(sdcContainer).then(function (info) {
                     if (info.HostConfig.Links) {
                         return true;

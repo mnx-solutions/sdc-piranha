@@ -108,7 +108,8 @@
                                         setImageName(machine.image, machine);
                                     });
                                 }
-                                if (isSdc(machine) && $scope.features.docker === 'enabled') {
+                                if (isSdc(machine) && $scope.features.docker === 'enabled' &&
+                                    machine.state !== 'deleting') {
                                     Docker.hasLinkedContainers(machine).then(function (res) {
                                         machine.isLinkedContainer = res;
                                     });
