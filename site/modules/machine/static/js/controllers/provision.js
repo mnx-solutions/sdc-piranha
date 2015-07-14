@@ -166,6 +166,7 @@
 
             var provision = function (machine) {
                 var submitBillingInfo = {btnTitle: 'Next'};
+                var instanceFromPublicImage = ng.copy($scope.data);
                 if ($scope.keys.length > 0) {
                     submitBillingInfo.btnTitle = 'Submit and Create Instance';
                     submitBillingInfo.appendPopupMessage = 'Provisioning will now commence.';
@@ -223,7 +224,7 @@
                         TITLE_CREATE_INSTANCE,
                         popupContent,
                         function () {
-                            finalProvision($scope.data);
+                            finalProvision(instanceFromPublicImage);
                         },
                         function () {
                             var stepsCount = $scope.provisionSteps.length;
@@ -240,7 +241,7 @@
                         PROVISION_BUNDLE_KEYS.forEach(function (key) {
                             data[key] = $scope[key];
                         });
-                        data.machine = $scope.data;
+                        data.machine = instanceFromPublicImage;
                     } else {
                         data.simpleImage = true;
                         data.machine = machine;
