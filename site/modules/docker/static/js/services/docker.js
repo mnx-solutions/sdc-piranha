@@ -759,7 +759,13 @@
         };
 
         service.pushImage = function (opts) {
-            return createCall('uploadImage', opts);
+            return createCall('uploadImage', opts, function (error, chunks) {
+                chunks.forEach(function (chunk) {
+                    if (chunk.status !== 'Pushing') {
+                        opts.options.image.progress.push(chunk.status);
+                    }
+                });
+            });
         };
 
         service.getImageTagsList = function (imageTags) {

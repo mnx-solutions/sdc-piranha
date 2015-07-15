@@ -13,6 +13,7 @@
                                     <select id="registrySelect"
                                             data-ng-model="input.registryId"
                                             ui-select2="{width: '103%'}"
+                                            data-ng-disabled="image.progress"
                                             required>
                                         <option data-ng-repeat="registry in registries" value="{{registry.id}}">{{registry.userHost}}</option>
                                     </select>
@@ -26,6 +27,7 @@
                                            name="name"
                                            data-ng-model="input.name"
                                            data-ng-change="validateName()"
+                                           data-ng-disabled="image.progress"
                                            required/>
                             </span>
                         </div>
@@ -38,13 +40,18 @@
                         </div>
                     </div>
                 </form>
+                <div data-ng-show="image.progress" class="push-image-log">
+                    <p data-ng-repeat="status in image.progress track by $index" emit-last-repeater-element>{{status}}</p>
+                </div>
+                <span data-ng-show="image.progress" class="push-image-log-legend">Scroll down to autoscroll</span>
             </div>
             <div class="modal-body" data-ng-hide="loading || registries && registries.length">
                 No registries found suitable for pushing images.
             </div>
             <div class="modal-footer">
-                <button data-ng-click="close()" data-button-focus="false" data-label="Cancel" class="btn grey">Cancel</button>
-                <button data-ng-click="push()" data-button-focus="true" data-label="Push" class="btn orange" data-ng-disabled="loading || !input.name || errorMessage || registries && !registries.length">Push</button>
+                <button data-ng-if="image.progress" data-ng-click="close()" data-button-focus="true" data-label="Close" class="btn orange">Close</button>
+                <button data-ng-hide="image.progress" data-ng-click="close()" data-button-focus="false" data-label="Cancel" class="btn grey">Cancel</button>
+                <button data-ng-hide="image.progress" data-ng-click="push()" data-button-focus="true" data-label="Push" class="btn orange" data-ng-disabled="loading || !input.name || errorMessage || registries && !registries.length">Push</button>
             </div>
         </div>
     </div>
