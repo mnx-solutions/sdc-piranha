@@ -122,6 +122,7 @@
                                         datacenter: datacenter.name
                                     };
                                     params.name = image.datasetName;
+                                    params.type = image.datasetType;
                                     params.forceMajorVersion = image.forceMajorVersion;
                                     if (isFree && image.datacenters.indexOf(datacenter.name) === -1) {
                                         return;
@@ -341,47 +342,48 @@
                 var operatingSystems = {All: 1};
 
                 datasets.forEach(function (dataset) {
-                    var datasetName = dataset.name;
-                    var datasetVersion = dataset.version;
-                    var datasetVisibility = dataset.public ? 'public' : 'custom';
-                    var datasetListVersions = listVersions[datasetVisibility][datasetName] =
-                        listVersions[datasetVisibility][datasetName] || [];
-                    var datasetVersions = versions[datasetVisibility][datasetName];
+                    var name = dataset.name;
+                    var type = dataset.type;
+                    var version = dataset.version;
+                    var key = name + '-' + type;
+                    var visibility = dataset.public ? 'public' : 'custom';
+                    var datasetListVersions = listVersions[visibility][key] =
+                        listVersions[visibility][key] || [];
+                    var datasetVersions = versions[visibility][name];
 
                     if (dataset.os) {
-                        dataset.os = dataset.name.substr(0, 3) === 'lx-' ? 'linux' : dataset.os;
                         operatingSystems[dataset.os] = 1;
                     }
                     dataset.limit = checkLimit(dataset.id);
 
                     if (!datasetVersions) {
-                        datasetVersions = versions[datasetVisibility][datasetName] = {};
-                        datasetVersions[datasetVersion] = dataset;
-                        datasetListVersions = listVersions[datasetVisibility][datasetName] = [];
-                        datasetListVersions.push(datasetVersion);
-                    } else if (!datasetVersions[datasetVersion]) {
-                        manyVersions[datasetVisibility][datasetName] = true;
-                        datasetVersions[datasetVersion] = dataset;
-                        datasetListVersions.push(datasetVersion);
+                        datasetVersions = versions[visibility][name] = {};
+                        datasetVersions[version] = dataset;
+                        datasetListVersions = listVersions[visibility][key] = [];
+                        datasetListVersions.push(version);
+                    } else if (!datasetVersions[version]) {
+                        manyVersions[visibility][name] = true;
+                        datasetVersions[version] = dataset;
+                        datasetListVersions.push(version);
                     }
                     if (datasetListVersions.length > 1) {
                         datasetListVersions.sort(util.cmpVersion);
                     }
 
-                    var filterVersions = function (imageName, isPublic) {
+                    var filterVersions = function (imageName, imageKey, isPublic) {
                         var result = [];
                         var visibility = isPublic ? 'public' : 'custom';
-                        if (!listVersions[visibility][imageName]) {
+                        if (!listVersions[visibility][imageKey]) {
                             return result;
                         }
-                        listVersions[visibility][imageName].forEach(function (value) {
+                        listVersions[visibility][imageKey].forEach(function (value) {
                             result.push(versions[visibility][imageName][value]);
                         });
 
                         return result;
                     };
-                    selectedVersions.public[datasetName] = filterVersions(datasetName, true);
-                    selectedVersions.custom[datasetName] = filterVersions(datasetName, false);
+                    selectedVersions.public[key] = filterVersions(name, key, true);
+                    selectedVersions.custom[key] = filterVersions(name, key, false);
                 });
 
                 var customDatasets = Object.keys(selectedVersions.custom)
@@ -400,7 +402,7 @@
 
             service.filterVersions = function (dataset, hostSpecification) {
                 var datasetVisibility = dataset.public ? 'public' : 'custom';
-                var listVersionsByDataset = listVersions[datasetVisibility][dataset.name];
+                var listVersionsByDataset = listVersions[datasetVisibility][dataset.name + '-' + dataset.type];
                 var versionsByDataset = versions[datasetVisibility][dataset.name];
                 var filteredVersions = [];
 
@@ -417,7 +419,7 @@
             service.getLastDatasetId = function (dataset) {
                 var datasetVisibility = dataset.public ? 'public' : 'custom';
                 var versionsByDataset = versions[datasetVisibility][dataset.name];
-                return versionsByDataset[listVersions[datasetVisibility][dataset.name].slice(-1)[0]].id;
+                return versionsByDataset[listVersions[datasetVisibility][dataset.name + '-' + dataset.type].slice(-1)[0]].id;
             };
 
             service.processPackages = function (packages, hostSpecification, callback) {
