@@ -12,11 +12,13 @@
     {
         "name": "Ubuntu 14.04",
         "datasetName": "ubuntu-14.04",
+        "datasetType": "smartmachine",
         "package": "4dad8aa6-2c7c-e20a-be26-c7f4f1925a9a"
     },
     {
         "name": "CentOS 6",
         "datasetName": "centos-6",
+        "datasetType": "smartmachine",
         "package": "4dad8aa6-2c7c-e20a-be26-c7f4f1925a9a"
     }
 ]
