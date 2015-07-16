@@ -834,6 +834,14 @@
             return job.promise;
         };
 
+        service.removeSdcFromInstancesList = function (machineId) {
+            machines.list.splice(machines.list.indexOf(machines.index[machineId]), 1);
+            delete machines.index[machineId];
+            if ($location.path().indexOf('/compute/instance/') !== -1) {
+                $location.path('/compute');
+            }
+        };
+
         service.getTagFilter = function (tag, items) {
             if (tag && items.length) {
                 return {
