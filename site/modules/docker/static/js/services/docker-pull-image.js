@@ -304,6 +304,10 @@
                             ]).then(function (result) {
                                 $scope.hosts = result[0] && result[0].length ? removeUnreachableHosts(result[0]) : [];
                                 $scope.tags = result[1] || [];
+                                if (!$scope.tags.length) {
+                                    $scope.close();
+                                    return errorCallback({message: 'Tag not found.'}, $scope);
+                                }
                                 $scope.tag = $scope.tags[0].name || null;
                                 $scope.loading = false;
                                 $scope.hosts && $scope.hosts.forEach(function (host) {
