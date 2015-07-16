@@ -202,18 +202,20 @@
                     var listVersions = [];
 
                     data.forEach(function (image) {
-                        if (!image.public) {
+                        var imageName = image.name;
+                        if (!image.public || imageName === params.name && params.type &&
+                            image.type !== params.type) {
                             return;
                         }
-                        if (!listImages[image.name]) {
-                            listImages[image.name] = {};
+                        if (!listImages[imageName]) {
+                            listImages[imageName] = {};
                         }
 
-                        listImages[image.name][image.version] = image.id;
-                        listVersions[image.name] = Object.keys(listImages[image.name]);
+                        listImages[imageName][image.version] = image.id;
+                        listVersions[imageName] = Object.keys(listImages[imageName]);
 
-                        if (listVersions[image.name].length > 1) {
-                            listVersions[image.name].sort(function (a, b) {
+                        if (listVersions[imageName].length > 1) {
+                            listVersions[imageName].sort(function (a, b) {
                                 return util.cmpVersion(a, b);
                             });
                         }
