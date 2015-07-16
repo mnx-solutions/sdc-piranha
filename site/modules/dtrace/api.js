@@ -36,18 +36,18 @@ var SUBUSER_LIST_RULES = [
 ];
 var DEVTOOLS_MANTA_PATH = '~~/stor/.joyent/devtools';
 
-function formatUrl(url, params) {
-    // noinspection JSLint
-    return url.replace(/(?::(\w+))/g, function (part, key) {
-        var value = params[key];
-        delete params[key];
-        return value;
-    });
-}
-
 exports.init = function execute(log, config, done) {
     var api = {};
     var MantaClient = require('../storage').MantaClient;
+
+    api.formatUrl = function (url, params) {
+        // noinspection JSLint
+        return url.replace(/(?::(\w+))/g, function (part, key) {
+            var value = params[key];
+            delete params[key];
+            return value;
+        });
+    };
 
     api.createHost = function (call, options, callback) {
         delete options.specification;
@@ -137,7 +137,7 @@ exports.init = function execute(log, config, done) {
 
             var options = {
                 log: log,
-                path: formatUrl(opts.path, params),
+                path: api.formatUrl(opts.path, params),
                 method: opts.method || 'GET',
                 retries: false,
                 connectTimeout: 5000

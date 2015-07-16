@@ -127,17 +127,19 @@
         };
 
         service.addRegistryUsernames = function (registries, excludeUnauthorizedDefaultRegistry) {
+            var changeRegistryUserHost = function (registry) {
+                var PROTOCOLS = ['http://', 'https://'];
+                PROTOCOLS.forEach(function (protocol) {
+                    if (registry.host.indexOf(protocol) > -1) {
+                        registry.userHost = registry.host.replace(protocol, protocol + registry.username + '@');
+                    }
+                });
+            }
             for (var i = registries.length - 1; i >= 0; i--) {
                 var registry = registries[i];
                 registry.userHost = registry.host;
                 if (registry.username) {
-                    var protocols = ['http://', 'https://'];
-                    protocols.forEach(function (protocol) {
-                        if (registry.host.indexOf(protocol) > -1) {
-                            var hostAddress = registry.host.split(protocol)[1];
-                            registry.userHost = protocol + registry.username + '@' + hostAddress;
-                        }
-                    });
+                    changeRegistryUserHost(registry);
                 } else if (excludeUnauthorizedDefaultRegistry && registry.host.indexOf('index.docker.io') !== -1) {
                     registries.splice(i, 1);
                 }
@@ -150,6 +152,9 @@
                 name: 'DockerRun',
                 data: {host: host, options: options},
                 done: function (err, data) {
+                    if (err) {
+                        PopupDialog.errorObj(err);
+                    }
                     var cache = service.cache['containers'];
                     if (cache && containerDoneHandler.create) {
                         containerDoneHandler.create(cache);
@@ -162,6 +167,9 @@
 
         var doneHandler = {
             containers: function (err, data) {
+                if (err) {
+                    PopupDialog.errorObj(err);
+                }
                 if (data && data.length) {
                     data.forEach(function (container) {
                         if (container.Names && container.Names.length) {
@@ -174,6 +182,9 @@
                 }
             },
             images: function (err, data) {
+                if (err) {
+                    PopupDialog.errorObj(err);
+                }
                 if (data && data.length) {
                     data = data.filter(function (image) {
                         return image.ParentId || image.isSdc;
@@ -196,6 +207,9 @@
                 }
             },
             deleteRegistry: function (err, data, options) {
+                if (err) {
+                    PopupDialog.errorObj(err);
+                }
                 var registry = options.registry;
                 if (registry.type === 'local' && service.cache['containers']) {
                     service.cache['containers'].reset();
@@ -285,6 +299,10 @@
                 name += 'All';
             }
             options = options || {};
+            return createJobCall(job, method, options, name, cache, jobKey);
+        }
+
+        function createJobCall(job, method, options, name, cache, jobKey) {
             var suppressErrors = options.suppressErrors;
             var lastIndex = 0;
             job.promise = serverTab.call({
@@ -326,7 +344,7 @@
                     delete service.jobs[jobKey];
                 },
                 error: function (err) {
-                    if (typeof (err) === 'object' && !err.error) {
+                    if (typeof err === 'object' && !err.error) {
                         err.error = err.syscall ? err.syscall + ' ' : '';
                         err.error += err.errno || '';
                     }
@@ -766,6 +784,9 @@
 
         service.pushImage = function (opts) {
             return createCall('uploadImage', opts, function (error, chunks) {
+                if (error) {
+                    PopupDialog.errorObj(error);
+                }
                 chunks.forEach(function (chunk) {
                     if (chunk.status !== 'Pushing') {
                         opts.options.image.progress.push(chunk.status);

@@ -82,15 +82,6 @@ function CAdvisorUnreachable() {
 }
 util.inherits(CAdvisorUnreachable, Error);
 
-function formatUrl(url, params) {
-    //noinspection JSLint
-    return url.replace(/(?::(\w+))/g, function (part, key) {
-        var value = params[key];
-        delete params[key];
-        return value;
-    });
-}
-
 function createCallback(dockerInstance, opts, auditParams, callback) {
     //noinspection JSLint
     return function (error, req, res, data) {
@@ -118,57 +109,88 @@ function createCallback(dockerInstance, opts, auditParams, callback) {
             auditParams.error = true;
             auditParams.errorMessage = error.body && error.body.error || error.message || error;
         }
-        checkAccountBilling(dockerInstance, function () {
-            if (dockerInstance.billingAvailable && !auditParams.silent && dockerInstance.auditor && (opts.auditType === 'docker' ||
-                (opts.auditType && opts.auditType !== 'docker' && (auditParams.id || auditParams.Id)))) {
-                if (!(dockerInstance.options.host && dockerInstance.options.host.id)) {
-                    req.log.warn({opts: opts, dockerOpts: dockerInstance.options}, 'Host not defined');
-                } else {
-                    setImmediate(function () {
-                        dockerInstance.auditor.put({
-                            host: dockerInstance.options.host.id,
-                            entry: auditParams.Id || auditParams.id,
-                            type: opts.auditType,
-                            name: dockerInstance.options.methodName
-                        }, auditParams);
-                    });
-                }
-            }
-            if (opts.noParse) {
-                data = res.body.toString();
-            }
+        checkAccountBilling(dockerInstance, auditParams, opts, req, res, data, function (error, data) {
             callback(auditParams.errorMessage, data);
         });
     };
 }
 
-function checkAccountBilling(dockerInstance, callback) {
+function checkAccountBilling(dockerInstance, auditParams, opts, req, res, data, callback) {
+    function putDockerInstanceToAuditor() {
+        var hostId = dockerInstance.options.host && dockerInstance.options.host.id;
+        var entryId = auditParams.Id || auditParams.id;
+        if (dockerInstance.billingAvailable && !auditParams.silent && dockerInstance.auditor &&
+            opts.auditType && (opts.auditType === 'docker' || opts.auditType !== 'docker' && entryId)) {
+            if (hostId) {
+                setImmediate(function () {
+                    dockerInstance.auditor.put({
+                        host: hostId,
+                        entry: entryId,
+                        type: opts.auditType,
+                        name: dockerInstance.options.methodName
+                    }, auditParams);
+                });
+            } else {
+                req.log.warn({opts: opts, dockerOpts: dockerInstance.options}, 'Host not defined');
+            }
+        }
+        if (opts.noParse) {
+            data = res.body.toString();
+        }
+        callback(null, data);
+    }
+
     if (typeof dockerInstance.billingAvailable === 'undefined') {
         var Billing = require('../account').Billing;
         Billing.isActive(dockerInstance.userId, function (err, isActive) {
             dockerInstance.billingAvailable = !err && isActive;
-            callback();
+            putDockerInstanceToAuditor();
         });
     } else {
-        callback();
+        putDockerInstanceToAuditor();
     }
+}
+
+function getQuery(params, options, opts) {
+    var query = {};
+    var param, header;
+    var headers = params.headers;
+    var optsParams = opts.params;
+    if (params.forceMethod) {
+        options.method = params.forceMethod;
+        delete params.forceMethod;
+    }
+    if (headers) {
+        for (header in headers) {
+            if (headers.hasOwnProperty(header)) {
+                options.headers[header] = headers[header];
+            }
+        }
+        delete params.headers;
+    }
+    for (param in optsParams) {
+        if (optsParams.hasOwnProperty(param)) {
+            if (params.hasOwnProperty(param)) {
+                query[param] = params[param];
+            } else if (optsParams[param] !== '=') {
+                query[param] = optsParams[param];
+            }
+        }
+    }
+    return query;
 }
 
 function createMethod(log, opts, selfName) {
     return function (params, callback) {
+        var Dtrace = require('../dtrace').Dtrace;
         if (!callback) {
-            callback = params;
+            callback = params || function () {};
             params = {};
-        }
-        if (!callback) {
-            callback = function () {};
         }
         if (this.options.error) {
             return callback(this.options.error);
         }
-        if (!params) {
-            params = {};
-        }
+        params = params || {};
 
         var raw = params.forceRaw || opts.raw;
         delete params.forceRaw;
@@ -185,35 +207,13 @@ function createMethod(log, opts, selfName) {
         }
         var options = {
             log: log,
-            path: formatUrl(path, params),
+            path: Dtrace.formatUrl(path, params),
             method: opts.method || 'GET',
             retries: opts.retries || false,
             connectTimeout: opts.timeout,
             headers: opts.headers || {}
         };
-        var query = {};
-        var param, header;
-        if (params.forceMethod) {
-            options.method = params.forceMethod;
-            delete params.forceMethod;
-        }
-        if (params.headers) {
-            for (header in params.headers) {
-                if (params.headers.hasOwnProperty(header)) {
-                    options.headers[header] = params.headers[header];
-                }
-            }
-            delete params.headers;
-        }
-        for (param in opts.params) {
-            if (opts.params.hasOwnProperty(param)) {
-                if (params.hasOwnProperty(param)) {
-                    query[param] = params[param];
-                } else if (opts.params[param] !== '=') {
-                    query[param] = opts.params[param];
-                }
-            }
-        }
+        var query = getQuery(params, options, opts);
         options.path += qs.stringify(query) ? '?' + qs.stringify(query) : '';
         var client;
         if (forceNewConnectionMethods.indexOf(selfName) !== -1) {
@@ -237,8 +237,7 @@ function createMethod(log, opts, selfName) {
 }
 
 function createApi(log, map, container) {
-    var name;
-    for (name in map) {
+    for (var name in map) {
         if (map.hasOwnProperty(name)) {
             container[name] = createMethod(log, map[name], name);
         }
@@ -571,7 +570,7 @@ exports.init = function execute(log, config, done) {
         var sdcDockerConfig = getSdcDockerConfig(hostId);
         if (sdcDockerConfig) {
             return verifySDCDockerAvailability(call, sdcDockerConfig, function (error, host) {
-                callback(null, host);
+                callback(error, host);
             });
         }
         call.cloud.listDatacenters(function (error, datacenters) {
@@ -607,7 +606,7 @@ exports.init = function execute(log, config, done) {
                         });
                         return callback(host ? null : 'Docker host not found', host);
                     }
-                    callback(null, hosts);
+                    callback(errors, hosts);
                 });
             });
         });
@@ -645,6 +644,9 @@ exports.init = function execute(log, config, done) {
         }, config.polling.dockerHostTimeout);
         function getHostStatus() {
             api.getHostStatus(call, host.id, function (error, status) {
+                if (error) {
+                    call.log.info({error: error});
+                }
                 if (status === 'completed') {
                     delete waitForHosts[pollerKey];
                     return poller.emit('completed');
@@ -715,7 +717,7 @@ exports.init = function execute(log, config, done) {
         options.tags['JPC_tag'] = 'DockerHost';
 
         if (disableTls) {
-            options.metadata['user-script'] = startupScript.replace('%__disable-tls__%', disableTls);;
+            options.metadata['user-script'] = startupScript.replace('%__disable-tls__%', disableTls);
             Machine.Create(call, options, callback);
             return;
         }
@@ -803,7 +805,7 @@ exports.init = function execute(log, config, done) {
                     call.log.error({result: result}, 'Can\'t parse docker status');
                 }
             }
-            callback(null, status);
+            callback(error, status);
         });
     };
 
@@ -1000,7 +1002,6 @@ exports.init = function execute(log, config, done) {
     };
 
     api.getRegistries = function (call, client, callback, fromCache) {
-
         if (typeof (client) === 'function') {
             fromCache = callback;
             callback = client;
@@ -1064,6 +1065,9 @@ exports.init = function execute(log, config, done) {
 
     api.deleteRegistry = function (call, key, value, callback) {
         api.getRegistries(call, function (error, list) {
+            if (error) {
+                return callback(error, true);
+            }
             var id;
             list = list.filter(function (item) {
                 var condition = key === 'host' ? item.host === value && parseInt(item.port, 10) === 5000 : item[key] === value;
@@ -1128,7 +1132,7 @@ exports.init = function execute(log, config, done) {
                         }
                     }
                 });
-                callback(null, results);
+                callback(errors, results);
             });
         });
     };
