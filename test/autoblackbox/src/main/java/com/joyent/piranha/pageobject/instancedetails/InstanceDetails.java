@@ -46,7 +46,7 @@ public class InstanceDetails extends AbstractPageObject {
     }
 
     public ImagesSection openImagesSection() {
-        $("#accordion1 a[data-target=\"#collapse_images\"]").click();
+        $("#machine-accordion a[data-target=\"#collapse_images\"]").click();
         return page(ImagesSection.class);
     }
 
