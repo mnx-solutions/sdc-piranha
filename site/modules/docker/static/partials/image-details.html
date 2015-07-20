@@ -12,10 +12,10 @@
 
     <div class="inl-table" data-ng-hide="loading">
         <div class="left-part">
-            <div class="panel-group" id="accordion1">
+            <div class="panel-group" id="container-accordion">
                 <div class="panel panel-default">
                     <div class="panel-heading">
-                        <a class="accordion-toggle toggle-icon" data-toggle="collapse" data-parent="#accordion1"
+                        <a class="accordion-toggle toggle-icon" data-toggle="collapse" data-parent="#container-accordion"
                            data-target="#collapse_summary">
                             Summary
                         </a>
@@ -79,7 +79,7 @@
 
                 <div class="panel panel-default" data-ng-show="images && images.length">
                     <div class="panel-heading">
-                        <a class="accordion-toggle collapsed toggle-icon" data-toggle="collapse" data-parent="#accordion1"
+                        <a class="accordion-toggle collapsed toggle-icon" data-toggle="collapse" data-parent="#container-accordion"
                            data-target="#collapse_history">
                             Image History
                         </a>
@@ -104,9 +104,7 @@
                     </div>
                 </div>
 
-                <div class="panel panel-default">
-                    <div data-audit-accordion data-type="'image'" data-items="audit"></div>
-                </div>
+                <div class="panel panel-default" data-audit-accordion data-type="'image'" data-items="audit"></div>
             </div>
         </div>
     </div>
