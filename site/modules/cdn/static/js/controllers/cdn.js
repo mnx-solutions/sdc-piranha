@@ -17,7 +17,7 @@
             requestContext.setUpRenderContext('cdn.index', scope);
 
             if (scope.features.manta === 'enabled') {
-                scope.gridUserConfig = Account.getUserConfig().$child('CdnConfigurations');
+                scope.gridUserConfig = 'CdnConfigurations'
             }
 
             var MESSAGE_NOT_AUTHORIZED = 'You are not authorized, please set you API key.';

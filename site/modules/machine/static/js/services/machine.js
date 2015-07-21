@@ -26,21 +26,19 @@
             createInstancePageConfig = config;
         };
         service.setCreateInstancePage = function (page) {
-            if (createInstancePageConfig && createInstancePageConfig.loaded()) {
+            if (createInstancePageConfig) {
                 createInstancePageConfig.page = page;
-                createInstancePageConfig.dirty(true);
-                createInstancePageConfig.$save();
+                Account.saveUserConfig();
             }
         };
         service.gotoCreatePage = function () {
-            if (!(createInstancePageConfig && createInstancePageConfig.loaded())) {
+            if (!createInstancePageConfig) {
                 $location.path('/compute/create/simple');
                 return;
             }
             if (createInstancePageConfig.page === undefined || (createInstancePageConfig.page === 'recent' && $rootScope.features.recentInstances !== 'enabled')) {
                 createInstancePageConfig.page = 'simple';
-                createInstancePageConfig.dirty(true);
-                createInstancePageConfig.$save();
+                Account.saveUserConfig();
             }
             var page = createInstancePageConfig.page ? '/' + createInstancePageConfig.page : '';
             $location.path('/compute/create' + page);

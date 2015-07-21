@@ -40,7 +40,7 @@
                 };
 
                 if ($scope.features.manta === 'enabled') {
-                    $scope.gridUserConfig = Account.getUserConfig().$child('dtrace-scripts');
+                    $scope.gridUserConfig = 'dtrace-scripts';
                 }
 
                 $scope.gridOrder = ['-Created'];

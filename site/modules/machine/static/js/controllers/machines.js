@@ -440,7 +440,7 @@
             }
 
             if ($scope.features.manta === 'enabled') {
-                $scope.gridUserConfig = Account.getUserConfig().$child('machines');
+                $scope.gridUserConfig = 'machines';
             }
 
             $scope.gridDetailProps = [

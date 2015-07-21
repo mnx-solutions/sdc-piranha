@@ -32,7 +32,7 @@
             };
 
             if ($scope.features.manta === 'enabled') {
-                $scope.gridUserConfig = Account.getUserConfig().$child('rbac-roles') || {};
+                $scope.gridUserConfig = 'rbac-roles';
             }
 
             $scope.gridOrder = ['name'];

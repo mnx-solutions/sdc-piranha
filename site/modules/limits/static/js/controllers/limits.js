@@ -20,7 +20,7 @@
                 $scope.limits = limits;
             });
 
-            $scope.gridUserConfig = Account.getUserConfig().$child('limits');
+            $scope.gridUserConfig = 'limits';
 
             $scope.gridOrder = ['datacenter'];
             $scope.exportFields = {};

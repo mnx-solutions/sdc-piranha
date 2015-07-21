@@ -603,7 +603,7 @@
 
                 if (scope.features.firewall === 'enabled') {
                     if (scope.features.manta === 'enabled') {
-                        scope.gridUserConfig = Account.getUserConfig().$child('firewall-details');
+                        scope.gridUserConfig = 'firewall-details';
                     }
                     scope.gridOrder = [];
                     scope.gridProps = [
@@ -689,7 +689,7 @@
 
                 if (scope.features.docker === 'enabled') {
                     if (scope.features.manta === 'enabled') {
-                        scope.gridUserConfigDocker = Account.getUserConfig().$child('docker-machine-containers');
+                        scope.gridUserConfigDocker = 'docker-machine-containers';
                     }
                     scope.gridOrderDocker = ['-created'];
                     scope.gridPropsDocker = [

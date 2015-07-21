@@ -39,7 +39,7 @@
                     }, errorCallback);
                 });
 
-                $scope.gridUserConfig = Account.getUserConfig().$child('docker-registries');
+                $scope.gridUserConfig = 'docker-registries';
 
                 $scope.gridOrder = [];
                 $scope.gridProps = [

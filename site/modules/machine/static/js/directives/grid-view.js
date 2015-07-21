@@ -135,14 +135,9 @@
                 $scope.tabFilter = $scope.tabFilterDefault || $scope.tabFilter || $scope.tabFilters.slice(-1)[0];
             };
 
-            var tabFilterUserConfig = null;
-            if ($rootScope.features.manta === 'enabled') {
-                tabFilterUserConfig = Account.getUserConfig().$child($scope.tabFilterField);
-            }
-
             var loadCurrentTabFilter = function () {
-                if (tabFilterUserConfig) {
-                    tabFilterUserConfig.$load(function (error, config) {
+                if ($rootScope.features.manta === 'enabled') {
+                    Account.getUserConfig($scope.tabFilterField, function (config) {
                         $timeout(function () {
                             $scope.tabFilter = $scope.forceTabActive || config.value;
                         });
@@ -151,8 +146,7 @@
                         $scope.$watch('tabFilter', function (filter) {
                             if (filter) {
                                 config.value = filter;
-                                config.dirty(true);
-                                config.$save();
+                                Account.saveUserConfig($scope.tabFilterField, config);
                             }
                         });
                     });
@@ -303,14 +297,13 @@
                 }
             });
 
-            if ($scope.userConfig.loaded()) {
+            if ($scope.gridUserConfig) {
                 var userConfig = $scope.gridUserConfig.config;
                 userConfig.order = orderConfigMap;
                 if ($scope.fantomSort && $scope.fantomSort.active) {
                     delete userConfig.order;
                 }
-                userConfig.dirty(true);
-                userConfig.$save();
+                Account.saveUserConfig($scope.userConfig, userConfig);
             }
         };
 
@@ -565,17 +558,23 @@
                     PopupDialog.message(null, 'At least one column should be selected.');
                 }
             }
+            var isGridUserConfigDirty = false;
             $scope.props.forEach(function (el) {
                 if (el.id === id) {
                     el.active = (el.active) ? false : true;
                     oneCheckboxSelected(el);
-                    if ($scope.userConfig.loaded()) {
+                    if ($scope.gridUserConfig) {
                         $scope.gridUserConfig.propKeys[id].active = el.active;
-                        $scope.gridUserConfig.config.dirty(true);
+                        $scope.gridUserConfig.config.props.find(function (prop) {
+                            return prop.id === id;
+                        }).active = el.active;
+                        isGridUserConfigDirty = true;
                     }
                 }
             });
-            $scope.userConfig.$save();
+            if (isGridUserConfigDirty) {
+                Account.saveUserConfig($scope.userConfig, $scope.gridUserConfig.config);
+            }
         };
 
         $scope.noClose = function () {
@@ -603,7 +602,7 @@
         multisort: true,
         controls: true
     })
-    .directive('gridView', ['gridConfig', '$rootScope', function (gridConfig, $rootScope) {
+    .directive('gridView', ['gridConfig', '$rootScope', 'Account', function (gridConfig, $rootScope, Account) {
         return {
             restrict: 'EA',
             scope: {
@@ -750,31 +749,9 @@
                 onPropsChanges();
 
                 var loadUserConfig = function () {
-                    if (!$scope.userConfig) {
-                        $scope.userConfig = {
-                            $load: function (callback) {
-                                this._loaded = true;
-                                callback(null, $scope.userConfig);
-                            },
-                            $save: function () {
-                            },
-                            $child: function () {
-                                return $scope.userConfig;
-                            },
-                            dirty: function () {
-                            },
-                            _loaded: false,
-                            loaded: function () {
-                                return this._loaded;
-                            }
-                        };
-                    }
-
-                    $scope.userConfig.$load(function (error, config) {
-                        if (error) {
-                            $scope.loading = false;
-                            return;
-                        }
+                    Account.getUserConfig($scope.userConfig, function (config) {
+                        $scope.userConfigData = config;
+                        var isConfigDirty = false;
                         var propKeys = {};
                         $scope.gridUserConfig = {
                             config: config,
@@ -787,13 +764,13 @@
                             });
                         } else {
                             config.props = [];
-                            config.dirty(true);
+                            isConfigDirty = true;
                         }
 
                         if ($scope.paginated) {
                             if (!ng.isDefined(config.perPage)) {
                                 config.perPage = $scope.perPage;
-                                config.dirty(true);
+                                isConfigDirty = true;
                             } else {
                                 $scope.perPage = config.perPage;
                             }
@@ -815,14 +792,16 @@
                             } else {
                                 propKeys[el.id] = el;
                                 config.props.push(el);
-                                config.dirty(true);
+                                isConfigDirty = true;
                             }
                             if (ng.isDefined(config.order) && ng.isDefined(config.order[el.name])) {
                                 $scope.order.push(config.order[el.name] ? el.order : el.rorder);
                             }
                             setColumnActive(el);
                         });
-                        config.$save();
+                        if (isConfigDirty) {
+                            Account.saveUserConfig($scope.userConfig, config);
+                        }
                         $scope.loading = false;
                     });
                 };
@@ -834,17 +813,16 @@
 
                 $scope.$on('propsChanged', function(event, args) {
                     onPropsChanges(null, args.props);
-                    $scope.userConfig = args.gridUserConfig;
+                    $scope.userConfigData = args.gridUserConfig;
                     loadUserConfig();
                 });
 
                 $scope.$watch('perPage', function (num) {
-                    if (ng.isDefined(num) && $scope.paginated) {
-                        var config = $scope.userConfig;
-                        if (config.loaded() && config.perPage != num) {
+                    if (ng.isDefined(num) && $scope.paginated && $scope.userConfigData) {
+                        var config = $scope.userConfigData;
+                        if (config.perPage != num) {
                             config.perPage = $scope.perPage;
-                            config.dirty(true);
-                            config.$save();
+                            Account.saveUserConfig($scope.userConfig, config);
                         }
                     }
                 });

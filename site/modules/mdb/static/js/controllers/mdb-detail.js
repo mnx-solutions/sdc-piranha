@@ -23,14 +23,14 @@
             $scope.objects = [];
             $scope.modules = [];
             if ($scope.features.manta === 'enabled') {
-                $scope.gridUserConfig = Account.getUserConfig().$child('mdb');
-            }
-
-            if ($scope.gridUserConfig.inputFile) {
-                $scope.inputFile = $scope.gridUserConfig.inputFile;
-                delete $scope.gridUserConfig.inputFile;
-                $scope.gridUserConfig.dirty(true);
-                $scope.gridUserConfig.$save();
+                $scope.gridUserConfig = mdb;
+                Account.getUserConfig('mdb', function (config) {
+                    if (config.inputFile) {
+                        $scope.inputFile = config.inputFile;
+                        delete config.inputFile;
+                        Account.saveUserConfig();
+                    }
+                });
             }
 
             $scope.gridOrder = ['objects'];

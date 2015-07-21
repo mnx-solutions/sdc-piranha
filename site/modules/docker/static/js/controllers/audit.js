@@ -44,7 +44,7 @@
             };
 
             if ($scope.features.manta === 'enabled') {
-                $scope.gridUserConfig = Account.getUserConfig().$child('docker-audit');
+                $scope.gridUserConfig = 'docker-audit';
             }
 
             $scope.query = '';

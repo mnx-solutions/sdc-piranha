@@ -336,97 +336,57 @@
             };
 
             service.userConfig = null;
-            service.getUserConfig = function () {
-                function load(callback) {
-                    service.getAccount().then(function (provisionAccount) {
-                        if (provisionAccount.provisionEnabled) {
+            service.userConfigDeferred = null;
+
+            service.getUserConfig = function (configProperty, callback) {
+                var loadUserConfig = function () {
+                    if (service.userConfigDeferred) {
+                        return service.userConfigDeferred.promise;
+                    }
+                    service.userConfigDeferred = $q.defer();
+
+                    service.getAccount().then(function (account) {
+                        if (account.provisionEnabled) {
                             serverTab.call({
                                 name: 'GetUserConfig',
                                 data: {},
                                 done: function (err, job) {
                                     if (err) {
-                                        callback(err, {});
+                                        service.userConfig = {};
+                                        service.userConfigDeferred.reject(err);
                                         return;
                                     }
-                                    callback(null, job.__read());
+                                    service.userConfig = job.__read();
+                                    service.userConfigDeferred.resolve(service.userConfig);
                                 }
                             });
                         } else {
-                            callback(null, {});
+                            service.userConfig = {};
+                            service.userConfigDeferred.resolve(service.userConfig);
                         }
                     });
+
+                    return service.userConfigDeferred.promise;
+                };
+
+                if (service.userConfig) {
+                    service.userConfig[configProperty] = service.userConfig[configProperty] || {};
+                    return callback(service.userConfig[configProperty]);
                 }
-
-                function UserConfig(config, parent) {
-                    if (!parent && service.userConfig) {
-                        return service.userConfig;
-                    }
-                    if (!(this instanceof UserConfig)) {
-                        return new UserConfig(config, parent);
-                    }
-
-                    service.userConfig = this;
-                    angular.extend(this, config);
-                    this._parent = parent || service.userConfig;
-                    this._dirty = false;
-                    return this;
-                }
-                UserConfig.prototype.dirty = function (value) {
-                    if (Boolean(value) === value) {
-                        this._parent._dirty = value;
-                    }
-                    return this._parent._dirty;
-                };
-                UserConfig.prototype.$save = function () {
-                    if (this.dirty()) {
-                        service.setUserConfig(this._parent);
-                        this.dirty(false);
-                    }
-                };
-                UserConfig.prototype.loaded = function () {
-                    return this._parent._loaded;
-                };
-                UserConfig.prototype.$load = function (callback) {
-                    var self = this;
-                    if (this.loaded()) {
-                        callback(null, this);
-                    } else {
-                        load(function (err, cfg) {
-                            angular.extend(self._parent, cfg);
-                            self._parent._loaded = true;
-                            callback(err, self._child ? self._parent.$child(self._child) : self);
-                        });
-                    }
-                };
-
-                UserConfig.prototype.$child = function (name) {
-                    if (this._child) {
-                        return this._parent.$child(name);
-                    }
-                    var config = this._parent[name] || {};
-                    if (config instanceof UserConfig) {
-                        return config;
-                    }
-                    this._parent[name] = new UserConfig(config, this);
-                    this._parent[name]._child = name;
-                    return this._parent[name];
-                };
-
-                UserConfig.prototype.toJSON = function () {
-                    var config = {};
-                    var k;
-                    for (k in this) {
-                        if (this.hasOwnProperty(k) && k[0] !== '_') {
-                            config[k] = this[k];
-                        }
-                    }
-                    return config;
-                };
-
-                return new UserConfig({});
+                loadUserConfig().then(function (userConfig) {
+                    userConfig[configProperty] = userConfig[configProperty] || {};
+                    callback(userConfig[configProperty])
+                }, function (error) {
+                    PopupDialog.errorObj(error);
+                    callback(service.userConfig);
+                });
             };
 
-            service.setUserConfig = function (config) {
+            service.saveUserConfig = function (key, value) {
+                if (value && key) {
+                    service.userConfig[key] = value;
+                }
+                config = service.userConfig;
                 var deferred = $q.defer();
                 service.getAccount().then(function (provisionAccount) {
                     if (provisionAccount.provisionEnabled) {
