@@ -424,6 +424,7 @@ module.exports = function execute(log, config) {
                     name: (call.data.name || 'My Image'),
                     version: (call.data.version || '1.0.0'), // We default to version 1.0.0
                     description: (call.data.description || ''),
+                    'published_at': call.data['published_at'],
                     datacenter: call.data.datacenter
                 };
 

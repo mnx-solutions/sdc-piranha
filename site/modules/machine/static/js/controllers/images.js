@@ -19,10 +19,18 @@
             });
 
             $scope.loading = true;
-            var loadListImages = function () {
-                Image.image().then(function (data) {
+            var loadListImages = function (updateCache) {
+                Image.image(null, updateCache).then(function (data) {
                     $scope.images = data;
                     $scope.loading = false;
+                    var creatingImage = $scope.images.find(function (image) {
+                        return image.state === 'creating';
+                    });
+                    if (creatingImage) {
+                        setTimeout(function () {
+                            loadListImages(true);
+                        }, 15000);
+                    }
                 }, function (err) {
                     PopupDialog.errorObj(err);
                     $scope.images = [];

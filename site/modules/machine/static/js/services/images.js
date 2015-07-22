@@ -33,7 +33,7 @@
                 var oldPrivate = null;
                 var indexImage = images.index[image.id];
                 var imagesList = images.list;
-                var datacenterList = imagesList[image.datacenter];
+                var datacenterList = imagesList[image.datacenter] || [];
                 var allList = imagesList['all'];
                 var privateList = imagesList['private'];
                 if (indexImage) {
@@ -163,13 +163,17 @@
                 return images.job;
             };
 
-            service.image = function (params, force) {
+            service.image = function (params, updateCache) {
                 var deferred = $q.defer();
                 if (typeof params === 'string') {
                     params = {id: params};
                 }
+                if (updateCache) {
+                    list = [];
+                    images = {index: {}, job: null, list: {private: [], all: []}};
+                }
 
-                if (images.list.final && !images.error) {
+                if (images.list.final && !images.error && !updateCache) {
                     list = filterImages(params);
                     if (list) {
                         deferred.resolve(list);
@@ -376,6 +380,7 @@
                         name: name,
                         description: description,
                         datacenter: datacenter,
+                        'published_at': image['published_at'],
                         version: version
                     },
                     initialized: function (err, job) {

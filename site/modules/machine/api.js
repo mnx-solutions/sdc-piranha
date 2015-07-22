@@ -9,6 +9,7 @@ exports.init = function execute(log, config, done) {
     var utils = require('../../../lib/utils');
 
     var api = {};
+    var creatingImagesCache = {};
 
     var IMAGE_CREATE_NOT_SUPPORTED = 'Image creation for %s is not currently supported';
 
@@ -485,6 +486,9 @@ exports.init = function execute(log, config, done) {
         var cloud = call.cloud.separate(options.datacenter);
         cloud.deleteImage(options.imageId, function (err) {
             if (!err) {
+                if (creatingImagesCache[options.imageId]) {
+                    delete creatingImagesCache[options.imageId];
+                }
                 pollForObjectStateChange(cloud, call, 'state', 'deleted', (60 * 60 * 1000), 'Image', options.imageId, callback);
             } else {
                 var result = false;
@@ -509,6 +513,11 @@ exports.init = function execute(log, config, done) {
                 call.immediate(err, {image: image});
             }
             if (!err) {
+                var cachedImage = creatingImagesCache[image.id] = image;
+                cachedImage.datacenter = options.datacenter;
+                cachedImage['published_at'] = options['published_at'];
+                cachedImage.public = false;
+                cachedImage.actionInProgress = true;
                 pollForObjectStateChange(cloud, call, 'state', 'active', (60 * 60 * 1000), 'Image', image.id, callback);
                 call.step = {
                     state: image.state
@@ -584,8 +593,17 @@ exports.init = function execute(log, config, done) {
 
                             // add datacenter to every image
                             img.datacenter = datacenterName;
+
+                            if (creatingImagesCache[img.id]) {
+                                delete creatingImagesCache[img.id];
+                            }
                         });
 
+                        for (var imageId in creatingImagesCache) {
+                            if (creatingImagesCache.hasOwnProperty(imageId)) {
+                                images.push(creatingImagesCache[imageId]);
+                            }
+                        }
                         response.status = 'complete';
                         response.images = images;
 
