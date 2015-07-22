@@ -156,6 +156,14 @@
                 }
             ];
 
+            $scope.$on('gridViewChangeTab', function (event, updatedTab) {
+                if (updatedTab === 'All') {
+                    $scope.exportFields.ignore = 'all';
+                } else {
+                    $scope.exportFields.ignore = [];
+                }
+            });
+
             $scope.gridActionButtons = [];
             $scope.exportFields = {
                 ignore: []

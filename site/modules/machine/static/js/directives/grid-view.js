@@ -201,6 +201,12 @@
             if ($scope.tabFilterUpdate) {
                 $scope.tabFilterUpdate = $scope.tabFilter;
             }
+            if ($scope.exportFields.ignore) {
+                $scope.hideExport = false;
+                if ($scope.exportFields.ignore === 'all') {
+                    $scope.hideExport = true;
+                }
+            }
         });
 
         $scope.$watch('tabFilterUpdate', function() {
@@ -376,14 +382,9 @@
                     if (prop.hasOwnProperty('_export')) {
                         var res = prop._export(item);
                         if (typeof(res) === 'object' && res.hasOwnProperty('then')) {
-                            var deferred = $q.defer();
-                            promises.push(deferred.promise);
-                            res.then(function (result) {
-                                deferred.resolve();
+                            promises.push(res.then(function (result) {
                                 newItem[name] = result;
-                            }, function (err) {
-                                deferred.reject(err);
-                            });
+                            }));
                         } else {
                             newItem[name] = res;
                         }
