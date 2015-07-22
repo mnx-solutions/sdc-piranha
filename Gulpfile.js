@@ -113,6 +113,12 @@ function startHttpServer(done) {
         next();
     });
 
+    // Don't allow to load piranha in the iFrame
+    server.use(function (req, res, next) {
+        res.setHeader('X-Frame-Options', 'SAMEORIGIN');
+        return next();
+    });
+
     server.get('/healthcheck', function(req, res, next) {
         res.send('ok');
     });
