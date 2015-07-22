@@ -138,7 +138,7 @@
                     btn: {
                         getLabel: Docker.getAuditButtonLabel,
                         getClass: function (event) {
-                            return 'btn grey edit' + (event.parsedParams && event.parsedParams.error ? 'show-on-click' : 'btn btn-original-text orange');
+                            return 'btn grey edit ' + (event.parsedParams && event.parsedParams.error ? 'show-on-click' : 'btn-original-text orange');
                         },
                         show: function (event) {
                             return event.parsedParams && (event.action || event.parsedParams.error);
