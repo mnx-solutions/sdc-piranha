@@ -240,9 +240,11 @@ function startHttpServer(done) {
         });
     }
 
-    function compileJs(js) {
-        var stream = gulp.src(js)
-            .pipe(concat('cache/all-' + Math.random().toString(16).substr(2) + '.js'));
+    function compileJs(js, isVendor) {
+        var stream = gulp.src(js);
+        if (!isVendor) {
+            stream = stream.pipe(concat('cache/all-' + Math.random().toString(16).substr(2) + '.js'));
+        }
 
         if (config.assets.js.minify) {
             stream = stream.pipe(uglify({
@@ -321,10 +323,12 @@ function startHttpServer(done) {
         return stream;
     }
 
-    function compileCss(options, css) {
-        var stream = gulp.src(css)
-            .pipe(transformCss(options))
-            .pipe(concat('cache/all-' + Math.random().toString(16).substr(2) + '.css'));
+    function compileCss(options, css, isVendor) {
+        var stream = gulp.src(css);
+        if (!isVendor) {
+            stream = stream.pipe(transformCss(options))
+                .pipe(concat('cache/all-' + Math.random().toString(16).substr(2) + '.css'));
+        }
 
         if (config.assets.css.minify) {
             stream = stream.pipe(cssmin());
@@ -412,8 +416,8 @@ function startHttpServer(done) {
         css = reverseArray(css);
 
         return es.merge(
-            gulp.src(vendorJs),
-            gulp.src(vendorCss),
+            compileJs(vendorJs, true),
+            compileCss(optsCopy, vendorCss, true),
             compileJs(js),
             compileCss(optsCopy, css)
         );
