@@ -881,6 +881,13 @@ iframe {
     border: 0;
 }
 
+.video {
+    position: absolute;
+    top: 10%;
+    left: 50%;
+    margin-left: -320px;
+}
+
 .error {
     color: #f60;
 }
