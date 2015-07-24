@@ -305,7 +305,7 @@
 
                 function checkErrorRolesResource(error) {
                     var errorMessage = 'None of your active roles are present on the resource';
-                    if (error.indexOf(errorMessage) !== -1 && scope.popup) {
+                    if (typeof error === 'string' && error.indexOf(errorMessage) !== -1 && scope.popup) {
                         scope.errorRolesResource = true;
                     }
                 }

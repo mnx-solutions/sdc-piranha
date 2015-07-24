@@ -17,6 +17,7 @@ module.exports = function (app) {
 
     app.post('/upload', function (req, res, next) {
         var form = new formidable.IncomingForm();
+        form.setMaxListeners(0);
         form.on('error', function (err) {
             req.log.warn({err: err}, 'Incoming form error');
             this.ended = true;
@@ -75,7 +76,7 @@ module.exports = function (app) {
             });
 
             return formidableStream;
-        };
+        }
 
         function uploadFile(path, part, callback) {
             var options = {
