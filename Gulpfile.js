@@ -169,6 +169,17 @@ function startHttpServer(done) {
 
     server.get('/old-browser', oldBrowserRoutes);
 
+    var excludeFilesList = [
+        'site/static/css/error.css',
+        'site/static/img/logo-white.png'
+    ];
+
+    excludeFilesList.forEach(function (file) {
+        server.get(file.replace('site/', '/'), function (req, res) {
+            res.sendFile(path.join(__dirname, file));
+        });
+    });
+
     redirect(server); //Add redirects for old urls
 
     var defaults = {
