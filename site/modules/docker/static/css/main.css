@@ -1132,7 +1132,7 @@ span .tag-editor {
     margin-top: -50px;
 }
 .pricing,
-.terminal,
+.terminal-icon,
 .faq {
     display: inline-block;
 
@@ -1146,8 +1146,8 @@ span .tag-editor {
 .pricing {
     background-image: url('../img/usd.png');
 }
-.terminal {
-    background-image: url('../img/terminal.png');
+.terminal-icon {
+    background-image: url('../img/terminal-icon.png');
 }
 .faq {
     background-image: url('../img/faq.png');
