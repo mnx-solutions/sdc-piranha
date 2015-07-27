@@ -236,7 +236,8 @@ exports.init = function execute(log, config, done) {
                 // poll for machine package change (resize)
                 pollForObjectStateChange(cloud, call, 'package', options.packageName, null, null, options.uuid, callback);
             } else {
-                (callback || call.error)(err);
+                var noErrorLog = err.message && err.message.indexOf('Invalid VM update parameters') !== -1;
+                (callback || call.error)(err, noErrorLog);
             }
         });
     };
