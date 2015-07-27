@@ -885,6 +885,7 @@ iframe {
     position: absolute;
     top: 10%;
     left: 50%;
+
     margin-left: -320px;
 }
 
@@ -2538,7 +2539,7 @@ a.orange-link {
     width: 420px;
 }
 
-.page-subheading,
+.page-subheading:not(.active-link),
 .page-heading {
     font-weight: 300;
 }
@@ -2866,7 +2867,7 @@ a.orange-link {
 .create-tags .loading-medium {
     display: none;
 }
-.tag-add-btn {
+.btn.tag-add-btn {
     width: 62px;
     height: 26px;
     padding: 4px 14px;
