@@ -167,6 +167,9 @@
                 machines.job = serverTab.call({
                     name: 'MachineList',
                     progress: function (err, job) {
+                        if (err) {
+                            return PopupDialog.errorObj(err);
+                        }
                         var data = job.__read();
                         function handleResponse(chunk) {
                             if (chunk.status === 'error') {
@@ -248,6 +251,9 @@
                     data: {states: mapStates()},
 
                     done: function (err, job) {
+                        if (err) {
+                            PopupDialog.errorObj(err);
+                        }
                         var data = job.__read();
 
                         if (data) {
@@ -312,67 +318,70 @@
             service.updateMachines(false);
         }
 
+        function start(machine, opts, uuid) {
+            var stateChanged = true;
+            machine.prevState = machine.state;
+            switch (opts.name) {
+                case 'MachineRename' :
+                    machine.state = 'renaming';
+                    break;
+                case 'MachineResize' :
+                    machine.state = 'resizing';
+                    break;
+                case 'MachineStart' :
+                    machine.state = 'starting';
+                    break;
+                case 'MachineStop' :
+                    machine.state = 'stopping';
+                    break;
+                case 'MachineReboot' :
+                    machine.state = 'rebooting';
+                    break;
+                case 'MachineDelete' :
+                    machine.state = 'deleting';
+                    break;
+                default :
+                    stateChanged = false;
+                    break;
+            }
+
+            if (!machine.job || machine.job.finished) {
+                opts.data = opts.data || {};
+                opts.data.uuid = uuid;
+                opts.data.datacenter = machine.datacenter;
+
+                if (!opts.progress) {
+                    opts.progress = function (err, data) {
+                        if (err) {
+                            PopupDialog.errorObj(err);
+                        }
+                        var step = data.step;
+                        if (step && typeof step === 'object') {
+                            Object.keys(step).forEach(function (key) {
+                                if (!stateChanged || key !== 'state') {
+                                    data.machine[key] = step[key];
+                                }
+                            });
+                        }
+                    };
+                }
+                if (!opts.done) {
+                    opts.done = function (err, job) {
+                        showNotification(err, job);
+                    };
+                }
+                var job = serverTab.call(ng.copy(opts));
+                job.machine = machine;
+                machine.job = job.getTracker();
+            }
+            return machine.job.deferred.promise;
+        }
+
         function changeState(opts) {
             return function (uuid) {
-                function start() {
-                    var stateChanged = true;
-                    machine.prevState = machine.state;
-                    switch (opts.name) {
-                        case 'MachineRename' :
-                            machine.state = 'renaming';
-                            break;
-                        case 'MachineResize' :
-                            machine.state = 'resizing';
-                            break;
-                        case 'MachineStart' :
-                            machine.state = 'starting';
-                            break;
-                        case 'MachineStop' :
-                            machine.state = 'stopping';
-                            break;
-                        case 'MachineReboot' :
-                            machine.state = 'rebooting';
-                            break;
-                        case 'MachineDelete' :
-                            machine.state = 'deleting';
-                            break;
-                        default :
-                            stateChanged = false;
-                            break;
-                    }
-
-                    if (!machine.job || machine.job.finished) {
-                        opts.data = opts.data || {};
-                        opts.data.uuid = uuid;
-                        opts.data.datacenter = machine.datacenter;
-
-                        if (!opts.progress) {
-                            opts.progress = function (err, data) {
-                                var step = data.step;
-                                if (step && typeof (step) === 'object') {
-                                    Object.keys(step).forEach(function (k) {
-                                        if (!stateChanged || k !== 'state') {
-                                            data.machine[k] = step[k];
-                                        }
-                                    });
-                                }
-                            };
-                        }
-                        if (!opts.done) {
-                            opts.done = function (err, job) {
-                                showNotification(err, job);
-                            };
-                        }
-                        var job = serverTab.call(ng.copy(opts));
-                        job.machine = machine;
-                        machine.job = job.getTracker();
-                    }
-                    return machine.job.deferred.promise;
-                }
-
                 var machine = service.machine(uuid);
                 if (machine.id) {
-                    var promise = start();
+                    var promise = start(machine, opts, uuid);
                     promise.then(
                         function (result) {
                             if (result && typeof result === 'object') {
@@ -413,56 +422,67 @@
                 var d = $q.defer();
                 machine.then(function(m) {
                     machine = m;
-                    start().then(d.resolve, d.reject);
+                    start(machine, opts, uuid).then(d.resolve, d.reject);
                 });
 
                 return d.promise;
             };
         }
 
+        function getInstanceNotificationMessage(err, job) {
+            var machine = job.machine || job.initial.machine;
+            var notificationMessage = 'Instance "' + machine.name + '" ';
+            if (err) {
+                notificationMessage += machine.state + ' has been failed.';
+                if (err.message && err.message.indexOf('permission') !== -1) {
+                    notificationMessage = err.message;
+                }
+            } else {
+                var machineState = machine.state.replace('ing', 'ed');
+                if (machineState === 'provisioned') {
+                    machineState = 'created';
+                }
+                notificationMessage += 'has been successfully ' + machineState + '.';
+            }
+            return notificationMessage;
+        }
+
+        function getTagMetadataNotificationMessage(err, job) {
+            var notificationMessage;
+            if (err) {
+                notificationMessage = err.message || err;
+            } else {
+                var collection = job.data.tags;
+                var item = 'Tag "';
+                if (!collection) {
+                    collection = job.data.metadata;
+                    item = 'Metadata "';
+                }
+                if (typeof collection === 'string') {
+                    collection = item + collection;
+                } else {
+                    var collectionKeys = Object.keys(collection);
+                    collection = item + collectionKeys[collectionKeys.length - 1];
+                }
+                var action = ['Create', 'Update', 'Delete'].filter(function (action) {
+                    return job.name.indexOf(action) !== -1;
+                })[0].toLowerCase();
+                notificationMessage = collection + '" has successfully ' + action + 'd.';
+            }
+            return notificationMessage;
+        }
+
         function showNotification(err, job, isTagsMetadataAction) {
             var instancesPath = INSTANCES_PATH;
             var notificationMessage;
             if (!isTagsMetadataAction) {
-                var machine = job.machine || job.initial.machine;
-                notificationMessage = 'Instance "' + machine.name + '" ';
-                if (err) {
-                    notificationMessage += machine.state + ' has been failed.';
-                    if (err.message && err.message.indexOf('permission') !== -1) {
-                        notificationMessage = err.message;
-                    }
-                } else {
-                    var machineState = machine.state.replace('ing', 'ed');
-                    if (machineState === 'provisioned') {
-                        machineState = 'created';
-                    }
-                    notificationMessage += 'has been successfully ' + machineState + '.';
-                }
+                notificationMessage = getInstanceNotificationMessage(err, job);
             } else if (job.data && (job.data.tags || job.data.metadata)) {
                 instancesPath += '/instance';
                 if ($location.path().indexOf(DOCKER_CONTAINER_PATH) !== -1) {
                     instancesPath = DOCKER_CONTAINER_PATH;
                 }
-                if (err) {
-                    notificationMessage = err.message || err;
-                } else {
-                    var collection = job.data.tags;
-                    var item = 'Tag "';
-                    if (!collection) {
-                        collection = job.data.metadata;
-                        item = 'Metadata "';
-                    }
-                    if (typeof (collection) === 'string') {
-                        collection = item + collection;
-                    } else {
-                        var collectionKeys = Object.keys(collection);
-                        collection = item + collectionKeys[collectionKeys.length - 1];
-                    }
-                    var action = ['Create', 'Update', 'Delete'].filter(function (action) {
-                        return job.name.indexOf(action) !== -1;
-                    })[0].toLowerCase();
-                    notificationMessage = collection + '" has successfully ' + action + 'd.';
-                }
+                notificationMessage = getTagMetadataNotificationMessage(err, job);
             }
             notification.popup(false, err, instancesPath, null, notificationMessage);
         }
@@ -607,7 +627,7 @@
                         setNewMachine();
                     }
 
-                    showNotification(err, {machine: result});
+                    showNotification(err, {machine: job.initial && job.initial.machine || result});
                     if (result.tags['JPC_tag'] === 'DockerHost') {
                         $rootScope.$emit('clearDockerCache', result);
                     }
@@ -615,6 +635,9 @@
                 },
 
                 progress: function (err, job) {
+                    if (err) {
+                        PopupDialog.errorObj(err);
+                    }
                     var step = job.step;
                     if (step) {
                         Object.keys(step).forEach(function (k) {
@@ -812,8 +835,8 @@
                     host: {primaryIp: machine.primaryIp, hostName: machine.name, id: machine.id}},
                 progress: function (err, job) {
                     var data = job.__read();
-                    if (data && data.length) {
-                        PopupDialog.errorObj(data);
+                    if (err || data && data.length) {
+                        PopupDialog.errorObj(err || data);
                     }
                 },
                 done: function (err) {
