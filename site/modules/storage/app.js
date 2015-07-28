@@ -7,6 +7,7 @@ var manta = require('manta');
 var express = require('express');
 var vasync = require('vasync');
 var formidable = require('formidable');
+var MemoryStream = require('memorystream');
 
 module.exports = function (app) {
     var Manta = require('./').MantaClient;
@@ -17,6 +18,7 @@ module.exports = function (app) {
 
     app.post('/upload', function (req, res, next) {
         var form = new formidable.IncomingForm();
+        form.setMaxListeners(0);
         form.on('error', function (err) {
             req.log.warn({err: err}, 'Incoming form error');
             this.ended = true;
@@ -59,24 +61,6 @@ module.exports = function (app) {
             });
         }
 
-        function getFormidableStream(form, part) {
-            var libStream = require('stream');
-            var formidableStream = new libStream.Readable();
-            formidableStream.wrap({
-                on: function (event, callback) {
-                    if (event === 'data' || event === 'end') {
-                        part.addListener.call(part, event, callback);
-                    } else {
-                        form.addListener.call(form, event, callback);
-                    }
-                },
-                pause: form.pause.bind(form),
-                resume: form.resume.bind(form)
-            });
-
-            return formidableStream;
-        };
-
         function uploadFile(path, part, callback) {
             var options = {
                 size: metadata.files[part.filename],
@@ -86,7 +70,10 @@ module.exports = function (app) {
                 },
                 mkdirs: true
             };
-            client.put('~~/' + path + '/' + part.filename, getFormidableStream(form, part), options, function (error) {
+
+            var memStream = new MemoryStream();
+            part.pipe(memStream);
+            client.put('~~/' + path + '/' + part.filename, memStream, options, function (error) {
                 callback(error);
             });
         }
@@ -163,7 +150,7 @@ module.exports = function (app) {
                             res.json({status: 'error', message: error.message});
                             return;
                         }
-                        res.sendStatus(error.statusCode || 500).send(error.message);
+                        res.status(error.statusCode || 500).send(error.message);
                         return;
                     }
                     handleFinishedDownload(fullPath);
