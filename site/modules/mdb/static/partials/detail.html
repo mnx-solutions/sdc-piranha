@@ -20,14 +20,14 @@
                               class="file-name">{{(file.filePath | name) || 'Not selected'}}</span>
                     </td>
                     <td>
-                        <button class="btn debugger-action-btn" data-ng-class="{'orange' : !objects.length || inputFile.length == 0}" data-select-file data-objects="inputFile" data-ng-click="selectFile()">Select File</button>
+                        <button class="btn debugger-action-btn" data-ng-class="{'orange': inputFile.length == 0}" data-select-file data-objects="inputFile" data-ng-click="selectFile()">Select File</button>
                     </td>
                 </tr>
                 <tr>
                     <td class="mdb-column-label">Status: {{status}}</td>
                     <td data-ng-if="!jobId && !objects.length">
                         <button class="btn orange debugger-action-btn"
-                                data-ng-class='{"disabled grey-new": inputFile.length == 0}'
+                                data-ng-class='{"disabled grey": inputFile.length == 0}'
                                 data-ng-click="process()">Process Now</button>
                     </td>
                     <td data-ng-if="jobId && !objects.length">
