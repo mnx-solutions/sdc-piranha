@@ -188,7 +188,7 @@
                 }
                 var propsChanged = {props: $scope.gridProps};
                 if ($scope.features.manta === 'enabled') {
-                    propsChanged.gridUserConfig = $scope.gridUserConfig;
+                    propsChanged.gridUserConfig = $scope.userConfig;
                 }
                 $scope.$broadcast('propsChanged', propsChanged);
             };
@@ -200,7 +200,10 @@
                 $scope.type = requestContext.getParam('type');
 
                 if ($scope.features.manta === 'enabled') {
-                    $scope.gridUserConfig = Account.getUserConfig().$child($scope.type);
+                    $scope.gridUserConfig = $scope.type;
+                    Account.getUserConfig($scope.gridUserConfig, function (config) {
+                        $scope.userConfig = config;
+                    });
                 }
                 refreshProps();
                 $scope.caption = {

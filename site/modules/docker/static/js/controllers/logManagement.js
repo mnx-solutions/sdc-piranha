@@ -104,11 +104,13 @@
                 };
 
                 if ($scope.features.manta === 'enabled') {
-                    $scope.gridUserConfig = Account.getUserConfig().$child('dockerLogs');
-                    $scope.$watch('gridUserConfig', function () {
-                        if ($scope.gridUserConfig.loaded()) {
-                            initialGridProps = angular.copy($scope.gridProps);
-                        }
+                    $scope.gridUserConfig = 'dockerLogs';
+                    // The next needed to handle change of the config grid properties
+                    Account.getUserConfig($scope.gridUserConfig, function (config) {
+                        $scope.userConfig = config;
+                    });
+                    $scope.$watch('userConfig', function () {
+                        initialGridProps = angular.copy($scope.gridProps);
                     });
                 }
 

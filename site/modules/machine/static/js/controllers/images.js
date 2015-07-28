@@ -62,7 +62,7 @@
             };
 
             if ($scope.features.manta === 'enabled') {
-                $scope.gridUserConfig = Account.getUserConfig().$child('images');
+                $scope.gridUserConfig = 'images';
             }
 
             $scope.gridOrder = ['-published_at'];

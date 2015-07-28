@@ -14,7 +14,7 @@
                 $scope.suppressErrors = false;
 
                 if ($scope.features.manta === 'enabled') {
-                    $scope.gridUserConfig = Account.getUserConfig().$child('job_history');
+                    $scope.gridUserConfig = 'job_history';
                     Account.getAccount().then(function (account) {
                         $scope.account = account;
                         if ($scope.account.provisionEnabled) {
@@ -70,7 +70,7 @@
                         appendPopupMessage: 'Manta access will now be granted.'
                     };
                     Account.checkProvisioning(submitBillingInfo, function () {
-                        $scope.gridUserConfig = Account.getUserConfig().$child('job_history');
+                        $scope.gridUserConfig = 'job_history';
                         getJobsList().then(function (jobs) {
                             $scope.jobs = jobs;
                         });

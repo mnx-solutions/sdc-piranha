@@ -123,7 +123,7 @@
                 };
 
                 if ($scope.features.manta === 'enabled') {
-                    $scope.gridUserConfig = Account.getUserConfig().$child('docker-containers');
+                    $scope.gridUserConfig = 'docker-containers';
                 }
 
                 var getContainerType = function (container) {

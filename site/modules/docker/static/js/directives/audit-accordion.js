@@ -10,7 +10,7 @@
                 items: '='
             },
             link: function ($scope) {
-                $scope.gridUserConfig = Account.getUserConfig().$child('docker-audit-' + $scope.type);
+                $scope.gridUserConfig = 'docker-audit-' + $scope.type;
                 $scope.query = '';
                 $scope.gridOrder = ['-npDate'];
 

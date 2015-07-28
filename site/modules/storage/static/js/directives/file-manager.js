@@ -19,7 +19,9 @@
                 scope.loading = true;
                 scope.infoDialogOpening = false;
                 scope.filesTree = {};
-                scope.userConfig = Account.getUserConfig().$child('fileman');
+                Account.getUserConfig('fileman', function (config) {
+                    scope.userConfig = config;
+                });
                 scope.rbacEnabled = $rootScope.features.rbac === 'enabled';
 
                 var rootPath = '/';
@@ -333,7 +335,7 @@
                         if (callback) {
                             callback(error, result);
                         }
-                        if (rootPath !== path && userAction && scope.userConfig.loaded()) {
+                        if (rootPath !== path && userAction && scope.userConfig) {
                             fileman.saveFilemanConfig(path);
                         }
                         return null;
@@ -442,7 +444,7 @@
                                 }
                                 return;
                             }
-                            if (rootPath !== scope.currentPath && userAction && scope.userConfig.loaded()) {
+                            if (rootPath !== scope.currentPath && userAction && scope.userConfig) {
                                 fileman.saveFilemanConfig(scope.currentPath);
                             }
                         });
@@ -450,49 +452,46 @@
                 };
 
                 scope.drawFileMan = function () {
-                    scope.userConfig.$load(function (err, config) {
-                        var obj;
-                        var loadedPath;
-                        var filteredPath = [];
-                        var parentPath = '/';
+                    var config = scope.userConfig;
+                    var configPath;
+                    var loadedPath;
+                    var filteredPath = [];
+                    var parentPath = '/';
 
-                        if (config && config.path) {
-                            obj = config.path;
-                            loadedPath = obj.split(/\//);
-                            for (var i = 0; i < loadedPath.length; i++) {
-                                if (loadedPath[i] !== "") {
-                                    if (loadedPath[i] !== "/") {
-                                        filteredPath.push({path: loadedPath[i], parent: parentPath});
-                                        parentPath += '/' + loadedPath[i];
-                                    }
-                                }
+                    if (config && config.path) {
+                        configPath = config.path;
+                        loadedPath = configPath.split(/\//);
+                        for (var i = 0; i < loadedPath.length; i++) {
+                            if (loadedPath[i] !== '' && loadedPath[i] !== '/') {
+                                filteredPath.push({path: loadedPath[i], parent: parentPath});
+                                parentPath += '/' + loadedPath[i];
                             }
                         }
+                    }
 
-                        if (!filteredPath.length) {
-                            filteredPath.push(defaultPath);
-                        }
+                    if (!filteredPath.length) {
+                        filteredPath.push(defaultPath);
+                    }
 
-                        var setCurrentPathPromise = $qe.denodeify(scope.setCurrentPath);
-                        var notResolvedPath = false;
-                        // Navigate up to saved path from root
+                    var setCurrentPathPromise = $qe.denodeify(scope.setCurrentPath);
+                    var isPathResolved = true;
+                    // Navigate up to saved path from root
 
-                        $qe.series(filteredPath.map(function (newPath) {
-                            return function (args) {
-                                var result = args[0].__read();
-                                var item = Array.isArray(result) && result.filter(function (el) {
-                                    return el.path === newPath.path;
-                                })[0];
-                                if (notResolvedPath || !item) {
-                                    notResolvedPath = true;
-                                    var defer = $qe.defer();
-                                    defer.resolve(args);
-                                    return defer.promise;
-                                }
+                    $qe.series(filteredPath.map(function (newPath) {
+                        return function (args) {
+                            var result = args[0].__read();
+                            var item = Array.isArray(result) && result.filter(function (el) {
+                                return el.path === newPath.path;
+                            })[0];
+                            if (isPathResolved && item) {
                                 return setCurrentPathPromise(item || newPath, false);
-                            };
+                            }
+                            isPathResolved = false;
+                            var defer = $qe.defer();
+                            defer.resolve(args);
+                            return defer.promise;
+                        };
                     }), setCurrentPathPromise(rootPath, false));
-                });
                 };
 
                 scope.completeAccount = function () {

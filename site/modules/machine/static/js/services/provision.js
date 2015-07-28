@@ -87,8 +87,7 @@
             service.getCreatedMachines = function () {
                 var deferred = $q.defer();
                 if (IsEnabled.manta && IsEnabled.recentInstances) {
-                    var createdMachines = Account.getUserConfig().$child('createdMachines');
-                    createdMachines.$load(function (error, config) {
+                    Account.getUserConfig('createdMachines', function (config) {
                         var recentInstances = config.createdMachines || [];
                         if (recentInstances.length > 0) {
                             recentInstances.sort(function (a, b) {
@@ -554,7 +553,7 @@
                         });
 
                         if (!err && IsEnabled.manta && IsEnabled.recentInstances && !machine.freetier) {
-                            Account.getUserConfig().$child('createdMachines').$load(function (error, config) {
+                            Account.getUserConfig('createdMachines', function (config) {
                                 config.createdMachines = config.createdMachines || [];
                                 var creationDate = new Date(newMachine.created).getTime();
                                 var listedMachine = config.createdMachines.find(function (m) {
@@ -575,8 +574,7 @@
                                     config.createdMachines.push(createdMachine);
                                 }
 
-                                config.dirty(true);
-                                config.$save();
+                                Account.saveUserConfig();
                             });
                         }
                     });

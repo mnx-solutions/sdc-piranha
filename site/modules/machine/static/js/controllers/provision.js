@@ -28,7 +28,7 @@
                 title: localization.translate(null, 'machine', 'Create Instances on Joyent')
             });
             if ($rootScope.features && $rootScope.features.manta === 'enabled') {
-                Account.getUserConfig().$child('createInstancePage').$load(function (error, config) {
+                Account.getUserConfig('createInstancePage', function (config) {
                     Machine.initCreateInstancePageConfig(config);
                 });
             }
@@ -312,8 +312,8 @@
 
                 function selectDatacenterByUserConfig() {
                     // TODO: Handle all other DC drop-downs
-                    $scope.userConfig = Account.getUserConfig().$child('datacenter');
-                    $scope.userConfig.$load(function (error, config) {
+                    Account.getUserConfig('datacenter', function (config) {
+                        $scope.userConfig = config;
                         if (config.value && !$scope.data.datacenter && !preSelectedImageId) {
                             $scope.selectDatacenter(config.value);
                         }
@@ -930,8 +930,7 @@
             $scope.$watch('data.datacenter', function (newVal, oldVal) {
                 if (datacenterConfig && datacenterConfig.value !== newVal) {
                     datacenterConfig.value = newVal;
-                    datacenterConfig.dirty(true);
-                    datacenterConfig.$save();
+                    Account.saveUserConfig();
                 }
                 if (newVal && (newVal !== oldVal || firstLoad)) {
                     $scope.reloading = true;

@@ -73,10 +73,10 @@
             fileman.mfind = createMethod('FileManMfind', true);
 
             fileman.saveFilemanConfig = function (path) {
-                var filemanConfig = Account.getUserConfig().$child('fileman');
-                filemanConfig['path'] = path;
-                filemanConfig.dirty(true);
-                filemanConfig.$save();
+                Account.getUserConfig('fileman', function (config) {
+                    config['path'] = path;
+                    Account.saveUserConfig();
+                });
             };
 
             return fileman;

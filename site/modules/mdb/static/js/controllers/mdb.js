@@ -17,7 +17,7 @@
             $scope.mantaUnavailable = true;
             $scope.gridNoEntriesMessage = 'You don\'t have any Node.js debugger jobs.';
 
-            $scope.gridUserConfig = Account.getUserConfig().$child('MdbJobs');
+            $scope.gridUserConfig = 'MdbJobs';
             Account.getAccount(true).then(function (account) {
                 $scope.provisionEnabled = account.provisionEnabled;
                 if ($scope.provisionEnabled) {

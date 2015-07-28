@@ -13,11 +13,11 @@
             templateUrl: 'dtrace/static/partials/core-dump.html',
             link: function ($scope, element, attrs) {
 
-                function addToUserConfig(whom, key, value) {
-                    var config = Account.getUserConfig().$child(whom);
-                    config[key] = value;
-                    config.dirty(true);
-                    config.$save();
+                function addToUserConfig(configProperty, key, value) {
+                    Account.getUserConfig(configProperty, function (config) {
+                        config[key] = value;
+                        Account.saveUserConfig();
+                    });
                 }
                 
                 function redirect(path) {

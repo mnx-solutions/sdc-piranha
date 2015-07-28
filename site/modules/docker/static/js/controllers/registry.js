@@ -43,7 +43,7 @@
                 };
 
                 if ($scope.features.manta === 'enabled') {
-                    $scope.gridUserConfig = Account.getUserConfig().$child('docker-local-registry-images');
+                    $scope.gridUserConfig = 'docker-local-registry-images';
                 }
 
                 var registryImageTag = function (action, imageName, tagName, layoutId, callback) {

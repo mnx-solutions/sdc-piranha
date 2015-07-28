@@ -864,8 +864,7 @@
             };
 
             if ($scope.features.manta === 'enabled') {
-                //TODO: Move to grid-view and use grid id as config id
-                $scope.gridUserConfig = Account.getUserConfig().$child('firewall');
+                $scope.gridUserConfig = 'firewall';
             }
 
             $scope.gridOrder = [];

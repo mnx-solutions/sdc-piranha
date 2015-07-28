@@ -38,7 +38,7 @@
                 };
 
                 if ($scope.features.manta === 'enabled') {
-                    $scope.gridUserConfig = Account.getUserConfig().$child('docker-images');
+                    $scope.gridUserConfig = 'docker-images';
                 }
                 var getGroupedImages = function (originalImages) {
                     var groupedImages = [];
