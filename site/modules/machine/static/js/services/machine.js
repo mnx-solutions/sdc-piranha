@@ -627,7 +627,7 @@
                         setNewMachine();
                     }
 
-                    showNotification(err, {machine: job.initial && job.initial.machine || result});
+                    showNotification(err, {machine: job.initial && job.initial.machine || machine});
                     if (result.tags['JPC_tag'] === 'DockerHost') {
                         $rootScope.$emit('clearDockerCache', result);
                     }
