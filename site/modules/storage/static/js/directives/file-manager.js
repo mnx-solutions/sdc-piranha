@@ -123,9 +123,12 @@
                                 var files = null;
                                 var parentPath = null;
                                 scope.refreshingFolder = true;
+                                var getParentPath = function () {
+                                    return scope.currentPath.split('/').slice(0, -1).join('/');
+                                };
 
-                                if (lastSelectedFile.type === 'object') {
-                                    parentPath = scope.currentPath.split('/').slice(0, -1).join('/');
+                                if (lastSelectedFile && lastSelectedFile.type === 'object') {
+                                    parentPath = getParentPath();
                                     files = scope.filesTree[parentPath] || [];
                                 } else {
                                     files = scope.files;
@@ -141,7 +144,11 @@
                                     showPopupDialog('error', 'Message', introText + ' "' + data.folderName + '" already exists.');
                                     scope.refreshingFolder = false;
                                 } else {
-                                    fileman.mkdir(getCurrentDirectory() + '/' + data.folderName, function (error) {
+                                    var directoryPath = getCurrentDirectory();
+                                    if (!lastSelectedFile) {
+                                        directoryPath = parentPath = getParentPath();
+                                    }
+                                    fileman.mkdir(directoryPath + '/' + data.folderName, function (error) {
                                         if (error) {
                                             scope.refreshingFolder = false;
                                             return;
