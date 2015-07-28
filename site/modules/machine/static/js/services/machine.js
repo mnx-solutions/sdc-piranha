@@ -391,10 +391,14 @@
                             }
                         },
                         function (err) {
+                            var messageBody = 'Unable to execute command "{{command}}" for instance {{uuid}}.';
+                            if (err.body && err.body.errors && err.body.errors.length) {
+                                messageBody += '<br>' + err.body.errors[0].message;
+                            }
                             var message = localization.translate(
                                 null,
                                 'machine',
-                                'Unable to execute command "{{command}}" for instance {{uuid}}. ',
+                                messageBody,
                                 {
                                     command: opts.name,
                                     uuid: machine.id
