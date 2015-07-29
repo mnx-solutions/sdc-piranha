@@ -294,6 +294,7 @@
     "googleAnalytics": "yes",
     "billing": "yes",
     "dockerExec": "yes",
+    "dockerLabels": "yes",
     "sdcDocker": "yes",
     "dtrace": "yes"
   }

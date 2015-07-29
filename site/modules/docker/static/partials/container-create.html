@@ -241,7 +241,7 @@
                     <div data-ng-hide="createImage" class="form-group volume-section">
                         <span class="edit-label">Ports</span><!--
                             --><span class="edit-value">
-                            <dropdown-select multiple tags-available data-preselected-items="input.PortBinding" on-focus="setNotation('PORTS')" validation="^{{exposedPattern}}$"></dropdown-select>
+                            <dropdown-select multiple tags-available data-items-name="portBinding" data-error-name="portsError" data-preselected-items="input.PortBinding" on-focus="setNotation('PORTS')" validation="^{{exposedPattern}}$"></dropdown-select>
                         </span>
                         <div class="edit-error" data-ng-show="isFormSubmited || containerCreateForm.$error.portsError">
                             <div class="error"
@@ -273,7 +273,19 @@
                         </span>
                     </div>
                     <div class="group-label">Runtime Configuration</div>
-
+                    <div data-ng-hide="createImage || features.dockerLabels == 'disabled'" class="form-group volume-section">
+                        <span class="edit-label">Labels</span><!--
+                            --><span class="edit-value">
+                            <dropdown-select multiple tags-available data-items-name="labels" data-error-name="labelsKeyError" labels data-preselected-items="input.Labels" on-focus="setNotation('LABELS')" validation="^([a-z0-9]+(([\.]{1}|[\-]{1})[a-z0-9]+)*)$"></dropdown-select>
+                        </span>
+                        <div class="edit-error" data-ng-show="isFormSubmited || containerCreateForm.$error.labelsKeyError">
+                            <div class="error"
+                                 data-translate
+                                 data-ng-show="containerCreateForm.$error.labelsKeyError">
+                                Keys should only consist of lower-cased alphanumeric characters, dots and dashes. Keys should start and end with an alpha numeric character. Keys may not contain consecutive dots or dashes.
+                            </div>
+                        </div>
+                    </div>
                     <div data-ng-hide="createImage" class="form-group volume-section">
                         <span class="edit-label">Links</span><!--
                             --><span class="edit-value">

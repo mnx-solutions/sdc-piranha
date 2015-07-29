@@ -65,6 +65,7 @@
                     REPOSITORY: 'Enter Repository',
                     MESSAGE: 'Commit message',
                     AUTHOR: 'Author',
+                    LABELS: 'Adds a map of labels to a container. To specify a map: <strong>key:value</strong>',
                     LINKS: 'Add link to another container (name:alias)'
                 };
                 var selectImageEl = ng.element('#imageSelect').eq(0);
@@ -145,6 +146,28 @@
 
                     }
                     return ports;
+                }
+
+                var LABEL_SEPARATOR = ':';
+
+                var parseLabels = function (labels) {
+                    var containerLabels = {};
+                    if (isArrayNotEmpty(labels)) {
+                        labels.forEach(function (label) {
+                            var labelKey = label.split(LABEL_SEPARATOR, 1)[0];
+                            var labelValue = label.substr(labelKey.length + 1);
+                            containerLabels[labelKey] = labelValue;
+                        });
+                    }
+                    return containerLabels;
+                }
+
+                var unParseLabels = function (labels) {
+                    var containerLabels = [];
+                    for (var label in labels) {
+                        containerLabels.push(label + LABEL_SEPARATOR + labels[label]);
+                    }
+                    return containerLabels;
                 }
 
                 function unParseVolumes(volumes, binds) {
@@ -292,6 +315,7 @@
                     StdinOnce: false,
                     Env: null,
                     Cmd: [],
+                    Labels: {},
                     ExposedPorts: {},
                     WorkingDir: '',
                     NetworkDisabled: false,
@@ -327,6 +351,7 @@
                     $scope.container = ng.extend($scope.container, createData);
 
                     $scope.input.Cmd = isArrayNotEmpty(createData.Cmd) ? unParseCommands(createData.Cmd) : '';
+                    $scope.input.Labels = unParseLabels(startData.Labels);
                     $scope.input.Entrypoint = isArrayNotEmpty(createData.Entrypoint) ? unParseCommands(createData.Entrypoint) : '';
                     $scope.input.Memory = Math.floor(createData.Memory / 1024 / 1024);
                     $scope.input.MemorySwap = Math.floor(createData.MemorySwap / 1024 / 1024);
@@ -711,6 +736,7 @@
 
                 $scope.create = function () {
                     $scope.container.Cmd = Docker.parseCmd($scope.input.Cmd);
+                    $scope.container.Labels = parseLabels($scope.input.Labels);
                     $scope.container.Entrypoint = Docker.parseCmd($scope.input.Entrypoint);
                     $scope.container.Env = parseEnvironments($scope.input.Env);
                     $scope.container.Volumes = parseVolumes($scope.input.Volumes);
