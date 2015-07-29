@@ -386,13 +386,12 @@
                 if (value && key) {
                     service.userConfig[key] = value;
                 }
-                config = service.userConfig;
                 var deferred = $q.defer();
                 service.getAccount().then(function (provisionAccount) {
                     if (provisionAccount.provisionEnabled) {
                         serverTab.call({
                             name: 'SetUserConfig',
-                            data: config,
+                            data: service.userConfig,
                             done: function (err, job) {
                                 if (err) {
                                     deferred.reject(err);

@@ -343,8 +343,7 @@
                 initialGridProps = angular.copy($scope.gridProps);
 
                 $scope.$on('gridViewChangeTab', function (event, tab) {
-                    if ($scope.tab && $scope.tab === tab ||
-                        $scope.gridUserConfig && !$scope.gridUserConfig.loaded()) {
+                    if ($scope.tab && $scope.tab === tab || !$scope.userConfig) {
                         return;
                     }
                     $scope.tab = tab;
