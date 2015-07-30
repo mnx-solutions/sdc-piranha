@@ -518,8 +518,8 @@
             };
 
             function setNetworks(datacenter) {
-                selectedNetworks = [];
                 Provision.getNetworks(datacenter).then(function (networks) {
+                    selectedNetworks = [];
                     networks.forEach(function (network) {
                         if (network.active) {
                             selectNetwork(network.id);
