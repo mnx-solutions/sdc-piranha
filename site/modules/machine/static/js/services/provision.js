@@ -296,6 +296,9 @@
                         'Joyent-SDC-Public': 1
                     };
                     val.forEach(function (network) {
+                        if (!network) {
+                            return;
+                        }
                         var orderedNetwork = confNetwork[network.name];
                         network.active = orderedNetwork > -1;
                         if (orderedNetwork > -1) {
