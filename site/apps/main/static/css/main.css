@@ -2958,7 +2958,11 @@ a.orange-link {
 
     font-weight: bold;
 }
+.container-labels {
+    overflow-x: auto;
 
+    max-width: 405px;
+}
 
 .indent-small {
     margin-top: 5px;
