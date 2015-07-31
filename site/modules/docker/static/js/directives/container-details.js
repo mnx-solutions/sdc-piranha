@@ -110,6 +110,7 @@
                             scope.container = {
                                 name: containerInfo.Name.substring(1),
                                 cmd: containerCmd,
+                                labels: containerInfo.Config.Labels,
                                 entrypoint: containerInfo.Config.Entrypoint,
                                 Ports: containerInfo.Config.ExposedPorts,
                                 hostname: containerInfo.Config.Hostname,
