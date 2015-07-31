@@ -57,7 +57,8 @@
                     };
 
                     scope.selectVal = function (item) {
-                        if (scope.validation && !RegExp(scope.validation).test(getVal(item))) {
+                        if (scope.validation && !RegExp(scope.validation).test(getVal(item)) &&
+                            !attrs.hasOwnProperty(attrs.itemsName)) {
                             return;
                         }
 
@@ -76,14 +77,20 @@
                     };
 
                     scope.change = function () {
-                        if (scope.validation && attrs.preselectedItems &&
-                            attrs.preselectedItems.indexOf('PortsBinding') !== -1) {
-                            var containerPortsError = scope.$parent.containerCreateForm.$error;
-                            containerPortsError.portsError = false;
-                            scope.error = scope.volume.length && !RegExp(scope.validation).test(scope.volume);
-                            if (scope.error) {
-                                containerPortsError.portsError = true;
+                        var containerError = scope.$parent.containerCreateForm.$error;
+                        var checkContainerErrors = function (itemName, errorName) {
+                            var itemValue = scope.volume;
+                            containerError[errorName] = false;
+                            if (attrs.hasOwnProperty(itemName) && itemValue.length) {
+                                itemValue = itemValue.split(':');
+                                if (itemValue.length > 1) {
+                                    itemValue = itemValue[0];
+                                }
                             }
+                            scope.error = containerError[errorName] = itemValue.length && !RegExp(scope.validation).test(itemValue);
+                        };
+                        if (scope.validation && attrs.itemsName && attrs.errorName) {
+                            checkContainerErrors(attrs.itemsName, attrs.errorName);
                         }
                     };
                 }
