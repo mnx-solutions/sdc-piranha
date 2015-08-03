@@ -166,8 +166,8 @@
         };
 
         var doneHandler = {
-            containers: function (err, data) {
-                if (err) {
+            containers: function (err, data, options) {
+                if (err && !(options && options.suppressErrors)) {
                     PopupDialog.errorObj(err);
                 }
                 if (data && data.length) {
