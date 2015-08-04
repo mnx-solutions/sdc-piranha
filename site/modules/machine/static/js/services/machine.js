@@ -22,8 +22,16 @@
         var DOCKER_CONTAINER_PATH = '/docker/container/';
         var cacheErrors = [];
 
-        service.initCreateInstancePageConfig = function (config) {
-            createInstancePageConfig = config;
+        service.initCreateInstancePageConfig = function (callback) {
+            callback = callback || angular.noop;
+            if (!createInstancePageConfig && $rootScope.features && $rootScope.features.manta === 'enabled') {
+                Account.getUserConfig('createInstancePage', function (config) {
+                    createInstancePageConfig = config;
+                    callback();
+                });
+            } else {
+                callback();
+            }
         };
         service.setCreateInstancePage = function (page) {
             if (createInstancePageConfig) {
@@ -32,16 +40,19 @@
             }
         };
         service.gotoCreatePage = function () {
-            if (!createInstancePageConfig) {
-                $location.path('/compute/create/simple');
-                return;
-            }
-            if (createInstancePageConfig.page === undefined || (createInstancePageConfig.page === 'recent' && $rootScope.features.recentInstances !== 'enabled')) {
-                createInstancePageConfig.page = 'simple';
-                Account.saveUserConfig();
-            }
-            var page = createInstancePageConfig.page ? '/' + createInstancePageConfig.page : '';
-            $location.path('/compute/create' + page);
+            service.initCreateInstancePageConfig(function () {
+                var defaultPath = '/compute/create';
+                if (!createInstancePageConfig) {
+                    $location.path(defaultPath);
+                    return;
+                }
+                if (createInstancePageConfig.page === 'recent' && $rootScope.features.recentInstances !== 'enabled') {
+                    createInstancePageConfig.page = 'simple';
+                    Account.saveUserConfig();
+                }
+                var page = createInstancePageConfig.page ? '/' + createInstancePageConfig.page : '';
+                $location.path(defaultPath + page);
+            });
         };
         service.gotoDockerDashboard = function (machines, isDeletedDockerMachine) {
             machines = machines || [];
