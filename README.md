@@ -3,7 +3,7 @@
 Production: <https://my.joyent.com/>  
 Repository: <https://github.com/joyent/piranha>  
 Browsing: <https://github.com/joyent/piranha>  
-Contacts: Lloyd Dewolf, Jens Schutt, Tyson Hom   
+Contacts: Tyson Hom   
 Docs: <https://hub.joyent.com/wiki/display/PIRANHA/Home> (out of date)  
 Tickets/bugs: <https://sdcportal.atlassian.net/browse/PIRANHA>
 
