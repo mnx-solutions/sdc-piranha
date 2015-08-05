@@ -291,7 +291,7 @@
                                         class="without-hover toggle-graf-btn toggle-btn-bg">\
                                     <p class="toggle-icon" data-ng-class="{collapsed: !showGraph}">{{ready && instrumentation.title || loadingText}}</p>\
                                 </button>\
-                                <button data-ng-click="deleteGraph()" class="btn del-btn-graf toggle-btn-bg pull-right" title="delete graph">\
+                                <button data-ng-click="deleteGraph()" class="btn without-hover del-btn-graf toggle-btn-bg pull-right" title="delete graph">\
                                     <div class="pull-right remove-icon"></div>\
                                 </button>\
                             </div>\

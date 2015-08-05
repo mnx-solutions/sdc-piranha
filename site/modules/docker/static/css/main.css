@@ -166,8 +166,6 @@
 }
 
 .rickshaw_graph {
-    overflow: hidden;
-
     max-width: 485px;
     margin-bottom: 10px;
 }
@@ -583,6 +581,7 @@
 }
 .container-create-form .restart-policy {
     float: left;
+
     min-width: 400px;
 }
 .btn.without-hover {
@@ -595,6 +594,7 @@
 }
 .container-create-form .max-retry-count {
     margin-left: 10px;
+
     vertical-align: middle;
 }
 .maximum-retry-error {

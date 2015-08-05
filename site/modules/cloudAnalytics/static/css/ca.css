@@ -35,7 +35,8 @@
     width: 34px;
     height: 34px;
 
-    background: no-repeat center center;
+    background-repeat: no-repeat;
+    background-position: center center;
     background-size: 24px;
 }
 
@@ -114,8 +115,7 @@
     margin-right: -42px;
 }
 
-.heatmap-pos
-{
+.heatmap-pos {
     padding-left: 35px;
 
     vertical-align: top;
