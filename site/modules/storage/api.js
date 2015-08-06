@@ -96,8 +96,9 @@ exports.init = function execute(log, config, done) {
 
     function putFileContents(filepath, data, callback) {
         data = typeof data === 'string' ? data : JSON.stringify(data);
-        var fileStream = new MemoryStream(data);
-        this.put(filepath, fileStream, {size: data.length, mkdirs: true}, callback);
+        var buffer = new Buffer(data);
+        var fileStream = new MemoryStream(buffer);
+        this.put(filepath, fileStream, {size: buffer.length, mkdirs: true}, callback);
     }
 
     function safePutFileContents(filepath, data, callback) {
