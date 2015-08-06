@@ -767,7 +767,7 @@
 
                 function pullImageProgressHandler(hostId, pullState, pulledImage) {
                     $scope.isPullingInProgress[hostId] = pullState;
-                    if (!pullState) {
+                    if (!pullState && pulledImage) {
                         loadHostImages($scope.host, pulledImage.name + ':' + pulledImage.tag);
                     }
                 }
