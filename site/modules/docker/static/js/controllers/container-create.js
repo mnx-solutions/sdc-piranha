@@ -160,7 +160,7 @@
                         });
                     }
                     return containerLabels;
-                }
+                };
 
                 var unParseLabels = function (labels) {
                     var containerLabels = [];
@@ -168,13 +168,13 @@
                         containerLabels.push(label + LABEL_SEPARATOR + labels[label]);
                     }
                     return containerLabels;
-                }
+                };
 
                 function unParseVolumes(volumes, binds) {
                     var output = [];
                     var i = 0;
                     for (var path in volumes) {
-                        if (binds[i] && binds[i].indexOf(path) !== -1) {
+                        if (binds && binds[i] && binds[i].indexOf(path) !== -1) {
                             output.push(binds[i]);
                             i++;
                         } else {
