@@ -233,7 +233,6 @@ var dockerAPIMethods = {
         path: '/info'
     },
     getVersion: {
-        auditType: 'docker',
         method: 'GET',
         path: '/version',
         params: {
