@@ -63,8 +63,8 @@
                 <p>Detailed analytics use pre-defined metrics to measure perfomance</p>
                 <button id="button-start" class="btn orange start-analytics-btn" data-ng-click="createDefaultInstrumentations()" data-ng-disabled="!selectedInstance">Start Analysis</button>
                 <p class="opt-title">Analytics Options:</p>
-                <button class="btn icon-zoom-in daffodil narrow" data-ng-click="zoom(1)" data-ng-disabled="!graphs.length || zoomInDisable"></button>
-                <button class="btn icon-zoom-out daffodil narrow" data-ng-click="zoom(-1)" data-ng-disabled="!graphs.length || zoomOutDisable"></button>
+                <button class="btn icon-zoom-in daffodil narrow" data-ng-click="zoom(-1)" data-ng-disabled="!graphs.length || zoomOutDisable"></button>
+                <button class="btn icon-zoom-out daffodil narrow" data-ng-click="zoom(1)" data-ng-disabled="!graphs.length || zoomInDisable"></button>
                 <button class="btn daffodil narrow" data-ng-click="deleteAllInstrumentations()" data-ng-disabled="!graphs.length">Delete All</button>
                 <button class="btn daffodil narrow" data-ng-click="createInstrumentation()" data-ng-disabled="!canCreate()">Create</button>
             </div>
