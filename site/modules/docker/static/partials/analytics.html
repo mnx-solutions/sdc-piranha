@@ -67,6 +67,8 @@
                     data-ng-click="createDefault()"
                     data-ng-disabled="!current.host || !containers.length || isSocketOpening || !current.container">Start Analysis</button>
             <p class="opt-title">Analytics Options:</p>
+            <button class="btn icon-zoom-in daffodil narrow" data-ng-click="zoom(1)" data-ng-disabled="!canDelete() || zoomInDisable" disabled="disabled"></button>
+            <button class="btn icon-zoom-out daffodil narrow" data-ng-click="zoom(-1)" data-ng-disabled="!canDelete() || zoomOutDisable" disabled="disabled"></button>
             <button class="btn daffodil narrow" data-ng-click="deleteAll()" data-ng-disabled="!canDelete()">Delete All</button>
             <button class="btn daffodil narrow" data-ng-click="create()" data-ng-disabled="!current.metric">Create</button>
         </div>

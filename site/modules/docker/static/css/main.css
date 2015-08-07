@@ -138,9 +138,13 @@
     height: 50px;
 }
 .page .chart_container {
+    position: relative;
+
     display: inline-block;
 
+    width: 450px;
     height: 150px;
+    margin-bottom: 10px;
 }
 
 .rickshaw_legend {
@@ -169,6 +173,9 @@
     max-width: 485px;
     margin-bottom: 10px;
 }
+.chart.rickshaw_graph {
+    left: 60px;
+}
 
 .rickshaw_legend .line .swatch {
     cursor: default;
@@ -196,7 +203,16 @@
     margin-left: 20px;
     padding-bottom: 20px;
 }
-.block .toggle-graf-width {
+.start-analytics-btn {
+    width: 210px;
+    margin-top: 5px;
+    margin-bottom: 25px;
+
+    text-align: left;
+}
+
+.block .toggle-graf-width,
+.detail-chart .toggle-graf-width {
     width: 100%;
 }
 
@@ -210,11 +226,11 @@
 
     float: right;
 
-    margin-top: -44px;
+    margin-top: -51px;
     padding: 0 20px 44px 0;
 }
 .y-axis {
-    float: left;
+    position: absolute;
 }
 .chart-container {
     padding: 10px 0;
@@ -486,10 +502,8 @@
     height: auto;
     margin-top: 5px;
 }
-.toggle-graf-width {
-    width: 100%;
-}
-.del-btn-graf {
+.block .del-btn-graf,
+.detail-chart .del-btn-graf {
     display: none;
 }
 .last-graf {
@@ -584,7 +598,7 @@
 
     min-width: 400px;
 }
-.btn.without-hover {
+.attach-public-ip .btn.without-hover {
     min-width: 90px;
     min-height: 34px;
 }

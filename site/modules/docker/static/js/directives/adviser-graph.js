@@ -126,7 +126,19 @@
 
                     graph.render();
 
-                    $scope.$watchCollection('type.data[0]', function () {
+                    $scope.$watchCollection('type.data[0]', function (newData, oldData) {
+                        if (newData && oldData && newData.length !== oldData.length) {
+                            var newSeries = [];
+                            $scope.type.data.forEach(function (array, index) {
+                                newSeries.push({
+                                    name: $scope.type.options.legends[index],
+                                    color: $scope.type.options.colors[index],
+                                    data: array
+                                });
+                                graph.series.splice(0);
+                                graph.series.push.apply(graph.series, newSeries);
+                            });
+                        }
                         graph.update();
                     });
 

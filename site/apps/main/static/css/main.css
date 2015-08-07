@@ -1370,6 +1370,24 @@ label.checkbox {
     background: url('../img/plus_icon.png') no-repeat;
 }
 
+.chart-icon {
+    float: left;
+
+    width: 16px;
+    height: 16px;
+    margin-top: 0;
+    padding-right: 26px;
+
+    vertical-align: middle;
+
+    background-image: url('../img/icon-chart.png');
+    background-repeat: no-repeat;
+}
+
+.btn:hover .chart-icon {
+    background-image: url('../img/icon-chart-white.png');
+}
+
 .chart-btn-icon {
     background: url('../img/chart-icon.png') no-repeat;
     background-size: 20px;
@@ -1385,6 +1403,36 @@ label.checkbox {
 
     background: url('../img/checked.png') no-repeat;
     background-size: 15px 14px;
+}
+
+.icon-zoom-in,
+.icon-zoom-out {
+    width: 34px;
+    height: 34px;
+
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-size: 24px;
+}
+
+.icon-zoom-in:hover,
+.icon-zoom-in:disabled:hover {
+    background-image: url(../img/zoomin-white.png);
+}
+
+.icon-zoom-in,
+.icon-zoom-in:disabled {
+    background-image: url(../img/zoomin.png);
+}
+
+.icon-zoom-out:hover,
+.icon-zoom-out:disabled:hover {
+    background-image: url(../img/zoomout-white.png);
+}
+
+.icon-zoom-out,
+.icon-zoom-out:disabled {
+    background-image: url(../img/zoomout.png);
 }
 
 .hide {
@@ -2432,13 +2480,6 @@ content {
     clear: right;
 }
 
-.start-analytics-btn {
-    width: 210px;
-    margin-top: 5px;
-    margin-bottom: 25px;
-
-    text-align: left;
-}
 .hotlinks {
     color: #d3d3d3;
 
