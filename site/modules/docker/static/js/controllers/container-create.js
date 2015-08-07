@@ -409,6 +409,10 @@
 
                 var loadHostImages = function (host, defaultSelectedImage) {
                     if (host && host.primaryIp) {
+                        setTimeout(function () {
+                            ng.element('#imageSelect option.image-pull-item').eq(0).attr('disabled', 'disabled');
+                            selectImageEl.select2('val', '').trigger('change');
+                        });
                         $scope.loadingHostDetails = true;
                         $scope.images = [];
                         $scope.container.container = 'base';
@@ -776,6 +780,7 @@
                     ng.element('.select2-results .image-pull-item').on('mouseup', function(e) {
                         dockerPullImage($scope.host, $scope.unreachableHosts, pullImageProgressHandler);
                         setTimeout(function () {
+                            ng.element('#imageSelect option.image-pull-item').eq(0).attr('disabled', 'disabled');
                             selectImageEl.select2('val', '').trigger('change');
                         });
                     });
