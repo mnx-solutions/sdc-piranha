@@ -1594,11 +1594,6 @@ label.checkbox {
     font-weight: 300;
 }
 
-.actions-down {
-    position: relative;
-    top: 43px;
-}
-
 .select-datacenter {
     width: 105px;
 }

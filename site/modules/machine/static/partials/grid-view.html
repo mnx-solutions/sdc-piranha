@@ -2,77 +2,96 @@
     <div class="loading-large row" data-ng-show="loading"></div>
     <div data-ng-hide="loading">
         <div class="page-row-info" data-ng-show="paginated">
-            <span>
-                Showing <span data-ng-hide="pageNumFirst == pageNumLast || pageNumSum == 0"> {{pageNumFirst}} -</span> {{pageNumLast}} of {{pageNumSum}} entries
-            </span>
-            <form data-ng-show="searchForm">
-                <div class="search-field">
-                <input type="search"
-                       name="search"
-                       id="search"
-                       class="filter-field text-large"
-                       placeholder="{{placeHolderText}}"
-                       data-ng-model="filterAll"
-                       data-translate="placeholder"
-                       data-ng-change="resetFilteredItemsSelection()" />
-                </div>
-            </form>
-        </div>
-        <div class="actions pull-right" data-ng-show="controls && pageNumSum" data-ng-class="{'actions-down': tabFilterField}" ng-init="actionButtonsList = getActionButtons(object)">
-            <div class="btn-group" ng-if="actionButtonsList.length > 1">
-                <span id="button-actions" class="btn dropdown-toggle text-medium" data-toggle="dropdown">
-                    Actions
-                    <i class="icon-drop-down"></i>
-                </span>
-                <ul id="option-list-actions" class="dropdown-menu grid-action-btn">
-                    <li data-ng-repeat="btn in actionButtonsList | orderBy:'sequence'" class="clearfix">
-                        <a data-action-button data-action-fn="btn.action" data-show-fn="btn.show" data-label="btn.label" data-object="object" class="grid-action-btn text-medium"></a>
-                    </li>
-                </ul>
-            </div>
-            <div class="btn-group" ng-if="actionButtonsList.length == 1">
-                <a data-action-button data-action-fn="actionButtonsList[0].action" data-show-fn="actionButtonsList[0].show" data-label="actionButtonsList[0].label" data-object="object" class="btn text-medium"></a>
-            </div>
-            <div class="btn-group">
-                <button type="button" class="btn text-medium" data-ng-disabled="!pageNumSum || exportInProgress" data-ng-hide="hideExport" data-ng-click="export('csv')">Export.csv</button>
-                <div class="hide" data-ng-bind-html="exportIframe"></div>
-            </div>
-            <div class="btn-group" data-ng-show="areColumnsEnabled()">
-                <span id="button-columns" class="btn text-medium" data-toggle="dropdown" data-ng-click="noClose()">
-                    Columns
-                    <i class="icon-drop-down"></i>
-                </span>
-                <div id="checkbox-list-columns" class="dropdown-menu hold-on-click dropdown-checkboxes pull-right">
-                    <div data-ng-repeat="prop in props | orderBy:'sequence'" class="dropdown-checkboxes-item">
-                        <label class="in-line">
-                            <div class="checker" data-ng-class="{hover:show}" data-ng-mouseenter="show = true" data-ng-mouseleave="show = false">
-                            <span data-ng-class="{checked: prop.active}">
-                                <input data-ng-click="selectColumnsCheckbox(prop.id)" type="checkbox" checked="" data-column="prop">
-                            </span>
+            <table class="filter-wrapper">
+                <tr>
+                    <td>
+                        <span>Showing <span data-ng-hide="pageNumFirst == pageNumLast || pageNumSum == 0"> {{pageNumFirst}} -</span> {{pageNumLast}} of {{pageNumSum}} entrie</span>
+                    </td>
+                    <td>
+                        <span data-ng-show="advancedSearchBox">
+                            <nit-advanced-searchbox ng-model="searchParams"
+                                                    parameters="availableSearchParams"
+                                                    placeholder="filter containers">
+                            </nit-advanced-searchbox>
+                        </span>
+                        <form data-ng-show="searchForm && !advancedSearchBox">
+                            <div class="search-field">
+                                <input type="search"
+                                       name="search"
+                                       id="search"
+                                       class="filter-field text-large"
+                                       placeholder="{{placeHolderText}}"
+                                       data-ng-model="filterAll"
+                                       data-translate="placeholder"
+                                       data-ng-change="resetFilteredItemsSelection()" />
                             </div>
-                        </label>
-                        <div class="text-medium in-line">{{prop.name}}</div>
-                    </div>
-                </div>
-            </div>
+                        </form>
+                    </td>
+                </tr>
+            </table>
+            <table class="tabs-wrapper">
+                <tr>
+                    <td>
+                        <div class="tabs-container" data-ng-show="tabFilterField">
+                            <span class="tabs-title">{{tabFilterField === 'datacenter' ? 'Data center' : tabFilterField}}:</span>
+                                <span data-ng-repeat="filter in tabFilters | orderBy:$index track by $index">
+                                    <input type="radio"
+                                           name="filter"
+                                           id="filter{{$index}}"
+                                           class="tab-radio"
+                                           data-ng-model="$parent.tabFilter"
+                                           data-ng-change="unSelectAllCheckbox()"
+                                           value="{{filter}}"
+                                            />
+                                    <label for="filter{{$index}}" class="tabs">{{filter}}</label>
+                                </span>
+                            <select data-select-two id="dcSelect2" data-ng-model="tabFilter" data-select="tabFilter" data-ng-change="unSelectAllCheckbox()" class="select-datacenter no-search-box" data-ng-options="filter for filter in tabFilters"></select>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="actions pull-right" data-ng-show="controls && pageNumSum" data-ng-class="{'actions-down': tabFilterField}" ng-init="actionButtonsList = getActionButtons(object)">
+                            <div class="btn-group" ng-if="actionButtonsList.length > 1">
+                                <span id="button-actions" class="btn dropdown-toggle text-medium" data-toggle="dropdown">
+                                    Actions
+                                    <i class="icon-drop-down"></i>
+                                </span>
+                                <ul id="option-list-actions" class="dropdown-menu grid-action-btn">
+                                    <li data-ng-repeat="btn in actionButtonsList | orderBy:'sequence'" class="clearfix">
+                                        <a data-action-button data-action-fn="btn.action" data-show-fn="btn.show" data-label="btn.label" data-object="object" class="grid-action-btn text-medium"></a>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="btn-group" ng-if="actionButtonsList.length == 1">
+                                <a data-action-button data-action-fn="actionButtonsList[0].action" data-show-fn="actionButtonsList[0].show" data-label="actionButtonsList[0].label" data-object="object" class="btn text-medium"></a>
+                            </div>
+                            <div class="btn-group">
+                                <button type="button" class="btn text-medium" data-ng-disabled="!pageNumSum || exportInProgress" data-ng-hide="hideExport" data-ng-click="export('csv')">Export.csv</button>
+                                <div class="hide" data-ng-bind-html="exportIframe"></div>
+                            </div>
+                            <div class="btn-group" data-ng-show="areColumnsEnabled()">
+                                <span id="button-columns" class="btn text-medium" data-toggle="dropdown" data-ng-click="noClose()">
+                                    Columns
+                                    <i class="icon-drop-down"></i>
+                                </span>
+                                <div id="checkbox-list-columns" class="dropdown-menu hold-on-click dropdown-checkboxes pull-right">
+                                    <div data-ng-repeat="prop in props | orderBy:'sequence'" class="dropdown-checkboxes-item">
+                                        <label class="in-line">
+                                            <div class="checker" data-ng-class="{hover:show}" data-ng-mouseenter="show = true" data-ng-mouseleave="show = false">
+                                                <span data-ng-class="{checked: prop.active}">
+                                                    <input data-ng-click="selectColumnsCheckbox(prop.id)" type="checkbox" checked="" data-column="prop">
+                                                </span>
+                                            </div>
+                                        </label>
+                                        <div class="text-medium in-line">{{prop.name}}</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+            </table>
         </div>
-
         <div class="item-list-container item">
-            <div class="tabs-container" data-ng-show="tabFilterField">
-                <span class="tabs-title">{{tabFilterField === 'datacenter' ? 'Data center' : tabFilterField}}:</span>
-                <span data-ng-repeat="filter in tabFilters | orderBy:$index track by $index">
-                    <input type="radio"
-                           name="filter"
-                           id="filter{{$index}}"
-                           class="tab-radio"
-                           data-ng-model="$parent.tabFilter"
-                           data-ng-change="unSelectAllCheckbox()"
-                           value="{{filter}}"
-                            />
-                    <label for="filter{{$index}}" class="tabs">{{filter}}</label>
-                </span>
-                <select data-select-two id="dcSelect2" data-ng-model="tabFilter" data-select="tabFilter" data-ng-change="unSelectAllCheckbox()" class="select-datacenter no-search-box" data-ng-options="filter for filter in tabFilters"></select>
-            </div>
             <table class="table table-striped table-bordered table-hover"
                    data-ng-class="{'grid-view-table': tabFilterField}"
                    data-ng-show="pageNumSum"

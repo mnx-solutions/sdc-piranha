@@ -25,10 +25,12 @@
                 var updateContainersInfo;
                 $scope.loading = true;
                 $scope.permittedHosts = [];
+                $scope.availableSearchParams = [];
                 if ($location.path() === '/docker/containers/running') {
                     $scope.forceTabActive = 'running';
                 }
                 var sdcDatacenter;
+                $scope.searchParams = {};
 
                 var errorCallback = function (err) {
                     Docker.errorCallback(err, function () {
@@ -81,19 +83,56 @@
                         }
                         return container.state;
                     }
-                    return container.state;
+                };
+
+                var getLabelsFromContainers = function (containers) {
+                    var labels = {};
+                    containers.forEach(function (container) {
+                        Object.keys(container.Labels).forEach(function (key) {
+                            if (labels[key]) {
+                                if (labels[key].indexOf(container.Labels[key]) === -1) {
+                                    labels[key].push(container.Labels[key]);
+                                }
+                            } else {
+                                labels[key] = [container.Labels[key]];
+                            }
+                        });
+                    });
+                    return labels;
                 };
 
                 var listAllContainers = function (cache) {
                     $q.all([
                         Docker.listContainers({host: 'All', cache: cache, options: {all: true}, suppressErrors: true}),
                         Docker.listHosts({prohibited: true}),
-                        Docker.listHosts()
+                        Docker.listHosts(),
+                        Docker.loadPredefinedSearchParams()
                     ]).then(function (result) {
                         var containers = result[0] || [];
                         var hosts = result[1] || [];
                         $scope.permittedHosts = result[2] || [];
                         $scope.host = $scope.permittedHosts[0];
+                        $scope.searchParams = result[3];
+
+                        var labels = getLabelsFromContainers(containers);
+                        Object.keys($scope.searchParams).forEach(function (key) {
+                            if (!labels[key]) {
+                                delete $scope.searchParams[key];
+                            } else {
+                                $scope.searchParams[key] = $scope.searchParams[key].filter(function (value) {
+                                    return labels[key].indexOf(value) !== -1;
+                                });
+                            }
+                        });
+                        $scope.availableSearchParams = Object.keys(labels).map(function (label) {
+                            return {
+                                key: label,
+                                name: label,
+                                placeholder: 'label',
+                                values: labels[label]
+                            };
+                        });
+
                         $scope.showRequestTritonBtn = hosts.find(function (host) {
                             return host.isSdc && host.prohibited;
                         });
@@ -229,6 +268,11 @@
                         _getter: function (container) {
                             return container.isSdc ? 'N/A' : container.hostId;
                         }
+                    },
+                    {
+                        id: 'labels',
+                        name: 'Labels',
+                        sequence: 13
                     }
                 ];
                 var gridMessages = {
@@ -433,13 +477,19 @@
                 $scope.exportFields = {
                     ignore: []
                 };
-                $scope.searchForm = true;
+                $scope.searchForm = $scope.advancedSearchBox = true;
                 $scope.enabledCheckboxes = true;
                 $scope.placeHolderText = 'filter containers';
                 $scope.tabFilterField = 'state';
 
                 Storage.pingManta(function () {
                     listAllContainers(true);
+                });
+
+                $scope.$watchCollection('searchParams', function (searchParams) {
+                    if (searchParams) {
+                        Docker.savePredefinedSearchParams(searchParams);
+                    }
                 });
 
                 $scope.$on('$routeChangeSuccess', function(next, current) {

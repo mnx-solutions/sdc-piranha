@@ -3,6 +3,8 @@ var cache = require('lru-cache')({
     max: 1000,
     maxAge: 60000 //ms
 });
+var pollerJobs = {};
+var EventEmitter = require('events').EventEmitter;
 
 exports.init = function execute(log, config, done) {
     var info = require('../cms').Info;
@@ -12,6 +14,7 @@ exports.init = function execute(log, config, done) {
     var creatingImagesCache = {};
 
     var IMAGE_CREATE_NOT_SUPPORTED = 'Image creation for %s is not currently supported';
+    var STATE_POLL_TIMEOUT = 60 * 60 * 1000;
 
     function filterFields(machine) {
         ['user-script', 'ufds_ldap_root_dn', 'ufds_ldap_root_pw'].forEach(function (f) {
@@ -88,7 +91,8 @@ exports.init = function execute(log, config, done) {
      * @param {String} [type=Machine] - type we are polling, defaults to machine
      * @param {Function} callback
      */
-    function pollForObjectStateChange(client, call, prop, expect, timeout, type, objectId, callback) {
+    function pollForObjectStateChange(call, prop, expect, timeout, type, objectId, cb) {
+        var cloud = call.cloud;
         objectId = objectId || (typeof call.data === 'object' ? call.data.uuid : call.data);
 
         timeout = timeout || 5 * 60 * 1000;
@@ -99,7 +103,18 @@ exports.init = function execute(log, config, done) {
             package: 'resizing'
         };
 
-        call.log = call.log.child({datacenter: client._currentDC});
+        if (pollerJobs[objectId]) {
+            pollerJobs[objectId].on('complete', cb);
+            return;
+        }
+
+        var job = pollerJobs[objectId] = new EventEmitter;
+        var callback = function (error, result) {
+            job.emit('complete', error, result);
+            delete pollerJobs[objectId];
+        };
+
+        call.log = call.log.child({datacenter: cloud._currentDC});
 
         var clearPoller = createPoller(call, timeout, callback, function () {
 
@@ -108,9 +123,9 @@ exports.init = function execute(log, config, done) {
 
             var getEntity = function (entityType, poller) {
                 if (entityType === 'Image') {
-                    return client.getImage(objectId, poller, null, true);
+                    return cloud.getImage(objectId, poller, null, true);
                 } else {
-                    return client['get' + entityType](objectId, true, poller, null, true);
+                    return cloud['get' + entityType](objectId, true, poller, null, true);
                 }
             };
 
@@ -166,6 +181,16 @@ exports.init = function execute(log, config, done) {
         });
     }
 
+    api.getWithStatus = function (machine, call) {
+        var job = pollerJobs[machine.id];
+        if (job) {
+            call.update(null, machine);
+            job.on('complete', call.done.bind(call));
+        } else {
+            call.done(null, machine);
+        }
+    };
+
     api.Create = function (call, options, callback) {
         // Not using immediate for dockerHost creation to prevent haproxy timeout
         if (call.getImmediate && options.specification !== 'dockerhost') {
@@ -204,7 +229,7 @@ exports.init = function execute(log, config, done) {
                     call.immediate(null, {machine: machine});
                 }
                 // poll for machine status to get running (provisioning)
-                pollForObjectStateChange(cloud, call, 'state', 'running', (60 * 60 * 1000), null, machine.id, callback);
+                pollForObjectStateChange(call, 'state', 'running', (STATE_POLL_TIMEOUT), null, machine.id, callback);
             } else {
                 var noErrorLog = err.message && err.message.indexOf('QuotaExceeded') === 0;
                 if (noErrorLog) {
@@ -221,7 +246,7 @@ exports.init = function execute(log, config, done) {
         cloud.renameMachine(options.uuid, options, function (err) {
             if (!err) {
                 // poll for machine name change (rename)
-                pollForObjectStateChange(cloud, call, 'name', options.name, (60 * 60 * 1000), null, options.uuid, callback);
+                pollForObjectStateChange(call, 'name', options.name, (STATE_POLL_TIMEOUT), null, options.uuid, callback);
             } else {
                 (callback || call.error)(err);
             }
@@ -234,7 +259,7 @@ exports.init = function execute(log, config, done) {
         cloud.resizeMachine(options.uuid, options, function (err) {
             if (!err) {
                 // poll for machine package change (resize)
-                pollForObjectStateChange(cloud, call, 'package', options.packageName, null, null, options.uuid, callback);
+                pollForObjectStateChange(call, 'package', options.packageName, null, null, options.uuid, callback);
             } else {
                 var noErrorLog = err.message && err.message.indexOf('Invalid VM update parameters') !== -1;
                 (callback || call.error)(err, noErrorLog);
@@ -247,7 +272,7 @@ exports.init = function execute(log, config, done) {
         var cloud = call.cloud.separate(options.datacenter);
         cloud.startMachine(options.uuid, function (err) {
             if (!err) {
-                pollForObjectStateChange(cloud, call, 'state', 'running', null, null, options.uuid, callback);
+                pollForObjectStateChange(call, 'state', 'running', null, null, options.uuid, callback);
             } else {
                 (callback || call.error)(err);
             }
@@ -259,7 +284,7 @@ exports.init = function execute(log, config, done) {
         var cloud = call.cloud.separate(options.datacenter);
         cloud.stopMachine(options.uuid, function (err) {
             if (!err) {
-                pollForObjectStateChange(cloud, call, 'state', 'stopped', null, null, options.uuid, callback);
+                pollForObjectStateChange(call, 'state', 'stopped', null, null, options.uuid, callback);
             } else {
                 (callback || call.error)(err);
             }
@@ -272,7 +297,7 @@ exports.init = function execute(log, config, done) {
         cache.set(options.uuid, 'deleting');
         cloud.deleteMachine(options.uuid, function (err) {
             if (!err) {
-                pollForObjectStateChange(cloud, call, 'state', 'deleted', null, null, options.uuid, function () {
+                pollForObjectStateChange(call, 'state', 'deleted', null, null, options.uuid, function () {
                     cache.del(options.uuid);
                     callback.apply(this, arguments);
                 });
@@ -288,7 +313,7 @@ exports.init = function execute(log, config, done) {
         var cloud = call.cloud.separate(options.datacenter);
         cloud.rebootMachine(options.uuid, function (err) {
             if (!err) {
-                pollForObjectStateChange(cloud, call, 'state', 'running', null, null, options.uuid, callback);
+                pollForObjectStateChange(call, 'state', 'running', null, null, options.uuid, callback);
             } else {
                 (callback || call.error)(err);
             }
@@ -474,7 +499,7 @@ exports.init = function execute(log, config, done) {
         cloud.updateImage(options.uuid, options, function (err) {
             if (!err) {
                 // poll for image name change (rename)
-                pollForObjectStateChange(cloud, call, 'name', options.name, (60 * 60 * 1000), 'Image', options.uuid, callback);
+                pollForObjectStateChange(call, 'name', options.name, (STATE_POLL_TIMEOUT), 'Image', options.uuid, callback);
             } else {
                 call.done(err);
             }
@@ -490,7 +515,7 @@ exports.init = function execute(log, config, done) {
                 if (creatingImagesCache[options.imageId]) {
                     delete creatingImagesCache[options.imageId];
                 }
-                pollForObjectStateChange(cloud, call, 'state', 'deleted', (60 * 60 * 1000), 'Image', options.imageId, callback);
+                pollForObjectStateChange(call, 'state', 'deleted', (STATE_POLL_TIMEOUT), 'Image', options.imageId, callback);
             } else {
                 var result = false;
                 if (err.restCode === 'NotAuthorized' && err.statusCode === 403 && cloud._subId) {
@@ -519,7 +544,7 @@ exports.init = function execute(log, config, done) {
                 cachedImage['published_at'] = options['published_at'];
                 cachedImage.public = false;
                 cachedImage.actionInProgress = true;
-                pollForObjectStateChange(cloud, call, 'state', 'active', (60 * 60 * 1000), 'Image', image.id, callback);
+                pollForObjectStateChange(call, 'state', 'active', (STATE_POLL_TIMEOUT), 'Image', image.id, callback);
                 call.step = {
                     state: image.state
                 };
@@ -625,7 +650,7 @@ exports.init = function execute(log, config, done) {
         var cloud = call.cloud.separate(call.data.datacenter);
         cloud.enableFirewall(call.data.machineId, function (err) {
             if (!err) {
-                pollForObjectStateChange(cloud, call, 'firewall_enabled', true, null, null, call.data.machineId, callback);
+                pollForObjectStateChange(call, 'firewall_enabled', true, null, null, call.data.machineId, callback);
             } else {
                 call.error(err);
             }
@@ -637,7 +662,7 @@ exports.init = function execute(log, config, done) {
         var cloud = call.cloud.separate(call.data.datacenter);
         cloud.disableFirewall(call.data.machineId, function (err) {
             if (!err) {
-                pollForObjectStateChange(cloud, call, 'firewall_enabled', false, null, null, call.data.machineId, callback);
+                pollForObjectStateChange(call, 'firewall_enabled', false, null, null, call.data.machineId, callback);
             } else {
                 call.error(err);
             }
