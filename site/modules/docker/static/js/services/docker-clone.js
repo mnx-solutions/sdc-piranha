@@ -9,6 +9,7 @@
                 return dockerPushImage(params.image);
             } else if (name === 'run') {
                 params.create.name = '';
+                params.host = event.host;
                 $rootScope.commonConfig('cloneDockerParams', params);
                 $location.path('/docker/container/create');
                 return;
