@@ -31,18 +31,18 @@
                 var legend = null;
                 var units = {
                     'seconds': [
-                        { mag: -9, str: 'n'},
-                        { mag: -6, str: 'µ' },
-                        { mag: -3, str: 'm' },
-                        { mag: 0, str: ''}
+                        {mag: -9, str: 'n'},
+                        {mag: -6, str: 'µ'},
+                        {mag: -3, str: 'm'},
+                        {mag: 0, str: ''}
                     ],
                     'bytes': [
-                        { mag: 0, str: ''},
-                        { mag: 10, str: 'K' },
-                        { mag: 20, str: 'M' },
-                        { mag: 30, str: 'G' },
-                        { mag: 40, str: 'T' },
-                        { mag: 50, str: 'P' }
+                        {mag: 0, str: ''},
+                        {mag: 10, str: 'K'},
+                        {mag: 20, str: 'M'},
+                        {mag: 30, str: 'G'},
+                        {mag: 40, str: 'T'},
+                        {mag: 50, str: 'P'}
                     ]
                 };
 
@@ -135,7 +135,7 @@
                                 });
 
                                 mag = unit.mag;
-                                unitstr = unit.str + (type.abbr || " " + type.unit);
+                                unitstr = unit.str + (type.abbr || ' ' + type.unit);
                             }
 
                             y = y / Math.pow(type.base, mag - power);
@@ -246,7 +246,11 @@
                 $scope.ready = false;
 
                 function updateGraph(data) {
-                    ticktime = data[0].end_time;
+                    if (!data || !data[0]) {
+                        return;
+                    }
+
+                    ticktime = data[0]['end_time'];
                     heatmaptime = ticktime - 1;
                     var series = $scope.instrumentation.getSeries($scope.instrumentations, ticktime);
                     if ($scope.instrumentation.config['value-arity'] === 'numeric-decomposition') {
@@ -274,7 +278,7 @@
                             if (legend) {
                                 var legendElement = getElement('#legend_' + $scope.$id);
                                 if (legendElement) {
-                                    legendElement.innerHTML = "";
+                                    legendElement.innerHTML = '';
                                     renderLegend(graph);
                                 }
                             }
