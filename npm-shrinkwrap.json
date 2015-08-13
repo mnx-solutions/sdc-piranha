@@ -579,7 +579,7 @@
     "fwrule": {
       "version": "1.0.0",
       "from": "../../../../tmp/npm-20042-60e187a1/git-cache-f37adea33ef2/5cbf20bcedb11308876a61f2d85ab6e520b4bb14",
-      "resolved": "git+ssh://git@git.joyent.com:fwrule.git#5cbf20bcedb11308876a61f2d85ab6e520b4bb14",
+      "resolved": "git://github.com/joyent/sdc-fwrule.git#5cbf20bcedb11308876a61f2d85ab6e520b4bb14",
       "dependencies": {
         "node-uuid": {
           "version": "1.2.0",
@@ -4018,7 +4018,7 @@
     "sdc-clients": {
       "version": "6.1.0",
       "from": "../../../../tmp/npm-20042-60e187a1/git-cache-87afd7511604/323f892c776f790cf1842e2ba26aeb87e6a2f8ea",
-      "resolved": "git+ssh://git@git.joyent.com:node-sdc-clients.git#323f892c776f790cf1842e2ba26aeb87e6a2f8ea",
+      "resolved": "git://github.com/joyent/node-sdc-clients.git#323f892c776f790cf1842e2ba26aeb87e6a2f8ea",
       "dependencies": {
         "lru-cache": {
           "version": "1.0.2",
