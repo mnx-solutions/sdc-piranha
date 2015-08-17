@@ -606,7 +606,10 @@ exports.init = function execute(log, config, done) {
                         });
                         return callback(host ? null : 'Docker host not found', host);
                     }
-                    callback(errors, hosts);
+                    if (errors) {
+                        call.log.warn({errors: errors}, 'Unable to retrieve hosts list.');
+                    }
+                    callback(null, hosts);
                 });
             });
         });
