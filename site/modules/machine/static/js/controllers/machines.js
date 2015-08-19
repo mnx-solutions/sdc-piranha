@@ -101,12 +101,7 @@
                                 });
                                 var imageExists = datasets.some(function (image) { return image.id === machine.image; });
                                 if (machine.image && !imageExists && !$scope.datasetsInfo[machine.image]) {
-                                    Image.getImage(machine.datacenter, machine.image).then(function (image) {
-                                        machine.type = Machine.getMachineType(machine, image);
-                                        setImageName(image, machine);
-                                    }, function () {
-                                        setImageName(machine.image, machine);
-                                    });
+                                    setImageName(machine.image, machine);
                                 }
                                 if (isSdc(machine) && $scope.features.docker === 'enabled' &&
                                     machine.state !== 'deleting') {
