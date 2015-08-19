@@ -513,6 +513,7 @@
                                 }
                                 machine.checked = false;
                             });
+                            $scope.checkedInstances = [];
                             if (isFirewallNonSupported) {
                                 $scope.notSupportedFirewallMessage();
                             }
