@@ -20,7 +20,7 @@
                             <span class="selected-sub"></span>
                         </a>
                     </li>
-                    <li class="sub" data-ng-class="{active: location.path().search('compute') == 1 && location.path().search('compute/') == -1}">
+                    <li class="sub" data-ng-class="{active: location.path().search('compute') == 1 && location.path().search('compute/') == -1 || location.path().search('/instance?') > 1}">
                         <a href="#!/compute">
                             <span class="titles">Instances</span>
                             <span class="selected-sub"></span>
