@@ -327,6 +327,10 @@
             service.updateMachines(false);
         }
 
+        $rootScope.$on('clearMachinesCache', function () {
+            machines = {job: null, index: {}, list: [], search: {}};
+        });
+
         function start(machine, opts, uuid) {
             var stateChanged = true;
             machine.prevState = machine.state;

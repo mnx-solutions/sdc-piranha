@@ -55,6 +55,9 @@
             }
 
             $scope.$watch('machines', function (machines) {
+                if (!machines.length && machines.final) {
+                    Machine.gotoCreatePage();
+                }
                 machines.forEach(function (machine) {
                     machine.label = machine.name || machine.id;
                 });

@@ -13,7 +13,8 @@
             '$location',
             '$filter',
             'Account',
-            function ($scope, requestContext, localization, Docker, $q, PopupDialog, Storage, $location, $filter, Account) {
+            '$rootScope',
+            function ($scope, requestContext, localization, Docker, $q, PopupDialog, Storage, $location, $filter, Account, $rootScope) {
                 var CURRENT_PAGE_ACTION = 'docker.containers';
 
                 localization.bind('docker', $scope);
@@ -497,6 +498,10 @@
                         hostId = requestContext.getParam('host') || '';
                         listAllContainers(true);
                     }
+                });
+
+                $rootScope.$on('clearDockerCache', function () {
+                    listAllContainers(true);
                 });
 
                 //create container

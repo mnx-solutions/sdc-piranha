@@ -741,7 +741,12 @@
                     $scope.container.HostConfig.Binds = isArrayNotEmpty(binds) ? binds : null;
 
                     Docker.run($scope.host, {create: $scope.container, start: $scope.container.HostConfig}).then(function () {
-                        $location.path('/docker/containers');
+                        if ($location.path().indexOf('/docker/container/create') !== -1) {
+                            $location.path('/docker/containers');
+                        }
+                        if ($scope.host.isSdc) {
+                            $rootScope.$emit('clearMachinesCache');
+                        }
                     }, function (err) {
                         if (typeof (err) === 'string') {
                             if (err.indexOf('cpuset.cpus: invalid') !== -1) {
