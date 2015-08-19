@@ -290,7 +290,7 @@ li.active a.question-icon
 }
 
 .sidebar-toggler-back {
-    background-image: url('../img/sidebar-toggler-icon-back.png');
+    transform: rotate(180deg);
 }
 
 .sidebar-toggler:hover {
