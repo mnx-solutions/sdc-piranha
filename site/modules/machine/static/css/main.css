@@ -1073,7 +1073,9 @@
 .small-icon.ghost,
 .small-icon.postgresql,
 .small-icon.scalearc,
-.small-icon.nginx {
+.small-icon.nginx,
+.small-icon.mariadb,
+.small-icon.dtrace {
     background-repeat: no-repeat;
     background-position: 168px 12px;
     background-size: 20px;
@@ -1111,7 +1113,9 @@
 .advanced-instance-title .ghost,
 .advanced-instance-title .postgresql,
 .advanced-instance-title .scalearc,
-.advanced-instance-title .nginx {
+.advanced-instance-title .nginx,
+.advanced-instance-title .mariadb,
+.advanced-instance-title .dtrace {
     width: 140px;
 }
 
@@ -1270,6 +1274,16 @@
     background-image: url(../img/icons/nginx.png);
 }
 
+.small-icon.mariadb,
+.mariadb-logo {
+    background-image: url(../img/icons/mariadb.png);
+}
+
+.small-icon.dtrace,
+.dtrace-logo {
+    background-image: url(../img/icons/dtrace.png);
+}
+
 .smart-logo,
 .ubuntu-logo,
 .windows-logo,
@@ -1281,7 +1295,8 @@
 .postgresql-logo,
 .scalearc-logo,
 .nginx-logo,
-.denian-logo {
+.dtrace-logo,
+.mariadb-logo {
     background-color: #eef0f2;
     background-repeat: no-repeat;
     background-position: 198px 10px;
