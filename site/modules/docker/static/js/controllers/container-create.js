@@ -351,7 +351,8 @@
                     $scope.container = ng.extend($scope.container, createData);
 
                     $scope.input.Cmd = isArrayNotEmpty(createData.Cmd) ? unParseCommands(createData.Cmd) : '';
-                    $scope.input.Labels = unParseLabels(startData.Labels);
+                    $scope.input.Labels = unParseLabels(createData.Labels);
+                    $scope.input.Links = startData.Links;
                     $scope.input.Entrypoint = isArrayNotEmpty(createData.Entrypoint) ? unParseCommands(createData.Entrypoint) : '';
                     $scope.input.Memory = Math.floor(createData.Memory / 1024 / 1024);
                     $scope.input.MemorySwap = Math.floor(createData.MemorySwap / 1024 / 1024);
@@ -632,6 +633,14 @@
                     $scope.container.HostConfig.VolumesFrom = [];
 
                     if ($scope.preSelectedData) {
+                        if ($scope.preSelectedData.host !== host.id) {
+                            if (!$scope.originLinks) {
+                                $scope.originLinks = $scope.input.Links;
+                                $scope.input.Links = [];
+                            }
+                        } else if ($scope.originLinks) {
+                            $scope.input.Links = $scope.originLinks;
+                        }
                         getHostStats($scope.host);
                         return;
                     }
