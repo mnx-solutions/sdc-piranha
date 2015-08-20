@@ -122,7 +122,9 @@ window.fn = [];
             service.pingManta = function (callback) {
                 callback = callback || angular.noop;
                 function errorPingManta() {
-                    if ($location.path().indexOf('/dashboard') !== 0) {
+                    var path = $location.path();
+                    if (path.indexOf('/dashboard') !== 0 && path.indexOf('/compute') !== 0 &&
+                        path.indexOf('/usage') !== 0) {
                         errorContext.emit(new Error(localization.translate(null,
                             'docker',
                             'Our operations team is investigating.'
