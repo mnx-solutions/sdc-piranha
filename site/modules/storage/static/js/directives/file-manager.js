@@ -239,6 +239,9 @@
                 };
 
                 scope.roleTag = function () {
+                    if (!lastSelectedFile) {
+                        return;
+                    }
                     var path = getObjectPath(lastSelectedFile);
 
                     var roleTagCtrl = function ($scope, dialog) {
