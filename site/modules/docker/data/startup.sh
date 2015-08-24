@@ -29,7 +29,7 @@ DOCKER_TCP_PORT=4240
 REGISTRY_PORT=5000
 MEMSTAT_PORT=8888
 
-DOCKER_VERSION="${DOCKER_VERSION:-1.6.0}"
+DOCKER_VERSION="${DOCKER_VERSION:-1.8.1}"
 
 KEYS_PATH=/root/.docker
 MANTA_DOCKER_PATH=/${MANTA_USER}/stor/.joyent/docker
@@ -75,8 +75,8 @@ function writeStage {
 }
 
 function installDocker {
-    wget -c https://get.docker.com/ubuntu/pool/main/l/lxc-docker-${DOCKER_VERSION}/lxc-docker-${DOCKER_VERSION}_${DOCKER_VERSION}_amd64.deb
-    dpkg -i lxc-docker-${DOCKER_VERSION}_${DOCKER_VERSION}_amd64.deb
+    wget -c "https://apt.dockerproject.org/repo/pool/main/d/docker-engine/docker-engine_${DOCKER_VERSION}-0~$(lsb_release -sc)_amd64.deb"
+    dpkg -i docker-engine_${DOCKER_VERSION}-0~$(lsb_release -sc)_amd64.deb
     local STATE=true
     while ${STATE} ; do
         if pgrep mkfs.ext3  >/dev/null; then

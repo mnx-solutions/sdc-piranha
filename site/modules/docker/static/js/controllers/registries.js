@@ -170,7 +170,7 @@
                                     } else {
                                         $scope.hasDockerHost = true;
                                     }
-                                    if (Docker.version && host.dockerVersion.Version < Docker.version) {
+                                    if (host.dockerVersion.Version < '1.6.0') {
                                         host.versionMismatch = true;
                                     }
                                 });
