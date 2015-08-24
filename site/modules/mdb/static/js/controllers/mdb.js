@@ -109,6 +109,7 @@
                 {
                     id: 'coreFile',
                     name: 'Core File',
+                    _order: 'coreFile',
                     sequence: 1,
                     active: true,
                     type: 'html',
