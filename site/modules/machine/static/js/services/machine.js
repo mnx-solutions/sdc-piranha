@@ -519,7 +519,10 @@
                     return;
                 }
 
-                machines.list.splice(machines.list.indexOf(job.machine), 1);
+                var machineIndex = machines.list.indexOf(job.machine);
+                if (machineIndex !== -1) {
+                    machines.list.splice(machineIndex, 1);
+                }
                 if (job.machine.tags && job.machine.tags.sdc_docker) {
                     $rootScope.$emit('clearDockerCache');
                 }
