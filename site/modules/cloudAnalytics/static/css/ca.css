@@ -10,6 +10,9 @@
 
 .rickshaw_legend {
     padding: 12px 0;
+
+    color: #333;
+    background-color: transparent;
 }
 
 .below-zero {
@@ -28,34 +31,6 @@
     padding-top: 20px;
 
     border-top: 1px solid #cbc1a8;
-}
-
-.icon-zoom-in,
-.icon-zoom-out {
-    width: 34px;
-    height: 34px;
-
-    background-repeat: no-repeat;
-    background-position: center center;
-    background-size: 24px;
-}
-
-.icon-zoom-in:hover {
-    background-image: url(../img/zoomin-white.png);
-}
-
-.icon-zoom-in,
-.icon-zoom-in:disabled {
-    background-image: url(../img/zoomin.png);
-}
-
-.icon-zoom-out:hover {
-    background-image: url(../img/zoomout-white.png);
-}
-
-.icon-zoom-out,
-.icon-zoom-out:disabled {
-    background-image: url(../img/zoomout.png);
 }
 
 .chart-info {

@@ -23,6 +23,8 @@
             var hostStats = null;
             var statsSocket;
             $scope.cadvisorUnavailable = false;
+            $scope.zoomInDisable = false;
+            $scope.zoomOutDisable = false;
 
             $scope.hostId = hostId;
             $scope.current = {
@@ -260,6 +262,12 @@
                         statsTimerControl();
                     }
                 }
+            };
+
+            $scope.zoom = function (inc) {
+                var zoomButtonsState = adviserGraph.zoom(inc);
+                $scope.zoomInDisable = zoomButtonsState.zoomInDisable;
+                $scope.zoomOutDisable = zoomButtonsState.zoomOutDisable;
             };
 
             $scope.canDelete = function () {

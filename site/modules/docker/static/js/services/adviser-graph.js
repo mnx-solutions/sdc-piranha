@@ -1,9 +1,12 @@
 'use strict';
 
 (function (ng, app) {
+    var metricsDataCache = {};
     app.factory('adviserGraph', ['$rootScope', 'util', function ($rootScope, util) {
         var defaultMetrics = ['cpuTotal', 'memory', 'network'];
         var prevs = {};
+        var range = 60;
+        var availableRanges = [10, 31, 60, 90, 120, 150, 180];
         return {
             init: function (metrics) {
                 var defaultSettings = {
@@ -85,9 +88,21 @@
                     var init = {};
                     metrics.forEach(function (metric) {
                         init[metric] = ng.extend({metric: metric}, defaultSettings, metricsSettings[metric] || {});
+                        metricsDataCache[metric] = [];
                     });
                     return init;
                 }
+            },
+            zoom: function (inc) {
+                var index = availableRanges.indexOf(range);
+                var newRange = availableRanges[index + inc];
+                if (newRange) {
+                    range = newRange;
+                }
+                return {
+                    zoomOutDisable: (index + inc === 0),
+                    zoomInDisable: (index + inc === availableRanges.length - 1)
+                };
             },
             updateValues: function (metrics, containerStats) {
                 function getInterval(current, previous) {
@@ -170,18 +185,42 @@
                         var chartsArray = [];
                         stats.forEach(function (stat, index) {
                             chartsArray[index] = [];
-                            for (var i = 0; i < 60; i++) {
+                            for (var i = 0; i < range; i++) {
                                 chartsArray[index].push({x: i, y: 0});
                             }
                         });
                         metrics.data = chartsArray;
                     } else {
+                        var metricCache = metricsDataCache[metrics.metric];
                         stats.forEach(function (stat, index) {
                             var currentData = metrics.data[index];
                             if (currentData && currentData.length && stat.length) {
+                                var dataSize = currentData.length;
+                                var dataCache = metricCache[index] = metricCache[index] || [];
+                                if (dataSize > range) {
+                                    metricCache[index] = dataCache = dataCache
+                                        .concat(currentData.splice(0, dataSize - range));
+                                } else if (dataSize < range && dataCache.length) {
+                                    metrics.data[index] = currentData = dataCache
+                                        .splice(
+                                            dataCache.length - range + dataSize,
+                                            dataCache.length
+                                        )
+                                        .concat(currentData);
+                                } else if (dataSize < range && !dataCache.length) {
+                                    for (var i = 0; i < range - dataSize; i++) {
+                                        currentData.unshift({x: currentData[0].x - 1, y: 0});
+                                    }
+                                }
+
                                 var newStatsData = stat[stat.length - 1];
                                 var lastXAxisPosition = currentData[currentData.length - 1].x;
-                                currentData.shift();
+                                if (dataCache.length) {
+                                    dataCache.shift();
+                                    dataCache.push(currentData.shift());
+                                } else {
+                                    currentData.shift();
+                                }
                                 newStatsData.x = lastXAxisPosition + 1;
                                 currentData.push(newStatsData);
                             }

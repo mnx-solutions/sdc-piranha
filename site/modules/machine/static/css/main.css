@@ -936,32 +936,28 @@
     cursor: pointer;
 }
 
-.package .value
-{
+.package .value {
     font-size: 14px;
     font-weight: 500;
 }
 
-.package .name
-{
-    font-size: 14px;
-    font-weight: 300;
-
+.package .name {
     display: inline-block;
     float: left;
 
     width: 100px;
+
+    font-size: 14px;
+    font-weight: 300;
 }
 
-.cost
-{
+.cost {
     padding-top: 50px;
 }
 
-.instance-name-input
-{
-    padding-left: 6px;
+.instance-name-input {
     width: 324px;
+    padding-left: 6px;
 }
 
 .review .right .instance-name-optional {
@@ -1019,26 +1015,6 @@
 
 .pb-top {
     padding-top: 7px;
-}
-
-
-
-.chart-icon {
-    float: left;
-
-    width: 16px;
-    height: 16px;
-    margin-top: 0;
-    padding-right: 26px;
-
-    vertical-align: middle;
-
-    background-image: url('../img/icon-chart.png');
-    background-repeat: no-repeat;
-}
-
-.btn:hover .chart-icon {
-    background-image: url('../img/icon-chart-white.png');
 }
 
 .small-icon.apache,
