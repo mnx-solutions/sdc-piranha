@@ -444,7 +444,7 @@
 
         function getInstanceNotificationMessage(err, job) {
             var machine = job.machine || job.initial.machine;
-            var notificationMessage = 'Instance "' + machine.name + '" ';
+            var notificationMessage = 'Instance "' + machine.label + '" ';
             if (err) {
                 notificationMessage += machine.state + ' has been failed.';
                 if (err.message && err.message.indexOf('permission') !== -1) {
@@ -640,6 +640,7 @@
 
                     if (machine.id !== result.id) {
                         machine.id = result.id;
+                        machine.label = result.name;
                         setNewMachine();
                     }
 
