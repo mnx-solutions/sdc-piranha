@@ -6,6 +6,7 @@
             var name = event.name;
             var params = event.parsedParams || {};
             if (name === 'push') {
+                delete params.image.progress;
                 return dockerPushImage(params.image);
             } else if (name === 'run') {
                 params.create.name = '';
