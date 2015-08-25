@@ -14,7 +14,8 @@
                                           data-option-label="'name'"
                                           data-selected-items="selectedHosts"
                                           data-selectable-header="AVAILABLE DOCKER HOSTS"
-                                          data-selection-header="ASSIGNED DOCKER HOSTS">
+                                          data-selection-header="ASSIGNED DOCKER HOSTS"
+                                          ng-enter="!(selectTagForm.$invalid || !selectedHosts.length) && pullImage()">
                             </multi-select>
                         </span>
                     </div>

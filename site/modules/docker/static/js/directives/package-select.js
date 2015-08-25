@@ -51,7 +51,7 @@
                         PopupDialog.custom({
                             templateUrl: 'docker/static/partials/select-package.html',
                             openCtrl: function ($scope, dialog) {
-
+                                angular.element('.btn.small.daffodil').blur();
                                 $scope.selectedPackage = parentScope.pkg;
                                 $scope.packages = parentScope.packages;
                                 $scope.packageTypes = parentScope.packageTypes;

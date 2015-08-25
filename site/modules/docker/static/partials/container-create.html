@@ -13,7 +13,7 @@
                 Docker hosts are not available, click to <a class="orange" href="#!/docker">Create Docker Host</a>
             </div>
             <div ng-show="hosts.length" class="edit-form">
-                <form name="containerCreateForm" class="container-create-form" novalidate>
+                <form ng-submit="create()" name="containerCreateForm" class="container-create-form" novalidate>
                     <div data-ng-hide="createImage" class="form-group">
                         <div class="group-label">Container Name</div>
                         <div class="edit-value">
@@ -96,6 +96,7 @@
                         <span class="edit-tag edit-label">Tag</span>
                         <span class="edit-value">
                             <input type="text"
+                                   id="tag"
                                    name="tag"
                                    data-ng-model="container.tag"
                                    data-ng-pattern="/^[A-Za-z0-9_\.\-]{2,30}$/"
@@ -371,8 +372,8 @@
                     <hr data-ng-show="!loading" />
                     <div class="row btn-bottom-block" data-ng-show="!loading">
                         <div class="pull-right">
-                            <button class="btn" data-ng-disabled="creating" data-ng-click="cancel()">Cancel</button>
-                            <button class="btn orange" data-ng-disabled="containerCreateForm.$invalid || creating" data-ng-click="create()">Start</button>
+                            <button class="btn" data-ng-disabled="creating" type="button" data-ng-click="cancel()">Cancel</button>
+                            <button class="btn orange" data-ng-disabled="containerCreateForm.$invalid || creating" type="submit" data-ng-click="create()">Start</button>
                         </div>
                         <div class="pull-right loading-medium-transparent" data-ng-show="creating"></div>
                     </div>

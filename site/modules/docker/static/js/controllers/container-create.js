@@ -623,7 +623,14 @@
                     }
                 };
 
+                var focusOnTag = function () {
+                    setTimeout(function () {
+                        ng.element('#tag').focus();
+                    });
+                };
+
                 $scope.changeHost = function (host) {
+                    focusOnTag();
                     host = host || Docker.getHost($scope.hosts, $scope.ip);
                     if (!host.id || !host.primaryIp) {
                         return;
@@ -657,6 +664,7 @@
                 };
 
                 $scope.changeContainer = function () {
+                    focusOnTag();
                     if ($scope.container.container) {
                         var container = $scope.containers.filter(function (container) {
                             return container.Id === $scope.container.container;
@@ -785,13 +793,15 @@
                     }
                 }
 
-                selectImageEl.select2('enable').on('open', function() {
-                    ng.element('.select2-results .image-pull-item').on('mouseup', function(e) {
+                selectImageEl.select2('enable').on('open', function () {
+                    ng.element('.select2-results .image-pull-item').on('mouseup', function (e) {
+                        selectImageEl.select2('disable');
                         dockerPullImage($scope.host, $scope.unreachableHosts, pullImageProgressHandler);
                         setTimeout(function () {
                             ng.element('#imageSelect option.image-pull-item').eq(0).attr('disabled', 'disabled');
                             selectImageEl.select2('val', '').trigger('change');
                         });
+                        selectImageEl.select2('enable');
                     });
                 });
             }

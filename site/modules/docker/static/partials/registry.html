@@ -19,7 +19,7 @@
             <div id="collapse_information" class="panel-collapse collapse in">
                 <div class="panel-body">
                     <div class="registry-form" data-ng-hide="loading">
-                        <form name="registryForm" id="registryForm">
+                        <form ng-submit="connectRegistry()" name="registryForm" id="registryForm">
                             <table>
                                 <tr>
                                     <td class="orange-asterix">API Version</td>
@@ -75,13 +75,13 @@
                                     <td><input name="password" type="password" data-ng-model="registry.password"/></td>
                                 </tr>
                             </table>
+                            <hr>
+                            <span class="orange-asterix-left">required fields</span>
+                            <div class="pull-right">
+                                <a href="#!/docker/registries" class="btn grey">Cancel</a>
+                                <button type="submit" data-ng-click="connectRegistry()" class="btn orange" data-ng-disabled="registryForm.$invalid || !portValid">Connect</button>
+                            </div>
                         </form>
-                        <hr>
-                        <span class="orange-asterix-left">required fields</span>
-                        <div class="pull-right">
-                            <a href="#!/docker/registries" class="btn grey">Cancel</a>
-                            <button data-ng-click="connectRegistry()" class="btn orange" data-ng-disabled="registryForm.$invalid || !portValid">Connect</button>
-                        </div>
                     </div>
 
                 </div>
