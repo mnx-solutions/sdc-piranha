@@ -203,6 +203,10 @@
                             };
 
                             $scope.create = function () {
+                                if ($scope.loading || !$scope.hosts.length ||
+                                    $scope.registry.host.versionMismatch) {
+                                    return;
+                                }
                                 var registry = {
                                     id: uuid(),
                                     api: 'v1',

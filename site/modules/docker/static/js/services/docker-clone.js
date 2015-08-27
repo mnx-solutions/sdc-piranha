@@ -81,6 +81,9 @@
                     });
 
                     scope.clone = function () {
+                        if (!scope.hostIp || !scope.isAllowed || scope.cloneForm.$invalid) {
+                            return;
+                        }
                         var host = Docker.getHost(scope.hosts, scope.hostIp);
                         if (name === 'run') {
                             params.create.name = scope.containerName;
