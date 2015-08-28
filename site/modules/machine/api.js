@@ -426,7 +426,7 @@ exports.init = function execute(log, config, done) {
         tritonDataCenters = [].concat(config.sdcDocker).map(function (sdcDocker) {
             return sdcDocker.datacenter;
         });
-    };
+    }
 
     api.PackageList = function (call, options, callback) {
         call.log.info('Handling list packages event');

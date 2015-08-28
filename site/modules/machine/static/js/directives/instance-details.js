@@ -226,10 +226,12 @@
 
                     Image.image({datacenter: m.datacenter, id: m.image}).then(function (image) {
                         if (scope.machine.tags.sdc_docker) {
-                            return scope.dataset = {name: 'Triton image'};
+                            scope.dataset = {name: 'Triton image'};
+                            return;
                         }
                         if (!image) {
-                            return scope.dataset = {name: 'N/A'};
+                            scope.dataset = {name: 'N/A'};
+                            return;
                         }
                         scope.dataset = image;
                         scope.machine.type = Machine.getMachineType(scope.machine, image);
@@ -265,7 +267,8 @@
                         scope.datasetType = type;
                     }, function () {
                         if (scope.machine.tags.sdc_docker) {
-                            return scope.dataset = {name: 'Triton image'};
+                            scope.dataset = {name: 'Triton image'};
+                            return;
                         }
                         scope.dataset = {name: 'Image deleted'};
                         scope.imageCreateNotSupported = 'Instances without images are not supported by the image API.';
@@ -427,9 +430,10 @@
                         });
                     }
 
+                    var message = '';
                     if (scope.imageCreateNotSupported || scope.machine.state !== 'stopped') {
                         var link = '<a class="orange-link" href="https://docs.joyent.com/public-cloud/containers/infrastructure/images/creating" target="_blank">"Considerations and Limitations"</a>';
-                        var message = scope.imageCreateNotSupported ||
+                        message = scope.imageCreateNotSupported ||
                             'Note: Image creation is subject to limitations and requires a reboot of the source instance.' +
                             ' Please review the section ' + link + ' on this page before proceeding.';
                     }

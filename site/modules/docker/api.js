@@ -55,7 +55,7 @@ if (config.features.sdcDocker === 'enabled' && config.sdcDocker && config.domain
             isSdc: true,
             prohibited: false
         });
-    })
+    });
 }
 
 var requestMap = {
