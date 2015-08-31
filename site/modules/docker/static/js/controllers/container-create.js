@@ -34,33 +34,42 @@
                     MEMORY_SWAP: 'Total memory usage (memory + swap)',
                     HOST: 'Choose data center & host where you create container',
                     VOLUMES_FROM: 'A list of volumes to inherit from another container.',
-                    VOLUMES_URL: '"Host" volumes list in format <strong>http[s]://example/file:/container/file</strong> <br /> \
-                                Said file will be downloaded and writed to a new directory in \
-                                the zone\'s dataset but not in the zoneroot, and will be mounted at \
-                                container\'s /container/file.',
+                    VOLUMES_URL: '"Host" volumes list in format <strong>http[s]://example/file:/container/file</strong>' + '' +
+                        '<br />Said file will be downloaded and writed to a new directory in the zone\'s dataset but ' +
+                        'not in the zoneroot, and will be mounted at container\'s /container/file.',
                     ENTRYPOINT: 'Overwrite the default ENTRYPOINT of the image. Use space as delimiter.',
                     CMD: 'Command to run specified',
                     PUBLISH_ALL_PORTS: 'Allocates a random host port for all of a container\'s exposed ports.',
-                    SDC_PUBLISH_ALL_PORTS: 'Allocates a random host port for all of a container\'s exposed ports.<br /> \
-                            PublishAllPorts is the way the SDC-Docker knows to assign a public IP address to the container, without that you can not get to the container from the internet.',
-                    ENV: 'A list of environment variables in the form of <strong>VAR=value</strong> or <strong>VAR="value"</strong><br />Press <strong>Enter</strong> button for adding value.',
+                    SDC_PUBLISH_ALL_PORTS: 'Allocates a random host port for all of a container\'s exposed ports.<br />' +
+                        'PublishAllPorts is the way the SDC-Docker knows to assign a public IP address to the ' +
+                        'container, without that you can not get to the container from the internet.',
+                    ENV: 'A list of environment variables in the form of <strong>VAR=value</strong> or ' +
+                        '<strong>VAR="value"</strong><br />Press <strong>Enter</strong> button for adding value.',
                     EXPOSED_PORTS: 'Ports accessible from the host by default',
-                    PORTS: 'Publish a container\'s port to the host. Format: <strong>ip:hostPort:containerPort</strong> | <strong> ip::containerPort</strong> | <strong>hostPort:containerPort</strong> |  <strong>containerPort</strong> \
-                            <br />Press <strong>Enter</strong> button for adding value.',
-                    VOLUMES_IMAGE: 'A mount point with the specified name and marks it as holding externally mounted volumes from native host or other containers',
-                    VOLUMES: 'Mountpoint paths (strings) inside the container<br /> \
-                            <strong>container_path</strong> to create a new volume for the container,<br /> \
-                            <strong>host_path:container_path</strong> to bind-mount a host path into the container,<br /> \
-                            <strong>host_path:container_path:&#60ro|rw&#62</strong> to make the bind-mount &#60read-only|read-write&#62 inside the container.',
-                    RESTART_POLICY: 'The behavior to apply when the container exits. The value is an object with a Name property of either \
-                            <strong>"always"</strong> to always restart or <strong>"on-failure"</strong> to restart only when the container exit code is non-zero. \
-                            If <strong>on-failure</strong> is used, <strong>MaximumRetryCount</strong> controls the number of times to retry before giving up. The default is not to restart. \
-                            (optional) An ever increasing delay (double the previous delay, starting at 100mS) is added before each restart to prevent flooding the server.',
-                    NETWORK: 'Set the Network mode for the container<br /> \
-                            <strong>bridge</strong>: creates a new network stack for the container on the docker bridge<br />\
-                            <strong>none</strong>: no networking for this container<br /> \
-                            <strong>container:&#60name|id&#62</strong>: reuses another container network stack<br /> \
-                            <strong>host</strong>: use the host network stack inside the container. Note: the host mode gives the container full access to local system services such as D-bus and is therefore considered insecure.',
+                    PORTS: 'Publish a container\'s port to the host. Format: <strong>ip:hostPort:containerPort</strong>' +
+                        ' | <strong> ip::containerPort</strong> | <strong>hostPort:containerPort</strong> | ' +
+                        '<strong>containerPort</strong><br />Press <strong>Enter</strong> button for adding value.',
+                    VOLUMES_IMAGE: 'A mount point with the specified name and marks it as holding externally mounted ' +
+                        'volumes from native host or other containers',
+                    VOLUMES: 'Mountpoint paths (strings) inside the container<br />' +
+                        '<strong>container_path</strong> to create a new volume for the container,<br />' +
+                        '<strong>host_path:container_path</strong> to bind-mount a host path into the container,<br />' +
+                        '<strong>host_path:container_path:&#60ro|rw&#62</strong> to make the bind-mount ' +
+                        '&#60read-only|read-write&#62 inside the container.',
+                    RESTART_POLICY: 'The behavior to apply when the container exits. The value is an object with a ' +
+                        'Name property of either <strong>"always"</strong> to always restart or ' +
+                        '<strong>"on-failure"</strong> to restart only when the container exit code is non-zero. ' +
+                        'If <strong>on-failure</strong> is used, <strong>MaximumRetryCount</strong> controls the ' +
+                        'number of times to retry before giving up. The default is not to restart. (optional) ' +
+                        'An ever increasing delay (double the previous delay, starting at 100mS) is added before ' +
+                        'each restart to prevent flooding the server.',
+                    NETWORK: 'Set the Network mode for the container<br />' +
+                        '<strong>bridge</strong>: creates a new network stack for the container on the docker bridge<br />' +
+                        '<strong>none</strong>: no networking for this container<br />' +
+                        '<strong>container:&#60name|id&#62</strong>: reuses another container network stack<br />' +
+                        '<strong>host</strong>: use the host network stack inside the container. ' +
+                        'Note: the host mode gives the container full access to local system services such as ' +
+                        'D-bus and is therefore considered insecure.',
                     TAG: 'Tag an image into a repository.',
                     REPOSITORY: 'Enter Repository',
                     MESSAGE: 'Commit message',
@@ -143,7 +152,6 @@
                             var hostPort = bind.HostPort ? bind.HostPort + ':' : ip ? ':' : '';
                             ports.push(ip + hostPort + port.substring(0, port.indexOf('/')));
                         });
-
                     }
                     return ports;
                 }
@@ -548,7 +556,9 @@
                         }
                     }, function (err, value) {
                         function retry () {
-                            setTimeout(function () {loadMachineAnalytics(machine, data, retries - 1)}, 1000);
+                            setTimeout(function () {
+                                loadMachineAnalytics(machine, data, retries - 1);
+                            }, 1000);
                         }
 
                         if (!data['cpu:usage:'] || !data['memory:rss:'] || !data['memory:rss_limit:'] || !value.length) {
@@ -716,13 +726,18 @@
                     }
 
                     $scope.container.HostConfig.Links = parseContainerLinks($scope.input.Links);
-                    $scope.container.HostConfig.LxcConf = parseLxcConf($scope.input.LxcConf);
+                    var lxcConf = $scope.container.HostConfig.LxcConf = parseLxcConf($scope.input.LxcConf);
 
                     setMemory();
+
                     var volumesFrom = $scope.container.HostConfig.VolumesFrom;
+
                     $scope.container.HostConfig.VolumesFrom = isArrayNotEmpty(volumesFrom) ? volumesFrom : null;
+
                     var binds = $scope.container.HostConfig.Binds;
+
                     $scope.container.HostConfig.Binds = isArrayNotEmpty(binds) ? binds : null;
+
                     Docker.run($scope.host, {create: $scope.container, start: $scope.container.HostConfig}).then(function () {
                         $location.path('/docker/containers');
                     }, function (err) {
@@ -731,7 +746,7 @@
                                 err = 'Cannot start container. Invalid argument: Cpuset.';
                             } else if (err.indexOf('cpuset.cpus: numerical result') !== -1) {
                                 err = 'Cannot start container. CPUset value is out of numerical range.';
-                            }else if (err === 'Docker host "' + $scope.ip + ':4243" is unreachable.' && lxcConf.length) {
+                            } else if (err === 'Docker host "' + $scope.ip + ':4243" is unreachable.' && lxcConf.length) {
                                 err = 'Unable to start created container as invalid LxcConf parameters provided.';
                             }
                         }

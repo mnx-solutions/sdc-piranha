@@ -385,8 +385,8 @@
             });
 
             var selectNetwork = function (id, doToggle) {
-                if (selectedNetworks.indexOf(id) > -1) {
-                    doToggle && selectedNetworks.splice(selectedNetworks.indexOf(id), 1);
+                if (selectedNetworks.indexOf(id) > -1 && doToggle) {
+                    selectedNetworks.splice(selectedNetworks.indexOf(id), 1);
                 } else {
                     selectedNetworks.push(id);
                 }
@@ -571,7 +571,9 @@
                         if ($scope.$$phase) {
                             deleteProvisionStep(WizardSteps.SSH);
                         } else {
-                            $scope.$apply(function () {deleteProvisionStep(WizardSteps.SSH)});
+                            $scope.$apply(function () {
+                                deleteProvisionStep(WizardSteps.SSH);
+                            });
                         }
                         ng.element('.carousel').off('slid.bs.carousel');
                     });

@@ -87,11 +87,10 @@
         service.showUpgradeAnalyticsMessage = function (hostName) {
             PopupDialog.message(
                 'New docker host analytics',
-                'CAdvisor analytics is no longer supported.\
-                 To upgrade host ' + hostName + ' to the new analytics, please ssh to the host and run:<br/>\
-                 <code>sudo su <br/> \
-                 wget ' + $location.protocol() + '://' + $location.host() + ':' + $location.port() + '/installMemStat.sh <br/> \
-                 . installMemStat.sh</code>',
+                'CAdvisor analytics is no longer supported. To upgrade host ' + hostName +
+                    ' to the new analytics, please ssh to the host and run:<br/><code>sudo su<br/>' +
+                    'wget ' + $location.protocol() + '://' + $location.host() + ':' + $location.port() +
+                    '/installMemStat.sh <br/>. installMemStat.sh</code>',
                 function () {}
             );
         };
@@ -112,7 +111,7 @@
 
         service.goToDockerContainers = function () {
             $location.path('/docker/containers');
-        }
+        };
 
         service.getAuditButtonLabel = function (event) {
             var isAction = event.parsedParams && (event.action || event.parsedParams.error);
@@ -134,7 +133,8 @@
                         registry.userHost = registry.host.replace(protocol, protocol + registry.username + '@');
                     }
                 });
-            }
+            };
+
             for (var i = registries.length - 1; i >= 0; i--) {
                 var registry = registries[i];
                 registry.userHost = registry.host;
