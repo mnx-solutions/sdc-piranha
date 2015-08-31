@@ -330,6 +330,8 @@
                         NetworkMode: 'bridge',
                         Links: [],
                         LxcConf: [],
+                        Memory: 0,
+                        MemorySwap: 0,
                         CapAdd: [],
                         CapDrop:  [],
                         RestartPolicy:  {'Name': 'no'},
@@ -689,8 +691,8 @@
 
                 var setMemory = function () {
                     if ($scope.host.isSdc && $scope.package) {
-                        $scope.container.Memory = $scope.package.memory * 1024 * 1024;
-                        $scope.container.MemorySwap = $scope.package.swap * 1024 * 1024;
+                        $scope.container.HostConfig.Memory = $scope.container.Memory = $scope.package.memory * 1024 * 1024;
+                        $scope.container.HostConfig.MemorySwap = $scope.container.MemorySwap = $scope.package.swap * 1024 * 1024;
                     } else {
                         var memorySwap = $scope.input.MemorySwap;
                         $scope.container.Memory = $scope.input.Memory * 1024 * 1024;
