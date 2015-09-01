@@ -163,14 +163,16 @@ ${DOCKER_DIR}/containers/*/*json.log {
                         tr -d '\\n' | \\
                         openssl dgst -sha256 -sign /root/.ssh/user_id_rsa | \\
                         openssl enc -e -a | tr -d '\\n')
-        
+
             curl -sS ${MANTA_URL}"\$@" -H "date: \${now}"  \\
                 -H "Authorization: Signature keyId=\"\${keyId}\",algorithm=\"\${alg}\",signature=\"\${sig}\""
         }
 
         for f in \$(find ${LOGS_DIR} -type f ! -name '*-last.log');do
             ContainerId=\$(basename \${f} | awk -F- '{print \$1}')
-            ContainerLogPath=${MANTA_DOCKER_PATH}/logs/\$(hostname)/\${ContainerId}
+            HostLogPath=${MANTA_DOCKER_PATH}/logs/\$(hostname)/
+            ContainerLogPath=\${HostLogPath}/\${ContainerId}
+            manta \${HostLogPath} -XPUT -H "content-type: application/json; type=directory"
             manta \${ContainerLogPath} -XPUT -H "content-type: application/json; type=directory"
             manta \${ContainerLogPath}/\$(date +"%F").log -XPUT -T \${f}
             mv \${f} ${LOGS_DIR}/\${ContainerId}-last.log
