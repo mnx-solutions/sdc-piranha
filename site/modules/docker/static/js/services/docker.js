@@ -889,6 +889,26 @@
             return createCall('execute', opts);
         };
 
+        service.loadPredefinedSearchParams = function () {
+            var job = serverTab.call({
+                name: 'LoadPredefinedSearchParams'
+            });
+            return job.promise;
+        };
+
+        service.savePredefinedSearchParams = function (predefinedSearchParams) {
+            for (var key in predefinedSearchParams) {
+                if (predefinedSearchParams.hasOwnProperty(key)) {
+                    predefinedSearchParams[key] = predefinedSearchParams[key] || '';
+                }
+            }
+            var job = serverTab.call({
+                name: 'SavePredefinedSearchParams',
+                data: {labelSearchParams: predefinedSearchParams}
+            });
+            return job.promise;
+        };
+
         service.SdcPackage = function (datacenter) {
             var job = serverTab.call({
                 name: 'SdcPackageList',

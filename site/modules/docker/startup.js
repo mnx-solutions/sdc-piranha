@@ -301,6 +301,7 @@ var Docker = function execute(log, config) {
                                                         return inspectCallback(null, []);
                                                     }
                                                     container.ipAddress = containerInfo.NetworkSettings.IPAddress;
+                                                    container.labels = containerInfo.Config.Labels;
                                                     inspectCallback(null, container);
                                                 });
                                             }
@@ -1029,6 +1030,21 @@ var Docker = function execute(log, config) {
                 }
                 call.done(null, DOCKER_EXEC_PATH + result.Id);
             });
+        }
+    });
+
+    server.onCall('LoadPredefinedSearchParams', function (call) {
+        call.done(null, call.req.session.labelSearchParams || {});
+    });
+
+    server.onCall('SavePredefinedSearchParams', {
+        verify: function (data) {
+            return data && data.labelSearchParams;
+        },
+        handler: function (call) {
+            call.req.session.labelSearchParams = call.data.labelSearchParams;
+            call.req.session.save();
+            call.done();
         }
     });
 

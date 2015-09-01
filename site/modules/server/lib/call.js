@@ -29,7 +29,7 @@ function deepCompare(a, b) {
 
         var ret = true;
         aKeys.forEach(function (k) {
-            if (!deepCompare(a[k], b[k])){
+            if (!deepCompare(a[k], b[k])) {
                 ret = false;
             }
         });
@@ -49,7 +49,7 @@ function Call(opts) {
 
     var self = this;
     self.__id = Math.random().toString(36).substr(2);
-    self.log = opts.log.child({call__id: self.__id});
+    self.log = opts.log.child({'call__id': self.__id});
 
     var _index = 0;
     var _status = 'created';
@@ -62,6 +62,15 @@ function Call(opts) {
     var _session = [];
     var _done = false;
     var _stack = null;
+    var _closed = false;
+
+    opts.req.connection.setMaxListeners(0);
+    opts.req.connection.on('close', function () {
+        _closed = true;
+        if (_status === 'created') {
+            _status = 'finished';
+        }
+    });
 
     function wrapEnum(obj) {
         Object.keys(obj).forEach(function (k) {
@@ -131,7 +140,7 @@ function Call(opts) {
         },
         step: {
             get: function () {
-                return _step.length < 1 ? null : _step[_step.length -1];
+                return _step.length < 1 ? null : _step.pop();
             },
             set: function (s) {
                 var old = self.step;
@@ -143,8 +152,15 @@ function Call(opts) {
             }
         },
         err: {
-            get: function () { return _error.length < 1 ? null : _error[_error.length -1]; },
+            get: function () {
+                return _error.slice(-1)[0] || null;
+            },
             set: function (s) { _error.push(s); }
+        },
+        closed: {
+            get: function () {
+                return _closed;
+            }
         },
         result: {
             value: function (data, done) {
@@ -186,13 +202,13 @@ function Call(opts) {
             value: function(err, noLog) {
                 if (err) {
                     self.err = err;
-	                if(!noLog) {
+                    if (!noLog) {
                         if (err.name === 'NotAuthorizedError') {
                             self.log.info(err);
                         } else {
                             self.log.error(err);
                         }
-	                }
+                    }
                     self.status('error');
                 }
             }

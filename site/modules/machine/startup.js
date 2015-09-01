@@ -284,7 +284,12 @@ module.exports = function execute(log, config) {
             var machineId = call.data.uuid;
             var machineInfo = {'datacenter': call.data.datacenter};
             call.log.info(machineInfo, 'Handling machine details call, machine %s', machineId);
-            call.cloud.separate(call.data.datacenter).getMachine(machineId, call.done.bind(call));
+            call.cloud.separate(call.data.datacenter).getMachine(machineId, function (error, detail) {
+                if (error) {
+                    return call.done(error);
+                }
+                machine.getWithStatus(machine, call);
+            });
         }
     });
 

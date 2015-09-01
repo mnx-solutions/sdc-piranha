@@ -1,0 +1,111 @@
+.advancedSearchBox {
+    position: relative;
+
+    display: block;
+
+    height: auto !important;
+    min-height: 30px;
+    margin: 0;
+    padding: 0 9px 0;
+
+    cursor: text;
+
+    border: 0;
+    -webkit-border-radius: 4px;
+       -moz-border-radius: 4px;
+            border-radius: 4px;
+    background-color: transparent;
+
+    line-height: 30px;
+}
+.advancedSearchBox .search-parameter-input {
+    min-width: 139px !important;
+    max-width: 240px !important;
+    height: 24px;
+    padding: 0 10px 0 25px;
+
+    vertical-align: top;
+
+    color: #666;
+    border: 1px solid #f5f5f5;
+    border-radius: 18px;
+    outline: 0 none;
+    background: #f5f5f5 url('../img/filter-icon.png') no-repeat 7px 7px;
+    background-size: 12px;
+    box-shadow: none;
+
+    font-size: 14px;
+    line-height: 24px;
+}
+.advancedSearchBox .search-parameter-input:focus {
+    padding-right: 10px;
+    padding-left: 25px;
+
+    border-color: #f5f5f5;
+    outline: 0 none;
+}
+.advancedSearchBox ul.dropdown-menu {
+    min-width: 186px;
+    max-width: 186px;
+    margin-top: 0;
+    padding: 0;
+
+    border-radius: 0;
+    background-color: #fafcfd;
+}
+.advancedSearchBox ul.dropdown-menu > li {
+    cursor: pointer;
+
+    background-color: #fafcfd;
+}
+.advancedSearchBox ul.dropdown-menu > li:hover {
+    background-color: #f6f7f8;
+}
+.advancedSearchBox ul.dropdown-menu > li a {
+    padding-left: 9px;
+
+    text-decoration: none;
+
+    color: #6d6d6d;
+}
+
+.advancedSearchBox .remove-all-icon,
+.advancedSearchBox .search-icon {
+    padding: 8px 0 0 10px;
+
+    color: #6d6d6d;
+}
+.advancedSearchBox .search-parameter {
+    vertical-align: top;
+
+    background-color: #f60;
+}
+.advancedSearchBox .search-parameter:hover {
+    cursor: pointer;
+
+    box-shadow: none;
+}
+.advancedSearchBox ul.dropdown-menu > li div {
+    overflow: hidden;
+
+    width: 100%;
+
+    text-overflow: ellipsis;
+}
+
+.advancedSearchBox ul.dropdown-menu > li {
+    height: 30px;
+}
+
+.advancedSearchBox ul.dropdown-menu > li.active {
+    background-color: #eee;
+}
+.value span,
+.value input {
+    float: left;
+    overflow: hidden;
+
+    max-width: 240px;
+
+    text-overflow: ellipsis;
+}

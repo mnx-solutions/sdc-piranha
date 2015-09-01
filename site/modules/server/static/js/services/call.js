@@ -73,7 +73,7 @@
                         self.tab.history(self); // Remove from active calls
 
                         if (_status === 'error' || self.err) {
-                            if (self.err.statusCode && self.err.statusCode === 401) {
+                            if (self.err && self.err.statusCode && self.err.statusCode === 401) {
                                 $rootScope.$broadcast('event:auth-loginRequired', self.err, data);
                             }
 

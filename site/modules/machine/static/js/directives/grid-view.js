@@ -57,7 +57,7 @@
             }
         }
 
-        function getLowerCaseSting(value) {
+        function getLowerCaseString(value) {
             value = value || '';
             if (value) {
                 if (ng.isNumber(value) || typeof (value) === 'boolean') {
@@ -74,7 +74,7 @@
             var result = false;
             if (ng.isObject(obj)) {
                 result = Object.keys(obj).some(function (key) {
-                    var propertyValue = getLowerCaseSting(obj[key]);
+                    var propertyValue = getLowerCaseString(obj[key]);
                     return propertyValue.indexOf(needle) !== -1;
                 });
             }
@@ -315,29 +315,52 @@
 
         $scope.matchesFilter = function (item) {
             var result = false;
+            var getFilteredItems = function (searchParam) {
+                var needle = searchParam.toLowerCase();
+                if (!searchInObject(item, needle)) {
+                    result = $scope.props.some(function (el) {
+                        if (el.active) {
+                            var subject = el._getter && el._getter(item) || item[el.id] || el.id2 && item[el.id][el.id2] || '';
+                            if (el.id === 'hostId' && item.hostIds && item.hostIds.length > 0) {
+                                subject = item.hostIds;
+                            }
+                            subject = getLowerCaseString(subject);
+
+                            return subject.indexOf(needle) !== -1;
+                        } else {
+                            return false;
+                        }
+                    });
+                }
+            };
             if ($scope.propertyFilter(item)) {
                 result = true;
                 if ($scope.filterAll) {
-                    var needle = $scope.filterAll.toLowerCase();
-                    if (!searchInObject(item, needle)) {
-                        result = $scope.props.some(function (el) {
-                            if (el.active) {
-                                var subject = el._getter && el._getter(item) || item[el.id] || el.id2 && item[el.id][el.id2] || '';
-                                if (el.id === 'hostId' && item.hostIds && item.hostIds.length > 0) {
-                                    subject = item.hostIds;
-                                }
-                                subject = getLowerCaseSting(subject);
+                    getFilteredItems($scope.filterAll);
+                }
+                var searchParams = angular.copy($scope.searchParams) || {};
+                if (searchParams.query && result) {
+                    getFilteredItems(searchParams.query);
+                    delete searchParams.query;
+                }
 
-                                return subject.indexOf(needle) !== -1;
-                            } else {
-                                return false;
-                            }
-                        });
-                    }
+                if (result && Object.keys(searchParams).length) {
+                    var labels = item.labels || {};
+                    result = Object.keys(searchParams).every(function (key) {
+                        var params = searchParams[key];
+                        return labels[key] && (!params[params.length - 1] ||
+                            params.indexOf(labels[key]) !== -1);
+                    });
                 }
             }
             return result;
         };
+
+        $scope.$watchCollection('searchParams', function (searchParams) {
+            if (searchParams) {
+                refreshGrid();
+            }
+        });
 
         $scope.changePage = function (t) {
             $scope.page = t;
@@ -614,6 +637,8 @@
                 actionButtons:'=',
                 imageButtonShow: '=',
                 filterAll: '@',
+                searchParams: '=?',
+                availableSearchParams: '=?',
                 exportFields: '=',
                 columnsButton: '=',
                 actionsButton: '=',
@@ -622,6 +647,7 @@
                 forceTabActive: '=?',
                 //TODO: What are these forms?
                 searchForm: '=',
+                advancedSearchBox: '=',
                 instForm: '=',
                 imgForm: '=',
                 enabledCheckboxes: '=',
