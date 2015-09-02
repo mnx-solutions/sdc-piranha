@@ -9,27 +9,14 @@
         'requestContext',
         'localization',
         'dockerClone',
-        'Account',
-        function ($scope, Docker, PopupDialog, $q, requestContext, localization, dockerClone, Account) {
+        'Storage',
+        function ($scope, Docker, PopupDialog, $q, requestContext, localization, dockerClone, Storage) {
             localization.bind('docker', $scope);
             requestContext.setUpRenderContext('docker.audit', $scope, {
                 title: localization.translate(null, 'docker', 'Docker Audit')
             });
 
             $scope.loading = true;
-
-            $q.all([
-                Docker.getAuditInfo(),
-                Docker.listHosts()
-            ]).then(function (result) {
-                $scope.audit = result[0] || [];
-                $scope.audit.forEach(function (audit) {
-                    audit.action = (audit.name === 'run' || audit.name === 'pull' || audit.name === 'push') ? 'Key actions' : null;
-                });
-                $scope.hosts = result[1] || [];
-                $scope.loading = false;
-            });
-
             var getEntryAuditDetails = function (event) {
                 if (!event.params) {
                     event.params = Docker.getAuditDetails({event: event});
@@ -172,6 +159,20 @@
             $scope.enabledCheckboxes = false;
             $scope.placeHolderText = 'filter audit';
             $scope.tabFilterField = 'action';
+
+            Storage.pingManta(function () {
+                $q.all([
+                    Docker.getAuditInfo(),
+                    Docker.listHosts()
+                ]).then(function (result) {
+                    $scope.audit = result[0] || [];
+                    $scope.audit.forEach(function (audit) {
+                        audit.action = (audit.name === 'run' || audit.name === 'pull' || audit.name === 'push') ? 'Key actions' : null;
+                    });
+                    $scope.hosts = result[1] || [];
+                    $scope.loading = false;
+                });
+            });
         }
     ]);
 }(window.angular, window.JP.getModule('docker')));
