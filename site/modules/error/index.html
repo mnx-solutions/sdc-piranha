@@ -1,7 +1,7 @@
 <div data-ng-switch="subview">
     <div data-ng-switch-when="index" data-ng-controller="error.IndexController">
         <div class="container-fluid container-position">
-            <h1>Service temporarily unavailable</h1>
+            <h1>{{error.isMantaNotAvailable && 'Manta service is not available' || 'Service temporarily unavailable'}}</h1>
             <p>
                 {{error.message}}
             </p>

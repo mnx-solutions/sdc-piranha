@@ -125,10 +125,12 @@ window.fn = [];
                     var path = $location.path();
                     if (path.indexOf('/dashboard') !== 0 && path.indexOf('/compute') !== 0 &&
                         path.indexOf('/usage') !== 0) {
-                        errorContext.emit(new Error(localization.translate(null,
+                        var err = new Error(localization.translate(null,
                             'docker',
                             'Our operations team is investigating.'
-                        )));
+                        ));
+                        err.isMantaNotAvailable = true;
+                        errorContext.emit(err);
                     }
                 }
                 function storagePing(billingEnabled) {

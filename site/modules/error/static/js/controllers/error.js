@@ -15,6 +15,7 @@
                 $scope.$on('errorContextChanged', function (scope, context) {
                     if (context) {
                         $scope.error = context.err || context.getContext().err;
+                        $scope.error.isMantaNotAvailable = context.err.isMantaNotAvailable || false;
                     }
                 });
 
