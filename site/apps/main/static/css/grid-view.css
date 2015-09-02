@@ -16,10 +16,8 @@
 
     display: inline-block;
 
+    width: 100%;
     min-height: 34px;
-}
-.grid-view-table {
-    padding-top: 25px;
 }
 
 .tabs-container {
@@ -31,7 +29,8 @@
 }
 
 .grid-container .tabs-container {
-    margin-bottom: -6px;
+    margin-bottom: -1px;
+    border-bottom: none;
 }
 
 .tabs-container .select-datacenter {
@@ -185,6 +184,9 @@
 .table-hover tbody tr:hover > th {
     background-color: #f9f9f9;
 }
+.grid-view-table {
+    border-top: none;
+}
 input.filter-field {
     width: 240px;
     height: 24px;
@@ -205,7 +207,7 @@ input.filter-field::-ms-clear {
 
 .actions-down {
     position: relative;
-    top: 5px;
+    top: 3px;
 }
 
 .actions .btn-group .btn {
@@ -273,8 +275,9 @@ input.filter-field::-ms-clear {
 }
 .filter-wrapper td:first-child {
     min-width: 140px;
-    vertical-align: top;
     padding-top: 5px;
+
+    vertical-align: top;
 }
 .filter-wrapper td:last-child,
 .tabs-wrapper td:first-child {
@@ -282,4 +285,7 @@ input.filter-field::-ms-clear {
 }
 .tabs-wrapper td:last-child {
     min-width: 220px;
+}
+.tabs-line {
+    border-bottom: 1px solid #ddd;
 }
