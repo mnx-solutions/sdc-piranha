@@ -16,7 +16,8 @@
                 restrict: 'E',
                 scope: {
                     model: '=ngModel',
-                    parameters: '='
+                    parameters: '=',
+                    editSearchParam: '=?'
                 },
                 replace: true,
                 templateUrl: '/static/partials/angular-advanced-searchbox.html',
@@ -28,7 +29,7 @@
                         $scope.searchParams = [];
                         $scope.searchQuery = '';
                         $scope.setSearchFocus = false;
-                        $scope.editSearchParam = false;
+                        $scope.editSearchParam = $scope.editSearchParam || false;
                         var isValueSelected = false;
                         $scope.searchValues = [];
                         $scope.$watch('searchQuery', function () {
@@ -74,7 +75,7 @@
                                 }
                             });
                             $scope.searchParams = $scope.searchParams.filter(function (param) {
-                                return !$scope.model.hasOwnProperty(param.key) || $scope.model[param.key].indexOf(param.value) !== -1;
+                                return $scope.model[param.key] && ($scope.model[param.key].indexOf(param.value) !== -1 || !param.value);
                             });
                         }, true);
 

@@ -640,6 +640,7 @@
                 filterAll: '@',
                 searchParams: '=?',
                 availableSearchParams: '=?',
+                editSearchParam: '=?',
                 exportFields: '=',
                 columnsButton: '=',
                 actionsButton: '=',

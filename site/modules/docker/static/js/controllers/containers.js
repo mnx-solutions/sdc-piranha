@@ -12,9 +12,8 @@
             'Storage',
             '$location',
             '$filter',
-            'Account',
             '$rootScope',
-            function ($scope, requestContext, localization, Docker, $q, PopupDialog, Storage, $location, $filter, Account, $rootScope) {
+            function ($scope, requestContext, localization, Docker, $q, PopupDialog, Storage, $location, $filter, $rootScope) {
                 var CURRENT_PAGE_ACTION = 'docker.containers';
 
                 localization.bind('docker', $scope);
@@ -32,6 +31,7 @@
                 }
                 var sdcDatacenter;
                 $scope.searchParams = {};
+                $scope.editSearchParam = false;
 
                 var errorCallback = function (err) {
                     Docker.errorCallback(err, function () {
@@ -58,7 +58,7 @@
                     }
                     var INTERVAL = 30000; // ms
                     updateContainersInfo = setInterval(function () {
-                        if (!hasCheckedContainers()) {
+                        if (!hasCheckedContainers() && !$scope.editSearchParam) {
                             listAllContainers(false);
                         }
                         if (hasContainersInProgress()) {
@@ -117,12 +117,14 @@
 
                         var labels = getLabelsFromContainers(containers);
                         Object.keys($scope.searchParams).forEach(function (key) {
-                            if (!labels[key]) {
-                                delete $scope.searchParams[key];
-                            } else {
-                                $scope.searchParams[key] = $scope.searchParams[key].filter(function (value) {
-                                    return labels[key].indexOf(value) !== -1;
-                                });
+                            if (key !== 'query') {
+                                if (!labels[key]) {
+                                    delete $scope.searchParams[key];
+                                } else {
+                                    $scope.searchParams[key] = $scope.searchParams[key].filter(function (value) {
+                                        return labels[key].indexOf(value) !== -1 || value === '';
+                                    });
+                                }
                             }
                         });
                         $scope.availableSearchParams = Object.keys(labels).map(function (label) {
