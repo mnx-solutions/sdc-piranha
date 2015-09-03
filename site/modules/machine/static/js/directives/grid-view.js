@@ -314,7 +314,7 @@
         };
 
         $scope.matchesFilter = function (item) {
-            var result = false;
+            var result = true;
             var getFilteredItems = function (searchParam) {
                 var needle = searchParam.toLowerCase();
                 if (!searchInObject(item, needle)) {
@@ -325,7 +325,6 @@
                                 subject = item.hostIds;
                             }
                             subject = getLowerCaseString(subject);
-
                             return subject.indexOf(needle) !== -1;
                         } else {
                             return false;
@@ -334,22 +333,24 @@
                 }
             };
             if ($scope.propertyFilter(item)) {
-                result = true;
                 if ($scope.filterAll) {
                     getFilteredItems($scope.filterAll);
                 }
                 var searchParams = angular.copy($scope.searchParams) || {};
-                if (searchParams.query && result) {
+                if (searchParams.query) {
                     getFilteredItems(searchParams.query);
                     delete searchParams.query;
                 }
 
-                if (result && Object.keys(searchParams).length) {
-                    var labels = item.labels || {};
+                if (Object.keys(searchParams).length) {
+                    var itemLabels = item.labels || {};
                     result = Object.keys(searchParams).every(function (key) {
-                        var params = searchParams[key];
-                        return labels[key] && (!params[params.length - 1] ||
-                            params.indexOf(labels[key]) !== -1);
+                        var requiredValues = searchParams[key];
+                        var itemValues = itemLabels[key];
+                        return requiredValues.indexOf('') === 0 ?
+                            itemLabels.hasOwnProperty(key) :
+                            itemValues && (!requiredValues[requiredValues.length - 1] ||
+                            requiredValues.indexOf(itemValues) !== -1);
                     });
                 }
             }
