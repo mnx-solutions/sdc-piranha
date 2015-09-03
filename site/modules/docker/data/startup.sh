@@ -133,6 +133,7 @@ backend docker_back_tcp
 backend docker_back
     mode http
     server d 127.0.0.1:${DOCKER_INTERNAL_PORT}
+    timeout server 10m
 
 backend memstat_back
     mode http

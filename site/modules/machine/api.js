@@ -112,6 +112,7 @@ exports.init = function execute(log, config, done) {
         var callback = function (error, result) {
             job.emit('complete', error, result);
             delete pollerJobs[objectId];
+            cb(error, result);
         };
 
         call.log = call.log.child({datacenter: cloud._currentDC});
