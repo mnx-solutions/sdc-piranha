@@ -39,11 +39,6 @@
                 SSH: 'SSH Key'
             };
 
-            var BILLING_START_MESSAGE = $scope.features.billing === 'enabled' ?
-                'Billing will start once this instance is created' :
-                'Instance will be created and started';
-
-            var TITLE_CREATE_INSTANCE = 'Confirm: Create Instance';
             var FilterValues = {
                 'No filter': [],
                 vcpus: [],
@@ -206,31 +201,29 @@
 
                     var dataset = $scope.selectedDataset;
                     var description = dataset && dataset.description;
-                    var popupContent = BILLING_START_MESSAGE;
+                    $scope.provisioningInProgress = false;
                     if (dataset && dataset.eula || description && description.indexOf('Stingray') > -1 ||
                         description && description.indexOf('SteelApp') > -1) {
-                        TITLE_CREATE_INSTANCE = 'Accept End-User License Agreement';
-                        popupContent = {
-                            templatePath: dataset.eula || 'slb/static/templates/eula.html',
-                            footer: BILLING_START_MESSAGE
-                        };
-                    }
-                    $scope.provisioningInProgress = false;
-                    PopupDialog.confirm(
-                        TITLE_CREATE_INSTANCE,
-                        popupContent,
-                        function () {
-                            finalProvision(instanceFromPublicImage);
-                        },
-                        function () {
-                            var stepsCount = $scope.provisionSteps.length;
-                            deleteProvisionStep(WizardSteps.ACCOUNT);
-                            $scope.provisioningInProgress = false;
-                            if (stepsCount !== $scope.provisionSteps.length) {
-                                $scope.reconfigure($scope.currentPageIndex - 1);
+                        PopupDialog.confirm(
+                            'Accept End-User License Agreement',
+                            {
+                                templatePath: dataset.eula || 'slb/static/templates/eula.html'
+                            },
+                            function () {
+                                finalProvision(instanceFromPublicImage);
+                            },
+                            function () {
+                                var stepsCount = $scope.provisionSteps.length;
+                                deleteProvisionStep(WizardSteps.ACCOUNT);
+                                $scope.provisioningInProgress = false;
+                                if (stepsCount !== $scope.provisionSteps.length) {
+                                    $scope.reconfigure($scope.currentPageIndex - 1);
+                                }
                             }
-                        }
-                    );
+                        );
+                    } else {
+                        finalProvision(instanceFromPublicImage);
+                    }
                 }, function () {
                     var data = {simpleImage: false, ready: false};
                     if (!machine) {
@@ -460,12 +453,6 @@
                 }
             };
 
-            var provisionWithConfirm = function (data) {
-                PopupDialog.confirm(TITLE_CREATE_INSTANCE, BILLING_START_MESSAGE, function () {
-                    provision(data);
-                });
-            };
-
             $scope.createSimple = function (data) {
                 Machine.hasMachineCreatingInProgress(function (result) {
                     if (result.hasCreating) {
@@ -474,7 +461,7 @@
                         if (data.freetier) {
                             return provision(data);
                         }
-                        provisionWithConfirm(data);
+                        provision(data);
                     }
                 });
             };
@@ -489,7 +476,7 @@
                         data.networks = $scope.networks.map(function (network) {
                             return network.id;
                         });
-                        provisionWithConfirm(data);
+                        provision(data);
                     }
                 });
             };

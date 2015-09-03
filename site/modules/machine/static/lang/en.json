@@ -118,7 +118,6 @@
     "per hour": "per hour",
     "Invalid machine name": "Invalid machine name",
     "Machine name is already in use": "Machine name is already in use",
-    "Billing will start once this instance is created": "Billing will start once this instance is created",
     "Machine is stopped, but billing will continue. You have to delete machine to cancel billing": "Machine is stopped, but billing will continue. You have to delete machine to cancel billing",
     "You will lose all information and data on this instance if you delete an instance. Deleting an instance also stops billing.": "You will lose all information and data on this instance if you delete an instance. Deleting an instance also stops billing.",
     "Click here to reboot your instance.": "Click here to reboot your instance.",
