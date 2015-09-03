@@ -28,14 +28,15 @@
                     <table class="upload-bar">
                         <tr data-ng-repeat="(fileId, progress) in uploads" data-ng-show="progress.filePath == key">
                             <td>
-                                <div class="tooltip-hover" data-toggle="tooltip" data-placement="top" data-html="true" data-original-title="{{progress.name}} <br> {{ progress.title }}">
-                                    <div class="bar" data-ng-style="{width: progress.loaded / progress.total * 100 + '%'}"></div>
+                                <div class="tooltip-hover bar-wrapper" data-toggle="tooltip" data-placement="top" data-html="true" data-original-title="{{progress.name}} <br> {{ progress.title }}">
+                                    <div class="bar" data-ng-class="{'bar-done': progress.clientDone}" data-ng-style="{width: progress.loaded / progress.total * 100 + '%'}"></div>
+                                    <div class="bar bar-server" data-ng-style="{width: progress.serverLoaded / progress.total * 100 + '%'}"></div>
                                     <div class="path-name over">{{ progress.name }}</div>
                                 </div>
                             </td>
                             <td>
                                 <div class="tooltip-hover" data-toggle="tooltip" data-placement="top" data-html="true" data-original-title="Cancel upload">
-                                    <div class="remove-icon" data-ng-click="cancelUpload(fileId)"></div>
+                                    <div class="remove-icon" data-ng-click="cancelUpload(fileId, progress)"></div>
                                 </div>
                             </td>
                         </tr>

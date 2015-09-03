@@ -7,31 +7,48 @@ var formidable = require('formidable');
 var MemoryStream = require('memorystream');
 
 module.exports = function (app) {
+    var UPLOAD_ABORT_ERROR = 'write after end';
     var Manta = require('./').MantaClient;
-
     var filesInProgress = {};
     var waitCallbacks = {};
     var requestsInProgress = {};
+    var uploadProgresses = Manta.uploadProgresses = {};
+    var memoryStreams = {};
+
+    var clearUpload = function (userId, fullPath, formId, keepProgress) {
+        delete requestsInProgress[formId][fullPath];
+        delete filesInProgress[userId][fullPath];
+        if (!keepProgress) {
+            memoryStreams[formId] && memoryStreams[formId].end();
+            delete uploadProgresses[formId];
+        }
+    };
 
     app.post('/upload', function (req, res, next) {
+        var formId;
         var form = new formidable.IncomingForm();
-        form.setMaxListeners(0);
-        form.on('error', function (err) {
-            req.log.warn({err: err}, 'Incoming form error');
-            this.ended = true;
-        }).on('aborted', function (err) {
-            req.log.warn({err: err}, 'Incoming form aborted');
-            this.ended = true;
-        });
-        var formId = Math.random();
         var client = Manta.createClient({req: req});
         var filePath = false;
         var userId = req.session.userId;
+        var memStream;
+        var metadata;
+
+        form.setMaxListeners(0);
+        form.on('error', function (err) {
+            req.log.warn({err: err}, 'Incoming form error');
+            res.json({success: false, status: 200});
+            clearUpload(userId, form.fullPath, formId, false);
+        }).on('aborted', function (err) {
+            req.log.warn({err: err}, 'Incoming form aborted');
+            res.json({success: false, status: 200});
+            clearUpload(userId, form.fullPath, formId, false);
+        });
+        form.on('end', function () {
+            res.json({success: true, status: 200});
+        });
+
         filesInProgress[userId] = filesInProgress[userId] || {};
         waitCallbacks[userId] = waitCallbacks[userId] || {};
-        requestsInProgress[formId] = {};
-
-        var metadata;
 
         function checkFile(client, path, callback) {
             client.info(path, function (error) {
@@ -68,10 +85,20 @@ module.exports = function (app) {
                 mkdirs: true
             };
 
-            var memStream = new MemoryStream();
+            memStream = memoryStreams[formId] = new MemoryStream();
             part.pipe(memStream);
-            client.put('~~/' + path + '/' + part.filename, memStream, options, function (error) {
+            var outStream = client.createWriteStream('~~/' + path + '/' + part.filename, options);
+            memStream.pipe(outStream);
+
+            memStream.on('data', function (chunk) {
+                uploadProgresses[formId] += chunk.length;
+            });
+            memStream.on('error', function (error) {
                 callback(error);
+            });
+            memStream.on('end', function () {
+                memStream = null;
+                callback();
             });
         }
 
@@ -88,19 +115,19 @@ module.exports = function (app) {
 
         function checkForAllFinished() {
             if (Object.keys(requestsInProgress[formId]).length === 0) {
-                if (!res.headersSent) {
-                    res.json({success: true, status: 200});
-                }
+                delete uploadProgresses[formId];
             } else {
                 setTimeout(checkForAllFinished, 1000);
             }
         }
 
         function handleFinishedDownload(fullPath) {
+            if (!filesInProgress[userId][fullPath]) {
+                return;
+            }
             // manta storage didn't updated so quickly, not depending on the file size
             waitFile(client, '~~/' + fullPath, function () {
-                delete filesInProgress[userId][fullPath];
-                delete requestsInProgress[formId][fullPath];
+                clearUpload(userId, fullPath, formId, true);
                 checkForAllFinished();
             });
         }
@@ -113,26 +140,33 @@ module.exports = function (app) {
                     }
                     metadata = obj;
                     filePath = obj.path;
+                    formId = obj.formId;
                 });
             } else if (!part.filename) {
                 form.handlePart(part);
             } else if (!filePath) {
                 next(new Error('variable "path" should be placed in a start of multipart data'));
             } else {
-                var fullPath = filePath + '/' + part.filename;
+                var fullPath = form.fullPath = filePath + '/' + part.filename;
+                // sometimes onPort calls twice, with same data... mb bug in formidable module
                 if (filesInProgress[userId][fullPath]) {
-                    // sometimes onPort calls twice, with same data... mb bug in formidable module
                     delete requestsInProgress[formId][fullPath];
-                    checkForAllFinished();
-                    return;
+                    return checkForAllFinished();
                 }
+                requestsInProgress[formId] = requestsInProgress[formId] || {};
                 filesInProgress[userId][fullPath] = true;
                 requestsInProgress[formId][fullPath] = true;
+                uploadProgresses[formId] = 1;
                 setTimeout(function () {
                     delete filesInProgress[userId][fullPath];
-                }, 1000 * 60 * 10);
+                }, 1000 * 60 * 30);
                 uploadFile(filePath, part, function (error) {
                     if (error) {
+                        clearUpload(userId, fullPath, formId, true);
+                        // If upload was aborted by user
+                        if (error.message === UPLOAD_ABORT_ERROR) {
+                            return;
+                        }
                         var logLevel = 'error';
                         var suppressError = false;
                         if (error.name === 'NoMatchingRoleTagError' || (error.name === 'AuthorizationFailedError' ||
@@ -141,13 +175,13 @@ module.exports = function (app) {
                             suppressError = true;
                         }
                         req.log[logLevel]({error: error}, 'Error while uploading files');
-                        delete filesInProgress[userId][fullPath];
-                        delete requestsInProgress[formId][fullPath];
                         if (suppressError) {
                             res.json({status: 'error', message: error.message});
                             return;
                         }
-                        res.status(error.statusCode || 500).send(error.message);
+                        if (!res.headersSent) {
+                            res.status(error.statusCode || 500).send(error.message);
+                        }
                         return;
                     }
                     handleFinishedDownload(fullPath);
@@ -155,6 +189,12 @@ module.exports = function (app) {
             }
         };
         form.parse(req);
+    });
+
+    app.get('/upload/abort', function (req, res) {
+        var formId = req.query.formId;
+        memoryStreams[formId] && memoryStreams[formId].end();
+        res.status(200).end();
     });
 
     var getFile = function (req, res, action) {

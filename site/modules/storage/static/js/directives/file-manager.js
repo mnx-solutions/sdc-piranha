@@ -2,9 +2,9 @@
 
 (function (app, ng) {
     app.directive('fileManager', ['Account', 'localization', 'PopupDialog', 'fileman', '$timeout', '$qe', 'util',
-            'Storage', '$location', 'rbac.Service', 'notification', '$rootScope', 'http',
+            'Storage', '$location', 'rbac.Service', 'notification', '$rootScope', 'http', '$http',
         function (Account, localization, PopupDialog, fileman, $timeout, $qe, util,
-                  Storage, $location, RbacService, notification, $rootScope, http) {
+                  Storage, $location, RbacService, notification, $rootScope, http, $http) {
         return {
             restrict: 'EA',
             scope: {
@@ -527,12 +527,55 @@
 
                 scope.uploads = {};
 
-                scope.$on('uploadReady', function ($scope, id, userAction, path) {
-                    delete scope.uploads[id];
-                    if (Object.keys(scope.uploads).length === 0) {
-                        scope.refreshingProgress = false;
-                        scope.createFilesTree(userAction, path);
-                    }
+                var createUploadTitle = function (progress) {
+                    var currentProgress = scope.uploads[progress.id];
+                    var total = util.getReadableFileSizeString(progress.total, 1000);
+                    scope.uploads[progress.id].title = util.getReadableFileSizeString(currentProgress.loaded, 1000) + ' of ' + total +
+                        ' -> server </br>' +
+                        util.getReadableFileSizeString(currentProgress.serverLoaded, 1000) + ' of ' + total +
+                        ' -> Manta';
+                };
+
+                var clearProgress = function (progressId, path) {
+                    setTimeout(function () {
+                        delete scope.uploads[progressId];
+                        if (Object.keys(scope.uploads).length === 0) {
+                            scope.refreshingProgress = false;
+                            scope.createFilesTree(true, path);
+                        }
+                    }, 0);
+                };
+
+                var serverUploadPollIntervals = [];
+                var pollServerUploadProgress = function (progress, path) {
+                    var stopPolling = function () {
+                        clearInterval(serverUploadPollIntervals[progress.id]);
+                        clearProgress(progress.id, path);
+                    };
+
+                    Storage.getServerUploadProgress(progress.formId, function (error, loadedProgress) {
+                        if (error) {
+                            stopPolling();
+                            return showPopupDialog('error', 'Error', error);
+                        }
+
+                        loadedProgress = loadedProgress.__read();
+
+                        if (Array.isArray(loadedProgress) || !scope.uploads[progress.id]) {
+                            stopPolling();
+                        } else {
+                            scope.uploads[progress.id].serverLoaded = loadedProgress;
+                            createUploadTitle(progress);
+                        }
+                    });
+                };
+
+                scope.$on('uploadError', function ($scope, id, path) {
+                    clearProgress(id, path);
+                });
+
+                scope.$on('uploadReady', function ($scope, id) {
+                    scope.uploads[id].clientDone = true;
                 });
 
                 scope.$on('uploadStart', function () {
@@ -543,8 +586,11 @@
                 scope.$on('uploadProgress', function (event, progress, path) {
                     scope.uploads[progress.id] = progress;
                     progress.filePath = path;
-                    progress.title = util.getReadableFileSizeString(progress.loaded, 1000) + ' of ' +
-                        util.getReadableFileSizeString(progress.total, 1000);
+                    createUploadTitle(progress);
+                    if (!serverUploadPollIntervals[progress.id]) {
+                        pollServerUploadProgress(progress, path);
+                        serverUploadPollIntervals[progress.id] = setInterval(pollServerUploadProgress.bind(this, progress, path), 10000);
+                    }
                 });
 
                 scope.$on('uploadWaiting', function (event, progress) {
@@ -552,8 +598,10 @@
                     progress.title = 'Waiting';
                 });
 
-                scope.cancelUpload = function (id) {
-                    http.abortUploadFiles(id);
+                scope.cancelUpload = function (id, progress) {
+                    http.abortUploadFiles(id, progress);
+                    $http.get('storage/upload/abort?formId=' + progress.formId);
+                    clearProgress(progress.id, progress.path);
                 };
             }
         };

@@ -122,9 +122,9 @@
                 return service;
             }
 
-            function uploadFiles(url, path, files, cb) {
+            function uploadFiles(url, path, files, formId, cb) {
                 var data = new FormData();
-                var metadata = {path: path, files: {}};
+                var metadata = {path: path, files: {}, formId: formId};
 
                 files = Array.prototype.slice.call(files);
 
@@ -192,12 +192,12 @@
                 });
             }
 
-            function abortUploadFiles(id) {
+            function abortUploadFiles(id, progress) {
                 var xhr = xhRequests[id];
                 setTimeout(function () {
                     xhr.abort();
                     delete xhRequests[id];
-                });
+                }, 0);
             }
 
             return {

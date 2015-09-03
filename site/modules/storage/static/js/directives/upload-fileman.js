@@ -12,7 +12,8 @@
             link: function (scope, element) {
 
                 function uploadFiles(files) {
-                    http.uploadFiles('storage/upload', scope.filemanUpload, files, function (error, data) {
+                    var formId = window.uuid.v4();
+                    http.uploadFiles('storage/upload', scope.filemanUpload, files, formId, function (error, data) {
                         scope.$apply(function () {
                             if (error || data.status === 'error') {
                                 var errorMessage = data && data.message || error && error.message || error;
@@ -21,10 +22,11 @@
                                     errorMessage = message + ' \'~~' + data.path + '\'.';
                                 }
                                 PopupDialog.error(null, errorMessage);
-                                scope.$parent.$emit('uploadReady', data.id, true, data.path);
+                                scope.$parent.$emit('uploadError', data.id, data.path);
                             } else if (data.status === 'uploadWaiting') {
                                 scope.$parent.$emit('uploadWaiting', data.progress);
                             } else if (data.status === 'progress') {
+                                data.progress.formId = formId;
                                 scope.$parent.$emit('uploadProgress', data.progress, data.progress.path);
                             } else if (data.status === 'success') {
                                 scope.$parent.$emit('uploadReady', data.id, true, data.path);

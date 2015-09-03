@@ -310,7 +310,6 @@ module.exports = function execute(log, config) {
             };
 
             var client = Manta.createClient(call);
-            console.log(job, inputs, 'CreateJob');
             client.createJob(job, function (error, jobId) {
                 if (error) {
                     sendError(call, error, null, '/jobs');
@@ -486,6 +485,10 @@ module.exports = function execute(log, config) {
 
     server.onCall('StorageMantaUrl', function (call) {
         call.done(null, config.manta.url);
+    });
+
+    server.onCall('FileManGetServerUploadProgress', function (call) {
+        call.done(null, Manta.uploadProgresses[call.data.formId]);
     });
 
     server.onCall('FileManMfind', {

@@ -116,6 +116,18 @@ window.fn = [];
                 }).promise;
             };
 
+            service.getServerUploadProgress = function (formId, callback) {
+                return serverTab.call({
+                    name: 'FileManGetServerUploadProgress',
+                    data: {
+                        formId: formId
+                    },
+                    done: function (error, progress) {
+                        callback(error, progress);
+                    }
+                });
+            };
+
             var billingIsActive = false;
             var mantaIsActive;
 

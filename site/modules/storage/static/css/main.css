@@ -312,6 +312,7 @@ input {
     margin-top: 2px;
     margin-left: 3px;
 }
+
 .bar {
     width: 0;
     height: 22px;
@@ -328,6 +329,23 @@ input {
     background-size: 50px 28px, 100% 100%, 100% 100%;
     box-shadow: inset 0 1px 1px 0 rgba(255, 255, 255, 0.4);
 }
+
+.bar-server {
+    background-color: #8ac856;
+    background-image: repeating-linear-gradient(45deg, transparent, transparent 33%, rgba(0, 0, 0, 0.1) 33%, rgba(0, 0, 0, 0.1) 66%, transparent 66%),
+    repeating-linear-gradient(to top, rgba(255, 255, 255, 0.25), rgba(0, 0, 0, 0.2)),
+    repeating-linear-gradient(to left, #63ff00,#8ac856);
+
+    margin-top: -22px;
+}
+
+.bar-done {
+    -webkit-animation: none;
+    -moz-animation: none;
+    -ms-animation: none;
+    animation: none;
+}
+
 .over {
     max-width: 170px;
     margin-top: -21px;
