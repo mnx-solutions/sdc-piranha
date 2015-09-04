@@ -88,7 +88,7 @@
                 var getLabelsFromContainers = function (containers) {
                     var labels = {};
                     containers.forEach(function (container) {
-                        Object.keys(container.Labels).forEach(function (key) {
+                        Object.keys(container.Labels || {}).forEach(function (key) {
                             if (labels[key]) {
                                 if (labels[key].indexOf(container.Labels[key]) === -1) {
                                     labels[key].push(container.Labels[key]);
