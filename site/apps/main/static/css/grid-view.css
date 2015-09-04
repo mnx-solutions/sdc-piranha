@@ -274,10 +274,10 @@ input.filter-field::-ms-clear {
     background-image: url('../img/icon-unsorted.png');
 }
 .filter-wrapper td:first-child {
-    min-width: 140px;
     padding-top: 5px;
 
     vertical-align: top;
+    white-space: nowrap;
 }
 .filter-wrapper td:last-child,
 .tabs-wrapper td:first-child {
