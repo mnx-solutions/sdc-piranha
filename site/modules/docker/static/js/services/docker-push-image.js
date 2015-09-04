@@ -51,6 +51,10 @@
                         scope.newRegistryForm.$setValidity('name', isValid);
                     };
                     scope.push = function () {
+                        if (scope.loading || !scope.input.name || scope.errorMessage ||
+                            scope.registries && !scope.registries.length) {
+                            return;
+                        }
                         if (Docker.registriesPushInProgress[scope.input.registryId]) {
                             return PopupDialog.message('Message', 'Another image is being pushed to this registry, please let it finish.');
                         }
