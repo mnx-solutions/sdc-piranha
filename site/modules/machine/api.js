@@ -109,6 +109,8 @@ exports.init = function execute(log, config, done) {
         }
 
         var job = pollerJobs[objectId] = new EventEmitter;
+        pollerJobs[objectId].on('complete', cb);
+
         var callback = function (error, result) {
             job.emit('complete', error, result);
             delete pollerJobs[objectId];
