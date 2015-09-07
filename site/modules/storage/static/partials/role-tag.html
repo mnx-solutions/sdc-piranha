@@ -17,9 +17,14 @@
                     data-selection-header="ASSIGNED">
                 </multi-select>
             </div>
-            <span data-ng-show="isNotEmptyDirectory && roles.length">
-                <input type="checkbox" data-ng-model="recursive"/> Apply to all nested objects
-            </span>
+            <div class="indent-medium" data-ng-show="isNotEmptyDirectory && roles.length">
+                <div class="checker in-line" data-ng-class="{hover:show}" data-ng-mouseenter="show = true" data-ng-mouseleave="show = false">
+                    <span data-ng-class="{checked: recursive}">
+                        <input data-ng-model="recursive" type="checkbox">
+                    </span>
+                </div>
+                <span class="text-upward">Apply to all nested objects</span>
+            </div>
         </div>
         <div class="modal-footer">
             <button data-ng-click="close()" class="btn grey">Cancel</button>

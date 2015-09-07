@@ -3269,3 +3269,6 @@ a.orange-link {
     font-size: 13px;
     font-weight: bold;
 }
+.text-upward {
+    vertical-align: top;
+}
