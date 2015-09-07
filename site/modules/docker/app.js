@@ -17,7 +17,7 @@ module.exports = function (app) {
             headerType = 'application/octet-stream';
         } else {
             messageError = 'Error while showing file';
-            headerType = 'text/plain';
+            headerType = 'text/cmd';
         }
         var client = Manta.createClient({req: req});
         var host = req.query.host;
