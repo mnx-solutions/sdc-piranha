@@ -67,7 +67,9 @@
                 });
             }
 
-            var getDockerHostInfo = function (machine) {
+            var getDockerHostInfo = function (machine, callback) {
+                callback = callback || angular.noop;
+
                 $scope.states[machine.id] = 'initializing';
                 Docker.hostInfo({host: machine, wait: true, suppressErrors: machine.prohibited}, function (error, states) {
                     states.forEach(function (state) {
@@ -78,15 +80,17 @@
                 }).then(function (info) {
                     if (angular.equals(info, {})) {
                         $scope.states[machine.id] = 'unreachable';
-                        return;
+                        return callback();
                     }
                     info = Array.isArray(info) ? info.slice(-1)[0] : info;
                     $scope.states[machine.id] = 'completed';
                     getDockerHostAnalytics(machine);
                     machine.containersCount = info.Containers;
                     getHostImagesCount(machine);
+                    callback();
                 }, function () {
                     $scope.states[machine.id] = 'unreachable';
+                    callback();
                     errorCallback.apply(this, arguments);
                 });
             };
@@ -128,10 +132,13 @@
                     Storage.pingManta(function () {
                         $scope.dockerMachines.forEach(function (machine) {
                             if (!machine.prohibited) {
-                                getDockerHostInfo(machine);
-                                Docker.getContainersCount(null, machine).then(function (containers) {
-                                    machine.runningContainers = containers.running;
-                                    machine.otherContainers = containers.stopped;
+                                getDockerHostInfo(machine, function () {
+                                    if ($scope.states[machine.id] === 'completed') {
+                                        Docker.getContainersCount(null, machine).then(function (containers) {
+                                            machine.runningContainers = containers.running;
+                                            machine.otherContainers = containers.stopped;
+                                        });
+                                    }
                                 });
                             }
                         });
