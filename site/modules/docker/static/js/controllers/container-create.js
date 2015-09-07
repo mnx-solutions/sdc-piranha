@@ -815,8 +815,8 @@
                     }
                 }
 
-                selectImageEl.select2('enable').on('open', function () {
-                    ng.element('.select2-results .image-pull-item').on('mouseup', function (e) {
+                var addPullImageListener = function () {
+                    ng.element('.image-pull-item').off().on('mouseup', function (e) {
                         selectImageEl.select2('disable');
                         dockerPullImage($scope.host, $scope.unreachableHosts, pullImageProgressHandler);
                         setTimeout(function () {
@@ -825,6 +825,11 @@
                         });
                         selectImageEl.select2('enable');
                     });
+                }
+
+                selectImageEl.select2('enable').on('open', function () {
+                    ng.element('.select2-input').last().on('blur', addPullImageListener);
+                    addPullImageListener();
                 });
             }
         ]);
