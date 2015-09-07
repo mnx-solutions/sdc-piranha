@@ -26,10 +26,9 @@ MANTA_DEV_ACCOUNT=dbqp
 DEP_URL="https://us-east.manta.joyent.com/${MANTA_DEV_ACCOUNT}/public/docker"
 
 DOCKER_INTERNAL_PORT=54243
-REGISTRY_INTERNAL_PORT=5000
+REGISTRY_INTERNAL_PORT=$(printenv REGISTRY_PORT)
 DOCKER_PORT=4243
 DOCKER_TCP_PORT=4240
-REGISTRY_PORT=5000
 MEMSTAT_PORT=8888
 
 DOCKER_VERSION="${DOCKER_VERSION:-1.8.1}"
@@ -63,7 +62,11 @@ function manta {
     fi
 
     local alg=rsa-sha256
-    local keyId=/${MANTA_USER}/${MANTA_SUBUSER}/keys/${MANTA_KEY_ID}
+    local user="/${MANTA_USER}"
+    if [ ! -z ${MANTA_SUBUSER} ]; then
+        user="${user}/${MANTA_SUBUSER}"
+    fi
+    local keyId=${user}/keys/${MANTA_KEY_ID}
     local now=$(LC_ALL=C date -u "+%a, %d %h %Y %H:%M:%S GMT")
     local sig=$(echo "date:" ${now} | \
                 tr -d '\n' | \

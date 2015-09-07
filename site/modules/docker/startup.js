@@ -2,13 +2,12 @@
 var config = require('easy-config');
 var path = require('path');
 var vasync = require('vasync');
+var restify = require('restify');
 var util = require('util');
 var url = require('url');
 var Auditor = require(__dirname + '/libs/auditor.js');
 var utils = require('../../../lib/utils');
-var WebSocket = require('ws');
 var DOCKER_SSL_ERROR = 'routines:SSL3_READ_BYTES';
-var uuid = require('../../static/vendor/uuid/uuid.js');
 
 var Docker = function execute(log, config) {
     var Docker = require('../docker').Docker;
@@ -211,7 +210,7 @@ var Docker = function execute(log, config) {
                         return port.PublicPort;
                     });
                 } else {
-                    ports = isPrivateRegistryName(container) && container.Image.indexOf('private-registry') >= 0 ? [5000] : [];
+                    ports = isPrivateRegistryName(container) && container.Image.indexOf('private-registry') >= 0 ? [Docker.DEFAULT_REGISTRY_PORT] : [];
                 }
                 if (ports.length) {
                     // delete registry
@@ -698,9 +697,33 @@ var Docker = function execute(log, config) {
             return data;
         },
         handler: function (call) {
-            var client = Docker.createRegistryClient(call, call.data);
-            client.ping(function (err, result) {
-                call.done(err, result);
+            var registry = call.data;
+            var pipeline = [];
+
+            pipeline.push(function (next) {
+                if (registry.api) {
+                    return next(null, registry.api);
+                }
+
+                Docker.getRegistryVersion(call, registry, function (error, apiVersion) {
+                    next(error, apiVersion);
+                });
+            });
+
+            pipeline.push(function (apiVersion, next) {
+                registry.api = apiVersion;
+                var client = Docker.createRegistryClient(call, registry);
+
+                client.ping(function (err, result) {
+                    if (result && Array.isArray(result.errors)) {
+                        return next(result.errors.pop());
+                    }
+                    next(err, {status: result, apiVersion: apiVersion});
+                });
+            });
+
+            vasync.waterfall(pipeline, function (error, result) {
+                call.done(error && (error.code || error.message || error), result);
             });
         }
     });
@@ -712,7 +735,7 @@ var Docker = function execute(log, config) {
             host: Docker.DOCKER_HUB_HOST,
             port: '443',
             username: '',
-            type: 'global'
+            type: Docker.REGISTRY_GLOBAL
         };
         Docker.getRegistries(call, function (error, list) {
             var checkDefaultRegistry = false;
@@ -795,7 +818,7 @@ var Docker = function execute(log, config) {
                     return call.done(err);
                 }
                 var host = url.parse(registry.host).hostname;
-                if (registry.type === 'local') {
+                if (registry.type === Docker.REGISTRY_LOCAL) {
                     Docker.listHosts(call, function (error, hosts) {
                         if (error) {
                             return call.done(error);
@@ -906,51 +929,45 @@ var Docker = function execute(log, config) {
         }
     });
 
-    server.onCall('DockerImageTags', {
+    function createRegistryRequest(requestName) {
+        return function (call) {
+            var registry = Docker.registriesCache.getItem(call, call.data.registry);
+            if (!registry) {
+                return;
+            }
+            call.data.authNotRequired = call.data.registry !== Docker.REGISTRY_LOCAL;
+            var client = Docker.createRegistryClient(call, registry);
+            var requestFunction = client[requestName];
+
+            if (!client) {
+                return call.done();
+            }
+
+            if (typeof requestFunction === 'function') {
+                requestFunction.call(client, call.data.options, call.done.bind(call));
+            } else {
+                call.done();
+            }
+        };
+    }
+
+    server.onCall('DockerGetImageTags', {
         verify: function (data) {
             return data && data.options && typeof data.options.name === 'string' && data.registry;
         },
-        handler: function (call) {
-            if (call.data.registry === 'local') {
-                Docker.searchPrivateImageTags(call, call.data.options.name, call.done.bind(call));
-                return;
-            }
-            var registry = Docker.registriesCache.getItem(call, call.data.registry);
-            if (!registry) {
-                return call.done();
-            }
-            call.data.authNotRequired = true;
-            var createRegistryClient = Docker.createRegistryClient(call, registry);
-            createRegistryClient.imageTags(call.data.options, function (err, result) {
-                call.done(err, result);
-            });
-        }
+        handler: createRegistryRequest('getImageTags')
     });
 
     server.onCall('DockerSearchImage', {
         verify: function (data) {
             return data && data.options && typeof data.options.q === 'string' && data.registry;
         },
-        handler: function (call) {
-            if (call.data.registry === 'local') {
-                Docker.searchPrivateImage(call, call.data.options.q, call.done.bind(call));
-                return;
-            }
-            var registry = Docker.registriesCache.getItem(call, call.data.registry);
-            if (!registry) {
-                return call.done();
-            }
-            call.data.authNotRequired = true;
-            var createRegistryClient = Docker.createRegistryClient(call, registry);
-            createRegistryClient.searchImage(call.data.options, function (err, result) {
-                call.done(err, result);
-            });
-        }
+        handler: createRegistryRequest('searchImage')
     });
 
     server.onCall('DockerCreateRegistry', {
         verify: function (data) {
-            return data && data.host && data.host.primaryIp;
+            return data && data.host && data.host.primaryIp && data.options && data.options.api;
         },
         handler: function (call) {
             DockerHandler.createRegistry(call);
@@ -1117,6 +1134,31 @@ var Docker = function execute(log, config) {
             });
             call.done(null, list);
         });
+    });
+
+    server.onCall('DockerAuthorize', {
+        verify: function (data) {
+            return data && data.options && data.options.serveraddress;
+        },
+        handler: function (call) {
+            var registry = call.data.options;
+            Docker.getRegistryVersion(call, registry, function (error, apiVersion) {
+                if (error) {
+                    return call.done(error.message || error);
+                }
+                var dockerClient = Docker.createClient(call, call.data.host);
+                dockerClient.auth({
+                    username: registry.username,
+                    password: registry.password,
+                    email: registry.email,
+                    serveraddress: registry.serveraddress
+                }, function (error, response) {
+                    response = response || {};
+                    response.apiVersion = apiVersion;
+                    call.done(error, response);
+                });
+            });
+        }
     });
 };
 

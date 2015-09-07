@@ -18,7 +18,7 @@ var gzip = require('gulp-gzip');
 var config = require('easy-config');
 var bunyan = require('bunyan');
 var express = require('express');
-var logger = bunyan.createLogger(config.extend({
+var loggerConfig = config.extend({
     log: {
         src: true,
         serializers: {
@@ -52,7 +52,9 @@ var logger = bunyan.createLogger(config.extend({
                 return cloneNode(obj);
             }
         }
-    }}).log);
+    }
+}).log;
+var logger = bunyan.createLogger(loggerConfig);
 
 var features = require('./lib/features');
 var utils = require('./lib/utils');
@@ -581,6 +583,19 @@ function startHttpServer(done) {
         });
     });
 }
+
+gulp.task('pretty-stream', function () {
+    var PrettyStream = require('bunyan-prettystream');
+    var prettyStdOut = new PrettyStream();
+    prettyStdOut.pipe(process.stdout);
+    loggerConfig.streams = loggerConfig.streams || [];
+    loggerConfig.streams.push({
+        level: loggerConfig.level,
+        type: 'raw',
+        stream: prettyStdOut
+    });
+    logger = bunyan.createLogger(loggerConfig);
+});
 
 gulp.task('serve', startHttpServer);
 

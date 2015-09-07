@@ -3,7 +3,6 @@
 var config = require('easy-config');
 var path = require('path');
 var vasync = require('vasync');
-var url = require('url');
 var util = require('util');
 var ursa = require('ursa');
 var fs = require('fs');
@@ -14,12 +13,7 @@ var utils = require('../../../../lib/utils');
 
 var MESSAGE_WRONG_IMAGE_NAME = 'Wrong image name';
 var REGEX_OBJECTS_SEPARATOR = /(?:\}\s*\{|\}\s*$)/;
-var DOCKER_HUB_URL = 'index.docker.io:443';
-var RegistryType = {
-    LOCAL: 'local',
-    GLOBAL: 'global',
-    REMOTE: 'remote'
-};
+var DOCKER_HUB_URL = 'index.docker.io';
 var DEFAULT_REGISTRY_ID = 'default';
 var AuditorType = {
     IMAGE: 'image',
@@ -159,7 +153,7 @@ var uploadImage = function (call) {
     var name = options.name;
     var parsedTag = parseTag(name);
     var pipeline = [];
-    var registryUrl = url.parse(registry.host).hostname + ':' + registry.port;
+    var registryUrl = Docker.getRegistryUrl(registry);
     var taggedName = parsedTag.repository + '/' + parsedTag.name;
     var entry = {
         host: call.data.host.id,
@@ -168,16 +162,16 @@ var uploadImage = function (call) {
         name: 'push'
     };
     var client = Docker.createClient(call, call.data.host);
-    if ((registryUrl === DOCKER_HUB_URL || registry.type === RegistryType.GLOBAL) && !parsedTag.repository) {
+    if ((registryUrl === DOCKER_HUB_URL || registry.type === Docker.REGISTRY_GLOBAL) && !parsedTag.repository) {
         taggedName = registry.username + '/' + parsedTag.name;
     } else if (registryUrl !== DOCKER_HUB_URL) {
-        registry.type = registry.type || RegistryType.LOCAL;
-        registryUrl = registry.type === RegistryType.LOCAL ? 'localhost:5000' : registryUrl;
+        registry.type = registry.type || Docker.REGISTRY_LOCAL;
+        registryUrl = registry.type === Docker.REGISTRY_LOCAL ? 'localhost:' + Docker.DEFAULT_REGISTRY_PORT : registryUrl;
         taggedName = registryUrl + '/' + parsedTag.fullname;
     }
 
     pipeline.push(function getRegistry(collector, callback) {
-        if (registry.type === RegistryType.LOCAL) {
+        if (registry.type === Docker.REGISTRY_LOCAL) {
             collector.registryAuth = new Buffer(JSON.stringify({auth: '', email: ''})).toString('base64');
             return callback();
         }
@@ -426,7 +420,7 @@ var pull = function (call) {
         name: 'pull'
     };
     call.data.authNotRequired = call.data.host.isSdc;
-    if (!registryId || registryId === RegistryType.LOCAL) {
+    if (!registryId || registryId === Docker.REGISTRY_LOCAL) {
         return pullImage(call, options);
     }
     Docker.getRegistry(call, registryId, function (error, registryRecord) {
@@ -454,19 +448,23 @@ var pull = function (call) {
 };
 
 var createRegistry = function (call) {
+    if (call.data.options.api === 'v2') {
+        return createRegistryV2(call);
+    }
     var Docker = api.Docker;
     var mantaClient = require('../../storage').MantaClient.createClient(call);
     var dockerClient = Docker.createClient(call, call.data.host);
     var pipeline = [];
-    var installConfig = config.docker || {};
+    var installConfig = config.docker;
+    var tcpRegistryPort = Docker.DEFAULT_REGISTRY_PORT + '/tcp';
     var hostConfig = {
-        ExposedPorts: {'5000/tcp': {}},
+        ExposedPorts: {},
         Binds: ['/root/.ssh:/root/.ssh:ro'],
-        PortBindings: {
-            '5000/tcp': [{HostIp: '127.0.0.1', HostPort: '5000'}]
-        },
+        PortBindings: {},
         RestartPolicy: {Name: 'always', MaximumRetryCount: 0}
     };
+    hostConfig.ExposedPorts[tcpRegistryPort] = {};
+    hostConfig.PortBindings[tcpRegistryPort] = [{HostIp: Docker.DEFAULT_REGISTRY_HOST, HostPort: Docker.DEFAULT_REGISTRY_PORT}];
 
     pipeline.push(function getFingerprint(collector, callback) {
         mantaClient.getFileContents(Docker.SDC_DOCKER_PATH + '/private.key', function (error, privateKey) {
@@ -515,7 +513,7 @@ var createRegistry = function (call) {
                 'SETTINGS_FLAVOR=dev',
                 'SEARCH_BACKEND=',
                 'DOCKER_REGISTRY_CONFIG=/config.yml',
-                'REGISTRY_PORT=5000',
+                'REGISTRY_PORT=' + Docker.DEFAULT_REGISTRY_PORT,
                 'STARTUP_SCRIPT=' + startupScript
             ],
             Cmd: ['/bin/bash', '-c', 'printenv STARTUP_SCRIPT | /bin/bash'],
@@ -549,7 +547,120 @@ var createRegistry = function (call) {
     }, function (error) {
         var host = 'https://' + call.data.host.primaryIp;
         if (error) {
-            return Docker.deleteRegistry(call, 'host', host, function (err) {
+            return Docker.deleteRegistry(call, 'host', host, function () {
+                return call.done(error);
+            });
+        }
+        Docker.getRegistries(call, mantaClient, function (error, list) {
+            var registry;
+            list = list.map(function (item) {
+                if (item.host === host) {
+                    delete item.actionInProgress;
+                    registry = item;
+                }
+                return item;
+            });
+            registry = registry || {};
+
+            if (!registry.id) {
+                registry = {
+                    id: uuid.v4(),
+                    api: registry.api || 'v1',
+                    host: host,
+                    port: registry.port || Docker.DEFAULT_REGISTRY_PORT,
+                    type: Docker.REGISTRY_LOCAL
+                };
+                list.push(registry);
+            }
+            Docker.registriesCache.put(call, registry.id, registry);
+            Docker.saveRegistries(call, list, mantaClient);
+        });
+    });
+};
+
+var createRegistryV2 = function (call) {
+    var Docker = api.Docker;
+    var mantaClient = require('../../storage').MantaClient.createClient(call);
+    var dockerClient = Docker.createClient(call, call.data.host);
+    var installConfig = config.docker || {};
+    var pipeline = [];
+    var importOptions = {
+        fromImage: installConfig.registryV2Image,
+        tag: (installConfig.registryV2Tag)
+    };
+    var tcpRegistryPort = Docker.DEFAULT_REGISTRY_PORT + '/tcp';
+    var hostConfig = {
+        Dns: ['8.8.8.8', '8.8.4.4'],
+        ExposedPorts: {},
+        PortBindings: {},
+        RestartPolicy: {Name: 'always', MaximumRetryCount: 0}
+    };
+    hostConfig.ExposedPorts[tcpRegistryPort] = {};
+    hostConfig.PortBindings[tcpRegistryPort] = [{HostIp: Docker.DEFAULT_REGISTRY_HOST, HostPort: Docker.DEFAULT_REGISTRY_PORT}];
+
+    pipeline.push(function getFingerprint(collector, callback) {
+        mantaClient.getFileContents(Docker.SDC_DOCKER_PATH + '/private.key', function (error, privateKey) {
+            if (error) {
+                return callback(error);
+            }
+            var key = ursa.createPrivateKey(privateKey);
+            collector.privateKey = privateKey;
+            collector.fingerprint = key.toPublicSshFingerprint('hex').replace(/([a-f0-9]{2})/gi, '$1:').slice(0, -1);
+            callback();
+        });
+    });
+
+    pipeline.push(function pullDockerImage(collector, callback) {
+        dockerClient.createImage(importOptions, function (err, req) {
+            if (err) {
+                return callback(err);
+            }
+            req.on('result', function (error, res) {
+                if (error) {
+                    return callback(error);
+                }
+
+                res.on('data', function () {
+                    // this event should exist
+                });
+                res.on('error', callback);
+                res.on('end', callback);
+            });
+            req.end();
+        });
+    });
+    pipeline.push(function createPrivateRegistryContainer(collector, callback) {
+        dockerClient.create({
+            name: 'private-registry',
+            Image: importOptions.fromImage + ':' + importOptions.tag,
+            Env: [
+                'MANTA_KEY_ID=' + collector.fingerprint,
+                'MANTA_KEY_DATA=' + collector.privateKey,
+                'MANTA_USER=' + mantaClient.user,
+                'MANTA_SUBUSER=' + Docker.SUBUSER_REGISTRY_LOGIN,
+                'MANTA_URL=' + mantaClient._url
+            ],
+            AttachStderr: true,
+            AttachStdin: true,
+            AttachStdout: true,
+            OpenStdin: true,
+            StdinOnce: true,
+            Tty: true,
+            HostConfig: hostConfig
+        }, function (error, registry) {
+            collector.registry = registry;
+            callback(error);
+        });
+    });
+
+    pipeline.push(function startRegistry(collector, callback) {
+        dockerClient.start(util._extend({id: collector.registry.Id}, hostConfig), callback);
+    });
+
+    vasync.pipeline({funcs: pipeline, arg: {}}, function (error) {
+        var host = 'https://' + call.data.host.primaryIp;
+        if (error) {
+            return Docker.deleteRegistry(call, 'host', host, function () {
                 return call.done(error);
             });
         }
@@ -565,10 +676,10 @@ var createRegistry = function (call) {
             if (!registry || !registry.id) {
                 registry = {
                     id: uuid.v4(),
-                    api: 'v1',
+                    api: 'v2',
                     host: host,
-                    port: '5000',
-                    type: RegistryType.LOCAL
+                    port: Docker.DEFAULT_REGISTRY_PORT,
+                    type: Docker.REGISTRY_LOCAL
                 };
                 list.push(registry);
             }
@@ -586,7 +697,7 @@ var getRegistryImages = function (call) {
         vasync.forEachParallel({
             inputs: images,
             func: function (image, callback) {
-                getImageInfo(call, Docker, registryId, {name: image.name}, function (err, result) {
+                getImageInfo(call, Docker, registryId, image, function (err, result) {
                     image.info = result;
                     call.update(null, image);
                     callback();
@@ -597,41 +708,169 @@ var getRegistryImages = function (call) {
             call.done(error, error && error !== vasyncErrors && error instanceof Docker.DockerHostUnreachable);
         });
     }
+    function updateImagesInfoV2(client, images) {
+        var pipeline = [];
+        var collector = {images: {}, tags: {}};
+        var taggedImages = [];
+        pipeline.push(function getImageTags(collector, callback) {
+            vasync.forEachParallel({
+                inputs: images,
+                func: function (image, vasyncCallback) {
+                    var imageName = image.name;
+                    client.getImageTags({name: imageName}, function (error, tags) {
+                        if (error || !tags) {
+                            return vasyncCallback();
+                        }
+                        var image = collector.images[imageName] = collector.images[imageName] || {name: imageName, tags: []};
+                        image.tags = tags;
+                        Object.keys(tags).forEach(function (tag) {
+                            var taggedImage = {
+                                name: imageName,
+                                tag: tag
+                            };
+                            taggedImages.push(taggedImage);
+                            collector.tags[imageName + ':' + tag] = taggedImage;
+                        });
+                        vasyncCallback();
+                    });
+                }
+            }, function () {
+                call.update(null, {images: taggedImages});
+                callback();
+            });
+        });
+        pipeline.push(function getImageManifests(collector, callback) {
+            var results = {};
+            vasync.forEachParallel({
+                inputs: Object.keys(collector.tags),
+                func: function (tag, vasyncCallback) {
+                    var image = collector.tags[tag];
+                    var result = results[tag] = results[tag] || {
+                        name: image.name,
+                        tag: image.tag,
+                        info: {
+                            images: [],
+                            length: 0,
+                            size: 0
+                        }
+                    };
+
+                    client.getManifest({name: image.name, tag: image.tag}, function (error, manifest) {
+                        if (error || !manifest) {
+                            return vasyncCallback();
+                        }
+                        manifest.history.forEach(function (layer) {
+                            var data = {};
+                            try {
+                                data = JSON.parse(layer.v1Compatibility);
+                            } catch (e) {
+                                return;
+                            }
+
+                            result.info.images.push(data);
+                            result.info.length += 1;
+                            result.info.size += data.Size || 0;
+                        });
+
+                        call.update(null, result);
+                        vasyncCallback();
+                    });
+                }
+            }, function () {
+                callback();
+            });
+        });
+
+        vasync.pipeline({
+            funcs: pipeline,
+            arg: collector
+        }, function () {
+            call.done(null, {});
+        });
+    }
+
+    function getImageTagsAndUpdateInfo(client, records) {
+        var images = [];
+        if (!records.length) {
+            call.update(null, []);
+            return call.done(null);
+        }
+        vasync.forEachParallel({
+            inputs: records,
+            func: function (image, callback) {
+                client.getImageTags({name: image.name}, function (error, tags) {
+                    if (error || !tags) {
+                        return callback();
+                    }
+                    if (!Array.isArray(tags)) {
+                        tags = Object.keys(tags);
+                    }
+                    if (tags.length === 0) {
+                        images.push(util._extend({tag: ''}, image));
+                    }
+                    tags.forEach(function (tag) {
+                        var imageCopy = util._extend({}, image);
+                        imageCopy.tag = tag.name || tag;
+                        images.push(imageCopy);
+                    });
+                    callback();
+                });
+            }
+        }, function () {
+            call.update(null, {images: images});
+            updateImagesInfo(images);
+        });
+
+    }
     Docker.getRegistry(call, registryId, function (error, registryRecord) {
         if (error || !registryRecord  && registryId !== DEFAULT_REGISTRY_ID) {
             return call.done('Registry not found.');
         }
         registryRecord = registryRecord || {};
-        if (registryRecord.type === RegistryType.REMOTE || registryRecord.type === RegistryType.GLOBAL || registryId === DEFAULT_REGISTRY_ID) {
+        if (registryRecord.type === Docker.REGISTRY_GLOBAL || registryId === DEFAULT_REGISTRY_ID ||
+            registryRecord.host.indexOf(DOCKER_HUB_URL) > -1) {
             if (!registryRecord.username) {
                 return call.done(null, {images: []});
             }
             searchQuery.q = registryRecord.username;
-        } else if (registryRecord.type === RegistryType.LOCAL) {
+        } else if (registryRecord.api === 'v2') {
+            var client = Docker.createRegistryClient(call, registryRecord);
+            client.searchImage({}, function (error, response) {
+                if (error || !response || !Array.isArray(response.results) || !response.results.length) {
+                    return call.update(error, {images: []});
+                }
+
+                updateImagesInfoV2(client, response.results);
+            });
+            return;
+        } else if (registryRecord.type === Docker.REGISTRY_LOCAL) {
             Docker.privateRegistryImages(call, searchQuery.q, function (error, records) {
                 if (error) {
                     return call.done(error);
                 }
-
-                call.update(error, {images: records});
-                updateImagesInfo(records);
+                var client = Docker.createRegistryClient(call, registryRecord);
+                getImageTagsAndUpdateInfo(client, records);
             });
             return;
         }
 
         var registryClient = Docker.createRegistryClient(call, registryRecord);
         registryClient.searchImage(searchQuery, function (error, response) {
+            if (error && (error.statusCode === 404 || String(error).indexOf('404 page not found') > -1)) {
+                // this occurred because trying to connect to different registry version
+                error = response = null;
+            }
             if (error || !response || !response.results) {
                 return call.done(error, {images: []});
             }
+
             var results = response.results;
             if (registryRecord.host === Docker.DOCKER_HUB_HOST) {
                 results = results.filter(function (image) {
                     return image.name.indexOf(registryRecord.username + '/') === 0;
                 });
             }
-            call.update(null, {images: results});
-            updateImagesInfo(results);
+            getImageTagsAndUpdateInfo(registryClient, results);
         });
     });
 };
@@ -643,16 +882,30 @@ var removeRegistryImage = function (call) {
         if (error) {
             return call.done(error.message || error);
         }
+
+        if (registryRecord.api === 'v2') {
+            var client = Docker.createRegistryClient(call, registryRecord);
+            client.removeImage({name: call.data.name, id: call.data.id}, call.done.bind(call));
+            return;
+        }
         registryRecord = registryRecord || {};
         var opts = {registry: registryRecord, image: call.data.name, access: 'DELETE'};
-        if (registryRecord.type === RegistryType.LOCAL) {
+        if (registryRecord.type === Docker.REGISTRY_LOCAL) {
             opts.access = 'GET';
         }
         Docker.createIndexClient(call, opts, function (error, clients) {
             if (error) {
                 return call.done(error.message || error, true);
             }
-            clients.registry.removeImage({name: call.data.name}, function (error) {
+            var removeOpts = {name: call.data.name};
+            var removeMethod = 'removeImage';
+
+            if (call.data.tag) {
+                removeOpts.tag = call.data.tag;
+                removeMethod = 'removeImageTag';
+            }
+
+            clients.registry[removeMethod](removeOpts, function (error) {
                 call.done(error && error !== '""' && error || null);
             });
         });
@@ -668,9 +921,9 @@ var tagRegistryImage = function (call) {
 
         registryRecord = registryRecord || {};
         var opts = {registry: registryRecord, image: call.data.options.name, access: 'POST'};
-        if (registryRecord.type === RegistryType.LOCAL) {
+        if (registryRecord.type === Docker.REGISTRY_LOCAL) {
             opts.access = 'GET';
-        } else if (registryRecord.type === RegistryType.REMOTE && call.data.action === 'addImageTag') {
+        } else if (registryRecord.type === Docker.REGISTRY_REMOTE && call.data.action === 'addImageTag') {
             opts.access = 'PUT';
         }
         Docker.createIndexClient(call, opts, function (error, clients) {
@@ -710,6 +963,7 @@ if (!config.features || config.features.docker !== 'disabled') {
         uploadImage: uploadImage,
         forceRemoveImage: forceRemoveImage,
         createRegistry: createRegistry,
+        createRegistryV2: createRegistryV2,
         getRegistryImages: getRegistryImages,
         tagRegistryImage: tagRegistryImage,
         removeRegistryImage: removeRegistryImage

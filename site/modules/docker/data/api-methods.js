@@ -265,7 +265,7 @@ var registryAPIMethods = {
         method: 'DELETE',
         path: '/v1/repositories/:name/'
     },
-    imageTags: {
+    getImageTags: {
         method: 'GET',
         path: '/v1/repositories/:name/tags'
     },
@@ -295,6 +295,29 @@ var registryAPIMethods = {
     }
 };
 
+var registryV2APIMethods = {
+    getCatalog: {
+        path: '/v2/_catalog',
+        params: {
+            n: '=',
+            last: '='
+        }
+    },
+    listTags: {
+        path: '/v2/:name/tags/list'
+    },
+    getManifest: {
+        path: '/v2/:name/manifests/:tag'
+    },
+    removeImage: {
+        method: 'DELETE',
+        path: '/v2/:name/manifests/:id'
+    },
+    ping: {
+        path: '/v2/'
+    }
+};
+
 var indexAPIMethods = {
     images: {
         method: 'GET',
@@ -312,5 +335,6 @@ var indexAPIMethods = {
 module.exports = {
     docker: dockerAPIMethods,
     registry: registryAPIMethods,
+    registryV2: registryV2APIMethods,
     index: indexAPIMethods
 };

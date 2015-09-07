@@ -158,7 +158,7 @@
                                 });
 
                                 registries.forEach(function (registry) {
-                                    if (registry.type === 'local') {
+                                    if (registry.type === Docker.REGISTRY_LOCAL) {
                                         delete hosts[util.rewriteUrl({href: registry.host}).hostname];
                                     }
                                 });
@@ -166,7 +166,8 @@
                                 Object.keys(hosts).forEach(function (hostName) {
                                     var host = hosts[hostName];
                                     var registryExist = list.some(function (item) {
-                                        return item.host === 'https://' + host.primaryIp && parseInt(item.port, 10) === 5000;
+                                        return item.host === 'https://' + host.primaryIp &&
+                                            parseInt(item.port, 10) === Docker.DEFAULT_REGISTRY_PORT;
                                     });
                                     if (!registryExist) {
                                         $scope.hosts.push(host);
@@ -190,11 +191,11 @@
                                 }
                                 var registry = {
                                     id: uuid(),
-                                    api: 'v1',
+                                    api: 'v2',
                                     host: 'https://' + $scope.registry.host.primaryIp,
-                                    port: '5000',
+                                    port: Docker.DEFAULT_REGISTRY_PORT,
                                     actionInProgress: true,
-                                    type: 'local'
+                                    type: Docker.REGISTRY_LOCAL
                                 };
 
                                 list.push(registry);

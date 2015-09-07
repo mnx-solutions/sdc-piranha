@@ -186,7 +186,7 @@ window.JP.main.service('util', ['$rootScope',
         service.unique = function (items) {
             return items.filter(function (item, index) {
                 return items.indexOf(item) === index;
-            })
+            });
         };
 
         service.isFormInvalid = function (form, field, errorType) {

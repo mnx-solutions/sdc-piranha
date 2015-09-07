@@ -168,6 +168,7 @@ function Call(opts) {
                     _result = data;
                 } else {
                     if (data) {
+                        _result = Array.isArray(_result) ? _result : [_result];
                         _result.push(data);
                     }
 

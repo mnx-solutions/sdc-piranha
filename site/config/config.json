@@ -150,7 +150,9 @@
     "dockerVersion": "1.8.2",
     "cadvisorVersion": "0.10.1",
     "registryVersion": "0.9.1",
-    "registryDriverVersion": "0.0.19"
+    "registryDriverVersion": "0.0.19",
+    "registryV2Image": "me13w/registry",
+    "registryV2Tag": "2"
   },
   "domains": {
     "api": ".api.joyent.com",

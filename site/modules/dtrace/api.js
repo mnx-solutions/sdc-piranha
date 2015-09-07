@@ -28,11 +28,12 @@ var SUBUSER_LOGIN = 'dtrace';
 var SUBUSER_OBJ_NAME = 'dtrace';
 var SUBUSER_LIST_RULES = [
     'can putobject',
-    'can putdirectory', 
-    'can getobject', 
-    'can getdirectory', 
-    'can deleteobject', 
-    'can deletedirectory'
+    'can putdirectory',
+    'can getobject',
+    'can getdirectory',
+    'can deleteobject',
+    'can deletedirectory',
+    'can putlink'
 ];
 var DEVTOOLS_MANTA_PATH = '~~/stor/.joyent/devtools';
 
@@ -94,7 +95,7 @@ exports.init = function execute(log, config, done) {
         function done(certificates) {
             keys.getKeyPair(mantaClient, call, DEVTOOLS_MANTA_PATH + '/private.key', 'dtrace', function (keyPair) {
                 call.req.session.privateKey = keyPair.privateKey;
-                options.metadata['user-script'] = certMgmt.applyVariablesToScript(startupScript, certificates, keyPair, mantaClient, SUBUSER_LOGIN);;
+                options.metadata['user-script'] = certMgmt.applyVariablesToScript(startupScript, certificates, keyPair, mantaClient, SUBUSER_LOGIN);
 
                 uploadKeysAndSetupSubuser(call, keyPair, function (error) {
                     if (error) {

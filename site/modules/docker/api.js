@@ -256,6 +256,21 @@ exports.init = function execute(log, config, done) {
     api.DOCKER_HUB_HOST = 'https://index.docker.io';
     api.CERTIFICATES_LOST = 'Certificates were lost. Cannot connect to docker.';
 
+    api.getRegistryUrl = function (registry, full) {
+        var parsedUrl = url.parse(registry.host);
+        var registryUrl = parsedUrl.hostname;
+
+        if (registry.port && (parsedUrl.protocol === 'http:' && registry.port !== 80 ||
+            parsedUrl.protocol === 'https:' && registry.port !== 443)) {
+            registryUrl += ':' + registry.port;
+        }
+
+        if (full) {
+            registryUrl = parsedUrl.protocol + '//' + registryUrl;
+        }
+        return registryUrl;
+    };
+
     api.registriesCache = {
         getCache: function (call) {
             var userId = call && call.req.session.userId;
@@ -305,6 +320,9 @@ exports.init = function execute(log, config, done) {
     }
 
     Docker.prototype.usePort = function (port) {
+        if (this.options.isSdc) {
+            return this;
+        }
         var options = JSON.parse(JSON.stringify(this.options));
         var parsedUrl = url.parse(options.url);
         parsedUrl.port = port;
@@ -317,6 +335,13 @@ exports.init = function execute(log, config, done) {
     };
 
     function Registry(options) {
+        this.version = 1;
+        this.options = options;
+        addClient(this);
+    }
+
+    function RegistryV2(options) {
+        this.version = 2;
         this.options = options;
         addClient(this);
     }
@@ -329,8 +354,44 @@ exports.init = function execute(log, config, done) {
     createApi(log, apiMethods.docker, Docker.prototype);
 
     createApi(log, apiMethods.registry, Registry.prototype);
+    createApi(log, apiMethods.registryV2, RegistryV2.prototype);
 
     createApi(log, apiMethods.index, Index.prototype);
+
+    RegistryV2.prototype.searchImage = function (opts, callback) {
+        var term = opts.q;
+        this.getCatalog({}, function (error, result) {
+            if (error) {
+                return callback(error);
+            }
+            result = (result.repositories || [])
+                .map(function (name) {
+                    return {
+                        name: name,
+                        description: ''
+                    };
+                });
+            if (term) {
+                result = result.filter(function (image) {
+                    return image.name.match(term) !== null;
+                });
+            }
+            callback(null, {query: term, results: result});
+        });
+    };
+
+    RegistryV2.prototype.getImageTags = function (opts, callback) {
+        this.listTags(opts, function (error, result) {
+            if (error) {
+                return callback(error);
+            }
+            var tags = {};
+            result.tags.forEach(function (tag) {
+                tags[tag] = true;
+            });
+            callback(null, tags);
+        });
+    };
 
     api.convertToDockerStats = function (data) {
         data = data.stats[0];
@@ -909,13 +970,9 @@ exports.init = function execute(log, config, done) {
     }
 
     api.createRegistryClient = function (call, credentials) {
-        var parsedUrl = url.parse(credentials.host);
-        var port = parseInt(credentials.port || parsedUrl.port, 10);
+        var registryUrl = api.getRegistryUrl(credentials, true);
+        var parsedUrl = url.parse(registryUrl);
         var opts = {headers: credentials.headers};
-        if (port) {
-            delete parsedUrl.host;
-            parsedUrl.port = port;
-        }
 
         if (credentials.auth) {
             var auth = parseAuthData(credentials.auth);
@@ -925,7 +982,7 @@ exports.init = function execute(log, config, done) {
         }
 
         opts.url = url.format(parsedUrl);
-        return createClient(call, Registry, opts);
+        return createClient(call, credentials.api === 'v2' ? RegistryV2 : Registry, opts);
     };
 
     api.createIndexClient = function (call, options, callback) {
@@ -954,7 +1011,7 @@ exports.init = function execute(log, config, done) {
             }
             var registryCredentials = JSON.parse(JSON.stringify(credentials));
             registryCredentials.headers = {Authorization: 'Token ' + authResult.token};
-            if (authResult.endpoint && registryCredentials.type !== 'local') {
+            if (authResult.endpoint && registryCredentials.type !== api.REGISTRY_LOCAL) {
                 var parsedUrl = url.parse(credentials.host);
                 if (authResult.endpoint.indexOf('http') !== 0) {
                     registryCredentials.host = parsedUrl.protocol + '//' + authResult.endpoint + '/';
@@ -1096,7 +1153,7 @@ exports.init = function execute(log, config, done) {
             }
             var id;
             list = list.filter(function (item) {
-                var condition = key === 'host' ? item.host === value && parseInt(item.port, 10) === 5000 : item[key] === value;
+                var condition = key === 'host' ? item.host === value && parseInt(item.port, 10) === api.DEFAULT_REGISTRY_PORT : item[key] === value;
                 if (condition) {
                     id = item.id;
                 }
@@ -1133,15 +1190,15 @@ exports.init = function execute(log, config, done) {
             }
             vasync.forEachParallel({
                 inputs: registries.filter(function (registry) {
-                    return registry.type === 'local';
+                    return registry.type === api.REGISTRY_LOCAL;
                 }),
                 func: function (registry, callback) {
-                    var createRegistryClient = api.createRegistryClient(call, registry);
-                    createRegistryClient.ping(function (err) {
+                    var registryClient = api.createRegistryClient(call, registry);
+                    registryClient.ping(function (err) {
                         if (err) {
                             return callback(null);
                         }
-                        createRegistryClient.imageTags({name: name}, callback);
+                        registryClient.getImageTags({name: name}, callback);
                     });
                 }
             }, function (errors, operations) {
@@ -1163,10 +1220,58 @@ exports.init = function execute(log, config, done) {
         });
     };
 
+    api.getRegistryVersion = function (call, registry, callback) {
+        var callDone = false;
+        var done = function () {
+            if (callDone) {
+                return;
+            }
+            callDone = true;
+            return callback.apply(this, arguments);
+        };
+
+        var client = restify.createClient({
+            url: api.getRegistryUrl(registry, true),
+            retries: false,
+            connectTimeout: 4000
+        });
+
+        client.get('/v1/_ping', function (error, req) {
+            var errorMessage = 'Could not connect to registry.';
+            if (error) {
+                return done(errorMessage);
+            }
+            req.on('result', function (error, res) {
+                var apiVersion = 'v1';
+                var apiHeader = res && res.headers['docker-distribution-api-version'] || '';
+                var oldApiHeader = res && res.headers['x-docker-registry-version'] || '';
+                if (error && apiHeader.indexOf('registry/2') > -1) {
+                    apiVersion = 'v2';
+                    error = null;
+                } else if (!error && oldApiHeader) {
+                    error = null;
+                } else {
+                    error = errorMessage;
+                }
+
+                client.close();
+                done(error, !error && apiVersion);
+            });
+            req.on('error', function () {
+                done(errorMessage, true);
+            });
+        });
+    };
+
     api.SUBUSER_LOGIN = SUBUSER_LOGIN;
     api.SUBUSER_REGISTRY_LOGIN = SUBUSER_REGISTRY_LOGIN;
     api.DOCKER_TCP_PORT = DOCKER_TCP_PORT;
     api.DOCKER_HUB_HOST = DOCKER_HUB_HOST;
+    api.REGISTRY_GLOBAL = 'global';
+    api.REGISTRY_REMOTE = 'remote';
+    api.REGISTRY_LOCAL = 'local';
+    api.DEFAULT_REGISTRY_HOST = '127.0.0.1';
+    api.DEFAULT_REGISTRY_PORT = 5000;
     exports.Docker = api;
     done();
 };

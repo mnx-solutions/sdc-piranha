@@ -33,12 +33,12 @@
             var setRegistryHost = function(scope, image) {
                 var selectedRegistry = getSelectedRegistry(scope);
                 if (selectedRegistry) {
-                    if (selectedRegistry.type === 'local') {
-                        image.name = 'localhost:5000/' + image.name;
-                    } else if (selectedRegistry.type === 'remote') {
+                    if (selectedRegistry.type === Docker.REGISTRY_LOCAL) {
+                        image.name = 'localhost:' + Docker.DEFAULT_REGISTRY_PORT + '/' + image.name;
+                    } else if (selectedRegistry.type === Docker.REGISTRY_REMOTE) {
                         var hostname = getHostname(selectedRegistry.host);
                         if (hostname !== 'index.docker.io') {
-                            image.name = hostname + ':' + selectedRegistry.port + '/' + image.name;
+                            image.name = Docker.getRegistryUrl(selectedRegistry) + '/' + image.name;
                         }
                     }
                 }
@@ -63,7 +63,8 @@
 
             var getHosts = function(scope) {
                 var selectedRegistry = getSelectedRegistry(scope);
-                return Docker[selectedRegistry && selectedRegistry.type === 'local' ? 'listRunningPrivateRegistryHosts' : 'completedHosts']()
+                var isLocalRegistry = selectedRegistry && selectedRegistry.type === Docker.REGISTRY_LOCAL;
+                return Docker[isLocalRegistry ? 'listRunningPrivateRegistryHosts' : 'completedHosts']();
             };
 
             var findImagesCtrl = function ($scope, dialog, Docker) {
@@ -87,12 +88,14 @@
                 function allowedIP($currentScope) {
                     return function () {
                         var selectedRegistry = getSelectedRegistry($scope);
-                        if (!selectedRegistry || !$currentScope.hostIp || selectedRegistry.type === 'global' || selectedRegistry.type === 'remote') {
+                        if (!selectedRegistry || !$currentScope.hostIp ||
+                            selectedRegistry.type === Docker.REGISTRY_GLOBAL ||
+                            selectedRegistry.type === Docker.REGISTRY_REMOTE) {
                             return true;
                         }
 
                         return $scope.fullRegistriesList.some(function (registry) {
-                            return registry.type === 'local' && getHostname(registry.host) === $currentScope.hostIp;
+                            return registry.type === Docker.REGISTRY_LOCAL && getHostname(registry.host) === $currentScope.hostIp;
                         });
                     };
                 }
@@ -369,6 +372,6 @@
                 openCtrl: ['$scope', 'dialog', 'Docker', 'notification', findImagesCtrl]
             });
 
-        }
+        };
     }]);
 }(window.angular, window.JP.getModule('docker')));

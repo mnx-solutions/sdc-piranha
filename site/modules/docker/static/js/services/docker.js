@@ -308,7 +308,7 @@
                     PopupDialog.errorObj(err);
                 }
                 var registry = options.registry;
-                if (registry.type === 'local' && service.cache['containers']) {
+                if (registry.type === service.REGISTRY_LOCAL && service.cache['containers']) {
                     service.cache['containers'].reset();
                 }
                 var cache = service.cache['registriesList'];
@@ -494,7 +494,7 @@
                 containers.forEach(function (container) {
                     if (container.NamesStr === 'private-registry' && container.Status.indexOf('Up') !== -1 && container.Status.indexOf('(Paused)') === -1) {
                         var allowedRegistry = registries.some(function (registry) {
-                            return registry.host === 'https://' + container.primaryIp && registry.type === 'local' && !registry.processing;
+                            return registry.host === 'https://' + container.primaryIp && registry.type === service.REGISTRY_LOCAL && !registry.processing;
                         });
                         if (allowedRegistry) {
                             hosts.push({primaryIp: container.primaryIp, name: container.hostName, id: container.hostId});
@@ -729,7 +729,7 @@
         };
 
         service.getImageTags = function (registryId, name) {
-            return createCall('imageTags', {registry: registryId, options: {name: name}, direct: true}).then(function (tags) {
+            return createCall('getImageTags', {registry: registryId, options: {name: name}, direct: true}).then(function (tags) {
                 if (!Array.isArray(tags)) {
                     var tagsArr = [];
                     for (var tagKey in tags) {
@@ -742,7 +742,13 @@
         };
 
         service.registryImageTag = function (action, registryId, name, tag, layoutId) {
-            return createCall('registryImageTag', {action: action, registryId: registryId, options: {name: name, tagName: tag, layoutId: layoutId}, direct: true});
+            var opts = {
+                action: action,
+                registryId: registryId,
+                options: {name: name, tagName: tag, layoutId: layoutId},
+                direct: true
+            };
+            return createCall('registryImageTag', opts);
         };
 
         service.registryPing = function (registry) {
@@ -767,7 +773,7 @@
             return job.promise;
         };
 
-        service.auth = function (options, dockerHost) {
+        service.authorize = function (options, dockerHost) {
             function getHost (host) {
                 var defer = $q.defer();
                 if (host) {
@@ -779,15 +785,7 @@
                         defer.reject('You don\'t have installed Docker hosts');
                         return;
                     }
-                    var notSdcHost = hosts.find(function (host) {
-                        return !host.isSdc;
-                    });
-
-                    if (notSdcHost) {
-                        defer.resolve(notSdcHost);
-                        return;
-                    }
-                    defer.reject('SDC-Docker host doesn\'t support authentication. Please, create another docker host before connect.');
+                    defer.resolve(hosts[0]);
                 }, function (error) {
                     defer.reject(error);
                 });
@@ -796,7 +794,7 @@
 
             return getHost(dockerHost).then(function (host) {
                 var job = serverTab.call({
-                    name: 'DockerAuth',
+                    name: 'DockerAuthorize',
                     data: {host: host, options: options},
                     done: function (err, data) {
                         if (err) {
@@ -842,7 +840,7 @@
                 }
                 list.forEach(function (registry) {
                     if (!registry.processing) {
-                        if (allowedHost && registry.type === 'local' && !privateRegistry) {
+                        if (allowedHost && registry.type === service.REGISTRY_LOCAL && !privateRegistry) {
                             if (forHost && registry.host.indexOf(forHost) === -1) {
                                 return;
                             }
@@ -852,13 +850,13 @@
                             });
                             if (isRunningRegistryContainer) {
                                 registries.push({
-                                    id: 'local',
+                                    id: service.REGISTRY_LOCAL,
                                     host: 'private registry',
-                                    type: 'local'
+                                    type: service.REGISTRY_LOCAL
                                 });
                                 privateRegistry = true;
                             }
-                        } else if (registry.type !== 'local') {
+                        } else if (registry.type !== service.REGISTRY_LOCAL) {
                             registries.push(registry);
                         }
                     }
@@ -1000,7 +998,7 @@
             return createCall('registryRemoveImage', ng.extend({}, options, {direct: true}));
         };
 
-        service.execute = function (opts, handler) {
+        service.execute = function (opts) {
             return createCall('execute', opts);
         };
 
@@ -1190,8 +1188,29 @@
             });
         };
 
+        service.getRegistryUrl = function (registry) {
+            var parsedUrl = document.createElement('a');
+            parsedUrl.href = registry.host.trim();
+            var registryUrl = parsedUrl.hostname;
+
+            if (registry.port && (parsedUrl.protocol === 'http:' && Number(registry.port) !== 80 ||
+                parsedUrl.protocol === 'https:' && Number(registry.port) !== 443)) {
+                registryUrl += ':' + registry.port;
+            }
+
+            return parsedUrl.protocol + '//' + registryUrl;
+        };
+
         service.imageInProgress = {};
 
+        service.REGISTRY_GLOBAL = 'global';
+        service.REGISTRY_REMOTE = 'remote';
+        service.REGISTRY_LOCAL = 'local';
+
+        service.DEFAULT_REGISTRY_PORT = window.JP.get('dockerRegistryDefaultPort');
+
+        service.AUTH_ACTION = 'authorize';
+        service.PING_ACTION = 'registryPing';
         return service;
     }]);
 }(window.angular, window.JP.getModule('docker')));

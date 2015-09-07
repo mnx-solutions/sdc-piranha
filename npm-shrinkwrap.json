@@ -140,6 +140,13 @@
         }
       }
     },
+    "bunyan-prettystream": {
+      "name": "bunyan-prettystream",
+      "version": "0.1.3",
+      "from": "bunyan-prettystream@*",
+      "resolved": "https://registry.npmjs.org/bunyan-prettystream/-/bunyan-prettystream-0.1.3.tgz",
+      "dependencies": {}
+    },
     "connect-redis": {
       "version": "2.2.0",
       "from": "connect-redis@>=2.2.0 <3.0.0",

@@ -35,12 +35,14 @@
                         var selectedRegistry = scope.registries.find(function (registry) {
                             return registry.id === scope.params.registryId;
                         });
-                        if (!selectedRegistry || selectedRegistry.type === 'global' || selectedRegistry.type === 'remote') {
+                        if (!selectedRegistry ||
+                            selectedRegistry.type === Docker.REGISTRY_GLOBAL ||
+                            selectedRegistry.type === Docker.REGISTRY_REMOTE) {
                             return true;
                         }
 
                         return scope.fullRegistriesList.some(function (registry) {
-                            return registry.type === 'local' && registry.host.indexOf(scope.hostIp) !== -1;
+                            return registry.type === Docker.REGISTRY_LOCAL && registry.host.indexOf(scope.hostIp) !== -1;
                         });
                     }
 

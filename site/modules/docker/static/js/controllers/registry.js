@@ -20,16 +20,16 @@
                 $scope.loading = true;
                 $scope.imagesLoading = false;
                 $scope.registries = [];
-                $scope.registryApiVersions = ['v1'];
+                $scope.registryApiVersions = ['v1', 'v2'];
 
                 var newRegistry = function (type) {
                     $scope.registry = {
-                        api: $scope.registryApiVersions[0],
-                        host: null,
-                        port: null,
-                        username: null,
-                        email: null,
-                        password: null,
+                        api: '',
+                        host: '',
+                        port: '',
+                        username: '',
+                        email: '',
+                        password: '',
                         type: type
                     };
                 };
@@ -46,21 +46,12 @@
                     $scope.gridUserConfig = 'docker-local-registry-images';
                 }
 
-                var registryImageTag = function (action, imageName, tagName, layoutId, callback) {
-                    Docker.registryImageTag(action, $scope.registry.id, imageName, tagName, layoutId).then(function () {
-                        callback();
-                    }, function (err) {
-                        callback(err);
-                        return errorCallback(err);
-                    });
-                };
-
                 Docker.getRegistriesList().then(function (list) {
                     $scope.registries = list;
                     $scope.loading = false;
                     if ($scope.registryId === 'create') {
                         $scope.registryId = null;
-                        newRegistry('remote');
+                        newRegistry(Docker.REGISTRY_REMOTE);
 
                     } else {
                         $scope.registries.forEach(function (registry) {
@@ -78,9 +69,10 @@
                                             $scope.imagesLoading = false;
                                             chunk.images.forEach(function (image) {
                                                 image.info = image.info || {};
-                                                imagesByName[image.name] = image;
+                                                var imageFullName = image.name + ':' + image.tag;
+                                                imagesByName[imageFullName] = image;
                                                 var registryId = $scope.registry.id;
-                                                if ($scope.registry.type === 'local') {
+                                                if ($scope.registry.type === Docker.REGISTRY_LOCAL) {
                                                     registryId = $scope.registry.type;
                                                 }
                                                 Docker.getImageTags(registryId, image.name).then(function (tags) {
@@ -92,7 +84,12 @@
                                             });
                                             $scope.images = chunk.images;
                                         } else if (chunk.name && chunk.info && chunk.info.size !== undefined) {
-                                            var image = imagesByName[chunk.name];
+                                            var imageFullName = chunk.name + ':' + chunk.tag;
+                                            var image = imagesByName[imageFullName];
+                                            if (!image) {
+                                                return;
+                                            }
+
                                             image.loading = false;
                                             image.size = chunk.info.size;
                                             if (chunk.info.images && chunk.info.images[0]) {
@@ -108,33 +105,6 @@
                         });
                     }
                 });
-                var checkImageTagDuplicate = function (tags, name, index) {
-                    if (!tags.length) {
-                        return false;
-                    }
-                    var hasDuplicates = tags.some(function (t, i) {
-                        return t.name.toLowerCase() === name.toLowerCase() && i !== index;
-                    });
-                    if (hasDuplicates) {
-                        PopupDialog.error(
-                            localization.translate(
-                                $scope,
-                                null,
-                                'Error'
-                            ),
-                            localization.translate(
-                                $scope,
-                                null,
-                                'Duplicate tag.'
-                            )
-                        );
-                    }
-                    return hasDuplicates;
-                };
-
-                function isRegistryTypeRemote() {
-                    return $scope.registry.type === 'remote';
-                }
 
                 $scope.gridOrder = [];
                 $scope.gridProps = [
@@ -147,6 +117,12 @@
                         _inProgress: function (object) {
                             return object.actionInProgress;
                         }
+                    },
+                    {
+                        id: 'tag',
+                        name: 'Tag',
+                        sequence: 1,
+                        active: true
                     },
                     {
                         id: 'created',
@@ -177,116 +153,11 @@
                         _getter: function (image) {
                             return image.size ? util.getReadableFileSizeString(image.size) : '';
                         }
-                    },
-                    {
-                        id: '',
-                        name: 'Action',
-                        sequence: 6,
-                        active: true,
-                        type: 'buttons',
-                        buttons: [
-                            {
-                                label: 'Tag',
-                                getClass: function () {
-                                    return 'btn grey';
-                                },
-                                disabled: function (object) {
-                                    return object.loading || object.actionInProgress;
-                                },
-                                action: function (object) {
-                                    ng.element('.btn.grey').blur();
-                                    PopupDialog.custom({
-                                        templateUrl: 'docker/static/partials/image-add-tag.html',
-                                        openCtrl: function ($scope, dialog) {
-                                            $scope.isRegistryTypeRemote = isRegistryTypeRemote();
-                                            $scope.newTag = '';
-                                            $scope.tags = angular.copy(object.tags) || [];
-                                            var storeTags = function () {
-                                                $scope.lastSavedTags = angular.copy(object.tags);
-                                            };
-                                            $scope.focusOut = function () {
-                                                if (!$scope.lastSavedTags) {
-                                                    return;
-                                                }
-                                                $scope.lastSavedTags.forEach(function (lastTag, index) {
-                                                    if ($scope.tags[index].name !== lastTag.name) {
-                                                        $scope.tags[index].name = lastTag.name;
-                                                    }
-                                                    $scope.tags[index].edit = false;
-                                                });
-                                            };
-                                            $scope.editTag = function (tag) {
-                                                if ($scope.isRegistryTypeRemote) {
-                                                    return;
-                                                }
-                                                storeTags();
-                                                $scope.focusOut();
-                                                tag.edit = true;
-                                            };
-                                            // removeImageTag isn't working on remote registry due to an issue:
-                                            // https://github.com/docker/docker/issues/8759
-                                            $scope.removeTag = function (tag) {
-                                                tag.actionInProgress = true;
-                                                registryImageTag('removeImageTag', object.name, tag.name, JSON.stringify(object.layoutId), function (error) {
-                                                    if (error) {
-                                                        return;
-                                                    }
-                                                    $scope.tags = $scope.tags.filter(function (item) {
-                                                        return item.name !== tag.name;
-                                                    });
-                                                    object.tags = $scope.tags;
-                                                    storeTags();
-                                                });
-
-                                            };
-                                            $scope.addTag = function () {
-                                                if (!checkImageTagDuplicate($scope.tags, $scope.newTag)) {
-                                                    $scope.newTagInProgress = true;
-                                                    registryImageTag('addImageTag', object.name, $scope.newTag, JSON.stringify(object.layoutId), function (error) {
-                                                        if (error) {
-                                                            $scope.newTagInProgress = false;
-                                                            return;
-                                                        }
-                                                        $scope.tags.push({name: $scope.newTag, edit: false, id: object.layoutId});
-                                                        object.tags = $scope.tags;
-                                                        storeTags();
-                                                        $scope.newTag = '';
-                                                        $scope.newTagInProgress = false;
-                                                    });
-                                                }
-                                            };
-                                            $scope.saveTag = function (tag, index) {
-                                                if (!checkImageTagDuplicate($scope.tags, tag.name, index)) {
-                                                    var oldTag = angular.copy($scope.lastSavedTags ? $scope.lastSavedTags[index] : $scope.tags[index]);
-                                                    tag.actionInProgress = true;
-                                                    tag.edit = false;
-                                                    registryImageTag('addImageTag', object.name, tag.name, JSON.stringify(object.layoutId), function (error) {
-                                                        if (error) {
-                                                            tag.actionInProgress = false;
-                                                            return;
-                                                        }
-                                                        $scope.tags[index].name = tag.name;
-                                                        object.tags = $scope.tags;
-                                                        $scope.removeTag(oldTag);
-                                                        tag.actionInProgress = false;
-                                                    });
-
-                                                }
-                                            };
-                                            $scope.close = function () {
-                                                if ($scope.tags.length) {
-                                                    $scope.focusOut();
-                                                }
-                                                dialog.close();
-                                            };
-                                        }
-                                    });
-                                }
-                            }
-                        ]
                     }
                 ];
 
+                // TODO: currently, v2 does not support deleting tags
+                /*
                 $scope.gridActionButtons = [
                     {
                         label: 'Remove',
@@ -296,7 +167,12 @@
                                     return;
                                 }
                                 image.actionInProgress = true;
-                                Docker.registryRemoveImage({registryId: $scope.registry.id, name: image.name}).then(function () {
+                                var opts = {
+                                    registryId: $scope.registry.id,
+                                    name: image.name,
+                                    tag: image.tag
+                                };
+                                Docker.registryRemoveImage(opts).then(function () {
                                     $scope.images.splice(index, 1);
                                 }, function () {
                                     image.actionInProgress = false;
@@ -307,6 +183,7 @@
                         sequence: 1
                     }
                 ];
+                */
 
                 $scope.exportFields = {
                     ignore: []
@@ -329,27 +206,18 @@
                     });
                 };
 
-                var checkExists = function (connectedRegistry) {
-                    var exist = false;
-                    var checkAuth = true;
-                    $scope.registries.forEach(function (registry) {
-                        if (connectedRegistry.username && connectedRegistry.password) {
-                            checkAuth = registry.username == connectedRegistry.username && registry.email == connectedRegistry.email;
-                        }
+                var isExistingRegistry = function (connectedRegistry) {
+                    return $scope.registries.some(function (registry) {
                         registry.id = registry.id || '';
-                        if (registry.api === connectedRegistry.api &&
-                                registry.host === connectedRegistry.host &&
-                                parseInt(registry.port, 10) === connectedRegistry.port &&
-                                checkAuth && registry.id !== connectedRegistry.id) {
-                            exist = true;
-                        }
+                        return Docker.getRegistryUrl(registry) === Docker.getRegistryUrl(connectedRegistry) &&
+                            (registry.username || '') === (connectedRegistry.username || '') &&
+                            registry.id !== connectedRegistry.id;
                     });
-                    return exist;
                 };
 
                 $scope.connectRegistry = function () {
                     $scope.loading = true;
-                    var registryExist = checkExists($scope.registry);
+                    var registryExist = isExistingRegistry($scope.registry);
                     if (registryExist) {
                         $scope.loading = false;
                         return PopupDialog.error(
@@ -366,32 +234,36 @@
                         );
                     }
                     var registry = ng.extend({}, $scope.registry);
-                    var action = 'registryPing';
+                    var action = Docker.PING_ACTION;
                     if (registry.username && registry.password) {
-                        action = 'auth';
-                        registry.serveraddress = registry.host + '/' + registry.api + '/';
-                        delete registry.host;
-                        delete registry.api;
+                        action = Docker.AUTH_ACTION;
+                        registry.serveraddress = Docker.getRegistryUrl(registry);
                     }
-                    Docker[action](registry).then(function (result) {
-                        if (result) {
-                            var hubMessage = result.Status || result.toString();
-                            if (action === 'auth' && hubMessage.indexOf('Account created') !== -1) {
+
+                    Docker[action](registry).then(function (response) {
+                        if (response) {
+                            var hubMessage = response.Status || response.toString();
+                            if (action === Docker.AUTH_ACTION && hubMessage.indexOf('Account created') !== -1) {
                                 notification.success(hubMessage);
                             }
-                            if (action === 'registryPing') {
+                            if (action === Docker.PING_ACTION) {
                                 delete $scope.registry.username;
                                 delete $scope.registry.password;
                                 delete $scope.registry.email;
                             }
+                            $scope.registry.api = $scope.registry.api || response.apiVersion;
                             addRegistry($scope.registry);
                         }
                     }, function (err) {
                         if (err.indexOf('html') > -1 || err.toLowerCase().indexOf('not found') > -1) {
                             err = 'Failed to connect: The requested URL <code>/v1/_ping</code> was not found.';
                         } else if (err.indexOf('Internal Server') > -1 || err.indexOf('connect ENETUNREACH') > -1 ||
-                            err.indexOf('connect timeout') > -1 || err.indexOf('getaddrinfo ENOTFOUND') > -1) {
+                            err.indexOf('connect timeout') > -1 || err.indexOf('getaddrinfo ENOTFOUND') > -1 ||
+                            err.indexOf('Internal error') > -1) {
                             err = 'Cannot connect to ' + $scope.registry.host;
+                        } else if (err.indexOf('incorrect username or password') !== -1 ||
+                            err.indexOf('UNAUTHORIZED') > -1) {
+                            err = 'Authentication failed. Incorrect username or password.';
                         }
                         PopupDialog.errorObj(err);
                         $scope.loading = false;

@@ -61,12 +61,12 @@
                         }
                         Docker.registriesPushInProgress[scope.input.registryId] = true;
                         var registry;
-                        if (scope.input.registryId === 'local') {
+                        if (scope.input.registryId === Docker.REGISTRY_LOCAL) {
                             registry = {
-                                id: 'local',
+                                id: Docker.REGISTRY_LOCAL,
                                 host: 'http://localhost',
-                                port: 5000,
-                                type: 'local'
+                                port: Docker.DEFAULT_REGISTRY_PORT,
+                                type: Docker.REGISTRY_LOCAL
                             };
                         } else {
                             registry = scope.registries.find(function (registry) {
@@ -112,6 +112,6 @@
                     };
                 }]
             });
-        }
+        };
     }]);
 }(window.angular, window.JP.getModule('docker')));
