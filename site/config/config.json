@@ -171,6 +171,7 @@
       "standard": "14.1.0",
       "standard64": "14.1.0",
       "ubuntu-12.04": "2.4.2",
+      "ubuntu-14.04": "20150819",
       "ubuntu-certified-12.04": "20140219",
       "ubuntu-certified-13.10": "20140219",
       "ubuntu-certified-14.04": "20140416",
