@@ -153,20 +153,58 @@
             return registries;
         };
 
-        service.run = function (host, options) {
+        service.run = function (host, options, accountId) {
+            var containerOptions = options.create;
+            var containerFakeId = accountId + '-' + uuid();
+            var provisioningContainer = {
+                Command: containerOptions.cmd ? containerOptions.cmd.join(',') : '',
+                Created: '',
+                Id: containerFakeId,
+                ShortId: '',
+                Image: containerOptions.Image,
+                NamesStr: containerOptions.name,
+                Ports: containerOptions.PortSpecs,
+                Status: '',
+                hostId: host.id,
+                hostName: host.name,
+                ipAddress: '',
+                isSdc: host.isSdc,
+                Labels: containerOptions.Labels,
+                state: 'provisioning',
+                actionInProgress: true
+            };
+            var resetCache = function () {
+                var cache = service.cache['containers'];
+                if (cache && containerDoneHandler.create) {
+                    containerDoneHandler.create(cache);
+                }
+            };
+            resetCache();
             var job = serverTab.call({
                 name: 'DockerRun',
-                data: {host: host, options: options},
-                done: function (err, data) {
-                    if (err) {
-                        PopupDialog.errorObj(err);
+                data: {host: host, options: options, provisioningContainer: provisioningContainer},
+                done: function () {
+                    resetCache();
+                    if ($location.path().indexOf('/docker/container/create') !== -1 ||
+                        $location.path().indexOf('/compute/container/create') !== -1) {
+                        $location.path('/docker/containers');
                     }
-                    var cache = service.cache['containers'];
-                    if (cache && containerDoneHandler.create) {
-                        containerDoneHandler.create(cache);
-                    }
-                    return data;
                 }
+            });
+            return job.promise;
+        };
+
+        service.getDockerContainersProvisioning = function () {
+            var job = serverTab.call({
+                name: 'GetDockerContainersProvisioning'
+            });
+            return job.promise;
+        };
+
+        service.removeDockerContainersProvisioning = function (containerId) {
+            var job = serverTab.call({
+                name: 'RemoveDockerContainersProvisioning',
+                data: {containerId: containerId}
             });
             return job.promise;
         };

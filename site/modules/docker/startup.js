@@ -8,6 +8,7 @@ var Auditor = require(__dirname + '/libs/auditor.js');
 var utils = require('../../../lib/utils');
 var WebSocket = require('ws');
 var DOCKER_SSL_ERROR = 'routines:SSL3_READ_BYTES';
+var uuid = require('../../static/vendor/uuid/uuid.js');
 
 var Docker = function execute(log, config) {
     var Docker = require('../docker').Docker;
@@ -22,6 +23,10 @@ var Docker = function execute(log, config) {
     var DOCKER_REMOVED_LOGS_PATH = Docker.SDC_DOCKER_PATH + '/removed-logs.json';
     var DOCKER_EXEC_PATH = '/main/docker/exec/';
     var methodHandlers = {};
+    var cache = require('lru-cache')({
+        max: 1000,
+        maxAge: 15 * 60 * 1000
+    });
 
     var isPrivateRegistryName = function (container) {
         return container.Names.some(function (name) {
@@ -196,7 +201,7 @@ var Docker = function execute(log, config) {
             return removeContainer(call, client, container, data.options, function (err) {
                 var ports = [];
                 if (err) {
-                    return call.log.warn(err.message, true);
+                    return call.log.warn(err.message || err, true);
                 }
                 if (container.Ports && container.Ports.length > 0) {
                     ports = container.Ports.map(function (port) {
@@ -295,7 +300,11 @@ var Docker = function execute(log, config) {
                                         vasync.forEachParallel({
                                             inputs: response,
                                             func: function (container, inspectCallback) {
-                                                if (['Removal In Progress', 'Dead', 'Created'].indexOf(container.Status) > -1) {
+                                                if (container.Created === 0 || !container.Status ||
+                                                    ['Removal In Progress', 'Dead', 'Created'].indexOf(container.Status) > -1) {
+                                                    if (!container.Status || container.Status === 'Created') {
+                                                        container = [];
+                                                    }
                                                     return inspectCallback(null, container);
                                                 }
                                                 client.inspect({id: container.Id}, function (errContainer, containerInfo) {
@@ -415,11 +424,43 @@ var Docker = function execute(log, config) {
 
     server.onCall('DockerRun', {
         verify: function (data) {
-            return data && data.host && data.options && data.options.create && data.options.create.Image && data.options.start;
+            return data && data.host && data.options && data.options.create && data.options.create.Image &&
+                data.options.start && data.provisioningContainer;
         },
         handler: function (call) {
-            DockerHandler.run(call);
+            var provisioningContainer = call.data.provisioningContainer;
+            var containerFakeId = provisioningContainer.Id;
+            cache.set(containerFakeId, provisioningContainer);
+            call.done();
+            DockerHandler.run(call, function (error) {
+                if (error) {
+                    var container = cache.get(containerFakeId);
+                    container.actionInProgress = false;
+                    container.error = error;
+                    cache.set(containerFakeId, container);
+                } else {
+                    cache.del(containerFakeId);
+                }
+            });
         }
+    });
+
+    server.onCall('RemoveDockerContainersProvisioning', {
+        verify: function (data) {
+            return data && data.containerId;
+        },
+        handler: function (call) {
+            cache.del(call.data.containerId);
+            call.done();
+        }
+    });
+
+    server.onCall('GetDockerContainersProvisioning', function (call) {
+        var provisioningContainers = {};
+        cache.forEach(function (value, key) {
+            provisioningContainers[key] = value;
+        });
+        call.done(null, provisioningContainers);
     });
 
     server.onCall('GetRemovedContainers', function (call) {

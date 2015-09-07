@@ -335,7 +335,7 @@ var forceRemoveImage = function (call) {
     ], call.done.bind(call));
 };
 
-var run = function (call) {
+var run = function (call, callback) {
     var Docker = api.Docker;
     var host = call.data.host;
     var options = call.data.options;
@@ -404,7 +404,11 @@ var run = function (call) {
                 name: 'run'
             }, util._extend(options, {error: true, errorMessage: error.message || error}));
         }
-        call.done(error);
+        if (typeof callback === 'function') {
+            callback(error);
+        } else {
+            call.done(error);
+        }
     });
 };
 

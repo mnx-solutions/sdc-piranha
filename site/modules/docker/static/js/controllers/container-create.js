@@ -7,6 +7,7 @@
             '$rootScope',
             'requestContext',
             'localization',
+            'Account',
             'Docker',
             'Provision',
             '$q',
@@ -16,7 +17,7 @@
             'CloudAnalytics',
             'Package',
             'dockerPullImage',
-            function ($scope, $rootScope, requestContext, localization, Docker, Provision, $q, PopupDialog, $filter, $location, CloudAnalytics, Package, dockerPullImage) {
+            function ($scope, $rootScope, requestContext, localization, Account, Docker, Provision, $q, PopupDialog, $filter, $location, CloudAnalytics, Package, dockerPullImage) {
                 localization.bind('docker', $scope);
                 requestContext.setUpRenderContext('docker.create', $scope, {
                     title: localization.translate(null, 'docker', 'Create Docker Container')
@@ -26,6 +27,7 @@
 
                 var sourceId = requestContext.getParam('sourceid');
                 var hostId = requestContext.getParam('hostid');
+                var accountId;
                 var images = {};
                 var containers = {};
                 var hostsStats = {};
@@ -712,6 +714,10 @@
                     }
                 }, errorCallback);
 
+                Account.getAccount().then(function (account) {
+                    accountId = account.id;
+                });
+
                 var setMemory = function () {
                     if ($scope.host.isSdc && $scope.package) {
                         $scope.container.HostConfig.Memory = $scope.container.Memory = $scope.package.memory * 1024 * 1024;
@@ -733,7 +739,6 @@
                     }
 
                     $scope.container.HostConfig.Links = parseContainerLinks($scope.input.Links);
-                    var lxcConf = $scope.container.HostConfig.LxcConf = parseLxcConf($scope.input.LxcConf);
 
                     setMemory();
 
@@ -745,26 +750,10 @@
 
                     $scope.container.HostConfig.Binds = isArrayNotEmpty(binds) ? binds : null;
 
-                    Docker.run($scope.host, {create: $scope.container, start: $scope.container.HostConfig}).then(function () {
-                        if ($location.path().indexOf('/docker/container/create') !== -1 ||
-                            $location.path().indexOf('/compute/container/create') !== -1) {
-                            $location.path('/docker/containers');
-                        }
-                        if ($scope.host.isSdc) {
-                            $rootScope.$emit('clearMachinesCache');
-                        }
-                    }, function (err) {
-                        if (typeof (err) === 'string') {
-                            if (err.indexOf('cpuset.cpus: invalid') !== -1) {
-                                err = 'Cannot start container. Invalid argument: Cpuset.';
-                            } else if (err.indexOf('cpuset.cpus: numerical result') !== -1) {
-                                err = 'Cannot start container. CPUset value is out of numerical range.';
-                            } else if (err === 'Docker host "' + $scope.ip + ':4243" is unreachable.' && lxcConf.length) {
-                                err = 'Unable to start created container as invalid LxcConf parameters provided.';
-                            }
-                        }
-                        errorCallback(err);
-                    });
+                    Docker.run($scope.host, {create: $scope.container, start: $scope.container.HostConfig}, accountId);
+                    if ($scope.host.isSdc) {
+                        $rootScope.$emit('clearMachinesCache');
+                    }
                 };
 
                 var createImage = function () {

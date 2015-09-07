@@ -102,63 +102,92 @@
                     return labels;
                 };
 
-                var listAllContainers = function (cache) {
-                    $q.all([
-                        Docker.listContainers({host: 'All', cache: cache, options: {all: true}, suppressErrors: true}),
-                        Docker.listHosts({prohibited: true}),
-                        Docker.listHosts(),
-                        Docker.loadPredefinedSearchParams()
-                    ]).then(function (result) {
-                        var containers = result[0] || [];
-                        var hosts = result[1] || [];
-                        $scope.permittedHosts = result[2] || [];
-                        $scope.host = $scope.permittedHosts[0];
-                        $scope.searchParams = result[3];
-
-                        var labels = getLabelsFromContainers(containers);
-                        Object.keys($scope.searchParams).forEach(function (key) {
-                            if (key !== 'query') {
-                                if (!labels[key]) {
-                                    delete $scope.searchParams[key];
-                                } else {
-                                    $scope.searchParams[key] = $scope.searchParams[key].filter(function (value) {
-                                        return labels[key].indexOf(value) !== -1 || value === '';
-                                    });
+                var addProvisioningContainers = function (containers, provisioningContainers) {
+                    Object.keys(provisioningContainers).forEach(function (containerId) {
+                        var container = provisioningContainers[containerId];
+                        if (container.error) {
+                            var err = container.error;
+                            if (typeof err === 'string') {
+                                if (err.indexOf('cpuset.cpus: invalid') !== -1) {
+                                    err = 'Cannot start container. Invalid argument: Cpuset.';
+                                } else if (err.indexOf('cpuset.cpus: numerical result') !== -1) {
+                                    err = 'Cannot start container. CPUset value is out of numerical range.';
                                 }
                             }
-                        });
-                        $scope.availableSearchParams = Object.keys(labels).map(function (label) {
-                            return {
-                                key: label,
-                                name: label,
-                                placeholder: 'label',
-                                values: labels[label]
-                            };
-                        });
-
-                        $scope.showRequestTritonBtn = hosts.find(function (host) {
-                            return host.isSdc && host.prohibited;
-                        });
-                        hosts.some(function (host) {
-                            if (host.isSdc) {
-                                sdcDatacenter = host.datacenter;
-                                return true;
-                            }
-                        });
-
-                        if (hostId) {
-                            containers = containers.filter(function (container) {
-                                return container.hostId === hostId;
-                            });
+                            errorCallback(err);
+                            Docker.removeDockerContainersProvisioning(containerId);
+                        } else {
+                            containers.push(container);
                         }
-                        $scope.containersFilter = Docker.getHostFilter(hostId, hosts);
-                        $scope.containers = containers.map(function (container) {
-                            container.state = getContainerState(container, false);
-                            container.actionInProgress = container.isRemoving;
-                            return container;
+                    });
+                };
+
+                var listAllContainers = function (cache) {
+
+                    Docker.listContainers({host: 'All', cache: cache, options: {all: true}, suppressErrors: true}).then(function (containers) {
+                        $q.all([
+                            Docker.listHosts({prohibited: true}),
+                            Docker.listHosts(),
+                            Docker.loadPredefinedSearchParams(),
+                            Docker.getDockerContainersProvisioning()
+                        ]).then(function (result) {
+                            containers = containers || [];
+                            var hosts = result[0] || [];
+                            $scope.permittedHosts = result[1] || [];
+                            $scope.host = $scope.permittedHosts[0];
+                            $scope.searchParams = result[2];
+                            var provisioningContainers = result[3] || {};
+
+                            $scope.showRequestTritonBtn = hosts.find(function (host) {
+                                return host.isSdc && host.prohibited;
+                            });
+                            hosts.some(function (host) {
+                                if (host.isSdc) {
+                                    sdcDatacenter = host.datacenter;
+                                    return true;
+                                }
+                            });
+
+                            if (hostId) {
+                                containers = containers.filter(function (container) {
+                                    return container.hostId === hostId;
+                                });
+                            }
+                            $scope.containersFilter = Docker.getHostFilter(hostId, hosts);
+                            $scope.containers = containers.map(function (container) {
+                                container.state = getContainerState(container, false);
+                                container.actionInProgress = container.isRemoving;
+                                return container;
+                            });
+
+                            addProvisioningContainers($scope.containers, provisioningContainers);
+
+                            var labels = getLabelsFromContainers($scope.containers);
+                            Object.keys($scope.searchParams).forEach(function (key) {
+                                if (key !== 'query') {
+                                    if (labels[key]) {
+                                        $scope.searchParams[key] = $scope.searchParams[key].filter(function (value) {
+                                            return labels[key].indexOf(value) !== -1 || value === '';
+                                        });
+                                    } else {
+                                        delete $scope.searchParams[key];
+                                    }
+                                }
+                            });
+                            $scope.availableSearchParams = Object.keys(labels).map(function (label) {
+                                return {
+                                    key: label,
+                                    name: label,
+                                    placeholder: 'label',
+                                    values: labels[label]
+                                };
+                            });
+
+                            $scope.loading = false;
+                            getStatsWithInterval(true);
+                        }, function (err) {
+                            errorCallback(err);
                         });
-                        $scope.loading = false;
-                        getStatsWithInterval(true);
                     }, function (err) {
                         errorCallback(err);
                     });
@@ -238,7 +267,7 @@
                         sequence: 8,
                         reverseSort: true,
                         _getter: function (container) {
-                            return $filter('humanDate')(container.Created);
+                            return container.Created ? $filter('humanDate')(container.Created) : '';
                         }
                     },
                     {
@@ -273,7 +302,7 @@
                         }
                     },
                     {
-                        id: 'labels',
+                        id: 'Labels',
                         name: 'Labels',
                         sequence: 13
                     }
@@ -311,10 +340,6 @@
                         plural: 'Please confirm that you want to create images from selected containers.'
                     }
                 };
-
-                function isCAdvisorAction(container, action) {
-                    return container.NamesStr === 'cAdvisor' && ['stop', 'pause', 'kill', 'remove'].indexOf(action) !== -1;
-                }
 
                 var processContainerComplete = function (container) {
                     getContainerState(container, true).then(function (state) {
@@ -357,8 +382,9 @@
                         Docker[command](container).then(function (response) {
                             if (action === 'remove') {
                                 $scope.containers = $scope.containers.filter(function (item) {
-                                    return !item.isRemoving && container.Id !== item.Id;
+                                    return container.Id !== item.Id;
                                 });
+                                listAllContainers(false);
                             }
                             $scope.containers.some(function (container) {
                                 if (container.Id === response.containerId) {
