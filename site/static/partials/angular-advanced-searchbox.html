@@ -17,7 +17,7 @@
                    typeahead-open-on-focus
                    typeahead-focus-first="false"
                    typeahead-on-select="typeaheadOnSelectValue($item)"
-                   typeahead="value for value in searchParam.values | filter:$viewValue | limitTo:8"
+                   typeahead="value for value in searchParam.values | filter:$viewValue"
                    typeahead-min-length="0"
                    placeholder="{{searchParam.placeholder}}" />
         </div>
@@ -35,7 +35,7 @@
            typeahead-open-on-focus
            typeahead-focus-first="false"
            typeahead-on-select="typeaheadOnSelect($item, $model, $label)"
-           typeahead="parameter as parameter.name for parameter in parameters | filter:{name:$viewValue} | limitTo:8"
+           typeahead="parameter as parameter.name for parameter in parameters | filter:{name:$viewValue}"
            typeahead-min-length="0"
            ng-model="searchQuery" />
 </div>

@@ -45,8 +45,11 @@
     outline: 0 none;
 }
 .advancedSearchBox ul.dropdown-menu {
+    overflow-x: scroll;
+
     min-width: 186px;
     max-width: 186px;
+    max-height: 200px;
     margin-top: 0;
     padding: 0;
 
