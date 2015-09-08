@@ -377,6 +377,8 @@ exports.init = function execute(log, config, done) {
             }
             var keys = Object.keys(datacenters || {});
             var count = keys.length;
+            var allMachines = [];
+
             if (count === 0) {
                 callback(null, []);
                 return;
@@ -385,9 +387,6 @@ exports.init = function execute(log, config, done) {
             keys.forEach(function (datacenterName) {
                 var cloud = call.cloud.separate(datacenterName);
                 call.log.debug('List machines for data center %s', datacenterName);
-
-                var allMachines = [];
-
                 cloud.listMachines({credentials: true}, function (err, machines) {
                     var response = {
                         name: datacenterName,
