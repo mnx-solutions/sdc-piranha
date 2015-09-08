@@ -177,10 +177,11 @@ Instrumentation.prototype.getValue = function (callback) {
             return;
         }
 
-        self.lastUpdate = (response['end_time'] || self.lastUpdate);
-
+        self.lastUpdate = response['end_time'] || response[0]['end_time'] || self.lastUpdate;
         if (arity === 'numeric-decomposition') {
-            response['end_time'] += self.config.duration || HEATMAP_DURATION;
+            self.lastUpdate += 1;
+            // When numeric-decomposition response is always an array
+            response[0]['end_time'] += self.config.duration || HEATMAP_DURATION;
         }
 
         callback(error, response);

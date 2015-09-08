@@ -171,6 +171,9 @@
 
                     axis.render();
                     axis.setSize({width: 50, height: 170});
+                    if ($scope.heatmap) {
+                        axis.element.style.top = '163px';
+                    }
                     return axis;
                 }
 
@@ -311,7 +314,7 @@
                                         </div>\
                                     </div>\
                                     <div data-ng-hide="heatmap" id="legend_{{$id}}" class="heatmap-pos"></div>\
-                                    <div class="graf-radio-group" data-toggle="buttons-radio">\
+                                    <div class="graf-radio-group" data-ng-if="!heatmap" data-toggle="buttons-radio">\
                                         <button class="graf-radio-btn" \
                                             data-ng-class="{active: renderer == activeRenderer}" \
                                             data-ng-hide="heatmap" \
