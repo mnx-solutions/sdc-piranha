@@ -6,7 +6,7 @@ window.JP.main.config(['routeProvider', function (routeProvider) {
         return;
     }
     var dockerResolve = {
-        data: function ($rootScope, $location, $q, Docker, Account) {
+        data: function ($rootScope, $location, $q, Docker, Machine) {
 
             function changePath() {
                 if ($location.path().indexOf('/docker') === 0 && $location.path() !== '/docker' && (!$rootScope.provisionEnabled || !$rootScope.dockerHostsAvailable)) {
@@ -14,29 +14,25 @@ window.JP.main.config(['routeProvider', function (routeProvider) {
                 }
             }
 
-            if (typeof ($rootScope.provisionEnabled) !== 'boolean' && typeof ($rootScope.dockerHostsAvailable) !== 'boolean') {
+            if ($rootScope.dockerHostsAvailable) {
+                changePath();
+            } else {
                 $q.all([
-                    $q.when(Account.getAccount()),
-                    $q.when(Docker.completedHosts())
+                    $q.when(Docker.completedHosts()),
+                    $q.when(Machine.machine())
                 ]).then(function (result) {
-                    var account = result[0] || {};
-                    var hosts = result[1] || [];
-                    $rootScope.dockerHostsAvailable = hosts.length > 0;
+                    var hosts = result[0] || [];
+                    var machines = result[1] || [];
+                    $rootScope.dockerHostsAvailable = hosts.length > 0 || machines.some(function (machine) {
+                        return machine.tags && machine.tags.hasOwnProperty('JPC_tag') && machine.tags['JPC_tag'] === 'DockerHost' &&
+                            machine.state !== 'creating';
+                    });
                     changePath();
                 }, changePath);
-            } else {
-                if ($rootScope.provisionEnabled && !$rootScope.dockerHostsAvailable) {
-                    Docker.completedHosts().then(function (hosts) {
-                        $rootScope.dockerHostsAvailable = hosts.length > 0;
-                        changePath();
-                    }, changePath);
-                } else {
-                    changePath();
-                }
             }
         }
     };
-    dockerResolve.data.$inject = ['$rootScope', '$location', '$q', 'Docker', 'Account'];
+    dockerResolve.data.$inject = ['$rootScope', '$location', '$q', 'Docker', 'Machine'];
 
     routeProvider
         .when('/docker', {
@@ -72,12 +68,12 @@ window.JP.main.config(['routeProvider', function (routeProvider) {
             showLatest: true,
             showText: true,
             resolve: {
-                data: ['$route', '$rootScope', '$location', '$q', 'Docker', 'Account', function ($route, $rootScope, $location, $q, Docker, Account) {
+                data: ['$route', '$rootScope', '$location', '$q', 'Docker', 'Machine', function ($route, $rootScope, $location, $q, Docker, Machine) {
                     if (!$route.current.params.containerid || !$route.current.params.hostid) {
                         $location.path('/dashboard');
                         return;
                     }
-                    dockerResolve.data($rootScope, $location, $q, Docker, Account);
+                    dockerResolve.data($rootScope, $location, $q, Docker, Machine);
                 }]
             }
         }).when('/docker/container/create/:hostid?/:sourceid?', {
@@ -98,19 +94,19 @@ window.JP.main.config(['routeProvider', function (routeProvider) {
             showLatest: true,
             showText: true,
             resolve: {
-                data: ['$route', '$rootScope', '$location', '$q', 'Docker', 'Account', function ($route, $rootScope, $location, $q, Docker, Account) {
+                data: ['$route', '$rootScope', '$location', '$q', 'Docker', 'Machine', function ($route, $rootScope, $location, $q, Docker, Machine) {
                     if (!$route.current.params.imageid || !$route.current.params.hostid) {
                         $location.path('/dashboard');
                         return;
                     }
-                    dockerResolve.data($rootScope, $location, $q, Docker, Account);
+                    dockerResolve.data($rootScope, $location, $q, Docker, Machine);
                 }]
             }
         }).when('/docker/logs', {
             title: 'Log Management',
             action: 'docker.logManagement',
             resolve: {
-                data: ['$rootScope', '$location', '$q', 'Docker', 'Account', function ($rootScope, $location, $q, Docker, Account) {
+                data: ['$rootScope', '$location', '$q', 'Docker', 'Account', 'Machine', function ($rootScope, $location, $q, Docker, Account, Machine) {
                     $q.all([
                         $q.when(Account.getAccount()),
                         $q.when(Docker.getRemovedContainers())
@@ -119,10 +115,10 @@ window.JP.main.config(['routeProvider', function (routeProvider) {
                         var containers = result[1] || [];
                         $rootScope.provisionEnabled = account.provisionEnabled || false;
                         if (!containers.length) {
-                            dockerResolve.data($rootScope, $location, $q, Docker, Account);
+                            dockerResolve.data($rootScope, $location, $q, Docker, Machine);
                         }
                     }, function () {
-                        dockerResolve.data($rootScope, $location, $q, Docker, Account);
+                        dockerResolve.data($rootScope, $location, $q, Docker, Machine);
                     });
                 }]
             }
@@ -134,7 +130,7 @@ window.JP.main.config(['routeProvider', function (routeProvider) {
             title: 'Audit',
             action: 'docker.audit',
             resolve: {
-                data: ['$rootScope', '$location', '$q', 'Docker', 'Account', 'Storage', function ($rootScope, $location, $q, Docker, Account, Storage) {
+                data: ['$rootScope', '$location', '$q', 'Docker', 'Account', 'Storage', 'Machine', function ($rootScope, $location, $q, Docker, Account, Storage, Machine) {
                     Storage.pingManta(function () {
                         $q.all([
                             $q.when(Account.getAccount()),
@@ -144,10 +140,10 @@ window.JP.main.config(['routeProvider', function (routeProvider) {
                             var audit = result[1] || [];
                             $rootScope.provisionEnabled = account.provisionEnabled || false;
                             if (!audit.length) {
-                                dockerResolve.data($rootScope, $location, $q, Docker, Account);
+                                dockerResolve.data($rootScope, $location, $q, Docker, Machine);
                             }
                         }, function () {
-                            dockerResolve.data($rootScope, $location, $q, Docker, Account);
+                            dockerResolve.data($rootScope, $location, $q, Docker, Machine);
                         });
                     });
                 }]
