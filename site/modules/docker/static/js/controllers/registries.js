@@ -180,7 +180,6 @@
 
                             $scope.close = function () {
                                 newRegistryDialogOpeningStatus(false);
-                                window.jQuery('#hostSelect').select2('close');
                                 dialog.close();
                             };
 

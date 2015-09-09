@@ -372,6 +372,10 @@
                         });
                 };
 
+                scope.changePackage = function (selectedPackage) {
+                    scope.selectedPackage = selectedPackage;
+                };
+
                 scope.clickResize = function () {
                     var selected = angular.isString(scope.selectedPackage) ? JSON.parse(scope.selectedPackage) : scope.selectedPackage;
 

@@ -5,7 +5,8 @@ window.JP.setMain('JoyentPortal', [
     'http-auth-interceptor',
     'ngRoute',
     'ngSanitize',
-    'angular-advanced-searchbox'
+    'angular-advanced-searchbox',
+    'ui.select'
 ]);
 
 window.JP.main.config(['$locationProvider', '$parseProvider', function ($locationProvider, $parseProvider) {

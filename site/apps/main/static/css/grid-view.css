@@ -34,7 +34,7 @@
     border-bottom: none;
 }
 
-.tabs-container .select-datacenter {
+.grid-container .tabs-container .datacenter-select {
     top: -3px;
 
     display: none;
@@ -78,7 +78,7 @@
         display: none;
     }
 
-    .tabs-container .select-datacenter {
+    .grid-container .tabs-container .datacenter-select {
         display: inline-block;
     }
 }
@@ -289,6 +289,9 @@ input.filter-field::-ms-clear {
 }
 .tabs-line {
     border-bottom: 1px solid #ddd;
+}
+.per-page-select {
+    width: 65px;
 }
 
 .grid-paged-items {

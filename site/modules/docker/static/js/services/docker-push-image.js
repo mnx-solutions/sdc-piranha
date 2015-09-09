@@ -19,15 +19,16 @@
                         name: parsedTag.name || ''
                     };
                     scope.image = image;
+                    scope.userHost = '';
 
                     Docker.getRegistriesList({aggregate: true}, image.primaryIp).then(function (result) {
                         scope.registries = result.short;
                         scope.registries = Docker.addRegistryUsernames(scope.registries, true);
+                        scope.input.registryId = scope.registries[0] && scope.registries[0].id || '';
                         scope.loading = false;
                     });
 
                     scope.close = function () {
-                        ng.element('#registrySelect').select2('close');
                         dialog.close();
                     };
                     scope.validateName = function () {

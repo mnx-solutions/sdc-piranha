@@ -42,7 +42,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="panel panel-default">
+                    <div class="panel panel-default ui-select-overflow">
                         <div class="panel-heading">
                             <a class="accordion-toggle collapsed toggle-icon" data-toggle="collapse" data-target="#collapse_advanced">
                                 Advanced
@@ -70,32 +70,36 @@
                                         </div>
                                     </div>
                                     <div class="advanced-option">
-                                        <span class="select-name">Amount of DRAM (MB):</span>
-                                        <div class="btn-group">
-                                            <select data-select-two
-                                                    id="amountOfDram"
-                                                    name="amountOfDram"
-                                                    class="dd-fixed-width"
-                                                    data-ng-model="amountOfDram"
-                                                    data-select="amountOfDram"
-                                                    data-ng-options="amountOfDram for amountOfDram in amountOfDramOptions"
-                                                    data-width="3000px">
-                                            </select>
-                                        </div>
+                                        <span class="reducers-label">Amount of DRAM (MB):</span>
+                                        <span class="reducers-field">
+                                            <ui-select data-ng-model="amountOfDram"
+                                                       append-to-body="true"
+                                                       theme="select2"
+                                                       search-enabled="true"
+                                                       class="full-width"
+                                                       on-select="setValue('amountOfDram', $select.selected)">
+                                                <ui-select-match>{{$select.selected}}</ui-select-match>
+                                                <ui-select-choices repeat="amountOfDram in amountOfDramOptions | filter: $select.search">
+                                                    {{amountOfDram}}
+                                                </ui-select-choices>
+                                            </ui-select>
+                                        </span>
                                     </div>
                                     <div class="advanced-option">
-                                        <span class="select-name">Amount of disk space (GB):</span>
-                                        <div class="btn-group">
-                                            <select data-select-two
-                                                    id="amountOfDiskSpace"
-                                                    name="amountOfDiskSpace"
-                                                    class="dd-fixed-width"
-                                                    data-ng-model="amountOfDiskSpace"
-                                                    data-select="amountOfDiskSpace"
-                                                    data-ng-options="amountOfDiskSpace for amountOfDiskSpace in amountOfDiskSpaceOptions"
-                                                    data-width="3000px">
-                                            </select>
-                                        </div>
+                                        <span class="reducers-label">Amount of disk space (GB):</span>
+                                        <span class="reducers-field">
+                                            <ui-select data-ng-model="amountOfDiskSpace"
+                                                       append-to-body="true"
+                                                       theme="select2"
+                                                       search-enabled="true"
+                                                       class="full-width"
+                                                       on-select="setValue('amountOfDiskSpace', $select.selected)">
+                                                <ui-select-match>{{$select.selected}}</ui-select-match>
+                                                <ui-select-choices repeat="amountOfDiskSpace in amountOfDiskSpaceOptions | filter: $select.search">
+                                                    {{amountOfDiskSpace}}
+                                                </ui-select-choices>
+                                            </ui-select>
+                                        </span>
                                     </div>
                                 </form>
                             </div>

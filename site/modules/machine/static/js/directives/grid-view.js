@@ -113,9 +113,9 @@
             }
         };
 
-        angular.element(window).resize(function () {
-            angular.element('.select-datacenter').select2('close');
-        });
+        $scope.changePerPageValue = function (perPage) {
+            $scope.perPage = perPage;
+        };
 
         $scope.tabFilter = '';
 
@@ -493,6 +493,11 @@
                 el.checked = false;
             });
             $scope.checkedItems = [];
+        };
+
+        $scope.changeTabFilter = function (tabFilter) {
+            $scope.tabFilter = tabFilter;
+            $scope.unSelectAllCheckbox();
         };
 
         var actionInProgress = function (el) {

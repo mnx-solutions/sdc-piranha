@@ -45,7 +45,6 @@
                 $scope.processing = false;
                 $scope.options = {};
                 $scope.data = '';
-                $scope.selectedHostIndex = 0;
                 var processes = {};
                 var PID_PLACEHOLDER = '$PID';
                 var EXECNAME_PLACEHOLDER = '$EXECNAME';
@@ -84,6 +83,14 @@
                     type = $scope.title === TITLES.flamegraph ? 'flamegraph' : 'coreDump';
                 }
 
+                var setGroupForScript = function () {
+                    $scope.scripts.forEach(function (script) {
+                        if (!script.type) {
+                            script.type = 'private';
+                        }
+                    });
+                };
+
                 Account.getAccount(true).then(function (account) {
                     $scope.provisionEnabled = account.provisionEnabled;
                     if ($scope.provisionEnabled) {
@@ -91,6 +98,7 @@
                             $q.all([DTrace.listHosts(), DTrace.getScriptsList(scriptsListType)]).then(function (result) {
                                 $scope.hosts = result[0] || [];
                                 $scope.scripts = result[1] || [];
+                                setGroupForScript();
                                 $scope.scriptName = $scope.scripts ? $scope.scripts[0].name : '';
                                 $scope.host = $scope.hosts[0];
                                 if ($scope.title !== TITLES.heatmap) {
@@ -138,7 +146,20 @@
                                     process.name = ' PID: ' + process.pid + ' CMD: ' + process.cmd;
                                 });
                                 processes[$scope.host.primaryIp] = list;
-                                $scope.processes = list;
+                                var processList = [];
+                                list.forEach(function (process) {
+                                    if ($scope.hasPid) {
+                                        var pidProcess = angular.copy(process);
+                                        pidProcess.group = 'pid';
+                                        processList.push(pidProcess);
+                                    }
+                                    if ($scope.hasExecname) {
+                                        var execnameProcess = angular.copy(process);
+                                        execnameProcess.group = 'execname';
+                                        processList.push(execnameProcess);
+                                    }
+                                });
+                                $scope.processes = processList;
                                 $scope.loadingHostProcesses = false;
                             }, errorCallback);
                         }
@@ -157,8 +178,8 @@
                     updateProcesses();
                 };
 
-                $scope.changeHost = function () {
-                    $scope.host = $scope.hosts[$scope.selectedHostIndex];
+                $scope.changeHost = function (selectedHost) {
+                    $scope.host = selectedHost;
                     if ($scope.host) {
                         if (processes[$scope.host.primaryIp]) {
                             $scope.processes = processes[$scope.host.primaryIp];
@@ -168,8 +189,13 @@
                     }
                 };
 
-                $scope.changeScript = function () {
+                $scope.changeScript = function (scriptName) {
+                    $scope.scriptName = scriptName;
                     updateProcesses();
+                };
+
+                $scope.changeProcess = function (process) {
+                    $scope.pid = process.group === 'pid' ? process.pid : process.execname;
                 };
 
                 function closeWebsocket() {

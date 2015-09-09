@@ -66,26 +66,31 @@
                         <h5><b>Set environment</b></h5>
                         <div data-ng-show="sshKeys.length > 1" class="code">
                             <label for="keySel">You have multiple keys, please select the one you want to use:</label>
-                            <select data-select-two
-                                    id="keySel"
-                                    data-ng-model="keyId"
-                                    data-width="200"
-                                    data-select="keyName"
-                                    data-ng-options="c.fingerprint as c.name for c in sshKeys">
-                            </select>
+                            <ui-select data-ng-model="keyId"
+                                       theme="select2"
+                                       class="edit-country key-select"
+                                       search-enabled="true"
+                                       on-select="changeKey($select.selected.fingerprint)">
+                                <ui-select-match>{{$select.selected.name}}</ui-select-match>
+                                <ui-select-choices repeat="sshKey.fingerprint as sshKey in sshKeys | filter: $select.search">
+                                    {{sshKey.name}}
+                                </ui-select-choices>
+                            </ui-select>
                         </div>
                         <div class="btn-group" data-ng-controller="Machine.ProvisionController">
                             <span>Data Center:</span>
                             <div class="loading-medium loading-medium-inline" data-ng-show="datasetsLoading"></div>
-                            <select type="hidden" data-select-two id="selectDatacenter" width="160" data-ng-model="data.datacenter"
-                                    data-fn="selectDatacenter" data-select="datacenters[0].name" placeholder="No matches found"
-                                    data-ng-disabled="datasetsLoading">
-                                <option value=""></option>
-                                <option data-ng-repeat="datacenter in datacenters | orderBy:$index" value="{{datacenter.name}}">
+                            <ui-select data-ng-model="data.datacenter"
+                                       ng-disabled="!data.datacenter"
+                                       theme="select2"
+                                       search-enabled="true"
+                                       class="provisioning-datacenter-select">
+                                <ui-select-match>{{$select.selected.name}}</ui-select-match>
+                                <ui-select-choices repeat="datacenter.name as datacenter in datacenters | orderBy: $index | filter: $select.search">
                                     {{datacenter.name}}
-                                </option>
-                            </select><br/><br/>
-                            <p>Once you have installed Node.js and the CloudAPI tools, you can copy and paste the examples below which are customized with your account information.</p>
+                                </ui-select-choices>
+                            </ui-select>
+                            <p class="indent-medium">Once you have installed Node.js and the CloudAPI tools, you can copy and paste the examples below which are customized with your account information.</p>
                             <div class="code">
                                 <p data-ng-show="parentAccount">export SDC_ACCOUNT={{parentAccount}};</p>
                                 <p data-ng-hide="parentAccount">export SDC_ACCOUNT={{account.login}};</p>

@@ -2,6 +2,9 @@
     width: 100%;
     margin-top: 1px;
 }
+input.fw-description {
+    height: 28px;
+}
 
 .value-field.fw-description-field {
     width: 65%;
@@ -54,7 +57,7 @@ th.protocol {
 .fw-controls input {
     box-sizing: border-box;
     width: 100%;
-    height: 30px;
+    height: 28px;
 
     text-indent: 6px;
 
@@ -333,8 +336,4 @@ code.plain {
 
 .padding-ten {
     padding: 10px;
-}
-
-.value-field .select2-choice span {
-    margin-right: 35px;
 }

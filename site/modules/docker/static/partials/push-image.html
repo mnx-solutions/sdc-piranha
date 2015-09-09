@@ -10,13 +10,18 @@
                     <div class="form-group">
                         <span class="edit-label">Registry</span>
                         <span class="edit-value">
-                                    <select id="registrySelect"
-                                            data-ng-model="input.registryId"
-                                            ui-select2="{width: '103%'}"
-                                            data-ng-disabled="image.progress"
-                                            required>
-                                        <option data-ng-repeat="registry in registries" value="{{registry.id}}">{{registry.userHost}}</option>
-                                    </select>
+                            <ui-select data-ng-model="input.registryId"
+                                       append-to-body="true"
+                                       theme="select2"
+                                       search-enabled="true"
+                                       class="registry-form-select"
+                                       ng-click="setNotation('NETWORK')"
+                                       ng-disabled="image.progress">
+                                <ui-select-match>{{$select.selected.userHost}}</ui-select-match>
+                                <ui-select-choices repeat="registry.id as registry in registries | filter: $select.search">
+                                    {{registry.userHost}}
+                                </ui-select-choices>
+                            </ui-select>
                         </span>
                     </div>
                     <div class="form-group">

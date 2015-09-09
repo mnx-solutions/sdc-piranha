@@ -30,13 +30,6 @@
                 });
             };
 
-            var closeSelectsAndDialog = function(selects, dialog) {
-                selects.forEach(function (select) {
-                    ng.element(select).select2('close');
-                });
-                dialog.close();
-            };
-
             var setRegistryHost = function(scope, image) {
                 var selectedRegistry = getSelectedRegistry(scope);
                 if (selectedRegistry) {
@@ -175,8 +168,7 @@
                             };
 
                             $scope.close = function () {
-                                closeSelectsAndDialog(['#tagSelect', '#hostSelect'], dialog);
-
+                                dialog.close();
                             };
                         }
                     });
@@ -318,6 +310,9 @@
                             });
 
                             $scope.allowedIP = allowedIP($scope);
+                            $scope.setTag = function (tag) {
+                                $scope.tag = tag;
+                            };
                             $scope.pullImage = function () {
                                 if (!$scope.tag) {
                                     return false;
@@ -358,14 +353,14 @@
                             };
 
                             $scope.close = function () {
-                                closeSelectsAndDialog(['#tagSelect', '#hostSelect'], dialog);
+                                dialog.close();
                             };
                         }
                     });
                 };
 
                 $scope.close = function () {
-                    closeSelectsAndDialog(['#registrySelect'], dialog);
+                    dialog.close();
                 };
             };
 

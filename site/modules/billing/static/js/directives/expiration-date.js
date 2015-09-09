@@ -5,35 +5,37 @@
         function () {
             return {
                 require: 'ngModel',
+                restrict: 'E',
                 link: function (scope, elm, attrs, ctrl) {
-                    ctrl.$parsers.unshift(function (viewValue) {
-                        if (!viewValue) {
+                    scope.$watch(attrs.ngModel, function (val) {
+                        // TODO: the logic below is really cryptic, needs improvement
+                        if (!val) {
                             return;
                         }
-                        scope.$watch(attrs.ngModel, function (val) {
-                            var yearCtrl = scope.paymentForm.expirationYear;
-                            var monthCtrl = scope.paymentForm.expirationMonth;
-                            var valid = true;
-                            var currentYear = (new Date()).getFullYear();
-                            var inputYear = parseInt(yearCtrl.$viewValue);
+                        var yearCtrl = scope.paymentForm.expirationYear;
+                        var monthCtrl = scope.paymentForm.expirationMonth;
+                        var valid = true;
+                        var currentYear = (new Date()).getFullYear();
+                        var inputYear = parseInt(yearCtrl.$viewValue);
 
-                            var currentMonth = (new Date()).getMonth();
-                            var inputMonth = parseInt(monthCtrl.$viewValue);
-                            inputMonth = inputMonth ? inputMonth - 1 : inputMonth;
+                        var currentMonth = (new Date()).getMonth();
+                        var inputMonth = parseInt(monthCtrl.$viewValue);
+                        inputMonth = inputMonth ? inputMonth - 1 : inputMonth;
 
-                            switch (attrs.id) {
+                        switch (attrs.id) {
                             case 'expirationMonth':
                                 // Ignore validation if year is not set
                                 if (!inputYear) {
                                     valid = true;
-                                } else if (inputYear && inputYear === currentYear) {
+                                    yearCtrl.$dirty = !valid;
+                                } else if (inputYear === currentYear) {
                                     // Selected month can't be earlier than current month
                                     valid = inputMonth >= currentMonth;
 
                                     yearCtrl.$setValidity('invalidExpirationDate', valid);
+                                    yearCtrl.$dirty = !valid;
                                 }
-
-                                break;
+                            break;
 
                             case 'expirationYear':
                                 if (inputYear) {
@@ -42,22 +44,22 @@
                                         if (inputMonth < currentMonth) {
                                             valid = false;
                                             monthCtrl.$setValidity('invalidExpirationDate', valid);
+                                            monthCtrl.$dirty = !valid;
                                         } else {
                                             valid = true;
                                             yearCtrl.$setValidity('invalidExpirationDate', valid);
+                                            yearCtrl.$dirty = !valid;
                                         }
                                     } else {
                                         valid = true;
                                         monthCtrl.$setValidity('invalidExpirationDate', valid);
+                                        monthCtrl.$dirty = !valid;
                                     }
                                 }
-                                break;
-                            }
+                            break;
+                        }
 
-                            ctrl.$setValidity('invalidExpirationDate', valid);
-                        });
-
-                        return viewValue;
+                        ctrl.$setValidity('invalidExpirationDate', valid);
                     });
                 }
             };

@@ -9,14 +9,16 @@
                 <form name="newRegistryForm">
                     <div class="form-group clearfix" data-ng-show="hosts.length">
                         <label class="control-label" for="hostSelect">Docker Host</label>
-                        <select data-select-two
-                                id="hostSelect"
-                                data-ng-model="registry.host"
-                                data-select="registry.host.name"
-                                data-ng-options="host.name for host in hosts"
-                                data-width="82%"
-                                required>
-                        </select>
+                        <ui-select data-ng-model="registry.host"
+                                   append-to-body="true"
+                                   theme="select2"
+                                   search-enabled="true"
+                                   class="registry-host-select">
+                            <ui-select-match>{{$select.selected.name}}</ui-select-match>
+                            <ui-select-choices repeat="host.name as host in hosts | filter: $select.search">
+                                {{host.name}}
+                            </ui-select-choices>
+                        </ui-select>
                     </div>
                     <div class="form-group clearfix" data-ng-show="!hosts.length">There are no available hosts to create registry.</div>
                     <div class="form-group clearfix" data-ng-show="registry.host.versionMismatch">

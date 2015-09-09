@@ -29,21 +29,30 @@
         </div>
         <div class="pull-right alert alert-info">
             <h5>Select Docker Host and Container:</h5>
-            <select ui-select2="{minimumResultsForSearch: -1, width: '210px', placeholder: '-- Choose Docker Host --'}" id="hostSelect" data-ng-model="current.host" data-ng-change="changeHost()" data-ng-disabled="changingHost">
-                <option></option>
-                <option data-ng-repeat="host in hosts" value={{host.primaryIp}}>
+            <ui-select data-ng-model="current.host"
+                       theme="select2"
+                       search-enabled="false"
+                       class="analytics-select"
+                       ng-disabled="changingHost"
+                       on-select="changeHost()">
+                <ui-select-match placeholder="-- Choose Docker Host --">{{$select.selected.name}}</ui-select-match>
+                <ui-select-choices repeat="host.primaryIp as host in hosts">
                     {{host.name}}
-                </option>
-            </select>
+                </ui-select-choices>
+            </ui-select>
             <div class="loading-medium-transparent" data-ng-show="changingHost"></div>
             <span data-ng-show="containers">
-                 <select ui-select2="{minimumResultsForSearch: -1, width: '210px', placeholder: '-- Choose Container --'}" id="containerSelect" data-ng-model="current.container" data-ng-change="changeContainer()">
-                     <option></option>
-                     <option data-ng-repeat="container in containers" value={{container.Id}}>
-                         {{container.Id | shortTag}} [{{container.Names[0].substring(1)}}]
-                     </option>
-                     <option value="">All containers</option>
-                 </select>
+                <ui-select data-ng-model="current.container"
+                           theme="select2"
+                           search-enabled="false"
+                           class="analytics-select"
+                           ng-disabled="changingHost"
+                           on-select="changeContainer()">
+                    <ui-select-match placeholder="-- Choose Container --">{{$select.selected.Id | shortTag}} [{{$select.selected.Names[0].substring(1)}}]</ui-select-match>
+                    <ui-select-choices repeat="container.Id as container in containers">
+                        {{container.Id | shortTag}} [{{container.Names[0].substring(1)}}]
+                    </ui-select-choices>
+                </ui-select>
             </span>
             <span data-ng-show="!current.container">
                 To see analytics for all containers go to the <a href="#!/cloudAnalytics/{{hostId}}">instance analytics</a>
@@ -53,12 +62,15 @@
             </span>
 
             <span data-ng-show="metrics && current.host && containers.length && current.container">
-                 <select ui-select2="{minimumResultsForSearch: -1, width: '210px', placeholder: '-- Choose Metric --'}" id="metricSelect" data-ng-model="current.metric">
-                     <option></option>
-                     <option data-ng-repeat="metric in metrics" value={{metric.val}}>
-                         {{metric.name}}
-                     </option>
-                 </select>
+                <ui-select data-ng-model="current.metric"
+                           theme="select2"
+                           search-enabled="false"
+                           class="analytics-select">
+                    <ui-select-match placeholder="-- Choose Metric --">{{$select.selected.name}}</ui-select-match>
+                    <ui-select-choices repeat="metric.val as metric in metrics">
+                        {{metric.name}}
+                    </ui-select-choices>
+                </ui-select>
             </span>
             <p>Detailed analytics use pre-defined metrics to measure perfomance</p>
             <button

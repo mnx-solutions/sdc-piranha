@@ -45,28 +45,33 @@
     outline: 0 none;
 }
 .advancedSearchBox ul.dropdown-menu {
-    overflow-x: scroll;
-
-    min-width: 186px;
-    max-width: 186px;
-    max-height: 200px;
-    margin-top: 0;
-    padding: 0;
+    min-width: 139px;
+    max-width: 139px;
+    margin: 4px 4px 4px 0;
+    padding: 4px;
+    cursor: default;
 
     border-radius: 0;
-    background-color: #fafcfd;
+
+    overflow-x: hidden;
+    overflow-y: auto;
+    max-height: 200px;
 }
 .advancedSearchBox ul.dropdown-menu > li {
     cursor: pointer;
-
-    background-color: #fafcfd;
 }
+.advancedSearchBox ul.dropdown-menu > li:hover a,
 .advancedSearchBox ul.dropdown-menu > li:hover {
     background-color: #f6f7f8;
 }
+.advancedSearchBox ul.dropdown-menu > li:hover a {
+    margin-right: 4px;
+}
 .advancedSearchBox ul.dropdown-menu > li a {
-    padding-left: 9px;
-
+    display: block;
+    vertical-align: top;
+    padding-left: 10px;
+    padding-right: 4px;
     text-decoration: none;
 
     color: #6d6d6d;
@@ -96,13 +101,6 @@
     text-overflow: ellipsis;
 }
 
-.advancedSearchBox ul.dropdown-menu > li {
-    height: 30px;
-}
-
-.advancedSearchBox ul.dropdown-menu > li.active {
-    background-color: #eee;
-}
 .value span,
 .value input {
     float: left;
@@ -111,4 +109,7 @@
     max-width: 240px;
 
     text-overflow: ellipsis;
+}
+.advancedSearchBox input {
+    width: 139px !important;
 }

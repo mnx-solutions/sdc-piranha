@@ -53,13 +53,15 @@
                     <p data-ng-hide="sshKeys.length">To see this CLI example, please <a href="#!/account">add your SSH key</a> to your account.</p>
                     <div data-ng-show="sshKeys.length > 1" class="code">
                         <label for="keySel">You have multiple keys, please select the one you want to use:</label>
-                        <select data-select-two
-                                id="keySel"
-                                data-ng-model="keyId"
-                                data-width="200"
-                                data-select="keyName"
-                                data-ng-options="c.fingerprint as c.name for c in sshKeys">
-                        </select>
+                        <ui-select data-ng-model="keyId"
+                                   theme="select2"
+                                   class="edit-country key-select"
+                                   search-enabled="true">
+                            <ui-select-match>{{$select.selected.name}}</ui-select-match>
+                            <ui-select-choices repeat="sshKey.fingerprint as sshKey in sshKeys | filter: $select.search">
+                                {{sshKey.name}}
+                            </ui-select-choices>
+                        </ui-select>
                     </div>
                     <div data-ng-controller="Docker.ContainersController">
                         <div class="loading-large span12" data-ng-show="loading"></div>
@@ -94,16 +96,15 @@
                             </div>
                             <div class="btn-group" data-ng-controller="Machine.ProvisionController">
                                 <span>Data Center & Host:</span>
-                                <select type="hidden"
-                                        data-select-two
-                                        id="hostSelect"
-                                        data-width="200"
-                                        data-ng-model="host"
-                                        data-select="host.datacenter + ' / ' + host.name"
-                                        data-ng-options="host as (host.datacenter + ' / ' + host.name) for host in permittedHosts"
-                                        placeholder="No matches found">
-                                    <option value="host.datacenter + ' / ' +host.name"></option>
-                                </select>
+                                <ui-select data-ng-model="host"
+                                           theme="select2"
+                                           search-enabled="true"
+                                           class="key-select">
+                                    <ui-select-match placeholder="No matches found">{{$select.selected.datacenter + ' / ' + $select.selected.name}}</ui-select-match>
+                                    <ui-select-choices repeat="permittedHost.name as permittedHost in permittedHosts | filter: $select.search">
+                                        {{permittedHost.datacenter + ' / ' + permittedHost.name}}
+                                    </ui-select-choices>
+                                </ui-select>
                                 <span data-ng-show="showRequestTritonBtn" class="intro-host-key">
                                     <a href="https://www.joyent.com/lp/preview" target="_blank" type="button" class="btn orange">Request Triton Preview</a>
                                 </span><br/><br/>

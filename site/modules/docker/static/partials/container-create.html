@@ -73,21 +73,33 @@
                     <div data-ng-show="createImage" class="form-group">
                         <span class="edit-image edit-label">DC &amp; Host</span>
                         <span class="edit-value">
-                            <select ui-select2="{minimumResultsForSearch: -1, width: '100%'}" id="hostSelect" data-ng-model="ip" ng-change="changeHost()" data-ng-disabled="loadingHostDetails">
-                                <option data-ng-repeat="host in hosts" value="{{host.primaryIp}}">
+                            <ui-select data-ng-model="ip"
+                                       theme="select2"
+                                       search-enabled="false"
+                                       class="full-width"
+                                       ng-disabled="loadingHostDetails"
+                                       on-select="changeHost($select.selected)">
+                                <ui-select-match>{{$select.selected.datacenter}} / {{$select.selected.name}}</ui-select-match>
+                                <ui-select-choices repeat="host.primaryIp as host in hosts">
                                     {{host.datacenter}} / {{host.name}}
-                                </option>
-                            </select>
+                                </ui-select-choices>
+                            </ui-select>
                         </span>
                     </div>
                     <div data-ng-if="createImage" class="form-group">
                         <span class="edit-image edit-label">Container</span>
                         <span class="edit-value">
-                            <select data-ng-disabled="!containers.length" ui-select2="{minimumResultsForSearch: -1, width: '100%'}" id="containerSelect" data-ng-model="container.container" data-ng-change="changeContainer()" required>
-                                <option data-ng-repeat="container in containers" value="{{container.Id}}">
+                            <ui-select data-ng-model="container.container"
+                                       theme="select2"
+                                       search-enabled="false"
+                                       class="full-width"
+                                       ng-disabled="!containers.length"
+                                       on-select="changeContainer($select.selected)">
+                                <ui-select-match>{{$select.selected.NamesStr}}</ui-select-match>
+                                <ui-select-choices repeat="container.Id as container in containers">
                                     {{container.NamesStr}}
-                                </option>
-                            </select>
+                                </ui-select-choices>
+                            </ui-select>
                         </span>
                     </div>
                     <div data-ng-show="createImage" class="page-header row">
@@ -163,22 +175,19 @@
                     <div data-ng-hide="createImage" class="form-group">
                         <div class="group-label">Image</div>
                         <div class="edit-value">
-                            <select
-                                    ui-select2="{minimumResultsForSearch: 1, width: '100%'}"
-                                    id="imageSelect"
-                                    data-ng-model="container.Image"
-                                    on-opening="setNotation('IMAGE')"
-                                    required>
-                                <option data-ng-repeat="image in images" value="{{image.name}}">
+
+                            <ui-select data-ng-model="container.Image"
+                                       theme="select2"
+                                       search-enabled="true"
+                                       class="full-width"
+                                       ng-click="setNotation('IMAGE')"
+                                       ui-select-options
+                                       data-options="customOptions">
+                                <ui-select-match placeholder="Pull image...">{{$select.selected.name}}</ui-select-match>
+                                <ui-select-choices repeat="image.name as image in images | filter: $select.search">
                                     {{image.name}}
-                                </option>
-                                <option disabled="disabled" data-ng-show="!isPullingInProgress[host.id]" class="image-pull-item">
-                                    Pull image...
-                                </option>
-                                <option disabled="disabled" data-ng-show="isPullingInProgress[host.id]">
-                                    Pulling image in progress
-                                </option>
-                            </select>
+                                </ui-select-choices>
+                            </ui-select>
                         </div>
                     </div>
                     <div data-ng-hide="hidePackageInfo(true)" class="form-group">
@@ -204,11 +213,16 @@
                             <div class="group-label">Restart Policy</div>
                             <div>
                             <span class="edit-value restart-name">
-                                <select ui-select2="{minimumResultsForSearch: -1, width: '130px'}" id="restartPolicy" data-ng-model="container.HostConfig.RestartPolicy.Name" on-opening="setNotation('RESTART_POLICY')">
-                                    <option data-ng-repeat="option in RESTART_OPTIONS" value="{{option}}">
+                                <ui-select data-ng-model="container.HostConfig.RestartPolicy.Name"
+                                           theme="select2"
+                                           search-enabled="false"
+                                           class="name-select"
+                                           ng-click="setNotation('RESTART_POLICY')">
+                                    <ui-select-match>{{$select.selected}}</ui-select-match>
+                                    <ui-select-choices repeat="option in RESTART_OPTIONS">
                                         {{option}}
-                                    </option>
-                                </select>
+                                    </ui-select-choices>
+                                </ui-select>
                             </span>
                             <span data-ng-show="container.HostConfig.RestartPolicy.Name == 'on-failure'" class="max-restart-wrapper">
                                 <span class="max-restart edit-label">MAX</span>
@@ -279,16 +293,16 @@
                     <div data-ng-hide="createImage" class="form-group">
                         <div class="group-label">Log Driver</div>
                         <div class="edit-value">
-                            <!-- TODO: replace 'select' to 'ui-select' -->
-                            <select ui-select2="{minimumResultsForSearch: -1, width: '100%'}"
-                                    id="logDriver"
-                                    data-ng-model="container.HostConfig.LogConfig.Type"
-                                    on-opening="setNotation('LOG_DRIVER')">
-                                <option value="json-file"></option>
-                                <option data-ng-repeat="logDriverName in LOG_DRIVER_NAMES" value="{{logDriverName}}">
+                            <ui-select data-ng-model="container.HostConfig.LogConfig.Type"
+                                       theme="select2"
+                                       search-enabled="false"
+                                       class="full-width"
+                                       ng-click="setNotation('LOG_DRIVER')">
+                                <ui-select-match>{{$select.selected}}</ui-select-match>
+                                <ui-select-choices repeat="logDriverName in LOG_DRIVER_NAMES">
                                     {{logDriverName}}
-                                </option>
-                            </select>
+                                </ui-select-choices>
+                            </ui-select>
                         </div>
                     </div>
                     <div data-ng-hide="createImage || isLogConfigDisabled()" class="form-group volume-section">
@@ -347,19 +361,29 @@
                     <div class="form-group">
                         <span class="edit-label">Network</span>
                         <span class="edit-value restart-name">
-                            <select ui-select2="{minimumResultsForSearch: -1, width: '157px'}" id="network" data-ng-model="input.NetworkMode" on-opening="setNotation('NETWORK')">
-                                <option data-ng-repeat="type in NETWORK_TYPES" value="{{type}}">
+                            <ui-select data-ng-model="input.NetworkMode"
+                                       theme="select2"
+                                       class="network-select"
+                                       search-enabled="false"
+                                       ng-click="setNotation('NETWORK')">
+                                <ui-select-match>{{$select.selected}}</ui-select-match>
+                                <ui-select-choices repeat="type in NETWORK_TYPES">
                                     {{type}}
-                                </option>
-                            </select>
+                                </ui-select-choices>
+                            </ui-select>
                         </span>
                         <span data-ng-show="input.NetworkMode == 'container'" class="max-restart-wrapper">
                             <span class="edit-value networkContainer">
-                                <select ui-select2="{minimumResultsForSearch: -1, width: '318px'}" id="networkContainer" data-ng-model="input.networkContainer" on-opening="setNotation('NETWORK')">
-                                    <option data-ng-repeat="container in containers" value="{{container.NamesStr}}">
+                                <ui-select data-ng-model="input.networkContainer"
+                                           theme="select2"
+                                           search-enabled="false"
+                                           class="container-select"
+                                           ng-click="setNotation('NETWORK')">
+                                    <ui-select-match>{{$select.selected.NamesStr}}</ui-select-match>
+                                    <ui-select-choices repeat="container.NameStr as container in containers">
                                         {{container.NamesStr}}
-                                    </option>
-                                </select>
+                                    </ui-select-choices>
+                                </ui-select>
                             </span>
                         </span>
                     </div>
@@ -396,7 +420,12 @@
                     <div class="row btn-bottom-block" data-ng-show="!loading">
                         <div class="pull-right">
                             <button class="btn" data-ng-disabled="creating" type="button" data-ng-click="cancel()">Cancel</button>
-                            <button class="btn orange" data-ng-disabled="containerCreateForm.$invalid || creating" type="submit">Start</button>
+                            <button class="btn orange"
+                                    data-ng-disabled="containerCreateForm.$invalid || creating ||
+                                                      !container.Image && type == 'Containers' ||
+                                                      !container.container && type == 'Images'"
+                                    type="submit">Start
+                            </button>
                         </div>
                         <div class="pull-right loading-medium-transparent" data-ng-show="creating"></div>
                     </div>

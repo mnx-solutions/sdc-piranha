@@ -198,7 +198,7 @@ label.control-label,
 .no-billing-text,
 .key-hash,
 .preview-sticker,
-.select-datacenter,
+.datacenter-select:not(.text-medium),
 .filter-container,
 .tooltip-inner,
 .alert-info p,
@@ -383,7 +383,9 @@ textarea.error {
 .edit-value .select2-container {
     display: inline-block;
 
-    height: 32px;
+    height: 28px;
+
+    vertical-align: top;
 }
 
 .input-group .add-on:first-child,
@@ -437,7 +439,7 @@ textarea.error {
 
 .edit-expiration-month,
 .edit-expiration-year {
-    width: 224px;
+    width: 222px;
 }
 
 .selects-spacer {
@@ -775,6 +777,8 @@ a {
 }
 
 .panel-group .panel {
+    overflow-y: hidden;
+
     border-radius: 0;
     box-shadow: none;
 }
@@ -1597,10 +1601,6 @@ label.checkbox {
     color: #7d7d7d;
 
     font-weight: 300;
-}
-
-.select-datacenter {
-    width: 105px;
 }
 
 .filter-container {
@@ -3295,6 +3295,58 @@ a.orange-link {
 }
 .text-upward {
     vertical-align: top;
+}
+.analytics-select {
+    width: 210px;
+}
+.host-select {
+    width: 312px;
+}
+.name-select {
+    width: 130px;
+}
+.network-select {
+    width: 157px;
+}
+.container-select {
+    width: 318px;
+}
+.registry-select {
+    width: 94%;
+}
+.datacenter-select,
+.dataset-select {
+    width: 110px;
+}
+.key-select {
+    width: 200px;
+}
+.registry-host-select {
+    width: 82%;
+}
+.registry-form-select {
+    width: 103%;
+}
+.tag-select {
+    width: 362px;
+}
+.status-select {
+    width: 105px;
+}
+.fw-datacenter-select {
+    width: 120px;
+}
+.provisioning-datacenter-select {
+    width: 160px;
+}
+.filter-prop-select {
+    width: 115px;
+}
+.filter-key-select {
+    width: 140px;
+}
+.country-select {
+    width: 340px;
 }
 
 create-instance-link:before {

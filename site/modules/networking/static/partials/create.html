@@ -43,14 +43,16 @@
                     <div class="form-group">
                         <span class="edit-name orange-asterix">Data Center</span>
                         <span class="edit-value">
-                            <select ui-select2="{minimumResultsForSearch: 1, width: '99.5%'}"
-                                    id="dcSelect"
-                                    ng-change="changeDatacenter()"
-                                    data-ng-model="network.datacenter">
-                                <option data-ng-repeat="datacenter in datacenters | orderBy:$index" value="{{datacenter}}">
+                            <ui-select data-ng-model="network.datacenter"
+                                       theme="select2"
+                                       search-enabled="true"
+                                       class="full-width"
+                                       on-select="changeDatacenter()">
+                                <ui-select-match>{{$select.selected}}</ui-select-match>
+                                <ui-select-choices repeat="datacenter in datacenters | orderBy: $index | filter: $select.search">
                                     {{datacenter}}
-                                </option>
-                            </select>
+                                </ui-select-choices>
+                            </ui-select>
                         </span>
                     </div>
 
@@ -114,14 +116,15 @@
                     <div class="form-group">
                         <span class="edit-name orange-asterix">VLAN</span>
                         <span data-ng-hide="createVlanForm" class="edit-value">
-                            <select ui-select2="{minimumResultsForSearch: 1, width: '99.5%'}"
-                                    id="vlanSelect"
-                                    data-ng-model="network.vlan_id"
-                                    required>
-                                <option data-ng-repeat="vlan in vlans | orderBy: $index | filter: {datacenter: network.datacenter}" value="{{vlan.vlan_id}}">
+                            <ui-select data-ng-model="network.vlan_id"
+                                       theme="select2"
+                                       search-enabled="true"
+                                       class="full-width">
+                                <ui-select-match>{{$select.selected.name}} ({{$select.selected.vlan_id}})</ui-select-match>
+                                <ui-select-choices repeat="vlan.vlan_id as vlan in vlans | orderBy: $index | filter: $select.search | filter: {datacenter: network.datacenter}">
                                     {{vlan.name}} ({{vlan.vlan_id}})
-                                </option>
-                            </select>
+                                </ui-select-choices>
+                            </ui-select>
                             <a data-ng-click="createVlanForm = true">Create a new VLAN</a>
                         </span>
                          <span data-ng-show="createVlanForm" class="edit-value range">

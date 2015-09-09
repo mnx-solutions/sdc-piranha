@@ -34,17 +34,14 @@
         'Account',
         '$location',
         '$anchorScroll',
-        'Select2overlay',
 
         function ($scope, $rootScope, $filter, $q, $qe, requestContext, localization, rule, Image, Datacenter, Machine,
-                  $http, PopupDialog, Account, $location, $anchorScroll, Select2overlay) {
+                  $http, PopupDialog, Account, $location, $anchorScroll) {
 
             localization.bind('firewall', $scope);
             requestContext.setUpRenderContext('firewall.index', $scope);
             $scope.tabFilterDefault = $rootScope.commonConfig('datacenter');
             $scope.openRuleForm = false;
-            var openHandler = Select2overlay.openHandler;
-            var closeHandler = Select2overlay.closeHandler;
 
             function scrollTo(id) {
                 if ($location.hash() === id) {
@@ -74,6 +71,13 @@
 
             $scope.disableLoading = function() {
                 $scope.loading = false;
+            };
+
+            $scope.changeItem = function (selectedItem, direction) {
+                if (!direction || !selectedItem || !selectedItem.id) {
+                    return;
+                }
+                $scope.current[direction] = ng.fromJson(selectedItem.id);
             };
 
             function query(options, type) {
@@ -162,42 +166,6 @@
 
             }
 
-            function createCombobox(id, objId, propId, handler, addOnSelect) {
-                return $(id).select2({
-                    width: '100%',
-                    query: handler,
-                    initSelection : function () {}
-                }).change(function (e) {
-                    var val = ng.fromJson(e.val);
-
-                    if (val.type === 'vm' && val.text && (e.currentTarget.id === 'fromSelect' || e.currentTarget.id === 'toSelect')) {
-                        $(id).select2('data', {
-                            id: ng.toJson({type: 'vm'}),
-                            text: 'Instance'
-                        });
-                    } else {
-                        $scope.$apply(function () {
-                            if (e.currentTarget.id === 'fromSelect') {
-                                $scope.fromForm.$pristine = true;
-                            } else if (e.currentTarget.id === 'toSelect') {
-                                $scope.toForm.$pristine = true;
-                            }
-                        });
-                    }
-
-                    $scope.$apply(function() {
-                        $scope[objId][propId] = val;
-                        if (addOnSelect) {
-                            addOnSelect(val);
-                        }
-                    });
-                }).on('open', openHandler).on('close', closeHandler).on('opening', function () {this.focus();});
-            }
-
-            // Create target comboboxes
-            var from = createCombobox('#fromSelect', 'current', 'from', query, false);
-            var to = createCombobox('#toSelect', 'current', 'to', reverseQuery, false);
-
             $scope.CIDRs = [];
             for (var i = 0; i <= 32; i++) {
                 $scope.CIDRs.push(i);
@@ -260,40 +228,6 @@
                     $scope.protocolForm.code.$setValidity('range', true);
                 }
             });
-
-            function selectVm(select, objId) {
-                $scope.vms.forEach(function (vm) {
-                    var id = ng.fromJson(vm.id);
-                    if (id.text === $scope.current[objId].text) {
-                        select.select2('data', vm).on('open', openHandler).on('close', closeHandler).on('opening', function () {this.focus();});
-                        $scope.$apply(function () {
-                            $scope[objId + 'Form'].$pristine = false;
-                        });
-                    }
-                });
-            }
-
-            function formWatch(obj, oldObj, formName, formId) {
-                if (obj && (!oldObj || oldObj.type !== 'vm' || obj.text) && obj.type === 'vm') {
-                    setTimeout(function () {
-                        var fromInstanceSelect = $('#' + formId);
-                        createCombobox('#' + formId, 'current', formName, instancesQuery, function (m) {
-                            fromInstanceSelect.select2('val', m.text).on('open', openHandler).on('close', closeHandler).on('opening', function () {this.focus();});
-                            $scope[formName + 'Form'].$pristine = false;
-                        });
-
-                        selectVm(fromInstanceSelect, formName);
-                    }, 1);
-                }
-            }
-
-            $scope.$watch('current.from', function (obj, oldObj) {
-                formWatch(obj, oldObj, 'from', 'fromInstanceSelect');
-            }, true);
-
-            $scope.$watch('current.to', function (obj, oldObj) {
-                formWatch(obj, oldObj, 'to', 'toInstanceSelect');
-            }, true);
 
             $scope.loading = true;
             $scope.tags = [];
@@ -375,15 +309,11 @@
             };
 
             $scope.refreshSelects = function () {
+                $scope.resetCurrent('from');
+                $scope.resetCurrent('to');
+                $scope.current.port = null;
                 $scope.selected.status = $scope.data.enabled.toString();
-                [
-                    $('#actionSelect').select2('val', $scope.data.parsed.action),
-                    $('#stateSelect').select2('val', $scope.selected.status),
-                    $('#protocolSelect').select2('val', $scope.data.parsed.protocol.name),
-                    $('#dcSelect').select2('enable').select2('val', $scope.selected.datacenter)
-                ].forEach(function (item) {
-                    item.on('open', openHandler).on('close', closeHandler).on('opening', function () {this.focus();});
-                });
+                $scope.disableSelect = false;
             };
 
             // FIXME: Get rid of copy-paste from provision.js!!!
@@ -420,7 +350,6 @@
                     $scope.datasetsLoading = true;
                     Datacenter.datacenterPing(newVal).then(function (result) {
                         if (result === 'pong') {
-                            $('#dcSelect').select2('val', newVal).on('open', openHandler).on('close', closeHandler).on('opening', function () {this.focus();});
                             $scope.datacenter = newVal;
                         } else {
                             switchToOtherDatacenter(newVal);
@@ -562,45 +491,20 @@
             };
 
             $scope.resetCurrent = function (direction) {
-                if (from && direction === 'from') {
-                    from.select2('val', '').on('open', openHandler).on('close', closeHandler).on('opening', function () {this.focus();});
+                if (!direction) {
+                    $scope.resetCurrent('from');
+                    $scope.resetCurrent('to');
                 }
-
-                if (to && direction === 'to') {
-                    to.select2('val', '').on('open', openHandler).on('close', closeHandler).on('opening', function () {this.focus();});
-                }
-
-                if (!direction || direction === 'from') {
-                    $scope.current.from = {
-                        type: 'wildcard',
-                        value: null
-                    };
-
-                    $scope.fromSubnet = {
-                        address: null,
-                        CIDR: 32
-                    };
-
-                    // No $setPristine
-                    $scope.fromForm.$pristine = true;
-                    $scope.fromForm.$dirty = false;
-                }
-
-                if (!direction || direction === 'to') {
-                    $scope.current.to = {
-                        type: 'wildcard',
-                        value: null
-                    };
-
-                    $scope.toSubnet = {
-                        address: null,
-                        CIDR: 32
-                    };
-
-                    // No $setPristine
-                    //$scope.toForm.$pristine = true;
-                    //$scope.toForm.$dirty = false;
-                }
+                $scope.current[direction + 'Select'] = null;
+                $scope.current[direction + 'VM'] = null;
+                $scope.current[direction] = {
+                    type: 'wildcard',
+                    value: null
+                };
+                $scope[direction + 'Subnet'] = {
+                    address: null,
+                    CIDR: 32
+                };
             };
 
             $scope.useAllPorts = function() {
@@ -657,17 +561,21 @@
                         var data = $scope.data.parsed;
 
                         function setFocus(direction) {
-                            var type = $scope.current[direction].type;
-
-                            if (type === 'vm') {
-                                ng.element('#s2id_' + direction + 'InstanceSelect').find('a').eq(0).mousedown();
-                            } else if (type === 'subnet' || type === 'ip') {
-                                ng.element('input[name="' + direction + 'Value"]').focus();
-                            } else if (type === 'tag') {
-                                ng.element('input[data-ng-model="current.' + direction + '.text"]').focus();
-                            } else {
-                                ng.element('#s2id_' + direction + 'Select').find('a').eq(0).mousedown();
-                            }
+                            setTimeout(function () {
+                                switch ($scope.current[direction].type) {
+                                    case 'vm':
+                                        ng.element('#' + direction + 'VM').find('a').click();
+                                        break;
+                                    case 'subnet', 'ip':
+                                        ng.element('input[name="' + direction + 'Value"]').focus();
+                                        break;
+                                    case 'tag':
+                                        ng.element('input[data-ng-model="current.' + direction + '.text"]').focus();
+                                        break;
+                                    default :
+                                        ng.element('#' + direction + 'Select').find('a').click();
+                                }
+                            });
                         }
 
                         if (!data.protocol.targets.length) {
@@ -773,37 +681,6 @@
                     rule.clearRules();
                     $scope.refresh();
                 }, $scope.disableLoading);
-            };
-
-            $scope.openPopovers = [];
-            $('body').on('click', function (e) {
-                if (!ng.element(e.target).hasClass('popover') && !ng.element(e.target).parent().hasClass('popover')) {
-                    // close all the popovers
-                    $scope.openPopovers.forEach(function (el) {
-                        ng.element(el).popover('destroy');
-                    });
-                }
-            });
-
-            $scope.stringifyRule = function (el, ruleToStringify) {
-                if (typeof $scope[ruleToStringify] === 'function') {
-                    ruleToStringify = $scope[ruleToStringify]();
-                }
-
-                $http.post('./firewall/stringify', ruleToStringify).then(function (response) {
-                    var stringifiedRule = response.data.rule;
-                    ng.element(el).popover('destroy');
-                    ng.element(el).popover(
-                        {
-                            container: 'body',
-                            content: stringifiedRule,
-                            placement: 'top',
-                            title: 'FWRULE string for CLI'
-                        }
-                    );
-                    ng.element(el).popover('show');
-                    $scope.openPopovers.push(el);
-                });
             };
 
             $scope.createRule = function () {
@@ -954,8 +831,7 @@
                             $scope.data = rule.cleanRule(object);
 
                             $scope.refreshSelects();
-                            $('#dcSelect').select2('disable');
-                            angular.element('#s2id_dcSelect a span').text($scope.data.datacenter);
+                            $scope.disableSelect = true;
 
                             $scope.tabFilterUpdate = $scope.changeTab = $scope.data.datacenter;
 
@@ -1114,7 +990,6 @@
 
                     $scope.tabFilterUpdate = $scope.datacenter;
 
-                    $('#dcSelect').select2('enable');
                     $scope.changeTab = '';
                     $scope.data.uuid = '';
                 }

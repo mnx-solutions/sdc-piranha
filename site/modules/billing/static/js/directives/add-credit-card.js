@@ -51,6 +51,7 @@
                         expirationYear: '',
                         expirationMonth: ''
                     };
+                    $scope.statesList = [];
 
                     $http.get('billing/campaign').then(function (code) {
                         if (!$scope.form.promoCode && code.data) {
@@ -232,10 +233,12 @@
                         if (newVal === 'USA') {
                             statesPromise.then(function (res) {
                                 $scope.stateSel = res.data.us.obj;
+                                $scope.statesList = util.objectToArray($scope.stateSel);
                             });
                         } else if (newVal === 'CAN') {
                             statesPromise.then(function (res) {
                                 $scope.stateSel = res.data.canada.obj;
+                                $scope.statesList = util.objectToArray($scope.stateSel);
                             });
                         } else {
                             $scope.stateSel = undefined;
@@ -274,6 +277,7 @@
                         if (field === 'state' &&
                                 errorType === 'submitRequired' &&
                                 $scope.formSubmitted &&
+                                $scope.paymentForm[field] &&
                                 $scope.paymentForm[field].$modelValue === '') {
                             return true;
                         }

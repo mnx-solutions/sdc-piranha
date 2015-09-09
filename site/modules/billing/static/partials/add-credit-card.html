@@ -45,38 +45,44 @@
         <div class="form-group">
             <span class="edit-name orange-asterix">Expiration</span>
                     <span class="edit-value-two">
-                        <select data-select-two
-                                data-select="form.expirationMonth"
+                        <ui-select data-ng-model="form.expirationMonth"
+                                   theme="select2"
+                                   class="edit-expiration-month"
+                                   search-enabled="true"
+                                   data-ng-required="true">
+                            <ui-select-match>{{$select.selected}}</ui-select-match>
+                            <ui-select-choices repeat="value in months | filter: $select.search">
+                                {{value}}
+                            </ui-select-choices>
+                        </ui-select>
+                        <data-expiration-date
                                 id="expirationMonth"
                                 name="expirationMonth"
-                                class="edit-expiration-month"
-                                data-expiration-date
-                                data-search-box="true"
-                                data-ng-class="{error: isError('creditCard.expirationMonth', 'invalidExpirationDate') || isError('creditCard.expirationMonth')}"
-                                data-ng-required="true"
-                                data-ng-model="form.expirationMonth">
-                            <option data-ng-repeat="value in months" value="{{value}}" ng-selected="form.expirationMonth == value">{{value}}</option>
-                        </select>
+                                data-ng-model="form.expirationMonth"
+                                data-ng-required="true">
+                        </data-expiration-date>
                         <span class="selects-spacer"></span>
-
-                        <select data-select-two
-                                data-select="form.expirationYear"
-                                id="expirationYear"
-                                name="expirationYear"
-                                class="edit-expiration-year"
-                                data-ng-style="selectStyle"
-                                data-expiration-date
-                                data-search-box="true"
-                                data-ng-class="{error: isError('creditCard.expirationYear', 'invalidExpirationDate') || isError('creditCard.expirationYear')}"
-                                data-ng-required="true"
-                                data-ng-model="form.expirationYear">
-                            <option data-ng-repeat="value in years" value="{{value}}" ng-selected="form.expirationYear == value">{{value}}</option>
-                        </select>
+                        <ui-select data-ng-model="form.expirationYear"
+                                   theme="select2"
+                                   class="edit-expiration-year"
+                                   search-enabled="true"
+                                   data-ng-required="true">
+                            <ui-select-match>{{$select.selected}}</ui-select-match>
+                            <ui-select-choices repeat="value in years | filter: $select.search">
+                                {{value}}
+                            </ui-select-choices>
+                        </ui-select>
+                         <data-expiration-date
+                                 id="expirationYear"
+                                 name="expirationYear"
+                                 data-ng-model="form.expirationYear"
+                                 data-ng-required="true">
+                         </data-expiration-date>
                     </span>
                     <span class="edit-error">
                         <div class="error"
                                  data-translate
-                                 data-ng-show="isError('creditCard.expirationYear', 'invalidExpirationDate') || isError('creditCard.expirationMonth', 'invalidExpirationDate')">
+                                 data-ng-show="isError('creditCard.expirationYear', 'invalidExpirationDate') || isError('creditCard.expirationMonth', 'invalidExpirationDate') || paymentForm.expirationMonth.$invalid">
                             Please provide the date in the future
                             </div>
                             <div class="error"
@@ -229,18 +235,16 @@
         <div class="form-group">
             <span class="edit-name orange-asterix">Country</span>
                     <span class="edit-value-one">
-                        <select data-select-two
-                                id="country"
-                                name="country"
-                                data-ng-class="{error: isError('country')}"
-                                class="edit-country"
-                                data-ng-model="form.cardHolderInfo.country"
-                                data-ng-change="form.cardHolderInfo.country"
-                                data-select="selectedCountry"
-                                data-ng-options="country.iso3 as country.name group by country.group for country in countries.data | orderBy: ['-group','name']"
-                                data-ng-required="true"
-                                data-search-box="true">
-                        </select>
+                        <ui-select data-ng-model="form.cardHolderInfo.country"
+                                   theme="select2"
+                                   class="edit-country"
+                                   search-enabled="true"
+                                   name="country">
+                            <ui-select-match>{{$select.selected.name}}</ui-select-match>
+                            <ui-select-choices repeat="country.iso3 as country in countries.data | filter: $select.search | orderBy: ['-group','name']" group-by="'group'">
+                                {{country.name}}
+                            </ui-select-choices>
+                        </ui-select>
                     </span>
                     <span class="edit-error">
                         <div class="error"
@@ -311,17 +315,15 @@
                 </span>
                 <span data-ng-switch-when="true">
                             <span class="edit-value-one">
-                                <select ui-select2="{setPristine: true, minimumResultsForSearch: 1}"
-                                        data-ng-model="form.cardHolderInfo.state"
-                                        id="stateSel"
-                                        class="edit-state"
-                                        name="state"
-                                        data-ng-class="{error: isError('state')}"
-                                        data-ng-required="true"
-                                        placeholder=" ">
-                                    <option value=""></option>
-                                    <option data-ng-repeat="(value, label) in stateSel" value="{{value}}" ng-selected="form.cardHolderInfo.state == value">{{label}}</option>
-                                </select>
+                                <ui-select data-ng-model="form.cardHolderInfo.state"
+                                           theme="select2"
+                                           class="edit-country"
+                                           search-enabled="true">
+                                    <ui-select-match>{{$select.selected.value}}</ui-select-match>
+                                    <ui-select-choices repeat="state.key as state in statesList | filter: $select.search">
+                                        {{state.value}}
+                                    </ui-select-choices>
+                                </ui-select>
                             </span>
                             <span class="edit-error">
                                 <div class="error"

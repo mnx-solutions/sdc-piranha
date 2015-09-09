@@ -65,6 +65,9 @@
                 });
                 d.open();
             };
+            $scope.changeKey = function (fingerprint) {
+                $scope.keyId = fingerprint;
+            };
 
         }]);
 }(window.JP.getModule('Storage')));

@@ -19,7 +19,7 @@
                 $scope.jobCreating = false;
                 $scope.numberOfReducers = '';
                 $scope.amountOfDramOptions = ['', 256, 512, 1024, 2048, 4096, 8192];
-                $scope.amountOfDram = $scope.amountOfDramOptions[0];
+                $scope.amountOfDram = angular.copy($scope.amountOfDramOptions[0]);
                 $scope.amountOfDiskSpaceOptions = ['', 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024];
                 $scope.amountOfDiskSpace = $scope.amountOfDiskSpaceOptions[0];
                 var cloneJob = $rootScope.popCommonConfig('cloneJob');
@@ -144,6 +144,9 @@
                         notification.popup(true, err, JOB_BUILDER_PATH, null, err.message || err);
                     });
                     return job;
+                };
+                $scope.setValue = function (modelName, value) {
+                    $scope[modelName] = value;
                 };
             }]
     );

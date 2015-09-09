@@ -43,133 +43,151 @@
     <div class="form-horizontal" data-ng-hide="loading" data-ng-model="data">
         <div class="item-list-container">
             <hr />
-
             <div data-ng-show="openRuleForm" id="create-rule">
                 <div class="row">
                     <p class="description">Cloud Firewall rules limit network traffic for your SmartOS instances in one system. Cloud Firewall will enforce applicable rules for each instance that has Cloud Firewall enabled in its Instance Details.</p>
                     <p class="description">There is no ordering to your own rules. For incoming traffic, the least restrictive rule wins. For outgoing traffic, the most restrictive rule wins. ICMP 8:0 is always open to support echo requests using <code class="plain">ping.</code></p>
                 </div>
-
                 <legend data-ng-show="data.uuid" class="indent-medium" id="edit-rule">Edit rule {{data.uuid}}</legend>
                 <table class="firewall-table">
-                <thead class="create-rule-header">
-                <tr>
-                    <td class="controls-wrapper">
-                        <label class="fw-control-label name-field">Status</label>
-                        <div class="value-field">
-                            <select ui-select2="{minimumResultsForSearch: -1, width: '105px'}" id="stateSelect" data-ng-model="selected.status">
-                                <option data-ng-repeat="state in selectData.states" value="{{state.id}}">
-                                    {{state.text}}
-                                </option>
-                            </select>
-                        </div>
-                    </td>
-                    <td class="controls-wrapper">
-                        <label class="fw-control-label name-field">Data Center</label>
-                        <div class="value-field">
-                            <select ui-select2="{minimumResultsForSearch: -1, width: '120px'}" id="dcSelect" data-ng-model="selected.datacenter">
-                                <option data-ng-repeat="datacenter in selectData.datacenters" value="{{datacenter.text}}">
-                                    {{datacenter.text}}
-                                </option>
-                            </select>
-                        </div>
-                        <div class="loading-medium loading-medium-inline" data-ng-show="datasetsLoading"></div>
-                    </td>
-                    <td class="controls-wrapper fw-description-field">
-                        <label class="fw-control-label name-field">Description</label>
-                        <div class="value-field fw-description-field">
-                            <input id="description" class="fw-description" name="firewallDescription" type="text" data-ng-model="data.description" placeholder="(Optional)" />
-                        </div>
-                    </td>
-                </tr>
-                </thead>
-                <tbody>
-                <tr>
-                <td class="column column-big min-height-table">
-                    <legend data-translate>Protocol</legend>
-                    <div>
-                        <select ui-select2="{minimumResultsForSearch: -1, width: '100%'}" id="protocolSelect" data-ng-model="data.parsed.protocol.name">
-                            <option data-ng-repeat="protocol in selectData.protocols" value="{{protocol.id}}">
-                                {{protocol.text}}
-                            </option>
-                        </select>
-                    </div><br/>
-                    <div class="fixed-height">
-                        <div data-ng-form="protocolForm">
-                            <label class="fw-control-label" data-ng-show="data.parsed.protocol.name && data.parsed.protocol.name != 'icmp'">Port</label>
-                            <div class="fw-controls fw-port-controls warning" data-ng-show="data.parsed.protocol.name && data.parsed.protocol.name != 'icmp'">
-                                <input id="port"
-                                       class="port"
-                                       name="port"
-                                       type="text"
-                                       data-ng-model="current.port"
-                                       data-range="1-65535" />
-                            </div>
-
-                            <div class="warning" data-ng-show="data.parsed.protocol.name && data.parsed.protocol.name == 'icmp'">
-                                <label class="fw-control-label">
-                                    <span>Type:</span>
-                                </label>
-                                <div class="fw-controls fw-port-controls">
-                                    <input type="text"
-                                           name="type"
-                                           class="port"
-                                           required="true"
-                                           data-range="0-255"
-                                           data-ng-model="current.type" />
+                    <thead class="create-rule-header">
+                        <tr>
+                            <td class="controls-wrapper">
+                                <label class="fw-control-label name-field">Status</label>
+                                <div class="value-field">
+                                    <ui-select data-ng-model="selected.status"
+                                               theme="select2"
+                                               search-enabled="false"
+                                               class="status-select">
+                                        <ui-select-match>{{$select.selected.text}}</ui-select-match>
+                                        <ui-select-choices repeat="state.id as state in selectData.states">
+                                            {{state.text}}
+                                        </ui-select-choices>
+                                    </ui-select>
                                 </div>
-
-                                <label class="fw-control-label indent-medium">
-                                    <span>Code:</span>
-                                </label>
-                                <div class="fw-controls fw-port-controls indent-medium">
-                                    <input type="text"
-                                           name="code"
-                                           class="port"
-                                           required="false"
-                                           data-range="0-255"
-                                           data-ng-model="current.code" />
+                            </td>
+                            <td class="controls-wrapper">
+                                <label class="fw-control-label name-field">Data Center</label>
+                                <div class="value-field">
+                                    <ui-select data-ng-model="selected.datacenter"
+                                               theme="select2"
+                                               search-enabled="false"
+                                               class="fw-datacenter-select"
+                                               ng-disabled="disableSelect">
+                                        <ui-select-match>{{$select.selected.text}}</ui-select-match>
+                                        <ui-select-choices repeat="datacenter.text as datacenter in selectData.datacenters">
+                                            {{datacenter.text}}
+                                        </ui-select-choices>
+                                    </ui-select>
                                 </div>
-                            </div>
-                        </div>
-                        <div class="indent-medium pull-right" data-ng-show="data.parsed.protocol.name && data.parsed.protocol.name != 'icmp'">
-                            <button class="btn" data-ng-click="useAllPorts()">Use All</button>
-                            <button class="btn orange"
-                                    data-ng-disabled="!protocolForm.port.$dirty || protocolForm.port.$error.range"
-                                    data-ng-click="addPort()">Add</button>
-                        </div>
-
-                        <div class="warning" data-ng-show="data.parsed.protocol.name && data.parsed.protocol.name == 'icmp'">
-                            <div class="indent-medium pull-right">
-                                <button class="btn"
-                                        data-ng-disabled="!protocolForm.type.$valid || !protocolForm.code.$valid"
-                                        data-ng-click="addType()">Add</button>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="results-group">
-                                        <span class="f-result" data-ng-hide="data.parsed.protocol.targets.length">
-                                            <div class="error" >
-                                                No ports added
+                                <div class="loading-medium loading-medium-inline" data-ng-show="datasetsLoading"></div>
+                            </td>
+                            <td class="controls-wrapper fw-description-field">
+                                <label class="fw-control-label name-field">Description</label>
+                                <div class="value-field fw-description-field">
+                                    <input id="description" class="fw-description" name="firewallDescription" type="text" data-ng-model="data.description" placeholder="(Optional)" />
+                                </div>
+                            </td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="column column-big min-height-table">
+                                <legend data-translate>Protocol</legend>
+                                <div>
+                                    <ui-select data-ng-model="data.parsed.protocol.name"
+                                               theme="select2"
+                                               search-enabled="false"
+                                               class="full-width">
+                                        <ui-select-match>{{$select.selected.text}}</ui-select-match>
+                                        <ui-select-choices repeat="protocol.id as protocol in selectData.protocols">
+                                            {{protocol.text}}
+                                        </ui-select-choices>
+                                    </ui-select>
+                                </div>
+                                <div class="fixed-height indent-big">
+                                    <div data-ng-form="protocolForm">
+                                        <label class="fw-control-label" data-ng-show="data.parsed.protocol.name && data.parsed.protocol.name != 'icmp'">Port</label>
+                                        <div class="fw-controls fw-port-controls warning" data-ng-show="data.parsed.protocol.name && data.parsed.protocol.name != 'icmp'">
+                                            <input id="port"
+                                                   class="port"
+                                                   name="port"
+                                                   type="text"
+                                                   data-ng-model="current.port"
+                                                   data-range="1-65535" />
+                                        </div>
+                                        <div class="warning" data-ng-show="data.parsed.protocol.name && data.parsed.protocol.name == 'icmp'">
+                                            <label class="fw-control-label">
+                                                <span>Type:</span>
+                                            </label>
+                                            <div class="fw-controls fw-port-controls">
+                                                <input type="text"
+                                                       name="type"
+                                                       class="port"
+                                                       required="true"
+                                                       data-range="0-255"
+                                                       data-ng-model="current.type" />
                                             </div>
+                                            <label class="fw-control-label indent-medium">
+                                                <span>Code:</span>
+                                            </label>
+                                            <div class="fw-controls fw-port-controls indent-medium">
+                                                <input type="text"
+                                                       name="code"
+                                                       class="port"
+                                                       required="false"
+                                                       data-range="0-255"
+                                                       data-ng-model="current.code" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="indent-medium pull-right" data-ng-show="data.parsed.protocol.name && data.parsed.protocol.name != 'icmp'">
+                                        <button class="btn" data-ng-click="useAllPorts()">Use All</button>
+                                        <button class="btn orange"
+                                                data-ng-disabled="!protocolForm.port.$dirty || protocolForm.port.$error.range"
+                                                data-ng-click="addPort()">Add</button>
+                                    </div>
+                                    <div class="warning" data-ng-show="data.parsed.protocol.name && data.parsed.protocol.name == 'icmp'">
+                                        <div class="indent-medium pull-right">
+                                            <button class="btn"
+                                                    data-ng-disabled="!protocolForm.type.$valid || !protocolForm.code.$valid"
+                                                    data-ng-click="addType()">Add</button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="results-group">
+                                    <span class="f-result" data-ng-hide="data.parsed.protocol.targets.length">
+                                        <div class="error" >
+                                            No ports added
+                                        </div>
+                                    </span>
+                                    <span data-ng-show="data.parsed.protocol.targets.length">
+                                        <span class="f-result" data-ng-repeat="target in data.parsed.protocol.targets">
+                                            <div class="remove-icon delete pull-right tags-delete-pos" data-ng-click="removeProtocolTarget($index)" ></div>
+                                            <div class="result-width">{{target}}</div>
                                         </span>
-                                        <span data-ng-show="data.parsed.protocol.targets.length">
-                                            <span class="f-result" data-ng-repeat="target in data.parsed.protocol.targets">
-                                                <div class="remove-icon delete pull-right tags-delete-pos" data-ng-click="removeProtocolTarget($index)" ></div>
-                                                <div class="result-width">{{target}}</div>
-                                            </span>
-                                        </span>
-                    </div>
-                </td>
-                <td class="column column-big min-height-table">
-                    <legend data-translate>From</legend>
-                    <div>
-                                        <span class="text-large">
-                                            <input type="hidden" id="fromSelect" /><br /><br />
-                                        </span>
-                    </div>
-                    <div class="fixed-height">
-                                        <span class="text-large" data-ng-form="fromForm">
+                                    </span>
+                                </div>
+                            </td>
+                            <td class="column column-big min-height-table">
+                                <legend data-translate>From</legend>
+                                <div>
+                                    <span class="text-large">
+                                        <ui-select id="fromSelect"
+                                                   data-ng-model="current.fromSelect"
+                                                   theme="select2"
+                                                   search-enabled="true"
+                                                   class="full-width"
+                                                   on-select="changeItem($select.selected, 'from')">
+                                            <ui-select-match>{{$select.selected.text}}</ui-select-match>
+                                            <ui-select-choices repeat="element in dropdown[0].children | filter: $select.search">
+                                                {{element.text}}
+                                            </ui-select-choices>
+                                        </ui-select>
+                                    </span>
+                                </div>
+                                <div class="fixed-height indent-big">
+                                    <span class="text-large" data-ng-form="fromForm">
                                         <span data-ng-switch="current.from.type">
                                             <span data-ng-switch-when="wildcard"></span>
                                             <span data-ng-switch-when="tag">
@@ -195,7 +213,15 @@
                                                         <div data-ng-show="current.from.text.length" class="row indent-medium">
                                                             <label class="fw-control-label">CIDR</label>
                                                             <div class="fw-controls">
-                                                                <select data-ng-options="c for c in CIDRs" data-ng-model="fromSubnet.CIDR"> </select>
+                                                                <ui-select data-ng-model="fromSubnet.CIDR"
+                                                                           theme="select2"
+                                                                           search-enabled="false"
+                                                                           class="full-width">
+                                                                    <ui-select-match>{{$select.selected}}</ui-select-match>
+                                                                    <ui-select-choices repeat="CIDR in CIDRs">
+                                                                        {{CIDR}}
+                                                                    </ui-select-choices>
+                                                                </ui-select>
                                                             </div>
                                                         </div>
                                                     </span>
@@ -208,7 +234,19 @@
                                                     <span data-ng-switch-when="vm">
                                                         <label class="fw-control-label">UUID</label>
                                                         <div class="fw-controls">
-                                                            <input type="hidden" id="fromInstanceSelect" />
+                                                            <ui-select id="fromVM"
+                                                                       ng-disabled="!vms.length"
+                                                                       data-ng-model="current.fromVM"
+                                                                       theme="select2"
+                                                                       search-enabled="true"
+                                                                       required="$select.selected.text"
+                                                                       class="full-width"
+                                                                       on-select="changeItem($select.selected, 'from')">
+                                                                <ui-select-match>{{$select.selected.text}}</ui-select-match>
+                                                                <ui-select-choices repeat="vm.id as vm in vms | filter: $select.search">
+                                                                    {{vm.text}}
+                                                                </ui-select-choices>
+                                                            </ui-select>
                                                         </div>
                                                     </span>
                                                 </span>
@@ -241,143 +279,174 @@
                                             </span>
                                         </span>
                                     </span>
-                    </div>
-
-                    <div class="results-group">
-                                        <span class="f-result" ng-hide="data.parsed.from.length">
-                                            <div class="error" >
-                                                No sources added
-                                            </div>
-                                        </span>
-
-                                        <span data-ng-show="data.parsed.from.length" class="">
-                                            <span class="f-result" data-ng-repeat="from in data.parsed.from">
-                                                <div class="remove-icon delete pull-right tags-delete-pos" data-ng-click="removeFrom($index)"></div>
-                                                <div class="result-width">{{from|targetInfo}}</div>
-                                            </span>
-                                        </span>
-                    </div>
-                </td>
-                <td class="column column-small min-height-table">
-                    <legend data-translate>Action</legend>
-                    <div>
-                        <select ui-select2="{minimumResultsForSearch: -1, width: '100%'}" id="actionSelect" data-ng-model="data.parsed.action">
-                            <option data-ng-repeat="action in selectData.actions" value="{{action.id}}">
-                                {{action.text}}
-                            </option>
-                        </select>
-                    </div>
-                </td>
-                <td class="column column-big min-height-table">
-                    <legend data-translate>To</legend>
-                    <div>
-                                        <span class="text-large">
-                                            <input type="hidden" id="toSelect" /><br/><br/>
-                                        </span>
-                    </div>
-                    <div class="fixed-height">
-                                        <span class="text-large" data-ng-form="toForm">
-                                        <span data-ng-switch="current.to.type">
-                                            <span data-ng-switch-when="wildcard">
-                                        </span>
-                                        <span data-ng-switch-when="tag">
-                                            <label class="fw-control-label">Key</label>
-                                            <div class="fw-controls">
-                                                <input type="text" data-ng-model="current.to.text" required />
-                                            </div>
-                                            <div data-ng-show="current.to.text.length" class="row indent-medium">
-                                                <label class="fw-control-label">Value</label>
-                                                <div class="fw-controls">
-                                                    <input type="text" data-ng-model="current.to.value" />
-                                                </div>
-                                            </div>
-                                        </span>
-                                        <span data-ng-switch-default>
-                                            <!-- due to the nature of directives, we need another switch here -->
-                                            <span data-ng-switch="current.to.type">
-                                                <span data-ng-switch-when="subnet">
-                                                    <label class="fw-control-label">Subnet</label>
-                                                    <div class="fw-controls">
-                                                        <input type="text" name="toValue" data-ng-model="toSubnet.address" data-ip required />
-                                                    </div>
-                                                    <div data-ng-show="current.to.text.length" class="row indent-medium">
-                                                        <label class="fw-control-label">CIDR</label>
-                                                        <div class="fw-controls">
-                                                            <select data-ng-options="c for c in CIDRs" data-ng-model="toSubnet.CIDR"> </select>
-                                                        </div>
-                                                    </div>
-                                                </span>
-                                                <span data-ng-switch-when="ip">
-                                                    <label class="fw-control-label">IP</label>
-                                                    <div class="fw-controls">
-                                                        <input type="text" name="toValue" data-ng-model="current.to.text" data-ip required />
-                                                    </div>
-                                                </span>
-                                                <span data-ng-switch-when="vm">
-                                                    <label class="fw-control-label">UUID</label>
-                                                    <div class="fw-controls">
-                                                        <input type="hidden" class="select2-input" id="toInstanceSelect" />
-                                                    </div>
-                                                </span>
-                                            </span>
-                                            <!-- directives switch end -->
-                                        </span>
-                                        </span>
+                                </div>
+                                <div class="results-group">
+                                    <span class="f-result" ng-hide="data.parsed.from.length">
+                                        <div class="error" >
+                                            No sources added
+                                        </div>
                                     </span>
 
+                                    <span data-ng-show="data.parsed.from.length">
+                                        <span class="f-result" data-ng-repeat="from in data.parsed.from">
+                                            <div class="remove-icon delete pull-right tags-delete-pos" data-ng-click="removeFrom($index)"></div>
+                                            <div class="result-width">{{from|targetInfo}}</div>
+                                        </span>
+                                    </span>
+                                </div>
+                            </td>
+                            <td class="column column-small min-height-table">
+                                <legend data-translate>Action</legend>
+                                <div>
+                                    <ui-select data-ng-model="data.parsed.action"
+                                               theme="select2"
+                                               search-enabled="false"
+                                               class="full-width">
+                                        <ui-select-match>{{$select.selected.text}}</ui-select-match>
+                                        <ui-select-choices repeat="action.id as action in selectData.actions">
+                                            {{action.text}}
+                                        </ui-select-choices>
+                                    </ui-select>
+                                </div>
+                            </td>
+                            <td class="column column-big min-height-table">
+                                <legend data-translate>To</legend>
+                                <div>
+                                    <span class="text-large">
+                                        <ui-select id="toSelect"
+                                                   data-ng-model="current.toSelect"
+                                                   theme="select2"
+                                                   search-enabled="true"
+                                                   class="full-width"
+                                                   on-select="changeItem($select.selected, 'to')">
+                                            <ui-select-match>{{$select.selected.text}}</ui-select-match>
+                                            <ui-select-choices repeat="element in dropdown[0].children | filter: $select.search">
+                                                {{element.text}}
+                                            </ui-select-choices>
+                                        </ui-select>
+                                    </span>
+                                </div>
+                                <div class="fixed-height indent-big">
+                                    <span class="text-large" data-ng-form="toForm">
                                     <span data-ng-switch="current.to.type">
                                         <span data-ng-switch-when="wildcard">
-                                            <span>
-                                                <span class="row">
-                                                    <div class="indent-medium">
-                                                        <button class="btn pull-right" data-ng-disabled="current.to.text != 'vmall' && current.to.text != 'any'" data-ng-click="addTo()">Add</button>
-                                                    </div>
-                                                </span>
-                                            </span>
-                                        </span>
-                                        <span data-ng-switch-when="tag">
-                                            <span class="row">
-                                                <div class="indent-medium">
-                                                    <button class="btn pull-right" data-ng-click="addTo()" data-ng-disabled="toForm.$invalid || toForm.$pristine">Add</button>
-                                                </div>
-                                            </span>
-                                        </span>
-                                        <span data-ng-switch-default>
-                                            <span class="row">
-                                                <div class="indent-medium">
-                                                    <button class="btn pull-right" data-ng-click="addTo()" data-ng-disabled="toForm.$invalid || toForm.$pristine">Add</button>
-                                                </div>
-                                            </span>
-                                        </span>
                                     </span>
-                    </div>
+                                    <span data-ng-switch-when="tag">
+                                        <label class="fw-control-label">Key</label>
+                                        <div class="fw-controls">
+                                            <input type="text" data-ng-model="current.to.text" required />
+                                        </div>
+                                        <div data-ng-show="current.to.text.length" class="row indent-medium">
+                                            <label class="fw-control-label">Value</label>
+                                            <div class="fw-controls">
+                                                <input type="text" data-ng-model="current.to.value" />
+                                            </div>
+                                        </div>
+                                    </span>
+                                    <span data-ng-switch-default>
+                                        <!-- due to the nature of directives, we need another switch here -->
+                                        <span data-ng-switch="current.to.type">
+                                            <span data-ng-switch-when="subnet">
+                                                <label class="fw-control-label">Subnet</label>
+                                                <div class="fw-controls">
+                                                    <input type="text" name="toValue" data-ng-model="toSubnet.address" data-ip required />
+                                                </div>
+                                                <div data-ng-show="current.to.text.length" class="row indent-medium">
+                                                    <label class="fw-control-label">CIDR</label>
+                                                    <div class="fw-controls">
+                                                        <ui-select data-ng-model="toSubnet.CIDR"
+                                                                   theme="select2"
+                                                                   search-enabled="false"
+                                                                   class="full-width">
+                                                            <ui-select-match>{{$select.selected}}</ui-select-match>
+                                                            <ui-select-choices repeat="CIDR in CIDRs">
+                                                                {{CIDR}}
+                                                            </ui-select-choices>
+                                                        </ui-select>
+                                                    </div>
+                                                </div>
+                                            </span>
+                                            <span data-ng-switch-when="ip">
+                                                <label class="fw-control-label">IP</label>
+                                                <div class="fw-controls">
+                                                    <input type="text" name="toValue" data-ng-model="current.to.text" data-ip required />
+                                                </div>
+                                            </span>
+                                            <span data-ng-switch-when="vm">
+                                                <label class="fw-control-label">UUID</label>
+                                                <div class="fw-controls">
+                                                    <ui-select id="toVM"
+                                                               ng-disabled="!vms.length"
+                                                               data-ng-model="current.toVM"
+                                                               required="$select.selected.text"
+                                                               theme="select2"
+                                                               search-enabled="true"
+                                                               class="full-width"
+                                                               on-select="changeItem($select.selected, 'to')">
+                                                        <ui-select-match>{{$select.selected.text}}</ui-select-match>
+                                                        <ui-select-choices repeat="vm.id as vm in vms | filter: $select.search">
+                                                            {{vm.text}}
+                                                        </ui-select-choices>
+                                                    </ui-select>
+                                                </div>
+                                            </span>
+                                        </span>
+                                        <!-- directives switch end -->
+                                    </span>
+                                </span>
+                            </span>
 
-
-                    <div class="results-group">
-                                        <span class="f-result" ng-hide="data.parsed.to.length">
-                                            <div class="error" >
-                                                No targets added
+                            <span data-ng-switch="current.to.type">
+                                <span data-ng-switch-when="wildcard">
+                                    <span>
+                                        <span class="row">
+                                            <div class="indent-medium">
+                                                <button class="btn pull-right" data-ng-disabled="current.to.text != 'vmall' && current.to.text != 'any'" data-ng-click="addTo()">Add</button>
                                             </div>
                                         </span>
-                                        <span data-ng-show="data.parsed.to.length" class="">
-                                            <span class="f-result" data-ng-repeat="to in data.parsed.to">
-                                                <div class="remove-icon delete pull-right tags-delete-pos" data-ng-click="removeTo($index)"></div>
-                                                <div class="result-width">{{to|targetInfo}}</div>
-                                            </span>
-                                        </span>
-                    </div>
-                </td>
-                </tr>
-                </tbody>
-                <tfoot>
-                <tr>
-                    <td>
-                        <button class="btn" data-ng-show="data.uuid" data-ng-click="deleteRule(data)">Delete</button>
-                        <button class="btn" data-ng-click="cancelRule()" data-translate-value>Cancel</button>
-                        <button class="btn orange" data-ng-click="saveRule()" data-translate-value>{{data.uuid && 'Update Rule' || 'Create Rule'}}</button>
+                                    </span>
+                                </span>
+                                <span data-ng-switch-when="tag">
+                                    <span class="row">
+                                        <div class="indent-medium">
+                                            <button class="btn pull-right" data-ng-click="addTo()" data-ng-disabled="toForm.$invalid || toForm.$pristine">Add</button>
+                                        </div>
+                                    </span>
+                                </span>
+                                <span data-ng-switch-default>
+                                    <span class="row">
+                                        <div class="indent-medium">
+                                            <button class="btn pull-right" data-ng-click="addTo()" data-ng-disabled="toForm.$invalid || toForm.$pristine">Add</button>
+                                        </div>
+                                    </span>
+                                </span>
+                            </span>
+                        </div>
+                        <div class="results-group">
+                            <span class="f-result" ng-hide="data.parsed.to.length">
+                                <div class="error" >
+                                    No targets added
+                                </div>
+                            </span>
+                            <span data-ng-show="data.parsed.to.length">
+                                <span class="f-result" data-ng-repeat="to in data.parsed.to">
+                                    <div class="remove-icon delete pull-right tags-delete-pos" data-ng-click="removeTo($index)"></div>
+                                    <div class="result-width">{{to|targetInfo}}</div>
+                                </span>
+                            </span>
+                        </div>
                     </td>
                 </tr>
-                </tfoot>
+            </tbody>
+                    <tfoot>
+                        <tr>
+                            <td>
+                                <button class="btn" data-ng-show="data.uuid" data-ng-click="deleteRule(data)">Delete</button>
+                                <button class="btn" data-ng-click="cancelRule()" data-translate-value>Cancel</button>
+                                <button class="btn orange" data-ng-click="saveRule()" data-translate-value>{{data.uuid && 'Update Rule' || 'Create Rule'}}</button>
+                            </td>
+                        </tr>
+                    </tfoot>
                 </table>
             </div>
         </div>

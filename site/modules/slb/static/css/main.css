@@ -42,6 +42,7 @@
 }
 
 .slb-select {
+    width: 100px;
     height: 32px;
 
     background-color: white !important;
@@ -158,6 +159,10 @@
 input.ng-invalid-field {
     border-color: red;
     box-shadow: 0 0 6px -1px red;
+}
+
+.no-display {
+    display: none;
 }
 
 .edit-btn-pos {

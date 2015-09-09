@@ -10,11 +10,18 @@
                 <div class="form-group">
                     <span class="edit-host edit-label">Docker Registry</span>
                         <span class="edit-value">
-                            <select ui-select2="{minimumResultsForSearch: -1, width: '94%'}" id="registrySelect" data-ng-model="registryId" required >
-                                <option data-ng-repeat="registry in registries" value="{{registry.id}}">
+                            <ui-select data-ng-model="registryId"
+                                       append-to-body="true"
+                                       theme="select2"
+                                       search-enabled="false"
+                                       class="registry-select"
+                                       ng-click="setNotation('NETWORK')"
+                                       on-select="setRegistryId($select.selected.id)">
+                                <ui-select-match>{{$select.selected.userHost}}</ui-select-match>
+                                <ui-select-choices repeat="registry.id as registry in registries">
                                     {{registry.userHost}}
-                                </option>
-                            </select>
+                                </ui-select-choices>
+                            </ui-select>
                         </span>
                 </div>
                 <div class="form-group">

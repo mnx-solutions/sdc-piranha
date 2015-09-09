@@ -9,48 +9,51 @@
             <table class="heatmap-controls">
                 <tr>
                     <td class="medium" data-ng-class="{triple: !processes || title === 'Core Dump'}">
-                        <select ui-select2="{minimumResultsForSearch: -1, width: '100%'}"
-                                id="hostSelect"
-                                data-ng-model="selectedHostIndex"
-                                data-ng-change="changeHost()"
-                                data-select2-disabled="loadingHostProcesses">
-                            <option data-ng-repeat="host in hosts" value="{{$index}}">
+                        <ui-select data-ng-model="host"
+                                   theme="select2"
+                                   search-enabled="false"
+                                   class="full-width"
+                                   on-select="changeHost($select.selected)">
+                            <ui-select-match>{{$select.selected.name}}</ui-select-match>
+                            <ui-select-choices repeat="$index as host in hosts">
                                 {{host.name}}
-                            </option>
-                        </select>
+                            </ui-select-choices>
+                        </ui-select>
                     </td>
                     <td class="medium" data-ng-class="{triple: !processes}" data-ng-show="title === 'Heatmap'">
-                        <select ui-select2="{width: '100%'}" id="scriptSelect" data-ng-model="scriptName" data-ng-change="changeScript()" data-select2-disabled="loadingHostProcesses">
-                            <optgroup label="private">
-                                <option data-ng-repeat="script in scripts | filter:'!shared' | filter:'!remote'" value="{{script.name}}">
-                                    {{script.name}}
-                                </option>
-                            </optgroup>
-                            <optgroup label="shared">
-                                <option data-ng-repeat="script in scripts | filter:'shared'" value="{{script.name}}">
-                                    {{script.name}}
-                                </option>
-                            </optgroup>
-                            <optgroup label="remote">
-                                <option data-ng-repeat="script in scripts | filter:'remote'" value="{{script.name}}">
-                                    {{script.owner + ' / ' + script.name}}
-                                </option>
-                            </optgroup>
-                        </select>
+                        <ui-select data-ng-model="scriptName"
+                                   theme="select2"
+                                   search-enabled="true"
+                                   class="full-width"
+                                   ng-disabled="loadingHostProcesses"
+                                   on-select="changeScript($select.selected.name)">
+                            <ui-select-match>
+                                <span ng-hide="$select.selected.type == 'remote'">{{$select.selected.name}}</span>
+                                <span ng-show="$select.selected.type == 'remote'">{{$select.selected.owner + ' / ' + $select.selected.name}}</span>
+                            </ui-select-match>
+                            <ui-select-choices repeat="script.name as script in scripts | filter: $select.search | orderBy: ['-group','name']" group-by="'type'">
+                                <span ng-hide="script.type == 'remote'">{{script.name}}</span>
+                                <span ng-show="script.type == 'remote'">{{script.owner + ' / ' + script.name}}</span>
+                            </ui-select-choices>
+                        </ui-select>
                     </td>
                     <td data-ng-show="processes && processes.length" class="big">
-                        <select ui-select2="{width: '100%'}" id="pidSelect" data-ng-model="pid" >
-                            <optgroup data-ng-if="hasExecname" label="execname">
-                                <option data-ng-repeat="process in processes | unique:'execname'" value="{{process.execname}}">
-                                    {{process.execname}}
-                                </option>
-                            </optgroup>
-                            <optgroup data-ng-if="hasPid" label="pid">
-                                <option data-ng-repeat="process in processes" value="{{process.pid}}">
-                                    {{process.name}}
-                                </option>
-                            </optgroup>
-                        </select>
+                        <ui-select data-ng-model="pid"
+                                   theme="select2"
+                                   search-enabled="true"
+                                   class="full-width"
+                                   on-select="changeProcess($select.selected)">
+                            <ui-select-match>
+                                {{$select.selected.group == 'pid' ? $select.selected.name : $select.selected.execname}}
+                            </ui-select-match>
+                            <ui-select-choices repeat="(process.group == 'execname' ? process.execname : progress.name)
+                                                        as process in processes |
+                                                        filter: $select.search |
+                                                        orderBy: ['group','name']"
+                                               group-by="'group'">
+                                {{process.group == 'pid' ? process.name : process.execname}}
+                            </ui-select-choices>
+                        </ui-select>
                     </td>
                     <td class="small" nowrap>
                         <a class="btn light dpl-inline effect-orange-button refresh-btn" data-ng-show="processes" data-ng-disabled="loadingHostProcesses || processing" data-ng-click="refreshScripts()"><i class="glyphicon glyphicon-refresh"></i></a>

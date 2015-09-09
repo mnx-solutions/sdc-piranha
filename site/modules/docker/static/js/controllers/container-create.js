@@ -439,10 +439,6 @@
 
                 var loadHostImages = function (host, defaultSelectedImage) {
                     if (host && host.primaryIp) {
-                        setTimeout(function () {
-                            ng.element('#imageSelect option.image-pull-item').eq(0).attr('disabled', 'disabled');
-                            selectImageEl.select2('val', '').trigger('change');
-                        });
                         $scope.loadingHostDetails = true;
                         $scope.images = [];
                         $scope.container.container = 'base';
@@ -451,16 +447,22 @@
                             $scope.images = images.map(function (image) {
                                 return setImageData(image);
                             });
+                            $scope.container.Image = null;
                             if ($scope.images.length > 0) {
                                 $scope.images = $filter('orderBy')($scope.images, 'name');
                                 $scope.container.Image = selectSource($scope.images, 'name', defaultSelectedImage);
-                                setTimeout(function () {
-                                    selectImageEl.select2('val', $scope.container.Image);
-                                });
                             }
                             $scope.loadingHostDetails = false;
                         }, errorCallback);
-                        ng.element(ng.element('#imageSelect option[disabled="disabled"]')[0]).removeAttr('disabled');
+                    }
+                };
+
+                $scope.customOptions = {
+                    inProgress: function () {
+                        return Boolean($scope.host && $scope.isPullingInProgress[$scope.host.id]);
+                    },
+                    click: function () {
+                        dockerPullImage($scope.host, $scope.unreachableHosts, pullImageProgressHandler);
                     }
                 };
 
@@ -487,10 +489,7 @@
                         setImageData($scope.image);
                         $scope.images = [$scope.image];
                         $scope.container.Image = $scope.image.name;
-                        setTimeout(function () {
-                            selectImageEl.select2('val', $scope.container.Image);
-                            selectImageEl.select2('disable');
-                        });
+
                         $scope.loadingHostDetails = false;
                     }, errorCallback);
                 };
@@ -507,10 +506,7 @@
                             $scope.container.primaryIp = host.primaryIp;
                             if ($scope.containers.length > 0) {
                                 $scope.container.container = selectSource($scope.containers, 'Id');
-                                setTimeout(function () {
-                                    ng.element('#containerSelect').select2('val', $scope.container.container);
-                                    setDefaultValues($scope.containers[0]);
-                                });
+                                setDefaultValues($scope.containers[0]);
                             } else {
                                 errorCallback('This docker host does not have containers for new image.');
                             }
@@ -534,9 +530,6 @@
                                     $scope.image = image;
                                 }
                             }
-                        });
-                        setTimeout(function () {
-                            selectImageEl.select2('val', $scope.container.Image);
                         });
                         $scope.loadingHostDetails = false;
                     }, errorCallback);
@@ -662,6 +655,8 @@
 
                 $scope.changeHost = function (host) {
                     focusOnTag();
+                    $scope.ip = host.primaryIp || $scope.ip;
+                    $scope.container.container = '';
                     host = host || Docker.getHost($scope.hosts, $scope.ip);
                     if (!host.id || !host.primaryIp) {
                         return;
@@ -829,23 +824,6 @@
                         loadHostImages($scope.host, pulledImage.name + ':' + pulledImage.tag);
                     }
                 }
-
-                var addPullImageListener = function () {
-                    ng.element('.image-pull-item').off().on('mouseup', function (e) {
-                        selectImageEl.select2('disable');
-                        dockerPullImage($scope.host, $scope.unreachableHosts, pullImageProgressHandler);
-                        setTimeout(function () {
-                            ng.element('#imageSelect option.image-pull-item').eq(0).attr('disabled', 'disabled');
-                            selectImageEl.select2('val', '').trigger('change');
-                        });
-                        selectImageEl.select2('enable');
-                    });
-                }
-
-                selectImageEl.select2('enable').on('open', function () {
-                    ng.element('.select2-input').last().on('blur', addPullImageListener);
-                    addPullImageListener();
-                });
             }
         ]);
 }(window.angular, window.JP.getModule('docker')));

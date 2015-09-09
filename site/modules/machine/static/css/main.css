@@ -1378,8 +1378,6 @@
 }
 
 .carousel-inner {
-    overflow-y: auto;
-
     min-height: 560px;
     max-height: 100%;
 }

@@ -535,7 +535,7 @@
 .group-label {
     margin-bottom: 5px;
 }
-.container-create-form input {
+.container-create-form input:not(.ui-select-search) {
     width: 98%;
 }
 .container-create-form .edit-value {
@@ -1111,4 +1111,17 @@ span .tag-editor {
 }
 .metadata .editable .key-width {
     margin-bottom: 10px;
+}
+.pull-image {
+    padding: 3px 7px;
+    box-sizing: border-box;
+
+    cursor: pointer;
+
+    border: solid 5px white;
+    border-top: none;
+    background-color: #f4f4f4;
+}
+.pull-image:not(.image-pull-item) {
+    cursor: default;
 }

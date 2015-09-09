@@ -27,18 +27,16 @@
             };
             var changeVlanValue = function (vlan) {
                 $scope.network.vlan_id = vlan.vlan_id;
-                setTimeout(function () {
-                    ng.element('#vlanSelect').select2('val', vlan.vlan_id);
-                    $scope.vlanCreating = false;
-                    $scope.createVlanForm = false;
-                    $scope.vlan = {};
-                });
+                $scope.vlanCreating = false;
+                $scope.createVlanForm = false;
+                $scope.vlan = {};
             };
 
             Vlan.vlan().then(function (vlans) {
                 $scope.vlans = vlans || [];
                 $scope.network.datacenter = vlans && vlans.length && vlans[0].datacenter;
                 $scope.createVlanForm = $scope.vlans.length === 0;
+                $scope.network.vlan_id = $scope.createVlanForm ? null : $scope.vlans[0].vlan_id;
                 $scope.loading = false;
             });
 

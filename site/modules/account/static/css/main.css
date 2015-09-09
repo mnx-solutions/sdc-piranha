@@ -33,24 +33,6 @@
     color: white;
     border-bottom: 1px solid #eee;
 }
-
-.select2-container .select2-choice {
-    background-color: #fafcfd;
-}
-
-.select2-container .select2-choice div b {
-    background-color: #fafcfd;
-    box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
-}
-
-.select2-container-active .select2-choice,
-.select2-container-multi.select2-container-active .select2-choices {
-    border: 1px solid #52a8ec;
-    outline: 0 none;
-    -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075), 0 0 8px rgba(82, 168, 236, .6);
-       -moz-box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075), 0 0 8px rgba(82, 168, 236, .6);
-            box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075), 0 0 8px rgba(82, 168, 236, .6);
-}
 .form-group {
     margin-bottom: 17px;
 }

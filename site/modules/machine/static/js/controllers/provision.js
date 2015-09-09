@@ -720,11 +720,8 @@
                 });
             };
 
-            $scope.selectVersion = function (versionId) {
-                if (!versionId) {
-                    versionId = $scope.data.dataset;
-                }
-                selectDataset(versionId, true);
+            $scope.selectVersion = function () {
+                selectDataset($scope.data.dataset, true);
             };
 
             $scope.selectPackageType = function (packageType) {
@@ -901,15 +898,12 @@
             };
 
             var selectFilter = function (key, name, callback) {
-                if (name !== $scope.filterModel[key]) {
-                    $scope.filterModel[key] = name;
-                    if (key === 'value') {
-                        $scope.onFilterChange();
-                    } else {
-                        $scope.onFilterChange(name);
-                    }
-                    callback();
+                if (key === 'value') {
+                    $scope.onFilterChange();
+                } else {
+                    $scope.onFilterChange(name);
                 }
+                callback();
             };
             $scope.selectFilterType = function (name) {
                 selectFilter('key', name, function () {
@@ -973,7 +967,6 @@
                         );
                         if (!err || err.restCode !== 'NotAuthorized') {
                             $scope.data.datacenter = firstNonSelected.name;
-                            $('#selectDatacenter').select2('val', firstNonSelected.name);
                         }
                     }
                 }

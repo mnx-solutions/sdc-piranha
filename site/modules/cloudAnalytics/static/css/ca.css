@@ -135,3 +135,6 @@
 .cloud-container {
     box-sizing: content-box;
 }
+.ui-select-container {
+    width: 210px;
+}

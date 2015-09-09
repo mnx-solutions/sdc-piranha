@@ -6,12 +6,16 @@
         <div class="btn-group"
              data-html="true"
              data-original-title="Filter by operating system">
-            <select type="hidden" data-select-two id="selectOS" class="dd-fixed-width" data-item="opsys"
-                    data-select="selectDataValue('os')" data-fn="selectOpsys">
-                <option data-ng-repeat="opsys in operating_systems" value="{{opsys}}">
-                    {{opsys | orderBy:'toString()'}}
-                </option>
-            </select>
+            <ui-select data-ng-model="data.opsys"
+                       theme="select2"
+                       search-enabled="true"
+                       class="datacenter-select"
+                       on-select="selectDataValue('os')">
+                <ui-select-match>{{$select.selected}}</ui-select-match>
+                <ui-select-choices repeat="opsys in operating_systems | filter: $select.search">
+                    {{opsys}}
+                </ui-select-choices>
+            </ui-select>
         </div>
         <div class="in-line">
             <input type="search"

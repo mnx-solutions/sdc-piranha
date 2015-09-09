@@ -43,13 +43,15 @@
                     <div class="form-group">
                         <span class="edit-name orange-asterix">Data Center</span>
                         <span class="edit-value">
-                            <select ui-select2="{minimumResultsForSearch: 1, width: '99%'}"
-                                    id="dcSelect"
-                                    data-ng-model="vlan.datacenter">
-                                <option data-ng-repeat="datacenter in datacenters | orderBy:$index" value="{{datacenter}}">
+                            <ui-select data-ng-model="vlan.datacenter"
+                                       theme="select2"
+                                       search-enabled="true"
+                                       class="full-width">
+                                <ui-select-match>{{$select.selected}}</ui-select-match>
+                                <ui-select-choices repeat="datacenter in datacenters | orderBy: $index | filter: $select.search">
                                     {{datacenter}}
-                                </option>
-                            </select>
+                                </ui-select-choices>
+                            </ui-select>
                         </span>
                     </div>
 

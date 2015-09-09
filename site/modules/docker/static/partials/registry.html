@@ -25,14 +25,15 @@
                                     <td class="orange-asterix">API Version</td>
                                     <td>
                                         <div class="btn-group">
-                                            <select data-select-two
-                                                    id="registryApi"
-                                                    name="registryApi"
-                                                    class="api-version"
-                                                    data-ng-model="registry.api"
-                                                    data-select="registry.api"
-                                                    data-ng-options="registryApi for registryApi in registryApiVersions">
-                                            </select>
+                                            <ui-select data-ng-model="registry.api"
+                                                       theme="select2"
+                                                       search-enabled="true"
+                                                       class="api-version">
+                                                <ui-select-match>{{$select.selected}}</ui-select-match>
+                                                <ui-select-choices repeat="registryApi in registryApiVersions | filter: $select.search">
+                                                    {{registryApi}}
+                                                </ui-select-choices>
+                                            </ui-select>
                                         </div>
                                     </td>
                                 </tr>

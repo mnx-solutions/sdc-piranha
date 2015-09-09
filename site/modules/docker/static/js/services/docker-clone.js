@@ -26,7 +26,6 @@
                     scope.loading = true;
 
                     scope.close = function () {
-                        window.jQuery('#hostSelect').select2('close');
                         dialog.close();
                     };
 
@@ -68,7 +67,8 @@
                         }
                     };
 
-                    scope.changeHost = function () {
+                    scope.changeHost = function (selectedHost) {
+                        scope.hostIp = selectedHost.primaryIp || scope.hostIp;
                         scope.isAllowed = false;
                         if (name in operationChecks) {
                             operationChecks[name]();
@@ -77,6 +77,7 @@
 
                     Docker.listHosts().then(function (hosts) {
                         scope.hosts = hosts || [];
+                        scope.hostIp = scope.hosts.length ? scope.hosts[0].primaryIp : null;
                         scope.loading = false;
                     });
 

@@ -58,10 +58,16 @@
                         <h5>Set environment</h5>
                         <div data-ng-show="sshKeys.length > 1" class="code">
                             <label for="keySel">You have multiple keys, please select the one you want to use:</label>
-                            <select id="keySel" data-ng-model="keyId" ui-select2="{width: 200}" value="{{keyName}}"
-                                    ng-options="c.fingerprint as c.name for c in sshKeys">
-                                <option ng-repeat="c.fingerprint as c.name for c in sshKeys" value="{{keyName}}">{{keyName}}</option>
-                            </select>
+                            <ui-select data-ng-model="keyId"
+                                       theme="select2"
+                                       class="edit-country key-select"
+                                       search-enabled="true"
+                                       on-select="changeKey($select.selected.fingerprint)">
+                                <ui-select-match>{{$select.selected.name}}</ui-select-match>
+                                <ui-select-choices repeat="sshKey.fingerprint as sshKey in sshKeys | filter: $select.search">
+                                    {{sshKey.name}}
+                                </ui-select-choices>
+                            </ui-select>
                         </div>
                         <div class="code">
                             <p>export MANTA_URL={{mantaUrl}};</p>

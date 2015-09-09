@@ -227,14 +227,26 @@
                     </div>
                     <div data-ng-hide="packages.length == 0 || package.selectedMaxPackage" class="resize-block">
                         <p class="control-label" data-translate>Resize Instance type</p>
-                        <select name="resize" ui-select2="{width: 375}" data-ng-model="selectedPackage">
-                            <option data-ng-show="machine" data-ng-repeat="package in packages"
-                                    value="{{package}}" class="text-medium">
+                        <ui-select data-ng-model="selectedPackage"
+                                   append-to-body="true"
+                                   theme="select2"
+                                   search-enabled="true"
+                                   class="full-width"
+                                   data-ng-show="machine"
+                                   on-select="changePackage($select.selected)">
+                            <ui-select-match>
+                                Mem: {{$select.selected.memory | sizeFormat}}
+                                Disk: {{$select.selected.disk | sizeFormat}}
+                                <span data-ng-show="$select.selected.vcpus">VCPU: {{$select.selected.vcpus}}</span>
+                                <span data-ng-show="datasetType == 'smartos'"> and bursting</span>
+                            </ui-select-match>
+                            <ui-select-choices repeat="package in packages | filter: $select.search">
                                 Mem: {{package.memory | sizeFormat}}
                                 Disk: {{package.disk | sizeFormat}}
-                                <span data-ng-show="package.vcpus">VCPU: {{package.vcpus}}</span><span data-ng-show="datasetType == 'smartos'"> and bursting</span>
-                            </option>
-                        </select>
+                                <span data-ng-show="package.vcpus">VCPU: {{package.vcpus}}</span>
+                                <span data-ng-show="datasetType == 'smartos'"> and bursting</span>
+                            </ui-select-choices>
+                        </ui-select>
                         <div class="form-group resize-button">
                             <button class="btn pull-right" type="submit" data-ng-click="clickResize()" data-ng-disabled="!selectedPackage || isResizing" data-translate>Resize</button>
                             <div class="loading-medium-transparent pull-right" data-ng-show="isResizing"></div>

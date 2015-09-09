@@ -196,17 +196,18 @@
     <div class="form-group">
         <span class="edit-name">Country</span>
         <span class="edit-value">
-            <select data-select-two
-                    id="subCountry"
-                    name="country"
-                    data-ng-class="{error: isError('country')}"
-                    data-ng-model="user.country"
-                    data-ng-change="user.country"
-                    data-select="user.countryName"
-                    data-ng-options="country.iso3 as country.name group by country.group for country in countries.data | orderBy: ['-group','name']"
-                    data-search-box="true"
-                    data-width="340px">
-            </select>
+            <ui-select data-ng-model="user.country"
+                       append-to-body="true"
+                       theme="select2"
+                       class="edit-country country-select"
+                       search-enabled="true"
+                       name="country"
+                       on-select="user.countryName = $select.selected.name">
+                <ui-select-match>{{$select.selected.name}}</ui-select-match>
+                <ui-select-choices repeat="country.iso3 as country in countries.data | filter: $select.search | orderBy: ['-group','name']" group-by="'group'">
+                    {{country.name}}
+                </ui-select-choices>
+            </ui-select>
         </span>
         <span class="edit-error">
             <div class="error"

@@ -633,7 +633,7 @@
             return current;
         }
 
-        service.pullForHosts = [];
+        service.pullForHosts = {};
 
         service.pullImage = function (host, image, registryId) {
             image.pullProcesses[host.id] = image.pullProcesses[host.id] || {};

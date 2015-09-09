@@ -2,8 +2,8 @@
 (function (app, ng) {
     app.controller('cloudController', [
         '$scope', 'PopupDialog', '$routeParams', 'Machine', '$timeout', '$location', '$q', 'localization',
-        'CloudAnalytics',
-        function ($scope, PopupDialog, $routeParams, Machine, $timeout, $location, $q, localization, CloudAnalytics) {
+        'CloudAnalytics', 'util',
+        function ($scope, PopupDialog, $routeParams, Machine, $timeout, $location, $q, localization, CloudAnalytics, util) {
             $scope.machineExists = true;
             $scope.selectedInstance = $scope.machineid = ($scope.container && $scope.container.Uuid) || $scope.machineid || $routeParams.machineid;
 
@@ -278,6 +278,7 @@
                     CloudAnalytics.removeAll({datacenter: $scope.datacenter, zoneId: $scope.machineid},
                         function () {
                             $scope.graphs = [];
+                            $scope.resetMetric();
                             callback();
                         });
                 });
@@ -296,8 +297,7 @@
                 $scope.current.decomposition.primary = null;
                 $scope.current.decomposition.secondary = null;
                 $scope.current.decomposition.secondaryF = null;
-                $('#decPrimarySelect').select2('val', '-- None --');
-                $('#decSecondarySelect').select2('val', '-- None --');
+                $scope.metricFields = util.objectToArray($scope.current.metric.fields);
             };
 
             $scope.expandMetric = function () {
@@ -326,6 +326,8 @@
                             $scope.current.decomposition.secondaryF[field] = $scope.current.metric.fields[field];
                         }
                     }
+                    $scope.metricFields = util.objectToArray($scope.current.metric.fields);
+                    $scope.decompositionSecondary = util.objectToArray($scope.current.decomposition.secondaryF);
                 } else {
                     $scope.current.decomposition.secondaryF = [];
                     $scope.current.decomposition.secondary = null;

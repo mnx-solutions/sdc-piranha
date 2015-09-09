@@ -209,6 +209,15 @@ window.JP.main.service('util', ['$rootScope',
             return result;
         };
 
+        service.objectToArray = function (obj) {
+            return Object.keys(obj || {}).map(function (key) {
+                return {
+                    key: key,
+                    value: obj[key]
+                };
+            })
+        };
+
         return service;
     }]
 );

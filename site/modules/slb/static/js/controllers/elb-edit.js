@@ -106,13 +106,6 @@
                     });
                 };
 
-                $scope.hcDelaySelect = function (name) {
-                    $scope.server.health.delay = name;
-                };
-                $scope.timeoutSelect = function (name) {
-                    $scope.server.health.timeout = name;
-                };
-
                 $scope.validateSelected = function (machine) {
                     if (machine && !machine.primaryIp) {
                         PopupDialog.error(

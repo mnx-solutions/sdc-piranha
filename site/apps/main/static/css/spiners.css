@@ -24,6 +24,7 @@
 
     vertical-align: middle;
 }
+.full-width,
 .loading-medium.full-width,
 .loading-medium-transparent.full-width {
     width: 100%;

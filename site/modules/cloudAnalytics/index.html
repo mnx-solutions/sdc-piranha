@@ -42,23 +42,48 @@
             <div class="pull-right alert alert-info">
                 <h5>Select Instance:</h5>
 
-                <select data-select-two id="zonesSelect" placeholder="-- Choose Instance --" data-width="210px" data-ng-show="zones.final" data-ng-model="selectedInstance" data-select="zoneName" data-ng-options="item.id as item.name for item in zones" data-ng-change="changeInstance()">
-                    <option value=""></option>
-                </select>
+                <ui-select data-ng-model="selectedInstance"
+                           theme="select2"
+                           search-enabled="false"
+                           on-select="changeInstance()"
+                           data-ng-show="zones.final">
+                    <ui-select-match placeholder="-- Choose Instance --">{{$select.selected.name}}</ui-select-match>
+                    <ui-select-choices repeat="item.id as item in zones">
+                        {{item.name}}
+                    </ui-select-choices>
+                </ui-select>
                 <span data-ng-show="metrics">
-                    <select data-select-two id="metricsSelect" placeholder="-- Choose Metric --" data-width="210px" data-ng-model="current.metric" data-ng-change="resetMetric()" ng-required data-ng-options="metric.labelHtml for metric in metrics">
-                        <option value=""></option>
-                    </select>
+                    <ui-select data-ng-model="current.metric"
+                               theme="select2"
+                               search-enabled="false"
+                               on-select="resetMetric()">
+                        <ui-select-match placeholder="-- Choose Metric --">{{$select.selected.labelHtml}}</ui-select-match>
+                        <ui-select-choices repeat="metric in metrics">
+                            {{metric.labelHtml}}
+                        </ui-select-choices>
+                    </ui-select>
                 </span>
                 <span class="nullable" data-ng-show="current.metric">
-                    <select data-select-two id="decPrimarySelect" data-width="210px" data-ng-model="current.decomposition.primary" data-ng-change="changeDecomposition()" data-ng-options="key as val for (key, val) in current.metric.fields">
-                        <option value="" selected>-- None --</option>
-                    </select>
+                    <ui-select data-ng-model="current.decomposition.primary"
+                               theme="select2"
+                               search-enabled="false"
+                               on-select="changeDecomposition()">
+                        <ui-select-match placeholder="-- None --">{{$select.selected.key}}</ui-select-match>
+                        <ui-select-choices repeat="field.key as field in metricFields | orderBy: ['value']">
+                            {{field.value}}
+                        </ui-select-choices>
+                    </ui-select>
                 </span>
                 <span class="nullable" data-ng-show="current.decomposition.primary">
-                    <select data-select-two id="decSecondarySelect" data-width="210px" data-ng-model="current.decomposition.secondary" data-ng-options="key as val for (key, val) in current.decomposition.secondaryF">
-                        <option value="" selected>-- None --</option>
-                    </select>
+                    <ui-select data-ng-model="current.decomposition.secondary"
+                               ng-disabled="!decompositionSecondary.length"
+                               theme="select2"
+                               search-enabled="false">
+                        <ui-select-match placeholder="-- None --">{{$select.selected.key}}</ui-select-match>
+                        <ui-select-choices repeat="decomposition.key as decomposition in decompositionSecondary | orderBy: ['value']">
+                            {{decomposition.value}}
+                        </ui-select-choices>
+                    </ui-select>
                 </span>
                 <p>Detailed analytics use pre-defined metrics to measure perfomance</p>
                 <button id="button-start" class="btn orange start-analytics-btn" data-ng-click="createDefaultInstrumentations()" data-ng-disabled="!selectedInstance">Start Analysis</button>

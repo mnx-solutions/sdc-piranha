@@ -1,36 +1,37 @@
 <div class="edit-value dual">
-      <select data-select-two
-              data-ng-if="selectStyle"
-              id="countrySelect"
-              name="countrySelect"
-              data-select="country.name"
-              width="{{selectStyle}}"
-              data-ng-model="country"
-              data-search-box="true"
-              data-ng-change="changeCountry(country)"
-              data-ng-options="country as (country.name + ' (+' + country.areaCode + ')') group by country.group for country in countryCodes | filter:filterUndefinedAreas | orderBy: ['-group','name']">
-      </select>
-      <span class="input-group input-group-inline">
-          <span class="input-group-addon">({{areaCode}})</span>
-          <input type="text"
-               name="phone"
-               class="input-group-inline"
-               data-ng-style="inputStyle"
-               data-ng-model="plainNumber"
-               data-ng-class="{error: isError({field:'phone'})}"
-               data-ng-required="required"
-               />
-      </span>
-      <div class="edit-error">
-          <div class="error"
-             data-translate
-             data-ng-show="isError({field:'phone', type:'required'}) || isError({field:'phone', type:'submitRequired'})">
-             Missing phone number
-          </div>
-          <div class="error"
-              data-translate
-              data-ng-show="isError({field:'phone', type:'pattern'})">
-              Invalid phone number
-          </div>
-      </div>
+    <ui-select data-ng-if="selectStyle"
+               data-ng-model="country"
+               append-to-body="true"
+               theme="select2"
+               ng-style="{width: selectStyle}"
+               search-enabled="true"
+               on-select="changeCountry($item)">
+        <ui-select-match>{{$select.selected.name}}</ui-select-match>
+        <ui-select-choices repeat="country in countryCodes | filter: $select.search | orderBy: ['-group','name']" group-by="'group'">
+            {{country.name + ' (+' + country.areaCode + ')'}}
+        </ui-select-choices>
+    </ui-select>
+    <span class="input-group input-group-inline">
+        <span class="input-group-addon">({{areaCode}})</span>
+        <input type="text"
+           name="phone"
+           class="input-group-inline"
+           data-ng-style="inputStyle"
+           data-ng-model="plainNumber"
+           data-ng-class="{error: isError({field:'phone'})}"
+           data-ng-required="required"
+           />
+        </span>
+    <div class="edit-error">
+        <div class="error"
+         data-translate
+         data-ng-show="isError({field:'phone', type:'required'}) || isError({field:'phone', type:'submitRequired'})">
+         Missing phone number
+        </div>
+        <div class="error"
+          data-translate
+          data-ng-show="isError({field:'phone', type:'pattern'})">
+          Invalid phone number
+        </div>
     </div>
+</div>

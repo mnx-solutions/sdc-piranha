@@ -33,11 +33,16 @@
                     <div class="tooltip-hover col-md-8 dd-margin protocol-pos"
                          data-toggle="tooltip"
                          data-placement="bottom">
-                        <select data-select-two id="protocolSelect" data-width="100px" class="slb-select" data-select="protocolSelected.name" data-fn="protocolSelect">
-                            <option data-ng-repeat="protocol in protocols" value="{{protocol.value}}">
+                        <ui-select data-ng-model="protocolSelected"
+                                   theme="select2"
+                                   search-enabled="false"
+                                   class="slb-select"
+                                   on-select="protocolSelect($select.selected.value)">
+                            <ui-select-match>{{$select.selected.name}}</ui-select-match>
+                            <ui-select-choices repeat="protocol.value as protocol in protocols">
                                 {{protocol.name}}
-                            </option>
-                        </select>
+                            </ui-select-choices>
+                        </ui-select>
                         <span class="upload-btn" data-ng-show="protocolSelected.name == 'HTTPS'">
                             <span data-cert-upload model="server.certificate"></span>
                         </span>
@@ -88,12 +93,15 @@
                     <div class="btn-group tooltip-hover col-md-3 dd-margin protocol-pos"
                          data-toggle="tooltip"
                          data-placement="bottom">
-
-                        <select data-select-two id="timeoutSelect" data-width="100px" class="slb-select" data-select="server.health.timeout + ' sec'" data-fn="timeoutSelect">
-                            <option data-ng-repeat="timeout in timeouts" value="{{timeout}}">
+                        <ui-select data-ng-model="server.health.timeout"
+                                   theme="select2"
+                                   search-enabled="false"
+                                   class="slb-select">
+                            <ui-select-match>{{$select.selected}} sec</ui-select-match>
+                            <ui-select-choices repeat="timeout in timeouts">
                                 {{timeout}} sec
-                            </option>
-                        </select>
+                            </ui-select-choices>
+                        </ui-select>
                     </div>
                 </div>
                 <div class="protocol-block clearfix">
@@ -102,12 +110,15 @@
                     <div class="btn-group tooltip-hover col-md-3 dd-margin protocol-pos"
                          data-toggle="tooltip"
                          data-placement="bottom">
-
-                        <select data-select-two id="hcDelaySelect" data-width="100px" class="slb-select" data-select="server.health.delay + ' mins'" data-fn="hcDelaySelect">
-                            <option data-ng-repeat="hcDelay in hcDelays" value="{{hcDelay}}">
+                        <ui-select data-ng-model="server.health.delay"
+                                   theme="select2"
+                                   search-enabled="false"
+                                   class="slb-select">
+                            <ui-select-match>{{$select.selected}} mins</ui-select-match>
+                            <ui-select-choices repeat="hcDelay in hcDelays">
                                 {{hcDelay}} mins
-                            </option>
-                        </select>
+                            </ui-select-choices>
+                        </ui-select>
                     </div>
                 </div>
                 <div class="protocol-block clearfix">

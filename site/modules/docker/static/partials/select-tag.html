@@ -23,11 +23,20 @@
                     <div data-ng-hide="hideTags" class="form-group">
                         <span class="edit-image edit-label left">Select image tag</span>
                         <span class="edit-value">
-                            <select data-ng-disabled="!tags.length" ui-select2="{minimumResultsForSearch: -1, width: '362px'}" id="tagSelect" data-width="250px" data-ng-model="tag" required>
-                                <option data-ng-repeat="tag in tags" value="{{tag.name}}">
+                            <ui-select data-ng-model="tag"
+                                       append-to-body="true"
+                                       theme="select2"
+                                       search-enabled="false"
+                                       class="tag-select"
+                                       style="width: 362px;"
+                                       ng-click="setNotation('NETWORK')"
+                                       ng-disabled="!tags.length"
+                                       on-select="setTag($select.selected.name)">
+                                <ui-select-match>{{$select.selected.name}}</ui-select-match>
+                                <ui-select-choices repeat="tag.name as tag in tags">
                                     {{tag.name}}
-                                </option>
-                            </select>
+                                </ui-select-choices>
+                            </ui-select>
                         </span>
                     </div>
                 </form>

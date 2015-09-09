@@ -112,18 +112,15 @@ var AREACODE_NORMALIZE_MAP = {
 
                     var areaCodeMap = {};
                     function createAreaCodeMap() {
-                        $scope.countryCodes.filter($scope.filterUndefinedAreas).forEach(function (country) {
+                        $scope.countryCodes.forEach(function (country) {
                             if (!areaCodeMap[country.areaCode]) {
                                 areaCodeMap[country.areaCode] = [country];
                             } else {
                                 areaCodeMap[country.areaCode].push(country);
                             }
+                            country = country.areaCode;
                         });
                     }
-
-                    $scope.filterUndefinedAreas = function (country) {
-                        return country.areaCode;
-                    };
 
                     $http.get('account/countryCodes').then(function(data) {
                         // consolidate zone 1 (North America) to "USA & Canada"

@@ -46,7 +46,18 @@
                                             />
                                     <label for="filter{{$index}}" class="tabs">{{filter}}</label>
                                 </span>
-                            <select data-select-two id="dcSelect2" data-ng-model="tabFilter" data-select="tabFilter" data-ng-change="unSelectAllCheckbox()" class="select-datacenter no-search-box" data-ng-options="filter for filter in tabFilters"></select>
+                            <ui-select data-ng-model="tabFilter"
+                                       append-to-body="true"
+                                       id="dcSelect2"
+                                       theme="select2"
+                                       search-enabled="true"
+                                       on-select="changeTabFilter($select.selected)"
+                                       class="datacenter-select text-medium">
+                                <ui-select-match>{{$select.selected}}</ui-select-match>
+                                <ui-select-choices repeat="tabFilter in tabFilters | filter: $select.search">
+                                    {{tabFilter}}
+                                </ui-select-choices>
+                            </ui-select>
                         </div>
                     </td>
                     <td>
@@ -201,9 +212,17 @@
 
         <div class="row pagination-container" data-ng-show="paginated && pageNumSum">
             <div class="pull-left select-position">
-                <select ui-select2="{minimumResultsForSearch: -1}" data-ng-model="perPage" value="25" class="no-search-box" style="width: 65px !important;">
-                    <option data-ng-repeat="size in pageSizes" value="{{size.value}}">{{size.name}}</option>
-                </select>
+                <ui-select data-ng-model="perPage"
+                           append-to-body="true"
+                           theme="select2"
+                           search-enabled="false"
+                           class="per-page-select text-medium"
+                           on-select="changePerPageValue($select.selected.value)">
+                    <ui-select-match>{{$select.selected.name}}</ui-select-match>
+                    <ui-select-choices repeat="size.value as size in pageSizes">
+                        {{size.name}}
+                    </ui-select-choices>
+                </ui-select>
                 <span>&nbsp;records per page</span>
             </div>
             <div class="pagination-right">

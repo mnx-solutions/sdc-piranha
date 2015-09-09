@@ -12,14 +12,16 @@
                     <span class="select-name">Data Center:</span>
                     <div class="btn-group">
                         <div class="loading-medium loading-medium-inline" data-ng-show="datasetsLoading"></div>
-                        <select type="hidden" data-select-two id="selectDatacenter" width="110" data-ng-model="data.datacenter"
-                                data-fn="selectDatacenter" data-select="data.datacenter" placeholder="No matches found"
-                                data-select2-disabled="datasetsLoading || currentPageIndex">
-                            <option value=""></option>
-                            <option data-ng-repeat="datacenter in datacenters | orderBy:$index" value="{{datacenter.name}}">
+                        <ui-select data-ng-model="data.datacenter"
+                                   ng-disabled="datasetsLoading || currentPageIndex"
+                                   theme="select2"
+                                   search-enabled="true"
+                                   class="datacenter-select">
+                            <ui-select-match>{{$select.selected.name}}</ui-select-match>
+                            <ui-select-choices repeat="datacenter.name as datacenter in datacenters | orderBy: $index | filter: $select.search">
                                 {{datacenter.name}}
-                            </option>
-                        </select>
+                            </ui-select-choices>
+                        </ui-select>
                     </div>
                 </div>
                 <div class="hotlinks">

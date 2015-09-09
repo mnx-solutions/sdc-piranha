@@ -147,8 +147,9 @@ dialogModule.provider("$dialog", function(){
     Dialog.prototype.close = function(result, data){
       var self = this;
       var fadingElements = this._getFadingElements();
-
-      body.removeClass(self.options.dialogOpenClass);
+      if (activeDialogs.value < 2) {
+          body.removeClass(self.options.dialogOpenClass);
+      }
       if(fadingElements.length > 0){
         for (var i = fadingElements.length - 1; i >= 0; i--) {
           $transition(fadingElements[i], removeTriggerClass).then(onCloseComplete);

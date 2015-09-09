@@ -8,7 +8,7 @@
                 <div class="dataset-desc crop text-wrap">{{selectedDataset.description}}</div>
 
                 <p data-ng-show="manyVersions[selectedDataset.visibility][selectedDataset.name]">IMAGE VERSION:</p>
-                <div class="text-small image-container" data-ng-if="manyVersions[selectedDataset.visibility][selectedDataset.name]">
+                <div class="image-container" data-ng-if="manyVersions[selectedDataset.visibility][selectedDataset.name]">
                     <div data-versions class="btn-group pull-left"></div>
                 </div>
                 <div class="dataset-cost cost" data-ng-show="features.billing == 'enabled'">
@@ -23,18 +23,28 @@
     <div class="filter-container">
         Filter:
         <div class="btn-group btn-group-filter">
-            <select type="hidden" width="115" data-select-two id="filterProperty" class="filter-select" data-item="prop" data-select="filterModel.key" data-fn="selectFilterType">
-                <option data-ng-repeat="prop in filterProps" value="{{prop}}">
+            <ui-select data-ng-model="filterModel.key"
+                       theme="select2"
+                       search-enabled="false"
+                       class="filter-prop-select"
+                       on-select="selectFilterType($select.selected)">
+                <ui-select-match>{{$select.selected | uppercase}}</ui-select-match>
+                <ui-select-choices repeat="prop in filterProps">
                     {{prop | uppercase}}
-                </option>
-            </select>
+                </ui-select-choices>
+            </ui-select>
         </div>
         <div class="btn-group btn-group-filter" data-ng-show="filterModel.key != 'No filter'">
-            <select type="hidden" data-select-two width="140" id="filterPropertyValue" class="filter-select" data-item="prop" data-select="formatFilterValue(filterModel.value)" data-fn="selectFilterValue">
-                <option data-ng-repeat="prop in filterValues[filterModel.key]" value="{{prop}}">
+            <ui-select data-ng-model="filterModel.value"
+                       theme="select2"
+                       search-enabled="false"
+                       class="filter-key-select"
+                       on-select="selectFilterValue($select.selected)">
+                <ui-select-match>{{formatFilterValue($select.selected)}}</ui-select-match>
+                <ui-select-choices repeat="prop in filterValues[filterModel.key]">
                     {{formatFilterValue(prop)}}
-                </option>
-            </select>
+                </ui-select-choices>
+            </ui-select>
         </div>
     </div>
     <div class="accordion-container">
