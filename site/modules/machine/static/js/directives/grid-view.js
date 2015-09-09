@@ -314,7 +314,7 @@
         };
 
         $scope.matchesFilter = function (item) {
-            var result = true;
+            var result = false;
             var getFilteredItems = function (searchParam) {
                 var needle = searchParam.toLowerCase();
                 if (!searchInObject(item, needle)) {
@@ -333,6 +333,7 @@
                 }
             };
             if ($scope.propertyFilter(item)) {
+                result = true;
                 if ($scope.filterAll) {
                     getFilteredItems($scope.filterAll);
                 }
