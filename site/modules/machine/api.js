@@ -83,16 +83,15 @@ exports.init = function execute(log, config, done) {
 
     /**
      * Waits for machine state, package or name change
-     * @param {Object} client
+     * @param {Object} cloud
      * @param {Object} call - machine ID is taken from call.data.uuid or call.data if it's a string
      * @param {String} prop - what to poll
      * @param {String} expect - what to expect
      * @param {Number} [timeout=300000] - timeout in milliseconds, defaults to 5m
      * @param {String} [type=Machine] - type we are polling, defaults to machine
-     * @param {Function} callback
+     * @param {Function} cb
      */
-    function pollForObjectStateChange(call, prop, expect, timeout, type, objectId, cb) {
-        var cloud = call.cloud;
+    function pollForObjectStateChange(cloud, call, prop, expect, timeout, type, objectId, cb) {
         objectId = objectId || (typeof call.data === 'object' ? call.data.uuid : call.data);
 
         timeout = timeout || 5 * 60 * 1000;
@@ -151,6 +150,7 @@ exports.init = function execute(log, config, done) {
                     } else {
                         call.log.error({error: err}, 'Cloud polling failed');
                     }
+
                     clearPoller(err, true);
                     return;
                 }
@@ -232,7 +232,7 @@ exports.init = function execute(log, config, done) {
                     call.immediate(null, {machine: machine});
                 }
                 // poll for machine status to get running (provisioning)
-                pollForObjectStateChange(call, 'state', 'running', (STATE_POLL_TIMEOUT), null, machine.id, callback);
+                pollForObjectStateChange(cloud, call, 'state', 'running', (STATE_POLL_TIMEOUT), null, machine.id, callback);
             } else {
                 var noErrorLog = err.message && err.message.indexOf('QuotaExceeded') === 0;
                 if (noErrorLog) {
@@ -249,7 +249,7 @@ exports.init = function execute(log, config, done) {
         cloud.renameMachine(options.uuid, options, function (err) {
             if (!err) {
                 // poll for machine name change (rename)
-                pollForObjectStateChange(call, 'name', options.name, (STATE_POLL_TIMEOUT), null, options.uuid, callback);
+                pollForObjectStateChange(cloud, call, 'name', options.name, (STATE_POLL_TIMEOUT), null, options.uuid, callback);
             } else {
                 (callback || call.error)(err);
             }
@@ -262,7 +262,7 @@ exports.init = function execute(log, config, done) {
         cloud.resizeMachine(options.uuid, options, function (err) {
             if (!err) {
                 // poll for machine package change (resize)
-                pollForObjectStateChange(call, 'package', options.packageName, null, null, options.uuid, callback);
+                pollForObjectStateChange(cloud, call, 'package', options.packageName, null, null, options.uuid, callback);
             } else {
                 var noErrorLog = err.message && err.message.indexOf('Invalid VM update parameters') !== -1;
                 (callback || call.error)(err, noErrorLog);
@@ -275,7 +275,7 @@ exports.init = function execute(log, config, done) {
         var cloud = call.cloud.separate(options.datacenter);
         cloud.startMachine(options.uuid, function (err) {
             if (!err) {
-                pollForObjectStateChange(call, 'state', 'running', null, null, options.uuid, callback);
+                pollForObjectStateChange(cloud, call, 'state', 'running', null, null, options.uuid, callback);
             } else {
                 (callback || call.error)(err);
             }
@@ -287,7 +287,7 @@ exports.init = function execute(log, config, done) {
         var cloud = call.cloud.separate(options.datacenter);
         cloud.stopMachine(options.uuid, function (err) {
             if (!err) {
-                pollForObjectStateChange(call, 'state', 'stopped', null, null, options.uuid, callback);
+                pollForObjectStateChange(cloud, call, 'state', 'stopped', null, null, options.uuid, callback);
             } else {
                 (callback || call.error)(err);
             }
@@ -300,7 +300,7 @@ exports.init = function execute(log, config, done) {
         cache.set(options.uuid, 'deleting');
         cloud.deleteMachine(options.uuid, function (err) {
             if (!err) {
-                pollForObjectStateChange(call, 'state', 'deleted', null, null, options.uuid, function () {
+                pollForObjectStateChange(cloud, call, 'state', 'deleted', null, null, options.uuid, function () {
                     cache.del(options.uuid);
                     callback.apply(this, arguments);
                 });
@@ -316,7 +316,7 @@ exports.init = function execute(log, config, done) {
         var cloud = call.cloud.separate(options.datacenter);
         cloud.rebootMachine(options.uuid, function (err) {
             if (!err) {
-                pollForObjectStateChange(call, 'state', 'running', null, null, options.uuid, callback);
+                pollForObjectStateChange(cloud, call, 'state', 'running', null, null, options.uuid, callback);
             } else {
                 (callback || call.error)(err);
             }
@@ -501,7 +501,7 @@ exports.init = function execute(log, config, done) {
         cloud.updateImage(options.uuid, options, function (err) {
             if (!err) {
                 // poll for image name change (rename)
-                pollForObjectStateChange(call, 'name', options.name, (STATE_POLL_TIMEOUT), 'Image', options.uuid, callback);
+                pollForObjectStateChange(cloud, call, 'name', options.name, (STATE_POLL_TIMEOUT), 'Image', options.uuid, callback);
             } else {
                 call.done(err);
             }
@@ -517,7 +517,7 @@ exports.init = function execute(log, config, done) {
                 if (creatingImagesCache[options.imageId]) {
                     delete creatingImagesCache[options.imageId];
                 }
-                pollForObjectStateChange(call, 'state', 'deleted', (STATE_POLL_TIMEOUT), 'Image', options.imageId, callback);
+                pollForObjectStateChange(cloud, call, 'state', 'deleted', (STATE_POLL_TIMEOUT), 'Image', options.imageId, callback);
             } else {
                 var result = false;
                 if (err.restCode === 'NotAuthorized' && err.statusCode === 403 && cloud._subId) {
@@ -546,7 +546,7 @@ exports.init = function execute(log, config, done) {
                 cachedImage['published_at'] = options['published_at'];
                 cachedImage.public = false;
                 cachedImage.actionInProgress = true;
-                pollForObjectStateChange(call, 'state', 'active', (STATE_POLL_TIMEOUT), 'Image', image.id, callback);
+                pollForObjectStateChange(cloud, call, 'state', 'active', (STATE_POLL_TIMEOUT), 'Image', image.id, callback);
                 call.step = {
                     state: image.state
                 };
@@ -652,7 +652,7 @@ exports.init = function execute(log, config, done) {
         var cloud = call.cloud.separate(call.data.datacenter);
         cloud.enableFirewall(call.data.machineId, function (err) {
             if (!err) {
-                pollForObjectStateChange(call, 'firewall_enabled', true, null, null, call.data.machineId, callback);
+                pollForObjectStateChange(cloud, call, 'firewall_enabled', true, null, null, call.data.machineId, callback);
             } else {
                 call.error(err);
             }
@@ -664,7 +664,7 @@ exports.init = function execute(log, config, done) {
         var cloud = call.cloud.separate(call.data.datacenter);
         cloud.disableFirewall(call.data.machineId, function (err) {
             if (!err) {
-                pollForObjectStateChange(call, 'firewall_enabled', false, null, null, call.data.machineId, callback);
+                pollForObjectStateChange(cloud, call, 'firewall_enabled', false, null, null, call.data.machineId, callback);
             } else {
                 call.error(err);
             }
