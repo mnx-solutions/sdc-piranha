@@ -193,7 +193,11 @@ function createMethod(log, opts, selfName) {
         params = params || {};
 
         var raw = params.forceRaw || opts.raw;
+        var retries = params.retries || opts.retries || false;
+        var timeout = params.timeout || opts.timeout;
         delete params.forceRaw;
+        delete params.retries;
+        delete params.timeout;
 
         var self = this;
         var auditParams = JSON.parse(JSON.stringify(params));
@@ -209,8 +213,8 @@ function createMethod(log, opts, selfName) {
             log: log,
             path: Dtrace.formatUrl(path, params),
             method: opts.method || 'GET',
-            retries: opts.retries || false,
-            connectTimeout: opts.timeout,
+            retries: retries,
+            connectTimeout: timeout,
             headers: opts.headers || {}
         };
         var query = getQuery(params, options, opts);

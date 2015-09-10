@@ -387,8 +387,12 @@ var Docker = function execute(log, config) {
                             if (getVersion) {
                                 var client = Docker.createClient(call, host);
                                 client.getVersion(function (error, version) {
+                                    if (error) {
+                                        return callback(null, []);
+                                    }
+
                                     host.dockerVersion = version;
-                                    callback(error, [host]);
+                                    callback(null, [host]);
                                 });
                                 return;
                             }
@@ -871,7 +875,7 @@ var Docker = function execute(log, config) {
             return data && data.options && typeof data.options.name === 'string' && data.registry;
         },
         handler: function (call) {
-            if (call.data.registry === 'local'){
+            if (call.data.registry === 'local') {
                 Docker.searchPrivateImageTags(call, call.data.options.name, call.done.bind(call));
                 return;
             }
