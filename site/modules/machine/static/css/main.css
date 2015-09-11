@@ -269,10 +269,12 @@
     height: 220px;
     margin: 0 10px 10px 0;
 
-    cursor: pointer;
-
     border-radius: 3px;
     background-color: #eef0f2;
+}
+
+.simple-image-browse {
+    cursor: pointer;
 }
 
 .simple-image:hover {
