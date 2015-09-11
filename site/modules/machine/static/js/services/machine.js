@@ -407,6 +407,8 @@
                             var messageBody = 'Unable to execute command "{{command}}" for instance {{uuid}}.';
                             if (err.body && err.body.errors && err.body.errors.length) {
                                 messageBody += '<br>' + err.body.errors[0].message;
+                            } else if (err.message) {
+                                messageBody += '<br>' + err.message;
                             }
                             var message = localization.translate(
                                 null,
