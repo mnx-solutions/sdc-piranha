@@ -833,6 +833,7 @@
 .review .right .create-mdata .key-container input,
 .review .right .create-mdata .value-container .value-width {
     width: 324px;
+    resize: vertical;
 }
 
 .info .section-title,
