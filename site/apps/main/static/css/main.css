@@ -2630,7 +2630,7 @@ a.orange-link {
     height: auto;
 }
 
-.panel-body table td {
+.panel-body table:not(.tabs-wrapper) td {
     color: #7d7d7d;
 
     line-height: 28px;
