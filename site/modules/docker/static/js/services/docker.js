@@ -9,9 +9,19 @@
             return;
         }
 
+        var CONTAINER_ACTIONS = {
+            start: 'start',
+            restart: 'restart',
+            pause: 'pause',
+            unpause: 'unpause',
+            stop: 'stop',
+            kill: 'kill',
+            remove: 'remove',
+            inspect: 'inspect',
+            logs: 'logs'
+        };
         var dockerVersions = window.JP.get('dockerVersions');
         var service = {cache: {}, jobs: {}, version: dockerVersions.dockerVersion};
-        var containerActions = ['start', 'stop', 'pause', 'unpause', 'inspect', 'restart', 'kill', 'logs', 'remove'];
         var imageActions = ['remove', 'inspect', 'history'];
         var caches = ['containers', 'images', 'topImages', 'registriesList'];
         caches.forEach(function (cache) {
@@ -49,10 +59,7 @@
             },
             start: function (cache, id) {
                 var container = cache.get(id);
-                if (container && container.Status && container.Status.indexOf('Paused') !== -1) {
-                    PopupDialog.errorObj('Cannot start container ' + id + '. Container ' + id + '  is paused. Unpause the container.');
-                }
-                if (container && container.Status && container.Status.indexOf('Paused') === -1) {
+                if (container && container.Status) {
                     container.state = 'running';
                     container.Status = 'Up moments ago';
                     cache.put(container);
@@ -105,7 +112,7 @@
 
         service.errorCallback = function (err, callback) {
             var messageMantaUnavailable = 'Manta service is not available.';
-            if ((err.message && err.message.indexOf(messageMantaUnavailable) >= 0) ||
+            if ((err && err.message && err.message.indexOf(messageMantaUnavailable) >= 0) ||
                 (err && typeof (err) === 'string' && err.indexOf(messageMantaUnavailable) >= 0)) {
                 errorContext.emit(new Error(localization.translate(null,
                     'docker',
@@ -479,7 +486,8 @@
             return createCall('getVersion', options);
         };
 
-        containerActions.forEach(function (action) {
+        Object.keys(CONTAINER_ACTIONS).forEach(function (action) {
+            action = CONTAINER_ACTIONS[action];
             service[action + 'Container'] = function (container, opts) {
                 if (!container) {
                     return;
@@ -517,8 +525,15 @@
                         if (container.isSdc && action === 'remove') {
                             Machine.removeSdcFromInstancesList(util.idToUuid(container.Id));
                         }
-                        if (containerDoneHandler[action] && cache) {
-                            containerDoneHandler[action](cache, options.options.id);
+                        if (containerDoneHandler[action]) {
+                            if (container.Status &&
+                                container.Status.indexOf('Paused') !== -1 &&
+                                action !== CONTAINER_ACTIONS.unpause) {
+                                PopupDialog.errorObj('Cannot ' + action + ' container ' + container.Id +
+                                    '. Container ' + container.Id + '  is paused. Unpause the container.');
+                            } else if (cache) {
+                                containerDoneHandler[action](cache, options.options.id);
+                            }
                         }
                         var data = job.__read();
                         if (action !== 'logs' && !data.containerId) {

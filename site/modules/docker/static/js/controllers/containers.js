@@ -374,7 +374,7 @@
                         container.actionInProgress = false;
                         getStatsWithInterval(true);
                         Docker.cache['containers'].reset();
-                    });
+                    }, errorCallback);
                 };
 
                 function processContainerAction(action) {
@@ -397,7 +397,6 @@
                                 return errorCallback(message);
                             }
                         }
-                        var deferred = $q.defer();
                         var command = action;
                         container.actionInProgress = true;
                         if (action === 'createImage') {
@@ -410,7 +409,7 @@
                             container.isRemoving = true;
                             Docker.setRemoving('containers', container.Id);
                         }
-                        Docker[command](container).then(function (response) {
+                        var promise = Docker[command](container).then(function (response) {
                             if (action === 'remove') {
                                 $scope.containers = $scope.containers.filter(function (item) {
                                     return container.Id !== item.Id;
@@ -423,14 +422,14 @@
                                     processContainerComplete(container);
                                 }
                             });
-                            deferred.resolve(response);
+                            return response;
                         }, function (err) {
-                            deferred.reject(err);
                             errorCallback(err);
                             processContainerComplete(container);
                             listAllContainers(false);
+                            return $q.reject(err);
                         });
-                        promises.push(deferred.promise);
+                        promises.push(promise);
                     });
 
                     $q.all(promises).then(function () {

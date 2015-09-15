@@ -201,6 +201,9 @@ var Docker = function execute(log, config) {
             return removeContainer(call, client, container, data.options, function (err) {
                 var ports = [];
                 if (err) {
+                    if (typeof err === 'string' && err.indexOf('Cannot destroy container') !== -1) {
+                        callback(err);
+                    }
                     return call.log.warn(err.message || err, true);
                 }
                 if (container.Ports && container.Ports.length > 0) {

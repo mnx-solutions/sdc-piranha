@@ -84,7 +84,7 @@
                     <p data-translate>Unpause</p>
                 </button>
 
-                <button data-ng-disabled="actionInProgress"
+                <button data-ng-disabled="container.state === 'paused' || actionInProgress"
                         data-ng-click="makeContainerAction('remove')"
                         data-translate-attributes="data-original-title"
                         data-toggle="tooltip"
