@@ -394,18 +394,13 @@
                             $location.path('/docker/image/create/' + container.hostId + '/' + container.Id);
                             return;
                         }
-
-                        PopupDialog.confirm(
-                            localization.translate(
-                                $scope,
-                                null,
-                                messageTitle
-                            ),
-                            localization.translate(
-                                $scope,
-                                null,
-                                messageBody[$scope.checkedItems.length > 1 ? 'plural' : 'single']
-                            ), function () {
+                        PopupDialog.confirmAction(
+                            messageTitle,
+                            action,
+                            'container',
+                            $scope.checkedItems.length,
+                            messageBody,
+                            function () {
                                 processContainerAction(action);
                             }
                         );
@@ -422,56 +417,57 @@
                     {
                         label: 'Start',
                         action: function () {
-                            makeContainerAction('start', 'Confirm: Start containers', gridMessages.start);
+                            makeContainerAction('start', 'Start containers');
                         },
                         sequence: 1
                     },
                     {
                         label: 'Stop',
                         action: function () {
-                            makeContainerAction('stop', 'Confirm: Stop containers', gridMessages.stop);
+                            makeContainerAction('stop', 'Stop containers');
                         },
                         sequence: 2
                     },
                     {
                         label: 'Pause',
                         action: function () {
-                            makeContainerAction('pause', 'Confirm: Pause containers', gridMessages.pause);
+                            makeContainerAction('pause', 'Pause containers');
                         },
                         sequence: 3
                     },
                     {
                         label: 'Unpause',
                         action: function () {
-                            makeContainerAction('unpause', 'Confirm: Unpause containers', gridMessages.unpause);
+                            makeContainerAction('unpause', 'Unpause containers');
                         },
                         sequence: 4
                     },
                     {
                         label: 'Remove',
                         action: function () {
-                            makeContainerAction('remove', 'Confirm: Remove containers', gridMessages.remove);
+                            makeContainerAction('remove', 'Remove containers');
                         },
                         sequence: 5
                     },
                     {
                         label: 'Kill',
                         action: function () {
-                            makeContainerAction('kill', 'Confirm: Kill containers', gridMessages.kill);
+                            makeContainerAction('kill', 'Kill containers');
                         },
                         sequence: 6
                     },
                     {
                         label: 'Restart',
                         action: function () {
-                            makeContainerAction('restart', 'Confirm: Restart containers', gridMessages.restart);
+                            makeContainerAction('restart', 'Restart containers');
                         },
                         sequence: 7
                     },
                     {
                         label: 'Create Image',
                         action: function () {
-                            makeContainerAction('createImage', 'Confirm: Create images from containers', gridMessages.createImage);
+                            makeContainerAction('createImage', 'Create images from containers',
+                                'Please confirm that you want to create images from selected containers.');
                         },
                         sequence: 7
                     }

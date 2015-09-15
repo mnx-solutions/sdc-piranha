@@ -94,31 +94,15 @@
                     }
                 ];
 
-                var gridMessages = {
-                    delete: {
-                        single: 'Please confirm that you want to remove this script.',
-                        plural: 'Please confirm that you want to remove selected scripts.'
-                    }
-                };
-
                 $scope.gridActionButtons = [
                     {
                         label: 'Delete',
                         action: function () {
-                            if (!$scope.checkedItems.length) {
-                                return PopupDialog.noItemsSelectedError('scripts');
-                            }
-                            PopupDialog.confirm(
-                                localization.translate(
-                                    $scope,
-                                    null,
-                                    'Confirm: Delete script'
-                                ),
-                                localization.translate(
-                                    $scope,
-                                    null,
-                                    gridMessages.delete[$scope.checkedItems.length > 1 ? 'plural' : 'single']
-                                ),
+                            PopupDialog.confirmAction(
+                                'Delete script',
+                                'delete',
+                                'script',
+                                $scope.checkedItems.length,
                                 function () {
                                     var selectedScripts = $scope.checkedItems.filter(function (script) {
                                         if (script.type === DTrace.SCRIPT_TYPES.remote) {

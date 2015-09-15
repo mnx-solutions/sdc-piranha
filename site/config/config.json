@@ -239,6 +239,7 @@
       "packagePrefix": "t4-"
     }
   ],
+  "networkingDatacenters": [],
   "subUserDenied": [
     "slb",
     "provisioningLimits",
@@ -249,7 +250,8 @@
     "cloudAnalytics",
     "cdn",
     "docker",
-    "dtrace"
+    "dtrace",
+    "networking"
   ],
   "features": {
     "privateSdc": "disabled",
@@ -282,6 +284,7 @@
     "mdb": "enabled",
     "rbac": "enabled",
     "cloudAnalytics": "enabled",
+    "networking": "enabled",
     "downloadSdc": "no",
     "limitedSlb": "yes",
     "cdn": "yes",

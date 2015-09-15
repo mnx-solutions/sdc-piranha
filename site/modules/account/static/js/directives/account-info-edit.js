@@ -8,7 +8,8 @@
         '$q',
         '$location',
         '$rootScope',
-        function (Account, localization, PopupDialog, $q, $location, $rootScope) {
+        'util',
+        function (Account, localization, PopupDialog, $q, $location, $rootScope, util) {
 
             return {
                 restrict: 'A',
@@ -41,24 +42,9 @@
                     };
 
                     $scope.isError = function (field, errorType) {
-                        var isPresent = false;
-
-                        if ($scope.formSubmitted &&
-                            $scope.accountForm[field].$invalid &&
-                            $scope.accountForm[field].$error.required &&
-                            errorType === 'required') {
-                            return true;
-                        }
-                        if ($scope.accountForm[field].$dirty) {
-                            Object.keys($scope.accountForm[field].$error).some(function (key) {
-                                if ($scope.accountForm[field].$error[key] && (!errorType || key === errorType)) {
-                                    isPresent = true;
-                                    return true;
-                                }
-                            });
-                        }
-
-                        return isPresent;
+                        var form = $scope.accountForm;
+                        form.submitted = $scope.formSubmitted;
+                        return util.isFormInvalid(form, field, errorType);
                     };
 
                     $scope.submitForm = function () {

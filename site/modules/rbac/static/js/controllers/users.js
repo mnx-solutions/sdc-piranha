@@ -24,10 +24,6 @@
             };
             getUsersList();
 
-            $scope.noCheckBoxChecked = function () {
-                PopupDialog.noItemsSelectedError('user');
-            };
-
             if ($scope.features.manta === 'enabled') {
                 $scope.gridUserConfig = 'rbac-users';
             }
@@ -154,39 +150,28 @@
                 {
                     label: 'Delete',
                     action: function () {
-                        if ($scope.checkedItems.length) {
-                            var titleEnding = $scope.checkedItems.length === 1 ? '' : 's';
-                            PopupDialog.confirm(
-                                localization.translate(
-                                    $scope,
-                                    null,
-                                    'Confirm: Delete user' + titleEnding
-                                ),
-                                localization.translate(
-                                    $scope,
-                                    null,
-                                    'Are you sure you want to delete the selected user' + titleEnding + '?'
-                                ),
-                                function () {
-                                    $scope.loading = true;
-                                    var deleteUsernames = {};
-                                    var deleteIds = $scope.checkedItems.map(function (item) {
-                                        deleteUsernames[item.id] = item.login;
-                                        return item.id;
-                                    });
-                                    service.deleteUser(deleteIds, deleteUsernames).then(function () {
-                                        getUsersList();
-                                        $scope.checkedItems = [];
-                                    }, function (err) {
-                                        service.updateCache({ids: deleteIds}, {}, 'user', service.ACCESS.WRITE);
-                                        PopupDialog.errorObj(err);
-                                        getUsersList();
-                                    });
-                                }
-                            );
-                        } else {
-                            $scope.noCheckBoxChecked();
-                        }
+                        PopupDialog.confirmAction(
+                            'Delete user',
+                            'delete',
+                            'user',
+                            $scope.checkedItems.length,
+                            function () {
+                                $scope.loading = true;
+                                var deleteUsernames = {};
+                                var deleteIds = $scope.checkedItems.map(function (item) {
+                                    deleteUsernames[item.id] = item.login;
+                                    return item.id;
+                                });
+                                service.deleteUser(deleteIds, deleteUsernames).then(function () {
+                                    getUsersList();
+                                    $scope.checkedItems = [];
+                                }, function (err) {
+                                    service.updateCache({ids: deleteIds}, {}, 'user', service.ACCESS.WRITE);
+                                    PopupDialog.errorObj(err);
+                                    getUsersList();
+                                });
+                            }
+                        );
                     },
                     sequence: 1
                 }

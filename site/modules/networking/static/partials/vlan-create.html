@@ -1,0 +1,106 @@
+<div class="container-fluid container-position" data-ng-controller="Vlan.CreateController">
+
+    <ul class="breadcrumb">
+        <li><a href="#!/compute">Compute</a></li><!--
+     --><li><a href="#!/vlans">Vlans</a></li>
+    </ul>
+    <h3 class="page-title">
+        Create Fabric VLan
+    </h3>
+
+    <div class="row">
+        <div class="first-block edit-form">
+            <form name="vlanForm" class="row vlan-create">
+                <fieldset class="line">
+                    <div class="form-group">
+                        <span class="edit-name orange-asterix" data-translate>
+                            Name
+                        </span>
+                        <span class="edit-value">
+                            <input type="text"
+                                   id="name"
+                                   name="name"
+                                   data-ng-model="vlan.name"
+                                   data-auto-focus
+                                   data-ng-pattern="vlanName.pattern"
+                                   data-ng-class="{error: isError('name')}"
+                                   required />
+                        </span>
+                        <div class="edit-error">
+                            <div class="error"
+                                 data-translate
+                                 data-ng-show="isError('name', 'required')">
+                                Missing name.
+                            </div>
+                            <div class="error"
+                                 data-translate
+                                 data-ng-show="isError('name', 'pattern')">
+                                {{vlanName.errorMessage}}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <span class="edit-name orange-asterix">Data Center</span>
+                        <span class="edit-value">
+                            <select ui-select2="{minimumResultsForSearch: 1, width: '99%'}"
+                                    id="dcSelect"
+                                    data-ng-model="vlan.datacenter">
+                                <option data-ng-repeat="datacenter in datacenters | orderBy:$index" value="{{datacenter}}">
+                                    {{datacenter}}
+                                </option>
+                            </select>
+                        </span>
+                    </div>
+
+                    <div class="form-group">
+                        <span class="edit-name orange-asterix" data-translate>
+                            ID
+                        </span>
+                        <span class="edit-value">
+                             <input type="text"
+                                    id="id"
+                                    name="id"
+                                    data-ng-pattern="/^(\d)*$/"
+                                    data-ng-model="vlan.vlan_id"
+                                    data-ng-class="{error: isError('id')}"
+                                    required />
+                        </span>
+                        <div class="edit-error">
+                            <div class="error"
+                                 data-translate
+                                 data-ng-show="isError('id', 'required')">
+                                Missing ID
+                            </div>
+                            <div class="error"
+                                 data-translate
+                                 data-ng-show="isError('id', 'pattern')">
+                                Must contain only digits.
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <span class="edit-name">Description</span>
+                        <span class="edit-value">
+                             <textarea type="text"
+                                       name="description"
+                                       data-ng-model="vlan.description">
+                             </textarea>
+                        </span>
+                    </div>
+                </fieldset>
+
+                <hr />
+                <div class="row btn-bottom-block">
+                    <span class="orange-asterix-left">&nbsp;required fields</span>
+                    <div class="pull-right">
+                        <button type="button" class="btn" data-ng-disabled="creating" data-ng-click="goToVlansPage()">Cancel</button>
+                        <button type="submit" class="btn orange" data-ng-disabled="vlanForm.$invalid || creating" data-ng-click="createVlan()">Create VLAN</button>
+                    </div>
+                    <div class="pull-right loading-medium-transparent" data-ng-show="creating"></div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

@@ -75,6 +75,38 @@
             return messageBox(title, question, btns, 'dialog/static/partials/confirmationDialog.html', callbackOk, callbackCancel);
         };
 
+
+        factory.confirmAction = function (confirmTitle, action, itemName, itemAmount, confirmMessage, callbackOk, callbackCancel) {
+            var singleName = itemName.single || itemName;
+            var pluralName = itemName.plural || itemName + 's';
+            if (!itemAmount) {
+                return factory.noItemsSelectedError(pluralName);
+            }
+            itemName = itemAmount > 1 ? pluralName : singleName;
+            if (typeof confirmMessage === 'function') {
+                callbackCancel = callbackOk;
+                callbackOk = confirmMessage;
+                confirmMessage = null;
+            }
+            var title =  localization.translate(
+                null,
+                null,
+                'Confirm: {{confirm}}.',
+                {confirm: confirmTitle}
+            );
+            if (confirmMessage) {
+                confirmMessage = (itemAmount > 1 ? confirmMessage.plural : confirmMessage.single) || confirmMessage;
+            }
+            var question = localization.translate(
+                null,
+                null,
+                confirmMessage || 'Please confirm that you want to {{action}} {{additional}} {{item}}.',
+                {action: action, additional: itemAmount > 1 ? 'selected' : 'this',  item:  itemName}
+            );
+
+            factory.confirm(title, question, callbackOk, callbackCancel);
+        };
+
         factory.error = function (title, question, callback) {
             if ((ng.isObject(question) && !question.error && !Array.isArray(question)) || question.code === 'EHOSTUNREACH') {
                 return;

@@ -1,0 +1,37 @@
+<div class="container-fluid container-position" data-ng-controller="Networking.NetworksController">
+    <div data-breadcrumbs></div>
+    <div class="page-header row">
+        <h3 class="page-title">Networks</h3>
+        <div class="page-title-btn">
+            <a data-ng-click="gotoCreatePage()">
+                <button type="button" class="btn big orange"><i class="plus-btn-icon"></i>
+                    Create Fabric Network</button>
+            </a>
+        </div>
+    </div>
+
+    <div class="loading-large col-md-12" data-ng-show="loading"></div>
+    <div data-ng-show="networks.length && !loading">
+        <div data-grid-view
+             data-user-config="gridUserConfig"
+             data-props="gridProps"
+             data-detail-props="gridDetailProps"
+             data-action-buttons="gridActionButtons"
+             data-columns-button="columnsButton"
+             data-search-form="searchForm"
+             data-items="networks"
+             data-order="gridOrder"
+             data-multisort="false"
+             data-filter-all="{{query}}"
+             data-enabled-checkboxes="enabledCheckboxes"
+             data-place-Holder-Text="placeHolderText"
+             data-export-fields="exportFields"
+             data-items-type="network"
+             data-tab-filter-field="tabFilterField"
+             data-checked-items="checkedItems">
+        </div>
+    </div>
+    <div data-ng-show="networks.length < 1 && !loading">
+        <div class="notified indent-medium">You don't have fabric networks</div>
+    </div>
+</div>

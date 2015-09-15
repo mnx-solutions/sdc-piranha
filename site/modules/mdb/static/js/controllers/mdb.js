@@ -88,13 +88,6 @@
                 return result;
             };
 
-            var actionMessages = {
-                delete: {
-                    single: 'Are you sure you want to delete the selected job?',
-                    plural: 'Are you sure you want to delete the selected jobs?'
-                }
-            };
-
             $scope.gridProps = [
                 {
                     id: 'jobId',
@@ -169,7 +162,21 @@
                 {
                     label: 'Delete',
                     action: function () {
-                        makeJobAction('Confirm: Delete job', actionMessages.delete);
+                        PopupDialog.confirmAction(
+                            'Delete job',
+                            'delete',
+                            'job',
+                            $scope.checkedItems.length,
+                            function () {
+                                $scope.loading = true;
+                                var deleteIds = $scope.checkedItems.map(function (item) {
+                                    return item.jobId;
+                                });
+                                mdb.deleteJob(deleteIds).then(function () {
+                                    getJobsList();
+                                }, errorCallback);
+                            }
+                        );
                     },
                     sequence: 1
                 }
@@ -187,37 +194,6 @@
                 PopupDialog.errorObj(err);
             };
 
-            $scope.noCheckBoxChecked = function () {
-                PopupDialog.noItemsSelectedError('job');
-            };
-
-            function makeJobAction(messageTitle, messageBody) {
-                if ($scope.checkedItems.length) {
-                    PopupDialog.confirm(
-                        localization.translate(
-                            $scope,
-                            null,
-                            messageTitle
-                        ),
-                        localization.translate(
-                            $scope,
-                            null,
-                            $scope.checkedItems.length > 1 ? messageBody.plural : messageBody.single
-                        ),
-                        function () {
-                            $scope.loading = true;
-                            var deleteIds = $scope.checkedItems.map(function (item) {
-                                return item.jobId;
-                            });
-                            mdb.deleteJob(deleteIds).then(function () {
-                                getJobsList();
-                            }, errorCallback);
-                        }
-                    );
-                } else {
-                    $scope.noCheckBoxChecked();
-                }
-            }
             var getJobsList = function () {
                 mdb.getDebugJobsList().then(function (list) {
                     $scope.mantaUnavailable = false;

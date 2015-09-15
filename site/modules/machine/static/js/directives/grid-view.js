@@ -102,7 +102,7 @@
         function areAllPagedItemsChecked() {
             if ($scope.pagedItems && $scope.pagedItems.length) {
                 return $scope.pagedItems.every(function (item) {
-                    return item.checked;
+                    return item.checked || $scope.isCheckBoxDisabled(item);
                 });
             }
             return false;
@@ -487,7 +487,7 @@
             $scope.checkedAllCheckBox = !$scope.checkedAllCheckBox;
 
             $scope.pagedItems.forEach(function (el) {
-                el.checked = $scope.checkedAllCheckBox;
+                el.checked = $scope.checkedAllCheckBox && !$scope.isCheckBoxDisabled(el);
             });
 
             $scope.checkedItems = $scope.checkedAllCheckBox ? $scope.pagedItems : [];
@@ -513,7 +513,7 @@
         };
 
         $scope.isCheckBoxDisabled = function (el) {
-            return actionInProgress(el);
+            return actionInProgress(el) || el.actionImpossible;
         };
 
         $scope.$watch('items', function (items) {
@@ -560,7 +560,7 @@
 
             $scope.pagedItems.forEach(function (el) {
                 var itemId = el.id || el.uuid || el.$$hashKey;
-                if (itemId === id && !actionInProgress(el)) {
+                if (itemId === id && !$scope.isCheckBoxDisabled(el)) {
                     el.checked = !el.checked;
                 }
                 if (el.deleteJob) {

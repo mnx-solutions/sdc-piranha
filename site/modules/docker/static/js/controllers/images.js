@@ -183,18 +183,7 @@
                     }
                 ];
 
-                var gridMessages = {
-                    remove: {
-                        single: 'Please confirm that you want to remove this image.',
-                        plural: 'Please confirm that you want to remove selected images.'
-                    },
-                    push: {
-                        single: 'Please confirm that you want to push this image.',
-                        plural: 'Please confirm that you want to push selected images.'
-                    }
-                };
-
-                function makeImageAction(action, messageTitle, messageBody) {
+                function makeImageAction(action, messageTitle) {
                     var messageGroup = '';
                     if ($scope.checkedItems.length) {
                         var groupingImages = [];
@@ -244,17 +233,11 @@
                             });
                         };
                         if (messageTitle) {
-                            PopupDialog.confirm(
-                                localization.translate(
-                                    $scope,
-                                    null,
-                                    messageTitle
-                                ),
-                                localization.translate(
-                                    $scope,
-                                    null,
-                                    messageBody[$scope.checkedItems.length > 1 ? 'plural' : 'single'] + messageGroup
-                                ),
+                            PopupDialog.confirmAction(
+                                messageTitle,
+                                'remove',
+                                'image',
+                                $scope.checkedItems.length,
                                 actionFunction
                             );
                         } else {
@@ -274,7 +257,7 @@
                     {
                         label: 'Remove',
                         action: function () {
-                            makeImageAction('remove', 'Confirm: Remove images', gridMessages.remove);
+                            makeImageAction('remove', 'Confirm: Remove images');
                         },
                         show: function () {
                             return $scope.tab !== 'all';

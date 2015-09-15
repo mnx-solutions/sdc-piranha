@@ -13,6 +13,7 @@
     "storage",
     "docker",
     "machine",
+    "networking",
     "firewall",
     "menu",
     "left",

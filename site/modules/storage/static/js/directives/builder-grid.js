@@ -9,51 +9,6 @@
             },
 
             link: function (scope) {
-                function showPopupDialog(level, title, message, callback) {
-                    return PopupDialog[level](
-                        title ? localization.translate(scope, null, title) : null,
-                        message ? localization.translate(scope, null, message) : null,
-                        callback
-                    );
-                }
-
-                function deleteRecord(messageBody) {
-                    if (scope.checkedItems.length) {
-                        PopupDialog.confirm(
-                            localization.translate(
-                                scope,
-                                null,
-                                'Confirm: Delete record'
-                            ),
-                            localization.translate(
-                                scope,
-                                null,
-                                (function () {
-                                    var result = messageBody.single;
-                                    if (scope.checkedItems.length > 1) {
-                                        result = messageBody.plural;
-                                    }
-                                    return result;
-                                }())
-                            ),
-                            function () {
-                                scope.objects = scope.objects.filter(function (el) {
-                                    return !el.checked;
-                                });
-                                scope.checkedItems = [];
-                            }
-                        );
-                    } else {
-                        showPopupDialog('error', 'Error', 'No item selected for the action.');
-                    }
-                }
-                var gridMessages = {
-                    delete: {
-                        single: 'Delete this record ?',
-                        plural: 'Delete selected records ?'
-                    }
-                };
-
                 scope.gridOrder = [];
                 scope.gridProps = [
                     {
@@ -63,16 +18,27 @@
                         active: true
                     }
                 ];
+
                 scope.gridActionButtons = [
                     {
                         label: 'Delete',
                         action: function () {
-                            deleteRecord(gridMessages.delete);
+                            PopupDialog.confirmAction(
+                                'Delete record',
+                                'delete',
+                                'record',
+                                scope.checkedItems.length,
+                                function () {
+                                    scope.objects = scope.objects.filter(function (el) {
+                                        return !el.checked;
+                                    });
+                                    scope.checkedItems = [];
+                                }
+                            );
                         },
                         sequence: 1
                     }
                 ];
-
 
                 scope.exportFields = {
                     ignore: 'all'

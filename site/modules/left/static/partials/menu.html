@@ -8,7 +8,7 @@
                     <span class="selected"></span>
                 </a>
             </li>
-            <li class="nested" data-ng-class="{'active open': location.path().search('compute') == 1 || location.path().search('slb') == 1 || location.path().search('firewall') == 1 || location.path().search('images')==1}">
+            <li class="nested" data-ng-class="{'active open': location.path().search('compute') == 1 || location.path().search('slb') == 1 || location.path().search('firewall') == 1 || location.path().search('images')==1 || location.path().search('network')==1 || location.path().search('vlan')==1}">
                     <a href="#!/compute" class="compute-icon">
                     <span class="title">Compute</span>
                     <span class="selected"></span>
@@ -41,6 +41,18 @@
                     <li class="sub" data-ng-class="{active: location.path().search('images') == 1}" data-ng-show="features.imageUse != 'disabled'">
                         <a href="#!/images">
                             <span class="titles">Images</span>
+                            <span class="selected-sub"></span>
+                        </a>
+                    </li>
+                    <li class="sub" data-ng-class="{active: location.path().search('network') == 1}" data-ng-show="features.networking != 'disabled'">
+                        <a href="#!/networks">
+                            <span class="titles">Networks</span>
+                            <span class="selected-sub"></span>
+                        </a>
+                    </li>
+                    <li class="sub" data-ng-class="{active: location.path().search('vlan') == 1}" data-ng-show="features.networking != 'disabled'">
+                        <a href="#!/vlans">
+                            <span class="titles">VLans</span>
                             <span class="selected-sub"></span>
                         </a>
                     </li>

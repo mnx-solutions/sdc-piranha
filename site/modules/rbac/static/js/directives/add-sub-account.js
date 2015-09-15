@@ -4,7 +4,8 @@
     app.directive('addSubAccount', [
         'localization',
         '$http',
-        function (localization, $http) {
+        'util',
+        function (localization, $http, util) {
 
             return {
                 restrict: 'A',
@@ -18,18 +19,9 @@
                     $scope.countries = $http.get('billing/countries');
 
                     $scope.isError = function (field, errorType) {
-                        var isPresent = false;
-                        if ($scope.subAccountForm[field].$dirty) {
-                            Object.keys($scope.subAccountForm[field].$error).some(function (key) {
-                                if ($scope.subAccountForm[field].$error[key] && (!errorType || key === errorType)) {
-                                    isPresent = true;
-                                    return true;
-                                }
-                                return false;
-                            });
-                        }
-
-                        return isPresent;
+                        var form = $scope.subAccountForm;
+                        form.submitted = $scope.formSubmitted;
+                        return util.isFormInvalid(form, field, errorType);
                     };
 
                     window.jQuery('.glyphicon.glyphicon-info-sign').tooltip();

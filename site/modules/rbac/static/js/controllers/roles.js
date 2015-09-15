@@ -27,10 +27,6 @@
                 $scope.loading = false;
             };
 
-            $scope.noCheckBoxChecked = function () {
-                PopupDialog.noItemsSelectedError('role');
-            };
-
             if ($scope.features.manta === 'enabled') {
                 $scope.gridUserConfig = 'rbac-roles';
             }
@@ -79,36 +75,25 @@
                 {
                     label: 'Delete',
                     action: function () {
-                        if ($scope.checkedItems.length) {
-                            var titleEnding = $scope.checkedItems.length === 1 ? '' : 's';
-                            PopupDialog.confirm(
-                                localization.translate(
-                                    $scope,
-                                    null,
-                                    'Confirm: Delete role' + titleEnding
-                                ),
-                                localization.translate(
-                                    $scope,
-                                    null,
-                                    'Are you sure you want to delete the selected role' + titleEnding + '?'
-                                ),
-                                function () {
-                                    $scope.loading = true;
-                                    var deleteIds = $scope.checkedItems.map(function (item) {
-                                        return item.id;
-                                    });
-                                    service.deleteRole(deleteIds).then(function () {
-                                        service.listRoles().then(function (roles) {
-                                            $scope.roles = roles;
-                                            $scope.loading = false;
-                                            $scope.checkedItems = [];
-                                        }, errorCallback);
+                        PopupDialog.confirmAction(
+                            'Delete role',
+                            'delete',
+                            'role',
+                            $scope.checkedItems.length,
+                            function () {
+                                $scope.loading = true;
+                                var deleteIds = $scope.checkedItems.map(function (item) {
+                                    return item.id;
+                                });
+                                service.deleteRole(deleteIds).then(function () {
+                                    service.listRoles().then(function (roles) {
+                                        $scope.roles = roles;
+                                        $scope.loading = false;
+                                        $scope.checkedItems = [];
                                     }, errorCallback);
-                                }
-                            );
-                        } else {
-                            $scope.noCheckBoxChecked();
-                        }
+                                }, errorCallback);
+                            }
+                        );
                     },
                     sequence: 1
                 }

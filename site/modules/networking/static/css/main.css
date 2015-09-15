@@ -1,0 +1,101 @@
+.left-part {
+    min-width: 660px;
+}
+
+.form-group .edit-error {
+    margin-right: 120px;
+}
+
+.vlan-detail .form-group .edit-error {
+    margin-right: 25px;
+}
+
+.form-group textarea {
+    min-width: 456px;
+    max-width: 456px;
+    min-height: 90px;
+}
+
+.edit-value.range input {
+    width: 200px;
+}
+
+.edit-value.range input:first-child {
+    margin-right: 28px;
+}
+
+.edit-value .route,
+.edit-value .vlan-fields {
+    display: inline-block;
+    margin-bottom: 10px;
+}
+
+.edit-value.range .route input:first-child {
+    margin-right: 14px;
+}
+
+.select2-choice {
+    background-color: #fafcfd;
+}
+
+.dropdown-select .arrow,
+.dropdown-select-wrapper .action-button {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    bottom: 0;
+    margin: auto;
+    cursor: pointer;
+    font-weight: 700;
+}
+.dropdown-select .dropdown-menu {
+    width: 100%;
+    border-top: none;
+}
+.dropdown-select .dropdown-menu > li {
+    padding: 5px 10px;
+    cursor: pointer;
+}
+.dropdown-select .dropdown-menu > li:hover {
+    background-color: #eee;
+}
+.volume-section .edit-label {
+    height: 28px;
+    margin: 0;
+    padding-left: 10px;
+    vertical-align: top;
+    background: #c4e4ff;
+    line-height: 28px;
+}
+.volume-section .edit-value {
+    width: 500px;
+}
+.volume-section .dropdown-select {
+    border: none;
+}
+.dropdown-select-wrapper .results {
+    position: relative;
+    margin-right: 25px;
+    background: #e9e9e9;
+}
+.dropdown-select-wrapper {
+    position: relative;
+}
+.dropdown-select-wrapper .results > div {
+    position: relative;
+    overflow: hidden;
+    padding: 3px 20px 3px 5px;
+    text-overflow: ellipsis;
+    word-wrap: break-word;
+}
+.dropdown-select-wrapper .action-button {
+    width: 13px;
+    height: 100%;
+}
+.dropdown-select input {
+    width: 97%;
+}
+.tag-editor {
+    width: 100%;
+    min-height: 26px;
+}

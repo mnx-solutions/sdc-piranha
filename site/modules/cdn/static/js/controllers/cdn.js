@@ -226,41 +226,6 @@
                 );
             };
 
-            function deleteConfiguration(messageTitle, messageBody) {
-                if (scope.checkedItems.length) {
-                    PopupDialog.confirm(
-                        localization.translate(
-                            scope,
-                            null,
-                            messageTitle
-                        ),
-                        localization.translate(
-                            scope,
-                            null,
-                            scope.checkedItems.length > 1 ? messageBody.plural : messageBody.single
-                        ),
-                        function () {
-                            scope.loading = true;
-                            var deleteIds = scope.checkedItems.map(function (item) {
-                                return item.service_id;
-                            });
-                            var opts = {
-                                key: scope.apiKey,
-                                ids: deleteIds
-                            };
-                            cdn.deleteConfiguration(opts).then(function () {
-                                loadConfigurations();
-                                scope.checkedItems = [];
-                            }, function (err) {
-                                loadConfigurations();
-                                showError(err);
-                            });
-                        }
-                    );
-                } else {
-                    PopupDialog.noItemsSelectedError('configuration');
-                }
-            }
             scope.gridProps = [
                 {
                     id: 'name',
@@ -297,18 +262,34 @@
 
             scope.enabledCheckboxes = true;
             scope.searchForm = true;
-            var actionMessages = {
-                delete: {
-                    single: 'Are you sure you want to delete the selected configuration?',
-                    plural: 'Are you sure you want to delete the selected configurations?'
-                }
-            };
 
             scope.gridActionButtons = [
                 {
                     label: 'Delete',
                     action: function () {
-                        deleteConfiguration('Confirm: Delete configurations', actionMessages.delete);
+                        PopupDialog.confirmAction(
+                            'Delete configurations',
+                            'delete',
+                            'configuration',
+                            scope.checkedItems.length,
+                            function () {
+                                scope.loading = true;
+                                var deleteIds = scope.checkedItems.map(function (item) {
+                                    return item.service_id;
+                                });
+                                var opts = {
+                                    key: scope.apiKey,
+                                    ids: deleteIds
+                                };
+                                cdn.deleteConfiguration(opts).then(function () {
+                                    loadConfigurations();
+                                    scope.checkedItems = [];
+                                }, function (err) {
+                                    loadConfigurations();
+                                    showError(err);
+                                });
+                            }
+                        );
                     },
                     sequence: 1
                 }

@@ -1,0 +1,96 @@
+<div class="container-fluid container-position" data-ng-controller="Network.DetailsController">
+
+    <ul class="breadcrumb">
+        <li><a href="#!/compute">Compute</a></li><!--
+     --><li><a href="#!/networks">Networks</a></li>
+    </ul>
+    <h3 class="page-title">{{network.name}}</h3>
+    <div class="loading-large col-md-12" data-ng-show="loading"></div>
+
+    <div data-ng-hide="loading">
+        <div class="inl-table">
+            <div class="left-part">
+                <div class="panel-group" id="network-accordion">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <a class="accordion-toggle toggle-icon" data-toggle="collapse" data-parent="#network-accordion"
+                               data-target="#collapse_network_summary">
+                                Summary
+                            </a>
+                        </div>
+                        <div id="collapse_network_summary" class="panel-collapse collapse in">
+                            <div class="panel-body">
+                                <table>
+                                    <tr class="id-section">
+                                        <td>UUID</td>
+                                        <td>{{network.id}}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>VLAN ID</td>
+                                        <td>{{network.vlan_id}}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Network</td>
+                                        <td>{{network.subnet}}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Gateway</td>
+                                        <td>{{network.gateway}}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>IP Range</td>
+                                        <td>{{network.ipRange}}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Resolvers</td>
+                                        <td>{{network.resolvers.join(', ')}}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Data center</td>
+                                        <td>{{network.datacenter}}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Provision a NAT zone</td>
+                                        <td>{{network.internet_nat && 'yes' || 'no'}}</td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <a class="accordion-toggle collapsed toggle-icon" data-toggle="collapse" data-parent="#network-accordion"
+                               data-target="#collapse_routes">
+                                Routes
+                            </a>
+                        </div>
+                        <div id="collapse_routes" class="panel-collapse collapse">
+                            <div class="panel-body overflow-accordion">
+                                <table class="table table-striped table-hover" data-ng-show="hasRoutes">
+                                    <thead>
+                                    <tr class="text-medium">
+                                        <th>#</th>
+                                        <th>IP / Subnet</th>
+                                        <th>Gateway</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr data-ng-repeat="(key, value) in network.routes">
+                                        <td>{{$index + 1}}</td>
+                                        <td>{{key}}</td>
+                                        <td>{{value}}</td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                                <div data-ng-hide="hasRoutes">
+                                    There is no routes for this network.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

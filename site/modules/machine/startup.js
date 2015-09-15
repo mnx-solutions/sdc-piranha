@@ -76,12 +76,6 @@ module.exports = function execute(log, config) {
         machine.PackageList(call, options, call.done);
     });
 
-    /* listNetworks */
-    server.onCall('NetworksList', function(call) {
-        call.log.info({'datacenter': call.data.datacenter}, 'Retrieving networks list');
-        call.cloud.separate(call.data.datacenter).listNetworks(call.done.bind(call));
-    });
-
     function sortDatacenters(datacenters) {
         var dcPrefixes = ['us-', 'eu-'];
         var sortedDatacenters = [];
@@ -290,19 +284,6 @@ module.exports = function execute(log, config) {
                 }
                 machine.getWithStatus(machine, call);
             });
-        }
-    });
-
-    /* GetNetwork */
-    server.onCall('getNetwork', {
-        verify: function (data) {
-            return data && typeof data.uuid === 'string';
-        },
-        handler: function (call) {
-            var networkId = call.data.uuid;
-            var machineInfo = {'datacenter': call.data.datacenter};
-            call.log.info(machineInfo, 'Handling network call, network %s', networkId);
-            call.cloud.separate(call.data.datacenter).getNetwork(networkId, call.done.bind(call));
         }
     });
 

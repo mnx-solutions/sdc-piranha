@@ -1,0 +1,21 @@
+<div data-ng-switch="subview">
+    <div data-ng-switch-when="index">
+        <div data-ng-include="'networking/static/partials/index.html'"></div>
+    </div>
+    <div data-ng-switch-when="details">
+        <div data-ng-include="'networking/static/partials/details.html'"></div>
+    </div>
+    <div data-ng-switch-when="create">
+        <div data-ng-include="'networking/static/partials/create.html'"></div>
+    </div>
+    <div data-ng-switch-when="vlans">
+        <div data-ng-include="'networking/static/partials/vlans.html'"></div>
+    </div>
+    <div data-ng-switch-when="vlan-details">
+        <div data-ng-include="'networking/static/partials/vlan-details.html'"></div>
+    </div>
+    <div data-ng-switch-when="vlan-create">
+        <div data-ng-include="'networking/static/partials/vlan-create.html'"></div>
+    </div>
+</div>
+

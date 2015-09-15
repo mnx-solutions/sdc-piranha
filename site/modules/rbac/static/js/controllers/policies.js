@@ -70,36 +70,25 @@
                 {
                     label: 'Delete',
                     action: function () {
-                        if ($scope.checkedItems.length) {
-                            var titleEnding = $scope.checkedItems.length === 1 ? 'y' : 'ies';
-                            PopupDialog.confirm(
-                                localization.translate(
-                                    $scope,
-                                    null,
-                                    'Confirm: Delete polic' + titleEnding
-                                ),
-                                localization.translate(
-                                    $scope,
-                                    null,
-                                    'Are you sure you want to delete the selected polic' + titleEnding + '?'
-                                ),
-                                function () {
-                                    $scope.loading = true;
-                                    var deleteIds = $scope.checkedItems.map(function (item) {
-                                        return item.id;
-                                    });
-                                    service.deletePolicy(deleteIds).then(function () {
-                                        service.listPolicies().then(function (policies) {
-                                            $scope.policies = policies;
-                                            $scope.loading = false;
-                                            $scope.checkedItems = [];
-                                        }, errorCallback);
+                        PopupDialog.confirmAction(
+                            'Delete policy',
+                            'delete',
+                            {single: 'policy', plural: 'policies'},
+                            $scope.checkedItems.length,
+                            function () {
+                                $scope.loading = true;
+                                var deleteIds = $scope.checkedItems.map(function (item) {
+                                    return item.id;
+                                });
+                                service.deletePolicy(deleteIds).then(function () {
+                                    service.listPolicies().then(function (policies) {
+                                        $scope.policies = policies;
+                                        $scope.loading = false;
+                                        $scope.checkedItems = [];
                                     }, errorCallback);
-                                }
-                            );
-                        } else {
-                            $scope.noCheckBoxChecked();
-                        }
+                                }, errorCallback);
+                            }
+                        );
                     },
                     sequence: 1
                 }

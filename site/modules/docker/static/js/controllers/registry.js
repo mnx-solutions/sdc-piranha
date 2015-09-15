@@ -287,10 +287,6 @@
                     }
                 ];
 
-                $scope.noCheckBoxChecked = function () {
-                    PopupDialog.noItemsSelectedError('images');
-                };
-
                 $scope.gridActionButtons = [
                     {
                         label: 'Remove',

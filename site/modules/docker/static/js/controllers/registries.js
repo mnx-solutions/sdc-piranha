@@ -76,33 +76,15 @@
                     }
                 ];
 
-                $scope.noCheckBoxChecked = function () {
-                    PopupDialog.noItemsSelectedError('registries');
-                };
-                var gridMessages = {
-                    delete: {
-                        single: 'Please confirm that you want to delete this registry.',
-                        plural: 'Please confirm that you want to delete selected registries.'
-                    }
-                };
                 $scope.gridActionButtons = [
                     {
                         label: 'Delete',
                         action: function () {
-                            if (!$scope.checkedItems.length) {
-                                return $scope.noCheckBoxChecked();
-                            }
-                            PopupDialog.confirm(
-                                localization.translate(
-                                    $scope,
-                                    null,
-                                    'Confirm: Delete registry'
-                                ),
-                                localization.translate(
-                                    $scope,
-                                    null,
-                                    gridMessages.delete[$scope.checkedItems.length > 1 ? 'plural' : 'single']
-                                ),
+                            PopupDialog.confirmAction(
+                                'Delete registry',
+                                'delete',
+                                {single: 'registry', plural: 'registries'},
+                                $scope.checkedItems.length,
                                 function () {
                                     $scope.checkedItems.forEach(function (registry) {
                                         registry.actionInProgress = true;

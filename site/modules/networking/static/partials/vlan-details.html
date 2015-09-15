@@ -1,0 +1,110 @@
+<div class="container-fluid container-position" data-ng-controller="Vlan.DetailsController">
+
+    <ul class="breadcrumb">
+        <li><a href="#!/compute">Compute</a></li><!--
+     --><li><a href="#!/vlans">Vlans</a></li>
+    </ul>
+    <h3 class="page-title">
+        Fabric VLan Details
+    </h3>
+
+    <div class="inl-table">
+        <div class="left-part">
+            <div class="panel-group vlan-details" id="vlanDetails">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <a class="accordion-toggle toggle-icon" data-toggle="collapse" data-parent="#vlanDetails"
+                           data-target="#summary">
+                            Summary
+                        </a>
+                    </div>
+                    <div id="summary" class="panel-collapse collapse in">
+                        <div class="panel-body">
+                            <form name="vlanForm" class="vlan-detail">
+                                <div class="form-group">
+                                    <span class="edit-name" data-translate>ID</span>
+                                    <span class="edit-value">
+                                        <input type="text"
+                                               name="id"
+                                               data-ng-model="currentVlan.vlan_id"
+                                               disabled />
+                                    </span>
+                                </div>
+                                <div class="form-group">
+                                    <span class="edit-name" data-translate>Data Center</span>
+                                    <span class="edit-value">
+                                        <input type="text"
+                                               name="id"
+                                               data-ng-model="currentVlan.datacenter"
+                                               disabled />
+                                    </span>
+                                </div>
+                                <div class="form-group">
+                                    <span class="edit-name" data-translate>Name</span>
+                                    <span class="edit-value">
+                                        <input type="text"
+                                               value=""
+                                               name="vlanName"
+                                               data-ng-pattern="vlanName.pattern"
+                                               data-ng-model="currentVlan.name"
+                                               required />
+                                    </span>
+                                    <div class="edit-error">
+                                        <div class="error"
+                                             data-ng-show="vlanForm.vlanName.$error.required"
+                                             data-translate>
+                                            Missing name.
+                                        </div>
+                                        <div class="error"
+                                             data-ng-show="vlanForm.vlanName.$error.pattern"
+                                             data-translate>
+                                            {{vlanName.errorMessage}}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="clearfix"></div>
+                                <div class="form-group">
+                                    <span class="edit-name description-label" data-translate>Description</span>
+                                    <span class="edit-value edit-description">
+                                        <textarea type="text"
+                                                  name="description"
+                                                  data-ng-model="currentVlan.description"></textarea>
+                                    </span>
+                                </div>
+
+                                <div class="pull-right">
+                                    <div class="loading-medium loading-medium-inline" data-ng-show="loading"></div>
+                                    <button class="btn" data-ng-click="cancel()" data-ng-disabled="loading">Cancel</button>
+                                    <button class="btn" data-ng-click="deleteVlan()" data-ng-disabled="loading">Delete</button>
+                                    <button class="btn orange" data-ng-click="updateVlan()" data-ng-disabled="loading || vlanForm.vlanName.$error.required">Save</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <a class="accordion-toggle collapsed toggle-icon" data-toggle="collapse" data-parent="#vlanDetails"
+                           data-target="#networks">
+                            Networks
+                        </a>
+                    </div>
+                    <div id="networks" class="panel-collapse collapse">
+                        <div class="loading-medium loading-medium-inline" data-ng-show="loadingNetworks"></div>
+                        <div class="panel-body" data-ng-hide="loadingNetworks">
+                            <div data-grid-view
+                                 data-props="networksGridProps"
+                                 data-items="networks"
+                                 data-order="networksGridOrder"
+                                 data-export-fields="networksExportFields"
+                                 data-items-type="object">
+                            </div>
+                            <div class="clearfix"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="right-part"></div>
+    </div>
+</div>

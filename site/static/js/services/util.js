@@ -160,7 +160,54 @@ window.JP.main.service('util', ['$rootScope',
                 return false;
             }
             return Number(el);
-        }
+        };
+
+        service.flatten = function (input, isDeep, result) {
+            if (!Array.isArray(input)) {
+                return [input];
+            }
+            result = result || [];
+
+            for (var index = 0, length = input.length; index < length; index++) {
+                var value = input[index];
+                if (Array.isArray(value)) {
+                    if (isDeep) {
+                        service.flatten(value, isDeep, result);
+                    } else {
+                        result = result.concat(value);
+                    }
+                } else {
+                    result.push(value);
+                }
+            }
+            return result;
+        };
+
+        service.unique = function (items) {
+            return items.filter(function (item, index) {
+                return items.indexOf(item) === index;
+            })
+        };
+
+        service.isFormInvalid = function (form, field, errorType) {
+            var result = false;
+            var formField = form[field];
+            if (formField) {
+                if (form.submitted &&
+                    formField.$invalid &&
+                    formField.$error.required &&
+                    errorType === 'required') {
+                    result = true;
+                } else if (formField.$dirty) {
+                    result = Object.keys(formField.$error).some(function (key) {
+                        return formField.$error[key] && (!errorType || key === errorType);
+                    });
+                }
+            } else {
+                result = form.$invalid;
+            }
+            return result;
+        };
 
         return service;
     }]

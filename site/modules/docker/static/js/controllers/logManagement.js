@@ -114,13 +114,6 @@
                     });
                 }
 
-                var gridMessages = {
-                    remove: {
-                        single: 'Please confirm that you want to remove this log.',
-                        plural: 'Please confirm that you want to remove selected logs.'
-                    }
-                };
-
                 var checkedLogs = function (checked) {
                     var logs = [];
                     $scope.checkedItems.forEach(function (log) {
@@ -132,34 +125,6 @@
                     });
                     return logs;
                 };
-
-                function removeContainerLogs(messageTitle, messageBody) {
-                    if ($scope.checkedItems.length) {
-                        PopupDialog.confirm(
-                            localization.translate(
-                                $scope,
-                                null,
-                                messageTitle
-                            ),
-                            localization.translate(
-                                $scope,
-                                null,
-                                messageBody[$scope.checkedItems.length > 1 ? 'plural' : 'single']
-                            ), function () {
-                                var logs = checkedLogs(true);
-                                Docker.removeDeletedContainerLogs(logs).then(function () {
-                                    $scope.checkedItems = [];
-                                    listRemovedContainers();
-                                }, function (err) {
-                                    checkedLogs(false);
-                                    errorCallback(err);
-                                });
-                            }
-                        );
-                    } else {
-                        $scope.noCheckBoxChecked();
-                    }
-                }
 
                 function analyzeContainerLogs() {
                     var selectedContainers = $scope.checkedItems.length;
@@ -199,7 +164,22 @@
                     {
                         label: 'Remove',
                         action: function () {
-                            removeContainerLogs('Confirm: Remove logs', gridMessages.remove);
+                            PopupDialog.confirmAction(
+                                'Remove logs',
+                                'remove',
+                                'log',
+                                $scope.checkedItems.length,
+                                function () {
+                                    var logs = checkedLogs(true);
+                                    Docker.removeDeletedContainerLogs(logs).then(function () {
+                                        $scope.checkedItems = [];
+                                        listRemovedContainers();
+                                    }, function (err) {
+                                        checkedLogs(false);
+                                        errorCallback(err);
+                                    });
+                                }
+                            );
                         },
                         show: function () {
                             return $scope.tab !== 'Running' && $scope.tab !== 'All existing';

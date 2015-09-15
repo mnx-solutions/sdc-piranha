@@ -1,0 +1,201 @@
+</html><div class="container-fluid container-position" data-ng-controller="Network.CreateController">
+
+    <ul class="breadcrumb">
+        <li><a href="#!/compute">Compute</a></li><!--
+     --><li><a href="#!/networks">Networks</a></li>
+    </ul>
+    <h3 class="page-title">
+        Create Fabric Network
+    </h3>
+
+    <div class="loading-large col-md-12" data-ng-show="loading"></div>
+    <div class="row" data-ng-hide="loading">
+        <div class="first-block edit-form">
+            <form name="networkForm" class="row">
+                <fieldset class="line">
+                    <div class="form-group">
+                        <span class="edit-name orange-asterix" data-translate>
+                            Name
+                        </span>
+                        <span class="edit-value">
+                            <input type="text"
+                                   id="network-name"
+                                   name="network-name"
+                                   data-ng-model="network.name"
+                                   data-ng-pattern="name.pattern"
+                                   data-ng-class="{error: isError('network-name')}"
+                                   required />
+                        </span>
+                        <div class="edit-error">
+                            <div class="error"
+                                 data-translate
+                                 data-ng-show="isError('network-name', 'required')">
+                                Missing network name.
+                            </div>
+                            <div class="error"
+                                 data-translate
+                                 data-ng-show="isError('network-name', 'pattern')">
+                                {{name.errorMessage}}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <span class="edit-name orange-asterix">Data Center</span>
+                        <span class="edit-value">
+                            <select ui-select2="{minimumResultsForSearch: 1, width: '99.5%'}"
+                                    id="dcSelect"
+                                    ng-change="changeDatacenter()"
+                                    data-ng-model="network.datacenter">
+                                <option data-ng-repeat="datacenter in datacenters | orderBy:$index" value="{{datacenter}}">
+                                    {{datacenter}}
+                                </option>
+                            </select>
+                        </span>
+                    </div>
+
+                    <div class="form-group">
+                        <span class="edit-name orange-asterix" data-translate>
+                            Subnet
+                        </span>
+                        <span class="edit-value">
+                            <input type="text"
+                                id="subnet"
+                                name="subnet"
+                                data-ip
+                                only-subnet
+                                data-ng-class="{error: isError('subnet')}"
+                                data-ng-model="network.subnet"
+                                required />
+                            <p>Subnet needs to be specified in CIDR Notation</p>
+                        </span>
+                    </div>
+
+                    <div class="form-group">
+                        <span class="edit-name" data-translate>
+                            Gateway
+                        </span>
+                        <span class="edit-value">
+                            <input type="text"
+                                   id="gateway"
+                                   name="gateway"
+                                   data-ip
+                                   data-ng-class="{error: isError('gateway')}"
+                                   data-ng-model="network.gateway" />
+                            <p>Gateway IP address</p>
+                        </span>
+                    </div>
+
+                    <div class="form-group">
+                        <span class="edit-name orange-asterix" data-translate>
+                            IP Range
+                        </span>
+                        <span class="edit-value range">
+                             <input type="text"
+                                    placeholder="Start IP Address"
+                                    id="provision_start_ip"
+                                    name="provision_start_ip"
+                                    data-ip
+                                    required
+                                    data-ng-class="{error: isError('provision_start_ip')}"
+                                    data-ng-model="network.provision_start_ip" />
+
+                             <input type="text"
+                                    placeholder="End IP Address"
+                                    id="provision_end_ip"
+                                    name="provision_end_ip"
+                                    data-ip
+                                    required
+                                    data-ng-class="{error: isError('provision_end_ip')}"
+                                    data-ng-model="network.provision_end_ip" />
+                        </span>
+                    </div>
+
+                    <div class="form-group">
+                        <span class="edit-name orange-asterix">VLAN</span>
+                        <span data-ng-hide="createVlanForm" class="edit-value">
+                            <select ui-select2="{minimumResultsForSearch: 1, width: '99.5%'}"
+                                    id="vlanSelect"
+                                    data-ng-model="network.vlan_id"
+                                    required>
+                                <option data-ng-repeat="vlan in vlans | orderBy: $index | filter: {datacenter: network.datacenter}" value="{{vlan.vlan_id}}">
+                                    {{vlan.name}} ({{vlan.vlan_id}})
+                                </option>
+                            </select>
+                            <a data-ng-click="createVlanForm = true">Create a new VLAN</a>
+                        </span>
+                         <span data-ng-show="createVlanForm" class="edit-value range">
+                             <span class="loading-medium-transparent col-md-12" data-ng-show="vlanCreating"></span>
+                             <span class="vlan-fields" data-ng-hide="vlanCreating">
+                                 <input type="text"
+                                        name="vlanName"
+                                        data-ng-pattern="name.pattern"
+                                        ng-model="vlan.name"
+                                        data-ng-class="{error: networkForm.vlanName.$error.pattern}"
+                                        placeholder="VLan name" />
+                                 <input type="text"
+                                        name="vlanId"
+                                        data-ng-pattern="/^(\d)*$/"
+                                        ng-model="vlan.vlan_id"
+                                        data-ng-class="{error: networkForm.vlanId.$error.pattern}"
+                                        placeholder="VLan ID" />
+                             </span>
+                             <span class="pull-right">
+                                <button type="button" class="btn" data-ng-disabled="vlanCreating" data-ng-click="createVlanForm = false">Cancel</button>
+                                <button type="button"
+                                        class="btn orange"
+                                        data-ng-disabled="vlanCreating || !vlan.name || !vlan.vlan_id || networkForm.vlanName.$invalid ||  vlanForm.vlanId.$invalid"
+                                        data-ng-click="createVlan()">
+                                    Save VLAN
+                                </button>
+                             </span>
+                         <span>
+                    </div>
+
+                    <div class="form-group">
+                        <span class="edit-name" data-translate>
+                            DNS Resolvers
+                        </span>
+                        <span class="edit-value">
+                            <tags-input ng-model="network.resolvers" regexp-validate="([0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3})"></tags-input>
+                             <p>Resolver IP addresses, use <strong>Enter</strong> button as delimiter</p>
+                        </span>
+                    </div>
+
+                    <div class="form-group">
+                        <span class="edit-name" data-translate>
+                            Routes
+                        </span>
+                        <span class="edit-value range">
+                            <span class="route" ng-repeat="route in routes">
+                                <input name="route-subnet" type="text" ng-model="route.subnet" data-ip or-subnet placeholder="IP or SUBNET" />
+                                <input name="route-gateway" type="text" ng-model="route.gateway" data-ip placeholder="Gateway" />
+                                <a data-ng-show="$index > 0" data-ng-click="removeRoute($index)">-</a>
+                            </span>
+                            <a data-ng-click="addRoute()">Add another route</a>
+                        </span>
+                    </div>
+
+                    <div class="form-group">
+                        <span class="edit-name">Description</span>
+                        <span class="edit-value">
+                             <textarea type="text"
+                                       name="description"
+                                       data-ng-model="network.description"></textarea>
+                        </span>
+                    </div>
+                </fieldset>
+
+                <hr />
+                <div class="row btn-bottom-block">
+                    <span class="orange-asterix-left">&nbsp;required fields</span>
+                    <div class="pull-right">
+                        <button class="btn" data-ng-disabled="creating" type="button" data-ng-click="goToNetworksPage()">Cancel</button>
+                        <button class="btn orange" data-ng-disabled="networkForm.$invalid || creating || vlanCreating"  data-ng-click="createNetwork()" type="submit">Create network</button>
+                    </div>
+                    <div class="pull-right loading-medium-transparent" data-ng-show="creating"></div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

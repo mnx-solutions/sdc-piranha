@@ -1,0 +1,39 @@
+<div class="container-fluid container-position" data-ng-controller="Networking.VlansController">
+    <ul class="breadcrumb">
+        <li><a href="#!/compute">Compute</a></li>
+    </ul>
+    <div class="page-header row">
+        <h3 class="page-title">Fabric VLans</h3>
+        <div class="page-title-btn">
+            <a data-ng-click="gotoCreatePage()">
+                <button type="button" class="btn big orange"><i class="plus-btn-icon"></i>
+                    Create Fabric VLan</button>
+            </a>
+        </div>
+    </div>
+
+    <div class="loading-large col-md-12" data-ng-show="loading"></div>
+    <div data-ng-show="vlans.length && !loading">
+        <div data-grid-view
+             data-user-config="gridUserConfig"
+             data-props="gridProps"
+             data-detail-props="gridDetailProps"
+             data-action-buttons="gridActionButtons"
+             data-columns-button="columnsButton"
+             data-search-form="searchForm"
+             data-items="vlans"
+             data-order="gridOrder"
+             data-multisort="false"
+             data-filter-all="{{query}}"
+             data-place-Holder-Text="placeHolderText"
+             data-export-fields="exportFields"
+             data-items-type="vlan"
+             data-enabled-checkboxes="enabledCheckboxes"
+             data-tab-filter-field="tabFilterField"
+             data-checked-items="checkedItems">
+        </div>
+    </div>
+    <div data-ng-show="vlans.length < 1 && !loading">
+        <div class="notified indent-medium">You don't have fabric VLans</div>
+    </div>
+</div>
