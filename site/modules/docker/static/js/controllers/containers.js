@@ -182,7 +182,7 @@
                         type: 'html',
                         _getter: function (container) {
                             var html = '<a href="#!/docker/container/' + container.hostId + '/' + container.Id + '" style="min-width: 140px;">' + container.ShortId + '</a>';
-                            if (container.isRemoving) {
+                            if (container.isRemoving || ['Removal In Progress', 'Dead', 'Created'].indexOf(container.Status) > -1) {
                                 html = container.ShortId;
                             }
                             return html;
@@ -357,7 +357,7 @@
                         Docker[command](container).then(function (response) {
                             if (action === 'remove') {
                                 $scope.containers = $scope.containers.filter(function (item) {
-                                    return container.Id !== item.Id;
+                                    return !item.isRemoving && container.Id !== item.Id;
                                 });
                             }
                             $scope.containers.some(function (container) {

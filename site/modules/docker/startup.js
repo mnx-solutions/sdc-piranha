@@ -295,6 +295,9 @@ var Docker = function execute(log, config) {
                                         vasync.forEachParallel({
                                             inputs: response,
                                             func: function (container, inspectCallback) {
+                                                if (['Removal In Progress', 'Dead', 'Created'].indexOf(container.Status) > -1) {
+                                                    return inspectCallback(null, container);
+                                                }
                                                 client.inspect({id: container.Id}, function (errContainer, containerInfo) {
                                                     if (errContainer) {
                                                         suppressErrors.push(errContainer);
