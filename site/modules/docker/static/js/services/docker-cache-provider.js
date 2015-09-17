@@ -9,6 +9,7 @@
                 this.list = [];
                 this.size = 0;
                 this.cacheKey = options && options.key || 'Id';
+                this.secondaryKey = options && options.secondaryKey || null;
                 this.initialized = false;
             }
 
@@ -18,11 +19,14 @@
                 }
                 var list = this.list;
                 var cacheKey = this.cacheKey;
+                var secondaryKey = this.secondaryKey;
                 var key = value[cacheKey];
                 if (key in this.index) {
                     this.list = list.map(function (item) {
                         if (item[cacheKey] === value[cacheKey]) {
-                            item = value;
+                            if (!secondaryKey || item[secondaryKey] === value[secondaryKey]) {
+                                item = value;
+                            }
                         }
                         return item;
                     });

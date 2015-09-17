@@ -15,7 +15,13 @@
         var imageActions = ['remove', 'inspect', 'history'];
         var caches = ['containers', 'images', 'topImages', 'registriesList'];
         caches.forEach(function (cache) {
-            service.cache[cache] = new DockerCacheProvider(cache === 'registriesList' ? {key: 'id'} : null);
+            var options = null;
+            if (cache === 'topImages') {
+                options = {secondaryKey: 'primaryIp'};
+            } else if (cache === 'registriesList') {
+                options = {key: 'id'};
+            }
+            service.cache[cache] = new DockerCacheProvider(options);
         });
 
         var resetDockerCaches = function () {
