@@ -1,53 +1,11 @@
 <div class="container-min-width wizard-first-step">
-    <div class="in-line">
-        <input type="search" class="filter-images filter-field" placeholder="Search image" data-ng-model="filterModel.searchText" data-translate="placeholder" />
-    </div>
-    <span class="select-name">
-            Data Center:
-        </span>
-    <div class="btn-group">
-        <select type="hidden" data-select-two id="selectDatacenter" width="110" data-ng-model="data.datacenter"
-            data-fn="selectDatacenter" data-select="data.datacenter" placeholder="No matches found" data-ng-disabled="datasetsLoading">
-            <option value=""></option>
-            <option data-ng-repeat="datacenter in datacenters | orderBy:$index" value="{{datacenter.name}}">
-                {{datacenter.name}}
-            </option>
-        </select>
-    </div>
-    <span class="select-name">
-        OS:
-    </span>
-    <div class="btn-group hidden-phone"
-         data-html="true"
-         data-original-title="Filter by operating system">
-        <select type="hidden" data-select-two id="selectOS" class="dd-fixed-width" data-item="opsys" data-select="selectDataValue('os')" data-fn="selectOpsys">
-            <option data-ng-repeat="opsys in operating_systems" value="{{opsys}}">
-                {{opsys | orderBy:'toString()'}}
-            </option>
-        </select>
-    </div>
-    <div class="hotlinks pull-right">
-        <span data-ng-show="isMantaEnabled && isRecentInstancesEnabled && recentInstances.length > 0">
-            <a href="#!/compute/create/recent" data-ng-click="setCreateInstancePage('recent')">Recent</a> |
-        </span>
-        <span data-ng-show="features.imageUse != 'disabled'">
-            <span class="active-link" data-ng-show="instanceType == 'Saved'">Saved </span>
-            <a href="#!/compute/create/custom" data-ng-click="selectInstanceType('Saved')" data-ng-hide="instanceType == 'Saved'"> Saved</a> |
-        </span>
-        <span>
-            <span class="active-link" data-ng-show="instanceType == 'Public'">All Public Images </span>
-            <a href="#!/compute/create" id="link-more-images" data-ng-click="selectInstanceType('Public')" data-ng-hide="instanceType == 'Public'">All Public Images </a> |
-        </span>
-        <span>
-            <a href="#!/compute/create/simple" data-ng-click="clickBackToQuickStart()">Quick</a>
-        </span>
-    </div>
+    <div data-ng-include="'machine/static/partials/create-instance-header.html'"></div>
 </div>
 <div class="advanced-table tooltip-hover">
-    <div data-ng-show="(datasets | filter:filterDatasetsByVisibility).length == 0 && !reloading" class="notified">
+    <div data-ng-show="filteredDatasets.length == 0 && !reloading" class="notified">
         No {{instanceType | lowercase}} images in this data center.
     </div>
-    <div data-ng-hide="reloading" data-ng-repeat="dataset in (datasets | orderBy:['type','name']) | filter:filterDatasets | filter:filterDatasetsByOS | filter:filterDatasetsByVisibility">
+    <div data-ng-if="!filterModel.searchText && !reloading" data-ng-repeat="dataset in filteredDatasets | orderBy:['type','name'] | limitTo:10">
         <div class="advanced-instance-box small-icon"
              data-ng-class="dataset.name | logo"
              data-toggle="tooltip"
@@ -61,11 +19,38 @@
             </div>
             <div class="advanced-instance-btn-block">
                 <button type="button"
-                   id="dataset-{{dataset.id}}"
                    name="dataset"
                    value="{{dataset.id}}"
                    data-ng-hide="dataset.limit"
                    data-ng-checked="selectedDataset.id == dataset.id"
+                        class="btn advaced-instance-btn pull-right"><b>Select</b>
+                </button>
+                <div data-ng-show="dataset.limit" class="hotlinks limit-links">
+                    <a href="#!/limits">Provisioning limit is reached</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div data-ng-show="!filterModel.searchText && filteredDatasets.length" class="no-breadcrumb-line"></div>
+    <div data-ng-hide="reloading" data-ng-repeat="dataset in filteredDatasets | orderBy:['type','name']">
+        <div class="advanced-instance-box small-icon"
+             data-ng-class="dataset.name | logo"
+             data-toggle="tooltip"
+             data-tooltip-text="{{dataset.description}}"
+             data-ng-click="checkLimit(dataset)">
+            <div class="advanced-instance-title">
+                <p data-tooltip-full-text data-original-title="{{dataset.name}}" data-ng-class="dataset.name | logo">{{dataset.name}}</p>
+            </div>
+            <div class="advanced-instance-description">
+                <p data-tooltip-full-text data-original-title="{{dataset.description}}">{{dataset.description}}</p>
+            </div>
+            <div class="advanced-instance-btn-block">
+                <button type="button"
+                        id="dataset-{{dataset.id}}"
+                        name="dataset"
+                        value="{{dataset.id}}"
+                        data-ng-hide="dataset.limit"
+                        data-ng-checked="selectedDataset.id == dataset.id"
                         class="btn advaced-instance-btn pull-right"><b>Select</b>
                 </button>
                 <div data-ng-show="dataset.limit" class="hotlinks limit-links">

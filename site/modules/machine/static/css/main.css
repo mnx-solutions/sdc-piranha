@@ -429,8 +429,7 @@
 }
 
 .ci-desc {
-    padding-top: 15px;
-    padding-bottom: 30px;
+    padding-bottom: 5px;
 
     font-size: 16px;
     font-weight: 400;
@@ -610,12 +609,15 @@
     width: 1010px;
 }
 
+.advanced-table .no-breadcrumb-line {
+    margin-bottom: 15px;
+}
+
 .wizard-first-step,
 .wizard-second-step {
     display: inline-block;
 
     padding-top: 5px;
-    padding-bottom: 30px;
 }
 
 .wizard-first-step {
@@ -623,7 +625,11 @@
 }
 
 .wizard-first-step .hotlinks {
-    margin-right: 12px;
+    margin: 10px 12px 0 0;
+}
+
+.wizard-first-step .loading-medium {
+    height: 28px;
 }
 
 .row.carousel-container {
@@ -634,9 +640,16 @@
     padding-top: 20px;
 }
 
+.choose-image-filter {
+    margin: 10px 0;
+}
+
+.choose-image-filter .in-line {
+    margin-left: 25px;
+}
+
 .select-name {
     padding-right: 2px;
-    padding-left: 10px;
 
     vertical-align: middle;
 
@@ -834,6 +847,7 @@
 .review .right .create-mdata .key-container input,
 .review .right .create-mdata .value-container .value-width {
     width: 324px;
+
     resize: vertical;
 }
 

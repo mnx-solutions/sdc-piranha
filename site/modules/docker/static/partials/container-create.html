@@ -1,6 +1,7 @@
 <div data-ng-controller="Docker.ContainerCreateController">
     <div class="container-fluid container-position container-min-width">
-        <ul class="breadcrumb">
+        <div data-ng-if="isCurrentLocation('compute/container')" data-ng-include="'machine/static/partials/create-instance-header.html'"></div>
+        <ul data-ng-hide="isCurrentLocation('compute/container')" class="breadcrumb">
             <li><a href="#!/docker">Docker</a></li><!--
         --><li><a href="#!/docker/{{type | lowercase}}">Docker {{type}}</a></li>
         </ul>

@@ -6,7 +6,7 @@ window.JP.main.config(['routeProvider', function (routeProvider) {
         return;
     }
     var dockerResolve = {
-        data: function ($rootScope, $location, $q, Docker, Machine) {
+        data: function ($rootScope, $location, $q, Docker, Machine, Account) {
 
             function changePath() {
                 if ($location.path().indexOf('/docker') === 0 && $location.path() !== '/docker' && (!$rootScope.provisionEnabled || !$rootScope.dockerHostsAvailable)) {
@@ -19,12 +19,15 @@ window.JP.main.config(['routeProvider', function (routeProvider) {
             } else {
                 $q.all([
                     $q.when(Docker.completedHosts()),
-                    $q.when(Machine.machine())
+                    $q.when(Machine.machine()),
+                    $q.when(Account.getAccount())
                 ]).then(function (result) {
                     var hosts = result[0] || [];
                     var machines = result[1] || [];
+                    var account = result[2] || {};
+                    $rootScope.provisionEnabled = account.provisionEnabled || false;
                     $rootScope.dockerHostsAvailable = hosts.length > 0 || machines.some(function (machine) {
-                        return machine.tags && machine.tags.hasOwnProperty('JPC_tag') && machine.tags['JPC_tag'] === 'DockerHost' &&
+                        return machine.tags && machine.tags['JPC_tag'] === 'DockerHost' &&
                             machine.state !== 'creating';
                     });
                     changePath();
@@ -32,7 +35,7 @@ window.JP.main.config(['routeProvider', function (routeProvider) {
             }
         }
     };
-    dockerResolve.data.$inject = ['$rootScope', '$location', '$q', 'Docker', 'Machine'];
+    dockerResolve.data.$inject = ['$rootScope', '$location', '$q', 'Docker', 'Machine', 'Account'];
 
     routeProvider
         .when('/docker', {
@@ -59,6 +62,10 @@ window.JP.main.config(['routeProvider', function (routeProvider) {
             action: 'docker.containers',
             resolve: dockerResolve
         }).when('/docker/container/create/:hostid', {
+            title: 'Create Container',
+            action: 'docker.create',
+            resolve: dockerResolve
+        }).when('/compute/container/create', {
             title: 'Create Container',
             action: 'docker.create',
             resolve: dockerResolve

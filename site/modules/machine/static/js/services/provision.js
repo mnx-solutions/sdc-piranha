@@ -484,6 +484,10 @@
                 });
             };
 
+            service.isCurrentLocation = function (path) {
+                return $location.path().search(path) > -1;
+            };
+
             service.finalProvision = function (machine, datacenters, account, hostSpecification, callback) {
                 if (machine && !machine.dataset) {
                     return PopupDialog.message('Error', 'Instance not found.');

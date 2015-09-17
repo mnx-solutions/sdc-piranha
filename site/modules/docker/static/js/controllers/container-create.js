@@ -8,6 +8,7 @@
             'requestContext',
             'localization',
             'Docker',
+            'Provision',
             '$q',
             'PopupDialog',
             '$filter',
@@ -15,12 +16,13 @@
             'CloudAnalytics',
             'Package',
             'dockerPullImage',
-            function ($scope, $rootScope, requestContext, localization, Docker, $q, PopupDialog, $filter, $location, CloudAnalytics, Package, dockerPullImage) {
+            function ($scope, $rootScope, requestContext, localization, Docker, Provision, $q, PopupDialog, $filter, $location, CloudAnalytics, Package, dockerPullImage) {
                 localization.bind('docker', $scope);
                 requestContext.setUpRenderContext('docker.create', $scope, {
                     title: localization.translate(null, 'docker', 'Create Docker Container')
                 });
                 $scope.loading = true;
+                $scope.isCurrentLocation = Provision.isCurrentLocation;
 
                 var sourceId = requestContext.getParam('sourceid');
                 var hostId = requestContext.getParam('hostid');
@@ -296,7 +298,10 @@
 
                 $scope.preSelectedData = $rootScope.popCommonConfig('cloneDockerParams');
 
-                $scope.title = 'Start Docker Container';
+                $scope.title = 'Docker Container';
+                if (!$scope.isCurrentLocation('compute/container/create')) {
+                    $scope.title = 'Start ' + $scope.title;
+                }
                 $scope.createImage = false;
                 $scope.type = $location.path().search('image/create') === -1 ? 'Containers' : 'Images';
                 if ($scope.type === 'Images') {
@@ -741,7 +746,8 @@
                     $scope.container.HostConfig.Binds = isArrayNotEmpty(binds) ? binds : null;
 
                     Docker.run($scope.host, {create: $scope.container, start: $scope.container.HostConfig}).then(function () {
-                        if ($location.path().indexOf('/docker/container/create') !== -1) {
+                        if ($location.path().indexOf('/docker/container/create') !== -1 ||
+                            $location.path().indexOf('/compute/container/create') !== -1) {
                             $location.path('/docker/containers');
                         }
                         if ($scope.host.isSdc) {

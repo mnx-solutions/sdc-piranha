@@ -1,41 +1,45 @@
 <div class="container-fluid container-position" data-ng-controller="Machine.ProvisionController">
-    <div data-breadcrumbs></div>
-    <div class="loading-large col-md-12" data-ng-show="loading"></div>
+    <div data-ng-include="'machine/static/partials/create-instance-header.html'"></div>
     <div class="" data-ng-hide="loading">
         <div class="container-min-width">
-            <h3 class="page-title no-breadcrumb-line container-min-width" data-translate>Quick Start: Create Instance</h3>
-            <div class="ci-desc">Get started <span data-ng-hide="features.privateSdc == 'enabled'">with Joyent</span> by selecting an instance below and start computing.</div>
-            <div class="wizard-first-step row">
-                <span class="select-name">Data Center:</span>
-                <div class="btn-group">
-                    <div class="loading-medium loading-medium-inline" data-ng-show="datasetsLoading"></div>
-                    <select type="hidden" data-select-two id="selectDatacenter" width="110" data-ng-model="data.datacenter"
-                        data-fn="selectDatacenter" data-select="data.datacenter" placeholder="No matches found"
-                        data-ng-disabled="datasetsLoading">
-                        <option value=""></option>
-                        <option data-ng-repeat="datacenter in datacenters | orderBy:$index" value="{{datacenter.name}}">
-                            {{datacenter.name}}
-                        </option>
-                    </select>
-                </div>
-                <div class="hotlinks pull-right">
-                    <span data-ng-show="isMantaEnabled && isRecentInstancesEnabled && recentInstances.length > 0">
-                        <a href="#!/compute/create/recent" data-ng-click="setCreateInstancePage('recent')">Recent</a> |
-                    </span>
-                    <span data-ng-show="features.imageUse != 'disabled'">
-                        <a href="#!/compute/create/custom" data-ng-click="selectInstanceType('Saved')"> Saved</a> |
-                    </span>
-                    <span>
-                        <a href="#!/compute/create" id="link-more-images" data-ng-click="selectInstanceType('Public')">All Public Images </a> |
-                    </span>
-                    <span>
-                        <span class="active-link">
-                            Quick
+            <h4 class="page-title no-breadcrumb-line container-min-width" data-translate>Recent Images</h4>
+            <div data-ng-show="recentInstances.length == 0" class="container-min-width">
+                No recent image / package combinations found.  You may need to provision some more instances.
+            </div>
+            <div class="row">
+                <div class="simple-image recent-image small-icon"
+                     data-ng-repeat="instance in recentInstances | limitTo:8"
+                     data-ng-class="instance.datasetName | logo">
+                    <div class="name">
+                        <p data-tooltip-full-text data-original-title="{{instance.datasetName}}">{{instance.datasetName}}</p>
+                    </div>
+                    <div class="description recent-description">
+                        <p data-tooltip-full-text data-original-title="{{instance.description}}">{{instance.description}}</p>
+                    </div>
+                    <div class="info">
+                        <p>MEMORY</p><span><p>{{ instance.memory | sizeFormat }}</p></span>
+                    </div>
+                    <div class="info">
+                        <p>vCPUs</p><span><p>{{ instance.vcpus }}</p></span>
+                    </div>
+                    <div class="info">
+                        <p>Disk</p><span><p>{{ instance.disk | sizeFormat }}</p></span>
+                    </div>
+
+                    <div class="btn-block recent-btn">
+                        <span data-ng-show="features.billing == 'enabled'">
+                            <span class="price">${{ instance.price }}</span>
+                            <span class="hour">per hour</span>
                         </span>
-                    </span>
+                        <button type="button"
+                                data-ng-click="createRecent(instance)"
+                                class="btn select-btn small">
+                            <b>Launch</b>
+                        </button>
+                    </div>
                 </div>
             </div>
-
+            <h4 class="page-title no-breadcrumb-line container-min-width" data-translate>Popular Images</h4>
             <div class="row images-wrapper">
                 <div class="simple-image"
                      data-ng-repeat="image in simpleImages | filter: filterSimpleImagesByDatacenter | orderBy: 'order'"
@@ -77,7 +81,7 @@
                     </div>
                 </div>
 
-                <div data-ng-click="selectInstanceType('Public')" class="simple-image simple-image-browse joyent-logo">
+                <div data-ng-click="selectInstanceType('native-container')" class="simple-image simple-image-browse joyent-logo">
                     <div class="browse">
                         <div class="title">
                             Browse our<br/>complete image<br/>library

@@ -962,9 +962,10 @@ i.glyphicon-question-sign {
 }
 
 .no-breadcrumb-line {
+    clear: both;
+
     margin-bottom: 0;
-    padding-top: 16px;
-    padding-bottom: 10px;
+    padding: 10px 0;
 
     border-bottom: 1px solid #ccc;
 }
@@ -2507,6 +2508,7 @@ a.orange-link {
     vertical-align: middle;
 }
 
+.hotlinks a.not-active-link,
 .hotlinks span.active-link {
     color: #333;
 }
@@ -3132,7 +3134,7 @@ a.orange-link {
     box-shadow: none;
     text-shadow: none;
 }
-.page-title,
+.page-title:not(h4),
 .page-heading,
 .blue-manta-header {
     font-size: 30px;

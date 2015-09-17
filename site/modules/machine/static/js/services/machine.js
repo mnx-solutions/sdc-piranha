@@ -41,16 +41,16 @@
         };
         service.gotoCreatePage = function () {
             service.initCreateInstancePageConfig(function () {
-                var defaultPath = '/compute/create';
+                var defaultPath = '/compute/create/';
                 if (!createInstancePageConfig) {
-                    $location.path(defaultPath);
+                    $location.path(defaultPath + 'simple');
                     return;
                 }
-                if (createInstancePageConfig.page === 'recent' && $rootScope.features.recentInstances !== 'enabled') {
+                if (createInstancePageConfig.page === 'container') {
                     createInstancePageConfig.page = 'simple';
                     Account.saveUserConfig();
                 }
-                var page = createInstancePageConfig.page ? '/' + createInstancePageConfig.page : '';
+                var page = createInstancePageConfig.page ? createInstancePageConfig.page : 'simple';
                 $location.path(defaultPath + page);
             });
         };

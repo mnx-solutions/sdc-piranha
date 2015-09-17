@@ -1,0 +1,76 @@
+<div>
+    <ul data-ng-hide="isCurrentLocation('create/native-container|create/virtual-machine')" class="breadcrumb">
+        <li><a href="#!/compute">Compute</a></li>
+    </ul>
+    <div class="loading-large col-md-12" data-ng-show="loading && !isCurrentLocation('compute/container/create')"></div>
+    <div class="" data-ng-hide="loading && !isCurrentLocation('compute/container/create')">
+        <div class="container-min-width">
+            <h3 data-ng-hide="isCurrentLocation('create/native-container|create/virtual-machine')"
+                class="page-title no-breadcrumb-line container-min-width"
+                data-translate>Create Instance
+            </h3>
+            <div data-ng-show="isCurrentLocation('compute/create/simple')" class="ci-desc">
+                Get started <span data-ng-hide="features.privateSdc == 'enabled'">with Joyent</span>
+                by selecting an instance below and start computing.
+            </div>
+            <div class="wizard-first-step row">
+                <div data-ng-hide="isCurrentLocation('compute/container/create')">
+                    <span class="select-name">Data Center:</span>
+                    <div class="btn-group">
+                        <div class="loading-medium loading-medium-inline" data-ng-show="datasetsLoading"></div>
+                        <select type="hidden" data-select-two id="selectDatacenter" width="110" data-ng-model="data.datacenter"
+                                data-fn="selectDatacenter" data-select="data.datacenter" placeholder="No matches found"
+                                data-ng-disabled="datasetsLoading">
+                            <option value=""></option>
+                            <option data-ng-repeat="datacenter in datacenters | orderBy:$index" value="{{datacenter.name}}">
+                                {{datacenter.name}}
+                            </option>
+                        </select>
+                    </div>
+                </div>
+                <div class="hotlinks">
+                    <create-instance-link path="create/simple"
+                                          action="clickBackToQuickStart()">
+                    </create-instance-link>
+                    <create-instance-link path="container/create"
+                                          data-ng-if="features.docker == 'enabled'"
+                                          type="container"
+                                          action="setCreateInstancePage(type)">
+                    </create-instance-link>
+                    <create-instance-link path="create/native-container"
+                                          data-ng-show="isCurrentLocation('compute/container/create') || isSdcDatacenter"
+                                          type="native-container"
+                                          action="selectInstanceType(type)">
+                    </create-instance-link>
+                    <create-instance-link path="create/virtual-machine"
+                                          type="virtual-machine"
+                                          action="selectInstanceType(type)">
+                    </create-instance-link>
+                </div>
+                <div class="choose-image-filter" data-ng-hide="isCurrentLocation('/container/create') || isCurrentLocation('/create/simple')">
+                    <span class="select-name">
+                        OS:
+                    </span>
+                    <div class="btn-group"
+                         data-html="true"
+                         data-original-title="Filter by operating system">
+                        <select type="hidden" data-select-two id="selectOS" class="dd-fixed-width" data-item="opsys"
+                                data-select="selectDataValue('os')" data-fn="selectOpsys">
+                            <option data-ng-repeat="opsys in operating_systems" value="{{opsys}}">
+                                {{opsys | orderBy:'toString()'}}
+                            </option>
+                        </select>
+                    </div>
+                    <div class="in-line">
+                        <input type="search"
+                               class="filter-images filter-field"
+                               placeholder="Search image"
+                               data-ng-model="filterModel.searchText"
+                               data-ng-change="getFilteredDatasets()"
+                               data-translate="placeholder" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

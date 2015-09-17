@@ -28,6 +28,7 @@
                 title: localization.translate(null, 'machine', 'Create Instances on Joyent')
             });
             Machine.initCreateInstancePageConfig();
+            var sdcDatacenters = window.JP.get('sdcDatacenters') || [];
             var CHOOSE_IMAGE_STEP = 0;
             var SELECT_PACKAGE_STEP = 1;
             var REVIEW_STEP = 2;
@@ -55,10 +56,12 @@
 
             var preSelectedData = $rootScope.popCommonConfig('preSelectedData');
             var datacenterConfig;
+            var isAvailableSwitchDatacenter;
 
             var PROVISION_CREATING_IN_PROGRESS = 'Another machine is being created, please let it become provisioning.';
 
             $scope.setCreateInstancePage = Machine.setCreateInstancePage;
+            $scope.isCurrentLocation = Provision.isCurrentLocation;
             $scope.provisionSteps = [
                 {
                     name: WizardSteps.CHOOSE_IMAGE,
@@ -77,8 +80,8 @@
 
             $scope.filterModel = {};
             $scope.sshModel = {isSSHStep: false};
-            $scope.instanceType = (preSelectedImageId || $location.path().indexOf('/custom') > -1) ?
-                'Saved' : 'Public';
+            $scope.instanceType = (preSelectedImageId || $location.path().indexOf('/native-container') > -1) ?
+                'native-container' : 'virtual-machine';
 
             if (preSelectedData && preSelectedData.preSelectedImageId) {
                 preSelectedImageId = preSelectedData.preSelectedImageId;
@@ -242,7 +245,8 @@
             var tasks = [
                 $q.when(Account.getKeys()),
                 $q.when(Datacenter.datacenter()),
-                $q.when(Account.getAccount(true))
+                $q.when(Account.getAccount(true)),
+                $q.when(Provision.getCreatedMachines())
             ];
             $qe.every(tasks).then(function (result) {
                 var keysResult = result[0];
@@ -275,7 +279,7 @@
                         if (datacenter) {
                             $scope.selectDatacenter(datacenter);
                         } else {
-                            $location.url('/compute/create');
+                            $location.url('/compute/create/simple');
                             $location.replace();
                             setDatacenter();
                         }
@@ -291,7 +295,7 @@
                         $scope.selectedPackage = $scope.data.package;
                         selectedNetworks = $scope.data.networks;
 
-                        $scope.instanceType = 'Public';
+                        $scope.instanceType = 'native-container';
                         $scope.reconfigure(REVIEW_STEP);
                     }
                     if (bundle.ready) {
@@ -343,6 +347,11 @@
                         PopupDialog.errorObj(error);
                         completeSetup();
                     });
+                    if ($scope.isRecentInstancesEnabled) {
+                        Image.image({datacenter: $scope.data.datacenter}).then(function (datasets) {
+                            $scope.recentInstances = Provision.processRecentInstances(result[3], getEmptyOnError(datasets), $scope.packages);
+                        });
+                    }
                 }
             }, function (err) {
                 $scope.loading = false;
@@ -485,7 +494,13 @@
                 Provision.selectDatacenter(name, function (datacenterName) {
                     if (datacenterName) {
                         $scope.data.datacenter = datacenterName;
+                        $scope.isSdcDatacenter = sdcDatacenters.some(function (sdcDatacenter) {
+                            return sdcDatacenter.datacenter === datacenterName;
+                        });
                         $rootScope.commonConfig('datacenter', datacenterName);
+                        if ($scope.instanceType === 'native-container' && !$scope.isSdcDatacenter) {
+                            $scope.selectInstanceType('virtual-machine');
+                        }
                     }
                 });
             };
@@ -705,23 +720,44 @@
             };
 
             $scope.filterDatasetsByVisibility = function (item) {
-                var result = item.public;
+                var result = false;
+                if ($scope.instanceType === 'native-container') {
+                    result = item.type === 'smartmachine';
+                } else if ($scope.instanceType === 'virtual-machine') {
+                    result = item.type === 'virtualmachine';
+                }
                 if ($scope.features.imageUse !== 'disabled') {
-                    result = item.state === 'active' &&
-                        ($scope.instanceType === 'Public' || !item.public) &&
-                        ($scope.instanceType === 'Saved' || item.public);
+                    result = item.state === 'active' && result;
                 }
                 return result;
             };
 
+            $scope.getFilteredDatasets = function () {
+                $scope.filteredDatasets = ($scope.datasets || []).filter(function (item) {
+                    return $scope.filterDatasets(item) && $scope.filterDatasetsByOS(item) && $scope.filterDatasetsByVisibility(item);
+                });
+            };
+
             $scope.selectInstanceType = function (type) {
                 $scope.instanceType = type;
-                if (type === 'Public') {
-                    $location.path('/compute/create');
-                    $scope.setCreateInstancePage('');
-                } else if (type === 'Saved') {
-                    $location.path('/compute/create/custom');
-                    $scope.setCreateInstancePage('custom');
+                $scope.getFilteredDatasets();
+                if (type === 'virtual-machine' || !$scope.isSdcDatacenter) {
+                    $location.path('/compute/create/virtual-machine');
+                    $scope.setCreateInstancePage('virtual-machine');
+                } else if (type === 'native-container') {
+                    $location.path('/compute/create/native-container');
+                    $scope.setCreateInstancePage('native-container');
+                } else if (type === 'container') {
+                    $location.path('/compute/container/create');
+                    $scope.setCreateInstancePage('container');
+                }
+            };
+
+            $scope.checkLimit = function (dataset) {
+                if (dataset.limit) {
+                    $scope.goTo('/limits');
+                } else {
+                    $scope.selectLastDatasetVersion(dataset);
                 }
             };
 
@@ -910,6 +946,16 @@
                 }
             };
 
+            function getEmptyOnError(list) {
+                var result = list;
+                if (list.error) {
+                    isAvailableSwitchDatacenter = list.error.restCode !== 'NotAuthorized';
+                    PopupDialog.errorObj(list.error);
+                    result = [];
+                }
+                return result;
+            }
+
             // Watch datacenter change
             var firstLoad = true;
             $scope.$watch('data.datacenter', function (newVal, oldVal) {
@@ -926,7 +972,7 @@
                         $q.when(Package.package({datacenter: newVal})),
                         $q.when(Provision.getCreatedMachines())
                     ]).then(function (result) {
-                        var isAvailableSwitchDatacenter = true;
+                        isAvailableSwitchDatacenter = true;
                         function checkErrorResult(result) {
                             if (result.error) {
                                 isAvailableSwitchDatacenter = result.error.restCode !== 'NotAuthorized';
@@ -935,21 +981,13 @@
                             }
                             return false;
                         }
-                        function getEmptyOnError(list) {
-                            var result = list;
-                            if (list.error) {
-                                isAvailableSwitchDatacenter = list.error.restCode !== 'NotAuthorized';
-                                PopupDialog.errorObj(list.error);
-                                result = [];
-                            }
-                            return result;
-                        }
                         var datasets = getEmptyOnError(result[0]);
                         var packages = getEmptyOnError(result[1]);
 
                         Provision.processDatasets(datasets, function (result) {
                             $scope['operating_systems'] = result.operatingSystems;
                             $scope.datasets = result.datasets;
+                            $scope.getFilteredDatasets();
                             $scope.manyVersions = result.manyVersions;
                             $scope.selectedVersions = result.selectedVersions;
                             $scope.datasetsLoading = false;
@@ -1040,6 +1078,7 @@
                 var dataValue = 'No matches found';
                 if (name === 'os' && $scope['operating_systems']) {
                     dataValue = $scope.data.opsys;
+                    $scope.getFilteredDatasets();
                 }
                 return dataValue;
             };

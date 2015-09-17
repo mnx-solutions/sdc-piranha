@@ -48,7 +48,7 @@
             </li>
             <li class="nested"
                 data-ng-show="features.docker == 'enabled'"
-                data-ng-class="{active: location.path().search('docker') == 1, open: location.path().search('/registr?') > 1 || location.path().search('/containers?') > 1 || location.path().search('/logs?') > 1 || location.path().search('/analytics?') > 1 || location.path().search('/images?') > 1 || location.path().search('/audit?') > 1}">
+                data-ng-class="checkDockerMenuOpen()">
                 <a href="#!/docker/containers" class="docker-icon">
                     <span class="title">Docker</span>
                 </a>

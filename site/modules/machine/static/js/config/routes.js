@@ -27,12 +27,12 @@ window.JP.main.config([
         }).when('/compute/ssh', {
             title: 'SSH keys',
             action: 'machine.ssh'
-        }).when('/compute/create', {
+        }).when('/compute/create/native-container', {
             title: 'Create Instance',
             action: 'machine.provision'
-        }).when('/compute/create/recent', {
+        }).when('/compute/create/virtual-machine', {
             title: 'Create Instance',
-            action: 'machine.recent'
+            action: 'machine.provision'
         }).when('/compute/create/:imageid', {
             title: 'Create Instance from custom image',
             action: 'machine.provision'

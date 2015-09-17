@@ -46,6 +46,13 @@
                     $location.path('/usage/' + usageType + year + '/' + month);
                 };
 
+                $scope.checkDockerMenuOpen = function () {
+                    return {
+                        active: $location.path().search('docker') === 1,
+                        open: $location.path().search('/registr?|/docker/containers?|/logs?|/analytics?|/images?|/audit?') > 1
+                    }
+                };
+
                 $scope.currentYear = (new Date()).getFullYear();
             }
         };
