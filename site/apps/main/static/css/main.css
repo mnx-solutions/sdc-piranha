@@ -2929,6 +2929,10 @@ a.orange-link {
     min-width: 395px;
     max-width: 395px;
 }
+.metadata .editable .value-width {
+    height: 80px;
+    min-height: 80px;
+}
 .create-images input,
 .create-images textarea {
     width: 394px;

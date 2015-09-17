@@ -231,6 +231,7 @@
 .create-mdata .value-container .value-width {
     width: 310px;
     height: 80px;
+    min-height: 80px;
 }
 
 
