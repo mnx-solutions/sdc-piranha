@@ -200,7 +200,7 @@
     "eula": ""
   },
   "docker": {
-    "dockerVersion": "1.8.1",
+    "dockerVersion": "1.8.2",
     "cadvisorVersion": "0.10.1",
     "registryVersion": "0.9.1",
     "registryDriverVersion": "0.0.19"
