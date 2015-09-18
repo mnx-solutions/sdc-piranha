@@ -843,7 +843,7 @@
             var setDefaultAccordionBehavior = function (accordion) {
                 accordion.find('.panel-collapse').addClass('collapse').end()
                     .find('a').addClass('collapsed').end()
-                    .find('.collapse.in').removeClass('in');
+                    .find('.collapse.in').removeClass('in').removeAttr('style');
             };
 
             $scope.onFilterChange = function (newVal, packageType) {
@@ -856,7 +856,8 @@
                         var accordion = ng.element('#packagesAccordion');
                         if ($scope.filterModel.key === 'No filter') {
                             setDefaultAccordionBehavior(accordion);
-                            accordion.find('.panel-collapse.collapse').has('div.active').addClass('in').parent()
+                            accordion.find('.panel-collapse.collapse').has('div.active').addClass('in')
+                                .removeAttr('style').parent()
                                 .find('a.collapsed').removeClass('collapsed');
                         } else {
                             $scope.collapsedPackageTypes = [];
