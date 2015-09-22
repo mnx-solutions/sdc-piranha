@@ -100,8 +100,11 @@
                     }
 
                     return $http(options)
-                        .success(function (response) {
-                            var status = response.error ? 'error' : 'success';
+                        .success(function (response, status) {
+                            status = !status || status > 400 ? 'error' : 'success';
+                            if (!response && status === 'error') {
+                                response = 'Connection refused';
+                            }
                             cb(status)(response);
                         })
                         .error(cb('error'));
@@ -122,7 +125,6 @@
             function uploadFiles(url, path, files, cb) {
                 var data = new FormData();
                 var metadata = {path: path, files: {}};
-                var fileIndex;
 
                 files = Array.prototype.slice.call(files);
 
@@ -161,7 +163,9 @@
                         var responseObj = null;
                         try {
                             responseObj = JSON.parse(xhr.responseText);
-                        } catch (e) {}
+                        } catch (e) {
+                            // bad object
+                        }
                         if (responseObj && (responseObj.error || responseObj.status === 'error')) {
                             return cb(responseObj, {status: 'error', id: chunkId, path: path});
                         }

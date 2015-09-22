@@ -45,7 +45,7 @@
 
                 var reloadPackages = function (currentPackageName, datacenter) {
                     $q.all([Package.package({datacenter: datacenter}), Package.getPackage(datacenter, currentPackageName)]).then(function (results) {
-                        scope.package = results[1];
+                        scope.package = results[1] || {};
                         scope.packages = results[0].filter(function (item) {
                             if (scope.package && item.type && item.type === 'smartos' && item.memory > scope.package.memory) {
                                 //Old images don't have currentPackage.type
@@ -64,6 +64,9 @@
                         };
 
                         scope.packages.forEach(function (pkg) {
+                            if (!pkg) {
+                                return;
+                            }
                             if (pkg.createdBySupport) {
                                 maxPackages.createdBySupport = pkg;
                             } else {
@@ -225,7 +228,7 @@
                     reloadPackages(m.package, m.datacenter);
 
                     Image.image({datacenter: m.datacenter, id: m.image}).then(function (image) {
-                        if (scope.machine.tags.sdc_docker) {
+                        if (scope.machine.tags['sdc_docker']) {
                             scope.dataset = {name: 'Triton image'};
                             return;
                         }
@@ -266,7 +269,7 @@
 
                         scope.datasetType = type;
                     }, function () {
-                        if (scope.machine.tags.sdc_docker) {
+                        if (scope.machine.tags['sdc_docker']) {
                             scope.dataset = {name: 'Triton image'};
                             return;
                         }
@@ -279,7 +282,7 @@
 
                 scope.isSdc = function () {
                     var machine = scope.machine;
-                    return machine && machine.tags && machine.tags.sdc_docker;
+                    return machine && machine.tags && machine.tags['sdc_docker'];
                 };
 
                 function loadMachineNetworks() {
@@ -590,7 +593,7 @@
                 };
 
                 scope.contactSupport = function (obj) {
-                    $q.when(scope.account).then(function (account) {
+                    $q.when(scope.account).then(function () {
                         var contactSupportParams = ng.copy(scope.zenboxParams);
                         if (obj) {
                             contactSupportParams['request_description'] = 'API Name: ' + obj.name;

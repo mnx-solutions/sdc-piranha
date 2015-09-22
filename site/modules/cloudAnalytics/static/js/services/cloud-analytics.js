@@ -1,7 +1,6 @@
 'use strict';
 
-
-(function (app, ng) {
+(function (app) {
     function InstrumentationCache() {}
     InstrumentationCache.prototype = {
         findById: function (zoneId, id) {
@@ -95,7 +94,7 @@
             });
 
             var ca = null;
-            var palette = new Rickshaw.Color.Palette({ scheme: 'colorwheel' });
+            var palette = new Rickshaw.Color.Palette({scheme: 'colorwheel'});
             var usedColors = {
                 default: 'steelblue'
             };
@@ -156,7 +155,7 @@
                         title += ' ' + fields[decompositions[k]].label;
                     }
                 }
-                
+
                 this.type = type;
                 this.title = title;
             };
@@ -192,7 +191,7 @@
                     y: options.location.y
                 });
 
-                if (values && typeof(values.ymin) !== 'undefined' && typeof(values.ymax) !== 'undefined') {
+                if (values && typeof values.ymin !== 'undefined' && typeof values.ymax !== 'undefined') {
                     config.ymin = values.ymin;
                     config.ymax = values.ymax;
                 }
@@ -257,9 +256,9 @@
                             var range = this.range || iService.range;
                             var endtime = times[times.length - 1];
 
-                            for (; range >= 0; --range ) {
+                            for (; range >= 0; --range) {
                                 seriesData.push({
-                                    x:endtime-range,
+                                    x:endtime - range,
                                     y:0
                                 });
                             }
@@ -283,7 +282,7 @@
                 this.polls = {};
             }
 
-            CloudAnalytics.prototype.ranges = [ 10, 31, 60, 90, 120, 150, 180 ];
+            CloudAnalytics.prototype.ranges = [10, 31, 60, 90, 120, 150, 180];
             CloudAnalytics.prototype.ca = {};
             CloudAnalytics.prototype.describeAnalytics = function () {
                 var self = this;
@@ -328,7 +327,7 @@
                 }
                 return d.promise;
             };
-            
+
             CloudAnalytics.prototype.createInstrumentations = function (options, callback) {
                 var cache = instrumentationCache[options.zoneId] = instrumentationCache[options.zoneId] || {};
                 var configs = options.configs.filter(function (config) {
@@ -366,7 +365,7 @@
                 instrumentationCache.forEach(options.zoneId, function (instrumentation) {
                     cache[instrumentation.id] = instrumentation;
                 });
-                
+
                 service.getValues(options, function (error, response) {
                     var values = response.res || [];
                     if (!error && !values.length) {
@@ -424,7 +423,7 @@
             };
             CloudAnalytics.prototype.createCacheKey = createCacheKey;
             CloudAnalytics.prototype.instrumentationCache = instrumentationCache;
-            
+
             CloudAnalytics.prototype.startPolling = function (options, callback) {
                 var self = this;
                 var timer = this.polls[options.zoneId];
@@ -438,7 +437,7 @@
                     }
                 }, 1000);
             };
-            
+
             CloudAnalytics.prototype.stopPolling = function (options, callback) {
                 callback = callback || angular.noop;
                 var self = this;
