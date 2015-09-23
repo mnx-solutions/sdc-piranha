@@ -1,4 +1,4 @@
-<div>
+<div style="max-width: 185px;">
     <select ui-select2="{minimumResultsForSearch: -1, width: '110%'}" id="selectVersion" data-ng-model="data.dataset" data-ng-change="selectVersion()" data-ng-if="selectedDataset || selectedVersions[selectedDataset.name]">
         <option data-ng-repeat="version in filteredVersions" value="{{version.id}}">
             {{version.version}}
