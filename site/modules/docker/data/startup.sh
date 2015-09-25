@@ -75,8 +75,20 @@ function writeStage {
 }
 
 function installDocker {
+    LINUX_IMAGE_VERSION="$(uname -r)_$(uname -r | sed 's/-generic$//').$(uname -v | awk -F- '{print substr($1, 2)}')"
+    wget -c "http://joyent.archive.ubuntu.com/ubuntu/pool/main/libn/libnl3/libnl-3-200_3.2.21-1_amd64.deb"
+    wget -c "http://joyent.archive.ubuntu.com/ubuntu/pool/main/libn/libnl3/libnl-genl-3-200_3.2.21-1_amd64.deb"
+    wget -c "http://joyent.archive.ubuntu.com/ubuntu/pool/main/w/wireless-regdb/wireless-regdb_2013.02.13-1ubuntu1_all.deb"
+    wget -c "http://joyent.archive.ubuntu.com/ubuntu/pool/main/c/crda/crda_1.1.2-1ubuntu2_amd64.deb"
+    wget -c "http://joyent.archive.ubuntu.com/ubuntu/pool/main/i/iw/iw_3.4-1_amd64.deb"
+    wget -c "http://joyent.archive.ubuntu.com/ubuntu/pool/main/l/linux/linux-image-extra-${LINUX_IMAGE_VERSION}_amd64.deb"
     wget -c "https://apt.dockerproject.org/repo/pool/main/d/docker-engine/docker-engine_${DOCKER_VERSION}-0~$(lsb_release -sc)_amd64.deb"
-    dpkg -i docker-engine_${DOCKER_VERSION}-0~$(lsb_release -sc)_amd64.deb
+    wget -c "http://joyent.archive.ubuntu.com/ubuntu/pool/universe/a/aufs-tools/aufs-tools_3.2+20130722-1.1_amd64.deb"
+
+    dpkg -i libnl-3-200_3.2.21-1_amd64.deb libnl-genl-3-200_3.2.21-1_amd64.deb wireless-regdb_2013.02.13-1ubuntu1_all.deb \
+        crda_1.1.2-1ubuntu2_amd64.deb iw_3.4-1_amd64.deb linux-image-extra-${LINUX_IMAGE_VERSION}_amd64.deb \
+        aufs-tools_3.2+20130722-1.1_amd64.deb docker-engine_${DOCKER_VERSION}-0~$(lsb_release -sc)_amd64.deb
+
     local STATE=true
     while ${STATE} ; do
         if pgrep mkfs.ext3  >/dev/null; then
@@ -91,7 +103,7 @@ function installDocker {
     mount -a
     mkdir ${DOCKER_DIR}
     service docker stop
-    echo "DOCKER_OPTS=\"-g /mnt/docker -H tcp://127.0.0.1:${DOCKER_INTERNAL_PORT} -H unix:///var/run/docker.sock --api-enable-cors=true\"" >> /etc/default/docker
+    echo "DOCKER_OPTS=\"-s aufs -g /mnt/docker -H tcp://127.0.0.1:${DOCKER_INTERNAL_PORT} -H unix:///var/run/docker.sock\"" >> /etc/default/docker
     service docker start
 }
 
