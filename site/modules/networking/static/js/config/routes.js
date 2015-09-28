@@ -1,6 +1,11 @@
 'use strict';
 
 window.JP.main.config(['routeProvider', function (routeProvider) {
+    var features = window.JP.get('features');
+    if (features && features.networking !== 'enabled') {
+        return;
+    }
+
     routeProvider.when('/networks', {
         title: 'Networks',
         action: 'networking.index',
