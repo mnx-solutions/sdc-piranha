@@ -165,6 +165,7 @@ label.control-label,
     font-weight: normal;
 }
 
+.label-info.state-label,
 .state-label {
     text-align: left;
     text-indent: -7px;
