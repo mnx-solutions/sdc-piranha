@@ -1020,6 +1020,27 @@ var Docker = function execute(log, config) {
         });
     });
 
+    server.onCall('removeAudit', {
+        verify: function (data) {
+            return data && Array.isArray(data);
+        },
+        handler: function (call) {
+            var auditor = new Auditor(call);
+            vasync.forEachParallel({
+                inputs: call.data,
+                func: function (item, callback) {
+                    item.date = new Date(item.date);
+                    auditor.del(item, callback);
+                }
+            }, function (err) {
+                if (err) {
+                    return call.done(err);
+                }
+                call.done();
+            });
+        }
+    });
+
     server.onCall('DockerTerminalPing', {
         verify: function (data) {
             return data && data.machine && data.machine.primaryIp && data.containerId;

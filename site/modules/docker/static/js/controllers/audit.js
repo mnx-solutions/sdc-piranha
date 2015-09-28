@@ -48,6 +48,10 @@
                     id: 'name',
                     name: 'Action',
                     sequence: 2,
+                    type: 'progress',
+                    _inProgress: function (event) {
+                        return event.actionInProgress;
+                    },
                     active: true
                 },
                 {
@@ -151,28 +155,71 @@
                 }
             });
 
-            $scope.gridActionButtons = [];
+            function removeAudit(messageTitle) {
+                if ($scope.checkedItems.length) {
+                    PopupDialog.confirmAction(
+                        messageTitle,
+                        'remove',
+                        'audit record',
+                        $scope.checkedItems.length,
+                        function () {
+                            $scope.checkedItems.forEach(function (record) {
+                                record.actionInProgress = true;
+                                record.checked = false;
+                            });
+                            Docker.removeAudit($scope.checkedItems).then(function () {
+                                $scope.checkedItems = [];
+                                $scope.audit = $scope.audit.filter(function (record) {
+                                    return !record.actionInProgress;
+                                });
+                            }, function (err) {
+                                Docker.errorCallback(err, function () {
+                                    $scope.loading = true;
+                                    listAuditRecords();
+                                });
+                            });
+                        });
+                } else {
+                    $scope.noCheckBoxChecked();
+                }
+            }
+
+            $scope.noCheckBoxChecked = function () {
+                PopupDialog.noItemsSelectedError('audit records');
+            };
+
+            $scope.gridActionButtons = [
+                {
+                    label: 'Remove',
+                    action: function () {
+                        removeAudit('Remove audit records');
+                    }
+                }
+            ];
             $scope.exportFields = {
                 ignore: []
             };
             $scope.searchForm = true;
-            $scope.enabledCheckboxes = false;
+            $scope.enabledCheckboxes = true;
             $scope.placeHolderText = 'filter audit';
             $scope.tabFilterField = 'action';
 
-            Storage.pingManta(function () {
-                $q.all([
-                    Docker.getAuditInfo(),
-                    Docker.listHosts()
-                ]).then(function (result) {
-                    $scope.audit = result[0] || [];
-                    $scope.audit.forEach(function (audit) {
-                        audit.action = (audit.name === 'run' || audit.name === 'pull' || audit.name === 'push') ? 'Key actions' : null;
+            function listAuditRecords() {
+                Storage.pingManta(function () {
+                    $q.all([
+                        Docker.getAuditInfo(),
+                        Docker.listHosts()
+                    ]).then(function (result) {
+                        $scope.audit = result[0] || [];
+                        $scope.audit.forEach(function (audit) {
+                            audit.action = (audit.name === 'run' || audit.name === 'pull' || audit.name === 'push') ? 'Key actions' : null;
+                        });
+                        $scope.hosts = result[1] || [];
+                        $scope.loading = false;
                     });
-                    $scope.hosts = result[1] || [];
-                    $scope.loading = false;
                 });
-            });
+            }
+            listAuditRecords();
         }
     ]);
 }(window.angular, window.JP.getModule('docker')));

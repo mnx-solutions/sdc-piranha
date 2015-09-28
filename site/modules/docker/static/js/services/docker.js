@@ -927,6 +927,13 @@
             return createCall('auditPing', {direct: true});
         };
 
+        service.removeAudit = function (auditRecords) {
+            return serverTab.call({
+                name: 'removeAudit',
+                data: auditRecords
+            }).promise;
+        };
+
         service.registryRemoveImage = function (options) {
             return createCall('registryRemoveImage', ng.extend({}, options, {direct: true}));
         };

@@ -6,7 +6,7 @@
         <h3 class="page-title">Audit</h3>
         <div class="loading-large col-md-12" data-ng-show="!audit.length && loading"></div>
 
-        <div data-ng-if="audit.length">
+        <div data-ng-show="audit.length">
             <div data-grid-view
                  data-user-config="gridUserConfig"
                  data-props="gridProps"
