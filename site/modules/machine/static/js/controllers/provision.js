@@ -754,7 +754,7 @@
             };
 
             $scope.checkLimit = function (dataset) {
-                if (dataset.limit) {
+                if (dataset.limit && dataset.limit.$$v) {
                     $scope.goTo('/limits');
                 } else {
                     $scope.selectLastDatasetVersion(dataset);
