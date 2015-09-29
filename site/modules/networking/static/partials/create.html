@@ -30,7 +30,7 @@
                             <div class="error"
                                  data-translate
                                  data-ng-show="isError('network-name', 'required')">
-                                Missing network name.
+                                Missing network name
                             </div>
                             <div class="error"
                                  data-translate
@@ -125,22 +125,24 @@
                             <a data-ng-click="createVlanForm = true">Create a new VLAN</a>
                         </span>
                          <span data-ng-show="createVlanForm" class="edit-value range">
-                             <span class="loading-medium-transparent col-md-12" data-ng-show="vlanCreating"></span>
-                             <span class="vlan-fields" data-ng-hide="vlanCreating">
+                             <span class="vlan-fields">
                                  <input type="text"
                                         name="vlanName"
                                         data-ng-pattern="name.pattern"
                                         ng-model="vlan.name"
+                                        data-ng-disabled="vlanCreating"
                                         data-ng-class="{error: networkForm.vlanName.$error.pattern}"
                                         placeholder="VLan name" />
                                  <input type="text"
                                         name="vlanId"
                                         data-ng-pattern="/^(\d)*$/"
                                         ng-model="vlan.vlan_id"
+                                        data-ng-disabled="vlanCreating"
                                         data-ng-class="{error: networkForm.vlanId.$error.pattern}"
                                         placeholder="VLan ID" />
                              </span>
                              <span class="pull-right">
+                                <span class="loading-medium-transparent col-md-12" data-ng-show="vlanCreating"></span>
                                 <button type="button" class="btn" data-ng-disabled="vlanCreating" data-ng-click="createVlanForm = false">Cancel</button>
                                 <button type="button"
                                         class="btn orange"

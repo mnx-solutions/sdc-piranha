@@ -2,12 +2,12 @@
     min-width: 660px;
 }
 
-.form-group .edit-error {
+.form-group .edit-error:not(.vlan-detail) {
     margin-right: 120px;
 }
 
 .vlan-detail .form-group .edit-error {
-    margin-right: 25px;
+    width: 605px;
 }
 
 .form-group textarea {
