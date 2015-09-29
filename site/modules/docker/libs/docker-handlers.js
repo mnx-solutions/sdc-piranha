@@ -10,6 +10,7 @@ var fs = require('fs');
 var uuid = require('../../../static/vendor/uuid/uuid.js');
 var registryConfig = fs.readFileSync(path.join(__dirname, '..', 'data/registry-config.yml'), 'utf-8');
 var api = require('../');
+var utils = require('../../../../lib/utils');
 
 var MESSAGE_WRONG_IMAGE_NAME = 'Wrong image name';
 var REGEX_OBJECTS_SEPARATOR = /(?:\}\s*\{|\}\s*$)/;
@@ -590,18 +591,9 @@ var getRegistryImages = function (call) {
                     callback();
                 });
             }
-        }, function (vasyncError) {
-            if (vasyncError) {
-                var cause = vasyncError['jse_cause'] || vasyncError['ase_errors'];
-                if (Array.isArray(cause)) {
-                    cause = cause[0];
-                } else {
-                    return call.done(vasyncError);
-                }
-                return call.done(cause, cause instanceof Docker.DockerHostUnreachable);
-            }
-
-            call.done(null);
+        }, function (vasyncErrors) {
+            var error = utils.getVasyncData(vasyncErrors).error;
+            call.done(error, error && error !== vasyncErrors && error instanceof Docker.DockerHostUnreachable);
         });
     }
     Docker.getRegistry(call, registryId, function (error, registryRecord) {

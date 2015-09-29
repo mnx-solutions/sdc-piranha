@@ -317,9 +317,9 @@ var Docker = function execute(log, config) {
                                                     inspectCallback(null, container);
                                                 });
                                             }
-                                        }, function (vasyncErr, containers) {
-                                            containers = [].concat.apply([], containers.successes);
-                                            callback(vasyncErr, containers);
+                                        }, function (vasyncErrs, containers) {
+                                            var data = utils.getVasyncData(vasyncErrs, containers);
+                                            callback(data.error, data.result);
                                         });
                                     } else {
                                         callback(null, response);
@@ -327,22 +327,14 @@ var Docker = function execute(log, config) {
                                 });
                             });
                         }
-                    }, function (vasyncError, operations) {
-                        if (vasyncError) {
-                            var cause = vasyncError['jse_cause'] || vasyncError['ase_errors'];
-                            if (Array.isArray(cause)) {
-                                cause = cause[0];
-                            } else {
-                                return call.done(vasyncError);
-                            }
-                            return call.done(cause, cause instanceof Docker.DockerHostUnreachable);
+                    }, function (vasyncErrors, operations) {
+                        var data = utils.getVasyncData(vasyncErrors, operations, suppressErrors);
+                        if (vasyncErrors) {
+                            var error = data.error;
+                            return call.done(error, error !== vasyncErrors && error instanceof Docker.DockerHostUnreachable);
                         }
 
-                        var result = [].concat.apply([], operations.successes);
-                        if (suppressErrors.length) {
-                            result.push({suppressErrors: suppressErrors});
-                        }
-                        call.done(null, result);
+                        call.done(null, data.result);
                     });
                 });
             });
@@ -413,11 +405,8 @@ var Docker = function execute(log, config) {
                     });
                 }
             }, function (vasyncErrors, operations) {
-                if (vasyncErrors) {
-                    return call.done(vasyncErrors);
-                }
-                var result = [].concat.apply([], operations.successes);
-                call.done(null, result);
+                var data = utils.getVasyncData(vasyncErrors, operations);
+                call.done(data.error, data.result);
             });
         });
     });
@@ -558,11 +547,8 @@ var Docker = function execute(log, config) {
                         });
                     }
                 }, function (vasyncErrors, analyzeLogFiles) {
-                    if (vasyncErrors) {
-                        return call.done(vasyncErrors);
-                    }
-                    analyzeLogFiles = [].concat.apply([], analyzeLogFiles.successes);
-                    call.done(null, analyzeLogFiles);
+                    var data = getVasyncData(vasyncErrors, analyzeLogFiles);
+                    call.done(data.error, data.result);
                 });
             }
 
@@ -619,10 +605,9 @@ var Docker = function execute(log, config) {
                             });
                         });
                     }
-                }, function (vasyncError) {
-                    if (vasyncError) {
-                        var cause = vasyncError['jse_cause'] || vasyncError['ase_errors'] || vasyncError;
-                        call.log.warn({error: cause}, 'Error while persisting container logs');
+                }, function (vasyncErrors) {
+                    if (vasyncErrors) {
+                        call.log.warn({error: utils.getVasyncError(vasyncErrors)}, 'Error while persisting container logs');
                     }
                     machine.Delete(call, options, function (error) {
                         if (error) {
@@ -688,10 +673,9 @@ var Docker = function execute(log, config) {
                                     });
                                 }
                             ]
-                        }, function (err) {
-                            if (err) {
-                                var cause = err['jse_cause'] || err['ase_errors'] || err;
-                                call.log.warn({error: cause}, 'Error while updating registries list');
+                        }, function (errors) {
+                            if (errors) {
+                                call.log.warn({error: utils.getVasyncError(errors)}, 'Error while updating registries list');
                             }
                             call.done();
                         });
@@ -1001,21 +985,9 @@ var Docker = function execute(log, config) {
                             callback(null, item);
                         });
                     }
-                }, function (vasyncError, operations) {
-                    if (vasyncError) {
-                        var cause = vasyncError['jse_cause'] || vasyncError['ase_errors'];
-                        if (Array.isArray(cause)) {
-                            cause = cause[0];
-                        } else {
-                            return call.done(vasyncError);
-                        }
-                        return call.done(cause);
-                    }
-                    var result = [].concat.apply([], operations.successes);
-                    if (suppressErrors.length) {
-                        result.push({suppressErrors: suppressErrors});
-                    }
-                    call.done(null, result);
+                }, function (vasyncErrors, operations) {
+                    var data = utils.getVasyncData(vasyncErrors, operations, suppressErrors);
+                    call.done(data.error, data.result);
                 });
             });
         }

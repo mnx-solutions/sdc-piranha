@@ -54,9 +54,6 @@
                     vlans.list = [];
                     vlans.job = serverTab.call({
                         name: 'FabricVlansList',
-                        error: function (err) {
-                            vlans.error = err;
-                        },
                         progress: function (err, job) {
                             var data = job.__read();
                             if (Array.isArray(data)) {

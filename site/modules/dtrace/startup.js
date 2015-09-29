@@ -64,11 +64,12 @@ var dtrace = function execute() {
                     func: function (sharedScript, callback) {
                         mantaSharedScriptsClient.getFileJson(path.join(SHARED_SCRIPTS_DIR_PATH, sharedScript.name), callback);
                     }
-                }, function (errors, operations) {
-                    if (errors) {
-                        return callback(errors, scriptsList);
+                }, function (vasyncErrors, operations) {
+                    var data = utils.getVasyncData(vasyncErrors, operations);
+                    if (vasyncErrors) {
+                        return callback(data.error, scriptsList);
                     }
-                    var sharedScripts = [].concat.apply([], operations.successes);
+                    var sharedScripts = data.result;
                     var scriptIds = scriptsList.map(function (script) {
                         return script.id;
                     });

@@ -16,7 +16,7 @@
             });
 
             $scope.datacenters = $scope.features.networkingDatacenters;
-            $scope.network = {datacenter: $scope.datacenters[0]};
+            $scope.network = {};
             $scope.loading = true;
             $scope.routes = [{subnet: '', gateway: ''}];
             $scope.vlan = {};
@@ -37,11 +37,9 @@
 
             Vlan.vlan().then(function (vlans) {
                 $scope.vlans = vlans || [];
+                $scope.network.datacenter = vlans && vlans.length && vlans[0].datacenter;
                 $scope.createVlanForm = $scope.vlans.length === 0;
                 $scope.loading = false;
-            }, function () {
-                $scope.loading = false;
-                $scope.goToNetworksPage();
             });
 
             $scope.isError = function (field, errorType) {

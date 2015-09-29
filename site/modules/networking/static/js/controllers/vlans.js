@@ -19,9 +19,6 @@
             Vlan.vlan().then(function (vlans) {
                 $scope.vlans = vlans || [];
                 $scope.loading = false;
-            }, function (err) {
-                PopupDialog.errorObj(err);
-                $scope.loading = false;
             });
 
             $scope.gotoCreatePage = function () {

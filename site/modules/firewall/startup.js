@@ -307,17 +307,8 @@ var firewall = function execute (api, config) {
                         callback();
                     }, undefined, true);
                 }
-            }, function (vasyncError) {
-                if (vasyncError) {
-                    var cause = vasyncError['ase_errors'];
-                    if (Array.isArray(cause)) {
-                        cause = cause[0];
-                    } else {
-                        return call.done(vasyncError);
-                    }
-                    return call.done(cause);
-                }
-                call.done();
+            }, function (vasyncErrors) {
+                call.done(utils.getVasyncData(vasyncErrors).error);
             });
         }, !!call.req.session.subId);
 

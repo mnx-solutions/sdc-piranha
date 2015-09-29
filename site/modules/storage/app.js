@@ -1,11 +1,8 @@
 "use strict";
 
-var fs = require('fs');
 var path = require('path');
 var config = require('easy-config');
 var manta = require('manta');
-var express = require('express');
-var vasync = require('vasync');
 var formidable = require('formidable');
 var MemoryStream = require('memorystream');
 

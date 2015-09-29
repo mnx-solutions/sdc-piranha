@@ -4,6 +4,7 @@ var vasync = require('vasync');
 
 module.exports = function execute() {
     var server = require('../server').Server;
+    var utils = require('../../../lib/utils');
     var networkingDatacenters = config.networkingDatacenters || [];
 
     server.onCall('GetNetwork', {
@@ -33,9 +34,9 @@ module.exports = function execute() {
                     callback(null, networks);
                 });
             }
-        }, function (vasyncError, operations) {
-            var result = [].concat.apply([], operations.successes);
-            call.done(vasyncError, result);
+        }, function (vasyncErrors, operations) {
+            var data = utils.getVasyncData(vasyncErrors, operations);
+            call.done(data.error, data.result);
         });
     });
 
@@ -49,6 +50,43 @@ module.exports = function execute() {
                 network.vlan_id = parseInt(network.vlan_id, 10) || 0;
                 call.cloud.separate(network.datacenter).createFabricNetwork(network, call.done.bind(call));
             }
+        });
+
+        server.onCall('FabricVlansList', function (call) {
+            var cloudapi = call.cloud;
+            cloudapi.listDatacenters(function (err, datacenters) {
+                if (err) {
+                    return call.done(err);
+                }
+
+                var availableDatacenters = Object.keys(datacenters).filter(function (datacenter) {
+                   return networkingDatacenters.indexOf(datacenter) !== -1;
+                });
+
+                if (availableDatacenters.length === 0) {
+                    return call.done('Data centers with enabled VLans not found.');
+                }
+
+                vasync.forEachParallel({
+                    inputs: availableDatacenters,
+                    func: function (datacenter, callback) {
+                        cloudapi.separate(datacenter).listFabricVlans(function (err, vlans) {
+                            if (err) {
+                                call.update(null, {status: 'error', error: err, datacenter: datacenter});
+                                return callback(null, []);
+                            }
+                            vlans.forEach(function (vlan) {
+                                vlan.id = datacenter + '&' + vlan.vlan_id;
+                                vlan.datacenter = datacenter;
+                            });
+                            callback(null, vlans);
+                        });
+                    }
+                }, function (vasyncErrors, operations) {
+                    var data = utils.getVasyncData(vasyncErrors, operations);
+                    call.done(data.error, data.result);
+                });
+            });
         });
 
         server.onCall('FabricNetworksDelete', {
@@ -72,8 +110,8 @@ module.exports = function execute() {
                             callback(null);
                         });
                     }
-                }, function (vasyncError) {
-                    call.done(vasyncError);
+                }, function (vasyncErrors) {
+                    call.done(utils.getVasyncData(vasyncErrors).error);
                 });
             }
         });

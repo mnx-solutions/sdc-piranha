@@ -14,7 +14,8 @@
     "DCCallTimeout": 5000,
     "limitedAccessDatacenters": [
       "us-east-3b"
-    ]
+    ],
+    "version": ">=7.2"
   },
   "localization": {
     "defaultLocale": "en",

@@ -39,7 +39,7 @@
     "redis": "^0.12.1",
     "restify": "^3.0.2",
     "sdc-clients": "git://github.com/joyent/node-sdc-clients.git#323f892c776f790cf1842e2ba26aeb87e6a2f8ea",
-    "smartdc": "git://github.com/joyent/node-smartdc.git#0fa5fc96ab99373f3119486da1cd0276168193ae",
+    "smartdc": "git://github.com/joyent/node-smartdc.git#2c3fb798706af80245f48e458bae801600c995c0",
     "soap": "^0.8.0",
     "speakeasy": "^1.0.3",
     "tar": "git+ssh://git@github.com:13W/node-tar.git",
