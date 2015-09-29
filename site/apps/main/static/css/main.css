@@ -484,6 +484,7 @@ textarea.error {
 }
 
 .provisioning-item {
+    margin-top: 6px;
     padding-top: 5px;
 }
 

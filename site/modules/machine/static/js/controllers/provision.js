@@ -99,7 +99,7 @@
 
             $scope.currentPageIndex = 0;
             $scope.currentStep = '';
-            $scope.datasetsLoading = false;
+            $scope.datasetsLoading = true;
             $scope.filterValues = ng.copy(FilterValues);
 
             $scope.isMantaEnabled = $scope.features.manta === 'enabled';

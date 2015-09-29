@@ -1,6 +1,11 @@
 <div class="container-fluid container-position" data-ng-controller="Machine.ProvisionController">
     <div data-ng-include="'machine/static/partials/create-instance-header.html'"></div>
+    <div class="loading-large col-md-12" data-ng-show="loading"></div>
     <div class="" data-ng-hide="loading">
+        <div class="ci-desc">
+            Get started <span data-ng-hide="features.privateSdc == 'enabled'">with Joyent</span>
+            by selecting an instance below and start computing.
+        </div>
         <div class="container-min-width">
             <h4 class="page-title no-breadcrumb-line container-min-width" data-translate>Recent Images</h4>
             <div data-ng-show="recentInstances.length == 0" class="container-min-width">

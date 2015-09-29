@@ -1,12 +1,9 @@
 <div class="container-fluid container-position" data-ng-controller="Machine.ProvisionController">
-    <ul class="breadcrumb">
-        <li><a href="#!/compute">Compute</a></li>
-    </ul>
+    <div data-ng-include="'machine/static/partials/create-instance-header.html'"></div>
     <div class="loading-large col-md-12" data-ng-show="loading"></div>
     <div data-ng-hide="loading">
         <div class="container-min-width">
-            <h3 class="page-title no-breadcrumb-line container-min-width" data-translate>Create Instance</h3>
-            <div class="wizard-steps">
+            <div class="wizard-steps wizard-steps-provision">
                 <div data-ng-repeat="provisionStep in provisionSteps" data-ng-hide="provisionStep.hide" data-ng-class="{'firststep': $first , 'active-step': currentPageIndex == $index}">
                     <p data-ng-show="currentPageIndex >= $index + 1">
                         <span class="current-step"

@@ -1,5 +1,27 @@
 <div class="container-min-width wizard-first-step">
-    <div data-ng-include="'machine/static/partials/create-instance-header.html'"></div>
+    <div class="choose-image-filter" data-ng-hide="isCurrentLocation('/container/create') || isCurrentLocation('/create/simple')">
+        <span class="select-name">
+            OS:
+        </span>
+        <div class="btn-group"
+             data-html="true"
+             data-original-title="Filter by operating system">
+            <select type="hidden" data-select-two id="selectOS" class="dd-fixed-width" data-item="opsys"
+                    data-select="selectDataValue('os')" data-fn="selectOpsys">
+                <option data-ng-repeat="opsys in operating_systems" value="{{opsys}}">
+                    {{opsys | orderBy:'toString()'}}
+                </option>
+            </select>
+        </div>
+        <div class="in-line">
+            <input type="search"
+                   class="filter-images filter-field"
+                   placeholder="Search image"
+                   data-ng-model="filterModel.searchText"
+                   data-ng-change="getFilteredDatasets()"
+                   data-translate="placeholder" />
+        </div>
+    </div>
 </div>
 <div class="advanced-table tooltip-hover">
     <div data-ng-show="filteredDatasets.length == 0 && !reloading" class="notified">

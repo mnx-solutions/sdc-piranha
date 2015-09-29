@@ -1,18 +1,12 @@
 <div>
-    <ul data-ng-hide="isCurrentLocation('create/native-container|create/virtual-machine')" class="breadcrumb">
+    <ul class="breadcrumb">
         <li><a href="#!/compute">Compute</a></li>
     </ul>
-    <div class="loading-large col-md-12" data-ng-show="loading && !isCurrentLocation('compute/container/create')"></div>
-    <div class="" data-ng-hide="loading && !isCurrentLocation('compute/container/create')">
-        <div class="container-min-width">
-            <h3 data-ng-hide="isCurrentLocation('create/native-container|create/virtual-machine')"
-                class="page-title no-breadcrumb-line container-min-width"
-                data-translate>Create Instance
-            </h3>
-            <div data-ng-show="isCurrentLocation('compute/create/simple')" class="ci-desc">
-                Get started <span data-ng-hide="features.privateSdc == 'enabled'">with Joyent</span>
-                by selecting an instance below and start computing.
-            </div>
+    <div class="container-min-width">
+        <h3 class="page-title no-breadcrumb-line container-min-width" data-translate>
+            Create Instance
+        </h3>
+        <div data-ng-if="!currentPageIndex">
             <div class="wizard-first-step row">
                 <div data-ng-hide="isCurrentLocation('compute/container/create')">
                     <span class="select-name">Data Center:</span>
@@ -46,29 +40,6 @@
                                           type="virtual-machine"
                                           action="selectInstanceType(type)">
                     </create-instance-link>
-                </div>
-                <div class="choose-image-filter" data-ng-hide="isCurrentLocation('/container/create') || isCurrentLocation('/create/simple')">
-                    <span class="select-name">
-                        OS:
-                    </span>
-                    <div class="btn-group"
-                         data-html="true"
-                         data-original-title="Filter by operating system">
-                        <select type="hidden" data-select-two id="selectOS" class="dd-fixed-width" data-item="opsys"
-                                data-select="selectDataValue('os')" data-fn="selectOpsys">
-                            <option data-ng-repeat="opsys in operating_systems" value="{{opsys}}">
-                                {{opsys | orderBy:'toString()'}}
-                            </option>
-                        </select>
-                    </div>
-                    <div class="in-line">
-                        <input type="search"
-                               class="filter-images filter-field"
-                               placeholder="Search image"
-                               data-ng-model="filterModel.searchText"
-                               data-ng-change="getFilteredDatasets()"
-                               data-translate="placeholder" />
-                    </div>
                 </div>
             </div>
         </div>
