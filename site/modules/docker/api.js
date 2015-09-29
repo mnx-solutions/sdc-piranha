@@ -613,7 +613,10 @@ exports.init = function execute(log, config, done) {
                     if (errors) {
                         call.log.warn({errors: errors}, 'Unable to retrieve hosts list.');
                     }
-                    callback(null, hosts);
+                    var hostsList = hosts.filter(function (host) {
+                        return host && host.id;
+                    });
+                    callback(null, hostsList);
                 });
             });
         });
