@@ -1,16 +1,9 @@
 'use strict';
 
-(function (app) {
-    app.directive('containerDetails', [
-        'Machine',
-        'Docker',
-        '$q',
-        'requestContext',
-        'localization',
-        '$location',
-        'util',
+(function (app) { app.directive('containerDetails', [
+    'Machine', 'Docker', '$q', 'requestContext', 'localization', '$location', 'util',
 
-        function (Machine, Docker, $q, requestContext, localization, $location, util) {
+    function (Machine, Docker, $q, requestContext, localization, $location, util) {
         return {
             restrict: 'EA',
             scope: true,
@@ -47,28 +40,14 @@
                 };
                 if (!containerId && !hostId) {
                     Docker.listHosts({prohibited: true}).then(function (hosts) {
-                        hosts.some(function (host) {
-                            if (host.isSdc) {
-                                hostId = host.id;
-                                Docker.listContainers({
-                                    host: host,
-                                    cache: false,
-                                    options: {all: true},
-                                    suppressErrors: true
-                                }).then(function (containers) {
-                                    containers.some(function (container) {
-                                        if (container.Id.substring(0, 32) === machineId.replace(/-/g, '')) {
-                                            containerId = container.Id;
-                                            getDockerInspectContainer(host);
-                                            return true;
-                                        }
-                                    });
-                                }, function () {
-                                    scope.isUnreachable = true;
-                                });
-                                return true;
-                            }
+                        var host = hosts.find(function (host) {
+                            return host.isSdc && host.datacenter === scope.machine.datacenter;
                         });
+                        if (host) {
+                            hostId = host.id;
+                            containerId = machineId.replace('-', '').substr(0, 12);
+                            getDockerInspectContainer(host);
+                        }
                     });
                 }
 
@@ -102,6 +81,7 @@
                     function inspectContainer() {
                         Docker.inspectContainer(container).then(function (containerInfo) {
                             var containerCmd = containerInfo.Config.Cmd;
+                            containerId = container.Id = containerInfo.Id;
                             if (Array.isArray(containerCmd)) {
                                 containerCmd = containerInfo.Config.Cmd.join(' ');
                             }
@@ -132,13 +112,13 @@
                                 scope.linkedContainers = [];
                             }
                             scope.loading = false;
-                        }, errorCallback);
 
-                        Docker.getAuditInfo({event: {type: 'container', host: hostId, entry: containerId}, params: true}).then(function (audit) {
-                            scope.audit = audit || [];
-                            scope.audit.forEach(function (event) {
-                                event.hostName = host.name || host.id;
-                            });
+                            Docker.getAuditInfo({event: {type: 'container', host: hostId, entry: containerId}, params: true}).then(function (audit) {
+                                scope.audit = audit || [];
+                                scope.audit.forEach(function (event) {
+                                    event.hostName = host.name || host.id;
+                                });
+                            }, errorCallback);
                         }, errorCallback);
 
                         Docker.logsContainer(container).then(function (logs) {
