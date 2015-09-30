@@ -75,12 +75,12 @@ window.JP.main.config(['routeProvider', function (routeProvider) {
             showLatest: true,
             showText: true,
             resolve: {
-                data: ['$route', '$rootScope', '$location', '$q', 'Docker', 'Machine', function ($route, $rootScope, $location, $q, Docker, Machine) {
+                data: ['$route', '$rootScope', '$location', '$q', 'Docker', 'Machine', 'Account', function ($route, $rootScope, $location, $q, Docker, Machine, Account) {
                     if (!$route.current.params.containerid || !$route.current.params.hostid) {
                         $location.path('/dashboard');
                         return;
                     }
-                    dockerResolve.data($rootScope, $location, $q, Docker, Machine);
+                    dockerResolve.data($rootScope, $location, $q, Docker, Machine, Account);
                 }]
             }
         }).when('/docker/container/create/:hostid?/:sourceid?', {
@@ -101,12 +101,12 @@ window.JP.main.config(['routeProvider', function (routeProvider) {
             showLatest: true,
             showText: true,
             resolve: {
-                data: ['$route', '$rootScope', '$location', '$q', 'Docker', 'Machine', function ($route, $rootScope, $location, $q, Docker, Machine) {
+                data: ['$route', '$rootScope', '$location', '$q', 'Docker', 'Machine', 'Account', function ($route, $rootScope, $location, $q, Docker, Machine, Account) {
                     if (!$route.current.params.imageid || !$route.current.params.hostid) {
                         $location.path('/dashboard');
                         return;
                     }
-                    dockerResolve.data($rootScope, $location, $q, Docker, Machine);
+                    dockerResolve.data($rootScope, $location, $q, Docker, Machine, Account);
                 }]
             }
         }).when('/docker/logs', {
@@ -122,10 +122,10 @@ window.JP.main.config(['routeProvider', function (routeProvider) {
                         var containers = result[1] || [];
                         $rootScope.provisionEnabled = account.provisionEnabled || false;
                         if (!containers.length) {
-                            dockerResolve.data($rootScope, $location, $q, Docker, Machine);
+                            dockerResolve.data($rootScope, $location, $q, Docker, Account, Machine);
                         }
                     }, function () {
-                        dockerResolve.data($rootScope, $location, $q, Docker, Machine);
+                        dockerResolve.data($rootScope, $location, $q, Docker, Account, Machine);
                     });
                 }]
             }
@@ -147,10 +147,10 @@ window.JP.main.config(['routeProvider', function (routeProvider) {
                             var audit = result[1] || [];
                             $rootScope.provisionEnabled = account.provisionEnabled || false;
                             if (!audit.length) {
-                                dockerResolve.data($rootScope, $location, $q, Docker, Machine);
+                                dockerResolve.data($rootScope, $location, $q, Docker, Account, Machine);
                             }
                         }, function () {
-                            dockerResolve.data($rootScope, $location, $q, Docker, Machine);
+                            dockerResolve.data($rootScope, $location, $q, Docker, Account, Machine);
                         });
                     });
                 }]
