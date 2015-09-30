@@ -8,7 +8,7 @@
         </h3>
         <div data-ng-if="!currentPageIndex">
             <div class="wizard-first-step row">
-                <div data-ng-hide="isCurrentLocation('compute/container/create')">
+                <div data-ng-hide="isCurrentLocation('compute/container/create|compute/docker/dashboard')">
                     <span class="select-name">Data Center:</span>
                     <div class="btn-group">
                         <div class="loading-medium loading-medium-inline" data-ng-show="datasetsLoading"></div>
@@ -32,7 +32,7 @@
                                           action="setCreateInstancePage(type)">
                     </create-instance-link>
                     <create-instance-link path="create/native-container"
-                                          data-ng-show="isCurrentLocation('compute/container/create') || isSdcDatacenter"
+                                          data-ng-show="isCurrentLocation('compute/container/create|docker/dashboard') || isSdcDatacenter"
                                           type="native-container"
                                           action="selectInstanceType(type)">
                     </create-instance-link>

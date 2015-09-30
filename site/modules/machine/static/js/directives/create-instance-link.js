@@ -27,7 +27,12 @@
                         $scope.linkTitle = 'Quick';
                 }
                 $scope.checkIsLinkActive = function () {
-                    return $scope.isLinkActive = $location.path().search($scope.path) > -1;
+                    var path = $scope.path;
+                    if ($scope.type === 'container') {
+                        path += '|compute/docker/dashboard';
+                    }
+                    $scope.isLinkActive = $location.path().search(path) > -1;
+                    return $scope.isLinkActive;
                 };
                 $scope.checkIsLinkActive();
             },

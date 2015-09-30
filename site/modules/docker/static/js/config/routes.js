@@ -37,6 +37,18 @@ window.JP.main.config(['routeProvider', function (routeProvider) {
     };
     dockerResolve.data.$inject = ['$rootScope', '$location', '$q', 'Docker', 'Machine', 'Account'];
 
+    var checkProvisionEnabled = function ($rootScope, $location, $q, Docker, Machine, Account) {
+        Account.getAccount().then(function (account) {
+            if (account.provisionEnabled) {
+                $location.path('/compute/container/create');
+            } else {
+                $location.path('/compute/docker/dashboard');
+            }
+        }, function () {
+            dockerResolve.data($rootScope, $location, $q, Docker, Machine, Account);
+        });
+    };
+
     routeProvider
         .when('/docker', {
             title: 'Docker',
@@ -65,10 +77,26 @@ window.JP.main.config(['routeProvider', function (routeProvider) {
             title: 'Create Container',
             action: 'docker.create',
             resolve: dockerResolve
+        }).when('/compute/docker/dashboard', {
+            title: 'Docker',
+            action: 'docker.index',
+            resolve: {
+                data: ['$route', '$rootScope', '$location', '$q', 'Docker', 'Machine', 'Account', function ($route, $rootScope, $location, $q, Docker, Machine, Account) {
+                    checkProvisionEnabled($rootScope, $location, $q, Docker, Machine, Account);
+                }]
+            }
         }).when('/compute/container/create', {
             title: 'Create Container',
             action: 'docker.create',
-            resolve: dockerResolve
+            resolve: {
+                data: ['$route', '$rootScope', '$location', '$q', 'Docker', 'Machine', 'Account', function ($route, $rootScope, $location, $q, Docker, Machine, Account) {
+                    if ($location.path().indexOf('/compute/container/create') === 0) {
+                        checkProvisionEnabled($rootScope, $location, $q, Docker, Machine, Account);
+                        return;
+                    }
+                    dockerResolve.data($rootScope, $location, $q, Docker, Machine, Account);
+                }]
+            }
         }).when('/docker/container/:hostid/:containerid', {
             title: 'Container Details',
             action: 'docker.details',

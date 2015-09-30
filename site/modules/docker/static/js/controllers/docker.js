@@ -11,12 +11,13 @@
         'Datacenter',
         'Image',
         'PopupDialog',
+        'Provision',
         'Docker',
         'Account',
         'Storage',
         'CloudAnalytics',
 
-        function ($scope, $rootScope, $q, requestContext, localization, $location, Datacenter, Image, PopupDialog, Docker, Account, Storage, CloudAnalytics) {
+        function ($scope, $rootScope, $q, requestContext, localization, $location, Datacenter, Image, PopupDialog, Provision, Docker, Account, Storage, CloudAnalytics) {
             localization.bind('docker.index', $scope);
             requestContext.setUpRenderContext('docker.index', $scope, {
                 title: localization.translate(null, 'docker', 'See my Joyent Docker Instances')
@@ -24,6 +25,7 @@
 
             var UBUNTU_IMAGE_NAME = 'ubuntu-certified-14.04';
 
+            $scope.isCurrentLocation = Provision.isCurrentLocation;
             $scope.loading = true;
             $scope.states = {};
             $scope.data = {
@@ -205,8 +207,12 @@
             };
 
             $scope.completeAccount = function () {
+                var path = 'compute/docker/dashboard';
+                if (!$scope.isCurrentLocation(path)) {
+                    path = '/docker';
+                }
                 Account.checkProvisioning({btnTitle: 'Submit and Access Docker'}, null, function () {
-                    $location.path('/docker');
+                    $location.path(path);
                 }, false);
             };
 
