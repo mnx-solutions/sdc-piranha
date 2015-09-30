@@ -223,7 +223,10 @@
                     },
                     {
                         id: 'NamesStr',
-                        name: 'Names',
+                        name: 'Name',
+                        _getter: function (container) {
+                            return container.Names && container.Names[0].substring(1) || '';
+                        },
                         sequence: 2,
                         active: true
                     },
@@ -309,6 +312,23 @@
                         id: 'Labels',
                         name: 'Labels',
                         sequence: 13
+                    },
+                    {
+                        id: 'Names',
+                        name: 'Links',
+                        type: 'html',
+                        _getter: function (container) {
+                            var html = '';
+                            var length = container.Names && container.Names.length || 0;
+                            if (length > 1) {
+                                for (var i = 1; i < length; i++) {
+                                    html += '<span>' + container.Names[i].substring(1) + '</span>';
+                                    html += i !== length - 1 ? '<span>, </span>' : '';
+                                }
+                            }
+                            return html;
+                        },
+                        sequence: 14
                     }
                 ];
                 var gridMessages = {
