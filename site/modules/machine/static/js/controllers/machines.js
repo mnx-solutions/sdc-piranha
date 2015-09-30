@@ -286,7 +286,10 @@
                     name: 'IP',
                     entryType: 'ipAddress',
                     sequence: 2,
-                    active: true
+                    active: true,
+                    _getter: function (machine) {
+                        return machine.primaryIp || machine.privateIps && machine.privateIps[0];
+                    }
                 },
                 {
                     id: '',
