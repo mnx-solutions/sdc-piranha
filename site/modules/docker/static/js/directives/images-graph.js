@@ -127,9 +127,11 @@
                             nodes.forEach(function (node) {
                                 if (node.ParentId) {
                                     var index = indexes[node.ParentId];
-                                    var parentNode = nodes[index];
-                                    parentNode.children = parentNode.children || [];
-                                    nodes[index].children.push(node);
+                                    if (index) {
+                                        var parentNode = nodes[index];
+                                        parentNode.children = parentNode.children || [];
+                                        nodes[index].children.push(node);
+                                    }
                                 } else {
                                     tree.push(node);
                                 }

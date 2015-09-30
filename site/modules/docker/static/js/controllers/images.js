@@ -303,7 +303,8 @@
                     if (current.$$route.action === CURRENT_PAGE_ACTION) {
                         hostId = requestContext.getParam('host') || '';
                         $scope.tabFilterUpdate = 'top';
-                        allImages = false;
+                        $scope.showGraph = allImages = false;
+                        $scope.loading = true;
                         listAllImages();
                     }
                 });

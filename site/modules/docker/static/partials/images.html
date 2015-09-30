@@ -15,7 +15,7 @@
         </div>
         <div class="loading-large col-md-12" data-ng-show="loading"></div>
 
-        <div data-ng-show="images.length">
+        <div data-ng-show="images.length && !loading">
             <div data-grid-view
                  data-user-config="gridUserConfig"
                  data-props="gridProps"
