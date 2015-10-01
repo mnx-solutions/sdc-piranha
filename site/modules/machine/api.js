@@ -514,8 +514,9 @@ exports.init = function execute(log, config, done) {
         var cloud = call.cloud.separate(options.datacenter);
         cloud.deleteImage(options.imageId, function (err) {
             if (!err) {
-                if (creatingImagesCache[options.imageId]) {
-                    delete creatingImagesCache[options.imageId];
+                var imageId = call.req.session.userId + '-' + options.imageId;
+                if (creatingImagesCache[imageId]) {
+                    delete creatingImagesCache[imageId];
                 }
                 pollForObjectStateChange(cloud, call, 'state', 'deleted', (STATE_POLL_TIMEOUT), 'Image', options.imageId, callback);
             } else {
@@ -540,24 +541,30 @@ exports.init = function execute(log, config, done) {
             if (call.immediate) {
                 call.immediate(err, {image: image});
             }
+            var imageId = call.req.session.userId + '-' + image.id;
             if (!err) {
-                var cachedImage = creatingImagesCache[image.id] = image;
+                var cachedImage = creatingImagesCache[imageId] = image;
                 cachedImage.datacenter = options.datacenter;
                 cachedImage['published_at'] = options['published_at'];
                 cachedImage.public = false;
                 cachedImage.actionInProgress = true;
-                pollForObjectStateChange(cloud, call, 'state', 'active', (STATE_POLL_TIMEOUT), 'Image', image.id, callback);
+                pollForObjectStateChange(cloud, call, 'state', 'active', (STATE_POLL_TIMEOUT), 'Image', image.id, function () {
+                    delete creatingImagesCache[imageId];
+                    callback.apply(this, arguments);
+                });
                 call.step = {
                     state: image.state
                 };
                 call.update(null);
             } else {
+                delete creatingImagesCache[imageId];
                 callback(err);
             }
         });
     };
 
     api.ImageList = function (call, callback) {
+        var userIdPrefix = call.req.session.userId + '-';
         call.cloud.listDatacenters(function (err, datacenters) {
             var keys = Object.keys(datacenters || {});
             var count = keys.length;
@@ -622,13 +629,14 @@ exports.init = function execute(log, config, done) {
                             // add datacenter to every image
                             img.datacenter = datacenterName;
 
-                            if (creatingImagesCache[img.id]) {
-                                delete creatingImagesCache[img.id];
+                            var imageId = userIdPrefix + img.id;
+                            if (creatingImagesCache[imageId]) {
+                                delete creatingImagesCache[imageId];
                             }
                         });
 
                         for (var imageId in creatingImagesCache) {
-                            if (creatingImagesCache.hasOwnProperty(imageId)) {
+                            if (creatingImagesCache.hasOwnProperty(imageId) && imageId.indexOf(userIdPrefix) === 0) {
                                 images.push(creatingImagesCache[imageId]);
                             }
                         }
