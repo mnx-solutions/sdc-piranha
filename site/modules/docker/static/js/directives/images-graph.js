@@ -102,17 +102,16 @@
                             d.isActive = false;
                             target.classList.remove('active');
                             scope.showDetails = false;
-                        } else {
-                            scope.marginTop = (maxDepth && maxDepth >= d.depth ? (maxDepth - d.depth) * graphDistance : 100) + 'px';
-                            d.isActive = true;
-                            var activeElement = document.querySelector('circle.active');
-                            if (activeElement) {
-                                activeElement.classList.remove('active');
-                            }
-                            scope.showDetails = true;
-                            getDetails(d);
-                            target.classList.add('active');
                         }
+                        scope.marginTop = (maxDepth && maxDepth >= d.depth ? (maxDepth - d.depth) * graphDistance : 100) + 'px';
+                        d.isActive = true;
+                        var activeElement = document.querySelector('circle.active');
+                        if (activeElement) {
+                            activeElement.classList.remove('active');
+                        }
+                        scope.showDetails = true;
+                        getDetails(d);
+                        target.classList.add('active');
                     }
                 }
                 var indexes = {};
