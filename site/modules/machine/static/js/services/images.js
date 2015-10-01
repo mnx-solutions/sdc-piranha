@@ -389,6 +389,7 @@
                             return;
                         }
 
+                        images.list[datacenter] = images.list[datacenter] || [];
                         var index = images.list[datacenter].indexOf(image);
                         var indexAll = images.list['all'].indexOf(image);
                         var indexPrivate = images.list['private'].indexOf(image);

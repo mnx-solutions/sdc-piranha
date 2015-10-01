@@ -319,7 +319,7 @@
                                         data-ng-click="clickCreateImage()"
                                         data-ng-hide="imageCreateNotSupported"
                                         data-translate
-                                        data-ng-disabled="(imageJob && !imageJob.finished) || (machine.job && !machine.job.finished) || creatingImage">
+                                        data-ng-disabled="imageJob && !imageJob.finished || machine.job && !machine.job.finished || creatingImage || !dataset">
                                     Create Image
                                 </button>
                             </div>
