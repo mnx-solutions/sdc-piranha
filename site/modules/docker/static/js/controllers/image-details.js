@@ -26,7 +26,7 @@
 
             $scope.loading = true;
             $scope.pushDialogOpening = false;
-            $scope.actionInProgress = false;
+            $scope.actionInProgress = Docker.imageInProgress[imageId] || false;
 
             var errorCallback = function (err) {
                 $scope.loading = false;
@@ -217,6 +217,10 @@
                 pushedImage.RepoTag = $scope.image.info.Tags ? $scope.image.info.Tags[0] : null;
                 return dockerPushImage(pushedImage);
             };
+
+            $scope.$watch('actionInProgress', function (actionInProgress) {
+                Docker.imageInProgress[imageId] = actionInProgress;
+            })
         }
     ]);
 }(window.JP.getModule('docker')));

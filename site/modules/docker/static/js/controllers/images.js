@@ -95,6 +95,7 @@
                                 topImages.push(image.ShorId);
                             }
                             image.repository = image.RepoTags && image.RepoTags.length ? image.RepoTags[0].split(':')[0] : '';
+                            image.actionInProgress = Docker.imageInProgress[image.Id] || false;
                         });
                         imagesWithoutGrouping = angular.copy(images);
                         $scope.images = getGroupedImages(images);
@@ -202,7 +203,7 @@
                         var actionFunction = function () {
                             var promises = [];
                             $scope.checkedItems.forEach(function (image) {
-                                image.actionInProgress = true;
+                                Docker.imageInProgress[image.Id] = image.actionInProgress = true;
                                 image.checked = false;
                                 var deferred = $q.defer();
                                 var currentData = image;
@@ -215,10 +216,13 @@
                                     }
                                 }
                                 Docker[currentAction + 'Image'](currentData).then(function (response) {
+                                    if (!image.isRemoving) {
+                                        Docker.imageInProgress[image.Id] = image.actionInProgress = false;
+                                    }
                                     deferred.resolve(response);
                                 }, function (err) {
                                     deferred.reject(err);
-                                    image.actionInProgress = false;
+                                    Docker.imageInProgress[image.Id] = image.actionInProgress = false;
                                     image.checked = false;
                                     if (image.isRemoving) {
                                         delete image.isRemoving;
@@ -229,6 +233,7 @@
                             });
 
                             $q.all(promises).then(function () {
+                                Docker.imageInProgress = {};
                                 listAllImages();
                             });
                         };

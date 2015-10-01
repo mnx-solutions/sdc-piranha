@@ -1117,6 +1117,8 @@
             });
         };
 
+        service.imageInProgress = {};
+
         return service;
     }]);
 }(window.angular, window.JP.getModule('docker')));
