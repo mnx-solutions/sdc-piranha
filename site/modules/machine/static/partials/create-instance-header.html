@@ -6,7 +6,7 @@
         <h3 class="page-title no-breadcrumb-line container-min-width" data-translate>
             Create Instance
         </h3>
-        <div data-ng-if="!currentPageIndex">
+        <div>
             <div class="wizard-first-step row">
                 <div data-ng-hide="isCurrentLocation('compute/container/create|compute/docker/dashboard')">
                     <span class="select-name">Data Center:</span>
@@ -14,7 +14,7 @@
                         <div class="loading-medium loading-medium-inline" data-ng-show="datasetsLoading"></div>
                         <select type="hidden" data-select-two id="selectDatacenter" width="110" data-ng-model="data.datacenter"
                                 data-fn="selectDatacenter" data-select="data.datacenter" placeholder="No matches found"
-                                data-ng-disabled="datasetsLoading">
+                                data-select2-disabled="datasetsLoading || currentPageIndex">
                             <option value=""></option>
                             <option data-ng-repeat="datacenter in datacenters | orderBy:$index" value="{{datacenter.name}}">
                                 {{datacenter.name}}

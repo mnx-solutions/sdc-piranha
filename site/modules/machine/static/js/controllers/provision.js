@@ -741,6 +741,7 @@
             $scope.selectInstanceType = function (type) {
                 $scope.instanceType = type;
                 $scope.getFilteredDatasets();
+                $scope.reconfigure(0);
                 if (type === 'virtual-machine' || !$scope.isSdcDatacenter) {
                     $location.path('/compute/create/virtual-machine');
                     $scope.setCreateInstancePage('virtual-machine');
