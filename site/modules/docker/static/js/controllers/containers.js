@@ -103,7 +103,8 @@
                 };
 
                 var addProvisioningContainers = function (containers, provisioningContainers) {
-                    Object.keys(provisioningContainers).forEach(function (containerId) {
+                    var provisioningContainerIds = Object.keys(provisioningContainers);
+                    provisioningContainerIds.forEach(function (containerId) {
                         var container = provisioningContainers[containerId];
                         if (container.error) {
                             var err = container.error;
@@ -120,6 +121,9 @@
                             containers.push(container);
                         }
                     });
+                    if (provisioningContainerIds.length) {
+                        delete Docker.cache.containers;
+                    }
                 };
 
                 var listAllContainers = function (cache) {

@@ -26,7 +26,9 @@
 
         var resetDockerCaches = function () {
             caches.forEach(function (cache) {
-                service.cache[cache].reset();
+                if (service.cache[cache]) {
+                    service.cache[cache].reset();
+                }
             });
         };
 
