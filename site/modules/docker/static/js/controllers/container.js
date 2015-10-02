@@ -153,6 +153,7 @@
                 function doAction() {
                     $scope.actionInProgress = true;
                     if (action === 'remove') {
+                        Docker.setRemoving('containers', containerId);
                         $scope.container.isRemoving = true;
                         container.Image = $scope.container.image;
                         container.Names = [$scope.container.name];
@@ -161,6 +162,9 @@
                         container.force = true;
                     }
                     Docker[action + 'Container'](container).then(function () {
+                        if ($location.path().indexOf(containerId) === -1) {
+                            return;
+                        }
                         if (action === 'remove') {
                             Docker.goToDockerContainers();
                         } else {

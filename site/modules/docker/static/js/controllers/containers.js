@@ -121,9 +121,6 @@
                             containers.push(container);
                         }
                     });
-                    if (provisioningContainerIds.length) {
-                        delete Docker.cache.containers;
-                    }
                 };
 
                 var listAllContainers = function (cache) {
@@ -136,6 +133,12 @@
                             Docker.getDockerContainersProvisioning()
                         ]).then(function (result) {
                             containers = containers || [];
+                            if (!cache) {
+                                var cacheContainers = Docker.cache.containers;
+                                if (cacheContainers) {
+                                    cacheContainers.replace(containers);
+                                }
+                            }
                             var hosts = result[0] || [];
                             $scope.permittedHosts = result[1] || [];
                             $scope.host = $scope.permittedHosts[0];
@@ -370,7 +373,7 @@
                         container.state = state;
                         container.actionInProgress = false;
                         getStatsWithInterval(true);
-                        delete Docker.cache.containers;
+                        Docker.cache['containers'].reset();
                     });
                 };
 
@@ -403,6 +406,10 @@
                             command += 'Container';
                         }
                         getStatsWithInterval(false);
+                        if (action === 'remove') {
+                            container.isRemoving = true;
+                            Docker.setRemoving('containers', container.Id);
+                        }
                         Docker[command](container).then(function (response) {
                             if (action === 'remove') {
                                 $scope.containers = $scope.containers.filter(function (item) {

@@ -592,19 +592,19 @@
             return createCall('RegistryImages', {registryId: registryId}, onProgress);
         };
 
-        function setRemoveProp(id) {
-            var cache = service.cache.topImages;
-            var cacheImage = cache.get(id);
-            if (cacheImage) {
-                cacheImage.isRemoving = true;
-                cache.put(cacheImage);
+        service.setRemoving = function (cacheName, id) {
+            var cache = service.cache[cacheName];
+            var cacheItem = cache && cache.get(id);
+            if (cacheItem) {
+                cacheItem.isRemoving = true;
+                cache.put(cacheItem);
             }
-        }
+        };
 
         imageActions.forEach(function (action) {
             service[action + 'Image'] = function (image) {
                 if (action === 'remove') {
-                    setRemoveProp(image.Id);
+                    service.setRemoving('topImages', image.Id);
                 }
                 return createCall(action + 'Image', {host: {primaryIp: image.primaryIp, id: image.hostId}, options: image.options || {id: image.Id}});
             };
@@ -888,7 +888,7 @@
         };
 
         service.forceRemoveImage = function (options) {
-            setRemoveProp(options.options.id);
+            service.setRemoving('topImages', options.options.id);
             return createCall('forceRemoveImage', ng.extend({}, options, {direct: true}));
         };
 
@@ -1069,7 +1069,7 @@
                 var linkedContainers = [];
                 containers.forEach(function (container) {
                     names.forEach(function (name) {
-                        if (container.Names.indexOf(name) !== -1) {
+                        if (container.Names.indexOf(name) !== -1 && !container.isRemoving) {
                             linkedContainers.push({
                                 id: container.Id,
                                 name: name.substring(1, name.length),
