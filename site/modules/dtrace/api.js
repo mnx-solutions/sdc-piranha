@@ -185,6 +185,7 @@ exports.init = function execute(log, config, done) {
         }
 
         callback(null, new Dtrace({
+            agent: false,
             url: 'https://' + machine + ':' + DTRACE_PORT,
             rejectUnauthorized: false,
             requestCert: true,

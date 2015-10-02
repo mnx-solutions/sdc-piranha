@@ -844,6 +844,7 @@ exports.init = function execute(log, config, done) {
         }
 
         var serviceConfig = {
+            agent: false,
             isSdc: opts.isSdc,
             url: opts.url,
             rejectUnauthorized: false,

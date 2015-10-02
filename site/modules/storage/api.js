@@ -227,6 +227,7 @@ exports.init = function execute(log, config, done) {
         var userConfig = opts || config.manta;
         var session = call && call.req.session;
         var options = {
+            agent: false,
             sign: manta.privateKeySigner({
                 key: apiKey,
                 keyId: config.cloudapi.keyId,
