@@ -70,17 +70,6 @@
             return value.toLowerCase();
         }
 
-        function searchInObject(obj, needle) {
-            var result = false;
-            if (ng.isObject(obj)) {
-                result = Object.keys(obj).some(function (key) {
-                    var propertyValue = getLowerCaseString(obj[key]);
-                    return propertyValue.indexOf(needle) !== -1;
-                });
-            }
-            return result;
-        }
-
         $scope.$watch('pagedItems', function (items) {
             var asyncProps = $scope.props.filter(function (prop) {
                 return prop.type === 'async';
@@ -314,48 +303,52 @@
         };
 
         $scope.matchesFilter = function (item) {
-            var result = false;
-            var getFilteredItems = function (searchParam) {
-                var needle = searchParam.toLowerCase();
-                if (!searchInObject(item, needle)) {
-                    result = $scope.props.some(function (el) {
-                        if (el.active) {
-                            var subject = el._getter && el._getter(item) || item[el.id] || el.id2 && item[el.id][el.id2] || '';
-                            if (el.id === 'hostId' && item.hostIds && item.hostIds.length > 0) {
-                                subject = item.hostIds;
-                            }
-                            subject = getLowerCaseString(subject);
-                            return subject.indexOf(needle) !== -1;
-                        } else {
-                            return false;
+            var match = false;
+            var isFound = function (query) {
+                query = getLowerCaseString(query);
+                return $scope.props.some(function (el) {
+                    var meet = false;
+                    if (el.active) {
+                        var subject = el._getter && el._getter(item) || item[el.id] || el.id2 && item[el.id][el.id2] || '';
+                        if (el.id === 'hostId' && item.hostIds && item.hostIds.length > 0) {
+                            subject = item.hostIds;
                         }
-                    });
-                }
+                        subject = getLowerCaseString(subject);
+                        meet = subject.indexOf(query) !== -1;
+                    }
+                    return meet;
+                });
             };
             if ($scope.propertyFilter(item)) {
-                result = true;
+                match = true;
                 if ($scope.filterAll) {
-                    getFilteredItems($scope.filterAll);
+                    match = isFound($scope.filterAll);
                 }
                 var searchParams = angular.copy($scope.searchParams) || {};
-                if (searchParams.query) {
-                    getFilteredItems(searchParams.query);
+                if (searchParams.query && Object.keys(searchParams).length === 1) {
+                    match = isFound(searchParams.query);
                     delete searchParams.query;
-                }
-
-                if (Object.keys(searchParams).length) {
+                } else if (Object.keys(searchParams).length) {
                     var itemLabels = item.labels || {};
-                    result = Object.keys(searchParams).every(function (key) {
+                    match = Object.keys(searchParams).every(function (key) {
+                        if (key === 'query') {
+                            return true;
+                        }
                         var requiredValues = searchParams[key];
                         var itemValues = itemLabels[key];
-                        return requiredValues.indexOf('') === 0 ?
+                        var match = requiredValues.indexOf('') === 0 ?
                             itemLabels.hasOwnProperty(key) :
                             itemValues && (!requiredValues[requiredValues.length - 1] ||
                             requiredValues.indexOf(itemValues) !== -1);
+                        if (searchParams.query) {
+                            match = isFound(searchParams.query) ? match : false;
+                            delete searchParams.query;
+                        }
+                        return match;
                     });
                 }
             }
-            return result;
+            return match;
         };
 
         $scope.$watchCollection('searchParams', function (searchParams) {
