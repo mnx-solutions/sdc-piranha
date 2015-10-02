@@ -8,7 +8,7 @@
                 window.gaSend('event', category, action, label || '');
             },
             page: function () {
-                window.gaSend('pageview', (window.location.pathname + '#!' + $location.path()).replace(/\/\//,"/"));
+                window.gaSend('pageview', (window.location.pathname + '#!' + $location.path()).replace(/\/\//, "/"));
                 window.mktoMunchkinFunction(
                     'visitWebPage',
                     {

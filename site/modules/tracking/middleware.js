@@ -43,17 +43,15 @@ module.exports = function trackingMiddleware(req, res, next) {
                 '  });' +
                 '});';
 
-            var GAHelper =
-                'window.gaSend = function(type, category, action, label, value) {' +
-                '   window.ga && ga("send", type, category, action, label, value);' +
-                '};';
             res.locals.jss.push(googleAnalytics);
             res.locals.jss.push(GAlink);
-            res.locals.jss.push(GAHelper);
         }
     }
-
-
+    var GAHelper =
+        'window.gaSend = function(type, category, action, label, value) {' +
+        '   window.ga && ga("send", type, category, action, label, value);' +
+        '};';
+    res.locals.jss.push(GAHelper);
 
     if (config.features.twitter === 'enabled') {
         var signupTag = config.twitter && config.twitter.signupTag;

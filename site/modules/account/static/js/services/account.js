@@ -157,7 +157,6 @@
                 return deferred.promise;
             };
 
-
             if (features.zendesk === 'enabled') {
                 var zenboxInit = function (name) {
                     if (typeof(window.Zenbox) !== "undefined" && $rootScope.zenboxParams.dropboxID) {
