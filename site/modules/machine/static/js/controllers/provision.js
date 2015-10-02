@@ -724,7 +724,7 @@
                 if ($scope.instanceType === 'native-container') {
                     result = item.type === 'smartmachine';
                 } else if ($scope.instanceType === 'virtual-machine') {
-                    result = item.type === 'virtualmachine';
+                    result = item.type === 'virtualmachine' || $scope.packageTypes.indexOf('Triton') === -1;
                 }
                 if ($scope.features.imageUse !== 'disabled') {
                     result = item.state === 'active' && result;
