@@ -4,7 +4,7 @@
     app.filter('humanDate', function () {
         return function (time) {
 
-             var diff = Math.abs(Math.ceil(new Date().getTime() / 1000) - time),
+             var diff = time ? Math.abs(Math.ceil(new Date().getTime() / 1000) - time) : 0,
                 day_diff = Math.floor(diff / 86400),
                 month_diff = Math.floor(day_diff / 30),
                 year_diff = Math.floor(day_diff / 365);

@@ -271,7 +271,7 @@
                         sequence: 8,
                         reverseSort: true,
                         _getter: function (container) {
-                            return container.Created ? $filter('humanDate')(container.Created) : '';
+                            return $filter('humanDate')(container.Created);
                         }
                     },
                     {
