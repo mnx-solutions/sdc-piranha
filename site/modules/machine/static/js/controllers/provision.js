@@ -398,8 +398,11 @@
 
             $scope.selectNetworkCheckbox = function (id) {
                 $scope.networks.forEach(function (el) {
-                    if (el.id === id) {
+                    if (el.id === network.id) {
                         el.active = (el.active) ? false : true;
+                    } else if (network.public && el.public && el.active) {
+                        el.active = false;
+                        selectNetwork(el.id, true);
                     }
                 });
                 selectNetwork(id, true);
@@ -484,9 +487,6 @@
                     } else {
                         data.name = '';
                         data.datacenter = $scope.data.datacenter;
-                        data.networks = $scope.networks.map(function (network) {
-                            return network.id;
-                        });
                         provision(data);
                     }
                 });

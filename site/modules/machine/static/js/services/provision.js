@@ -571,10 +571,12 @@
                                 if (listedMachine) {
                                     listedMachine.provisionsCount += 1;
                                     listedMachine.creationDate = creationDate;
+                                    listedMachine.networks = machine.networks;
                                 } else {
                                     var createdMachine = {
                                         dataset: machine.dataset,
                                         package: machine.package,
+                                        networks: machine.networks,
                                         provisionsCount: 1,
                                         creationDate: creationDate
                                     };

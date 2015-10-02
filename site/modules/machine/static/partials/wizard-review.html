@@ -101,8 +101,9 @@
                                                 data-ng-model="selectedNetworkId"/>
                                     </span>
                                 </div>
-                                <span class="network-name" data-ng-click="selectNetworkCheckbox(network.id)">{{network.name}}</span>
+                                <span class="network-name" data-ng-click="selectNetworkCheckbox(network)">{{network.name}} {{network.public && ' (public)' || ''}}</span>
                             </div>
+                            <div class="note">Note: You can specify a maximum of 1 public networks.</div>
                          </div>
                         <div class="section-title">
                             Tags
