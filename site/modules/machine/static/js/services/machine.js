@@ -517,7 +517,7 @@
         service.deleteMachine = changeState({
             name: 'MachineDelete',
             done: function(err, job) {
-                if (err && err.message.indexOf('getmachine') < 0) {
+                if (err && (err.message || err).indexOf('getmachine') < 0) {
                     var errorMessage = getMessage(job.machine, err, 'execute command "' + job.name + '" for');
                     if (err.restCode === 'NotAuthorized') {
                         errorMessage = err.message;
