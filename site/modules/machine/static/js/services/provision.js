@@ -193,7 +193,7 @@
 
                 $q.all(task).then(function (taskResult) {
                     var networks = taskResult[0].networks;
-                    freeTierOptions = taskResult[1];
+                    freeTierOptions = taskResult[1] || [];
                     var setupTask = [setup(taskResult[0].images, networks)];
 
                     if (freeTierOptions.length && freeTierOptions.valid) {
