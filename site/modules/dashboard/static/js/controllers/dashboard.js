@@ -2,11 +2,11 @@
 
 (function (ng, app) {
     app.controller('Dashboard.IndexController', ['$scope', '$q', '$sce', 'requestContext', 'Account', 'Machine',
-        'localization', '$http', '$cookies', 'slb.Service', '$rootScope', 'Support', 'fileman', 'Utilization', 'util',
+        'localization', '$http', '$cookies', 'slb.Service', 'Support', 'fileman', 'Utilization', 'util',
         'Datacenter', 'FreeTier', '$location', 'Docker', 'Storage',
 
         function ($scope, $q, $sce, requestContext, Account, Machine, localization, $http, $cookies, slbService,
-                  $rootScope, Support, fileman, Utilization, util, Datacenter, FreeTier, $location, Docker, Storage) {
+                  Support, fileman, Utilization, util, Datacenter, FreeTier, $location, Docker, Storage) {
             localization.bind('dashboard', $scope);
             requestContext.setUpRenderContext('dashboard.index', $scope);
             $scope.loading = true;
@@ -14,10 +14,11 @@
             // populate all datasources
             var INITIAL_COUNT_VALUE = '-';
             $scope.account = {};
-            $scope.slbFeatureEnabled = $rootScope.features.slb === 'enabled';
-            $scope.usageDataFeatureEnabled = $rootScope.features.usageData === 'enabled';
-            $scope.mantaEnabled = $rootScope.features.manta === 'enabled';
-            $scope.dockerEnabled = $rootScope.features.docker === 'enabled';
+            var features = $scope.features;
+            $scope.slbFeatureEnabled = features.slb === 'enabled';
+            $scope.usageDataFeatureEnabled = features.usageData === 'enabled';
+            $scope.mantaEnabled = features.manta === 'enabled' && features.fileStorage === 'disabled';
+            $scope.dockerEnabled = features.docker === 'enabled';
             $scope.mantaMemory = {value: ''};
 
             $scope.machines = [];
@@ -35,7 +36,7 @@
                 $scope.dashboardAd = $sce.trustAsHtml('<iframe src="' + dashboardAdUrl + '"></iframe>');
             }
 
-            if ($rootScope.features.blogEntries === 'enabled') {
+            if (features.blogEntries === 'enabled') {
                 window['dashboard_rss_feed_callback'] = function (data) {
                     $scope.rssentries = data.responseData.feed.entries;
                 };
@@ -47,7 +48,7 @@
                 $q.when($scope.rssentries),
                 $q.when(Machine.machine())
             ];
-            if ($rootScope.features.docker === 'enabled') {
+            if (features.docker === 'enabled') {
                 $scope.runningContainers = $scope.otherContainers = INITIAL_COUNT_VALUE;
                 dashboardOperations = dashboardOperations.concat([
                     $q.when(Storage.pingManta(function () {
@@ -64,7 +65,7 @@
                 var tasks = [];
                 if ($scope.account.provisionEnabled) {
                     $scope.mantaMemory = {value: INITIAL_COUNT_VALUE};
-                    if ($rootScope.features.support === 'enabled') {
+                    if (features.support === 'enabled') {
                         $scope.supportTile = [];
                         Support.support(function (error, supportPackages) {
                             supportPackages.forEach(function (supportPackage) {
@@ -130,14 +131,14 @@
                 $scope.runningcount = runningcount;
                 $scope.othercount = othercount;
 
-                if ($scope.features.freetier === 'enabled') {
+                if (features.freetier === 'enabled') {
                     freeTierTileStatus();
                 }
             }, true);
 
             $scope.runningcount = $scope.othercount = INITIAL_COUNT_VALUE;
 
-            if ($scope.features.usageData === 'enabled') {
+            if (features.usageData === 'enabled') {
                 var now = new Date();
                 var year = now.getFullYear();
                 var month = now.getMonth() + 1;
@@ -188,7 +189,7 @@
                 });
             };
 
-            if ($scope.features.freetier === 'enabled') {
+            if (features.freetier === 'enabled') {
                 freeTierTileStatus();
             }
 

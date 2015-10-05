@@ -11,11 +11,11 @@ module.exports = function (app) {
     }
 
     function send(socket, message) {
-        socket.log.info({message: message, state: socket.readyState}, 'Socket: send message');
         if (socket.readyState === WebSocket.OPEN) {
             socket.send(fixNonUnicodeCharacters(message.toString('UTF-8')));
         }
     }
+
     function close(socket, error) {
         var closeSocket = function (error) {
             socket.log.info({cause: error}, 'Close socket');
@@ -34,7 +34,6 @@ module.exports = function (app) {
 
     function initConnection(socket, callback) {
         socket.once('message', function (data) {
-            socket.log.info({message: data}, 'initConnection: send receive message');
             try {
                 data = JSON.parse(data);
             } catch (e) {
@@ -113,10 +112,9 @@ module.exports = function (app) {
                 res.on('error', close(socket));
                 res.on('end', close(socket));
             });
+            socket.on('error', req.connection.destroy.bind(req.connection));
+            socket.on('close', req.connection.destroy.bind(req.connection));
         });
-
-        socket.on('error', req.connection.destroy.bind(req.connection));
-        socket.on('close', req.connection.destroy.bind(req.connection));
     }
 
     function processCadvisorStats(client, data, socket) {

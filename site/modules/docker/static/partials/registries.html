@@ -6,7 +6,7 @@
             <button data-ng-click="connectNewRegistry()" type="button" class="btn big orange"
                     data-ng-disabled="loading"><i class="plus-btn-icon"></i>Add Existing Registry</button>
             <button data-ng-click="createNewRegistry()" type="button" class="btn big orange"
-                    data-ng-disabled="loading || newRegistryDialogOpening"><i class="plus-btn-icon"></i>Create New Registry</button>
+                    data-ng-disabled="loading || newRegistryDialogOpening || features.fileStorage == 'enabled'"><i class="plus-btn-icon"></i>Create New Registry</button>
         </div>
     </div>
     <div class="loading-large col-md-12" data-ng-show="loading"></div>

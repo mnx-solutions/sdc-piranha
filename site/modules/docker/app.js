@@ -31,11 +31,15 @@ module.exports = function (app) {
 
         function getfilesInDateRange(logPath, action, callback) {
             client.ftw(logPath, function (err, entriesStream) {
-                if (err) {
-                    if (err.statusCode === 404) {
+                var errorCallback = function (error) {
+                    if (error.statusCode === 404) {
                         return callback(null, []);
                     }
-                    return callback(err);
+                    return callback(error);
+                };
+
+                if (err) {
+                    return errorCallback(err);
                 }
 
                 entriesStream.on('entry', function (obj) {
@@ -50,9 +54,7 @@ module.exports = function (app) {
                     callback(null, filesInDateRange);
                 });
 
-                entriesStream.on('error', function (error) {
-                    callback(error);
-                });
+                entriesStream.on('error', errorCallback);
             });
         }
 

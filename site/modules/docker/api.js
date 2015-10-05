@@ -8,8 +8,6 @@ var vasync = require('vasync');
 var fs = require('fs');
 var path = require('path');
 var config = require('easy-config');
-var exec = require('child_process').exec;
-var os = require('os');
 var EventEmitter = require('events').EventEmitter;
 var certMgmt = require('../../../lib/certificates');
 var subuser = require('../../../lib/subuser');
@@ -23,10 +21,6 @@ var cache = require('lru-cache')({
 var apiMethods = require(__dirname + '/data/api-methods');
 var moment = require('moment');
 
-var mantaPrivateKey;
-if (config.manta.privateKey) {
-    mantaPrivateKey = fs.readFileSync(config.manta.privateKey, 'utf-8');
-}
 var DEFAULT_DH_RULE = 'FROM any TO tag JPC_tag = DockerHost ALLOW tcp (PORT 4242 AND PORT 4243 AND PORT 5000)';
 var DOCKER_TCP_PORT = 4240;
 var DOCKER_HUB_HOST = 'https://index.docker.io';
@@ -251,6 +245,12 @@ function createApi(log, map, container) {
 exports.init = function execute(log, config, done) {
     var disableTls = Boolean(config.docker && config.docker.disableTls);
     var Manta = require('../storage').MantaClient;
+    var useFileStorage = Boolean(config.features && config.features.fileStorage === 'enabled');
+    var DOCKER_HOST_STATUS = {
+        initializing: 'initializing',
+        completed: 'completed',
+        unreachable: 'unreachable'
+    };
     var api = {};
     api.SDC_DOCKER_PATH = SDC_DOCKER_PATH;
     api.DOCKER_HUB_HOST = 'https://index.docker.io';
@@ -643,7 +643,7 @@ exports.init = function execute(log, config, done) {
         poller = new EventEmitter();
         waitForHosts[pollerKey] = poller;
         installCallbacks();
-        poller.status = 'initializing';
+        poller.status = DOCKER_HOST_STATUS.initializing;
         poller.started = new Date();
         setTimeout(function () {
             var pollerExists = !!waitForHosts[pollerKey];
@@ -652,15 +652,15 @@ exports.init = function execute(log, config, done) {
                 poller.emit('error', 'The installation of Docker host "' + host.name + '" has timed out. Please refresh the page.');
             }
         }, config.polling.dockerHostTimeout);
-        function getHostStatus() {
-            api.getHostStatus(call, host.id, function (error, status) {
+        function getHostStatus(pollerKey) {
+            api.getHostStatus(call, host, function (error, status) {
                 if (error) {
                     call.log.info({error: error});
                 }
-                if (status === 'completed') {
+                if (status === DOCKER_HOST_STATUS.completed) {
                     delete waitForHosts[pollerKey];
-                    return poller.emit('completed');
-                } else if (status === 'unreachable') {
+                    return poller.emit(DOCKER_HOST_STATUS.completed);
+                } else if (status === DOCKER_HOST_STATUS.unreachable) {
                     delete waitForHosts[pollerKey];
                     return poller.emit('error');
                 }
@@ -671,11 +671,11 @@ exports.init = function execute(log, config, done) {
                 }
 
                 if (waitForHosts[pollerKey]) {
-                    setTimeout(getHostStatus, config.polling.dockerHost);
+                    setTimeout(getHostStatus.bind(null, pollerKey), config.polling.dockerHost);
                 }
             });
         }
-        getHostStatus();
+        getHostStatus(pollerKey);
     };
 
     function uploadKeysAndSetupSubusers(call, keyPair, uploadCallback) {
@@ -725,6 +725,7 @@ exports.init = function execute(log, config, done) {
         options.metadata = options.metadata || {};
         options.tags = options.tags || {};
         options.tags['JPC_tag'] = 'DockerHost';
+        startupScript = startupScript.replace('&__disable-manta__%', useFileStorage || '');
 
         if (disableTls) {
             options.metadata['user-script'] = startupScript.replace('%__disable-tls__%', disableTls);
@@ -798,25 +799,39 @@ exports.init = function execute(log, config, done) {
         });
     };
 
-    api.getHostStatus = function (call, machineId, callback) {
+    api.getHostStatus = function (call, host, callback) {
+        var machineId = typeof host === 'string' ? host : host.id;
         if (getSdcDockerConfig(machineId)) {
             setImmediate(function () {
-                callback(null, 'completed');
+                callback(null, DOCKER_HOST_STATUS.completed);
             });
             return;
         }
         var client = require('../storage').MantaClient.createClient(call);
-        client.getFileContents(SDC_DOCKER_PATH + '/.status-' + machineId, function (error, result) {
-            var status = 'initializing';
-            if (!error) {
-                try {
-                    status = JSON.parse(result).status;
-                } catch (e) {
-                    call.log.error({result: result}, 'Can\'t parse docker status');
+        var statusPath = SDC_DOCKER_PATH + '/.status-' + machineId;
+        var status = DOCKER_HOST_STATUS.initializing;
+        if (useFileStorage && !client.exist(statusPath)) {
+            var dockerClient = api.createClient(call, host);
+            dockerClient.ping(function (err) {
+                if (err) {
+                    return callback(null, status);
                 }
-            }
-            callback(error, status);
-        });
+                api.setHostStatus(call, machineId, DOCKER_HOST_STATUS.completed, function () {
+                    callback(null, DOCKER_HOST_STATUS.completed);
+                });
+            });
+        } else {
+            client.getFileContents(statusPath, function (error, result) {
+                if (!error) {
+                    try {
+                        status = JSON.parse(result).status;
+                    } catch (e) {
+                        call.log.error({result: result}, 'Can\'t parse docker status');
+                    }
+                }
+                callback(error, status);
+            });
+        }
     };
 
     api.setHostStatus = function (call, machineId, status, callback) {

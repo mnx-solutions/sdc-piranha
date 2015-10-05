@@ -2,12 +2,14 @@
 
 var config = require('easy-config');
 var manta = require('manta');
+var fileStorage = require('./file-storage');
 var fs = require('fs');
 var MemoryStream = require('memorystream');
 var vasync = require('vasync');
 var apiKey = fs.readFileSync(config.cloudapi.keyPath, 'utf8');
 var mantaPrivateKey;
-if (config.manta.privateKey) {
+
+if (config.features.manta === 'enabled' && config.manta.privateKey) {
     mantaPrivateKey = fs.readFileSync(config.manta.privateKey, 'utf8');
 }
 
@@ -63,9 +65,9 @@ exports.init = function execute(log, config, done) {
         directory = root;
         vasync.pipeline({
             funcs: parts.map(function (nextDirectory) {
-                return function (input, callback) {
+                return function (input, funcsCallback) {
                     directory = directory + '/' + nextDirectory;
-                    createDirectoryIfNotExist(directory, callback);
+                    createDirectoryIfNotExist(directory, funcsCallback);
                 };
             })
         }, callback);
@@ -97,8 +99,10 @@ exports.init = function execute(log, config, done) {
     function putFileContents(filepath, data, callback) {
         data = typeof data === 'string' ? data : JSON.stringify(data);
         var buffer = new Buffer(data);
-        var fileStream = new MemoryStream(buffer);
+        var fileStream = new MemoryStream();
         this.put(filepath, fileStream, {size: buffer.length, mkdirs: true}, callback);
+        fileStream.write(buffer);
+        fileStream.end();
     }
 
     function safePutFileContents(filepath, data, callback) {
@@ -109,8 +113,10 @@ exports.init = function execute(log, config, done) {
                 return callback(err);
             }
             data = typeof data === 'string' ? data : JSON.stringify(data);
-            var fileStream = new MemoryStream(data);
+            var fileStream = new MemoryStream();
             self.put(filepath, fileStream, {size: data.length}, callback);
+            fileStream.write(data);
+            fileStream.end();
         });
     }
 
@@ -262,7 +268,13 @@ exports.init = function execute(log, config, done) {
         } else {
             options.headers['X-Auth-Token'] = session.token || call.req.cloud._token;
         }
-        var client = manta.createClient(options);
+        var client;
+        if (config.features.fileStorage === 'enabled') {
+            client = fileStorage.createClient(call, opts);
+        } else {
+            client = manta.createClient(options);
+        }
+
         client.getFileContents = getFileContents;
         client.putFileContents = putFileContents;
         client.safeMkdirp = safeMkdirp;

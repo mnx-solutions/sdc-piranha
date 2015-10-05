@@ -127,6 +127,9 @@
     },
     "earliest_date": "2013-12-18"
   },
+  "fileStorage": {
+    "root": "/tmp/portal-storage"
+  },
   "manta": {
     "url": "https://us-east.manta.joyent.com"
   },
@@ -245,6 +248,7 @@
     "dockerLabels": "yes",
     "sdcDocker": "yes",
     "dtrace": "yes",
-    "networking": "no"
+    "networking": "no",
+    "fileStorage": "no"
   }
 }

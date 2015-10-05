@@ -39,21 +39,22 @@ Auditor.prototype.createHeadPath = function (event) {
 Auditor.prototype.createPaths = function (event) {
     var paths = {head: this.createHeadPath(event), links: []};
     if (event.type !== 'docker') {
-        paths.links.push(AUDITPATH + '/hosts/' + event.host + '/' + event.type + 's/' + event.entry + '/' + createFileName(formatDate(event.date), event.name));
-        paths.links.push(AUDITPATH + '/' + event.type + 's/' + event.entry + '/' + createFileName(
+        var type = event.type + 's';
+        paths.links.push(path.join(AUDITPATH, 'hosts', event.host, type, event.entry, createFileName(formatDate(event.date), event.name)));
+        paths.links.push(path.join(AUDITPATH, type, event.entry, createFileName(
             formatDate(event.date),
             event.host,
             genType(event),
             event.name
-        ));
+        )));
     }
 
-    paths.links.push(AUDITPATH + '/docker/' + createFileName(
+    paths.links.push(path.join(AUDITPATH, 'docker', createFileName(
         formatDate(event.date),
         event.host,
         genType(event),
         event.name
-    ));
+    )));
     return paths;
 };
 
@@ -142,7 +143,7 @@ Auditor.prototype.get = function (event, callback) {
 };
 
 Auditor.prototype.getDockerDir = function (event, type) {
-    return AUDITPATH + (type === 'host' ? '/hosts/' + event.host.replace(/\//g, '') : '') + '/docker';
+    return path.join(AUDITPATH, type === 'host' ? 'hosts/' + event.host.replace(/\//g, '') : '', 'docker');
 };
 
 Auditor.prototype.put = function (event, body, callback) {

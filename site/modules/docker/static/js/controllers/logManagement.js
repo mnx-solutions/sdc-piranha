@@ -192,7 +192,7 @@
                             analyzeContainerLogs();
                         },
                         show: function () {
-                            return $scope.tab !== REMOVED_CONTAINER_STATUS;
+                            return $scope.tab !== REMOVED_CONTAINER_STATUS && $scope.features.mantaJobs === 'enabled';
                         },
                         sequence: 2
                     }

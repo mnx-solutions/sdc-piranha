@@ -16,6 +16,7 @@ END
 
 
 DISABLE_TLS=%__disable-tls__%
+WITHOUT_MANTA=&__disable-manta__%
 MANTA_URL=%__manta-url__%
 MANTA_KEY_ID=$(ssh-keygen -lf /root/.ssh/user_id_rsa.pub | awk '{print $2}')
 MANTA_USER=%__manta-account__%
@@ -55,6 +56,10 @@ END
 /usr/sbin/mdata-delete user-script &
 
 function manta {
+    if [ ! -z "${WITHOUT_MANTA}" ];then
+        return
+    fi
+
     local alg=rsa-sha256
     local keyId=/${MANTA_USER}/${MANTA_SUBUSER}/keys/${MANTA_KEY_ID}
     local now=$(LC_ALL=C date -u "+%a, %d %h %Y %H:%M:%S GMT")

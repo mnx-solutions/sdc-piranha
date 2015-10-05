@@ -2,15 +2,15 @@
 
 window.JP.main.config(['routeProvider', function (routeProvider) {
     var features = window.JP.get('features');
-    if (features && features.manta === 'disabled') {
-        if (features.privateSdc === 'disabled') {
-            routeProvider
-                .when('/manta/intro', {
-                    title: 'Storage',
-                    action: 'storage.index'
-                });
-        }
-    } else {
+    if (!features || features.manta === 'disabled' && features.fileStorage === 'disabled') {
+        return;
+    } else if (features.fileStorage === 'enabled') {
+        routeProvider
+            .when('/manta/files', {
+                title: 'File Manager',
+                action: 'storage.fileman'
+            });
+    } else if (features.manta === 'enabled') {
         routeProvider
             .when('/manta/intro', {
                 title: 'Storage',

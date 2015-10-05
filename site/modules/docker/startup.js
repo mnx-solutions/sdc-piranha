@@ -270,7 +270,7 @@ var Docker = function execute(log, config) {
                     vasync.forEachParallel({
                         inputs: hosts,
                         func: function (host, callback) {
-                            Docker.getHostStatus(call, host.id, function (error, status) {
+                            Docker.getHostStatus(call, host, function (error, status) {
                                 if (error || status !== 'completed') {
                                     return callback(null, []);
                                 }
@@ -383,7 +383,7 @@ var Docker = function execute(log, config) {
             vasync.forEachParallel({
                 inputs: hosts,
                 func: function (host, callback) {
-                    Docker.getHostStatus(call, host.id, function (error, status) {
+                    Docker.getHostStatus(call, host, function (error, status) {
                         if (error || status !== 'completed') {
                             callback(null, []);
                         }
@@ -522,11 +522,15 @@ var Docker = function execute(log, config) {
                         var analyzeLogFiles = [];
                         var logPath = path.join(DOCKER_LOGS_PATH, log.hostId, log.Id);
                         client.ftw(logPath, function (err, entriesStream) {
-                            if (err) {
-                                if (err.statusCode === 404) {
+                            var errorCallback = function (error) {
+                                if (error.statusCode === 404) {
                                     return callback(null, []);
                                 }
-                                return callback(err);
+                                return callback(error);
+                            };
+
+                            if (err) {
+                                return errorCallback(err);
                             }
 
                             entriesStream.on('entry', function (obj) {
@@ -541,13 +545,11 @@ var Docker = function execute(log, config) {
                                 callback(null, analyzeLogFiles);
                             });
 
-                            entriesStream.on('error', function (error) {
-                                callback(error);
-                            });
+                            entriesStream.on('error', errorCallback);
                         });
                     }
                 }, function (vasyncErrors, analyzeLogFiles) {
-                    var data = getVasyncData(vasyncErrors, analyzeLogFiles);
+                    var data = utils.getVasyncData(vasyncErrors, analyzeLogFiles);
                     call.done(data.error, data.result);
                 });
             }
@@ -675,7 +677,7 @@ var Docker = function execute(log, config) {
                             ]
                         }, function (errors) {
                             if (errors) {
-                                call.log.warn({error: utils.getVasyncError(errors)}, 'Error while updating registries list');
+                                call.log.warn({error: utils.getVasyncData(errors).error}, 'Error while updating registries list');
                             }
                             call.done();
                         });

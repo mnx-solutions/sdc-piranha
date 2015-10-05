@@ -2,7 +2,7 @@
 
 window.JP.main.config(['routeProvider', function (routeProvider) {
     var features = window.JP.get('features');
-    if (features && features.dtrace !== 'enabled') {
+    if (features && features.dtrace !== 'enabled' || features.fileStorage === 'enabled') {
         return;
     }
 

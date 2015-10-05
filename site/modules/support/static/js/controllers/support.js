@@ -121,7 +121,7 @@
 
 
             scope.$on('$routeChangeStart', function(e, next, last) {
-                if (next.$$route.controller === last.$$route.controller) {
+                if (last.$$route && next.$$route && next.$$route.controller === last.$$route.controller) {
                     e.preventDefault();
                     $route.current = last.$$route;
                     scope.loading = true;
