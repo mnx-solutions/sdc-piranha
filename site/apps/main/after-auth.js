@@ -37,7 +37,7 @@ function loadUserCertificates(req, service, callback) {
 
 module.exports = function loadUserCertificatesMiddleware(req, res, next) {
     if (config.features.manta !== 'enabled') {
-        return;
+        return next();
     }
 
     vasync.forEachParallel({
