@@ -24,6 +24,7 @@
                 });
                 $scope.loading = true;
                 $scope.isCurrentLocation = Provision.isCurrentLocation;
+                $scope.isTritonEnabled = $scope.features.sdcDocker === 'enabled';
 
                 var sourceId = requestContext.getParam('sourceid');
                 var hostId = requestContext.getParam('hostid');

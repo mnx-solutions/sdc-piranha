@@ -15,13 +15,14 @@
         'localization',
         '$q',
         '$qe',
+        'Docker',
         'PopupDialog',
         '$rootScope',
         'loggingService',
         'util',
         'errorContext',
         function ($scope, $filter, requestContext, $timeout, Provision, Machine, Datacenter, Package, Account, Image,
-            $location, localization, $q, $qe, PopupDialog, $rootScope, loggingService, util, errorContext) {
+            $location, localization, $q, $qe, Docker, PopupDialog, $rootScope, loggingService, util, errorContext) {
 
             localization.bind('machine', $scope);
             requestContext.setUpRenderContext('machine.provision', $scope, {
@@ -102,6 +103,7 @@
             $scope.datasetsLoading = true;
             $scope.filterValues = ng.copy(FilterValues);
 
+            $scope.isTritonEnabled = $scope.features.sdcDocker === 'enabled';
             $scope.isMantaEnabled = $scope.features.manta === 'enabled';
             $scope.isRecentInstancesEnabled = $scope.features.recentInstances === 'enabled';
 
@@ -724,7 +726,8 @@
                 if ($scope.instanceType === 'native-container') {
                     result = item.type === 'smartmachine';
                 } else if ($scope.instanceType === 'virtual-machine') {
-                    result = item.type === 'virtualmachine' || $scope.packageTypes.indexOf('Triton') === -1;
+                    result = item.type === 'virtualmachine' || ($scope.packageTypes.indexOf('Triton') === -1 ||
+                        !$scope.isSdcAvailable) && item.type === 'smartmachine' && item.os !== 'linux';
                 }
                 if ($scope.features.imageUse !== 'disabled') {
                     result = item.state === 'active' && result;
@@ -969,11 +972,15 @@
                     $scope.reloading = true;
                     $scope.datasetsLoading = true;
                     firstLoad = false;
-                    $qe.every([
+                    var tasks = [
                         $q.when(Image.image({datacenter: newVal})),
                         $q.when(Package.package({datacenter: newVal})),
                         $q.when(Provision.getCreatedMachines())
-                    ]).then(function (result) {
+                    ];
+                    if ($scope.features.docker === 'enabled') {
+                        tasks.push($q.when(Docker.listHosts()));
+                    }
+                    $qe.every(tasks).then(function (result) {
                         isAvailableSwitchDatacenter = true;
                         function checkErrorResult(result) {
                             if (result.error) {
@@ -985,6 +992,9 @@
                         }
                         var datasets = getEmptyOnError(result[0]);
                         var packages = getEmptyOnError(result[1]);
+                        $scope.isSdcAvailable = (result[3] || []).some(function (host) {
+                            return $scope.isSdcDatacenter && host.isSdc && host.datacenter === newVal;
+                        });
 
                         Provision.processDatasets(datasets, function (result) {
                             $scope['operating_systems'] = result.operatingSystems;

@@ -1,7 +1,7 @@
 <div class="container-fluid container-position" data-ng-controller="Machine.ProvisionController">
     <div data-ng-include="'machine/static/partials/create-instance-header.html'"></div>
-    <div class="loading-large col-md-12" data-ng-show="loading"></div>
-    <div data-ng-hide="loading">
+    <div class="loading-large col-md-12" data-ng-show="loading || datasetsLoading"></div>
+    <div data-ng-hide="loading || datasetsLoading">
         <div class="container-min-width">
             <div class="wizard-steps wizard-steps-provision">
                 <div data-ng-repeat="provisionStep in provisionSteps" data-ng-hide="provisionStep.hide" data-ng-class="{'firststep': $first , 'active-step': currentPageIndex == $index}">
