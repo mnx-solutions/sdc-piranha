@@ -150,10 +150,10 @@ window.JP.main.config(['routeProvider', function (routeProvider) {
                         var containers = result[1] || [];
                         $rootScope.provisionEnabled = account.provisionEnabled || false;
                         if (!containers.length) {
-                            dockerResolve.data($rootScope, $location, $q, Docker, Account, Machine);
+                            dockerResolve.data($rootScope, $location, $q, Docker, Machine, Account);
                         }
                     }, function () {
-                        dockerResolve.data($rootScope, $location, $q, Docker, Account, Machine);
+                        dockerResolve.data($rootScope, $location, $q, Docker, Machine, Account);
                     });
                 }]
             }
