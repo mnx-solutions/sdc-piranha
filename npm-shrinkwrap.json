@@ -5019,9 +5019,10 @@
       "resolved": "https://registry.npmjs.org/term.js/-/term.js-0.0.4.tgz"
     },
     "ursa": {
-      "version": "0.8.4",
-      "from": "ursa@>=0.8.4 <0.9.0",
-      "resolved": "https://registry.npmjs.org/ursa/-/ursa-0.8.4.tgz",
+      "name": "ursa",
+      "version": "0.8.5",
+      "from": "git://github.com/13w/ursa.git#de5237af459c62ab67fec35a1d6808376aa5a5cf",
+      "resolved": "git://github.com/13w/ursa.git#de5237af459c62ab67fec35a1d6808376aa5a5cf",
       "dependencies": {
         "bindings": {
           "version": "1.2.1",
@@ -5029,9 +5030,9 @@
           "resolved": "https://registry.npmjs.org/bindings/-/bindings-1.2.1.tgz"
         },
         "nan": {
-          "version": "1.7.0",
+          "version": "1.9.0",
           "from": "nan@>=1.7.0 <2.0.0",
-          "resolved": "https://registry.npmjs.org/nan/-/nan-1.7.0.tgz"
+          "resolved": "https://registry.npmjs.org/nan/-/nan-1.9.0.tgz"
         }
       }
     },

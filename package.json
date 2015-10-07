@@ -44,7 +44,7 @@
     "speakeasy": "^1.0.3",
     "tar": "git+ssh://git@github.com:13W/node-tar.git",
     "term.js": "0.0.4",
-    "ursa": "^0.8.4",
+    "ursa": "git://github.com/13w/ursa.git#de5237af459c62ab67fec35a1d6808376aa5a5cf",
     "vasync": "^1.6.3",
     "ws": "^0.7.1",
     "zuora-rest": "^0.1.7"
