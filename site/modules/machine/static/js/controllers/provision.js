@@ -500,7 +500,8 @@
                             return sdcDatacenter.datacenter === datacenterName;
                         });
                         $rootScope.commonConfig('datacenter', datacenterName);
-                        if ($scope.instanceType === 'native-container' && !$scope.isSdcDatacenter) {
+                        if (!requestContext.getParam('imageid') && !$location.search().specification &&
+                            $scope.instanceType === 'native-container' && !$scope.isSdcDatacenter) {
                             $scope.selectInstanceType('virtual-machine');
                         }
                     }
