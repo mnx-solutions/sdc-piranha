@@ -46,7 +46,9 @@
                     $location.path(defaultPath + 'simple');
                     return;
                 }
-                if (createInstancePageConfig.page === 'container') {
+                if (createInstancePageConfig.page === 'container' ||
+                    createInstancePageConfig.page === 'native-container' &&
+                    $rootScope.features && $rootScope.features.sdcDocker === 'disabled') {
                     createInstancePageConfig.page = 'simple';
                     Account.saveUserConfig();
                 }

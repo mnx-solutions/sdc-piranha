@@ -29,7 +29,14 @@ window.JP.main.config([
             action: 'machine.ssh'
         }).when('/compute/create/native-container', {
             title: 'Create Instance',
-            action: 'machine.provision'
+            action: 'machine.provision',
+            resolve: {
+                data: ['$rootScope', '$location', function ($rootScope, $location) {
+                    if ($rootScope.features.sdcDocker === 'disabled') {
+                        $location.path('/dashboard');
+                    }
+                }]
+            }
         }).when('/compute/create/virtual-machine', {
             title: 'Create Instance',
             action: 'machine.provision'
