@@ -755,7 +755,8 @@
                 $scope.instanceType = type;
                 $scope.getFilteredDatasets();
                 $scope.reconfigure(0);
-                if (type === 'virtual-machine' || !$scope.isSdcDatacenter) {
+                if (type === 'virtual-machine' || !$scope.isSdcDatacenter || type === 'native-container' &&
+                    !$scope.isSdcAvailable) {
                     $location.path('/compute/create/virtual-machine');
                     $scope.setCreateInstancePage('virtual-machine');
                 } else if (type === 'native-container') {
