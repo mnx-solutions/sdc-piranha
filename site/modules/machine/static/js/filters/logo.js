@@ -36,6 +36,7 @@
                 wordpress: "wordpress",
 
                 //os
+                "alpine-3": "alpine",
                 "arch-demo": "arch",
                 base: "smart",
                 centos: "centos",

@@ -1031,6 +1031,7 @@
     padding-top: 7px;
 }
 
+.small-icon.alpine,
 .small-icon.apache,
 .small-icon.cassandra,
 .small-icon.couchdb,
@@ -1071,6 +1072,7 @@
     background-size: 20px;
 }
 
+.advanced-instance-title .alpine,
 .advanced-instance-title .apache,
 .advanced-instance-title .cassandra,
 .advanced-instance-title .couchdb,
@@ -1274,19 +1276,25 @@
     background-image: url(../img/icons/dtrace.png);
 }
 
-.smart-logo,
-.ubuntu-logo,
-.windows-logo,
+.small-icon.alpine,
+.alpine-logo {
+    background-image: url(../img/icons/alpine.png);
+}
+
+.alpine-logo,
 .centos-logo,
 .debian-logo,
-.node-logo,
+.dtrace-logo,
 .joyent-logo,
+.mariadb-logo
 .mongodb-logo,
+.nginx-logo,
+.node-logo,
 .postgresql-logo,
 .scalearc-logo,
-.nginx-logo,
-.dtrace-logo,
-.mariadb-logo {
+.smart-logo,
+.ubuntu-logo,
+.windows-logo {
     background-color: #eef0f2;
     background-repeat: no-repeat;
     background-position: 198px 10px;
