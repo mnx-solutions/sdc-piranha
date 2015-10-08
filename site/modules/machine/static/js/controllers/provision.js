@@ -396,7 +396,7 @@
                 }
             };
 
-            $scope.selectNetworkCheckbox = function (id) {
+            $scope.selectNetworkCheckbox = function (network) {
                 $scope.networks.forEach(function (el) {
                     if (el.id === network.id) {
                         el.active = (el.active) ? false : true;
@@ -405,7 +405,7 @@
                         selectNetwork(el.id, true);
                     }
                 });
-                selectNetwork(id, true);
+                selectNetwork(network.id, true);
             };
 
             var nextStep = function (step) {
@@ -427,7 +427,9 @@
 
             $scope.clickProvision = function () {
                 // add networks to data
-                $scope.data.networks = (selectedNetworks.length > 0) ? selectedNetworks : '';
+                if (selectedNetworks.length > 0) {
+                    $scope.data.networks = selectedNetworks;
+                }
 
                 var instanceType = '';
                 var specification = $location.search().specification;
@@ -983,14 +985,6 @@
                     }
                     $qe.every(tasks).then(function (result) {
                         isAvailableSwitchDatacenter = true;
-                        function checkErrorResult(result) {
-                            if (result.error) {
-                                isAvailableSwitchDatacenter = result.error.restCode !== 'NotAuthorized';
-                                PopupDialog.errorObj(result.error);
-                                return true;
-                            }
-                            return false;
-                        }
                         var datasets = getEmptyOnError(result[0]);
                         var packages = getEmptyOnError(result[1]);
                         $scope.isSdcAvailable = (result[3] || []).some(function (host) {

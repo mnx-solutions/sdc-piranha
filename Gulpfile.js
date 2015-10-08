@@ -18,7 +18,8 @@ var gzip = require('gulp-gzip');
 var config = require('easy-config');
 var bunyan = require('bunyan');
 var express = require('express');
-var logger = bunyan.createLogger(config.extend({log: {
+var logger = bunyan.createLogger(config.extend({
+    log: {
         src: true,
         serializers: {
             error: function (err) {
@@ -119,11 +120,11 @@ function startHttpServer(done) {
         return next();
     });
 
-    server.get('/healthcheck', function(req, res, next) {
+    server.get('/healthcheck', function(req, res) {
         res.send('ok');
     });
 
-    server.get('/installMemStat.sh', function (req, res, next) {
+    server.get('/installMemStat.sh', function (req, res) {
         var filePath = path.join(__dirname, '/site/modules/docker/data/installMemStat.sh');
         fs.stat(filePath, function (err, stat) {
             if (err || !stat) {
@@ -138,7 +139,7 @@ function startHttpServer(done) {
         });
     });
 
-    server.get('/version', function (req, res, next) {
+    server.get('/version', function (req, res) {
 
         var ret = {};
         version(function (err, gitInfo) {
@@ -153,13 +154,13 @@ function startHttpServer(done) {
                     git: {
                         commitId: gitInfo.commitId
                     }
-                }
+                };
             } else {
                 ret = {
                     git: gitInfo,
                     features: features,
                     hostname: require('os').hostname()
-                }
+                };
             }
 
             res.send(ret);
@@ -264,7 +265,7 @@ function startHttpServer(done) {
             }));
         }
         if (config.assets.js.gzip) {
-            stream = stream.pipe(gzip({append: false}))
+            stream = stream.pipe(gzip({append: false}));
         }
         return stream;
     }
@@ -354,7 +355,7 @@ function startHttpServer(done) {
         var args = [].slice.call(arguments);
         return function (file) {
             return file && path.join.apply(path, [].concat(args, file));
-        }
+        };
     }
 
     function getStaticScripts(options, type, isVendor) {

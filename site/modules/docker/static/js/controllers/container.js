@@ -122,7 +122,7 @@
                 var host = $q.when(Docker.listHosts({id:hostId}));
                 host.then(function (machine) {
                     if (machine.isSdc) {
-                        return $q.all([
+                        $q.all([
                             Docker.listContainers({host: 'All', cache: true, options: {all: true}, suppressErrors: true}),
                             Machine.machine(util.idToUuid(containerId))
                         ]).then(function (result) {
@@ -138,6 +138,7 @@
                             }
                             getDockerInspectContainer(machine);
                         }, Docker.goToDockerContainers);
+                        return;
                     }
                     getDockerInspectContainer(machine);
                 }, Docker.goToDockerContainers);

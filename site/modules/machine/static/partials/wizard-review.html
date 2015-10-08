@@ -95,7 +95,7 @@
                             <div class="clearfix" data-ng-repeat="network in networks track by $index">
                                 <div class="checker pull-left" data-ng-class="{hover:show}" data-ng-mouseenter="show = true" data-ng-mouseleave="show = false">
                                     <span data-ng-class="{checked: network.active}">
-                                         <input data-ng-click="selectNetworkCheckbox(network.id)" type="checkbox"
+                                         <input data-ng-click="selectNetworkCheckbox(network)" type="checkbox"
                                                 value="{{network.id}}"
                                                 name="{{network.name}}"
                                                 data-ng-model="selectedNetworkId"/>
