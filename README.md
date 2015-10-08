@@ -1,15 +1,14 @@
 # Joyent Public Cloud Portal (piranha)
 
-Production: <https://my.joyent.com/>  
-Repository: <https://github.com/joyent/piranha>  
-Browsing: <https://github.com/joyent/piranha>  
-Contacts: Tyson Hom   
+Production: <https://my.joyent.com/>
+Repository: <https://github.com/joyent/piranha> 
+Contacts: Dan Lukinykh <dan.lukinykh@joyent.com>
 Docs: <https://hub.joyent.com/wiki/display/PIRANHA/Home> (out of date)  
-Tickets/bugs: <https://sdcportal.atlassian.net/browse/PIRANHA>
+Tickets/bugs: <https://devhub.joyent.com/jira/browse/PORTAL>, deprecated: <https://sdcportal.atlassian.net/browse/PIRANHA>
 
 ## Overview
 
-Originally billed as the SDC7 Client Portal, it is currently focused on Joyent Public Cloud.
+User portal for Joyent Public Cloud / Smart Data Center.
 
 The project code name of 'piranha' has no special meaning other than Joyent's fondness for fish named projects. It is also hard to spell.
 
@@ -23,9 +22,12 @@ The project code name of 'piranha' has no special meaning other than Joyent's fo
     tools/
     var/
     Gruntfile.js
+    Gulpfile.js
+    Makefile
     README.md
     env.json
     index.js
+    npm-shrinkwrap.json
     package.json
 
 ## Installation
@@ -34,25 +36,23 @@ The project code name of 'piranha' has no special meaning other than Joyent's fo
 
 Development regularly occurs on Linux until it is ready for staging. Lloyd encourages development on SmartOS to be "close to production".
 
-1. `ssh git@git.joyent.com` Confirms access to the private repositories. Connection will immediately close.
-2. `git clone git@github.com:joyent/piranha.git`  
-3. `npm install` (if you get errors, try `npm i --production`)
-4. Create environment configuration file including uploading a private ssh key of a 'developer' user for SDC. See Configuration section below. Better yet, get someone else's working config file and use that as the `{environment}` when starting the server.
-5. Make sure portal user has rights to write var/error.json `chown -R portal var/`
-6. If Redis isn't installed and running, [install](http://redis.io/download) and [run](http://reistiago.wordpress.com/2011/07/23/installing-on-redis-mac-os-x/) it
-7. `node index.js -env={environment}`
+1. `git clone git@github.com:joyent/piranha.git`  
+2. `npm install` (if you get errors, try `npm i --production`)
+3. Create environment configuration file including uploading a private ssh key of a 'developer' user for SDC. See Configuration section below. Better yet, get someone else's working config file and use that as the `{environment}` when starting the server.
+4. Make sure portal user has rights to write var/error.json `chown -R portal var/`
+5. If Redis isn't installed and running, [install](http://redis.io/download) and [run](http://reistiago.wordpress.com/2011/07/23/installing-on-redis-mac-os-x/) it
+6. `gulp serve -env={environment}` you can use `./node_modules/.bin/gulp` without installing it
 
 ### Staged Development
 
-The production environment is currently SmartOS 64-bit - base64 13.1.0, so we use the same for staged development.
+The production environment is currently SmartOS 64-bit - base64 13.3.1, so we use the same for staged development.
 * Use 'ssh -A' to connect to the instance, forwarding your authentication agent.
 
-1. Test access to Joyent git repos: `ssh git@git.joyent.com` (Confirms access to the private repositories. Connection will immediately close)  
-2. Update and install system packages: `pkgin up; pkgin -y install scmgit-base redis build-essential`
-3. Enable local Redis service: `svcadm enable redis:default`
-4. Clone Piranha repo from GitHub: `git clone git@github.com:joyent/piranha.git /opt/portal` 
-5. Create a new non-root user for portal: `useradd -s /bin/false -m portal`
-6. Install node.js modules: `cd /opt/portal; npm install --production`
+1. Update and install system packages: `pkgin up; pkgin -y install scmgit-base redis build-essential`
+2. Enable local Redis service: `svcadm enable redis:default`
+3. Clone Piranha repo from GitHub: `git clone git@github.com:joyent/piranha.git /opt/portal` 
+4. Create a new non-root user for portal: `useradd -s /bin/false -m portal`
+5. Install node.js modules: `cd /opt/portal; npm install --production`
 6. Make sure that portal user owns its files: `chown -R portal /opt/portal`
 7. Create environment configuration file including uploading a private ssh key of a 'developer' user for SDC. See Configuration section below.
 8. Import portal service configuration file: `svccfg import /opt/portal/smf/portal.xml`
@@ -106,129 +106,93 @@ Possible tar builder flags:
 6. Install node.js modules: `npm install --production`
 7. Start portal: `svcadm enable portal`
 
-## Testing
-
-### E2E
-
-piranha uses [Protractor][5] as AngularJS E2E tests runner.
-
-Install development dependencies:
-
-    npm install --development
-    grunt install:dev
-    
-Create local configuration for E2E tests:
-
-    cp test/e2e/config/config.json test/e2e/config/config.test.json # Copy main config
-    vi test/e2e/config/config.test.json  # Override options
-    
-Run tests:
-
-    grunt test:e2e
-    
-Run tests in automatic mode:
-
-    grunt autotest:e2e
-
-### UI unit tests
-
-piranha uses [Karma][6] as AngularJS unit tests runner.
-
-To run unit tests: 
-
-    grunt test:unit
-
-To run unit tests in automatic mode: 
-
-    grunt autotest:unit
-
-
 ## Configuration
 
 piranha uses [easy-config][1] for configuration handling. The default config file is `site/config/config.json`. When piranha is started with the `-env={environment}` command line option, the values in `site/config/config.{environment}.json` overwrite those from `config.json`.
 
 You can also define configuration options using command line. ex: `$ node index.js -env=pro --log.level=fatal`
 
-- `assets.*` [express-modulizer][3] magic.
-- `billing.url` [billing-server][4] url
+- `assets.*` Browser assets manipulation e.g. minify, gzip etc.
 - `billing.noUpdate` Do not talk to billing server
-- `billing.rejectUnauthorized` Reject unauthorized SSL connection 
-- `capishim.username` Capishim username
+- `billing.rejectUnauthorized` Reject unauthorized SSL connection
+- `billing.url` [billing-server][4] url
+- `capishim.allowSelfSigned` Dev option to allow self-signed certificates
+- `capishim.noUpdate` Do not talk to capi shim
 - `capishim.password` Capishim password
 - `capishim.url` Capishim url
-- `capishim.noUpdate` Do not talk to capi shim
-- `capishim.allowSelfSigned` Dev option to allow self-signed certificates
-- `cloudapi.version` If defined this is used for Api-version header for CloudAPI calls.
-- `cloudapi.url` CloudAPI endpoint url
-- `cloudapi.urls` If defined (Array) this is used instead of url. Here you can define multiple CloudAPI (datacenter) URL's so if one fails, portal will take the next one
-- `cloudapi.DCCallTimeout` Datacenter call timeout in ms.
-- `cloudapi.username` Username from AdminUI
+- `capishim.username` Capishim username
+- `cloudapi.DCCallTimeout` Datacenter call timeout in ms
+- `cloudapi.limitedAccessDatacenters` An array of datacenters with limited user access
 - `cloudapi.keyId` Your SSH key fingerprint from Admin portal
 - `cloudapi.keyPath` Full local path to your private key file
-- `images.types` List of machine types supported for image creation
+- `cloudapi.url` CloudAPI endpoint url
+- `cloudapi.urls` If defined (Array) this is used instead of url. Here you can define multiple CloudAPI (datacenter) URL's so if one fails, portal will take the next one
+- `cloudapi.username` Username from AdminUI
+- `cloudapi.version` If defined this is used for Api-version header for CloudAPI calls
 - `images.earliest_date` Only allow images from machines created after this date
-- `slb.ssc_private_key` Hardcode if on west-x, do not use on west-1
-- `slb.ssc_public_key` Hardcode if on west-x, do not use on west-1
-- `slb.slb_code_url` Download location for SLB API code
-- `slb.sdc_url` Hardcode if on west-x, do not use on west-1
-- `slb.ssc_image` UUID of SLB controller image
-- `slb.ssc_package` Name of SLB controller package
-- `slb.ssc_networks` Hardcode if on west-x, do not use on west-1
-- `slb.ssc_datacenter` Datacenter for SSC machine, defaults to west-1
-- `slb.account` Hardcode if on west-x, do not use on west-1
-- `slb.ssc_protocol` Protocol to communicate with SLB controller
-- `slb.ssc_port` Port to communicate with SLB controller
-- `googleAnalytics.identifier` Google analytics ID
+- `images.types` List of machine types supported for image creation
 - `googleAnalytics.domain` Google analytics domain
+- `googleAnalytics.identifier` Google analytics ID
 - `localization.defaultLocale` Default language for portal
 - `localization.locales` Possible languages in portal
-- `log.name` Name which will appear in every log message
 - `log.level` Log level used by [Bunyan][2]. Possible values: `fatal`, `error`, `warn`, `info`, `debug`, `trace`
-- `marketo.apikey` Marketo API key
+- `log.name` Name which will appear in every log message
 - `marketo.accountId` Markerto Account Id
-- `maxmind.phoneApiUrl` MaxMind Phone API URL
+- `marketo.apikey` Marketo API key
 - `maxmind.fraudApiUrl` MaxMind Fraud API URL
 - `maxmind.licenseId` MaxMind license ID
 - `maxmind.limits.calls` Maximum calls allowed
 - `maxmind.limits.serviceFails` Maximum service fails after which verification is skipped
+- `maxmind.phoneApiUrl` MaxMind Phone API URL
 - `maxmind.pinTries` Maximum pin entries
 - `maxmind.riskScoreFraudLimit` Maximum risk score allowed, value can be 0..100 where 0 = block everyone; 100 = allow everyone
 - `maxmind.testClientIp` Set your IP address for testing
 - `maxmind.testRiskScore` Set your risk score for testing
-- `polling.machineTags` Time in ms how long can machine tags polling take before fail
 - `polling.machineState` Time in ms how long can machine state polling take before fail
-- `polling.packageChange` Time in ms how long can packge change take before fail
-- `redis.host` Redis storage host
-- `redis.port` Redis storage port
+- `polling.machineTags` Time in ms how long can machine tags polling take before fail
+- `polling.packageChange` Time in ms how long can package change take before fail
 - `redis.db` Redis database index
+- `redis.host` Redis storage host
 - `redis.password` Redis storage password
-- `server.port` Port on which piranha portal runs on.
+- `redis.port` Redis storage port
 - `server.headerClientIpKey` Client IP address placeholder for load balancer / reverse proxy
+- `server.port` Port on which piranha portal runs on.
 - `session.lifespan` Session timeout (in minutes)
 - `showSLBObjects` Dev option to see SLB keys, images & machines
 - `skinChange.url` Url for alternative beta/legacy skin, should be in format 'https://betaportal.joyent.com'
-- `sso.url` Signle Sign-on service url
-- `sso.keyIid` Your SSH key fingerprint in path format. ex: /{udrtnsmr}/keys/{fingerprint}
+- `slb.account` Hardcode if on west-x, do not use on west-1
+- `slb.sdc_url` Hardcode if on west-x, do not use on west-1
+- `slb.slb_code_url` Download location for SLB API code
+- `slb.ssc_datacenter` Datacenter for SSC machine, defaults to west-1
+- `slb.ssc_image` UUID of SLB controller image
+- `slb.ssc_networks` Hardcode if on west-x, do not use on west-1
+- `slb.ssc_package` Name of SLB controller package
+- `slb.ssc_port` Port to communicate with SLB controller
+- `slb.ssc_private_key` Hardcode if on west-x, do not use on west-1
+- `slb.ssc_protocol` Protocol to communicate with SLB controller
+- `slb.ssc_public_key` Hardcode if on west-x, do not use on west-1
+- `sso.keyId` Your SSH key fingerprint in path format. ex: /{SDC_USERNAME}/keys/{fingerprint}
 - `sso.keyPath` Full local path to your private key file
+- `sso.url` Signle Sign-on service url
 - `twitter.signupTag` Conversion tag to track user signups coming from Twitter Ads
-- `usageData.userId` Test east-1 user for getting usage statistics, used if running in dev environment
 - `usageData.key` Key used to access usage data in centralized manta account
 - `usageData.keyId` Fingerprint of the key used to access usage data in centralized manta account
-- `usageData.user` Username of manta user accessing centralized usage data
 - `usageData.url` Url of manta holding centralized usage data
+- `usageData.user` Username of manta user accessing centralized usage data
+- `usageData.userId` Test east-1 user for getting usage statistics, used if running in dev environment
 - `zendesḱ.account` Zendesk account with trailing `/token`
-- `zendesk.token` Zendesk token
-- `zendesk.host` Zendesk host
 - `zendesk.forumsPath` Path to Zendesk forums json
-- `zendesk.systemStatusPath` Path to Zendesk system statuses topic json
+- `zendesk.host` Zendesk host
 - `zendesk.packageUpdatePath` Path to Zendesk packages updates topic json
-- `zuora.tenantID` Zuoras tenant ID
-- `zuora.api.user` Zuora API user
+- `zendesk.systemStatusPath` Path to Zendesk system statuses topic json
+- `zendesk.token` Zendesk token
 - `zuora.api.password` Zuora API password
-- `zuora.api.validation.countries.type` Zuora validation rule type
-- `zuora.api.validation.countries.name` Which field rule uses
+- `zuora.api.user` Zuora API user
 - `zuora.api.validation.countries.list` Rule values
+- `zuora.api.validation.countries.name` Which field rule uses
+- `zuora.api.validation.countries.type` Zuora validation rule type
 - `zuora.soap` GuartTime TBD
+- `zuora.tenantID` Zuora tenant ID
 
 ## Features
 
