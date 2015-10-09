@@ -155,6 +155,7 @@ module.exports = function (app) {
     });
 
     app.ws('/stats/:id', function (socket, req) {
+        socket.log = socket.log || req.log;
         initConnection(socket, function (data) {
             var client = Docker.createClient({log: req.log, req: req}, data.host);
             client.getVersion(function (error, info) {
