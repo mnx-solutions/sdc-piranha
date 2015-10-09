@@ -277,6 +277,20 @@
                 return deferred.promise;
             };
 
+            service.getPopularImageList = function () {
+                var job = serverTab.call({
+                    name: 'ImagesPopularList'
+                });
+                return job.promise;
+            };
+
+            service.getSimpleImgList = function () {
+                var job = serverTab.call({
+                    name: 'ImagesSimpleList'
+                });
+                return job.promise;
+            };
+
             function showError(image, message, err) {
                 var detailMessage = (err.body && err.body.message) || err.message || String(err);
                 if (err.code === 'PrepareImageDidNotRun') {

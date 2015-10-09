@@ -373,6 +373,10 @@ module.exports = function execute(log, config) {
         call.done(null, images);
     });
 
+    server.onCall('ImagesPopularList', function (call) {
+        call.done(null, config.ns['popular-images'] || []);
+    });
+
     /* FirstInstance */
     server.onCall('checkFirstInstanceCreated', function (call) {
         var uuid = call.data.uuid;

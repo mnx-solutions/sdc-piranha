@@ -150,20 +150,6 @@
             }
         }
 
-        service.getSimpleImgList = function() {
-            var job = serverTab.call({
-                name: 'ImagesSimpleList',
-                done: function (err, data) {
-                    if (err) {
-                        return false;
-                    }
-
-                    return data;
-                }
-            });
-            return job.promise;
-        };
-
         service.getCacheErrors = function () {
             return cacheErrors;
         };

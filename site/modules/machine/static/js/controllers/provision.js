@@ -95,6 +95,7 @@
             $scope.networks = [];
             $scope.packages = [];
             $scope.packageTypes = [];
+            $scope.popularImages = [];
             $scope.packageType = null;
             $scope.loading = true;
 
@@ -128,6 +129,10 @@
 
             $scope.filterSimpleImagesByDatacenter = function (image) {
                 return image.imageData.datacenter === $scope.data.datacenter;
+            };
+
+            $scope.filterPopularImages = function (image) {
+                return $scope.popularImages.indexOf(image.name) !== -1;
             };
 
             var deleteProvisionStep = function (stepName) {
@@ -248,7 +253,8 @@
                 $q.when(Account.getKeys()),
                 $q.when(Datacenter.datacenter()),
                 $q.when(Account.getAccount(true)),
-                $q.when(Provision.getCreatedMachines())
+                $q.when(Provision.getCreatedMachines()),
+                $q.when(Image.getPopularImageList())
             ];
             $qe.every(tasks).then(function (result) {
                 var keysResult = result[0];
@@ -256,6 +262,7 @@
                 $scope.account = result[2];
                 $scope.simpleImages = [];
                 $scope.datacenters = [];
+                $scope.popularImages = result[4] || [];
 
                 if (!datacentersResult.error && ($scope.account.error || keysResult.error)) {
                     $scope.datacenters = datacentersResult;

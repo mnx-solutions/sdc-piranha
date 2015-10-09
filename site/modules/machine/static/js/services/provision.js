@@ -182,7 +182,7 @@
                 };
 
                 var deferred = $q.defer();
-                var task = [Machine.getSimpleImgList()];
+                var task = [Image.getSimpleImgList()];
                 if ($rootScope.features.freetier === 'enabled') {
                     task.push(FreeTier.freetier());
                 }
