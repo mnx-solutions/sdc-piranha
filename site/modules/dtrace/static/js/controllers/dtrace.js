@@ -16,7 +16,7 @@
             function ($scope, Account, DTrace, Storage, $q, requestContext, localization, PopupDialog, $route, util) {
                 localization.bind('dtrace', $scope);
                 requestContext.setUpRenderContext('dtrace.script', $scope, {
-                    title: localization.translate(null, 'dtrace', 'See my Joyent DTrace Heatmap')
+                    title: localization.translate(null, 'dtrace', 'See my ' + $scope.companyName + ' DTrace Heatmap')
                 });
                 $scope.title = $route.current.$$route.title;
                 $scope.devToolsPath = DTrace.devToolsLink();

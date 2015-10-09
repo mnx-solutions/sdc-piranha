@@ -14,7 +14,7 @@
             function ($scope, DTrace, Storage, requestContext, localization, PopupDialog, Account, $location) {
                 localization.bind('dtrace', $scope);
                 requestContext.setUpRenderContext('dtrace.script', $scope, {
-                    title: localization.translate(null, 'dtrace', 'See my Joyent DTrace Script Details')
+                    title: localization.translate(null, 'dtrace', 'See my ' + $scope.companyName + ' DTrace Script Details')
                 });
 
                 $scope.loading = true;

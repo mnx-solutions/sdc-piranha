@@ -19,7 +19,7 @@
                 localization.bind('docker', $scope);
                 var CURRENT_PAGE_ACTION = 'docker.images';
                 requestContext.setUpRenderContext(CURRENT_PAGE_ACTION, $scope, {
-                    title: localization.translate(null, 'docker', 'See my Joyent Docker Images')
+                    title: localization.translate(null, 'docker', 'See my ' + $scope.companyName + ' Docker Images')
                 });
 
                 var hostId = requestContext.getParam('host') || '';

@@ -23,7 +23,7 @@
             var machineId = requestContext.getParam('machineid') || util.idToUuid(requestContext.getParam('containerid'));
             localization.bind('machine', $scope);
             requestContext.setUpRenderContext('machine.details', $scope, {
-                title: localization.translate(null, 'machine', 'View Joyent Instance Details')
+                title: localization.translate(null, 'machine', 'View ' + $scope.companyName + ' Instance Details')
             });
             $scope.tabs = ['Infrastructure Details', 'Docker Details'];
             $scope.activeTab = $scope.tabs[0];

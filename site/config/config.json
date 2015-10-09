@@ -197,6 +197,7 @@
     "dtrace",
     "networking"
   ],
+  "companyName": "Joyent",
   "features": {
     "privateSdc": "disabled",
     "fullVersion": "enabled",

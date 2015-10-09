@@ -24,6 +24,7 @@ module.exports = function featureFlagsMiddleware(req, res, next) {
         res.locals.jss.push('window.JP.set("wsPort", ' + (config.wsPort || 8443) + ')');
     }
     res.locals.jss.push('window.JP.set("features", ' + JSON.stringify(currentFeatures || {}) + ')');
+    res.locals.jss.push('window.JP.set("companyName", ' + JSON.stringify(config.companyName || '') + ')');
 
     return next();
 };

@@ -18,7 +18,7 @@
 
                 localization.bind('docker', $scope);
                 requestContext.setUpRenderContext(CURRENT_PAGE_ACTION, $scope, {
-                    title: localization.translate(null, 'docker', 'See my Joyent Docker Containers')
+                    title: localization.translate(null, 'docker', 'See my ' + $scope.companyName + ' Docker Containers')
                 });
 
                 var hostId = requestContext.getParam('host') || '';

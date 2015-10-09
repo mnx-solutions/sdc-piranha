@@ -28,7 +28,7 @@
 
         function ($scope, requestContext, localization, notification, Account, BillingService, PopupDialog, $q, $http, $rootScope) {
             requestContext.setUpRenderContext('account', $scope, {
-                title: localization.translate(null, 'account', 'Manage My Joyent Account')
+                title: localization.translate(null, 'account', 'Manage My ' + $scope.companyName + ' Account')
             });
 
             $scope.account = Account.getAccount();

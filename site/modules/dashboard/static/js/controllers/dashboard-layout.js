@@ -8,7 +8,7 @@
 
         function ($scope, requestContext, localization) {
             requestContext.setUpRenderContext('dashboard', $scope, {
-                title: localization.translate(null, 'dashboard', 'Joyent Cloud Management Portal')
+                title: localization.translate(null, 'dashboard', $scope.companyName + ' Management Portal')
             });
         }
     ]);

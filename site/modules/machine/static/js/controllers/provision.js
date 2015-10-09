@@ -26,7 +26,7 @@
 
             localization.bind('machine', $scope);
             requestContext.setUpRenderContext('machine.provision', $scope, {
-                title: localization.translate(null, 'machine', 'Create Instances on Joyent')
+                title: localization.translate(null, 'machine', 'Create Instances on ' + $scope.companyName)
             });
             Machine.initCreateInstancePageConfig();
             var sdcDatacenters = window.JP.get('sdcDatacenters') || [];

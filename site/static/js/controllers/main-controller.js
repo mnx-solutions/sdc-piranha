@@ -17,8 +17,9 @@
         function ($scope, $rootScope, $route, $routeParams, $window, $$track, requestContext, $location, errorContext, localization, $http) {
             $rootScope.features = window.JP.get('features') || {};
             $rootScope.wsPort = window.JP.get('wsPort') || 8443;
+            $rootScope.companyName = window.JP.get('companyName') || '';
 
-            $scope.windowTitle = 'Joyent Cloud';
+            $scope.windowTitle = $rootScope.companyName;
 
             $scope.setWindowTitle = function (title) {
                 $scope.windowTitle = title;
@@ -104,7 +105,7 @@
                 function () {
                     errorContext.emit(new Error(localization.translate(null,
                         'main',
-                        'Can\'t connect to joyent.com. Confirm you are online and not experiencing any connectivity or DNS issues.'
+                        'Can\'t connect to portal service. Confirm you are online and not experiencing any connectivity or DNS issues.'
                     )));
                 }
             );

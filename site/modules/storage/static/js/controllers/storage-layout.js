@@ -9,7 +9,7 @@
 
         function ($scope, requestContext, localization, fileman) {
             requestContext.setUpRenderContext('storage', $scope, {
-                title: localization.translate(null, 'storage', 'Joyent Cloud Management Portal')
+                title: localization.translate(null, 'storage',  $scope.companyName + ' Management Portal')
             });
         }
     ]);
