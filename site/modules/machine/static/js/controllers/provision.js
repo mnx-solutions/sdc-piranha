@@ -30,6 +30,7 @@
             });
             Machine.initCreateInstancePageConfig();
             var sdcDatacenters = window.JP.get('sdcDatacenters') || [];
+            var publicSdc = $scope.features && $scope.features.privateSdc === 'disabled';
             var CHOOSE_IMAGE_STEP = 0;
             var SELECT_PACKAGE_STEP = 1;
             var REVIEW_STEP = 2;
@@ -524,7 +525,7 @@
             };
 
             $scope.sortPackages = function (pkg) {
-                return parseInt(pkg.memory, 10);
+                return parseInt(pkg.memory || 0, 10);
             };
 
             function setNetworks(datacenter) {
@@ -651,7 +652,7 @@
             function setFilterValues(values) {
                 var filterValues = ng.copy(values);
                 $scope.packages.forEach(function (p) {
-                    if ($scope.filterPackages()(p) && p.price) {
+                    if ($scope.filterPackages()(p) && (!publicSdc || p.price)) {
                         var addFilterValue = function(key, value) {
                             if (filterValues[key].indexOf(value) === -1) {
                                 filterValues[key].push(value);
@@ -789,8 +790,8 @@
             $scope.filterPackages = function (packageType, isPackageTypeCollapsed) {
                 return function (item) {
                     var result = true;
-                    if ($scope.datasetType !== item.type || item.freeTierHidden ||
-                        isPackageTypeCollapsed && packageType === item.group) {
+                    if (publicSdc && ($scope.datasetType !== item.type || item.freeTierHidden ||
+                        isPackageTypeCollapsed && packageType === item.group)) {
                         result = false;
                     } else if (packageType && packageType !== item.group) {
                         result = isPackageTypeCollapsed && $scope.collapsedPackageTypes.indexOf(item.group) === -1;
@@ -810,7 +811,7 @@
 
             $scope.filterPackageTypes = function (datasetType) {
                 return function (packageType) {
-                    return indexPackageTypes[packageType].indexOf(datasetType) > -1 &&
+                    return !publicSdc || indexPackageTypes[packageType].indexOf(datasetType) > -1 &&
                         $scope.packages.filter($scope.filterPackagesByProp).some($scope.filterPackages(packageType));
                 };
             };

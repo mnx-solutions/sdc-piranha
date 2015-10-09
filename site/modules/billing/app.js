@@ -1,5 +1,9 @@
 'use strict';
 
+var config = require('easy-config');
+if (config.features && config.features.billing === 'disabled') {
+    return;
+}
 var zuora = require('zuora-rest');
 var zuoraHelpers = require('./lib/zuora-helpers');
 
@@ -31,10 +35,10 @@ module.exports = function execute(app, log, config) {
             });
     }
 
-    app.get('/countries', function (req, res, next) {
+    app.get('/countries', function (req, res) {
         var data = zuora.countries.getArray(config.zuora.rest.validation.countries);
         data.forEach(function (el) {
-            if( [ 'USA','CAN','GBR' ].indexOf(el.iso3) >= 0) {
+            if (['USA','CAN','GBR'].indexOf(el.iso3) >= 0) {
                 el.group = 'Default';
             } else {
                 el.group = 'All countries';
@@ -43,7 +47,7 @@ module.exports = function execute(app, log, config) {
         res.json(data);
     });
 
-    app.get('/states', function (req, res, next) {
+    app.get('/states', function (req, res) {
         res.json(zuora.states);
     });
 
@@ -68,7 +72,7 @@ module.exports = function execute(app, log, config) {
         return defCampaign;
     }
 
-    app.get('/campaign', function (req, res, next) {
+    app.get('/campaign', function (req, res) {
         var promo = getPromoDetail(req.cookies.campaignId);
         var result = {code: '', hideCode: false};
         var campaignId = req.cookies.campaignId;

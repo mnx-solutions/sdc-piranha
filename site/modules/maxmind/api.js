@@ -2,7 +2,9 @@
 
 var restify = require('restify');
 var config = require('easy-config');
-
+if (config.features && config.features.maxmind === 'disabled') {
+    return;
+}
 if (!config.maxmind || !config.maxmind.licenseId) {
     throw new Error('MaxMind licenseId must be defined in the config');
 }

@@ -323,7 +323,7 @@ exports.init = function execute(log, config, done) {
         });
     };
 
-    api.State = function (call, callback) {
+    api.State = function (call) {
         var machines = [];
         var mapped = {};
         var states = call.data.states ? call.data.states : {};
@@ -350,7 +350,7 @@ exports.init = function execute(log, config, done) {
             });
 
             // Machine removal
-            Object.keys(states).forEach(function iterateState (id, index) {
+            Object.keys(states).forEach(function iterateState (id) {
                 if (!mapped.hasOwnProperty(id)) {
                     machines.push({
                         id: id,
@@ -463,29 +463,37 @@ exports.init = function execute(log, config, done) {
                 call.error(err);
                 return;
             }
-            var datacenter = options.datacenter;
-            if (!info.packages.data[datacenter]) {
-                datacenter = 'all';
-            }
-            if (options && options.datacenter && DATACENTERS_WITHOUT_SUPPORT_PACKAGES.indexOf(options.datacenter.toLowerCase()) === -1) {
-                data = data.concat(supportPackages);
+            if (config.features.privateSdc === 'disabled') {
+                var datacenter = options.datacenter;
+                if (!info.packages.data[datacenter]) {
+                    datacenter = 'all';
+                }
+                if (options && options.datacenter && DATACENTERS_WITHOUT_SUPPORT_PACKAGES.indexOf(options.datacenter.toLowerCase()) === -1) {
+                    data = data.concat(supportPackages);
+                }
+
+                var filteredPackagesMap = {};
+                data.forEach(function (p) {
+                    if (info.packages.data[datacenter][p.name]) {
+                        filteredPackagesMap[p.name] = utils.extend(p, info.packages.data[datacenter][p.name]);
+                    } else {
+                        filteredPackagesMap[p.name] = p;
+                    }
+                });
+
+                var filteredPackages = [];
+                for (var packageName in filteredPackagesMap) {
+                    if (filteredPackagesMap.hasOwnProperty(packageName)) {
+                        filteredPackages.push(filteredPackagesMap[packageName]);
+                    }
+                }
+            } else {
+                filteredPackages = data.map(function (pkg) {
+                    pkg['short_name'] = pkg['short_name'] || pkg.name;
+                    return pkg;
+                });
             }
 
-            var filteredPackagesMap = {};
-            data.forEach(function (p) {
-                if (info.packages.data[datacenter][p.name]) {
-                    filteredPackagesMap[p.name] = utils.extend(p, info.packages.data[datacenter][p.name]);
-                } else {
-                    filteredPackagesMap[p.name] = p;
-                }
-            });
-
-            var filteredPackages = [];
-            for (var packageName in filteredPackagesMap) {
-                if (filteredPackagesMap.hasOwnProperty(packageName)) {
-                    filteredPackages.push(filteredPackagesMap[packageName]);
-                }
-            }
             if (tritonDataCenters.indexOf(options.datacenter) !== -1) {
                 filteredPackages = filteredPackages.map(function(pkg) {
                     pkg.type = pkg.type === 'other' ? 'smartos' : pkg.type;

@@ -2721,6 +2721,9 @@ a.orange-link {
 
 .accordion-package-select .panel-body .short-name {
     padding-left: 40px;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
 }
 
 .accordion-package-select .panel-body .short-name {
@@ -2729,16 +2732,20 @@ a.orange-link {
 
 .accordion-package-select .panel-body .memory {
     width: 20%;
+    vertical-align: top;
 }
 .accordion-package-select .panel-body .cpu {
     width: 14%;
+    vertical-align: top;
 }
 
 .accordion-package-select .panel-body .disk {
     width: 17%;
+    vertical-align: top;
 }
 .accordion-package-select .panel-body .price {
     max-width: 17%;
+    vertical-align: top;
 }
 
 .accordion-package-select .package-info,

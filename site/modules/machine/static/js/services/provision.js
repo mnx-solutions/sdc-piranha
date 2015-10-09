@@ -441,7 +441,7 @@
                 var packageTypes = [];
 
                 packages.forEach(function (p) {
-                    if (p.group && p.price) {
+                    if (p.group) {
                         var indexPackageType = indexPackageTypes[p.group];
                         if (!indexPackageType) {
                             indexPackageTypes[p.group] = [p.type];
@@ -450,10 +450,13 @@
                             indexPackageTypes[p.group].push(p.type);
                         }
                     }
-                    var price = util.getNr(p.price);
-                    var priceMonth = util.getNr(p['price_month']);
-                    p.price = (price || price === 0) && price.toFixed(3) || undefined;
-                    p['price_month'] = (priceMonth || priceMonth === 0) && priceMonth.toFixed(2) || undefined;
+
+                    if (p.price) {
+                        var price = util.getNr(p.price);
+                        var priceMonth = util.getNr(p['price_month']);
+                        p.price = (price || price === 0) && price.toFixed(3) || undefined;
+                        p['price_month'] = (priceMonth || priceMonth === 0) && priceMonth.toFixed(2) || undefined;
+                    }
                 });
 
                 var standardIndex = packageTypes.indexOf('Standard');

@@ -1,5 +1,9 @@
 'use strict';
 
+var config = require('easy-config');
+if (config.features && config.features.billing === 'disabled') {
+    return;
+}
 var moment = require('moment');
 var zHelpers = require('./lib/zuora-helpers');
 
@@ -166,7 +170,7 @@ module.exports = function execute(log, config) {
 
             // Payment method added
             // Have to remove previous billing methods.
-            zHelpers.deleteAllButDefaultPaymentMethods(call, function (err) {
+            zHelpers.deleteAllButDefaultPaymentMethods(call, function () {
                 //Ignoring errors
                 if (--count === 0) {
                     call.done(null, paymentMethodResponse);
@@ -235,7 +239,7 @@ module.exports = function execute(log, config) {
                     delete data.creditCardType;
                     delete data.cardHolderInfo;
                     delete data.accountKey;
-                    console.log(data);
+
                     zuora.payment.update(defaultMethodId, data, function (updateErr, updateResult) {
                         if (updateErr) {
                             zuoraError(call, updateErr, updateResult, 'Error updating payment method');

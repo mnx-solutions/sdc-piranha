@@ -241,6 +241,7 @@
     "feedback": "yes",
     "blogEntries": "no",
     "marketo": "yes",
+    "maxmind": "yes",
     "twitter": "yes",
     "googleAnalytics": "yes",
     "billing": "yes",
