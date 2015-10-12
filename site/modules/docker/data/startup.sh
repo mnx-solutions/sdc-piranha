@@ -22,6 +22,8 @@ MANTA_KEY_ID=$(ssh-keygen -lf /root/.ssh/user_id_rsa.pub | awk '{print $2}')
 MANTA_USER=%__manta-account__%
 MANTA_SUBUSER=%__manta-subuser__%
 DOCKER_VERSION=$(/usr/sbin/mdata-get docker-version)
+MANTA_DEV_ACCOUNT=dbqp
+DEP_URL="https://us-east.manta.joyent.com/${MANTA_DEV_ACCOUNT}/public/docker"
 
 DOCKER_INTERNAL_PORT=54243
 REGISTRY_INTERNAL_PORT=5000
@@ -81,14 +83,14 @@ function writeStage {
 
 function installDocker {
     LINUX_IMAGE_VERSION="$(uname -r)_$(uname -r | sed 's/-generic$//').$(uname -v | awk -F- '{print substr($1, 2)}')"
-    wget -c "http://joyent.archive.ubuntu.com/ubuntu/pool/main/libn/libnl3/libnl-3-200_3.2.21-1_amd64.deb"
-    wget -c "http://joyent.archive.ubuntu.com/ubuntu/pool/main/libn/libnl3/libnl-genl-3-200_3.2.21-1_amd64.deb"
-    wget -c "http://joyent.archive.ubuntu.com/ubuntu/pool/main/w/wireless-regdb/wireless-regdb_2013.02.13-1ubuntu1_all.deb"
-    wget -c "http://joyent.archive.ubuntu.com/ubuntu/pool/main/c/crda/crda_1.1.2-1ubuntu2_amd64.deb"
-    wget -c "http://joyent.archive.ubuntu.com/ubuntu/pool/main/i/iw/iw_3.4-1_amd64.deb"
+    wget -c "${DEP_URL}/libnl-3-200_3.2.21-1_amd64.deb"
+    wget -c "${DEP_URL}/libnl-genl-3-200_3.2.21-1_amd64.deb"
+    wget -c "${DEP_URL}/wireless-regdb_2013.02.13-1ubuntu1_all.deb"
+    wget -c "${DEP_URL}/crda_1.1.2-1ubuntu2_amd64.deb"
+    wget -c "${DEP_URL}/iw_3.4-1_amd64.deb"
     wget -c "http://joyent.archive.ubuntu.com/ubuntu/pool/main/l/linux/linux-image-extra-${LINUX_IMAGE_VERSION}_amd64.deb"
     wget -c "https://apt.dockerproject.org/repo/pool/main/d/docker-engine/docker-engine_${DOCKER_VERSION}-0~$(lsb_release -sc)_amd64.deb"
-    wget -c "http://joyent.archive.ubuntu.com/ubuntu/pool/universe/a/aufs-tools/aufs-tools_3.2+20130722-1.1_amd64.deb"
+    wget -c "${DEP_URL}/aufs-tools_3.2+20130722-1.1_amd64.deb"
 
     dpkg -i libnl-3-200_3.2.21-1_amd64.deb libnl-genl-3-200_3.2.21-1_amd64.deb wireless-regdb_2013.02.13-1ubuntu1_all.deb \
         crda_1.1.2-1ubuntu2_amd64.deb iw_3.4-1_amd64.deb linux-image-extra-${LINUX_IMAGE_VERSION}_amd64.deb \
@@ -114,8 +116,8 @@ function installDocker {
 
 function createBalancer {
     cat ${KEYS_PATH}/server-cert.pem ${KEYS_PATH}/server-key.pem >${KEYS_PATH}/server.pem
-    wget -c http://joyent.archive.ubuntu.com/ubuntu/pool/main/h/haproxy/haproxy_1.5.10-1_amd64.deb
-    wget -c http://joyent.archive.ubuntu.com/ubuntu/pool/main/i/init-system-helpers/init-system-helpers_1.20ubuntu3_all.deb
+    wget -c "${DEP_URL}/haproxy_1.5.10-1_amd64.deb"
+    wget -c "${DEP_URL}/init-system-helpers_1.20ubuntu3_all.deb"
     dpkg -i init-system-helpers_1.20ubuntu3_all.deb haproxy_1.5.10-1_amd64.deb
 
     cat <<END >>/etc/haproxy/haproxy.cfg
@@ -198,7 +200,8 @@ ${DOCKER_DIR}/containers/*/*json.log {
     endscript 
 }
 END
-    wget -c http://joyent.archive.ubuntu.com/ubuntu/pool/main/l/logrotate/logrotate_3.8.7-1ubuntu1_amd64.deb
+
+    wget -c "${DEP_URL}/logrotate_3.8.7-1ubuntu1_amd64.deb"
     dpkg -i logrotate_3.8.7-1ubuntu1_amd64.deb
 }
 
