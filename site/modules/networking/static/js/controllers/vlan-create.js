@@ -14,7 +14,7 @@
                 title: localization.translate(null, 'networking', 'Fabric VLan Form')
             });
 
-            $scope.datacenters = $scope.features.networkingDatacenters;
+            $scope.datacenters = window.JP.get('networkingDatacenters') || [];
             $scope.vlan = {datacenter: $scope.datacenters[0]};
             $scope.vlanName = Vlan.name;
 

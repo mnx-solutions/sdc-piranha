@@ -15,7 +15,7 @@
                 title: localization.translate(null, 'networking', 'Fabric Network Form')
             });
 
-            $scope.datacenters = $scope.features.networkingDatacenters;
+            $scope.datacenters = window.JP.get('networkingDatacenters') || [];
             $scope.network = {};
             $scope.loading = true;
             $scope.routes = [{subnet: '', gateway: ''}];
