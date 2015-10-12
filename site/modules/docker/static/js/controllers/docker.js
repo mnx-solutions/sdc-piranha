@@ -35,6 +35,7 @@
             $scope.chartOptions = {
                 size: 60
             };
+            $scope.isPrivateSdcEnabled = $rootScope.features.privateSdc === 'enabled';
             var tritonEnabled = $rootScope.features.sdcDocker === 'enabled';
             $scope.isTritonTab = tritonEnabled;
             var tritonMachines = [];
