@@ -221,7 +221,7 @@
                         type: 'html',
                         _getter: function (container) {
                             var shortId = container.ShortId || container.Id.slice(0, 12);
-                            var html = '<a href="#!/docker/container/' + container.hostId + '/' + shortId + '" style="min-width: 140px;">' + shortId + '</a>';
+                            var html = '<a href="#!/docker/container/' + container.hostId + '/' + container.Id + '" style="min-width: 140px;">' + shortId + '</a>';
                             if (container.logs === REMOVED_CONTAINER_STATUS) {
                                 html = '<span>' + shortId + '</span>';
                             }
