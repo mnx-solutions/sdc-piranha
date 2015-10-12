@@ -21,6 +21,7 @@
 
             var datacenterForNetworks = '';
             var networks = [];
+            var activeNetworks = [];
             var limits = [];
             var freeTierOptions = [];
 
@@ -291,6 +292,7 @@
                 var deferred = $q.defer();
                 function configureNetworks(val) {
                     networks = ['', ''];
+                    activeNetworks = [];
                     var confNetwork = {
                         'Joyent-SDC-Private': 0,
                         'Joyent-SDC-Public': 1
@@ -302,6 +304,7 @@
                         var orderedNetwork = confNetwork[network.name];
                         network.active = orderedNetwork > -1;
                         if (orderedNetwork > -1) {
+                            activeNetworks.push(network.id);
                             networks[orderedNetwork] = network;
                         } else {
                             networks.push(network);
@@ -497,6 +500,8 @@
                     machine.specification = hostSpecification;
                     loggingService.log('info', 'Provisioning ' + machine.specification);
                 }
+                machine.networks = machine.networks && machine.networks.length ? machine.networks : activeNetworks;
+                
                 Machine.waitForCreatingMachinesToFinish(function (machines) {
                     Machine.provisionMachine(machine).done(function (err, job) {
                         callback();
