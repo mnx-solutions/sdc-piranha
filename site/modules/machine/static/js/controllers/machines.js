@@ -234,7 +234,7 @@
                                         Machine.gotoDockerDashboard($scope.machines, isDeletedDockerMachine);
                                         el.checked = false;
                                     };
-                                    if (el.tags && el.tags.JPC_tag === 'DockerHost') {
+                                    if (el.tags && el.tags.JPC_tag === 'DockerHost' && $scope.features.docker === 'enabled') {
                                         Machine.deleteDockerMachine(el).then(function () {
                                             resolvedDeleteAction(el, true);
                                         });
