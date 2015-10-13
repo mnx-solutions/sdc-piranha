@@ -22,7 +22,7 @@ html(lang='en',data-ng-app='JoyentPortal', id="ng-app", data-ng-controller='Main
         div(data-ng-switch-when='#{layout.module}',class='module-#{layout.module}',data-ng-controller='#{layout.module}.LayoutController')!= layout.data
 
 
-    div(class="feedback-tab" data-ng-if="features.feedback == 'enabled'")
+    div(ng-class="{'feedback-tab': isFeedbackEnabled}" data-ng-if="isFeedbackEnabled")
       a(target="_blank" class="feedback-tab-link" title="Feedback" data-ng-href="https://www.surveymonkey.com/s/PortalUpdateSurvey?c=#{userId}+{{currentHref}}")
     each link in js
         script(type='text/javascript',src='#{link._url}')

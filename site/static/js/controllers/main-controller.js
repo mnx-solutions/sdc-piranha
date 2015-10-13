@@ -19,6 +19,7 @@
             $rootScope.wsPort = window.JP.get('wsPort') || 8443;
             $rootScope.companyName = window.JP.get('companyName') || '';
 
+            $scope.isFeedbackEnabled = $rootScope.features.feedback === 'enabled';
             $scope.windowTitle = $rootScope.companyName;
 
             $scope.setWindowTitle = function (title) {
