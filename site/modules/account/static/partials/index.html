@@ -41,7 +41,7 @@
                         </div>
                     </div>
                 </fieldset>
-                <fieldset data-ng-hide="account.isSubuser || features.billing == 'disabled'">
+                <fieldset data-ng-if="!account.isSubuser && features.billing == 'enabled'">
                     <legend>
                         <span>Billing Information</span>
                         <a href="#!/account/payment/" class="btn small">Edit</a>
@@ -69,7 +69,7 @@
                     <legend><span>SSH</span></legend>
                     <div data-ssh-form data-is-sub-user-form="true"></div>
                 </fieldset>
-                <fieldset data-ng-controller="Account.InvoicesController" ng-show="isInvocesEnabled && !account.isSubuser">
+                <fieldset data-ng-controller="Account.InvoicesController" data-ng-if="isInvocesEnabled && !account.isSubuser">
                     <legend><span>Invoices</span></legend>
                     <div class="row">
                         <div class="loading-medium row full-width" data-ng-show="loading"></div>

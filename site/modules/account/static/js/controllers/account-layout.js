@@ -21,12 +21,8 @@
         'notification',
         'Account',
         'BillingService',
-        'PopupDialog',
-        '$q',
-        '$http',
-        '$rootScope',
 
-        function ($scope, requestContext, localization, notification, Account, BillingService, PopupDialog, $q, $http, $rootScope) {
+        function ($scope, requestContext, localization, notification, Account, BillingService) {
             requestContext.setUpRenderContext('account', $scope, {
                 title: localization.translate(null, 'account', 'Manage My ' + $scope.companyName + ' Account')
             });
@@ -55,9 +51,8 @@
                 $scope.openKeyDetails = null;
             });
 
-            $scope.creditCard = $scope.creditCard || BillingService.getDefaultCreditCard();
-
-
+            $scope.creditCard = $scope.creditCard || $scope.features.billing === 'enabled' ? BillingService.getDefaultCreditCard() : null;
         }
     ]);
 }(window.JP.getModule('Account')));
+
