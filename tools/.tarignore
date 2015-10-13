@@ -16,12 +16,12 @@ config.beta4.json
 config.westx.json
 config.local.json
 
-portal-*.tar
-portal-*.tar.gz
+*.tar
+*.tar.gz
 
 pids
 logs
-deps
+./deps
 notes
 results
 nbproject

@@ -8,5 +8,8 @@ install:
 build:
 	@bash tools/build-tar.sh
 
+build-private:
+	@bash tools/build-tar.sh --private
+
 clean:
 	rm -fr node_modules/
