@@ -6,7 +6,7 @@ install:
 	npm install --production
 
 build:
-	node tools/build-tar.js --debug --skip-tags --skip-package
+	@bash tools/build-tar.sh
 
 clean:
 	rm -fr node_modules/

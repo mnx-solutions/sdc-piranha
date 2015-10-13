@@ -17,6 +17,7 @@ config.westx.json
 config.local.json
 
 portal-*.tar
+portal-*.tar.gz
 
 pids
 logs
