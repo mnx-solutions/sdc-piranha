@@ -6,7 +6,7 @@
     <div data-ng-show="provisionEnabled && !loading">
         <div class="header-btn-panel" data-ng-hide="loading || !showControls">
     <div class="upload-btn">
-        <input type="file" id="uploadInput" name="uploadInput" style="display: none" multiple
+        <input type="file" id="uploadInput" name="uploadInput" class="hide" multiple
                data-fileman-upload="uploadPath" data-existing-files="files">
         <input type="hidden" name="path" value="{{ currentPath }}"/>
         <label type="button" for="uploadInput" class="btn pull-left"><i class="plus-icon"></i>Add

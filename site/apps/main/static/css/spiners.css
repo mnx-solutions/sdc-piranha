@@ -57,3 +57,10 @@
     height: 20px;
     margin-right: 12px;
 }
+
+.spinner {
+    width: 30px;
+    min-width: 30px;
+    height: 30px;
+    min-height: 30px;
+}

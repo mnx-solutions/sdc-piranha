@@ -1293,6 +1293,7 @@ label.checkbox {
     color: #333;
 }
 
+.typeahead,
 .open > .dropdown-menu {
     display: block;
 }
@@ -1457,6 +1458,7 @@ label.checkbox {
     font-weight: 300;
 }
 
+.form-add-tag.new-tag .error,
 .preview-sticker.tab,
 .page-title .preview-sticker {
     position: absolute;
@@ -2649,6 +2651,7 @@ a.orange-link {
 }
 
 .account .field,
+.marketing-info,
 .edit-name,
 .input-group .add-on:first-child,
 .input-group .btn:first-child,
@@ -3302,3 +3305,20 @@ create-instance-link:first-child:before {
     content: '';
 }
 
+.marketing-info {
+    padding: 8px 0 0 70px;
+
+    color: #7c7c7c;
+}
+
+.large-digit-size {
+    font-size: 26px;
+}
+
+.invoices-loading {
+    height: 60px;
+}
+
+.version-select {
+    max-width: 180px;
+}

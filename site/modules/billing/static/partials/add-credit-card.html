@@ -416,8 +416,8 @@
             <a data-ng-show="isSignUpForm && skipBillingVisible" data-ng-click="skipBilling()" class="btn" data-translate>Skip</a>
             <button class="btn orange" data-ng-click="submitForm()" data-ng-disabled="loading">Complete Account Setup</button>
         </div>
-        <div class="loading-medium pull-right" style="width:30px; height:30px;min-width:30px;min-height:30px;" data-ng-show="loading"></div>
-        <div style="margin-top: 5px;" data-ng-hide="loading">
+        <div class="loading-medium pull-right spinner" data-ng-show="loading"></div>
+        <div class="indent-small" data-ng-hide="loading">
             <span class="orange-asterix-left">required fields</span>
         </div>
         <div class="fieldset-spacer"></div>

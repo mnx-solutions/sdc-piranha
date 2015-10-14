@@ -11,7 +11,7 @@
 
         <div class="pull-left container col-md-9">
             <div data-notification></div>
-			<div class="loading-medium" data-ng-show="loading" style="height:60px;"></div>
+			<div class="loading-medium invoices-loading" data-ng-show="loading"></div>
             <table class="table" data-ng-show="!loading && !error && invoices.length">
                 <thead>
                     <tr>
@@ -41,5 +41,5 @@
 			<div class="clearfix"></div>
 		</div>
     </div>
-    <div style="display:none;" data-ng-bind-html="exportIframe"></div>
+    <div class="hide" data-ng-bind-html="exportIframe"></div>
 </div>

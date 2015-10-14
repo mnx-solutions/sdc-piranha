@@ -34,7 +34,7 @@
                             <td>Tag {{tags.length + 1}}</td>
                             <td><input type="text" name="newTag" data-ng-model="newTag" data-ng-disabled="newTagInProgress"
                                        data-ng-pattern="/^[A-Za-z0-9_\.\-]+$/" data-ng-minlength="2" data-ng-maxlength="30"/>
-                                <span colspan="3" class="error" data-ng-show="editTags.$invalid" style="position: absolute;">
+                                <span colspan="3" class="error" data-ng-show="editTags.$invalid">
                                     only [A-Za-z0-9_.-] are allowed, minimum 2, maximum 30 in length
                                 </span>
                             </td>

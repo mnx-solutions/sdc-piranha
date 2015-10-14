@@ -11,7 +11,7 @@
             <div><p class="laststep"></p></div>
         </div>
         <div class="message-box hide">
-            <p style="color: #7C7C7C;padding-left: 70px;padding-top: 8px;font-size: 16px;">Marketing Info</p>
+            <p class="marketing-info">Marketing Info</p>
         </div>
         <div class="login-form first-block">
             <p data-translate>After you enter a phone number where you can be reached below, you will then be called by an automated system and provided a PIN number over the phone. Once completed, you’ll be able to proceed to finalize your registration process.</p>
@@ -44,24 +44,24 @@
                             </div>
                         </td>
                         <td>
-                            <div data-ng-show="phoneError" class="error" style="margin-top: 4px;">
+                            <div data-ng-show="phoneError" class="error phone-error">
                                 <span>{{phoneError}}</span>
                             </div>
-                            <div data-ng-show="callInProgress" class="info info-icon" style="margin-top: 4px;">
+                            <div data-ng-show="callInProgress" class="info info-icon call-info">
                                 <span>Calling...</span>
                             </div>
                         </td>
 
                     </tr>
                 </table>
-                <div class="phone-btn-pos pull-right"><button class="si-btn" data-ng-disabled="!phone || !country || callInProgress">Call Me Now</button></div>
+                <div class="phone-btn-pos pull-right"><button class="call-verify-button" data-ng-disabled="!phone || !country || callInProgress">Call Me Now</button></div>
             </form>
             <div class="line-st1"></div>
-            <div style="padding-top: 42px;">
+            <div class="phone-message">
                 <p>
                     A call will be placed to you at this number and a PIN number will be provided to you. Please enter the PIN number here to complete the verification process.
                 </p>
-                <form data-ng-submit="verifyPin()" style="padding-top: 21px;">
+                <form data-ng-submit="verifyPin()" class="verify-pin-form">
                     <table class="table">
                         <tr>
                             <td><label>PIN Number</label></td>
@@ -79,12 +79,12 @@
                         </tr>
                     </table>
                     <div class="phone-btn-pos">
-                        <button class="si-btn">Verify</button>
+                        <button class="call-verify-button">Verify</button>
                     </div>
                 </form>
             </div>
             <div class="line-st1"></div>
-            <div style="padding:42px 0 42px 0">
+            <div class="cancel-signup">
                 <div class="loading-medium loading-medium-signup" data-ng-show="navigating"></div>
                 <button class="btn grey-btn pull-right cancel-signup-btn" data-ng-show="currentStep" data-ng-click="signOut()" class="note text-small cancel-signup-link" data-translate>Cancel Signup Process</button>
             </div>
