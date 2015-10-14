@@ -16,7 +16,7 @@
                 link: function ($scope) {
                     $scope.error = null;
 
-                    $scope.countries = $http.get('billing/countries');
+                    $scope.countries = $http.get('account/countries');
 
                     $scope.isError = function (field, errorType) {
                         var form = $scope.subAccountForm;

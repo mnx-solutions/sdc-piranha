@@ -4,7 +4,6 @@ var config = require('easy-config');
 if (config.features && config.features.billing === 'disabled') {
     return;
 }
-var zuora = require('zuora-rest');
 var zuoraHelpers = require('./lib/zuora-helpers');
 
 module.exports = function execute(app, log, config) {
@@ -34,22 +33,6 @@ module.exports = function execute(app, log, config) {
                 return (new Date(campaign2.defaultDate)).getTime() - (new Date(campaign1.defaultDate)).getTime();
             });
     }
-
-    app.get('/countries', function (req, res) {
-        var data = zuora.countries.getArray(config.zuora.rest.validation.countries);
-        data.forEach(function (el) {
-            if (['USA','CAN','GBR'].indexOf(el.iso3) >= 0) {
-                el.group = 'Default';
-            } else {
-                el.group = 'All countries';
-            }
-        });
-        res.json(data);
-    });
-
-    app.get('/states', function (req, res) {
-        res.json(zuora.states);
-    });
 
     function getPromoDetail(campaignId) {
         if (campaignId) {

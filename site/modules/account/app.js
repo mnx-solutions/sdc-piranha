@@ -9,6 +9,7 @@ var uuid = require('../../static/vendor/uuid/uuid.js');
 var ursa = require('ursa');
 var jobs = {};
 var multer = require('multer');
+var zuora = require('zuora-rest');
 /**
  * @ngdoc service
  * @name account.service:api
@@ -19,9 +20,10 @@ var multer = require('multer');
  */
 module.exports = function execute(app, log, config) {
     var SignupProgress = require('../account').SignupProgress;
+    var countriesValidation = config.zuora && config.zuora.rest && config.zuora.rest.validation && config.zuora.rest.validation.countries;
 
     app.get('/countryCodes', function (req, res) {
-        var data = countryCodes.getArray(config.zuora.rest.validation.countries);
+        var data = countryCodes.getArray(countriesValidation);
         data.forEach(function (el) {
             if (['USA', 'CAN', 'GBR'].indexOf(el.iso3) >= 0) {
                 el.group = 'Default';
@@ -30,6 +32,22 @@ module.exports = function execute(app, log, config) {
             }
         });
         res.json(data);
+    });
+
+    app.get('/countries', function (req, res) {
+        var data = zuora.countries.getArray(countriesValidation);
+        data.forEach(function (el) {
+            if (['USA','CAN','GBR'].indexOf(el.iso3) >= 0) {
+                el.group = 'Default';
+            } else {
+                el.group = 'All countries';
+            }
+        });
+        res.json(data);
+    });
+
+    app.get('/states', function (req, res) {
+        res.json(zuora.states);
     });
 
     if (config.features.allowSkipBilling === 'enabled') {

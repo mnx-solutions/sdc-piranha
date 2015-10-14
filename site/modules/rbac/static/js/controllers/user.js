@@ -46,7 +46,7 @@
             };
 
             var fillCountryNameFromCode = function () {
-                $scope.countries = $http.get('billing/countries');
+                $scope.countries = $http.get('account/countries');
                 $scope.countries.then(function (countries) {
                     var country = countries.data.find(function (country) {
                         return country.iso3 === $scope.user.country;

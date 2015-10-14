@@ -102,8 +102,8 @@
                     $scope.prev = $scope.prev || BillingService.getDefaultCreditCard();
                     $scope.formSubmitted = false;
 
-                    $scope.countries = $http.get('billing/countries');
-                    var statesPromise = $http.get('billing/states');
+                    $scope.countries = $http.get('account/countries');
+                    var statesPromise = $http.get('account/states');
 
                     $scope.$watch('submitTitle', function () {
                         $scope.submitBtnTitle = $scope.submitTitle || submitBillingInfo.btnTitle;
