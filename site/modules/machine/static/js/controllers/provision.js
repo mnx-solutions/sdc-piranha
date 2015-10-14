@@ -42,6 +42,20 @@
                 SSH: 'SSH Key'
             };
 
+            var IMAGE_TYPES = {
+                virtualmachine: 'virtualmachine',
+                smartmachine: 'smartmachine'
+            };
+            var INSTANCE_TYPES = {
+                container: 'native-container',
+                machine: 'virtual-machine'
+            };
+            var ROUTES = {
+                nativeContainer: '/compute/create/' + INSTANCE_TYPES.container,
+                virtualMachine: '/compute/create/' + INSTANCE_TYPES.machine,
+                container: '/compute/container/create'
+            };
+
             var FilterValues = {
                 'No filter': [],
                 vcpus: [],
@@ -82,8 +96,8 @@
 
             $scope.filterModel = {};
             $scope.sshModel = {isSSHStep: false};
-            $scope.instanceType = (preSelectedImageId || $location.path().indexOf('/native-container') > -1) ?
-                'native-container' : 'virtual-machine';
+            $scope.instanceType = (preSelectedImageId || $location.path() === ROUTES.nativeContainer) ?
+                INSTANCE_TYPES.container : INSTANCE_TYPES.machine;
 
             if (preSelectedData && preSelectedData.preSelectedImageId) {
                 preSelectedImageId = preSelectedData.preSelectedImageId;
@@ -305,7 +319,7 @@
                         $scope.selectedPackage = $scope.data.package;
                         selectedNetworks = $scope.data.networks;
 
-                        $scope.instanceType = 'native-container';
+                        $scope.instanceType = INSTANCE_TYPES.container;
                         $scope.reconfigure(REVIEW_STEP);
                     }
                     if (bundle.ready) {
@@ -511,8 +525,8 @@
                         });
                         $rootScope.commonConfig('datacenter', datacenterName);
                         if (!requestContext.getParam('imageid') && !$location.search().specification &&
-                            $scope.instanceType === 'native-container' && !$scope.isSdcDatacenter) {
-                            $scope.selectInstanceType('virtual-machine');
+                            $scope.instanceType === INSTANCE_TYPES.container && !$scope.isSdcDatacenter) {
+                            $scope.selectInstanceType(INSTANCE_TYPES.machine);
                         }
                     }
                 });
@@ -675,9 +689,9 @@
 
             var selectDataset = function (id, changeDataset) {
                 Image.image({id: id, datacenter: $scope.data.datacenter}).then(function (dataset) {
-                    if (dataset.type === 'virtualmachine') {
+                    if (dataset.type === IMAGE_TYPES.virtualmachine) {
                         $scope.datasetType = 'kvm';
-                    } else if (dataset.type === 'smartmachine') {
+                    } else if (dataset.type === IMAGE_TYPES.smartmachine) {
                         $scope.datasetType = 'smartos';
                     } else {
                         $scope.datasetType = dataset.type;
@@ -734,11 +748,11 @@
 
             $scope.filterDatasetsByVisibility = function (item) {
                 var result = false;
-                if ($scope.instanceType === 'native-container') {
-                    result = item.type === 'smartmachine';
-                } else if ($scope.instanceType === 'virtual-machine') {
-                    result = item.type === 'virtualmachine' || ($scope.packageTypes.indexOf('Triton') === -1 ||
-                        !$scope.isSdcAvailable) && item.type === 'smartmachine' && item.os !== 'linux';
+                if ($scope.instanceType === INSTANCE_TYPES.container) {
+                    result = item.type === IMAGE_TYPES.smartmachine;
+                } else if ($scope.instanceType === INSTANCE_TYPES.machine) {
+                    result = item.type === IMAGE_TYPES.virtualmachine || ($scope.packageTypes.indexOf('Triton') === -1 ||
+                        !$scope.isSdcAvailable) && item.type === IMAGE_TYPES.smartmachine && item.os !== 'linux';
                 }
                 if ($scope.features.imageUse !== 'disabled') {
                     result = item.state === 'active' && result;
@@ -756,15 +770,15 @@
                 $scope.instanceType = type;
                 $scope.getFilteredDatasets();
                 $scope.reconfigure(0);
-                if (type === 'virtual-machine' || !$scope.isSdcDatacenter || type === 'native-container' &&
+                if (type === INSTANCE_TYPES.machine || !$scope.isSdcDatacenter || type === INSTANCE_TYPES.container &&
                     !$scope.isSdcAvailable) {
-                    $location.path('/compute/create/virtual-machine');
-                    $scope.setCreateInstancePage('virtual-machine');
-                } else if (type === 'native-container') {
-                    $location.path('/compute/create/native-container');
-                    $scope.setCreateInstancePage('native-container');
+                    $location.path(ROUTES.virtualMachine);
+                    $scope.setCreateInstancePage(INSTANCE_TYPES.machine);
+                } else if (type === INSTANCE_TYPES.container) {
+                    $location.path(ROUTES.nativeContainer);
+                    $scope.setCreateInstancePage(INSTANCE_TYPES.container);
                 } else if (type === 'container') {
-                    $location.path('/compute/container/create');
+                    $location.path(ROUTES.container);
                     $scope.setCreateInstancePage('container');
                 }
             };
@@ -973,6 +987,17 @@
                 return result;
             }
 
+            var hasVmImages = function (images) {
+                images = images || $scope.datasets;
+                var result = images.some(function (image) {
+                    return image.type === IMAGE_TYPES.virtualmachine;
+                });
+                if (!result && $location.path() === ROUTES.virtualMachine) {
+                    $scope.selectInstanceType(INSTANCE_TYPES.container);
+                }
+                return result;
+            };
+
             // Watch datacenter change
             var firstLoad = true;
             $scope.$watch('data.datacenter', function (newVal, oldVal) {
@@ -1003,7 +1028,10 @@
                         Provision.processDatasets(datasets, function (result) {
                             $scope['operating_systems'] = result.operatingSystems;
                             $scope.datasets = result.datasets;
-                            $scope.getFilteredDatasets();
+                            $scope.hasVmImages = hasVmImages();
+                            if ($scope.hasVmImages) {
+                                $scope.getFilteredDatasets();
+                            }
                             $scope.manyVersions = result.manyVersions;
                             $scope.selectedVersions = result.selectedVersions;
                             $scope.datasetsLoading = false;

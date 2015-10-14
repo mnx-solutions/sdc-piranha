@@ -3293,3 +3293,12 @@ a.orange-link {
 .text-upward {
     vertical-align: top;
 }
+
+create-instance-link:before {
+    content: ' |';
+}
+
+create-instance-link:first-child:before {
+    content: '';
+}
+
