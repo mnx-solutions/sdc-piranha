@@ -4,6 +4,7 @@ var path = require('path');
 var restify = require('restify');
 var EventEmitter = require('events').EventEmitter;
 var config = require('easy-config');
+var MemoryStream = require('memorystream');
 
 if (config.features.fileStorage === 'enabled' && (!config.fileStorage || !config.fileStorage.root)) {
     throw new Error('features.fileStorage.root is not defined in config');
@@ -114,8 +115,7 @@ module.exports = {
             if (error) {
                 return callback(new restify.NotFoundError({message: 'Resource not found'}));
             }
-            var response = new EventEmitter();
-            response.setEncoding = function () {};
+            var response = new MemoryStream();
             callback(error, response);
 
             files.forEach(function (file) {
