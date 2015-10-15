@@ -130,7 +130,7 @@
                             Docker.listHosts({prohibited: true}),
                             Docker.listHosts(),
                             Docker.loadPredefinedSearchParams(),
-                            Docker.getDockerContainersProvisioning()
+                            Docker.getDockerContainersProvisioning(hostId)
                         ]).then(function (result) {
                             containers = containers || [];
                             if (!cache) {

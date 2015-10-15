@@ -189,16 +189,21 @@
                     resetCache();
                     if ($location.path().indexOf('/docker/container/create') !== -1 ||
                         $location.path().indexOf('/compute/container/create') !== -1) {
-                        $location.path('/docker/containers');
+                        if ($location.search().host === host.id) {
+                            $location.path('/docker/containers');
+                        } else {
+                            $location.url('/docker/containers');
+                        }
                     }
                 }
             });
             return job.promise;
         };
 
-        service.getDockerContainersProvisioning = function () {
+        service.getDockerContainersProvisioning = function (host) {
             var job = serverTab.call({
-                name: 'GetDockerContainersProvisioning'
+                name: 'GetDockerContainersProvisioning',
+                data: {host: host}
             });
             return job.promise;
         };

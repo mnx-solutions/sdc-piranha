@@ -447,7 +447,9 @@ var Docker = function execute(log, config) {
     server.onCall('GetDockerContainersProvisioning', function (call) {
         var provisioningContainers = {};
         cache.forEach(function (value, key) {
-            provisioningContainers[key] = value;
+            if (!call.data.host || call.data.host === value.host) {
+                provisioningContainers[key] = value;
+            }
         });
         call.done(null, provisioningContainers);
     });
