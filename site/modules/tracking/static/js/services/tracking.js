@@ -25,16 +25,23 @@
                 var enc_email = '';
                 $http.get('/tracking/sha/' + account.email).success(function (data) {
                     enc_email = data;
-                    var marketoData = {
-                        Email:             account.email,
-                        CAPI_UUID__c_lead: account.id || ''
-                    };
-                    $http.get('billing/campaign').then(function (code) {
-                        marketoData.Campaign_ID__c = $cookies.campaignId || code.data.campaignId;
+
+                    var callback = function (code) {
+                        var marketoData = {
+                            Email:             account.email,
+                            CAPI_UUID__c_lead: account.id || ''
+                        };
+                        marketoData.Campaign_ID__c = $cookies.campaignId || code && code.data.campaignId;
                         window.mktoMunchkinFunction('associateLead', marketoData, enc_email);
                         $rootScope.$emit('trackingSuccess');
                         loggingService.log('debug', 'Associate Marketo lead from client', marketoData);
-                    });
+                    };
+
+                    if ($rootScope.features.billing === 'enabled') {
+                        $http.get('billing/campaign').then(callback);
+                    } else {
+                        callback();
+                    }
                 });
             },
             //inform marketo about machine provisioned
