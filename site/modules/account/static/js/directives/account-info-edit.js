@@ -68,7 +68,7 @@
                         // clean the phone number
                         var account = ng.copy($scope.account);
                         if (typeof account.country !== 'string') {
-                            account.country = account.country.iso3;
+                            account.country = account.country && account.country.iso3 || '';
                         }
 
                         $scope.loading = true;

@@ -85,11 +85,11 @@
             } else {
                 Account.getAccount().then(function (account) {
                     $scope.user.companyName = account.companyName;
-                    $scope.user.country = account.country.iso3 || account.country;
-                    if (!account.country.iso3) {
+                    $scope.user.country = account.country && account.country.iso3 || account.country || '';
+                    if (account.country && !account.country.iso3) {
                         fillCountryNameFromCode();
                     } else {
-                        $scope.user.countryName = account.country.name;
+                        $scope.user.countryName = account.country && account.country.name || '';
                     }
                     if (!account.provisionEnabled) {
                         var submitBillingInfo = {
