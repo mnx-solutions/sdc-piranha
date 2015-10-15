@@ -13,6 +13,7 @@
                 localization.bind('account', $scope);
                 requestContext.setUpRenderContext('account.index', $scope);
 
+                $scope.isInvocesEnabled = $scope.features.invoices === 'enabled';
                 $scope.loading = true;
                 Account.getAccount().then(function (account) {
                     $scope.account = account;
