@@ -45,15 +45,23 @@ window.JP.main.config([
             action: 'machine.provision'
         }).when('/images', {
             title: 'Images',
-            action: 'machine.images'
+            action: 'machine.images',
+            resolve: {
+                data: ['$rootScope', '$location', function ($rootScope, $location) {
+                    if ($rootScope.features.imageUse === 'disabled') {
+                        $location.path('/dashboard');
+                    }
+                }]
+            }
         }).when('/images/:currentImage', {
             title: 'Image Details',
             action: 'machine.image-details',
             showLatest: true,
             showText: true,
             resolve: {
-                data: ['$route', '$location', function ($route, $location) {
-                    if (!$route.current.params.currentImage) {
+                data: ['$rootScope', '$route', '$location', function ($rootScope, $route, $location) {
+                    if ($route.current && $route.current.params && !$route.current.params.currentImage ||
+                        $rootScope.features.imageUse === 'disabled') {
                         $location.path('/dashboard');
                     }
                 }]
