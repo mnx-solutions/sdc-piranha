@@ -80,7 +80,9 @@
                     MESSAGE: 'Commit message',
                     AUTHOR: 'Author',
                     LABELS: 'Adds a map of labels to a container. To specify a map: <strong>key:value</strong>',
-                    LINKS: 'Add link to another container (name:alias)'
+                    LINKS: 'Add link to another container (name:alias)',
+                    LOG_DRIVER: 'Available log driver types.',
+                    LOG_OPTIONS: 'Adds a config options to log driver. To specify option: <strong>key:value</strong>'
                 };
                 var selectImageEl = ng.element('#imageSelect').eq(0);
 
@@ -161,26 +163,26 @@
                     return ports;
                 }
 
-                var LABEL_SEPARATOR = ':';
+                var ITEM_SEPARATOR = ':';
 
-                var parseLabels = function (labels) {
-                    var containerLabels = {};
-                    if (isArrayNotEmpty(labels)) {
-                        labels.forEach(function (label) {
-                            var labelKey = label.split(LABEL_SEPARATOR, 1)[0];
-                            var labelValue = label.substr(labelKey.length + 1);
-                            containerLabels[labelKey] = labelValue;
+                var parseItems = function (items) {
+                    var containerItems = {};
+                    if (isArrayNotEmpty(items)) {
+                        items.forEach(function (item) {
+                            var itemKey = item.split(ITEM_SEPARATOR, 1)[0];
+                            var itemValue = item.substr(itemKey.length + 1);
+                            containerItems[itemKey] = itemValue;
                         });
                     }
-                    return containerLabels;
+                    return containerItems;
                 };
 
-                var unParseLabels = function (labels) {
-                    var containerLabels = [];
-                    for (var label in labels) {
-                        containerLabels.push(label + LABEL_SEPARATOR + labels[label]);
+                var unParseItems = function (items) {
+                    var containerItems = [];
+                    for (var item in items) {
+                        containerItems.push(item + ITEM_SEPARATOR + items[item]);
                     }
-                    return containerLabels;
+                    return containerItems;
                 };
 
                 function unParseVolumes(volumes, binds) {
@@ -311,9 +313,10 @@
                     $scope.createImage = true;
                     $scope.title = 'Create Image From Container';
                 }
-                $scope.attaches = ['Stdin', 'Stdout', 'Stderr'];
-                $scope.restartOptions = ['no', 'on-failure', 'always'];
-                $scope.networkTypes = ['none', 'bridge', 'host'];
+                $scope.ATTACHES = ['Stdin', 'Stdout', 'Stderr'];
+                $scope.RESTART_OPTIONS = ['no', 'on-failure', 'always'];
+                $scope.LOG_DRIVER_NAMES = ['fluentd', 'syslog', 'gelf'];
+                $scope.NETWORK_TYPES = ['none', 'bridge', 'host'];
                 $scope.container = {
                     Hostname: '',
                     Domainname: '',
@@ -345,6 +348,10 @@
                         PortBindings: {},
                         NetworkMode: 'bridge',
                         Links: [],
+                        LogConfig: {
+                            Type: 'json-file',
+                            Config: null
+                        },
                         LxcConf: [],
                         Memory: 0,
                         MemorySwap: 0,
@@ -360,7 +367,8 @@
                     MemorySwap: 0,
                     Env: [],
                     NetworkMode: 'bridge',
-                    Links: []
+                    Links: [],
+                    LogConfig: []
                 };
 
                 if ($scope.preSelectedData) {
@@ -369,8 +377,9 @@
                     $scope.container = ng.extend($scope.container, createData);
 
                     $scope.input.Cmd = isArrayNotEmpty(createData.Cmd) ? unParseCommands(createData.Cmd) : '';
-                    $scope.input.Labels = unParseLabels(createData.Labels);
+                    $scope.input.Labels = unParseItems(createData.Labels);
                     $scope.input.Links = startData.Links;
+                    $scope.input.LogConfig = unParseItems(startData.LogConfig.Config);
                     $scope.input.Entrypoint = isArrayNotEmpty(createData.Entrypoint) ? unParseCommands(createData.Entrypoint) : '';
                     $scope.input.Memory = Math.floor(createData.Memory / 1024 / 1024);
                     $scope.input.MemorySwap = Math.floor(createData.MemorySwap / 1024 / 1024);
@@ -379,7 +388,7 @@
                     $scope.input.PortBindings = unParsePorts(startData.PortBindings);
                     $scope.input.LxcConf = isArrayNotEmpty(startData.LxcConf) ? unParseLxcConf(startData.LxcConf) : '';
                     var restartPolicy = startData.RestartPolicy;
-                    if (restartPolicy && $scope.restartOptions.indexOf(restartPolicy.Name) !== -1) {
+                    if (restartPolicy && $scope.RESTART_OPTIONS.indexOf(restartPolicy.Name) !== -1) {
                         $scope.container.HostConfig.RestartPolicy = restartPolicy;
                     }
                     if (startData.NetworkMode) {
@@ -533,11 +542,11 @@
 
                 function updateNetworkTypes () {
                     var containersCount = $scope.containers.length;
-                    var indexContainerNetwork = $scope.networkTypes.indexOf('container');
+                    var indexContainerNetwork = $scope.NETWORK_TYPES.indexOf('container');
                     if (containersCount > 0 && indexContainerNetwork === -1) {
-                        $scope.networkTypes.push('container');
+                        $scope.NETWORK_TYPES.push('container');
                     } else if (containersCount === 0 && indexContainerNetwork !== -1) {
-                        $scope.networkTypes.pop();
+                        $scope.NETWORK_TYPES.pop();
                     }
                     $scope.input.NetworkMode = $scope.input.NetworkMode === 'container' ? 'bridge' : $scope.input.NetworkMode;
                 }
@@ -775,12 +784,15 @@
 
                 $scope.create = function () {
                     $scope.container.Cmd = Docker.parseCmd($scope.input.Cmd);
-                    $scope.container.Labels = parseLabels($scope.input.Labels);
+                    $scope.container.Labels = parseItems($scope.input.Labels);
                     $scope.container.Entrypoint = Docker.parseCmd($scope.input.Entrypoint);
                     $scope.container.Env = parseEnvironments($scope.input.Env);
                     $scope.container.Volumes = parseVolumes($scope.input.Volumes);
                     $scope.container.HostConfig.NetworkMode = $scope.input.NetworkMode;
                     $scope.container.HostConfig.PortBindings = parsePorts($scope.input.PortBinding);
+                    if ($scope.container.HostConfig.LogConfig.Type !== 'json-file') {
+                        $scope.container.HostConfig.LogConfig.Config = parseItems($scope.input.LogConfig);
+                    }
 
                     if ($scope.input.NetworkMode === 'container') {
                         if ($scope.input.networkContainer) {

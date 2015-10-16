@@ -205,7 +205,7 @@
                             <div>
                             <span class="edit-value restart-name">
                                 <select ui-select2="{minimumResultsForSearch: -1, width: '130px'}" id="restartPolicy" data-ng-model="container.HostConfig.RestartPolicy.Name" on-opening="setNotation('RESTART_POLICY')">
-                                    <option data-ng-repeat="option in restartOptions" value="{{option}}">
+                                    <option data-ng-repeat="option in RESTART_OPTIONS" value="{{option}}">
                                         {{option}}
                                     </option>
                                 </select>
@@ -275,6 +275,28 @@
                             <dropdown-select multiple tags-available data-preselected-items="input.Volumes" on-focus="setNotation('VOLUMES')"></dropdown-select>
                         </span>
                     </div>
+                    <div data-ng-hide="createImage" class="group-label">Log Configuration</div>
+                    <div data-ng-hide="createImage" class="form-group">
+                        <div class="group-label">Log Driver</div>
+                        <div class="edit-value">
+                            <!-- TODO: replace 'select' to 'ui-select' -->
+                            <select ui-select2="{minimumResultsForSearch: -1, width: '100%'}"
+                                    id="logDriver"
+                                    data-ng-model="container.HostConfig.LogConfig.Type"
+                                    on-opening="setNotation('LOG_DRIVER')">
+                                <option value="json-file"></option>
+                                <option data-ng-repeat="logDriverName in LOG_DRIVER_NAMES" value="{{logDriverName}}">
+                                    {{logDriverName}}
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+                    <div data-ng-hide="createImage || container.HostConfig.LogConfig.Type == 'json-file'" class="form-group volume-section">
+                        <span class="edit-label">Log Options</span><!--
+                            --><span class="edit-value">
+                            <dropdown-select multiple tags-available data-items-name="labels" labels data-preselected-items="input.LogConfig" on-focus="setNotation('LOG_OPTIONS')"></dropdown-select>
+                        </span>
+                    </div>
                     <div class="group-label">Runtime Configuration</div>
                     <div data-ng-hide="createImage || features.dockerLabels == 'disabled'" class="form-group volume-section">
                         <span class="edit-label">Labels</span><!--
@@ -326,7 +348,7 @@
                         <span class="edit-label">Network</span>
                         <span class="edit-value restart-name">
                             <select ui-select2="{minimumResultsForSearch: -1, width: '157px'}" id="network" data-ng-model="input.NetworkMode" on-opening="setNotation('NETWORK')">
-                                <option data-ng-repeat="type in networkTypes" value="{{type}}">
+                                <option data-ng-repeat="type in NETWORK_TYPES" value="{{type}}">
                                     {{type}}
                                 </option>
                             </select>
@@ -345,7 +367,7 @@
                         <div class="group-label">Misc</div>
                         <div class="form-group">
                             <span class="edit-label">Attach</span>
-                            <div class="misc-checkboxes" data-ng-repeat="attach in attaches">
+                            <div class="misc-checkboxes" data-ng-repeat="attach in ATTACHES">
                                 <div class="tooltip-hover" data-toggle="tooltip" data-html="true" data-original-title="{{tooltips['ATTACH_' + attach.toUpperCase()]}}" data-trigger="hover">
                                     <input data-ng-model="container['Attach' + attach]" type="checkbox" />
                                     <label class="attach-name checkbox-label" data-ng-click="container['Attach' + attach]=!container['Attach' + attach]">{{attach}}</label>
