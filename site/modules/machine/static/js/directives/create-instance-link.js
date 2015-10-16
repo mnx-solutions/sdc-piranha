@@ -29,7 +29,7 @@
                 $scope.checkIsLinkActive = function () {
                     var path = $scope.path;
                     if ($scope.type === 'container') {
-                        path += '|compute/docker/dashboard';
+                        path += '|compute/docker/welcome';
                     }
                     $scope.isLinkActive = $location.path().search(path) > -1;
                     return $scope.isLinkActive;

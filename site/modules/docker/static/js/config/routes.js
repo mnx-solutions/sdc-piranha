@@ -11,6 +11,9 @@ window.JP.main.config(['routeProvider', function (routeProvider) {
             function changePath() {
                 if ($location.path().indexOf('/docker') === 0 && $location.path() !== '/docker' && (!$rootScope.provisionEnabled || !$rootScope.dockerHostsAvailable)) {
                     $location.path('/docker');
+                } else if ($rootScope.provisionEnabled && $location.path() === '/docker') {
+                    $location.path('/docker/containers');
+                    return;
                 }
             }
 
@@ -42,7 +45,7 @@ window.JP.main.config(['routeProvider', function (routeProvider) {
             if (account.provisionEnabled) {
                 $location.path('/compute/container/create');
             } else {
-                $location.path('/compute/docker/dashboard');
+                $location.path('/compute/docker/welcome');
             }
         }, function () {
             dockerResolve.data($rootScope, $location, $q, Docker, Machine, Account);
@@ -52,7 +55,7 @@ window.JP.main.config(['routeProvider', function (routeProvider) {
     routeProvider
         .when('/docker', {
             title: 'Docker',
-            action: 'docker.index',
+            action: 'docker.welcome',
             resolve: dockerResolve
         }).when('/docker/intro', {
             title: 'Docker',
@@ -77,9 +80,9 @@ window.JP.main.config(['routeProvider', function (routeProvider) {
             title: 'Create Container',
             action: 'docker.create',
             resolve: dockerResolve
-        }).when('/compute/docker/dashboard', {
+        }).when('/compute/docker/welcome', {
             title: 'Docker',
-            action: 'docker.index',
+            action: 'docker.welcome',
             resolve: {
                 data: ['$route', '$rootScope', '$location', '$q', 'Docker', 'Machine', 'Account', function ($route, $rootScope, $location, $q, Docker, Machine, Account) {
                     checkProvisionEnabled($rootScope, $location, $q, Docker, Machine, Account);

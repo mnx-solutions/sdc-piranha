@@ -1,7 +1,7 @@
 #! /bin/bash
 
-if [ -e /var/tmp/.docker-installed ]; then 
-    exit 0 
+if [ -e /var/tmp/.docker-installed ]; then
+    exit 0
 fi
 exec 3>&1 4>&2 1>/var/log/docker-install.log 2>&1
 set -x
@@ -197,7 +197,7 @@ ${DOCKER_DIR}/containers/*/*json.log {
             manta \${ContainerLogPath}/\$(date +"%F").log -XPUT -T \${f}
             mv \${f} ${LOGS_DIR}/\${ContainerId}-last.log
         done
-    endscript 
+    endscript
 }
 END
 
