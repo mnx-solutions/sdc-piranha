@@ -805,7 +805,9 @@
                 return function (item) {
                     var result = true;
                     if (publicSdc && ($scope.datasetType !== item.type || item.freeTierHidden ||
-                        isPackageTypeCollapsed && packageType === item.group)) {
+                        isPackageTypeCollapsed && packageType === item.group ||
+                        $scope.selectedDataset && $scope.selectedDataset.type === IMAGE_TYPES.smartmachine &&
+                        $scope.selectedDataset.os === 'linux' && item.name.indexOf('g3-') > -1)) {
                         result = false;
                     } else if (packageType && packageType !== item.group) {
                         result = isPackageTypeCollapsed && $scope.collapsedPackageTypes.indexOf(item.group) === -1;
