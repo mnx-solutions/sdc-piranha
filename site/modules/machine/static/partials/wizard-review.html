@@ -105,15 +105,17 @@
                             </div>
                             <div class="note">Note: You can specify a maximum of 1 public networks.</div>
                          </div>
-                        <div class="section-title">
-                            Tags
-                        </div>
-                        <p class="tags-text-p">Tags are metadata stored as key-value pairs to make it easier for you to find, sort, and identify your instances.</p>
-                        <div class="create-tags ci-tags"
-                             data-machine-collection
-                             data-collection="data.tags"
-                             data-collection-name="'tags'"
-                             data-review="true">
+                        <div data-ng-show="features.instanceTagging === 'enabled'">
+                            <div class="section-title">
+                                Tags
+                            </div>
+                            <p class="tags-text-p">Tags are metadata stored as key-value pairs to make it easier for you to find, sort, and identify your instances.</p>
+                            <div class="create-tags ci-tags"
+                                 data-machine-collection
+                                 data-collection="data.tags"
+                                 data-collection-name="'tags'"
+                                 data-review="true">
+                            </div>
                         </div>
                         <div class="metadata-section" data-ng-show="instanceMetadataEnabled">
                             <div class="section-title">Metadata</div>
