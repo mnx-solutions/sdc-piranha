@@ -379,7 +379,6 @@
                     $scope.input.Cmd = isArrayNotEmpty(createData.Cmd) ? unParseCommands(createData.Cmd) : '';
                     $scope.input.Labels = unParseItems(createData.Labels);
                     $scope.input.Links = startData.Links;
-                    $scope.input.LogConfig = unParseItems(startData.LogConfig.Config);
                     $scope.input.Entrypoint = isArrayNotEmpty(createData.Entrypoint) ? unParseCommands(createData.Entrypoint) : '';
                     $scope.input.Memory = Math.floor(createData.Memory / 1024 / 1024);
                     $scope.input.MemorySwap = Math.floor(createData.MemorySwap / 1024 / 1024);
@@ -390,6 +389,9 @@
                     var restartPolicy = startData.RestartPolicy;
                     if (restartPolicy && $scope.RESTART_OPTIONS.indexOf(restartPolicy.Name) !== -1) {
                         $scope.container.HostConfig.RestartPolicy = restartPolicy;
+                    }
+                    if (startData.LogConfig) {
+                        $scope.input.LogConfig = unParseItems(startData.LogConfig.Config);
                     }
                     if (startData.NetworkMode) {
                         $scope.input.NetworkMode = startData.NetworkMode;
