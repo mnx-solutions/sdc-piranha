@@ -2320,7 +2320,7 @@ label.checkbox.folder-name-form-checkbox {
 }
 
 #zenbox_container {
-    top: 50px;
+    top: 50px !important;
 }
 
 .support-comments {
