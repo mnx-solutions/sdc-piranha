@@ -784,6 +784,11 @@
                     }, errorCallback);
                 };
 
+                $scope.isLogConfigDisabled = function () {
+                    var logConfig = $scope.container.HostConfig.LogConfig;
+                    return !logConfig || logConfig.Type === 'json-file';
+                };
+
                 $scope.create = function () {
                     $scope.container.Cmd = Docker.parseCmd($scope.input.Cmd);
                     $scope.container.Labels = parseItems($scope.input.Labels);
@@ -792,7 +797,7 @@
                     $scope.container.Volumes = parseVolumes($scope.input.Volumes);
                     $scope.container.HostConfig.NetworkMode = $scope.input.NetworkMode;
                     $scope.container.HostConfig.PortBindings = parsePorts($scope.input.PortBinding);
-                    if ($scope.container.HostConfig.LogConfig.Type !== 'json-file') {
+                    if (!$scope.isLogConfigDisabled()) {
                         $scope.container.HostConfig.LogConfig.Config = parseItems($scope.input.LogConfig);
                     }
 

@@ -291,7 +291,7 @@
                             </select>
                         </div>
                     </div>
-                    <div data-ng-hide="createImage || container.HostConfig.LogConfig.Type == 'json-file'" class="form-group volume-section">
+                    <div data-ng-hide="createImage || isLogConfigDisabled()" class="form-group volume-section">
                         <span class="edit-label">Log Options</span><!--
                             --><span class="edit-value">
                             <dropdown-select multiple tags-available data-items-name="labels" labels data-preselected-items="input.LogConfig" on-focus="setNotation('LOG_OPTIONS')"></dropdown-select>
