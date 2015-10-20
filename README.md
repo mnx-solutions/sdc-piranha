@@ -248,7 +248,7 @@ Enabling `privateSdc` feature will disable the following: `promocode`, `invoices
 
 Disabling `zendesk` feature will disable `createdBySupportPackages`.
 
-Disabling `billing` feature will disable `support`, `invoices`, `usageData`. It will enable `allowSkipBilling`.
+Disabling `billing` feature will disable `support`, `invoices`, `usageData`, `provisioningLimits`. It will enable `allowSkipBilling`.
 
 ## Common errors:
 
