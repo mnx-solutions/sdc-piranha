@@ -7,7 +7,7 @@
             by selecting an instance below and start computing.
         </div>
         <div class="container-min-width">
-            <h4 class="page-title no-breadcrumb-line container-min-width" data-translate>Recent Images</h4>
+            <h4 class="page-title no-breadcrumb-line container-min-width"  data-ng-if="features.recentInstances == 'enabled'" data-translate>Recent Images</h4>
             <div data-ng-show="recentInstances.length == 0" class="container-min-width">
                 No recent image / package combinations found.  You may need to provision some more instances.
             </div>
