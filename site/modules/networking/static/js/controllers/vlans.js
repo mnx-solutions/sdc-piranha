@@ -12,7 +12,7 @@
         function ($scope, PopupDialog, Vlan, $rootScope, localization, requestContext, $location) {
             localization.bind('networking', $scope);
             requestContext.setUpRenderContext('networking.vlans', $scope, {
-                title: localization.translate(null, 'networking', 'Fabric VLans')
+                title: localization.translate(null, 'networking', 'Fabric VLANs')
             });
             $scope.loading = true;
 
@@ -66,9 +66,9 @@
                     label: 'Delete',
                     action: function () {
                         PopupDialog.confirmAction(
-                            'Delete Fabric VLan',
+                            'Delete Fabric VLAN',
                             'delete',
-                            'VLan',
+                            'VLAN',
                             $scope.checkedItems.length,
                             function () {
                                 $scope.checkedItems.forEach(function (vlan) {

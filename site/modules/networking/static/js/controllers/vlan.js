@@ -12,7 +12,7 @@
         function ($scope, requestContext, localization, Vlan, Network, PopupDialog, $location) {
             localization.bind('networking', $scope);
             requestContext.setUpRenderContext('networking.vlan-details', $scope, {
-                title: localization.translate(null, 'networking', 'Fabric VLan Details')
+                title: localization.translate(null, 'networking', 'Fabric VLAN Details')
             });
 
             var vlanId = requestContext.getParam('vlanid');
@@ -64,12 +64,12 @@
                     localization.translate(
                         $scope,
                         null,
-                        'Confirm: Delete VLan'
+                        'Confirm: Delete VLAN'
                     ),
                     localization.translate(
                         $scope,
                         'networking',
-                        'Are you sure you want to delete this VLan?'
+                        'Are you sure you want to delete this VLAN?'
                     ), function () {
                         Vlan.deleteVlan($scope.currentVlan).promise.then(function () {
                             goToVlansPage();

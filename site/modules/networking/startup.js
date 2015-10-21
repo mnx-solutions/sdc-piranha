@@ -64,7 +64,7 @@ module.exports = function execute() {
                 });
 
                 if (availableDatacenters.length === 0) {
-                    return call.done('Data centers with enabled VLans not found.');
+                    return call.done('Data centers with enabled VLANs not found.');
                 }
 
                 vasync.forEachParallel({

@@ -11,7 +11,7 @@
         function ($scope, requestContext, localization, Vlan, $location, util) {
             localization.bind('networking', $scope);
             requestContext.setUpRenderContext('networking.vlan-create', $scope, {
-                title: localization.translate(null, 'networking', 'Fabric VLan Form')
+                title: localization.translate(null, 'networking', 'Fabric VLAN Form')
             });
 
             $scope.datacenters = window.JP.get('networkingDatacenters') || [];

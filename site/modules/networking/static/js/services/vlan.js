@@ -30,8 +30,8 @@
             var getMessage = function (vlan, err, action) {
                 action = action || 'create';
                 var vlanName = vlan && vlan.name ? ' "' + vlan.name + '"' : '';
-                return err ? 'Unable to ' + action + ' vlan' + vlanName + '.' :
-                    'VLan' + vlanName + ' has successfully ' + action + 'd.';
+                return err ? 'Unable to ' + action + ' VLAN' + vlanName + '.' :
+                    'VLAN' + vlanName + ' has successfully ' + action + 'd.';
             };
 
             var updateCache = function (vlan, action) {
@@ -64,7 +64,7 @@
                                     localization.translate(
                                         null,
                                         'networking',
-                                        'Unable to retrieve VLans from data center {{name}}.',
+                                        'Unable to retrieve VLANs from data center {{name}}.',
                                         {name: data.datacenter}
                                     ),
                                     err || data.error);
@@ -74,7 +74,7 @@
                             if (err) {
                                 errorContext.emit(new Error(localization.translate(null,
                                     'networking',
-                                    'Unable to retrieve VLans list: ' + (err.message || err)
+                                    'Unable to retrieve VLANs list: ' + (err.message || err)
                                 )));
                                 return;
                             }
@@ -107,7 +107,7 @@
                         if (typeof params === 'string' && vlans.index[params]) {
                             deferred.resolve(vlans.index[params]);
                         } else {
-                            deferred.reject('VLan ' + params + ' not found');
+                            deferred.reject('VLAN ' + params + ' not found');
                         }
                     } else {
                         deferred.resolve(vlans.list);

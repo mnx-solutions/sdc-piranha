@@ -132,14 +132,14 @@
                                         ng-model="vlan.name"
                                         data-ng-disabled="vlanCreating"
                                         data-ng-class="{error: networkForm.vlanName.$error.pattern}"
-                                        placeholder="VLan name" />
+                                        placeholder="VLAN name" />
                                  <input type="text"
                                         name="vlanId"
                                         data-ng-pattern="/^(\d)*$/"
                                         ng-model="vlan.vlan_id"
                                         data-ng-disabled="vlanCreating"
                                         data-ng-class="{error: networkForm.vlanId.$error.pattern}"
-                                        placeholder="VLan ID" />
+                                        placeholder="VLAN ID" />
                                  <p data-ng-show="networkForm.vlanName.$error.pattern" class="error">{{name.errorMessage}}</p>
                                  <p data-ng-show="networkForm.vlanId.$error.pattern && !networkForm.vlanName.$error.pattern" class="error indentation">Must contain only digits.</p>
                              </span>
