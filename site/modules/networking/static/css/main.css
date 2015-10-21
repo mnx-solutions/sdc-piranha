@@ -99,3 +99,6 @@
     width: 100%;
     min-height: 26px;
 }
+.indentation {
+    padding-left: 250px;
+}

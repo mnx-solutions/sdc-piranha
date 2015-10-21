@@ -140,6 +140,8 @@
                                         data-ng-disabled="vlanCreating"
                                         data-ng-class="{error: networkForm.vlanId.$error.pattern}"
                                         placeholder="VLan ID" />
+                                 <p data-ng-show="networkForm.vlanName.$error.pattern" class="error">{{name.errorMessage}}</p>
+                                 <p data-ng-show="networkForm.vlanId.$error.pattern && !networkForm.vlanName.$error.pattern" class="error indentation">Must contain only digits.</p>
                              </span>
                              <span class="pull-right">
                                 <span class="loading-medium-transparent col-md-12" data-ng-show="vlanCreating"></span>
