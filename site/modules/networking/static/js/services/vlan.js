@@ -14,8 +14,8 @@
             var VLANS_PATH = '/vlans';
 
             service.name = {
-                pattern: /^[A-Za-z]+[A-Za-z0-9\.\_\-]*$/,
-                errorMessage: "Must start with a letter and contain letters, digits and signs like '.', '_' and '-'."
+                pattern: /^[A-Za-z]+[A-Za-z0-9\.\_\/\\-]*$/,
+                errorMessage: "Must start with a letter, may contain alphanumeric characters and '_', '\\', '.', '/', '-'."
             };
 
             var findIndexByVlan = function (list, vlan) {
