@@ -10,8 +10,7 @@
         '$rootScope',
         '$q',
         'rbac.Service',
-        'requestContext',
-        function (Account, PopupDialog, localization, util, $rootScope, $q, RBAC, requestContext) {
+        function (Account, PopupDialog, localization, util, $rootScope, $q, RBAC) {
             return {
                 restrict: 'A',
                 replace: true,
@@ -29,9 +28,19 @@
                 link: function ($scope) {
                     $scope.keys = [];
                     $scope.isCreateKeyEnabled = true;
-                    var subuserId = !$scope.isSubUserForm ? requestContext.getParam('id') : false;
-                    if (subuserId === 'create') {
-                        subuserId = false;
+                    Account.assignSubUserId($scope).then(function () {
+                        if (!$scope.loadDisabled) {
+                            $scope.updateKeys();
+                        } else {
+                            $scope.$watch('loadDisabled', function (value) {
+                                if (!value) {
+                                    $scope.updateKeys();
+                                }
+                            });
+                        }
+                    });
+                    if ($scope.subUserId === 'create') {
+                        $scope.subUserId = false;
                     }
                     var errorCallback = function (err, cb) {
                         $scope.loading = false;
@@ -41,7 +50,7 @@
                         } else {
                             PopupDialog.errorObj(err);
                         }
-                        if (subuserId && err.message.indexOf('listuserkeys') === -1) {
+                        if ($scope.subUserId && err.message.indexOf('listuserkeys') === -1) {
                             getKeysList(null, true);
                         }
                     };
@@ -58,7 +67,7 @@
                     };
 
                     var getKeysList = function (cb, suppressErrors) {
-                        RBAC.listUserKeys(subuserId).then(function (list) {
+                        RBAC.listUserKeys($scope.subUserId).then(function (list) {
                             $scope.keys = list;
                             $scope.loadingKeys = false;
                             if (angular.isFunction(cb)) {
@@ -77,7 +86,7 @@
                             notifyDataChanged = false;
                         }
                         $scope.loadingKeys = true;
-                        if (subuserId) {
+                        if ($scope.subUserId) {
                             getKeysList(cb);
                         } else {
                             $q.when(Account.getKeys(true)).then(function (result) {
@@ -106,18 +115,7 @@
                     };
 
                     var keyDeletedMessage = function () {
-                        PopupDialog.message(
-                            localization.translate(
-                                $scope,
-                                null,
-                                'Message'
-                            ),
-                            localization.translate(
-                                $scope,
-                                null,
-                                'Key successfully deleted.'
-                            )
-                        );
+                        Account.showPopupDialog($scope, 'message', 'Message', 'Key successfully deleted.');
                     };
 
                     $scope.deleteKey = function (name, fingerprint, $event) {
@@ -130,8 +128,8 @@
                             function () {
                                 $scope.loadingKeys = true;
                                 $scope.keys = null;
-                                if (subuserId) {
-                                    RBAC.deleteUserKey(subuserId, name, fingerprint).then(function () {
+                                if ($scope.subUserId) {
+                                    RBAC.deleteUserKey($scope.subUserId, name, fingerprint).then(function () {
                                         getKeysList();
                                         keyDeletedMessage();
                                     }, errorCallback);
@@ -156,23 +154,6 @@
 
                     $scope.$on('sshCreated', function () {
                         getKeysList();
-                    });
-
-                    Account.getAccount().then(function (account) {
-                        $scope.account = account;
-                        if ($scope.isSubUserForm && $scope.account.isSubuser) {
-                            subuserId = $scope.account.id;
-                        }
-
-                        if (!$scope.loadDisabled) {
-                            $scope.updateKeys();
-                        } else {
-                            $scope.$watch('loadDisabled', function (value) {
-                                if (!value) {
-                                    $scope.updateKeys();
-                                }
-                            });
-                        }
                     });
                 },
                 templateUrl: 'account/static/partials/ssh-form.html'

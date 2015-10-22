@@ -8,10 +8,9 @@
         'http',
         '$rootScope',
         'PopupDialog',
-        'requestContext',
         'loggingService',
         'rbac.Service',
-        function (Account, localization, http, $rootScope, PopupDialog, requestContext, loggingService, RBAC) {
+        function (Account, localization, http, $rootScope, PopupDialog, loggingService, RBAC) {
             return {
                 restrict: 'EA',
                 replace: true,
@@ -20,29 +19,10 @@
                     localization.bind('account', $scope);
                 },
                 link: function ($scope) {
-                    var subUserId = !$scope.isSubUserForm ? requestContext.getParam('id') : false;
-                    Account.getAccount().then(function (account) {
-                        if ($scope.isSubUserForm && account.isSubuser) {
-                            subUserId = account.id;
-                        }
-                    });
-                    function showPopupDialog(level, title, message, callback) {
-                        return PopupDialog[level](
-                            title ? localization.translate(
-                                $scope,
-                                null,
-                                title
-                            ) : null,
-                            message ? localization.translate(
-                                $scope,
-                                null,
-                                message
-                            ) : null,
-                            callback
-                        );
-                    }
+                    var ADDITIONAL_MESSAGE = ' Please try another SSH key.';
+                    Account.assignSubUserId($scope);
 
-                    function getKeyErrorMessage(sshKey, keyName) {
+                    var getKeyErrorMessage = function (sshKey, keyName) {
                         var sshKeyExists = false;
                         var sshKeyNameExists = false;
                         var message = "The key you've imported is not a public key.";
@@ -63,14 +43,111 @@
                             message = 'The ssh key named "' + keyName + '" already exists.'
                         }
                         return message;
-                    }
-
-                    var additionalMessage = ' Please try another SSH key.';
+                    };
 
                     var errorCallback = function (err) {
                         $rootScope.$broadcast('sshProgress', false);
                         PopupDialog.errorObj(err);
                     };
+
+                    var uploadSubUserKey = function (key) {
+                        RBAC.uploadUserKey($scope.subUserId, key.name, key.data).then(function () {
+                            $rootScope.$broadcast('sshCreated', true);
+                        }, function (err) {
+                            var message;
+                            if (err && err.name === 'NotAuthorizedError') {
+                                message = err.message;
+                                errorCallback(message);
+                                return;
+                            }
+                            message = getKeyErrorMessage(key.data, key.name);
+                            errorCallback(message + ADDITIONAL_MESSAGE);
+                        });
+                    };
+
+                    var addUserKeyData = function (result) {
+                        if (!result.data.keyName) {
+                            var keyParts = result.data.keyData.split(' ');
+                            if (keyParts[2]) {
+                                result.data.keyName = keyParts[2];
+                            }
+                        }
+                        var key = {
+                            name: result.data.keyName,
+                            data: result.data.keyData
+                        };
+                        if ($scope.subUserId) {
+                            uploadSubUserKey(key);
+                        } else {
+                            $scope.createNewKey(key);
+                        }
+                    };
+
+                    var addNewKeyModalCallback = function (result) {
+                        if (!result) {
+                            $rootScope.$broadcast('sshProgress', false);
+                            return;
+                        }
+                        if (result.value === 'add' && result.data.keyData) {
+                            addUserKeyData(result);
+                        } else if (result.value === 'add' && !result.data.keyData) {
+                            $rootScope.$broadcast('sshProgress', false);
+                            Account.showPopupDialog($scope, 'error', 'Error', 'Please enter a SSH key.');
+                        } else if (result.keyUploaded && !$scope.subUserId) {
+                            if ($scope.nextStep) {
+                                $scope.skipSsh();
+                            } else {
+                                $scope.updateKeys(true);
+                            }
+                        } else if (result.keyUploaded && $scope.subUserId) {
+                            $rootScope.$broadcast('sshCreated', true);
+                        }
+                    };
+
+                    var uploadFile = function (dialog, elem) {
+                        var files = elem.files;
+                        var file = files[0];
+
+                        if (file.size > 1024) {
+                            $rootScope.$broadcast('sshProgress', false);
+                            dialog.close({});
+                            return Account.showPopupDialog($scope, 'error', 'Error', 'The file you\'ve uploaded is not a public key.' + ADDITIONAL_MESSAGE);
+                        } else {
+                            var path = 'account/upload';
+                            if ($scope.subUserId) {
+                                path = 'account/upload?userId=' + $scope.subUserId;
+                            }
+                            return http.uploadFiles(path, elem.value, files, null, function (error, result) {
+                                $scope.loadingKeys = false;
+                                if (result && result.status !== 'success' && result.status !== 'error') {
+                                    return;
+                                }
+
+                                if (error) {
+                                    var message = error.error;
+                                    $rootScope.$broadcast('sshProgress', false);
+
+                                    if (error.status === 409) {
+                                        loggingService.log('info', error.error);
+                                        message = 'This key already exists.';
+                                    }
+
+                                    dialog.close({});
+
+                                    if (error.status === 403 && error.error) {
+                                        message = error.error;
+                                        return Account.showPopupDialog($scope, 'error', 'Error', message);
+                                    }
+                                    return Account.showPopupDialog($scope, 'error', 'Error', message + ADDITIONAL_MESSAGE);
+                                }
+
+                                return dialog.close({
+                                    keyUploaded: true
+                                });
+                            });
+                        }
+                    };
+
                     /* ssh key creating popup with custom template */
                     $scope.addNewKey = function () {
                         var addKeyCtrl = function ($scope, dialog) {
@@ -103,50 +180,7 @@
                                 $scope.$apply(function () {
                                     $rootScope.$broadcast('sshProgress', true);
                                 });
-
-                                var files = elem.files;
-                                var file = files[0];
-
-                                if (file.size > 1024) {
-                                    $rootScope.$broadcast('sshProgress', false);
-
-                                    dialog.close({});
-                                    
-                                    return showPopupDialog('error', 'Error', "The file you've uploaded is not a public key." + additionalMessage);
-                                } else {
-                                    var path = 'account/upload';
-                                    if (subUserId) {
-                                        path = 'account/upload?userId=' +  subUserId;
-                                    }
-                                    return http.uploadFiles(path, elem.value, files, null, function (error, result) {
-                                        if (result && result.status !== 'success' && result.status !== 'error') {
-                                            return;
-                                        }
-                                        $scope.loadingKeys = false;
-
-                                        if (error) {
-                                            var message = error.error;
-                                            $rootScope.$broadcast('sshProgress', false);
-
-                                            if (error.status && error.status === 409) {
-                                                loggingService.log('info', error.error);
-                                                message = 'This key already exists.';
-                                            }
-
-                                            dialog.close({});
-
-                                            if (error.status === 403 && error.error) {
-                                                message = error.error;
-                                                return showPopupDialog('error', 'Error', message);
-                                            }
-                                            return showPopupDialog('error', 'Error', message + additionalMessage);
-                                        }
-
-                                        return dialog.close({
-                                            keyUploaded: true
-                                        });
-                                    });
-                                }
+                                uploadFile(dialog, elem);
                             };
                         };
 
@@ -156,49 +190,7 @@
                             openCtrl: addKeyCtrl
                         };
 
-                        PopupDialog.custom(
-                            opts,
-                            function (result) {
-                                if (result && result.value === 'add' && result.data.keyData) {
-                                    if (!result.data.keyName) {
-                                        var keyParts = result.data.keyData.split(' ');
-                                        if (keyParts[2]) {
-                                            result.data.keyName = keyParts[2];
-                                        }
-                                    }
-                                    if (subUserId) {
-                                        RBAC.uploadUserKey(subUserId, result.data.keyName, result.data.keyData).then(function () {
-                                            $rootScope.$broadcast('sshCreated', true);
-                                        }, function (err) {
-                                            var message;
-                                            if (err && err.name === 'NotAuthorizedError') {
-                                                message = err.message;
-                                                errorCallback(message);
-                                                return;
-                                            }
-                                            message = getKeyErrorMessage(result.data.keyData, result.data.keyName);
-                                            errorCallback(message + additionalMessage);
-                                        });
-                                    } else {
-                                        $scope.createNewKey({
-                                            name: result.data.keyName,
-                                            data: result.data.keyData
-                                        });
-                                    }
-                                } else if (result && result.value === 'add' && !result.data.keyData) {
-                                    $rootScope.$broadcast('sshProgress', false);
-                                    showPopupDialog('error', 'Error', 'Please enter a SSH key.');
-                                } else if (result && result.keyUploaded && !subUserId) {
-                                    if ($scope.nextStep) {
-                                        $scope.skipSsh();
-                                    } else {
-                                        $scope.updateKeys(true);
-                                    }
-                                } else if (result && result.keyUploaded && subUserId) {
-                                    $rootScope.$broadcast('sshCreated', true);
-                                }
-                            }
-                        );
+                        PopupDialog.custom(opts, addNewKeyModalCallback);
                     };
 
                     $scope.createNewKey = function (key) {
@@ -207,39 +199,34 @@
                             key = $scope.key;
                         }
 
-                        Account.createKey(key.name, key.data).then(
-                            function (data) {
-                                $rootScope.$broadcast('sshProgress', false);
-                                if (data.name && data.fingerprint && data.key) {
-                                    $scope.key = null;
+                        Account.createKey(key.name, key.data).then(function (data) {
+                            $rootScope.$broadcast('sshProgress', false);
+                            if (data.name && data.fingerprint && data.key) {
+                                $scope.key = null;
 
-                                    if ($scope.nextStep) {
-                                        showPopupDialog('message', 'Message', 'SSH Key successfully added to your account.');
-                                        $scope.passSsh('/main/');
-                                    } else {
-                                        $scope.updateKeys(true, function () {
-                                            showPopupDialog('message', 'Message', 'New key successfully added.');
-                                        });
-                                    }
+                                if ($scope.nextStep) {
+                                    Account.showPopupDialog($scope, 'message', 'Message', 'SSH Key successfully added to your account.');
+                                    $scope.passSsh('/main/');
                                 } else {
-                                    var message = 'Failed to add new key: ' + (data.message || '') + ' ' + (data.code || '') + '.';
-                                    showPopupDialog('error', 'Error', message);
+                                    $scope.updateKeys(true, function () {
+                                        Account.showPopupDialog($scope, 'message', 'Message', 'New key successfully added.');
+                                    });
                                 }
-
-                            },
-                            function (err) {
-                                $rootScope.$broadcast('sshProgress', false);
-                                var message;
-                                if (err && err.name === 'NotAuthorizedError') {
-                                    message = err.message;
-                                    showPopupDialog('error', 'Error', message);
-                                    return;
-                                }
-                                message = getKeyErrorMessage(key.data, key.name);
-                                showPopupDialog('error', 'Error', message + additionalMessage);
+                            } else {
+                                var message = 'Failed to add new key: ' + (data.message || '') + ' ' + (data.code || '') + '.';
+                                Account.showPopupDialog($scope, 'error', 'Error', message);
                             }
-                        );
 
+                        }, function (err) {
+                            $rootScope.$broadcast('sshProgress', false);
+                            var message;
+                            if (err && err.name === 'NotAuthorizedError') {
+                                message = err.message;
+                                return Account.showPopupDialog($scope, 'error', 'Error', message);
+                            }
+                            message = getKeyErrorMessage(key.data, key.name);
+                            Account.showPopupDialog($scope, 'error', 'Error', message + ADDITIONAL_MESSAGE);
+                        });
                     };
                 },
                 templateUrl: 'account/static/partials/account-ssh-import.html'

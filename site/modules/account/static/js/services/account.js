@@ -19,7 +19,9 @@
         '$$track',
         'PopupDialog',
         '$rootScope',
-        function ($q, serverTab, $$track, PopupDialog, $rootScope) {
+        'requestContext',
+        'localization',
+        function ($q, serverTab, $$track, PopupDialog, $rootScope, requestContext, localization) {
             var service = {};
 
             var account = null;
@@ -407,6 +409,33 @@
                 });
 
                 return deferred.promise;
+            };
+
+            service.showPopupDialog = function (scope, level, title, message, callback) {
+                return PopupDialog[level](
+                    title ? localization.translate(
+                        scope,
+                        null,
+                        title
+                    ) : null,
+                    message ? localization.translate(
+                        scope,
+                        null,
+                        message
+                    ) : null,
+                    callback
+                );
+            };
+
+            service.assignSubUserId = function ($scope) {
+                $scope.subUserId = !$scope.isSubUserForm ? requestContext.getParam('id') : false;
+                return service.getAccount().then(function (account) {
+                    $scope.account = account;
+                    if ($scope.isSubUserForm && account.isSubuser) {
+                        $scope.subUserId = account.id;
+                    }
+                    return $scope.subUserId;
+                });
             };
 
             return service;
