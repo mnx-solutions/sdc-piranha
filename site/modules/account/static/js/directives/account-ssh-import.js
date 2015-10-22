@@ -118,7 +118,7 @@
                                     if (subUserId) {
                                         path = 'account/upload?userId=' +  subUserId;
                                     }
-                                    return http.uploadFiles(path, elem.value, files, function (error, result) {
+                                    return http.uploadFiles(path, elem.value, files, null, function (error, result) {
                                         if (result && result.status !== 'success' && result.status !== 'error') {
                                             return;
                                         }
