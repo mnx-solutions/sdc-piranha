@@ -84,7 +84,7 @@
                 {
                     id: 'datacenter',
                     name: 'Datacenter',
-                    active: false,
+                    active: true,
                     sequence: 7
                 }
             ];
