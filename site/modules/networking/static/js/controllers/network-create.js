@@ -25,6 +25,7 @@
                 $location.path('/networks');
                 $location.replace();
             };
+            $scope.provisionNAT = true;
             var changeVlanValue = function (vlan) {
                 $scope.network.vlan_id = vlan.vlan_id;
                 $scope.vlanCreating = false;
@@ -61,6 +62,10 @@
                 }
             };
 
+            $scope.changeProvisionNAT = function () {
+                $scope.provisionNAT = !$scope.provisionNAT;
+            };
+
             $scope.createNetwork = function () {
                 $scope.creating = true;
                 var network = $scope.network;
@@ -68,6 +73,9 @@
                     delete network.gateway;
                 }
                 network.routes = {};
+                if (!$scope.provisionNAT) {
+                    network.no_internet_nat = true;
+                }
                 $scope.routes.forEach(function (route) {
                     if (route.subnet && route.gateway) {
                         network.routes[route.subnet] = route.gateway;

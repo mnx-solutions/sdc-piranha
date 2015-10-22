@@ -188,7 +188,18 @@
                         <span class="edit-value">
                              <textarea type="text"
                                        name="description"
-                                       data-ng-model="network.description"></textarea>
+                                       data-ng-model="network.description">
+                             </textarea>
+                            <div class="indent-medium">
+                                <label class="checkbox nat in-line">
+                                    <div class="checker" data-ng-class="{hover: shows}" data-ng-mouseenter="shows = true" data-ng-mouseleave="shows = false">
+                                        <span data-ng-click="changeProvisionNAT()" data-ng-class="{checked: provisionNAT}">
+                                            <input type="checkbox" class="group-checkable">
+                                        </span>
+                                    </div>
+                                </label>
+                                <span>Provision a NAT zone on the gateway address.</span>
+                            </div>
                         </span>
                     </div>
                 </fieldset>

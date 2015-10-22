@@ -98,3 +98,7 @@
 .indentation {
     padding-left: 250px;
 }
+.checkbox.nat {
+    padding-left: 0;
+    vertical-align: middle;
+}
