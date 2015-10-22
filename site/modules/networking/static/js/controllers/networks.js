@@ -50,7 +50,7 @@
                 },
                 {
                     id: 'subnet',
-                    name: 'Network',
+                    name: 'Subnet',
                     active: true,
                     sequence: 2
                 },
