@@ -20,12 +20,12 @@
 
             Network.getFabricNetwork(networkId).then(function (network) {
                 $scope.loading = false;
-                $scope.hasRoutes = network.routes && Object.keys(network.routes).length;
-                $scope.network = network;
+                $scope.hasRoutes = network && network.routes && Object.keys(network.routes).length;
+                $scope.network = network || {};
             }, function (err) {
                 PopupDialog.errorObj(err);
                 $scope.loading = false;
-                $location.path('/networks');
+                $location.path('/network/networks');
             });
         }
 

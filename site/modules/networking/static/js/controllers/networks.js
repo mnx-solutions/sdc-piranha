@@ -26,7 +26,7 @@
             });
 
             $scope.gotoCreatePage = function () {
-                $location.path('/networks/create');
+                $location.path('/network/networks/create');
                 $location.replace();
             };
 
@@ -43,7 +43,7 @@
                     type: 'html',
                     _getter: function (network) {
                         if (network.fabric) {
-                            return '<a href="#!/networks/' + network.id + '">' + network.name + '</a>';
+                            return '<a href="#!/network/networks/' + network.id + '">' + network.name + '</a>';
                         }
                         return network.name;
                     }

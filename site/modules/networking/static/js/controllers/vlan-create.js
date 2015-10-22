@@ -19,7 +19,7 @@
             $scope.vlanName = Vlan.name;
 
             $scope.goToVlansPage = function () {
-                $location.path('/vlans');
+                $location.path('/network/vlans');
                 $location.replace();
             };
 

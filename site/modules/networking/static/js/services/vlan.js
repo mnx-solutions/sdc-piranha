@@ -11,7 +11,7 @@
 
             var service = {};
             var vlans = {job: null, index: {}, list: [], error: {}};
-            var VLANS_PATH = '/vlans';
+            var VLANS_PATH = '/network/vlans';
 
             service.name = {
                 pattern: /^[A-Za-z]+[A-Za-z0-9\.\_\/\\-]*$/,
@@ -126,7 +126,7 @@
             };
 
             service.createVlan = function (vlan, path) {
-                path = path || '/vlans/create';
+                path = path || '/network/vlans/create';
                 var job = serverTab.call({
                     name: 'FabricVlanCreate',
                     data: vlan,

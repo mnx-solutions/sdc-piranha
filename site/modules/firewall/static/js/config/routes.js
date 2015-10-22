@@ -5,11 +5,7 @@ window.JP.main.config([
     function (routeProvider) {
         var features = window.JP.get('features');
         if (features && features.firewall !== 'disabled') {
-            routeProvider.when('/firewall', {
-                title: 'Cloud Firewall',
-                action: 'firewall.index',
-                parent: 'machine.index'
-            }).when('/docker/firewall', {
+            routeProvider.when('/network/firewall', {
                 title: 'Cloud Firewall',
                 action: 'firewall.index',
                 parent: 'machine.index'

@@ -22,7 +22,7 @@
             $scope.vlan = {};
             $scope.name = Vlan.name;
             $scope.goToNetworksPage = function () {
-                $location.path('/networks');
+                $location.path('/network/networks');
                 $location.replace();
             };
             $scope.provisionNAT = true;

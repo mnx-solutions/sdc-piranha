@@ -53,6 +53,11 @@
                     }
                 };
 
+                $scope.clickNetwork = function () {
+                    var url = $scope.features.networking != 'disabled' ? '/network/networks' : '/network/firewall';
+                    $location.path(url);
+                };
+
                 $scope.currentYear = (new Date()).getFullYear();
             }
         };

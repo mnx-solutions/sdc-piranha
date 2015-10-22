@@ -20,7 +20,7 @@
             var id = datacenter + '&' + vlanId;
 
             var goToVlansPage = function () {
-                $location.path('/vlans');
+                $location.path('/network/vlans');
                 $location.replace();
             };
 
@@ -94,7 +94,7 @@
                     type: 'html',
                     _getter: function (network) {
                         if (network.fabric) {
-                            return '<a href="#!/networks/' + network.id + '">' + network.name + '</a>';
+                            return '<a href="#!/network/networks/' + network.id + '">' + network.name + '</a>';
                         }
                         return network.name;
                     }

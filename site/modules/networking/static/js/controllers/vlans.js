@@ -22,7 +22,7 @@
             });
 
             $scope.gotoCreatePage = function () {
-                $location.path('/vlans/create');
+                $location.path('/network/vlans/create');
                 $location.replace();
             };
 
@@ -38,7 +38,7 @@
                     _order: 'name',
                     type: 'html',
                     _getter: function (vlan) {
-                        return '<a href="#!/vlans/' + vlan.datacenter + '/' + vlan.vlan_id + '">' + vlan.name + '</a>';
+                        return '<a href="#!/network/vlans/' + vlan.datacenter + '/' + vlan.vlan_id + '">' + vlan.name + '</a>';
                     }
                 },
                 {

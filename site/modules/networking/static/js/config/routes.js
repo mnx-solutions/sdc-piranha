@@ -6,14 +6,13 @@ window.JP.main.config(['routeProvider', function (routeProvider) {
         return;
     }
 
-    routeProvider.when('/networks', {
+    routeProvider.when('/network/networks', {
         title: 'Networks',
-        action: 'networking.index',
-        parent: 'machine.index'
-    }).when('/networks/create', {
+        action: 'networking.index'
+    }).when('/network/networks/create', {
         title: 'Create Fabric Network',
         action: 'networking.create'
-    }).when('/networks/:networkid', {
+    }).when('/network/networks/:networkid', {
         title: 'Network Details',
         action: 'networking.details',
         showLatest: true,
@@ -21,18 +20,17 @@ window.JP.main.config(['routeProvider', function (routeProvider) {
         resolve: {
             data: ['$route', '$location', function ($route, $location) {
                 if (!$route.current.params.networkid) {
-                    $location.path('/networks');
+                    $location.path('/network/networks');
                 }
             }]
         }
-    }).when('/vlans', {
+    }).when('/network/vlans', {
         title: 'Fabric VLANs',
-        action: 'networking.vlans',
-        parent: 'machine.index'
-    }).when('/vlans/create', {
+        action: 'networking.vlans'
+    }).when('/network/vlans/create', {
         title: 'Create Fabric VLAN',
         action: 'networking.vlan-create'
-    }).when('/vlans/:datacenter/:vlanid', {
+    }).when('/network/vlans/:datacenter/:vlanid', {
         title: 'Fabric VLAN Details',
         action: 'networking.vlan-details',
         showLatest: true,
@@ -40,7 +38,7 @@ window.JP.main.config(['routeProvider', function (routeProvider) {
         resolve: {
             data: ['$route', '$location', function ($route, $location) {
                 if (!$route.current.params.datacenter || !$route.current.params.vlanid) {
-                    $location.path('/vlans');
+                    $location.path('/network/vlans');
                 }
             }]
         }

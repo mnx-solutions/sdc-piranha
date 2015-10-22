@@ -231,17 +231,25 @@ li.active a.question-icon
 {
     background-image: url('../img/question-orange.png');
 }
-
-.dashboard-icon,
-.compute-icon,
-.storage-icon,
-.usage-icon,
-.support-icon,
+.network-icon
+{
+    background-image: url('../img/network-white.png');
+}
+li.active a.network-icon
+{
+    background-image: url('../img/network-orange.png');
+}
 .accounts-icon,
-.sdc-download-icon,
-.docker-icon,
+.compute-icon,
+.dashboard-icon,
 .dev-tools-icon,
-.question-icon {
+.docker-icon,
+.network-icon,
+.question-icon,
+.sdc-download-icon,
+.storage-icon,
+.support-icon,
+.usage-icon {
     height: 22px;
 
     background-repeat: no-repeat;
