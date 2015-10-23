@@ -311,11 +311,15 @@
                 );
             }
 
+            var capitalize = function (str) {
+                return str.charAt(0).toUpperCase() + str.slice(1);
+            };
+
             function getErrorMessage(image, err, isPopupMessage, action) {
                 action = action || 'create';
                 var errorMessage = 'Unable to ' + action + ' image ' + (image.name || '') + '.';
                 if (isPopupMessage) {
-                    errorMessage += ' ' + (err.message || err);
+                    errorMessage += ' ' + capitalize(err.message || err);
                 }
                 if (err.restCode === 'NotAuthorized') {
                     errorMessage = err.message;
@@ -378,7 +382,8 @@
                     handleChunk(image, 'remove');
                     $rootScope.$emit('createdImage', machineId);
                     var errorMessage = getErrorMessage(image, imageError, true);
-                    if (imageError.restCode === 'NotAuthorized' && $location.path().indexOf(instanceDetailsPath) !== -1) {
+                    if ((imageError.restCode === 'NotAuthorized' || imageError.restCode === 'NotAvailable') &&
+                        $location.path().indexOf(instanceDetailsPath) !== -1) {
                         imagesPath = instanceDetailsPath;
                     }
                     if (errorMessage.indexOf('permission') !== -1) {
