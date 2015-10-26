@@ -315,7 +315,7 @@
                 }
                 $scope.ATTACHES = ['Stdin', 'Stdout', 'Stderr'];
                 $scope.RESTART_OPTIONS = ['no', 'on-failure', 'always'];
-                $scope.LOG_DRIVER_NAMES = ['fluentd', 'syslog', 'gelf'];
+                $scope.LOG_DRIVER_NAMES = ['', 'fluentd', 'syslog', 'gelf'];
                 $scope.NETWORK_TYPES = ['none', 'bridge', 'host'];
                 $scope.container = {
                     Hostname: '',
@@ -368,7 +368,8 @@
                     Env: [],
                     NetworkMode: 'bridge',
                     Links: [],
-                    LogConfig: []
+                    LogConfig: [],
+                    LogConfigType: ''
                 };
 
                 if ($scope.preSelectedData) {
@@ -391,6 +392,7 @@
                         $scope.container.HostConfig.RestartPolicy = restartPolicy;
                     }
                     if (startData.LogConfig) {
+                        $scope.input.LogConfigType = startData.LogConfig.Type;
                         $scope.input.LogConfig = unParseItems(startData.LogConfig.Config);
                     }
                     if (startData.NetworkMode) {
@@ -782,6 +784,13 @@
                 $scope.isLogConfigDisabled = function () {
                     var logConfig = $scope.container.HostConfig.LogConfig;
                     return !logConfig || logConfig.Type === 'json-file';
+                };
+
+                $scope.setLogConfigType = function () {
+                    var logConfig = $scope.container.HostConfig.LogConfig;
+                    if (logConfig) {
+                        logConfig.Type = $scope.input.LogConfigType || 'json-file';
+                    }
                 };
 
                 $scope.create = function () {

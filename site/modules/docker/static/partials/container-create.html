@@ -293,10 +293,11 @@
                     <div data-ng-hide="createImage" class="form-group">
                         <div class="group-label">Log Driver</div>
                         <div class="edit-value">
-                            <ui-select data-ng-model="container.HostConfig.LogConfig.Type"
+                            <ui-select data-ng-model="input.LogConfigType"
                                        theme="select2"
                                        search-enabled="false"
                                        class="full-width"
+                                       on-select="setLogConfigType()"
                                        ng-click="setNotation('LOG_DRIVER')">
                                 <ui-select-match>{{$select.selected}}</ui-select-match>
                                 <ui-select-choices repeat="logDriverName in LOG_DRIVER_NAMES">
