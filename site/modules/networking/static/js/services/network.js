@@ -108,6 +108,22 @@
                 return deferred.promise;
             };
 
+            service.getNetworkConfig = function (datacenters) {
+                 var job = serverTab.call({
+                    name: 'GetNetworkConfig',
+                    data: {datacenters: datacenters}
+                });
+                return job.promise;
+            };
+
+            service.updateNetworkConfig = function (datacenter, defaultId) {
+                 var job = serverTab.call({
+                    name: 'UpdateNetworkConfig',
+                    data: {id: defaultId, datacenter: datacenter}
+                });
+                return job.promise;
+            };
+
             service.network = function (datacenter) {
                 if (datacenter && !networks.job[datacenter]) {
                     var job = service.updateNetworks(datacenter);

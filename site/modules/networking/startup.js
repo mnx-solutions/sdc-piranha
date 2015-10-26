@@ -17,6 +17,43 @@ module.exports = function execute() {
         }
     });
 
+    server.onCall('GetNetworkConfig', {
+        verify: function (data) {
+            return data && data.datacenters;
+        },
+        handler: function (call) {
+            var datacenters = Array.isArray(call.data.datacenters) ? call.data.datacenters : [call.data.datacenters];
+            vasync.forEachParallel({
+                inputs: datacenters,
+                func: function (datacenter, callback) {
+                    call.cloud.separate(datacenter).getConfig(function (error, network) {
+                        network.datacenter = datacenter;
+                        callback(error, network);
+                    });
+                }
+            }, function (vasyncErrors, operations) {
+                var data = utils.getVasyncData(vasyncErrors, operations);
+                var defaultNetworks = null;
+                if (data.result) {
+                    defaultNetworks = {};
+                    data.result.forEach(function (network) {
+                        defaultNetworks[network.datacenter] = network.default_network;
+                    });
+                }
+                call.done(data.error, defaultNetworks);
+            });
+        }
+    });
+
+    server.onCall('UpdateNetworkConfig', {
+        verify: function (data) {
+            return data && typeof data.id === 'string' && data.datacenter;
+        },
+        handler: function (call) {
+            call.cloud.separate(call.data.datacenter).updateConfig({default_network: call.data.id}, call.done.bind(call));
+        }
+    });
+
     server.onCall('NetworksList', function (call) {
         var datacenters = call.data.datacenter === 'fabric' ? networkingDatacenters : [call.data.datacenter];
         vasync.forEachParallel({

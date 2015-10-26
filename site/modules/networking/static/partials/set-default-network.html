@@ -1,0 +1,35 @@
+<div class="modal-dialog modal-dialog-push-image">
+    <div class="modal-content">
+        <div tabindex="-1" data-backdrop="static" data-focus-on="button">
+            <div class="modal-header message">
+                <h5><i class="glyphicon glyphicon-info-sign"></i><b>Set Default Network</b></h5>
+            </div>
+            <div class="modal-body loading-medium full-width" data-ng-show="loading"></div>
+            <div class="modal-body registry-form" data-ng-hide="loading">
+                <form name="newDefaultNetwork" class="configurationForm">
+                    <div class="form-group">
+                        <span class="edit-label">Networks</span>
+                        <span class="edit-value">
+                            <ui-select data-ng-model="newNetwork.id"
+                                       class="registry-form-select"
+                                       theme="select2"
+                                       append-to-body="true"
+                                       search-enabled="false"
+                                       on-select="newNetwork.id = $select.selected.id"
+                                       ng-disabled="loading">
+                                <ui-select-match>{{$select.selected.id + " (" + $select.selected.name + ")"}}</ui-select-match>
+                                <ui-select-choices repeat="network.id as network in networks">
+                                    {{network.id + " (" + network.name + ")"}}
+                                </ui-select-choices>
+                            </ui-select>
+                        </span>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button data-ng-click="close()" data-button-focus="true" data-label="Cancel" class="btn grey">Cancel</button>
+                <button data-ng-hide="loading" data-ng-click="setNetwork()" data-button-focus="false" data-label="Set" class="btn orange">Set Network</button>
+            </div>
+        </div>
+    </div>
+</div>

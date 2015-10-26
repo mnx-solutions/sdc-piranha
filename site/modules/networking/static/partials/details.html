@@ -52,7 +52,23 @@
                                         <td>Provision a NAT zone</td>
                                         <td>{{network.internet_nat && 'yes' || 'no'}}</td>
                                     </tr>
+                                    <tr>
+                                        <td>Default for Docker</td>
+                                        <td>{{network.defaultForDocker}}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Default ID for Docker</td>
+                                        <td>{{currentDefaultNetwork}}</td>
+                                    </tr>
                                 </table>
+                                <div class="pull-right">
+                                    <button class="btn orange"
+                                            type="button"
+                                            data-ng-click="setDefaultNetwork()"
+                                            data-ng-disabled="loading || actionInProgress">
+                                        Set Default Network
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </div>

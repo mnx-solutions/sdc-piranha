@@ -9,16 +9,25 @@
         'localization',
         'requestContext',
         '$location',
-        function ($scope, PopupDialog, Network, $rootScope, localization, requestContext, $location) {
+        '$q',
+        function ($scope, PopupDialog, Network, $rootScope, localization, requestContext, $location, $q) {
             localization.bind('networking', $scope);
             requestContext.setUpRenderContext('networking.index', $scope, {
                 title: localization.translate(null, 'networking', 'Fabric Networks')
             });
             $scope.loading = true;
             $scope.networks = [];
+            var datacenters = window.JP.get('networkingDatacenters') || [];
 
-            Network.listFabric().then(function (networks) {
-                $scope.networks = networks || [];
+            $q.all([
+                Network.listFabric(),
+                Network.getNetworkConfig(datacenters)
+            ]).then(function (results) {
+                $scope.networks = results[0] || [];
+                var defaultNetworks = results[1] || {};
+                $scope.networks.forEach(function (network) {
+                    network.defaultForDocker = defaultNetworks[network.datacenter] === network.id ? 'yes' : 'no';
+                });
                 $scope.loading = false;
             }, function (err) {
                 PopupDialog.errorObj(err);
@@ -82,10 +91,16 @@
                     }
                 },
                 {
+                    id: 'defaultForDocker',
+                    name: 'Default for Docker',
+                    active: true,
+                    sequence: 7
+                },
+                {
                     id: 'datacenter',
                     name: 'Datacenter',
                     active: true,
-                    sequence: 7
+                    sequence: 8
                 }
             ];
 
