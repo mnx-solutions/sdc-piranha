@@ -29,7 +29,7 @@
 }
 
 .grid-container .tabs-container {
-    margin-bottom: -1px;
+    margin: 0 0 -1.1px 0;
 
     border-bottom: none;
 }
@@ -50,6 +50,7 @@
 }
 
 .tabs {
+    height: 30px;
     margin-right: 2px;
     padding: 4px 10px;
 
@@ -274,18 +275,20 @@ input.filter-field::-ms-clear {
 .icon-unsorted {
     background-image: url('../img/icon-unsorted.png');
 }
+.filter-wrapper {
+    margin-bottom: .9%;
+}
 .filter-wrapper td:first-child {
     padding-top: 5px;
-
-    vertical-align: top;
-    white-space: nowrap;
 }
 .filter-wrapper td:last-child,
 .tabs-wrapper td:first-child {
     width: 100%;
 }
-.tabs-wrapper td:last-child {
-    min-width: 220px;
+.tabs-wrapper td,
+.filter-wrapper td {
+    vertical-align: top;
+    white-space: nowrap;
 }
 .tabs-line {
     border-bottom: 1px solid #ddd;
