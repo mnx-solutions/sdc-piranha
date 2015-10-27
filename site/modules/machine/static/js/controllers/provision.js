@@ -119,7 +119,6 @@
             $scope.datasetsLoading = true;
             $scope.filterValues = ng.copy(FilterValues);
 
-            $scope.isTritonEnabled = $scope.features.sdcDocker === 'enabled';
             $scope.isMantaEnabled = $scope.features.manta === 'enabled';
             $scope.isRecentInstancesEnabled = $scope.features.recentInstances === 'enabled';
 
@@ -748,8 +747,7 @@
                 if ($scope.instanceType === INSTANCE_TYPES.container) {
                     result = item.type === IMAGE_TYPES.smartmachine;
                 } else if ($scope.instanceType === INSTANCE_TYPES.machine) {
-                    result = item.type === IMAGE_TYPES.virtualmachine || ($scope.packageTypes.indexOf('Triton') === -1 ||
-                        !$scope.isSdcAvailable) && item.type === IMAGE_TYPES.smartmachine && item.os !== 'linux';
+                    result = item.type === IMAGE_TYPES.virtualmachine;
                 }
                 if ($scope.features.imageUse !== 'disabled') {
                     result = item.state === 'active' && result;
@@ -767,8 +765,7 @@
                 $scope.instanceType = type;
                 $scope.getFilteredDatasets();
                 $scope.reconfigure(0);
-                if (type === INSTANCE_TYPES.machine || !$scope.isSdcDatacenter || type === INSTANCE_TYPES.container &&
-                    !$scope.isSdcAvailable) {
+                if (type === INSTANCE_TYPES.machine) {
                     $location.path(ROUTES.virtualMachine);
                     $scope.setCreateInstancePage(INSTANCE_TYPES.machine);
                 } else if (type === INSTANCE_TYPES.container) {
@@ -802,9 +799,7 @@
                 return function (item) {
                     var result = true;
                     if (publicSdc && ($scope.datasetType !== item.type || item.freeTierHidden ||
-                        isPackageTypeCollapsed && packageType === item.group ||
-                        $scope.selectedDataset && $scope.selectedDataset.type === IMAGE_TYPES.smartmachine &&
-                        $scope.selectedDataset.os === 'linux' && item.name.indexOf('g3-') > -1)) {
+                        isPackageTypeCollapsed && packageType === item.group)) {
                         result = false;
                     } else if (packageType && packageType !== item.group) {
                         result = isPackageTypeCollapsed && $scope.collapsedPackageTypes.indexOf(item.group) === -1;
@@ -1009,16 +1004,10 @@
                         $q.when(Package.package({datacenter: newVal})),
                         $q.when(Provision.getCreatedMachines())
                     ];
-                    if ($scope.features.docker === 'enabled') {
-                        tasks.push($q.when(Docker.listHosts()));
-                    }
                     $qe.every(tasks).then(function (result) {
                         isAvailableSwitchDatacenter = true;
                         var datasets = getEmptyOnError(result[0]);
                         var packages = getEmptyOnError(result[1]);
-                        $scope.isSdcAvailable = (result[3] || []).some(function (host) {
-                            return $scope.isSdcDatacenter && host.isSdc && host.datacenter === newVal;
-                        });
 
                         Provision.processDatasets(datasets, function (result) {
                             $scope['operating_systems'] = result.operatingSystems;
