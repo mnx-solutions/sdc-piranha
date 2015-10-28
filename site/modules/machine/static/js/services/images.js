@@ -319,7 +319,7 @@
                 action = action || 'create';
                 var errorMessage = 'Unable to ' + action + ' image ' + (image.name || '') + '.';
                 if (isPopupMessage) {
-                    errorMessage += ' ' + capitalize(err.message || err);
+                    errorMessage += ' ' + capitalize(err.message || err).replace('available', 'available.');
                 }
                 if (err.restCode === 'NotAuthorized') {
                     errorMessage = err.message;
