@@ -665,6 +665,9 @@
                     $scope.isSdc = host.isSdc;
                     $scope.host = host;
                     $scope.container.HostConfig.VolumesFrom = [];
+                    $q.when(Docker.hasVmImages(host.datacenter)).then(function (hasVmImages) {
+                        $scope.hasVmImages = hasVmImages;
+                    });
 
                     if ($scope.preSelectedData) {
                         if ($scope.preSelectedData.host !== host.id) {

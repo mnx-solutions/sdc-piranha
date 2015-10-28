@@ -979,9 +979,7 @@
 
             var hasVmImages = function (images) {
                 images = images || $scope.datasets;
-                var result = images.some(function (image) {
-                    return image.type === IMAGE_TYPES.virtualmachine;
-                });
+                var result = Provision.hasVmImages(images, IMAGE_TYPES.virtualmachine);
                 if (!result && $location.path() === ROUTES.virtualMachine) {
                     $scope.selectInstanceType(INSTANCE_TYPES.container);
                 }

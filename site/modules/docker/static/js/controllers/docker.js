@@ -118,6 +118,9 @@
             Datacenter.datacenter().then(function (datacenters) {
                 $scope.datacenters = datacenters || [];
                 $scope.data.datacenter = $scope.datacenters[0].name;
+                $q.when(Docker.hasVmImages($scope.data.datacenter)).then(function (hasVmImages) {
+                    $scope.hasVmImages = hasVmImages;
+                });
             });
 
             $q.all([

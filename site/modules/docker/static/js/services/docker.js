@@ -1,8 +1,8 @@
 'use strict';
 
-(function (ng, app) {app.factory('Docker', ['serverTab', '$rootScope', 'errorContext', 'EventBubble', 'Machine',
-    'PopupDialog', 'localization', '$q', '$location', 'DockerCacheProvider', 'Storage', 'util', 'Account',
-    function (serverTab, $rootScope, errorContext, EventBubble, Machine, PopupDialog,
+(function (ng, app) {app.factory('Docker', ['serverTab', '$rootScope', 'errorContext', 'EventBubble', 'Machine', 'Image',
+    'PopupDialog', 'Provision', 'localization', '$q', '$location', 'DockerCacheProvider', 'Storage', 'util', 'Account',
+    function (serverTab, $rootScope, errorContext, EventBubble, Machine, Image, PopupDialog, Provision,
               localization, $q, $location, DockerCacheProvider, Storage, util, Account) {
 
         if ($rootScope.features.docker !== 'enabled') {
@@ -1085,6 +1085,14 @@
                 });
                 return linkedContainers;
             });
+        };
+
+        service.hasVmImages = function (datacenter) {
+            if (Provision.isCurrentLocation('compute/container|compute/docker/welcome') && datacenter) {
+                return $q.when(Image.image({datacenter: datacenter})).then(function (images) {
+                    return Provision.hasVmImages(images, 'virtualmachine');
+                });
+            }
         };
 
         service.hasLinkedContainers = function (machine) {

@@ -494,6 +494,12 @@
                 return $location.path().search(path) > -1;
             };
 
+            service.hasVmImages = function (images, imageType) {
+                return images.some(function (image) {
+                    return image.type === imageType;
+                });
+            };
+
             service.finalProvision = function (machine, datacenters, account, hostSpecification, callback) {
                 if (machine && !machine.dataset) {
                     return PopupDialog.message('Error', 'Instance not found.');
