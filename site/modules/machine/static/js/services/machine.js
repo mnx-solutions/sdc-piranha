@@ -123,7 +123,7 @@
 
             machine = wrapMachine(machine);
             machine.publicIps = machine.privateIps = [];
-            if (ng.isArray(machine.ips)) {
+            if (ng.isArray(machine.ips) && machine.ips.length) {
                 machine.publicIps = machine.ips.filter(function (ip) {
                     return !util.isPrivateIP(ip);
                 });
