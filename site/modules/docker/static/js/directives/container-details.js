@@ -121,17 +121,19 @@
                             }, errorCallback);
                         }, errorCallback);
 
-                        Docker.logsContainer(container).then(function (logs) {
-                            scope.containerLogs = [];
-                            if (logs && typeof (logs) === 'string') {
-                                logs = logs.split(/[\r\n]+/);
-                                if (Array.isArray(logs)) {
-                                    logs.forEach(function (str) {
-                                        scope.containerLogs.push(str);
-                                    });
-                                } else {
-                                    scope.containerLogs.push(logs);
-                                }
+                        Docker.logsContainer(container, {timestamps: false}).then(function (logs) {
+                            if (logs) {
+                                scope.containerLogs = logs = Array.isArray(logs) ? logs.join('\r\n') : logs;
+                                var terminal = new Terminal({
+                                    cols: 86,
+                                    rows: 0,
+                                    useStyle: true,
+                                    screenKeys: true
+                                });
+                                var terminalElement = document.getElementById('logsTerminal');
+                                terminalElement.innerHTML = '';
+                                terminal.open(terminalElement);
+                                terminal.write(logs);
                             }
                         }, errorCallback);
                     }

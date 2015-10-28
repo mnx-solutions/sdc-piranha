@@ -101,10 +101,8 @@
     padding: 15px 0;
 }
 .container-log {
-    overflow: auto;
-
     max-height: 1018px;
-    padding: 0 5px;
+    padding: 0;
 
     white-space: nowrap;
 
@@ -1113,8 +1111,8 @@ span .tag-editor {
     margin-bottom: 10px;
 }
 .pull-image {
-    padding: 3px 7px;
     box-sizing: border-box;
+    padding: 3px 7px;
 
     cursor: pointer;
 
