@@ -15,6 +15,7 @@
             var networks = {job: {}, index: {}, list: {fabric: false, vlan: []}, error: {}};
             var networksInfo = {};
             var NETWORKS_PATH = '/networks';
+            var defaultNetworkCache = {};
 
             var getMessage = function (network, action) {
                 action = action || 'create';
@@ -109,17 +110,34 @@
             };
 
             service.getNetworkConfig = function (datacenters) {
-                 var job = serverTab.call({
+                var job = serverTab.call({
                     name: 'GetNetworkConfig',
-                    data: {datacenters: datacenters}
+                    data: {datacenters: datacenters},
+                    done: function (error, job) {
+                        var data = job.__read();
+                        if (data && Object.keys(defaultNetworkCache).length) {
+                            Object.keys(data).forEach(function (key) {
+                                if (data[key] !== defaultNetworkCache[key]) {
+                                    data[key] = defaultNetworkCache[key];
+                                } else {
+                                    delete defaultNetworkCache[key];
+                                }
+                            });
+                        }
+                    }
                 });
                 return job.promise;
             };
 
             service.updateNetworkConfig = function (datacenter, defaultId) {
-                 var job = serverTab.call({
+                var job = serverTab.call({
                     name: 'UpdateNetworkConfig',
-                    data: {id: defaultId, datacenter: datacenter}
+                    data: {id: defaultId, datacenter: datacenter},
+                    done: function (error) {
+                        if (!error) {
+                           defaultNetworkCache[datacenter] = defaultId;
+                        }
+                    }
                 });
                 return job.promise;
             };
