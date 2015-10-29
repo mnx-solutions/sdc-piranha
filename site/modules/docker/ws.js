@@ -18,7 +18,6 @@ module.exports = function (app) {
 
     function close(socket, error) {
         var closeSocket = function (error) {
-            socket.log.info({cause: error}, 'Close socket');
             if (error) {
                 send(socket, error.message || error);
             }
@@ -44,7 +43,6 @@ module.exports = function (app) {
             }
             callback(data);
         });
-        socket.log.info('initConnection: send ready');
         send(socket, 'ready');
     }
 
@@ -56,19 +54,14 @@ module.exports = function (app) {
             delete parsedUrl.host;
             client.options.url = url.format(parsedUrl);
         }
-        client.log.info({host: data.host}, 'Exec call: exec start');
         client.execStart(util._extend({id: data.execId, headers: data.headers || {}}, data.options), function (error, req) {
             if (!data.host.isSdc) {
                 client.options.url = dockerUrl;
             }
             if (error) {
-                client.log.info({error: error}, 'Exec call: error!');
                 return close(socket, error);
             }
-
-            client.log.info({host: data.host}, 'Exec call: wait upgrade');
             req.on('upgrade', function (res, clientSocket) {
-                client.log.info({host: data.host}, 'Exec call: upgrade complete!');
                 socket.on('message', function (message) {
                     clientSocket.write(message.toString('UTF-8'));
                 });
@@ -81,7 +74,6 @@ module.exports = function (app) {
             });
             // hijak
             req.on('result', function (err, execRes) {
-                client.log.info({host: data.host, error: err}, 'Exec call: hijak!');
                 if (err) {
                     return close(socket, error);
                 }
@@ -141,19 +133,14 @@ module.exports = function (app) {
     }
 
     app.ws('/exec/:id', function (socket, req) {
-        req.log.info('Exec call, init connection');
-        socket.log = socket.log || req.log;
         initConnection(socket, function (data) {
-            req.log.info('Exec call, init complete');
             var client = Docker.createClient({log: req.log, req: req}, data.host);
-            client.log = client.log || req.log;
             data.execId = req.params.id;
             execStart(client, data, socket);
         });
     });
 
     app.ws('/stats/:id', function (socket, req) {
-        socket.log = socket.log || req.log;
         initConnection(socket, function (data) {
             var client = Docker.createClient({log: req.log, req: req}, data.host);
             client.getVersion(function (error, info) {
