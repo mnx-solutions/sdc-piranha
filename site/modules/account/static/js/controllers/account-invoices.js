@@ -19,13 +19,24 @@
             'requestContext',
             'Account',
             'BillingService',
+            'PopupDialog',
+            '$location',
             '$q',
-            function ($scope, requestContext, Account, BillingService, $q) {
+            function ($scope, requestContext, Account, BillingService, PopupDialog, $location, $q) {
             requestContext.setUpRenderContext('account.invoices', $scope);
 
             $scope.loading = true;
             $scope.isInvocesEnabled = $scope.features.invoices === 'enabled';
             $scope.invoices = [];
+
+            var scrollToInvoices = function () {
+                if ($location.path() === '/account/invoices') {
+                    // setTimeout allows to wait when all DOM elements will be available and then we can make correct scrolling.
+                    setTimeout(function () {
+                        document.getElementById('invoices').scrollIntoView();
+                    });
+                }
+            };
 
             if ($scope.isInvocesEnabled) {
                 Account.getAccount().then(function(account) {
@@ -40,18 +51,22 @@
                                     return invoice.status === 'Posted';
                                 });
                             }
-
-                            $scope.loading = false;
                         }, function (err) {
-                            $scope.loading = false;
                             $scope.error = err;
                             if (err === "Not Implemented") {
                                 $scope.isInvocesEnabled = false;
                             }
+                        }).finally(function () {
+                            $scope.loading = false;
+                            scrollToInvoices();
                         });
                     } else {
                         $scope.loading = false;
+                        scrollToInvoices();
                     }
+                }).catch(function (error) {
+                    $scope.loading = false;
+                    PopupDialog.errorObj(error);
                 });
             }
 

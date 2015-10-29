@@ -69,7 +69,7 @@
                     <legend><span>SSH</span></legend>
                     <div data-ssh-form data-is-sub-user-form="true"></div>
                 </fieldset>
-                <fieldset data-ng-controller="Account.InvoicesController" data-ng-if="isInvocesEnabled && !account.isSubuser">
+                <fieldset id="invoices" data-ng-controller="Account.InvoicesController" data-ng-if="isInvocesEnabled && !account.isSubuser">
                     <legend><span>Invoices</span></legend>
                     <div class="row">
                         <div class="loading-medium row full-width" data-ng-show="loading"></div>

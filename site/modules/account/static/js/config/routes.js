@@ -34,7 +34,7 @@ window.JP.main.config(['routeProvider', function (routeProvider) {
     if (features && features.invoices !== 'disabled') {
         routeProvider.when('/account/invoices', {
             title: 'Invoices',
-            action: 'account.invoices',
+            action: 'account.index',
             resolve: masterUserResolve
         });
     }
