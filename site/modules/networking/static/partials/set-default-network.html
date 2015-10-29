@@ -17,9 +17,9 @@
                                        search-enabled="false"
                                        on-select="newNetwork.id = $select.selected.id"
                                        ng-disabled="loading">
-                                <ui-select-match>{{$select.selected.id + " (" + $select.selected.name + ")"}}</ui-select-match>
+                                <ui-select-match>{{$select.selected.name + " (" + $select.selected.id + ")"}}</ui-select-match>
                                 <ui-select-choices repeat="network.id as network in networks">
-                                    {{network.id + " (" + network.name + ")"}}
+                                    {{network.name + " (" + network.id + ")"}}
                                 </ui-select-choices>
                             </ui-select>
                         </span>
