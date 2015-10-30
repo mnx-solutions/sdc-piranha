@@ -36,6 +36,7 @@
                 $scope.network.defaultForDocker = 'no';
                 if ($scope.network.datacenter) {
                     Network.getNetworkConfig($scope.network.datacenter).then(function (config) {
+                        config = config.defaultNetworks || {};
                         setCurrentDefaultNetwork(config[$scope.network.datacenter]);
                     }, function (error) {
                         PopupDialog.errorObj(error);

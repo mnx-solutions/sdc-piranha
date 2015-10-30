@@ -7,9 +7,10 @@
         'localization',
         'errorContext',
         'Machine',
+        'PopupDialog',
         'util',
         'notification',
-        function (serverTab, $q, localization, errorContext, Machine, util, notification) {
+        function (serverTab, $q, localization, errorContext, Machine, PopupDialog, util, notification) {
 
             var service = {};
             var networks = {job: {}, index: {}, list: {fabric: false, vlan: []}, error: {}};
@@ -115,10 +116,14 @@
                     data: {datacenters: datacenters},
                     done: function (error, job) {
                         var data = job.__read();
-                        if (data && Object.keys(defaultNetworkCache).length) {
-                            Object.keys(data).forEach(function (key) {
-                                if (data[key] !== defaultNetworkCache[key]) {
-                                    data[key] = defaultNetworkCache[key];
+                        var defaultNetworks = data.defaultNetworks;
+                        if (data.error) {
+                            PopupDialog.errorObj(data.error);
+                        }
+                        if (defaultNetworks && Object.keys(defaultNetworkCache).length) {
+                            Object.keys(defaultNetworks).forEach(function (key) {
+                                if (defaultNetworks[key] !== defaultNetworkCache[key]) {
+                                    defaultNetworks[key] = defaultNetworkCache[key];
                                 } else {
                                     delete defaultNetworkCache[key];
                                 }

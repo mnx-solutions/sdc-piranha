@@ -24,7 +24,7 @@
                 Network.getNetworkConfig(datacenters)
             ]).then(function (results) {
                 $scope.networks = results[0] || [];
-                var defaultNetworks = results[1] || {};
+                var defaultNetworks = results[1].defaultNetworks || {};
                 $scope.networks.forEach(function (network) {
                     network.defaultForDocker = defaultNetworks[network.datacenter] === network.id ? 'yes' : 'no';
                 });

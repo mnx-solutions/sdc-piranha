@@ -34,13 +34,17 @@ module.exports = function execute() {
             }, function (vasyncErrors, operations) {
                 var data = utils.getVasyncData(vasyncErrors, operations);
                 var defaultNetworks = null;
+                var error = data.error;
+                if (error && error.message === 'Error getting config') {
+                    error = null;
+                }
                 if (data.result) {
                     defaultNetworks = {};
                     data.result.forEach(function (network) {
                         defaultNetworks[network.datacenter] = network.default_network;
                     });
                 }
-                call.done(data.error, defaultNetworks);
+                call.done(null, {defaultNetworks: defaultNetworks, error: error});
             });
         }
     });
