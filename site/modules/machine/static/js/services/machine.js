@@ -125,9 +125,11 @@
             machine.publicIps = machine.privateIps = [];
             if (ng.isArray(machine.ips) && machine.ips.length) {
                 machine.publicIps = machine.ips.filter(function (ip) {
-                    return !util.isPrivateIP(ip);
+                    return ip && !util.isPrivateIP(ip);
                 });
-                machine.privateIps = machine.ips.filter(util.isPrivateIP);
+                machine.privateIps = machine.ips.filter(function (ip) {
+                    return ip && util.isPrivateIP(ip);
+                });
             }
 
             if (machines.index[machine.id]) {
