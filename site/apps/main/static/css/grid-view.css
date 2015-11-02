@@ -21,17 +21,14 @@
 }
 
 .tabs-container {
+    box-sizing: content-box;
     height: 30px;
-    margin-top: 5px;
-    margin-bottom: 10px;
-
-    border-bottom: 1px solid #ddd;
+    margin: 0 0 -1px 0;
 }
 
-.grid-container .tabs-container {
-    margin: 0 0 -1.1px 0;
-
-    border-bottom: none;
+.tabs-selector {
+    width: 100%;
+    margin-bottom: 10px;
 }
 
 .grid-container .tabs-container .datacenter-select {
@@ -49,12 +46,17 @@
     line-height: 33px;
 }
 
+label.tabs {
+    box-sizing: content-box;
+    margin-bottom: 0;
+}
+
 .tabs {
-    height: 30px;
+    height: 20px;
     margin-right: 2px;
     padding: 4px 10px;
 
-    border: 1px solid #ccc;
+    border: 1px solid #ddd;
     background: #ebebeb;
 
     font-size: 14px;
@@ -70,7 +72,7 @@
 
 .tab-radio:checked + .tabs {
     border-color: #ddd;
-    border-bottom: 1px solid #fff;
+    border-bottom: 1.1px solid #fff;
     background: #fff;
 }
 
@@ -276,7 +278,7 @@ input.filter-field::-ms-clear {
     background-image: url('../img/icon-unsorted.png');
 }
 .filter-wrapper {
-    margin-bottom: .9%;
+    margin-bottom: 15px;
 }
 .filter-wrapper td:first-child {
     padding-top: 5px;
@@ -293,6 +295,7 @@ input.filter-field::-ms-clear {
 .tabs-line {
     border-bottom: 1px solid #ddd;
 }
+
 .per-page-select {
     width: 65px;
 }

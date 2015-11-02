@@ -1,11 +1,18 @@
-<div class="tabs-container">
-    <span data-ng-repeat="tab in tabs">
-        <input type="radio"
-               name="{{tab}}"
-               id="tab{{tab}}"
-               class="tab-radio"
-               data-ng-click="setActive(tab)"
-               data-ng-checked="isActive(tab)"/>
-        <label for="tab{{tab}}" class="tabs dashboard">{{tab}}</label>
-    </span>
-</div>
+<table class="tabs-wrapper tabs-line tabs-selector">
+    <tr>
+        <td>
+            <div class="tabs-container">
+                <span data-ng-repeat="tab in tabs">
+                    <input type="radio"
+                           name="{{tab}}"
+                           id="tab{{tab}}"
+                           class="tab-radio"
+                           data-ng-click="setActive(tab)"
+                           data-ng-checked="isActive(tab)"/>
+                    <label for="tab{{tab}}" class="tabs">{{tab}}</label>
+                </span>
+            </div>
+        </td>
+    </tr>
+</table>
+
