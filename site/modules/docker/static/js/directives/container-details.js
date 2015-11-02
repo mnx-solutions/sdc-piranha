@@ -131,9 +131,11 @@
                                     screenKeys: true
                                 });
                                 var terminalElement = document.getElementById('logsTerminal');
-                                terminalElement.innerHTML = '';
-                                terminal.open(terminalElement);
-                                terminal.write(logs);
+                                if (terminalElement) {
+                                    terminalElement.innerHTML = '';
+                                    terminal.open(terminalElement);
+                                    terminal.write(logs);
+                                }
                             }
                         }, errorCallback);
                     }
