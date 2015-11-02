@@ -1046,7 +1046,6 @@ uis.directive('uiSelect',
           // it might stick around when the user routes away or the select field is otherwise removed
           scope.$on('$destroy', function() {
             resetDropdown();
-            setCorrectPosition();
           });
         }
 
