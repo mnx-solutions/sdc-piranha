@@ -45,7 +45,7 @@
                 <ui-select data-ng-model="selectedInstance"
                            theme="select2"
                            search-enabled="false"
-                           on-select="changeInstance()"
+                           on-select="changeInstance($item)"
                            data-ng-show="zones.final">
                     <ui-select-match placeholder="-- Choose Instance --">{{$select.selected.name}}</ui-select-match>
                     <ui-select-choices repeat="item.id as item in zones">

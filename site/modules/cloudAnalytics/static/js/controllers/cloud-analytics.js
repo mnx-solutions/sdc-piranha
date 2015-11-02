@@ -284,7 +284,8 @@
                 });
             };
 
-            $scope.changeInstance = function () {
+            $scope.changeInstance = function (machine) {
+                $scope.selectedInstance = machine.id;
                 CloudAnalytics.stopPolling({datacenter: $scope.datacenter, zoneId: $scope.machineid}, function () {
                     $q.when(Machine.machine($scope.selectedInstance)).then(createDefaultVariables);
                     $location.path('/cloudAnalytics/' + $scope.selectedInstance);
