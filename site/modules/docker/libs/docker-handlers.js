@@ -345,6 +345,7 @@ var run = function (call, callback) {
     var pipeline = [];
     var dockerClient = Docker.createClient(call, host);
     var auditor = dockerClient.auditor;
+    var containerId;
 
     pipeline.push(function listImages(collector, callback) {
         dockerClient.images({}, function (error, images) {
@@ -370,7 +371,7 @@ var run = function (call, callback) {
 
     pipeline.push(function createContainer(collector, callback) {
         dockerClient.create(createOptions, function (error, response) {
-            startOptions.id = response && response.Id;
+            containerId = startOptions.id = response && response.Id;
             callback(error);
         });
     });
@@ -406,9 +407,9 @@ var run = function (call, callback) {
             }, util._extend(options, {error: true, errorMessage: error.message || error}));
         }
         if (typeof callback === 'function') {
-            callback(error);
+            callback(error, containerId);
         } else {
-            call.done(error);
+            call.done(error, containerId);
         }
     });
 };

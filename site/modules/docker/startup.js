@@ -423,15 +423,16 @@ var Docker = function execute(log, config) {
             var provisioningContainer = call.data.provisioningContainer;
             var containerFakeId = provisioningContainer.Id;
             cache.set(containerFakeId, provisioningContainer);
-            call.done();
-            DockerHandler.run(call, function (error) {
+            DockerHandler.run(call, function (error, containerId) {
                 if (error) {
                     var container = cache.get(containerFakeId);
                     container.actionInProgress = false;
                     container.error = error;
                     cache.set(containerFakeId, container);
+                    call.done();
                 } else {
                     cache.del(containerFakeId);
+                    call.done(null, containerId);
                 }
             });
         }

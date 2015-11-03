@@ -1,15 +1,16 @@
 'use strict';
 
 (function (ng, app) {app.factory('Docker', ['serverTab', '$rootScope', 'errorContext', 'EventBubble', 'Machine', 'Image',
-    'PopupDialog', 'Provision', 'localization', '$q', '$location', 'DockerCacheProvider', 'Storage', 'util', 'Account',
+    'PopupDialog', 'Provision', 'localization', '$q', '$location', 'DockerCacheProvider', 'Storage', 'util', 'Account', 'notification',
     function (serverTab, $rootScope, errorContext, EventBubble, Machine, Image, PopupDialog, Provision,
-              localization, $q, $location, DockerCacheProvider, Storage, util, Account) {
+              localization, $q, $location, DockerCacheProvider, Storage, util, Account, notification) {
 
         var dockerVersions = window.JP.get('dockerVersions');
         if ($rootScope.features && $rootScope.features.docker !== 'enabled' || !dockerVersions) {
             return;
         }
 
+        var CONTAINER_CREATE = 'create';
         var CONTAINER_ACTIONS = {
             start: 'start',
             restart: 'restart',
@@ -43,6 +44,17 @@
             });
         };
 
+        function showNotification(containerId, action) {
+            var path = $location.path();
+            if (containerId && action && path.indexOf('/docker/containers') === -1 && path.indexOf(containerId) === -1) {
+                action = ['created', 'started', 'stopped', 'paused',
+                    'unpaused', 'removed', 'restarted', 'killed'].find(function (actionInPast) {
+                        return actionInPast.indexOf(action) !== -1;
+                    });
+                notification.success('Container "' + containerId.slice(0, 12) + '" is successfully ' + action + '.');
+            }
+        }
+
         $rootScope.$on('clearDockerCache', function(event, data) {
             if (data) {
                 service.hostInfo({host: data, wait: true}).then(function () {
@@ -55,44 +67,58 @@
         });
 
         var containerDoneHandler = {
+            handler: function (options) {
+                var container = options.cache.get(options.id);
+                if (container && container.Status) {
+                    switch (options.action) {
+                        case CONTAINER_ACTIONS.pause:
+                            container.Status += options.status;
+                            break;
+                        case CONTAINER_ACTIONS.unpause:
+                            container.Status = container.Status.replace(options.status, '');
+                            break;
+                        default:
+                            container.Status = options.status;
+                    }
+                    container.state = options.state || container.state;
+                    options.cache.put(container);
+                }
+            },
             create: function (cache) {
                 cache.reset();
             },
-            start: function (cache, id) {
-                var container = cache.get(id);
-                if (container && container.Status) {
-                    container.state = 'running';
-                    container.Status = 'Up moments ago';
-                    cache.put(container);
-                }
+            start: function (cache, id, action) {
+                this.handler({
+                    action: action,
+                    cache: cache,
+                    id: id,
+                    status: 'Up moments ago',
+                    state: 'running'
+                });
             },
-            stop: function (cache, id) {
-                var container = cache.get(id);
-                if (container && container.Status) {
-                    container.state = 'stopped';
-                    container.Status = 'Exited (-1) moments ago';
-                    cache.put(container);
-                }
+            stop: function (cache, id, action) {
+                this.handler({
+                    action: action,
+                    cache: cache,
+                    id: id,
+                    status: 'Exited (-1) moments ago',
+                    state: 'stopped'
+                });
             },
-            pause: function (cache, id) {
-                var container = cache.get(id);
-                if (container && container.Status) {
-                    container.Status += ' (Paused)';
-                    cache.put(container);
-                }
-            },
-            unpause: function (cache, id) {
-                var container = cache.get(id);
-                if (container && container.Status) {
-                    container.Status = container.Status.replace(' (Paused)', '');
-                    cache.put(container);
-                }
+            pause: function (cache, id, action) {
+                this.handler({
+                    action: action,
+                    cache: cache,
+                    id: id,
+                    status: ' (Paused)'
+                });
             },
             remove: function (cache, id) {
                 service.cache['registriesList'].reset();
                 cache.remove(id);
             }
         };
+        containerDoneHandler.unpause = containerDoneHandler.pause;
         containerDoneHandler.restart = containerDoneHandler.start;
         containerDoneHandler.kill = containerDoneHandler.stop;
 
@@ -190,19 +216,19 @@
                 }
             };
             resetCache();
+            if ($location.path().indexOf('/container/create') !== -1) {
+                if ($location.search().host === host.id) {
+                    $location.path('/docker/containers');
+                } else {
+                    $location.url('/docker/containers');
+                }
+            }
             var job = serverTab.call({
                 name: 'DockerRun',
                 data: {host: host, options: options, provisioningContainer: provisioningContainer},
-                done: function () {
+                done: function (error, job) {
+                    showNotification(job.__read(), CONTAINER_CREATE);
                     resetCache();
-                    if ($location.path().indexOf('/docker/container/create') !== -1 ||
-                        $location.path().indexOf('/compute/container/create') !== -1) {
-                        if ($location.search().host === host.id) {
-                            $location.path('/docker/containers');
-                        } else {
-                            $location.url('/docker/containers');
-                        }
-                    }
                 }
             });
             return job.promise;
@@ -532,8 +558,11 @@
                                 action !== CONTAINER_ACTIONS.unpause) {
                                 PopupDialog.errorObj('Cannot ' + action + ' container ' + container.Id +
                                     '. Container ' + container.Id + '  is paused. Unpause the container.');
-                            } else if (cache) {
-                                containerDoneHandler[action](cache, options.options.id);
+                            } else {
+                                showNotification(options.options.id, action);
+                                if (cache) {
+                                    containerDoneHandler[action](cache, options.options.id, action);
+                                }
                             }
                         }
                         var data = job.__read();
