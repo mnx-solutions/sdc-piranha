@@ -34,13 +34,17 @@
                     // setTimeout allows to wait when all DOM elements will be available and then we can make correct scrolling.
                     setTimeout(function () {
                         document.getElementById('invoices').scrollIntoView();
-                    });
+                        if ($scope.loading) {
+                            scrollToInvoices();
+                        }
+                    }, 1000);
                 }
             };
 
             if ($scope.isInvocesEnabled) {
                 Account.getAccount().then(function(account) {
                     if (account.provisionEnabled && !account.isSubuser) {
+                        scrollToInvoices();
                         $q.all([
                             $q.when(BillingService.getInvoices())
                         ]).then(function (results) {
@@ -58,11 +62,9 @@
                             }
                         }).finally(function () {
                             $scope.loading = false;
-                            scrollToInvoices();
                         });
                     } else {
                         $scope.loading = false;
-                        scrollToInvoices();
                     }
                 }).catch(function (error) {
                     $scope.loading = false;
