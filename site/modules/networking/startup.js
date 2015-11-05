@@ -144,15 +144,14 @@ module.exports = function execute() {
                     func: function (network, callback) {
                         call.cloud.separate(network.datacenter).deleteFabricNetwork(network.vlan_id, network.id, function (err) {
                             if (err) {
-                                call.update(null, {status: 'error', error: err});
-                                return callback(null, []);
+                                return callback(null, {status: 'error', error: err, network: network});
                             }
-                            call.update(null, network);
-                            callback(null);
+                            callback(null, network);
                         });
                     }
-                }, function (vasyncErrors) {
-                    call.done(utils.getVasyncData(vasyncErrors).error);
+                }, function (vasyncErrors, operations) {
+                    var data = utils.getVasyncData(vasyncErrors, operations);
+                    call.done(data.error, data.result);
                 });
             }
         });

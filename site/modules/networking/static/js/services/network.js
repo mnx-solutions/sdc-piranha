@@ -227,26 +227,27 @@
                 var job = serverTab.call({
                     name: 'FabricNetworksDelete',
                     data: networksList,
-                    progress: function (err, job) {
-                        var data = job.__read();
-                        if (Array.isArray(data)) {
-                            data = data[0];
-                        }
-                        if (err || data.error) {
-                            notification.notify(NETWORKS_PATH, getMessage(data, 'delete'), err || data.error);
-                        } else if (networks.index[data.id]) {
-                            networks.list.vlan.forEach(function (network, index) {
-                                if (network.id === data.id) {
-                                    networks.list.vlan.splice(index, 1);
-                                }
-                            });
-                            delete networks.index[data.id];
-                        }
-                    },
-                    done: function (err) {
+                    done: function (err, job) {
                         if (err) {
                             notification.notify(NETWORKS_PATH, getMessage(null, 'delete'), err);
                         }
+                        var deletedNetworks = job.__read();
+                        deletedNetworks.forEach(function (deletedNetwork) {
+                            if (deletedNetwork.error) {
+                                notification.notify(NETWORKS_PATH, getMessage(deletedNetwork, 'delete'), deletedNetwork.error);
+                                var network = networks.list.vlan.find(function (network) {
+                                    return deletedNetwork.network && deletedNetwork.network.id === network.id;
+                                });
+                                if (network) {
+                                    network.actionInProgress = network.checked = false;
+                                }
+                            } else if (networks.index[deletedNetwork.id]) {
+                                networks.list.vlan = networks.list.vlan.filter(function (network) {
+                                    return network.id !== deletedNetwork.id;
+                                });
+                                delete networks.index[deletedNetwork.id];
+                            }
+                        });
                         networks.list.fabric = Object.keys(networks.index).map(function (key) {
                             return networks.index[key];
                         });

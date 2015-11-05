@@ -49,7 +49,10 @@
                     active: true,
                     sequence: 1,
                     _order: 'name',
-                    type: 'html',
+                    type: 'progress',
+                    _inProgress: function (network) {
+                        return network.actionInProgress;
+                    },
                     _getter: function (network) {
                         if (network.fabric) {
                             return '<a href="#!/network/networks/' + network.id + '">' + network.name + '</a>';
@@ -114,7 +117,19 @@
                             'network',
                             $scope.checkedItems.length,
                             function () {
-                                Network.deleteNetworks($scope.checkedItems);
+                                $scope.checkedItems.forEach(function (network) {
+                                    network.actionInProgress = true;
+                                });
+                                Network.deleteNetworks($scope.checkedItems).done(function (err, job) {
+                                    var deletedNetworks = job.__read();
+                                    $scope.networks = $scope.networks.filter(function (network) {
+                                        return deletedNetworks.every(function (deletedNetwork) {
+                                            return deletedNetwork.error && network.id === deletedNetwork.network.id ||
+                                                network.id !== deletedNetwork.id;
+                                        });
+                                    });
+                                    $scope.checkedItems = [];
+                                });
                             }
                         );
                     },
