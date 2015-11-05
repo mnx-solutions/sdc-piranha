@@ -211,6 +211,7 @@
                             $rootScope.commonConfig('provisionBundle', bundleData);
                             return $location.path('/compute/ssh');
                         }
+                        $rootScope.commonConfig('datacenter', $scope.data.datacenter);
                         Provision.finalProvision(data, $scope.datacenters, $scope.account, hostSpecification, function () {
                             $scope.provisioningInProgress = false;
                         });
