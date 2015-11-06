@@ -827,7 +827,8 @@
                             $scope.refreshSelects();
                             $scope.disableSelect = true;
 
-                            $scope.tabFilterUpdate = $scope.changeTab = $scope.data.datacenter;
+                            $scope.tabFilterUpdate = $scope.changeTab = $scope.selected.datacenter =
+                                $scope.data.datacenter;
 
                             $scope.openRuleForm = true;
 
