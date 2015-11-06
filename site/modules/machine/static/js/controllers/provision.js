@@ -1070,6 +1070,7 @@
             });
 
             $scope.slideCarousel = function (step) {
+                ng.element('html, body').scrollTop(0);
                 ng.element('.carousel-inner').scrollTop(step || 0);
                 ng.element('.carousel').carousel(typeof step === 'number' ? step : 'next');
             };
