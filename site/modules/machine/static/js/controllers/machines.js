@@ -20,7 +20,7 @@
         function ($scope, $$track, $q, requestContext, Machine, Image, Package, localization, PopupDialog, $location, firewall, $rootScope, Account, FreeTier, Docker) {
             localization.bind('machine', $scope);
             requestContext.setUpRenderContext('machine.index', $scope, {
-                title: localization.translate(null, 'machine', 'See my ' + $scope.companyName + ' Instances')
+                title: localization.translate(null, 'machine', 'See my ' + $scope.company.name + ' Instances')
             });
             var currentLocation = $location.path();
             $scope.loading = true;

@@ -10,7 +10,7 @@
 
             link: function (scope) {
                 requestContext.setUpRenderContext('docker.details', scope, {
-                    title: localization.translate(null, 'docker', 'View ' + scope.companyName + ' Container Details')
+                    title: localization.translate(null, 'docker', 'View ' + scope.company.name + ' Container Details')
                 });
                 var containerId = requestContext.getParam('containerid');
                 var hostId = requestContext.getParam('hostid');

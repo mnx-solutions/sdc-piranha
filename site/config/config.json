@@ -200,7 +200,11 @@
     "dtrace",
     "networking"
   ],
-  "companyName": "Joyent",
+  "company": {
+    "name": "Joyent",
+    "supportUrl": "https://help.joyent.com/home",
+    "devCenterUrl": "http://www.joyent.com/developers"
+  },
   "features": {
     "privateSdc": "disabled",
     "fullVersion": "enabled",

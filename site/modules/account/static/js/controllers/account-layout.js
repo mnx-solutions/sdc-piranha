@@ -24,7 +24,7 @@
 
         function ($scope, requestContext, localization, notification, Account, BillingService) {
             requestContext.setUpRenderContext('account', $scope, {
-                title: localization.translate(null, 'account', 'Manage My ' + $scope.companyName + ' Account')
+                title: localization.translate(null, 'account', 'Manage My ' + $scope.company.name + ' Account')
             });
 
             $scope.account = Account.getAccount();

@@ -26,7 +26,7 @@
 
             localization.bind('machine', $scope);
             requestContext.setUpRenderContext('machine.provision', $scope, {
-                title: localization.translate(null, 'machine', 'Create Instances on ' + $scope.companyName)
+                title: localization.translate(null, 'machine', 'Create Instances on ' + $scope.company.name)
             });
             Machine.initCreateInstancePageConfig();
             var sdcDatacenters = window.JP.get('sdcDatacenters') || [];

@@ -8,7 +8,7 @@
 
         function ($scope, requestContext, localization) {
             requestContext.setUpRenderContext('firewall', $scope, {
-                title: localization.translate(null, 'firewall', $scope.companyName + ' Management Portal')
+                title: localization.translate(null, 'firewall', $scope.company.name + ' Management Portal')
             });
         }
     ]);

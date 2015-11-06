@@ -8,7 +8,7 @@
 
         function ($scope, requestContext, localization) {
             requestContext.setUpRenderContext('slb', $scope, {
-                title: localization.translate(null, 'slb', $scope.companyName + ' Management Portal')
+                title: localization.translate(null, 'slb', $scope.company.name + ' Management Portal')
             });
         }
     ]);

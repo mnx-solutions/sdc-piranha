@@ -15,7 +15,7 @@
         function ($scope, Docker, Machine, PopupDialog, $qe, requestContext, localization, $location, util, dockerPushImage) {
             localization.bind('docker', $scope);
             requestContext.setUpRenderContext('docker.images-details', $scope, {
-                title: localization.translate(null, 'docker', 'View ' + $scope.companyName + ' Image Details')
+                title: localization.translate(null, 'docker', 'View ' + $scope.company.name + ' Image Details')
             });
 
             var imageId = requestContext.getParam('imageid');

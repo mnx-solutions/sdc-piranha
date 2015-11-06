@@ -17,10 +17,10 @@
         function ($scope, $rootScope, $route, $routeParams, $window, $$track, requestContext, $location, errorContext, localization, $http) {
             $rootScope.features = window.JP.get('features') || {};
             $rootScope.wsPort = window.JP.get('wsPort') || 8443;
-            $rootScope.companyName = window.JP.get('companyName') || '';
+            $rootScope.company = window.JP.get('company') || {name: ''};
 
             $scope.isFeedbackEnabled = $rootScope.features.feedback === 'enabled';
-            $scope.windowTitle = $rootScope.companyName;
+            $scope.windowTitle = $rootScope.company.name;
 
             $scope.setWindowTitle = function (title) {
                 $scope.windowTitle = title;

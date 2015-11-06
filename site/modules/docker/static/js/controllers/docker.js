@@ -20,7 +20,7 @@
         function ($scope, $rootScope, $q, requestContext, localization, $location, Datacenter, Image, PopupDialog, Provision, Docker, Account, Storage, CloudAnalytics) {
             localization.bind('docker.index', $scope);
             requestContext.setUpRenderContext('docker.index', $scope, {
-                title: localization.translate(null, 'docker', 'See my ' + $scope.companyName + ' Docker Instances')
+                title: localization.translate(null, 'docker', 'See my ' + $scope.company.name + ' Docker Instances')
             });
 
             var UBUNTU_IMAGE_NAME = 'ubuntu-certified-14.04';

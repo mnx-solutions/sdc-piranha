@@ -8,7 +8,7 @@
 
         function ($scope, requestContext, localization) {
             requestContext.setUpRenderContext('cloudAnalytics', $scope, {
-                title: localization.translate(null, 'cloudAnalytics', 'Analyze ' + $scope.companyName + ' Performance')
+                title: localization.translate(null, 'cloudAnalytics', 'Analyze ' + $scope.company.name + ' Performance')
             });
         }
     ]);

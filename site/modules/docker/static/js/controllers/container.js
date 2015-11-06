@@ -16,7 +16,7 @@
         function ($scope, Docker, Machine, PopupDialog, $q, requestContext, localization, $location, $timeout, adviserGraph, util) {
             localization.bind('docker', $scope);
             requestContext.setUpRenderContext('docker.details', $scope, {
-                title: localization.translate(null, 'docker', 'View ' + $scope.companyName + ' Container Details')
+                title: localization.translate(null, 'docker', 'View ' + $scope.company.name + ' Container Details')
             });
 
             var containerId = requestContext.getParam('containerid');

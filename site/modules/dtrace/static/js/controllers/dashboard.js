@@ -18,7 +18,7 @@
         function ($scope, $rootScope, $q, requestContext, localization, $location, Datacenter, Storage, Image, PopupDialog, DTrace, Account, util) {
             localization.bind('dtrace.index', $scope);
             requestContext.setUpRenderContext('dtrace.index', $scope, {
-                title: localization.translate(null, 'dtrace', 'See my ' + $scope.companyName + ' DTrace Instances')
+                title: localization.translate(null, 'dtrace', 'See my ' + $scope.company.name + ' DTrace Instances')
             });
 
             var DTRACE_IMAGE_OS = 'smartos';

@@ -29,11 +29,11 @@
                 </ul>
             </span>
             
-            <a href="https://help.joyent.com/home" target="_blank">
+            <a ng-href="{{company.supportUrl}}" target="_blank" data-ng-hide="!company.supportUrl">
                 <i class="support-icon"></i>
                 <span>Support</span>
             </a>
-            <a href="http://www.joyent.com/developers" target="_blank">
+            <a ng-href="{{company.devCenterUrl}}" target="_blank" data-ng-hide="!company.devCenterUrl">
                 <i class="dev-center-icon"></i>
                 <span>DevCenter</span>
             </a>
