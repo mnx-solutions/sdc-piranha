@@ -28,6 +28,10 @@
                     <create-instance-link path="create/simple"
                                           action="clickBackToQuickStart()">
                     </create-instance-link>
+                    <create-instance-link path="create/custom"
+                                          type="custom"
+                                          action="selectInstanceType(type)">
+                    </create-instance-link>
                     <create-instance-link path="container/create"
                                           data-ng-if="features.docker == 'enabled'"
                                           type="container"

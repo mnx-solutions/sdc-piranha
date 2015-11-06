@@ -32,7 +32,7 @@
         No {{instanceType | lowercase}} images in this data center.
     </div>
     <div ng-show="filteredDatasets.length && !reloading">
-        <div data-ng-if="!filterModel.searchText && popularImages.length && (filteredDatasets | filter: filterPopularImages).length">
+        <div data-ng-if="!isCurrentLocation('/create/custom') && !filterModel.searchText && popularImages.length && (filteredDatasets | filter: filterPopularImages).length">
             <h4 class="page-title no-breadcrumb-line container-min-width" data-translate>Popular Images</h4>
             <div class="row">
                 <div data-ng-repeat="dataset in filteredDatasets | filter: filterPopularImages | orderBy: ['type','name'] | limitTo: 10">

@@ -48,11 +48,13 @@
             };
             var INSTANCE_TYPES = {
                 container: 'native-container',
-                machine: 'virtual-machine'
+                machine: 'virtual-machine',
+                custom: 'custom'
             };
             var ROUTES = {
                 nativeContainer: '/compute/create/' + INSTANCE_TYPES.container,
                 virtualMachine: '/compute/create/' + INSTANCE_TYPES.machine,
+                custom: '/compute/create/' + INSTANCE_TYPES.custom,
                 container: '/compute/container/create'
             };
 
@@ -96,8 +98,12 @@
 
             $scope.filterModel = {};
             $scope.sshModel = {isSSHStep: false};
-            $scope.instanceType = (preSelectedImageId || $location.path() === ROUTES.nativeContainer) ?
-                INSTANCE_TYPES.container : INSTANCE_TYPES.machine;
+            $scope.instanceType = INSTANCE_TYPES.machine;
+            if ($location.path() === ROUTES.nativeContainer) {
+                $scope.instanceType = INSTANCE_TYPES.container;
+            } else if (preSelectedImageId || $location.path() === ROUTES.custom) {
+                $scope.instanceType = INSTANCE_TYPES.custom;
+            }
 
             if (preSelectedData && preSelectedData.preSelectedImageId) {
                 preSelectedImageId = preSelectedData.preSelectedImageId;
@@ -564,6 +570,9 @@
                     preSelectedImageId = null;
                     externalInstanceParams = null;
                     $location.search('specification', null);
+                    if (requestContext.getParam('imageid')) {
+                        $location.path(ROUTES.custom);
+                    }
                 }
                 if (step !== REVIEW_STEP) {
                     if ($scope.networks && $scope.networks.length) {
@@ -740,15 +749,17 @@
             };
 
             $scope.filterDatasetsByOS = function (item) {
-                return $scope.data.opsys === 'All' || item.os.match($scope.data.opsys);
+                return $scope.data.opsys === 'All' || item.os && item.os.match($scope.data.opsys);
             };
 
             $scope.filterDatasetsByVisibility = function (item) {
                 var result = false;
                 if ($scope.instanceType === INSTANCE_TYPES.container) {
-                    result = item.type === IMAGE_TYPES.smartmachine;
+                    result = item.public && item.type === IMAGE_TYPES.smartmachine;
                 } else if ($scope.instanceType === INSTANCE_TYPES.machine) {
-                    result = item.type === IMAGE_TYPES.virtualmachine;
+                    result = item.public && item.type === IMAGE_TYPES.virtualmachine;
+                } else if ($scope.instanceType === INSTANCE_TYPES.custom) {
+                    result = !item.public;
                 }
                 if ($scope.features.imageUse !== 'disabled') {
                     result = item.state === 'active' && result;
@@ -775,6 +786,9 @@
                 } else if (type === 'container') {
                     $location.path(ROUTES.container);
                     $scope.setCreateInstancePage('container');
+                } else if (type === 'custom') {
+                    $location.path(ROUTES.custom);
+                    $scope.setCreateInstancePage('custom');
                 }
             };
 

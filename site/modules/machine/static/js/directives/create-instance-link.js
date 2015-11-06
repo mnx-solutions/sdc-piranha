@@ -1,7 +1,7 @@
 'use strict';
 
 (function (app) {
-    app.directive('createInstanceLink', ['$location', function ($location) {
+    app.directive('createInstanceLink', ['requestContext', '$location', function (requestContext, $location) {
         return {
             restrict: 'E',
             scope: {
@@ -15,6 +15,10 @@
                         $scope.linkTitle = 'Docker';
                         break;
 
+                    case 'custom':
+                        $scope.linkTitle = 'Saved';
+                        break;
+
                     case 'native-container':
                         $scope.linkTitle = 'Infrastructure Container';
                         break;
@@ -26,10 +30,16 @@
                     default:
                         $scope.linkTitle = 'Quick';
                 }
+
                 $scope.checkIsLinkActive = function () {
+                    var preSelectedImageId = requestContext.getParam('imageid') === 'custom' ? null :
+                        requestContext.getParam('imageid');
                     var path = $scope.path;
                     if ($scope.type === 'container') {
                         path += '|compute/docker/welcome';
+                    }
+                    if (preSelectedImageId && !$location.search().specification) {
+                        path = path.replace('custom', preSelectedImageId);
                     }
                     $scope.isLinkActive = $location.path().search(path) > -1;
                     return $scope.isLinkActive;
