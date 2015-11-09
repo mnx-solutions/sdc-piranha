@@ -711,7 +711,6 @@
 
                     $scope.data.dataset = dataset.id;
                     $scope.selectedDataset = dataset;
-                    $scope.filterModel.searchText = '';
                     dataset.visibility = dataset.public ? 'public' : 'custom';
 
                     setPackagesPrice(dataset);
