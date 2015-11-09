@@ -298,7 +298,10 @@
                 $scope.current.decomposition.primary = null;
                 $scope.current.decomposition.secondary = null;
                 $scope.current.decomposition.secondaryF = null;
-                $scope.metricFields = util.objectToArray($scope.current.metric.fields);
+                var metricFields = $scope.current.metric && $scope.current.metric.fields;
+                if (metricFields) {
+                    $scope.metricFields = util.objectToArray(metricFields);
+                }
             };
 
             $scope.expandMetric = function () {
