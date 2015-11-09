@@ -39,7 +39,7 @@
                     HOST: 'Choose data center & host where you create container',
                     VOLUMES_FROM: 'A list of volumes to inherit from another container.',
                     VOLUMES_URL: '"Host" volumes list in format <strong>http[s]://example/file:/container/file</strong>' + '' +
-                        '<br />Said file will be downloaded and writed to a new directory in the zone\'s dataset but ' +
+                        '<br />Said file will be downloaded and written to a new directory in the zone\'s dataset but ' +
                         'not in the zoneroot, and will be mounted at container\'s /container/file.',
                     ENTRYPOINT: 'Overwrite the default ENTRYPOINT of the image. Use space as delimiter.',
                     CMD: 'Command to run specified',
