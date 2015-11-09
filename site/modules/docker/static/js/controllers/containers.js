@@ -314,6 +314,9 @@
                     {
                         id: 'Labels',
                         name: 'Labels',
+                        _order: function (container) {
+                            return JSON.stringify(container.Labels);
+                        },
                         sequence: 13
                     },
                     {
