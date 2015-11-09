@@ -18,6 +18,7 @@
             $scope.loading = true;
             $scope.networks = [];
             var datacenters = window.JP.get('networkingDatacenters') || [];
+            var CONFIG_KEY = 'networksDatacenter';
 
             $q.all([
                 Network.listFabric(),
@@ -143,16 +144,15 @@
             $scope.tabFilterField = 'datacenter';
             $scope.placeHolderText = 'filter networks';
             $scope.enabledCheckboxes = true;
-            $scope.tabFilterDefault = $rootScope.commonConfig($scope.tabFilterField);
+            $scope.tabFilterDefault = $rootScope.commonConfig(CONFIG_KEY);
             $scope.$on('gridViewChangeTab', function (event, tab) {
                 if (tab === 'all') {
-                    $rootScope.clearCommonConfig($scope.tabFilterField);
+                    $rootScope.clearCommonConfig(CONFIG_KEY);
                 } else {
-                    $rootScope.commonConfig($scope.tabFilterField, tab);
+                    $rootScope.commonConfig(CONFIG_KEY, tab);
                 }
             });
 
         }
     ]);
 }(window.JP.getModule('Networking')));
-

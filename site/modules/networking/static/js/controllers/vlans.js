@@ -15,6 +15,7 @@
                 title: localization.translate(null, 'networking', 'Fabric VLANs')
             });
             $scope.loading = true;
+            var CONFIG_KEY = 'vlansDatacenter';
 
             Vlan.vlan().then(function (vlans) {
                 $scope.vlans = vlans || [];
@@ -88,12 +89,12 @@
             $scope.enabledCheckboxes = true;
             $scope.tabFilterField = 'datacenter';
             $scope.placeHolderText = 'filter vlans';
-            $scope.tabFilterDefault = $rootScope.commonConfig($scope.tabFilterField);
+            $scope.tabFilterDefault = $rootScope.commonConfig(CONFIG_KEY);
             $scope.$on('gridViewChangeTab', function (event, tab) {
                 if (tab === 'all') {
-                    $rootScope.clearCommonConfig($scope.tabFilterField);
+                    $rootScope.clearCommonConfig(CONFIG_KEY);
                 } else {
-                    $rootScope.commonConfig($scope.tabFilterField, tab);
+                    $rootScope.commonConfig(CONFIG_KEY, tab);
                 }
             });
 

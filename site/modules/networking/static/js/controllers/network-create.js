@@ -2,6 +2,7 @@
 
 (function (ng, app) {
     app.controller('Network.CreateController', [
+        '$rootScope',
         '$scope',
         'requestContext',
         'localization',
@@ -9,7 +10,7 @@
         'Vlan',
         '$location',
         'util',
-        function ($scope, requestContext, localization, Network, Vlan, $location, util) {
+        function ($rootScope, $scope, requestContext, localization, Network, Vlan, $location, util) {
             localization.bind('networking', $scope);
             requestContext.setUpRenderContext('networking.vlan-create', $scope, {
                 title: localization.translate(null, 'networking', 'Fabric Network Form')
@@ -22,6 +23,7 @@
             $scope.vlan = {};
             $scope.name = Vlan.name;
             $scope.goToNetworksPage = function () {
+                $scope.creating = false;
                 $location.path('/network/networks');
                 $location.replace();
             };
@@ -82,8 +84,8 @@
                     }
                 });
                 Network.createNetwork(network).promise.then(function () {
-                    $scope.creating = false;
-                    $scope.goToNetworksPage();
+                    $rootScope.commonConfig('networksDatacenter', $scope.network.datacenter);
+                    setTimeout($scope.goToNetworksPage, 500);
                 }, function () {
                     $scope.creating = false;
                 });
