@@ -266,10 +266,6 @@
             }];
             $scope.datacenters = [];
 
-            $scope.selectDatacenter = function (name) {
-                $scope.datacenter = name;
-            };
-
             $scope.selectData = {};
             $scope.selectData.actions = [{
                 id:'allow',
@@ -445,7 +441,7 @@
                     $scope.tabFilterUpdate = $scope.tabFilterDefault;
                 }
                 $scope.$watch('datacenter', function(dc) {
-                    if (dc) {
+                    if (dc && $scope.loading) {
                         $scope.resetCurrent('from');
                         $scope.resetCurrent('to');
                         $scope.resetData();
@@ -820,11 +816,8 @@
                             return $scope.loading;
                         },
                         action: function (object) {
-                            $scope.resetCurrent('from');
-                            $scope.resetCurrent('to');
-                            $scope.data = rule.cleanRule(object);
-
                             $scope.refreshSelects();
+                            $scope.data = rule.cleanRule(object);
                             $scope.disableSelect = true;
 
                             $scope.tabFilterUpdate = $scope.changeTab = $scope.selected.datacenter =
@@ -959,17 +952,12 @@
 
             $scope.changeTab = '';
 
-            $scope.$watch('tabFilterUpdate', function(tab) {
-                if (tab) {
-                    tab = tab.name || tab;
-                    if (!$scope.data.uuid && tab !== 'all') {
-                        $scope.datacenter = tab;
-                    }
-                    if (tab === 'all') {
-                        $rootScope.clearCommonConfig('datacenter');
-                    } else {
-                        $rootScope.commonConfig('datacenter', tab);
-                    }
+            $scope.tabFilterField = 'datacenter';
+            $scope.$on('gridViewChangeTab', function (event, tab) {
+                if (tab === 'all') {
+                    $rootScope.clearCommonConfig($scope.tabFilterField);
+                } else {
+                    $rootScope.commonConfig($scope.tabFilterField, tab);
                 }
             });
 
