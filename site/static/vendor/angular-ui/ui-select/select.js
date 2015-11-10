@@ -999,6 +999,7 @@ uis.directive('uiSelect',
           var unbindAll = function () {
               wnd.unbind('resize');
               wnd.unbind('scroll');
+              wnd.unbind('keydown');
               if (modal) {
                   modal.unbind('scroll');
                   modalBody.unbind('scroll');
@@ -1017,6 +1018,12 @@ uis.directive('uiSelect',
               $timeout(function () {
                 wnd.bind('resize scroll', function (e) {
                   setPosition(e);
+                });
+                wnd.bind('keydown', function (e) {
+                  if (e.keyCode === 27 || e.which === 27) {
+                    unbindAll();
+                    resetDropdown();
+                  }
                 });
                 if (modal) {
                   modal.bind('scroll', function (e) {
