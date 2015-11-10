@@ -12,7 +12,7 @@
             link: function ($scope) {
                 switch ($scope.type) {
                     case 'container':
-                        $scope.linkTitle = 'Docker';
+                        $scope.linkTitle = 'Docker Container';
                         break;
 
                     case 'custom':
