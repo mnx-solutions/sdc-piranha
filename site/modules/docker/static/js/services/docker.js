@@ -5,7 +5,8 @@
     function (serverTab, $rootScope, errorContext, EventBubble, Machine, Image, PopupDialog, Provision,
               localization, $q, $location, DockerCacheProvider, Storage, util, Account) {
 
-        if ($rootScope.features.docker !== 'enabled') {
+        var dockerVersions = window.JP.get('dockerVersions');
+        if ($rootScope.features && $rootScope.features.docker !== 'enabled' || !dockerVersions) {
             return;
         }
 
@@ -20,7 +21,7 @@
             inspect: 'inspect',
             logs: 'logs'
         };
-        var dockerVersions = window.JP.get('dockerVersions');
+
         var service = {cache: {}, jobs: {}, version: dockerVersions.dockerVersion};
         var imageActions = ['remove', 'inspect', 'history'];
         var caches = ['containers', 'images', 'topImages', 'registriesList'];

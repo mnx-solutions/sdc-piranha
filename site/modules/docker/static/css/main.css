@@ -1048,7 +1048,7 @@ span .tag-editor {
     font-weight: bold;
 }
 .tabs-container .page-title-btn {
-    margin-top: -20px;
+    margin-top: -58px;
 }
 .page-title-btn.icons {
     margin-top: -50px;
@@ -1122,4 +1122,9 @@ span .tag-editor {
 }
 .pull-image:not(.image-pull-item) {
     cursor: default;
+}
+.tabs-wrapper .filter-label {
+    width: 45px;
+
+    vertical-align: middle;
 }

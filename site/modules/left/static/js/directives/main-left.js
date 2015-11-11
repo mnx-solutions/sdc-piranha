@@ -1,13 +1,14 @@
 'use strict';
 
 (function (app, ng) {
-    app.directive('mainLeft', ['$rootScope', 'DTrace', 'Support', 'requestContext', function ($rootScope, DTrace, Support, requestContext) {
+    app.directive('mainLeft', ['$rootScope', '$q', 'DTrace', 'Machine', 'Support', 'requestContext', function ($rootScope, $q, DTrace, Machine, Support, requestContext) {
         return {
             templateUrl: 'left/static/partials/menu.html',
             scope: true,
             controller: function ($scope, $location) {
                 $scope.location = $location;
                 $scope.sideBarMin = false;
+                $scope.dockerHostsAvailable = false;
                 var supportPackagesCallback = function (error, supportPackages) {
                     $scope.supportPackages = supportPackages;
                 };
@@ -45,6 +46,21 @@
                     usageType = usageType ? (usageType + '/') : '';
                     $location.path('/usage/' + usageType + year + '/' + month);
                 };
+
+                if ($scope.features.docker === 'enabled') {
+                    $q.when(Machine.machine()).then(function (machines) {
+                        $scope.machines = machines;
+                    });
+                    $scope.$watch('machines', function (machines) {
+                        $scope.dockerHostsAvailable = machines.some(function (machine) {
+                            return machine.tags && machine.tags['JPC_tag'] === 'DockerHost' &&
+                                machine.state !== 'creating';
+                        });
+                        if (!$scope.dockerHostsAvailable && $location.path() === '/docker') {
+                            $location.path('/docker/containers');
+                        }
+                    }, true);
+                }
 
                 $scope.checkDockerMenuOpen = function () {
                     return {

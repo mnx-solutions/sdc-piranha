@@ -11,12 +11,16 @@
             var MAX_DTRACE_VERSION = '14.4.0';
             var QUOTA_EXCEEDED_HEADER = 'QuotaExceeded: ';
 
+            var isFeatureEnabled = function (featureName) {
+                return $rootScope.features && $rootScope.features[featureName] === 'enabled';
+            };
+
             var IsEnabled = {
-                manta: $rootScope.features.manta === 'enabled',
-                recentInstances: $rootScope.features.recentInstances === 'enabled',
-                provisioningLimits: $rootScope.features.provisioningLimits === 'enabled',
-                dockerMemoryLimit: $rootScope.features.dockerMemoryLimit === 'enabled',
-                dtraceHDDLimit: $rootScope.features.dtraceHDDLimit === 'enabled'
+                manta: isFeatureEnabled('manta'),
+                recentInstances: isFeatureEnabled('recentInstances'),
+                provisioningLimits: isFeatureEnabled('provisioningLimits'),
+                dockerMemoryLimit: isFeatureEnabled('dockerMemoryLimit'),
+                dtraceHDDLimit: isFeatureEnabled('dtraceHDDLimit')
             };
 
             var datacenterForNetworks = '';

@@ -9,11 +9,12 @@ window.JP.main.config(['routeProvider', function (routeProvider) {
         data: function ($rootScope, $location, $q, Docker, Machine, Account) {
 
             function changePath() {
-                if ($location.path().indexOf('/docker') === 0 && $location.path() !== '/docker' && (!$rootScope.provisionEnabled || !$rootScope.dockerHostsAvailable)) {
-                    $location.path('/docker');
-                } else if ($rootScope.provisionEnabled && $location.path() === '/docker') {
+                if ($location.path().indexOf('/docker') === 0 && $location.path() !== '/docker/welcome' &&
+                    !$rootScope.provisionEnabled) {
+                    $location.path('/docker/welcome');
+                } else if ($rootScope.provisionEnabled && ($location.path() === '/docker/welcome' ||
+                    $location.path() === '/docker' && !$rootScope.dockerHostsAvailable)) {
                     $location.path('/docker/containers');
-                    return;
                 }
             }
 
@@ -29,6 +30,9 @@ window.JP.main.config(['routeProvider', function (routeProvider) {
                     var machines = result[1] || [];
                     var account = result[2] || {};
                     $rootScope.provisionEnabled = account.provisionEnabled || false;
+                    hosts = hosts.filter(function (host) {
+                        return !host.isSdc;
+                    });
                     $rootScope.dockerHostsAvailable = hosts.length > 0 || machines.some(function (machine) {
                         return machine.tags && machine.tags['JPC_tag'] === 'DockerHost' &&
                             machine.state !== 'creating';
@@ -54,6 +58,10 @@ window.JP.main.config(['routeProvider', function (routeProvider) {
 
     routeProvider
         .when('/docker', {
+            title: 'Docker',
+            action: 'docker.index',
+            resolve: dockerResolve
+        }).when('/docker/welcome', {
             title: 'Docker',
             action: 'docker.welcome',
             resolve: dockerResolve

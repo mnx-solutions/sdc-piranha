@@ -14,17 +14,24 @@
     <div class="page-title container-min-width" data-ng-show="isCurrentLocation('compute/docker/dashboard')"></div>
     <div class="loading-large" data-ng-show="loading"></div>
     <div class="tabs-container" data-ng-show="!loading && !isCurrentLocation('compute/docker/dashboard')">
-        <span>Filter:&nbsp;</span>
-        <span data-ng-repeat="tab in tabs">
-            <input type="radio"
-                   name="tab"
-                   id="tab{{$index}}"
-                   class="tab-radio"
-                   data-ng-click="setActive(tab)"
-                   data-ng-checked="isChecked(tab)"
-                    />
-            <label for="tab{{$index}}" class="tabs dashboard">{{tab}}</label>
-        </span>
+        <table class="tabs-wrapper tabs-line tabs-selector">
+            <tr>
+                <td class="filter-label">Filter:&nbsp;</td>
+                <td>
+                    <div class="tabs-container">
+                <span data-ng-repeat="tab in tabs">
+                    <input type="radio"
+                           name="tab"
+                           id="tab{{$index}}"
+                           class="tab-radio"
+                           data-ng-click="setActive(tab)"
+                           data-ng-checked="isChecked(tab)"/>
+                    <label for="tab{{$index}}" class="tabs">{{tab}}</label>
+                </span>
+                    </div>
+                </td>
+            </tr>
+        </table>
         <div class="page-title-btn" data-ng-hide="isTritonTab">
             <div class="control-panel">
                 <span class="middle">Data Center:</span>
@@ -44,6 +51,7 @@
             <button data-ng-disabled="!data.imageId" data-ng-click="createDocker()" type="button" class="btn big orange"><i class="plus-btn-icon"></i>Create KVM-Docker Host</button>
         </div>
     </div>
+    <div class="indent-big"></div>
     <div class="row dockers-wrapper" data-ng-show="dockerMachines.length >= 1 && !loading">
         <div class="docker-wrapper triton-bg" data-ng-repeat="machine in getFilteredMachines(dockerMachines)" data-ng-class="{'kvm-bg': !machine.isSdc}">
             <div class="name">
