@@ -3,10 +3,10 @@
 (function (ng, app) {
     app.controller('Dashboard.IndexController', ['$scope', '$q', '$sce', 'requestContext', 'Account', 'Machine',
         'localization', '$http', '$cookies', 'slb.Service', 'Support', 'fileman', 'Utilization', 'util',
-        'Datacenter', 'FreeTier', '$location', 'Docker', 'Storage',
+        'Datacenter', 'FreeTier', '$location',
 
         function ($scope, $q, $sce, requestContext, Account, Machine, localization, $http, $cookies, slbService,
-                  Support, fileman, Utilization, util, Datacenter, FreeTier, $location, Docker, Storage) {
+                  Support, fileman, Utilization, util, Datacenter, FreeTier, $location) {
             localization.bind('dashboard', $scope);
             requestContext.setUpRenderContext('dashboard.index', $scope);
             $scope.loading = true;
@@ -18,7 +18,6 @@
             $scope.slbFeatureEnabled = features.slb === 'enabled';
             $scope.usageDataFeatureEnabled = features.usageData === 'enabled';
             $scope.mantaEnabled = features.manta === 'enabled' && features.fileStorage === 'disabled';
-            $scope.dockerEnabled = features.docker === 'enabled';
             $scope.mantaMemory = {value: ''};
 
             $scope.machines = [];
@@ -48,17 +47,7 @@
                 $q.when($scope.rssentries),
                 $q.when(Machine.machine())
             ];
-            if (features.docker === 'enabled') {
-                $scope.runningContainers = $scope.otherContainers = INITIAL_COUNT_VALUE;
-                dashboardOperations = dashboardOperations.concat([
-                    $q.when(Storage.pingManta(function () {
-                        Docker.getContainersCount().then(function (containers) {
-                            $scope.runningContainers = containers.running;
-                            $scope.otherContainers = containers.stopped;
-                        });
-                    }))
-                ]);
-            }
+
             // when all datasources are loaded, disable loader
             $q.all(dashboardOperations).then(function (result) {
                 $scope.account = result[0] || {};
@@ -117,10 +106,6 @@
                 var othercount = 0;
 
                 machines.forEach(function (machine) {
-                    // excluding triton SDC Docker Containers
-                    if (machine.tags && machine.tags.sdc_docker && !$scope.account.isSubuser) {
-                        return;
-                    }
                     if (machine.state === 'running') {
                         runningcount += 1;
                     } else {

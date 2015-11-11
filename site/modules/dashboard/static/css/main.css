@@ -211,10 +211,6 @@ a.orange {
     background: #6a6a6a url('../img/tile-bg/instances.png') no-repeat right 26px;
 }
 
-.docker-bg {
-    background: #6a6a6a url('../img/tile-bg/docker.png') no-repeat right 20px;
-}
-
 .elb-bg {
     background: #6a6a6a url('../img/tile-bg/elb.png') no-repeat right 22px;
 }
@@ -249,8 +245,7 @@ a.orange {
 .manta-bg,
 .usage-bg,
 .support-bg,
-.status-bg,
-.docker-bg {
+.status-bg {
     background-size: 92px 94px;
 }
 
@@ -355,7 +350,6 @@ a.orange {
     width: 60px;
 }
 
-.docker-bg,
 .support-bg,
 .tile.instance-bg
 {

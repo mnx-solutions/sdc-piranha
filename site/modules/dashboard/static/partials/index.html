@@ -31,33 +31,6 @@
             </div>
         </div>
 
-        <div class="pull-left tile-wrapper" data-ng-show="dockerEnabled">
-            <div class="tile docker-bg">
-                <div data-ng-click="gotoPage('/docker/containers')" class="tile-body">
-                    <div class="title">Docker Containers</div>
-                    <div class="left-column">
-                        <div data-ng-click="gotoPage('/docker/containers/running')" data-ng-disabled="!runningContainers">
-                            <div class="number">
-                                {{runningContainers}}
-                            </div>
-                            <div class="info">
-                                running
-                            </div>
-                        </div>
-                    </div>
-                    <div class="right-column">
-                        <div class="number">
-                            {{otherContainers}}
-                        </div>
-                        <div class="info">
-                            stopped
-                        </div>
-                    </div>
-                </div>
-                <a class="tile-button" href="#!/docker/container/create">+ Create Docker Container</a>
-            </div>
-        </div>
-
         <div class="pull-left tile-wrapper" data-ng-show="slbFeatureEnabled">
             <div class="tile elb-bg">
                 <a data-ng-href="{{(slbControllerCreated && '#!/slb/list') || '#!/slb/'}}">
