@@ -78,6 +78,9 @@
                     Docker.listHosts().then(function (hosts) {
                         scope.hosts = hosts || [];
                         scope.hostIp = scope.hosts.length ? scope.hosts[0].primaryIp : null;
+                        if (scope.hostIp) {
+                            scope.changeHost(scope.hosts[0]);
+                        }
                         scope.loading = false;
                     });
 
