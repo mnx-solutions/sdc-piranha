@@ -41,8 +41,11 @@
                             done: function(err, job) {
                                 var data = job.__read();
                                 var error = err || data.err;
+                                if (Machine.isMachineDeleted(machine, error)) {
+                                    return cb(error);
+                                }
                                 showMessage(error, machine.name, 'enable');
-	                            cb(error);
+                                cb(error);
                             }
                         });
                     });
@@ -64,6 +67,9 @@
                             done: function(err, job) {
                                 var data = job.__read();
                                 var error = err || data.err;
+                                if (Machine.isMachineDeleted(machine, error)) {
+                                    return cb(error);
+                                }
                                 showMessage(error, machine.name, 'disable');
                                 cb(error);
                             }

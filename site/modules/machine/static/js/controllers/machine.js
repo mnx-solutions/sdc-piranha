@@ -10,15 +10,17 @@
         'util',
         function ($scope, requestContext, localization, Machine, Docker, util) {
             function setMachine(machine) {
-                $scope.machine = machine;
-                $scope.containerDetailsAvailable = $scope.machine.tags && $scope.machine.tags['sdc_docker'] &&
-                    $scope.features.sdcDocker !== 'disabled' && $scope.features.docker === 'enabled';
+                Machine.checkMachineExists(machine).then(function () {
+                    $scope.machine = machine;
+                    $scope.containerDetailsAvailable = $scope.machine.tags && $scope.machine.tags['sdc_docker'] &&
+                        $scope.features.sdcDocker !== 'disabled' && $scope.features.docker === 'enabled';
 
-                if ($scope.containerDetailsAvailable && $scope.machine.state !== 'deleting') {
-                    Docker.hasLinkedContainers($scope.machine).then(function (res) {
-                        $scope.isLinkedContainer = res;
-                    });
-                }
+                    if ($scope.containerDetailsAvailable && $scope.machine.state !== 'deleting') {
+                        Docker.hasLinkedContainers($scope.machine).then(function (res) {
+                            $scope.isLinkedContainer = res;
+                        });
+                    }
+                });
             }
             var machineId = requestContext.getParam('machineid') || util.idToUuid(requestContext.getParam('containerid'));
             localization.bind('machine', $scope);

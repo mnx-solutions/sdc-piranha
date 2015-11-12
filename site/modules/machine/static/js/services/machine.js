@@ -11,9 +11,10 @@
     'PopupDialog',
     'Account',
     '$location',
+    '$route',
     'ErrorService',
     'notification',
-    function (serverTab, $rootScope, $q, $timeout, localization, Package, Dataset, util, PopupDialog, Account, $location, ErrorService, notification) {
+    function (serverTab, $rootScope, $q, $timeout, localization, Package, Dataset, util, PopupDialog, Account, $location, $route, ErrorService, notification) {
 
         var service = {};
         var machines = {job: null, index: {}, list: [], search: {}};
@@ -394,6 +395,9 @@
                             }
                         },
                         function (err) {
+                            if (service.isMachineDeleted(machine, err)) {
+                                return;
+                            }
                             var messageBody = 'Unable to execute command "{{command}}" for instance {{uuid}}.';
                             if (err.body && err.body.errors && err.body.errors.length) {
                                 messageBody += '<br>' + err.body.errors[0].message;
@@ -505,6 +509,9 @@
         service.deleteMachine = changeState({
             name: 'MachineDelete',
             done: function(err, job) {
+                if (service.isMachineDeleted(job.machine, err)) {
+                    return;
+                }
                 if (err && (err.message || err).indexOf('getmachine') < 0) {
                     var errorMessage = getMessage(job.machine, err, 'execute command "' + job.name + '" for');
                     if (err.restCode === 'NotAuthorized') {
@@ -837,6 +844,49 @@
             return deferred.promise;
         };
 
+        service.getMachineDetails = function (machine) {
+            var job = serverTab.call({
+                name: 'MachineDetails',
+                data: {uuid: machine.id, datacenter: machine.datacenter}
+            });
+            return job.promise;
+        };
+
+        service.isMachineDeleted = function (machine, error) {
+            var isMachineDeleted = false;
+            if (error) {
+                if (error.statusCode === 410 && error.body && error.body.state === 'deleted' ||
+                    String(error).indexOf('problem retrieving container') > -1) {
+                    isMachineDeleted = true;
+                    var errorMessage = 'The instance is no longer accessible.';
+                    if (error instanceof Error) {
+                        error.message = errorMessage;
+                    } else {
+                        error = new Error(errorMessage);
+                    }
+                    var machineIndex = machines.list.indexOf(machine);
+                    if (machineIndex !== -1) {
+                        machines.list.splice(machineIndex, 1);
+                    }
+                    delete machines.index[machine.id];
+                    if (machine.tags && machine.tags.sdc_docker) {
+                        $rootScope.$emit('removeContainerFromDockerCache', machine.id);
+                    }
+                }
+                PopupDialog.errorObj(error, function () {
+                    $location.path('/compute');
+                    $route.reload();
+                });
+            }
+            return isMachineDeleted;
+        };
+
+        service.checkMachineExists = function (machine) {
+            return service.getMachineDetails(machine).catch(function (error) {
+                service.isMachineDeleted(machine, error);
+            });
+        };
+
         service.deleteDockerMachine = function (machine) {
             var machineState = machine.state;
             machine.state = 'deleting';
@@ -860,6 +910,9 @@
                         delete machines.index[machine.id];
                         showNotification(err, {machine: machine});
                     } else {
+                        if (service.isMachineDeleted(machine, err)) {
+                            return;
+                        }
                         machine.state = machineState;
                         notification.popup(true, true, INSTANCES_PATH, null, getMessage(machine, err, 'delete'), err.message || err);
                     }

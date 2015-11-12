@@ -153,6 +153,10 @@
                             if (err) {
                                 self.err = err;
                                 self.status('error');
+                                if (String(err).indexOf('problem retrieving container') > -1 &&
+                                    $location.path().indexOf('/compute') > -1) {
+                                    return;
+                                }
                                 if (err.status === 0) {
                                     if (err.name !== 'GetUserConfig' && err.name !== 'SetUserConfig') {
                                         var message = err.name ? 'Unable to retrieve ' + err.name : '';

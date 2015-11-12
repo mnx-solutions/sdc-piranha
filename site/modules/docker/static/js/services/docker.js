@@ -66,6 +66,18 @@
             }
         });
 
+        $rootScope.$on('removeContainerFromDockerCache', function(event, machineId) {
+            var cache = service.cache['containers'];
+            if (cache && machineId) {
+                var container = cache.list.find(function (container) {
+                    return util.idToUuid(container.Id) === machineId;
+                });
+                if (container) {
+                    cache.remove(container.Id);
+                }
+            }
+        });
+
         var containerDoneHandler = {
             handler: function (options) {
                 var container = options.cache.get(options.id);
@@ -1168,6 +1180,9 @@
                     }
                     return false;
                 }, function (err) {
+                    if (Machine.isMachineDeleted(sdcContainer, err)) {
+                        return;
+                    }
                     PopupDialog.errorObj(err);
                 });
             }, function (err) {

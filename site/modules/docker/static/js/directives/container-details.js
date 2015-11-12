@@ -37,6 +37,9 @@
 
                 var errorCallback = function () {
                     scope.loading = false;
+                    if ($location.path().indexOf('/compute') > -1) {
+                        Machine.checkMachineExists(scope.machine);
+                    }
                 };
                 if (!containerId && !hostId) {
                     Docker.listHosts({prohibited: true}).then(function (hosts) {
@@ -74,7 +77,12 @@
                                 return Docker.goToDockerContainers();
                             }
                             inspectContainer();
-                        }, Docker.goToDockerContainers);
+                        }, function (error) {
+                            if (Machine.isMachineDeleted(scope.machine, error)) {
+                                return;
+                            }
+                            Docker.goToDockerContainers();
+                        });
                     } else {
                         inspectContainer();
                     }
