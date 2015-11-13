@@ -33,7 +33,7 @@
                                           action="selectInstanceType(type)">
                     </create-instance-link>
                     <create-instance-link path="container/create"
-                                          data-ng-if="features.docker == 'enabled'"
+                                          data-ng-if="dockerHostsAvailable"
                                           type="container"
                                           action="setCreateInstancePage(type)">
                     </create-instance-link>

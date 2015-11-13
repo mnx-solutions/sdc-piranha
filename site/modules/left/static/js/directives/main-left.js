@@ -8,7 +8,7 @@
             controller: function ($scope, $location) {
                 $scope.location = $location;
                 $scope.sideBarMin = false;
-                $scope.dockerHostsAvailable = false;
+                $rootScope.dockerHostsAvailable = false;
                 var supportPackagesCallback = function (error, supportPackages) {
                     $scope.supportPackages = supportPackages;
                 };
@@ -52,12 +52,15 @@
                         $scope.machines = machines;
                     });
                     $scope.$watch('machines', function (machines) {
-                        $scope.dockerHostsAvailable = machines.some(function (machine) {
+                        $rootScope.dockerHostsAvailable = machines.some(function (machine) {
                             return machine.tags && machine.tags['JPC_tag'] === 'DockerHost' &&
                                 machine.state !== 'creating';
                         });
-                        if (!$scope.dockerHostsAvailable && $location.path() === '/docker') {
+                        if (!$rootScope.dockerHostsAvailable && $location.path() === '/docker') {
                             $location.path('/docker/containers');
+                        }
+                        if ($scope.features.sdcDocker === 'enabled' && !$rootScope.dockerHostsAvailable) {
+                            $rootScope.dockerHostsAvailable = true;
                         }
                     }, true);
                 }

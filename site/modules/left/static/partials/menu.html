@@ -41,13 +41,13 @@
                 </ul>
             </li>
             <li class="nested"
-                data-ng-show="features.docker == 'enabled'"
+                data-ng-show="dockerHostsAvailable"
                 data-ng-class="checkDockerMenuOpen()">
                 <a href="#!/docker/containers" class="docker-icon">
                     <span class="title">Docker</span>
                 </a>
                 <ul class="sub-menu">
-                    <li class="sub" data-ng-class="{active: location.path().search('docker/intro') == 1}">
+                    <li class="sub" data-ng-show="features.sdcDocker == 'enabled'" data-ng-class="{active: location.path().search('docker/intro') == 1}">
                         <a href="#!/docker/intro">
                             <span class="titles">Introduction</span>
                             <span class="selected-sub"></span>

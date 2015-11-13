@@ -656,7 +656,7 @@
 
                 $scope.changeHost = function (host) {
                     focusOnTag();
-                    $scope.ip = host.primaryIp || $scope.ip;
+                    $scope.ip = host && host.primaryIp || $scope.ip;
                     $scope.container.container = '';
                     host = host || Docker.getHost($scope.hosts, $scope.ip);
                     if (!host.id || !host.primaryIp) {
