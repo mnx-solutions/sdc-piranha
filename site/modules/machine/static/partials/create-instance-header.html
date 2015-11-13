@@ -3,10 +3,10 @@
         <li><a href="#!/compute">Compute</a></li>
     </ul>
     <div class="container-min-width">
-        <h3 class="page-title no-breadcrumb-line container-min-width" data-translate>
+        <h3 class="page-title no-breadcrumb-line" data-translate>
             Create Instance
         </h3>
-        <div>
+        <div data-ng-hide="loading || datasetsLoading">
             <div class="wizard-first-step row">
                 <div data-ng-hide="isCurrentLocation('compute/container/create|compute/docker/welcome')">
                     <span class="select-name">Data Center:</span>

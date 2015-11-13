@@ -1,15 +1,15 @@
 <div data-ng-controller="Docker.ContainerCreateController">
-    <div class="container-fluid container-position container-min-width">
+    <div class="container-fluid container-position">
         <div data-ng-if="isCurrentLocation('compute/container')" data-ng-include="'machine/static/partials/create-instance-header.html'"></div>
         <ul data-ng-hide="isCurrentLocation('compute/container')" class="breadcrumb">
             <li><a href="#!/docker">Docker</a></li><!--
         --><li><a href="#!/docker/{{type | lowercase}}">Docker {{type}}</a></li>
         </ul>
-        <div class="page-header row">
+        <div class="page-header row container-min-width" data-ng-hide="isCurrentLocation('compute/container') && loading">
             <h3 class="page-title">{{title}}</h3>
         </div>
         <div class="loading-large col-md-12" data-ng-show="loading"></div>
-        <div class="row" data-ng-hide="loading">
+        <div class="row container-min-width" data-ng-hide="loading">
             <div ng-hide="hosts.length">
                 Docker hosts are not available, click to <a class="orange" href="#!/docker">Create Docker Host</a>
             </div>
