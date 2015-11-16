@@ -249,6 +249,7 @@
     "twitter": "yes",
     "googleAnalytics": "yes",
     "billing": "yes",
+    "combinedInstances": "no",
     "dockerExec": "yes",
     "dockerLabels": "yes",
     "sdcDocker": "yes",

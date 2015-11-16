@@ -26,6 +26,14 @@
                             <span class="selected-sub"></span>
                         </a>
                     </li>
+                    <li class="sub"
+                        data-ng-show="features.combinedInstances == 'enabled'"
+                        data-ng-class="{active: location.path().search('compute/combined-instances') == 1}">
+                        <a href="#!/compute/combined-instances">
+                            <span class="titles">Instances.v2</span>
+                            <span class="selected-sub"></span>
+                        </a>
+                    </li>
                     <li class="sub" data-ng-class="{active: location.path().search('slb') == 1}" data-ng-show="features.slb != 'disabled'">
                         <a href="#!/slb">
                             <span class="titles" data-translate>Load Balancers</span>

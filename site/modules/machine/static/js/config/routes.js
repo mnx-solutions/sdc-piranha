@@ -6,6 +6,16 @@ window.JP.main.config([
         routeProvider.when('/compute', {
             title: 'Compute',
             action: 'machine.index'
+        }).when('/compute/combined-instances', {
+            title: 'Compute',
+            action: 'machine.combined-instances',
+            resolve: {
+                data: ['$rootScope', '$location', function ($rootScope, $location) {
+                    if ($rootScope.features.combinedInstances === 'disabled') {
+                        $location.path('/compute');
+                    }
+                }]
+            }
         }).when('/compute/intro', {
             title: 'Compute',
             action: 'machine.introduction'

@@ -5,6 +5,7 @@
         '$scope',
         '$$track',
         '$q',
+        'util',
         'requestContext',
         'Machine',
         'Image',
@@ -17,7 +18,7 @@
         'Account',
         'FreeTier',
         'Docker',
-        function ($scope, $$track, $q, requestContext, Machine, Image, Package, localization, PopupDialog, $location, firewall, $rootScope, Account, FreeTier, Docker) {
+        function ($scope, $$track, $q, util, requestContext, Machine, Image, Package, localization, PopupDialog, $location, firewall, $rootScope, Account, FreeTier, Docker) {
             localization.bind('machine', $scope);
             requestContext.setUpRenderContext('machine.index', $scope, {
                 title: localization.translate(null, 'machine', 'See my ' + $scope.company.name + ' Instances')
@@ -62,7 +63,8 @@
                     machine.label = machine.name || machine.id;
                 });
             }, true);
-            var isSdc = function (machine) {
+
+            var isDockerContainer = function (machine) {
                 return machine && machine.tags && machine.tags.sdc_docker;
             };
 
@@ -71,7 +73,7 @@
                 var imageName = 'Image deleted';
                 if (image && typeof image !== 'string') {
                     imageName = image.name + '/' + image.version;
-                } else if (isSdc(machine)) {
+                } else if (isDockerContainer(machine)) {
                     imageName = 'Triton image';
                 }
                 $scope.datasetsInfo[imageId] = imageName;
@@ -106,7 +108,7 @@
                                 if (machine.image && !imageExists && !$scope.datasetsInfo[machine.image]) {
                                     setImageName(machine.image, machine);
                                 }
-                                if (isSdc(machine) && $scope.features.docker === 'enabled' &&
+                                if (isDockerContainer(machine) && $scope.features.docker === 'enabled' &&
                                     machine.state !== 'deleting') {
                                     Docker.hasLinkedContainers(machine).then(function (res) {
                                         machine.isLinkedContainer = res;
@@ -306,6 +308,10 @@
                             if (machineImage.data === 'Image deleted') {
                                 machineImage.tooltip = 'The image is no longer accessible because the image has been deleted, is inactive, or access privileges have been removed.';
                             }
+                            if (isDockerContainer(machine) && $scope.features.combinedInstances === 'enabled' &&
+                                $location.path() === '/compute/combined-instances') {
+                                machineImage.data += ': ' + machine.imageName;
+                            }
                             return machineImage;
                         }
                         return '';
@@ -438,6 +444,78 @@
                     }
                 };
                 $scope.gridProps.splice(2, 0, firewallColumn);
+            }
+
+            $scope.gridPropsV2 = [];
+            if ($scope.features.combinedInstances === 'enabled') {
+                $scope.gridPropsV2 = angular.copy($scope.gridProps);
+                var columnType = $scope.gridPropsV2.find(function (prop) {
+                    return prop.id === 'type';
+                });
+                if (columnType) {
+                    $scope.gridPropsV2.splice($scope.gridPropsV2.indexOf(columnType), 1);
+                }
+                $scope.loading = true;
+                if ($scope.features.docker === 'enabled' && $scope.features.sdcDocker === 'enabled') {
+                    Docker.listContainers({host: 'All', cache: true, options: {all: true}, suppressErrors: true}).then(function (containers) {
+                        if (containers && containers.length) {
+                            $scope.machines.forEach(function (machine) {
+                                if (isDockerContainer(machine)) {
+                                    var container = containers.find(function (container) {
+                                        return util.idToUuid(container.Id) === machine.id;
+                                    });
+                                    if (container) {
+                                        machine.imageName = container.Image;
+                                        machine.Command = container.Command;
+                                        machine.Status = container.Status;
+                                        machine.Ports = container.Ports;
+                                        machine.Names = container.Names;
+                                    }
+                                }
+                            });
+                        }
+                    }, function (err) {
+                        PopupDialog.errorObj(err);
+                    }).finally(function () {
+                        $scope.loading = false;
+                    });
+                }
+                var additionalDockerColumns = [
+                    {
+                        id: 'Command',
+                        name: 'Command',
+                        sequence: 19
+                    },
+                    {
+                        id: 'Status',
+                        name: 'Duration',
+                        sequence: 20,
+                        active: true
+                    },
+                    {
+                        id: 'Ports',
+                        name: 'Ports',
+                        sequence: 21
+                    },
+                    {
+                        id: 'Names',
+                        name: 'Links',
+                        type: 'html',
+                        _getter: function (container) {
+                            var html = '';
+                            var length = container.Names && container.Names.length || 0;
+                            if (length > 1) {
+                                for (var i = 1; i < length; i++) {
+                                    html += '<span>' + container.Names[i].substring(1) + '</span>';
+                                    html += i !== length - 1 ? '<span>, </span>' : '';
+                                }
+                            }
+                            return html;
+                        },
+                        sequence: 22
+                    }
+                ];
+                $scope.gridPropsV2 = $scope.gridPropsV2.concat(additionalDockerColumns);
             }
 
             if ($scope.features.manta === 'enabled') {

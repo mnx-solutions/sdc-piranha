@@ -1,0 +1,43 @@
+<div data-ng-controller="Machine.IndexController" class="container-fluid container-position">
+    <div class="row" data-ng-show="machines.length || query">
+        <div class="row">
+            <h3 class="page-title white-line">
+                Instances
+                <span class="text-large" ng-if="machinesFilter">
+                    tagged with "{{machinesFilter.name}}"
+                </span>
+            </h3>
+            <div class="page-title-btn">
+                <a data-ng-click="gotoCreatePage()">
+                    <button type="button" class="btn big orange"><i class="plus-btn-icon"></i>Create
+                        Instance</button></a>
+            </div>
+        </div>
+
+        <div class="loading-large col-md-12" data-ng-show="!machines.length && loading"></div>
+
+        <div data-grid-view
+             data-user-config="gridUserConfig"
+             data-props="gridPropsV2"
+             data-detail-props="gridDetailProps"
+             data-action-buttons="gridActionButtons"
+             data-items="machines"
+             data-order="gridOrder"
+             data-fantom-sort = "fantomSort"
+             data-multisort="false"
+             data-export-fields="exportFields"
+             data-place-Holder-Text="placeHolderText"
+             data-search-form="searchForm"
+             data-filter-all="{{query}}"
+             data-enabled-checkboxes="enabledCheckboxes"
+             data-items-type="machine"
+             data-tab-filter-field="tabFilterField"
+             data-tab-filter-default="tabFilterDefault"
+             data-no-entries-message-error-type="dcUnreachable"
+             data-checked-items="checkedInstances"
+             data-force-active="forceActive"
+             data-force-tab-active="forceTabActive">
+        </div>
+        <span class="text-medium" data-ng-show="freeTierFound()">* Free Dev instance until {{freetier.validUntil | date:'yyyy-MM-dd'}}</span>
+    </div>
+</div>
