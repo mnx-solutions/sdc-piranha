@@ -576,7 +576,9 @@
                 });
 
                 scope.$on('uploadReady', function ($scope, id) {
-                    scope.uploads[id].clientDone = true;
+                    $timeout(function () {
+                        scope.uploads[id].clientDone = true;
+                    });
                 });
 
                 scope.$on('uploadStart', function () {
