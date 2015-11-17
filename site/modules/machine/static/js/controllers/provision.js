@@ -1025,9 +1025,7 @@
                             $scope['operating_systems'] = result.operatingSystems;
                             $scope.datasets = result.datasets;
                             $scope.hasVmImages = hasVmImages();
-                            if ($scope.hasVmImages) {
-                                $scope.getFilteredDatasets();
-                            }
+                            $scope.getFilteredDatasets();
                             $scope.manyVersions = result.manyVersions;
                             $scope.selectedVersions = result.selectedVersions;
                             $scope.datasetsLoading = false;
