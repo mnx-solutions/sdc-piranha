@@ -43,8 +43,8 @@
             };
 
             var IMAGE_TYPES = {
-                virtualmachine: 'virtualmachine',
-                smartmachine: 'smartmachine'
+                virtualmachine: ['virtualmachine'],
+                smartmachine: ['smartmachine', 'zone-dataset', 'lx-dataset']
             };
             var INSTANCE_TYPES = {
                 container: 'native-container',
@@ -698,9 +698,9 @@
 
             var selectDataset = function (id, changeDataset) {
                 Image.image({id: id, datacenter: $scope.data.datacenter}).then(function (dataset) {
-                    if (dataset.type === IMAGE_TYPES.virtualmachine) {
+                    if (IMAGE_TYPES.virtualmachine.indexOf(dataset.type) > -1) {
                         $scope.datasetType = 'kvm';
-                    } else if (dataset.type === IMAGE_TYPES.smartmachine) {
+                    } else if (IMAGE_TYPES.smartmachine.indexOf(dataset.type) > -1) {
                         $scope.datasetType = 'smartos';
                     } else {
                         $scope.datasetType = dataset.type;
@@ -754,9 +754,9 @@
             $scope.filterDatasetsByVisibility = function (item) {
                 var result = false;
                 if ($scope.instanceType === INSTANCE_TYPES.container) {
-                    result = item.public && item.type === IMAGE_TYPES.smartmachine;
+                    result = item.public && IMAGE_TYPES.smartmachine.indexOf(item.type) > -1;
                 } else if ($scope.instanceType === INSTANCE_TYPES.machine) {
-                    result = item.public && item.type === IMAGE_TYPES.virtualmachine;
+                    result = item.public && IMAGE_TYPES.virtualmachine.indexOf(item.type) > -1;
                 } else if ($scope.instanceType === INSTANCE_TYPES.custom) {
                     result = !item.public;
                 }

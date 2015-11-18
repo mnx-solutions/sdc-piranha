@@ -500,7 +500,7 @@
 
             service.hasVmImages = function (images, imageType) {
                 return images.some(function (image) {
-                    return image.type === imageType;
+                    return imageType.indexOf(image.type) > -1;
                 });
             };
 
