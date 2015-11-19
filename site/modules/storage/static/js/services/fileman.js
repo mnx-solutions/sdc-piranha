@@ -79,6 +79,14 @@
                 });
             };
 
+            fileman.UPLOAD_EVENTS = {
+                error: 'uploadError',
+                ready: 'uploadReady',
+                progress: 'uploadProgress',
+                waiting: 'uploadWaiting',
+                start: 'uploadStart',
+                complete: 'uploadComplete'
+            };
             return fileman;
         }
     ]);

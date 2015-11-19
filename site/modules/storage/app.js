@@ -16,7 +16,9 @@ module.exports = function (app) {
     var memoryStreams = {};
 
     var clearUpload = function (userId, fullPath, formId, keepProgress) {
-        delete requestsInProgress[formId][fullPath];
+        if (requestsInProgress[formId]) {
+            delete requestsInProgress[formId][fullPath];
+        }
         delete filesInProgress[userId][fullPath];
         if (!keepProgress) {
             memoryStreams[formId] && memoryStreams[formId].end();
@@ -32,19 +34,24 @@ module.exports = function (app) {
         var userId = req.session.userId;
         var memStream;
         var metadata;
+        var done = function done(data) {
+            if (!res.headersSent) {
+                res.json(data);
+            }
+        };
 
         form.setMaxListeners(0);
         form.on('error', function (err) {
             req.log.warn({err: err}, 'Incoming form error');
-            res.json({success: false, status: 200});
+            done({success: false, status: 200});
             clearUpload(userId, form.fullPath, formId, false);
         }).on('aborted', function (err) {
             req.log.warn({err: err}, 'Incoming form aborted');
-            res.json({success: false, status: 200});
+            done({success: false, status: 200});
             clearUpload(userId, form.fullPath, formId, false);
         });
         form.on('end', function () {
-            res.json({success: true, status: 200});
+            done({success: true, status: 200});
         });
 
         filesInProgress[userId] = filesInProgress[userId] || {};
@@ -114,7 +121,7 @@ module.exports = function (app) {
         }
 
         function checkForAllFinished() {
-            if (Object.keys(requestsInProgress[formId]).length === 0) {
+            if (uploadProgresses[formId] && Object.keys(requestsInProgress[formId] || {}).length === 0) {
                 delete uploadProgresses[formId];
             } else {
                 setTimeout(checkForAllFinished, 1000);
@@ -150,7 +157,9 @@ module.exports = function (app) {
                 var fullPath = form.fullPath = filePath + '/' + part.filename;
                 // sometimes onPort calls twice, with same data... mb bug in formidable module
                 if (filesInProgress[userId][fullPath]) {
-                    delete requestsInProgress[formId][fullPath];
+                    if (requestsInProgress[formId]) {
+                        delete requestsInProgress[formId][fullPath];
+                    }
                     return checkForAllFinished();
                 }
                 requestsInProgress[formId] = requestsInProgress[formId] || {};

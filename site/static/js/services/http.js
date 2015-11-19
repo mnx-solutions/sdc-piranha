@@ -137,7 +137,8 @@
                     data.append('uploadInput', file);
                 });
 
-                var shortNames = files.map(function (file) { return file.name; }).join(', ');
+                var names = files.map(function (file) { return file.name; });
+                var shortNames = names.join(', ');
                 if (shortNames.length > 100) {
                     shortNames = shortNames.substr(0, 100) + '...';
                 }
@@ -155,7 +156,7 @@
                             name: shortNames,
                             path: path
                         };
-                        cb(null, {status: 'progress', progress: progress, id: chunkId});
+                        cb(null, {status: 'progress', progress: progress, id: chunkId, names: names});
                     }
                 }, false);
                 xhr.addEventListener('load', function () {
@@ -167,19 +168,21 @@
                             // bad object
                         }
                         if (responseObj && (responseObj.error || responseObj.status === 'error')) {
-                            return cb(responseObj, {status: 'error', id: chunkId, path: path});
+                            return cb(responseObj, {status: 'error', id: chunkId, path: path, names: names});
                         }
-                        cb(null, {status: 'success', id: chunkId, path: path});
+                        cb(null, {status: 'success', id: chunkId, path: path, name: shortNames, names: names});
                     } else {
                         var message = 'Failed to upload ' + shortNames + ': ' + xhr.responseText || xhr.statusText;
-                        cb(null, {status: 'error', message: message, id: chunkId, path: path});
+                        cb(null, {status: 'error', message: message, id: chunkId, path: path, names: names});
                     }
                 }, false);
                 xhr.addEventListener('abort', function () {
-                    cb(null, {status: 'success', id: chunkId, path: path});
+                    cb(null, {status: 'success', id: chunkId, path: path, names: names});
                 }, false);
                 xhr.addEventListener('error', function () {
-                    cb(null, {status: 'error', message: 'Failed to read or upload file', id: chunkId, path: path});
+                    cb(null, {status: 'error', message: 'Failed to read or upload file', id: chunkId,
+                        path: path, names: names
+                    });
                 }, false);
                 xhr.open('post', url, true);
                 xhr.send(data);
@@ -187,12 +190,13 @@
                     cb(null, {status: 'uploadWaiting', progress: {
                         id: chunkId,
                         name: shortNames,
-                        filePath: path
+                        filePath: path,
+                        names: names
                     }});
                 });
             }
 
-            function abortUploadFiles(id, progress) {
+            function abortUploadFiles(id) {
                 var xhr = xhRequests[id];
                 setTimeout(function () {
                     xhr.abort();

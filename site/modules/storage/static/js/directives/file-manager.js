@@ -548,10 +548,15 @@
                     }, 0);
                 };
 
-                var pollServerUploadProgress = function (progress, path) {
+                var pollServerUploadProgress = function (emitter, data) {
+                    var progress = data.progress;
                     var stopPolling = function () {
                         clearInterval(serverUploadPollIntervals[progress.id]);
-                        clearProgress(progress.id, path);
+                        clearProgress(progress.id, progress.path);
+                        if (scope.uploads[progress.id]) {
+                            scope.uploads[progress.id].clientDone = true;
+                        }
+                        emitter.$emit(fileman.UPLOAD_EVENTS.complete, data);
                     };
 
                     Storage.getServerUploadProgress(progress.formId, function (error, loadedProgress) {
@@ -571,34 +576,39 @@
                     });
                 };
 
-                scope.$on('uploadError', function ($scope, id, path) {
-                    clearProgress(id, path);
-                });
-
-                scope.$on('uploadReady', function ($scope, id) {
-                    $timeout(function () {
-                        scope.uploads[id].clientDone = true;
+                function uploadProgressListener(emitter) {
+                    emitter.$on(fileman.UPLOAD_EVENTS.error, function ($scope, id, path) {
+                        clearProgress(id, path);
                     });
-                });
 
-                scope.$on('uploadStart', function () {
+                    emitter.$on(fileman.UPLOAD_EVENTS.ready, function ($scope, id) {
+                        if (scope.uploads[id]) {
+                            scope.uploads[id].clientDone = true;
+                        }
+                    });
+                    emitter.$on(fileman.UPLOAD_EVENTS.progress, function (event, data) {
+                        var progress = data.progress;
+                        scope.uploads[progress.id] = progress;
+                        progress.filePath = progress.path;
+                        createUploadTitle(progress);
+                        if (!serverUploadPollIntervals[progress.id]) {
+                            pollServerUploadProgress(emitter, data);
+                            serverUploadPollIntervals[progress.id] = setInterval(function () {
+                                pollServerUploadProgress(emitter, data);
+                            }, 2000);
+                        }
+                    });
+
+                    emitter.$on(fileman.UPLOAD_EVENTS.waiting, function (event, progress) {
+                        scope.uploads[progress.id] = progress;
+                        progress.title = 'Waiting';
+                    });
+                }
+
+                scope.$on(fileman.UPLOAD_EVENTS.start, function (event, emitter) {
                     scope.refreshingFolder = true;
                     scope.refreshingProgress = true;
-                });
-
-                scope.$on('uploadProgress', function (event, progress, path) {
-                    scope.uploads[progress.id] = progress;
-                    progress.filePath = path;
-                    createUploadTitle(progress);
-                    if (!serverUploadPollIntervals[progress.id]) {
-                        pollServerUploadProgress(progress, path);
-                        serverUploadPollIntervals[progress.id] = setInterval(pollServerUploadProgress.bind(this, progress, path), 10000);
-                    }
-                });
-
-                scope.$on('uploadWaiting', function (event, progress) {
-                    scope.uploads[progress.id] = progress;
-                    progress.title = 'Waiting';
+                    uploadProgressListener(emitter);
                 });
 
                 scope.cancelUpload = function (id, progress) {
