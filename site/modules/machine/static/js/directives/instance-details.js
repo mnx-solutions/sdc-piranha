@@ -769,6 +769,9 @@
                     scope.tabFilterField = 'state';
 
                 }
+                scope.showDockerSections = function () {
+                    return scope.features.docker === 'enabled' && scope.isDockerCompleteHost && scope.features.combinedInstances === 'disabled';
+                };
             },
 
             templateUrl: 'machine/static/partials/details-summary.html'
