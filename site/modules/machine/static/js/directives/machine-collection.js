@@ -3,7 +3,6 @@
 (function (app) {
     app.directive('machineCollection', ['Machine', 'PopupDialog', 'localization', '$location', function (Machine, PopupDialog, localization, $location) {
         return {
-            templateUrl: 'machine/static/partials/machine-collection.html',
             restrict: 'EA',
             scope: {
                 collection: '=',
@@ -205,6 +204,10 @@
                         scope.loadCollection();
                     }
                 });
+            },
+            templateUrl: function(elem, attrs) {
+                var url = 'machine/static/partials/';
+                return attrs.elasticTemplate ? url + 'elastic-tags-collection.html' : url + 'machine-collection.html';
             }
         };
     }]);

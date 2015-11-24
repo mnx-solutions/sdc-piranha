@@ -45,17 +45,17 @@
     outline: 0 none;
 }
 .advancedSearchBox ul.dropdown-menu {
+    overflow-x: hidden;
+    overflow-y: auto;
+
     min-width: 139px;
-    max-width: 139px;
+    max-height: 200px;
     margin: 4px 4px 4px 0;
     padding: 4px;
+
     cursor: default;
 
     border-radius: 0;
-
-    overflow-x: hidden;
-    overflow-y: auto;
-    max-height: 200px;
 }
 .advancedSearchBox ul.dropdown-menu > li {
     cursor: pointer;
@@ -64,14 +64,14 @@
 .advancedSearchBox ul.dropdown-menu > li:hover {
     background-color: #f6f7f8;
 }
-.advancedSearchBox ul.dropdown-menu > li:hover a {
-    margin-right: 4px;
-}
+
 .advancedSearchBox ul.dropdown-menu > li a {
     display: block;
-    vertical-align: top;
-    padding-left: 10px;
+
     padding-right: 4px;
+    padding-left: 10px;
+
+    vertical-align: top;
     text-decoration: none;
 
     color: #6d6d6d;

@@ -1,0 +1,70 @@
+<div data-ng-form="collectionForm">
+    <div class="item-list-container">
+        <table class="tags-table">
+            <thead>
+                <tr class="controls" data-ng-show="internalCollection.length > 1">
+                    <td>Key</td>
+                    <td>Value</td>
+                    <td></td>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="controls" data-ng-repeat="item in internalCollection" data-ng-class="{'no-border': $last}" data-ng-click="editItem(item)">
+                    <td>
+                        <div data-ng-show="!item.edit">
+                            {{item.key}}
+                        </div>
+                        <div data-ng-show="item.edit">
+                            <input type="text"
+                                   size="{{item.dirtyKey.length || 10}}"
+                                   name="key"
+                                   placeholder="Key"
+                                   data-translate="placeholder"
+                                   data-ng-model="item.dirtyKey"
+                                   data-ng-required="!review"
+                                   data-ng-pattern="/^[a-zA-Z0-9\._:\-]+$/"
+                                   data-ng-disabled="item.saving || saving">
+                        </div>
+                    </td>
+                    <td>
+                        <div data-ng-show="!item.edit" data-ng-click="editItem(item)">
+                            {{item.val}}
+                        </div>
+                        <div data-ng-show="item.edit">
+                            <input type="text"
+                                   size="{{item.dirtyVal.length || 10}}"
+                                   placeholder="Value"
+                                   data-translate="placeholder"
+                                   data-ng-model="item.dirtyVal"
+                                   data-ng-required="!review"
+                                   data-ng-disabled="item.saving || saving"/>
+                            <div class="error" data-ng-show="itemForm.key.$error.pattern">
+                                {{$parent.collectionName === 'tags' ? 'Tag' : 'Metadata'}} key must be alphanumeric
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <span data-ng-show="!item.edit">
+                            <div class="remove-icon delete pull-right tags-delete-pos"
+                                 data-ng-click="removeItem(item)"
+                                 data-ng-show="!item.saving && !item.edit">
+                            </div>
+                            <div class="pull-right loading-medium item" data-ng-if="item.saving"></div>
+                        </span>
+                        <span data-ng-show="item.edit">
+                            <div class="pull-right">
+                                <button class="btn tag-add-btn"
+                                        data-ng-click="addItem(item)"
+                                        data-translate
+                                        data-ng-disabled="saving || !item.dirtyVal || !item.dirtyKey || item.saving">
+                                            {{item.isNew && 'Add' || 'Save'}}
+                                </button>
+                                <div class="loading-medium" data-ng-if="item.saving"></div>
+                            </div>
+                        </span>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

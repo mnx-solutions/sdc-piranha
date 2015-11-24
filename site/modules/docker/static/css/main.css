@@ -536,6 +536,9 @@
 .container-create-form input:not(.ui-select-search) {
     width: 98%;
 }
+.dropdown-select input:not(.ui-select-search) {
+    width: 92%;
+}
 .container-create-form .edit-value {
     width: 485px;
 }

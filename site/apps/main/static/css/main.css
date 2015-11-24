@@ -2895,14 +2895,14 @@ a.orange-link {
 .tag.editable {
     margin-top: 10px;
 }
+.detail-tags .tag.editable {
+    width: 550px;
+}
 .detail-tags .key-container input {
     width: 160px;
     margin-right: 5px;
 }
 
-.detail-tags .value-width {
-    width: 225px;
-}
 .accordion-max-width .value-container {
     display: inline-block;
 
@@ -2941,13 +2941,12 @@ a.orange-link {
 }
 .accordion-max-width {
     min-width: 507px;
-    max-width: 465px;
 }
 
 .metadata .editable .value-width,
 .metadata .editable .key-width {
-    min-width: 395px;
-    max-width: 395px;
+    min-width: 445px;
+    max-width: 445px;
 }
 .metadata .editable .value-width {
     height: 80px;
@@ -2978,14 +2977,7 @@ a.orange-link {
 .detail-mdata .value.value-width {
     vertical-align: middle;
 }
-.detail-tags .key-width,
-.detail-mdata .key.key-width {
-    width: 165px;
-}
-.detail-mdata .value.value-width,
-.detail-tags .value.value-width {
-    width: 270px;
-}
+
 .key,
 .value {
     padding: 0;
@@ -3020,8 +3012,6 @@ a.orange-link {
 }
 .container-labels {
     overflow-x: auto;
-
-    max-width: 405px;
 }
 
 .indent-small {
@@ -3373,4 +3363,50 @@ create-instance-link:first-child:before {
 
 .version-select {
     max-width: 180px;
+}
+.tags-table {
+    clear: both;
+    overflow: auto;
+
+    width: 100%;
+    max-width: none;
+
+    white-space: nowrap;
+}
+.tags-table td:first-child {
+    padding-right: 20px;
+
+    color: #5d80a7;
+}
+.tags-table td:last-child {
+    padding-left: 20px;
+}
+
+.tags-table input,
+.tags-table input:focus {
+    min-width: 100%;
+
+    letter-spacing: 1px;
+
+    font-size: 14px;
+}
+
+.tags-table td {
+    padding: 5px 0;
+
+    vertical-align: middle;
+}
+
+.panel-body table.tags-table td {
+    line-height: 22px;
+}
+
+.tags-table .btn.tag-add-btn {
+    vertical-align: middle;
+}
+.tags-table .no-border {
+    border-bottom: none;
+}
+.tags-table .remove-icon {
+    margin-top: 0;
 }

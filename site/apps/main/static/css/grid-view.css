@@ -292,6 +292,9 @@ input.filter-field::-ms-clear {
     vertical-align: top;
     white-space: nowrap;
 }
+.filter-wrapper td:last-child {
+    white-space: normal;
+}
 .tabs-line {
     border-bottom: 1px solid #ddd;
 }

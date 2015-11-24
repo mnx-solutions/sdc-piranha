@@ -44,7 +44,7 @@
                 if (!containerId && !hostId) {
                     Docker.listHosts({prohibited: true}).then(function (hosts) {
                         var host = hosts.find(function (host) {
-                            return host.isSdc && host.datacenter === scope.machine.datacenter;
+                            return host.isSdc && scope.machine && host.datacenter === scope.machine.datacenter;
                         });
                         if (host) {
                             hostId = host.id;

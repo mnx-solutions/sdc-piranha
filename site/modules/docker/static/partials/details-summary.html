@@ -58,7 +58,9 @@
                         <tr>
                             <td>Labels</td>
                             <td>
-                                <div class="container-labels">{{container.labels}}</div>
+                                <div class="container-labels" data-ng-repeat="(key, value) in container.labels">
+                                    {{ key }}: {{ value }}{{{true: '', false: ', '}[$last]}}
+                                </div>
                             </td>
                         </tr>
                         <tr>
