@@ -440,6 +440,7 @@
                     if (scope.loadingFolder || scope.currentPath === fullPath) {
                         return;
                     }
+                    scope.currentSelectedObject = obj;
                     if (lastSelectedFile) {
                         lastSelectedActive = false;
                     }

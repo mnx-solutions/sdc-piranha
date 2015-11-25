@@ -41,7 +41,7 @@
                             </td>
                         </tr>
                     </table>
-                    <div data-ng-repeat="path in files"  class="finder-elements" data-ng-class="{active: path.active}">
+                    <div data-ng-repeat="path in files"  class="finder-elements" data-ng-class="{active: path.active, path: currentSelectedObject.name != path.name}">
                         <span data-ng-click="setCurrentPath(path, true)">
                             <div class="{{path.type}} path-name"></div>
                             <div data-tooltip-full-text class="path-name" data-type="dotdotdot" data-original-title="{{path.name}}">{{ path.name }}</div>

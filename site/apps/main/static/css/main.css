@@ -1864,8 +1864,12 @@ label.checkbox {
     white-space: nowrap;
 }
 
-.finder-elements.active {
-    background-color: #fef1d2;
+.finder-elements.active:not(.path) {
+    background-color: #999996;
+}
+
+.finder-elements.active.path {
+    background-color: #D1D1D1;
 }
 
 .img-icon {
@@ -2027,7 +2031,15 @@ label.checkbox {
     color: #333;
 }
 
-.finder-elements.active .path-name {
+.finder-elements.active:not(.path) .path-name {
+    letter-spacing: 1.2px;
+
+    color: #fafafa;
+
+    font-weight: 200;
+}
+
+.finder-elements.active.path .path-name {
     color: #333;
 }
 
