@@ -1,4 +1,4 @@
-<div class="container-fluid container-position" data-ng-controller="StorageController">
+<div class="container-fluid container-position" data-ng-controller="IntroductionController">
     <div class="row">
         <h3 class="page-title">Triton Docker Containers</h3>
     </div>
@@ -63,7 +63,7 @@
                             </ui-select-choices>
                         </ui-select>
                     </div>
-                    <div data-ng-controller="Docker.ContainersController">
+                    <div>
                         <div class="loading-large span12" data-ng-show="loading"></div>
                         <p data-ng-show="sshKeys.length && permittedHosts.length == 0 && !loading">To see this CLI example, please <a href="#!/docker">create Docker instance</a>.</p>
                         <div data-ng-show="sshKeys.length && permittedHosts.length > 0">
@@ -94,11 +94,12 @@
                             <div class="code">
                                 <p>bash sdc-docker-setup.sh &lt;CLOUDAPI_URL&gt; &lt;ACCOUNT_USERNAME&gt; ~/.ssh/&lt;PRIVATE_KEY_FILE&gt;</p>
                             </div>
-                            <div class="btn-group" data-ng-controller="Machine.ProvisionController">
+                            <div class="btn-group">
                                 <span>Data Center & Host:</span>
                                 <ui-select data-ng-model="host"
                                            theme="select2"
                                            search-enabled="true"
+                                           on-select="setHost($select.selected)"
                                            class="key-select">
                                     <ui-select-match placeholder="No matches found">{{$select.selected.datacenter + ' / ' + $select.selected.name}}</ui-select-match>
                                     <ui-select-choices repeat="permittedHost.name as permittedHost in permittedHosts | filter: $select.search">

@@ -1,4 +1,4 @@
-<div class="container-fluid container-position" data-ng-controller="StorageController">
+<div class="container-fluid container-position" data-ng-controller="IntroductionController">
     <div class="row">
         <h3 class="page-title">Triton Infrastructure Containers and VMs</h3>
     </div>
@@ -77,14 +77,15 @@
                                 </ui-select-choices>
                             </ui-select>
                         </div>
-                        <div class="btn-group" data-ng-controller="Machine.ProvisionController">
+                        <div class="btn-group">
                             <span>Data Center:</span>
                             <div class="loading-medium loading-medium-inline" data-ng-show="datasetsLoading"></div>
-                            <ui-select data-ng-model="data.datacenter"
-                                       ng-disabled="!data.datacenter"
+                            <ui-select data-ng-model="datacenter"
+                                       ng-disabled="!datacenter"
                                        theme="select2"
                                        search-enabled="true"
-                                       class="provisioning-datacenter-select">
+                                       class="provisioning-datacenter-select"
+                                       on-select="setDatacenter($select.selected)">
                                 <ui-select-match>{{$select.selected.name}}</ui-select-match>
                                 <ui-select-choices repeat="datacenter.name as datacenter in datacenters | orderBy: $index | filter: $select.search">
                                     {{datacenter.name}}
@@ -96,7 +97,7 @@
                                 <p data-ng-hide="parentAccount">export SDC_ACCOUNT={{account.login}};</p>
                                 <p data-ng-show="parentAccount">export SDC_SUBUSER={{account.login}};</p>
                                 <p>export SDC_KEY_ID={{keyId}};</p>
-                                <p>export SDC_URL={{getDatacenterUrl(data.datacenter)}};</p>
+                                <p>export SDC_URL={{getDatacenterUrl(datacenter.name)}};</p>
                             </div>
                         </div>
                         <p>You are now ready to start using the CloudAPI</p>

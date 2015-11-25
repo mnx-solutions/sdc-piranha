@@ -1122,13 +1122,6 @@
                 return dataValue;
             };
 
-            $scope.getDatacenterUrl = function (datacenterName) {
-                var selectedDatacenter = $scope.datacenters && $scope.datacenters.find(function (datacenter) {
-                    return datacenter.name === datacenterName;
-                });
-                return selectedDatacenter && selectedDatacenter.url;
-            };
-
             $scope.isChangeImageDenied = function () {
                 return hostSpecification === 'dockerhost' || hostSpecification === 'dtracehost';
             };
