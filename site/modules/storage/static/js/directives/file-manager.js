@@ -20,6 +20,17 @@
                 scope.infoDialogOpening = false;
                 scope.filesTree = {};
                 scope.uploads = {};
+
+                scope.uploadProgresses = function () {
+                    var progresses = {};
+
+                    Object.keys(scope.uploads).forEach(function (id) {
+                        progresses[id] = scope.uploads[id].progress;
+                    });
+
+                    return progresses;
+                };
+
                 Account.getUserConfig('fileman', function (config) {
                     scope.userConfig = config;
                 });
@@ -531,7 +542,7 @@
                 };
 
                 var createUploadTitle = function (progress) {
-                    var currentProgress = scope.uploads[progress.id];
+                    var currentProgress = scope.uploads[progress.id].progress;
                     var total = util.getReadableFileSizeString(progress.total, 1000);
                     scope.uploads[progress.id].title = util.getReadableFileSizeString(currentProgress.loaded, 1000) + ' of ' + total +
                         ' -> server </br>' +
@@ -540,13 +551,13 @@
                 };
 
                 var clearProgress = function (progressId, path) {
-                    setTimeout(function () {
+                    $timeout(function () {
                         delete scope.uploads[progressId];
                         if (Object.keys(scope.uploads).length === 0) {
                             scope.refreshingProgress = false;
                             scope.createFilesTree(true, path);
                         }
-                    }, 0);
+                    });
                 };
 
                 var pollServerUploadProgress = function (emitter, data) {
@@ -555,7 +566,7 @@
                         clearInterval(serverUploadPollIntervals[progress.id]);
                         clearProgress(progress.id, progress.path);
                         if (scope.uploads[progress.id]) {
-                            scope.uploads[progress.id].clientDone = true;
+                            scope.uploads[progress.id].progress.clientDone = true;
                         }
                         emitter.$emit(fileman.UPLOAD_EVENTS.complete, data);
                     };
@@ -571,7 +582,7 @@
                         if (Array.isArray(loadedProgress) || !scope.uploads[progress.id]) {
                             stopPolling();
                         } else {
-                            scope.uploads[progress.id].serverLoaded = loadedProgress;
+                            scope.uploads[progress.id].progress.serverLoaded = loadedProgress;
                             createUploadTitle(progress);
                         }
                     });
@@ -584,12 +595,13 @@
 
                     emitter.$on(fileman.UPLOAD_EVENTS.ready, function ($scope, id) {
                         if (scope.uploads[id]) {
-                            scope.uploads[id].clientDone = true;
+                            scope.uploads[id].progress.clientDone = true;
                         }
                     });
                     emitter.$on(fileman.UPLOAD_EVENTS.progress, function (event, data) {
                         var progress = data.progress;
-                        scope.uploads[progress.id] = progress;
+                        data.emitter = emitter;
+                        scope.uploads[progress.id] = data;
                         progress.filePath = progress.path;
                         createUploadTitle(progress);
                         if (!serverUploadPollIntervals[progress.id]) {
@@ -600,9 +612,10 @@
                         }
                     });
 
-                    emitter.$on(fileman.UPLOAD_EVENTS.waiting, function (event, progress) {
-                        scope.uploads[progress.id] = progress;
-                        progress.title = 'Waiting';
+                    emitter.$on(fileman.UPLOAD_EVENTS.waiting, function (event, data) {
+                        data.emitter = emitter;
+                        scope.uploads[data.progress.id] = data;
+                        data.progress.title = 'Waiting';
                     });
                 }
 
@@ -613,9 +626,11 @@
                 });
 
                 scope.cancelUpload = function (id, progress) {
+                    var data = scope.uploads[progress.id];
                     http.abortUploadFiles(id, progress);
                     $http.get('storage/upload/abort?formId=' + progress.formId);
                     clearProgress(progress.id, progress.path);
+                    data.emitter.$emit(fileman.UPLOAD_EVENTS.complete, data);
                 };
             }
         };

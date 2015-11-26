@@ -25,7 +25,7 @@
                             emitter.$emit(fileman.UPLOAD_EVENTS.error, data.id, data.path);
                             cache.remove(data.path + '/' + data.name);
                         } else if (data.status === 'uploadWaiting') {
-                            emitter.$emit(fileman.UPLOAD_EVENTS.waiting, data.progress);
+                            emitter.$emit(fileman.UPLOAD_EVENTS.waiting, data);
                         } else if (data.status === 'progress') {
                             data.progress.formId = formId;
                             emitter.$emit(fileman.UPLOAD_EVENTS.progress, data);
