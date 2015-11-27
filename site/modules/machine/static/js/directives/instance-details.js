@@ -3,10 +3,10 @@
 (function (app, ng) {app.directive('instanceDetails', [
     '$rootScope', 'requestContext', 'Machine', 'Package', 'Network', 'firewall',
     'Docker', '$filter', '$$track', 'localization', '$q', '$location', 'PopupDialog', 'Image', 'FreeTier',
-    'Account', 'loggingService', 'util',
+    'Account', 'loggingService', 'util', '$timeout',
 
     function ($rootScope, requestContext, Machine, Package, Network, firewall, Docker, $filter, $$track,
-                  localization, $q, $location, PopupDialog, Image, FreeTier, Account, loggingService, util) {
+                  localization, $q, $location, PopupDialog, Image, FreeTier, Account, loggingService, util, $timeout) {
         return {
             restrict: 'EA',
 
@@ -32,8 +32,15 @@
                 scope.imageName = scope.creatingImage || '';
 
                 scope.$watch('machine.job.finished', function (state) {
+                    var machine = scope.machine;
+                    if (machine && (!machine.compute_node || !machine.ips.length)) {
+                        scope.machines = Machine.machine(true);
+                        $timeout(function () {
+                            machine = Machine.machine(machineid);
+                        }, 1000);
+                    }
                     if (state) {
-                        scope.machine = Machine.machine(machineid);
+                        machine = Machine.machine(machineid);
                     }
                 });
 
