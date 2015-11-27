@@ -1,8 +1,8 @@
 'use strict';
 (function (app, ng) {
-    app.factory('Provision', ['$rootScope', '$q', '$filter', '$location', '$$track', 'Datacenter', 'Account', 'Machine',
+    app.factory('Provision', ['$rootScope', '$q', '$filter', '$location', '$$track', 'Datacenter', 'Docker', 'Account', 'Machine',
         'Package', 'Image', 'FreeTier', 'Network', 'PopupDialog', 'Limits', 'loggingService', 'util',
-        function ($rootScope, $q, $filter, $location, $$track, Datacenter, Account, Machine,
+        function ($rootScope, $q, $filter, $location, $$track, Datacenter, Docker, Account, Machine,
                   Package, Image, FreeTier, Network, PopupDialog, Limits, loggingService, util) {
             var service = {};
 
@@ -442,14 +442,14 @@
                     });
                 }
                 var indexPackageTypes = {};
-                var packageTypes = [];
+                var packageGroups = [];
 
                 packages.forEach(function (p) {
                     if (p.group) {
                         var indexPackageType = indexPackageTypes[p.group];
                         if (!indexPackageType) {
                             indexPackageTypes[p.group] = [p.type];
-                            packageTypes.push(p.group);
+                            packageGroups.push(p.group);
                         } else if (!indexPackageType[p.type]) {
                             indexPackageTypes[p.group].push(p.type);
                         }
@@ -463,15 +463,15 @@
                     }
                 });
 
-                var standardIndex = packageTypes.indexOf('Standard');
+                var standardIndex = packageGroups.indexOf('Standard');
                 if (standardIndex !== -1) {
-                    packageTypes.splice(standardIndex, 1);
-                    packageTypes.push('Standard');
+                    packageGroups.splice(standardIndex, 1);
+                    packageGroups.push('Standard');
                 }
 
                 callback({
                     indexPackageTypes: indexPackageTypes,
-                    packageTypes: packageTypes,
+                    packageGroups: packageGroups,
                     packages: packages
                 });
             };
@@ -613,6 +613,48 @@
             service.zenboxDialog = function (params) {
                 var props = ng.extend({}, $rootScope.zenboxParams, params);
                 window.Zenbox.show(null, props);
+            };
+
+            var getFilteredDockerImages = function (dockerImages, dockerHosts, datacenterName) {
+                dockerImages = dockerImages.filter(function (dockerImage) {
+                    var dockerHost = dockerHosts.find(function (host) {
+                        return host.id === dockerImage.hostId;
+                    });
+                    return dockerHost && dockerHost.datacenter === datacenterName;
+                });
+                dockerImages.forEach(function (dockerImage) {
+                    dockerImage.name = dockerImage.Id.slice(0, 12);
+                    dockerImage.repository = '';
+                    var firstRepoTag = dockerImage.RepoTags && dockerImage.RepoTags[0];
+                    if (firstRepoTag && firstRepoTag !== '<none>:<none>') {
+                        dockerImage.name = firstRepoTag.split(':')[0];
+                        dockerImage.repository = firstRepoTag;
+                    }
+                    dockerImage.created = $filter('humanDate')(dockerImage.Created);
+                    dockerImage.virtualSize = util.getReadableFileSizeString(dockerImage.VirtualSize);
+                });
+                return dockerImages;
+            };
+
+            service.getDockerImagesInfo = function (datacenter) {
+                if (datacenter) {
+                    var tasks = [
+                        Docker.listAllImages({all: false, cache: true}),
+                        Docker.completedHosts(),
+                        Docker.SdcPackage(datacenter)
+                    ];
+                    return $q.every(tasks).then(function (result) {
+                        var dockerImages = result[0] || [];
+                        var dockerHosts = result[1] || [];
+                        var sdcPackages = result[2] || [];
+                        dockerImages = getFilteredDockerImages(dockerImages, dockerHosts, datacenter);
+                        return {
+                            dockerImages: dockerImages,
+                            sdcPackages: sdcPackages
+                        };
+                    });
+                }
+                return $q.reject(datacenter);
             };
 
             return service;

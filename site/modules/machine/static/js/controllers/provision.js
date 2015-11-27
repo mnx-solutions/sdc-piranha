@@ -3,6 +3,7 @@
 (function (app, ng) {
     app.controller('Machine.ProvisionController', ['$scope',
         '$filter',
+        '$route',
         'requestContext',
         '$timeout',
         'Provision',
@@ -21,7 +22,7 @@
         'loggingService',
         'util',
         'errorContext',
-        function ($scope, $filter, requestContext, $timeout, Provision, Machine, Datacenter, Package, Account, Image,
+        function ($scope, $filter, $route, requestContext, $timeout, Provision, Machine, Datacenter, Package, Account, Image,
             $location, localization, $q, $qe, Docker, PopupDialog, $rootScope, loggingService, util, errorContext) {
 
             localization.bind('machine', $scope);
@@ -29,34 +30,59 @@
                 title: localization.translate(null, 'machine', 'Create Instances on ' + $scope.company.name)
             });
             Machine.initCreateInstancePageConfig();
-            var sdcDatacenters = window.JP.get('sdcDatacenters') || [];
+            var tritonDatacenters = window.JP.get('sdcDatacenters') || [];
             var publicSdc = $scope.features && $scope.features.privateSdc === 'disabled';
-            var CHOOSE_IMAGE_STEP = 0;
-            var SELECT_PACKAGE_STEP = 1;
-            var REVIEW_STEP = 2;
-            var WizardSteps = {
-                CHOOSE_IMAGE: 'Choose Image',
-                SELECT_PACKAGE: 'Select Package',
-                REVIEW: 'Review',
-                ACCOUNT: 'Account Information',
-                SSH: 'SSH Key'
-            };
+            var instanceTypesStepConfig = null;
+            var sdcPackages = [];
+            var packageGroupsCache = [];
+            var packagesCache = [];
 
             var IMAGE_TYPES = {
                 virtualmachine: ['virtualmachine'],
                 smartmachine: ['smartmachine', 'zone-dataset', 'lx-dataset']
             };
             var INSTANCE_TYPES = {
+                simple: 'simple',
                 container: 'native-container',
                 machine: 'virtual-machine',
-                custom: 'custom'
+                custom: 'custom',
+                dockerContainer: 'container'
             };
             var ROUTES = {
                 nativeContainer: '/compute/create/' + INSTANCE_TYPES.container,
                 virtualMachine: '/compute/create/' + INSTANCE_TYPES.machine,
                 custom: '/compute/create/' + INSTANCE_TYPES.custom,
+                simple: '/compute/create/' + INSTANCE_TYPES.simple,
                 container: '/compute/container/create'
             };
+
+            var INSTANCE_TYPE_OPTIONS = [
+                {
+                    name: 'Quick Start',
+                    description: 'Choose a popular image and start computing right away...',
+                    type: INSTANCE_TYPES.simple
+                },
+                {
+                    name: 'Saved Images',
+                    description: 'Choose a saved image for computing...',
+                    type: INSTANCE_TYPES.custom
+                },
+                {
+                    name: 'Docker Container',
+                    description: 'Launch a container with docker public or private repo...',
+                    type: INSTANCE_TYPES.dockerContainer
+                },
+                {
+                    name: 'Infrastructure Container',
+                    description: 'Choose a linux or smartos image for container-native computing...',
+                    type: INSTANCE_TYPES.container
+                },
+                {
+                    name: 'Hardware Virtual Machine',
+                    description: 'Create a KVM running on Windows or Linux guest OS...',
+                    type: INSTANCE_TYPES.machine
+                }
+            ];
 
             var FilterValues = {
                 'No filter': [],
@@ -64,10 +90,10 @@
                 memory: [],
                 disk: []
             };
-            var PROVISION_BUNDLE_KEYS = ['datacenters', 'datasetType', 'selectedDataset', 'filterModel', 'filterProps',
-                'filterValues', 'selectedPackageInfo', 'packages', 'packageTypes', 'indexPackageTypes'];
+            var PROVISION_BUNDLE_KEYS = ['datacenters', 'datasetType', 'selectedImage', 'filterModel', 'filterProps',
+                'filterValues', 'selectedPackageInfo', 'packages', 'packageGroups', 'indexPackageTypes'];
 
-            var preSelectedImageId = requestContext.getParam('imageid') === 'custom' ? null :
+            var preSelectedImageId = requestContext.getParam('imageid') === INSTANCE_TYPES.custom ? null :
                 requestContext.getParam('imageid');
 
             var hostSpecification = preSelectedImageId && $location.search().specification;
@@ -82,25 +108,63 @@
             $scope.isCurrentLocation = Provision.isCurrentLocation;
             $scope.provisionSteps = [
                 {
-                    name: WizardSteps.CHOOSE_IMAGE,
+                    name: 'Instance Type',
+                    template: 'machine/static/partials/wizard-instance-type.html',
+                    hidden: Boolean(hostSpecification)
+                },
+                {
+                    name: 'Choose Image',
                     template: 'machine/static/partials/wizard-choose-image.html',
-                    hide: hostSpecification
+                    hidden: Boolean(hostSpecification)
                 },
                 {
-                    name: WizardSteps.SELECT_PACKAGE,
-                    template: 'machine/static/partials/wizard-select-package.html'
+                    name: 'Select Package',
+                    template: 'machine/static/partials/wizard-select-package.html',
+                    hidden: false
                 },
                 {
-                    name: WizardSteps.REVIEW,
-                    template: 'machine/static/partials/wizard-review.html'
+                    name: 'Review',
+                    template: 'machine/static/partials/wizard-review.html',
+                    hidden: false
+                },
+                {
+                    name: 'Attributes',
+                    template: 'docker/static/partials/container-create.html',
+                    hidden: true
+                },
+                {
+                    name: 'Account Information',
+                    template: 'machine/static/partials/wizard-account-info.html',
+                    hidden: true
+                },
+                {
+                    name: 'SSH Key',
+                    template: 'machine/static/partials/wizard-ssh-key.html',
+                    hidden: true
                 }
             ];
 
+            $scope.STEP_INDEX = {
+                type: 0,
+                image: 1,
+                package: 2,
+                review: 3,
+                attributes: 4,
+                account: 5,
+                ssh: 6
+            };
+
             $scope.filterModel = {};
+            $scope.selectedInstanceType = {};
+            $scope.provisionForm = {form: {}};
             $scope.sshModel = {isSSHStep: false};
             $scope.instanceType = INSTANCE_TYPES.machine;
-            if ($location.path() === ROUTES.nativeContainer) {
+            if ($location.path() === ROUTES.simple) {
+                $scope.instanceType = INSTANCE_TYPES.simple;
+            } else if ($location.path() === ROUTES.nativeContainer) {
                 $scope.instanceType = INSTANCE_TYPES.container;
+            } else if ($location.path() === ROUTES.container) {
+                $scope.instanceType = INSTANCE_TYPES.dockerContainer;
             } else if (preSelectedImageId || $location.path() === ROUTES.custom) {
                 $scope.instanceType = INSTANCE_TYPES.custom;
             }
@@ -115,13 +179,15 @@
             $scope.datacenters = [];
             $scope.networks = [];
             $scope.packages = [];
-            $scope.packageTypes = [];
+            $scope.packageGroups = [];
             $scope.popularImages = [];
-            $scope.packageType = null;
+            $scope.packageGroup = null;
+            $scope.isInstanceTypeStepDisabled = $scope.isFirstSlideActive = true;
+            $scope.showSimpleType = false;
             $scope.loading = true;
 
-            $scope.currentPageIndex = 0;
-            $scope.currentStep = '';
+            $scope.currentStepIndex = $scope.STEP_INDEX.type;
+            $scope.currentStepName = '';
             $scope.datasetsLoading = true;
             $scope.filterValues = ng.copy(FilterValues);
 
@@ -135,45 +201,19 @@
                 metadata: {}
             };
 
-            $scope.selectedDataset = null;
+            $scope.selectedImage = null;
             $scope.selectedPackage = null;
             var selectedNetworks = [];
             var indexPackageTypes = {};
             var freeTierOptions = [];
+            var unreachableDatacenters = [];
+            var firstLoad = true;
 
             var externalInstanceParams = requestContext.getParam('dc') && requestContext.getParam('package');
             var provisionBundle = $rootScope.popCommonConfig('provisionBundle');
             if (provisionBundle) {
                 $rootScope.commonConfig('datacenter', provisionBundle.machine.datacenter);
             }
-
-            $scope.filterSimpleImagesByDatacenter = function (image) {
-                return image.imageData.datacenter === $scope.data.datacenter;
-            };
-
-            $scope.filterPopularImages = function (image) {
-                return $scope.popularImages.indexOf(image.name) !== -1;
-            };
-
-            var deleteProvisionStep = function (stepName) {
-                $scope.provisionSteps = $scope.provisionSteps.filter(function (item) {
-                    return item.name !== stepName;
-                });
-            };
-
-            $scope.getCreateTitle = function () {
-                return $scope.currentPageIndex === $scope.provisionSteps.length - 1 ? 'Create Instance' : 'Next';
-            };
-            // TODO: need get better structure for storing steps
-            var addProvisionStep = function (name, template) {
-                var isExists = $scope.provisionSteps.some(function (item) {
-                    return item.name === name;
-                });
-
-                if (!isExists) {
-                    $scope.provisionSteps.push({name: name, template: template});
-                }
-            };
 
             var setDatacenter = function () {
                 if ($rootScope.commonConfig('datacenter')) {
@@ -182,8 +222,6 @@
                     $scope.selectDatacenter();
                 }
             };
-
-            $scope.provisioningInProgress = false;
 
             var provision = function (machine) {
                 var submitBillingInfo = {btnTitle: 'Next'};
@@ -230,26 +268,21 @@
                         return;
                     }
 
-                    var dataset = $scope.selectedDataset;
-                    var description = dataset && dataset.description;
+                    var image = $scope.selectedImage;
+                    var description = image && image.description;
                     $scope.provisioningInProgress = false;
-                    if (dataset && dataset.eula || description && description.indexOf('Stingray') > -1 ||
+                    if (image && image.eula || description && description.indexOf('Stingray') > -1 ||
                         description && description.indexOf('SteelApp') > -1) {
                         PopupDialog.confirm(
                             'Accept End-User License Agreement',
                             {
-                                templatePath: dataset.eula || 'slb/static/templates/eula.html'
+                                templatePath: image.eula || 'slb/static/templates/eula.html'
                             },
                             function () {
                                 finalProvision(instanceFromPublicImage);
                             },
                             function () {
-                                var stepsCount = $scope.provisionSteps.length;
-                                deleteProvisionStep(WizardSteps.ACCOUNT);
                                 $scope.provisioningInProgress = false;
-                                if (stepsCount !== $scope.provisionSteps.length) {
-                                    $scope.reconfigure($scope.currentPageIndex - 1);
-                                }
                             }
                         );
                     } else {
@@ -269,6 +302,207 @@
                     $rootScope.commonConfig('provisionBundle', data);
                 });
             };
+
+            var selectNetwork = function (id, doToggle) {
+                if (selectedNetworks.indexOf(id) > -1 && doToggle) {
+                    selectedNetworks.splice(selectedNetworks.indexOf(id), 1);
+                } else {
+                    selectedNetworks.push(id);
+                }
+            };
+
+            var goToStep = function (step) {
+                $scope.currentStepName = $scope.provisionSteps[$scope.currentStepIndex].name;
+                $scope.currentStepIndex = step || 0;
+                ng.element('html, body').scrollTop(0);
+                ng.element('.carousel-inner').scrollTop($scope.currentStepIndex);
+                ng.element('.carousel').carousel(typeof step === 'number' ? step : 'next');
+            };
+
+            var prepareProvision = function () {
+                $scope.sshModel.isSSHStep = $scope.keys.length === 0;
+                if (!$scope.account.provisionEnabled) {
+                    return goToStep($scope.STEP_INDEX.account);
+                } else if ($scope.sshModel.isSSHStep) {
+                    return goToStep($scope.STEP_INDEX.ssh);
+                }
+                provision();
+            };
+
+            var selectImage = function (id, changeImage) {
+                Image.image({id: id, datacenter: $scope.data.datacenter}).then(function (image) {
+                    if (IMAGE_TYPES.virtualmachine.indexOf(image.type) > -1) {
+                        $scope.datasetType = 'kvm';
+                    } else if (IMAGE_TYPES.smartmachine.indexOf(image.type) > -1) {
+                        $scope.datasetType = 'smartos';
+                    } else {
+                        $scope.datasetType = image.type;
+                    }
+
+                    ng.element('#next').trigger('click');
+                    ng.element('#step-configuration').fadeIn('fast');
+
+                    $scope.data.dataset = image.id;
+                    $scope.selectedImage = image;
+                    image.visibility = image.public ? 'public' : INSTANCE_TYPES.custom;
+
+                    setPackagesPrice(image);
+                    setFreeTierHidden(freeTierOptions);
+
+                    if (!changeImage) {
+                        goToStep($scope.STEP_INDEX.package);
+                    }
+
+                    if ($scope.packages && !externalInstanceParams) {
+                        setFilterValues(FilterValues);
+                    }
+                    $scope.filteredVersions = Provision.filterVersions(image, hostSpecification).reverse();
+                });
+            };
+
+            var filterImages = function (image) {
+                if (!$scope.filterModel.searchText) {
+                    return true;
+                }
+                var props = ['id', 'name', 'description'];
+                if ($scope.instanceType === INSTANCE_TYPES.dockerContainer) {
+                    props = props.concat(['created', 'virtualSize']);
+                }
+                var term = $scope.filterModel.searchText.toLowerCase();
+                return props.some(function (prop) {
+                    return image[prop] && image[prop].toLowerCase().indexOf(term) !== -1;
+                });
+            };
+
+            var filterImagesByOS = function (image) {
+                return $scope.data.opsys === 'All' || image.os && image.os.match($scope.data.opsys);
+            };
+
+            var filterImagesByVisibility = function (image) {
+                var result = false;
+                if ($scope.instanceType === INSTANCE_TYPES.container) {
+                    result = image.public && IMAGE_TYPES.smartmachine.indexOf(image.type) > -1;
+                } else if ($scope.instanceType === INSTANCE_TYPES.machine) {
+                    result = image.public && IMAGE_TYPES.virtualmachine.indexOf(image.type) > -1;
+                } else if ($scope.instanceType === INSTANCE_TYPES.custom) {
+                    result = !image.public;
+                }
+                if ($scope.features.imageUse !== 'disabled') {
+                    result = image.state === 'active' && result;
+                }
+                return result;
+            };
+
+            var getReveiwStep = function () {
+                return $scope.instanceType === INSTANCE_TYPES.dockerContainer ? $scope.STEP_INDEX.attributes : $scope.STEP_INDEX.review;
+            };
+
+            var getFilteredImages = function (images) {
+                return (images || []).filter(function (image) {
+                    var foundImage = ($scope.images || []).find(function (dataset) {
+                        return image.imageData && dataset.id === image.imageData.dataset || dataset.id === image.dataset;
+                    });
+                    return foundImage ? filterImages(foundImage) && filterImagesByOS(foundImage) : false;
+                });
+            };
+
+            var setDefaultAccordionBehavior = function (accordion) {
+                accordion.find('.panel-collapse').addClass('collapse').end()
+                    .find('.collapse.in').removeClass('in').removeAttr('style');
+            };
+
+            var onFilterChange = function (newVal) {
+                if (newVal) {
+                    $scope.filterModel.value = $scope.filterValues[newVal][0];
+                }
+                if ($scope.packages) {
+                    selectMinimalPackage('');
+                    $timeout(function () {
+                        var accordion = ng.element('#packagesAccordion');
+                        if ($scope.filterModel.key === 'No filter') {
+                            setDefaultAccordionBehavior(accordion);
+                            accordion.find('.panel-collapse').has('div.active').addClass('in').removeAttr('style');
+                        } else {
+                            $scope.collapsedPackageGroups = [];
+                            accordion.find('.collapse').addClass('in');
+                        }
+                    });
+                }
+            };
+
+            var selectFilter = function (key, name, callback) {
+                if (key === 'value') {
+                    onFilterChange();
+                } else {
+                    onFilterChange(name);
+                }
+                callback();
+            };
+
+            var switchToAliveDatacenter = function (datacenter, err) {
+                if (unreachableDatacenters.indexOf(datacenter) === -1) {
+                    unreachableDatacenters.push(datacenter);
+                }
+                if ($scope.datacenters && $scope.datacenters.length > 0) {
+                    var firstNonSelected = $scope.datacenters.find(function (dc) {
+                        return unreachableDatacenters.indexOf(dc.name) === -1;
+                    });
+                    if (firstNonSelected) {
+                        PopupDialog.error(
+                            localization.translate(
+                                null,
+                                null,
+                                'Error'
+                            ), err && err.restCode === 'NotAuthorized' ? err.message :
+                                localization.translate(
+                                    null,
+                                    'machine',
+                                    'CloudAPI is not responding in the {{name}} data center.' +
+                                    ' Our operations team is investigating.',
+                                    {name: datacenter}
+                                )
+                        );
+                        if (!err || err.restCode !== 'NotAuthorized') {
+                            $scope.data.datacenter = firstNonSelected.name;
+                        }
+                    }
+                }
+            };
+
+            var getTritonDatacenterId = function (datacenter) {
+                $scope.tritonDatacenter = tritonDatacenters.find(function (tritonDatacenter) {
+                    return tritonDatacenter.datacenter === datacenter;
+                });
+                $scope.isTritonDatacenter = Boolean($scope.tritonDatacenter);
+                return $scope.tritonDatacenter && $scope.tritonDatacenter.id;
+            };
+
+            var getImagesInfo = function (datacenter) {
+                if ($rootScope.dockerHostsAvailable) {
+                    $scope.loading = true;
+                    Provision.getDockerImagesInfo(datacenter).then(function (result) {
+                        $scope.dockerImages = result.dockerImages;
+                        sdcPackages = result.sdcPackages;
+                        $scope.getSearchedDockerImages();
+                    }).finally(function () {
+                        $scope.loading = false;
+                    });
+                }
+            };
+
+            $scope.filterSimpleImagesByDatacenter = function (image) {
+                return image.imageData.datacenter === $scope.data.datacenter;
+            };
+
+            $scope.filterPopularImages = function (image) {
+                return $scope.popularImages.indexOf(image.name) !== -1;
+            };
+
+            $scope.getCreateTitle = function () {
+                return $scope.currentStepIndex === $scope.STEP_INDEX.review ? 'Create Instance' : 'Next';
+            };
+
+            $scope.provisioningInProgress = false;
 
             var tasks = [
                 $q.when(Account.getKeys()),
@@ -295,10 +529,10 @@
 
                 $scope.keys = !keysResult.error ? keysResult : [];
                 if (!$scope.account.provisionEnabled) {
-                    addProvisionStep(WizardSteps.ACCOUNT, 'machine/static/partials/wizard-account-info.html');
+                    $scope.provisionSteps[$scope.STEP_INDEX.account].hidden = false;
                 }
                 if ($scope.keys.length <= 0) {
-                    addProvisionStep(WizardSteps.SSH, 'machine/static/partials/wizard-ssh-key.html');
+                    $scope.provisionSteps[$scope.STEP_INDEX.ssh].hidden = false;
                 }
 
                 function selectDatacenterByImage(imageId) {
@@ -309,7 +543,7 @@
                         if (datacenter) {
                             $scope.selectDatacenter(datacenter);
                         } else {
-                            $location.url('/compute/create/simple');
+                            $location.url(ROUTES.simple);
                             $location.replace();
                             setDatacenter();
                         }
@@ -326,7 +560,7 @@
                         selectedNetworks = $scope.data.networks;
 
                         $scope.instanceType = INSTANCE_TYPES.container;
-                        $scope.reconfigure(REVIEW_STEP);
+                        $scope.reconfigure(getReveiwStep());
                     }
                     if (bundle.ready) {
                         provision(bundle.machine);
@@ -378,8 +612,8 @@
                         completeSetup();
                     });
                     if ($scope.isRecentInstancesEnabled) {
-                        Image.image({datacenter: $scope.data.datacenter}).then(function (datasets) {
-                            $scope.recentInstances = Provision.processRecentInstances(result[3], getEmptyOnError(datasets), $scope.packages);
+                        Image.image({datacenter: $scope.data.datacenter}).then(function (images) {
+                            $scope.recentInstances = Provision.processRecentInstances(result[3], getEmptyOnError(images), $scope.packages);
                         });
                     }
                 }
@@ -393,35 +627,23 @@
                 if ($scope.keys.length > 0) {
                     $scope.clickProvision();
                 } else {
-                    var sshStepIndex = 4;
-                    $scope.sshModel.isSSHStep = nextStep(sshStepIndex);
-                    $timeout(function () {
-                        deleteProvisionStep(WizardSteps.ACCOUNT);
-                        if ($scope.sshModel.isSSHStep) {
-                            sshStepIndex = 3;
-                            $scope.setCurrentStep(sshStepIndex);
-                        }
-                    }, 600);
+                    $scope.sshModel.isSSHStep = !$scope.provisionSteps[$scope.STEP_INDEX.ssh].hidden;
+                    goToStep($scope.STEP_INDEX.ssh);
+                    $scope.provisionSteps[$scope.STEP_INDEX.account].hidden = true;
                 }
-
             });
 
             $scope.$on('ssh-form:onKeyUpdated', function (event, keys) {
                 $scope.keys = keys;
-                if (keys.length > 0 && $scope.currentStep !== WizardSteps.REVIEW &&
-                    $scope.currentStep !== WizardSteps.SSH) {
-                    deleteProvisionStep(WizardSteps.SSH);
+                if (keys.length > 0 && $scope.currentStepIndex !== $scope.STEP_INDEX.ssh) {
+                    $scope.provisionSteps[$scope.STEP_INDEX.ssh].hidden = true;
                 } else {
-                    addProvisionStep(WizardSteps.SSH, 'machine/static/partials/wizard-ssh-key.html');
+                    $scope.provisionSteps[$scope.STEP_INDEX.ssh].hidden = false;
                 }
             });
 
-            var selectNetwork = function (id, doToggle) {
-                if (selectedNetworks.indexOf(id) > -1 && doToggle) {
-                    selectedNetworks.splice(selectedNetworks.indexOf(id), 1);
-                } else {
-                    selectedNetworks.push(id);
-                }
+            $scope.isProvisionEnabled = function () {
+                return $scope.account && $scope.account.provisionEnabled;
             };
 
             $scope.selectNetworkCheckbox = function (network) {
@@ -434,23 +656,6 @@
                     }
                 });
                 selectNetwork(network.id, true);
-            };
-
-            var nextStep = function (step) {
-                var isNextStep = step - $scope.currentPageIndex === 1;
-                if (isNextStep) {
-                    $scope.setCurrentStep(step);
-                    $scope.slideCarousel();
-                }
-                return isNextStep;
-            };
-
-            var prepareProvision = function () {
-                $scope.sshModel.isSSHStep = $scope.keys.length === 0;
-                if (!$scope.account.provisionEnabled || $scope.sshModel.isSSHStep) {
-                    return nextStep(3);
-                }
-                provision();
             };
 
             $scope.clickProvision = function () {
@@ -526,12 +731,10 @@
                 Provision.selectDatacenter(name, function (datacenterName) {
                     if (datacenterName) {
                         $scope.data.datacenter = datacenterName;
-                        $scope.isSdcDatacenter = sdcDatacenters.some(function (sdcDatacenter) {
-                            return sdcDatacenter.datacenter === datacenterName;
-                        });
+                        getTritonDatacenterId(datacenterName);
                         $rootScope.commonConfig('datacenter', datacenterName);
                         if (!requestContext.getParam('imageid') && !$location.search().specification &&
-                            $scope.instanceType === INSTANCE_TYPES.container && !$scope.isSdcDatacenter) {
+                            $scope.instanceType === INSTANCE_TYPES.container && !$scope.isTritonDatacenter) {
                             $scope.selectInstanceType(INSTANCE_TYPES.machine);
                         }
                     }
@@ -567,8 +770,29 @@
                 });
             }
 
+            var resetSelectedData = function (step, instancePackage) {
+                $scope.data = {
+                    datacenter: $scope.data.datacenter,
+                    opsys: 'All',
+                    name: null,
+                    dataset: $scope.data.dataset,
+                    metadata: {},
+                    tags: {}
+                };
+
+                if (instancePackage && (step === $scope.STEP_INDEX.package || $scope.selectedPackage &&
+                    $scope.selectedImage.id === $scope.data.dataset)) {
+                    $scope.data.package = instancePackage;
+                } else {
+                    $scope.selectedPackage = null;
+                    $scope.selectedPackageInfo = null;
+                    $scope.packageGroup = null;
+                    $scope.selectedImage = null;
+                }
+            };
+
             $scope.reconfigure = function (step) {
-                if (step === CHOOSE_IMAGE_STEP) {
+                if (step === $scope.STEP_INDEX.image) {
                     ng.element('#filterProperty').val('No filter');
                     preSelectedImageId = null;
                     externalInstanceParams = null;
@@ -577,50 +801,34 @@
                         $location.path(ROUTES.custom);
                     }
                 }
-                if (step !== REVIEW_STEP) {
+                if (step !== $scope.STEP_INDEX.review && step !== $scope.STEP_INDEX.attributes) {
                     if ($scope.networks && $scope.networks.length) {
                         setNetworks($scope.data.datacenter);
                     }
 
-                    var provisionForm = $scope.$$childTail.$$childTail && $scope.$$childTail.$$childTail.provisionForm;
-                    if (provisionForm) {
+                    if ($scope.provisionForm.form.machineName) {
                         ['machineName', 'machineUnique'].forEach(function (key) {
-                            provisionForm.machineName.$setValidity(key, true);
+                            $scope.provisionForm.form.machineName.$setValidity(key, true);
                         });
                     }
-                    var instancePackage = $scope.data.package;
-
-                    $scope.data = {
-                        datacenter: $scope.data.datacenter,
-                        opsys: $scope.data.opsys,
-                        name: null,
-                        dataset: $scope.data.dataset,
-                        metadata: {},
-                        tags: {}
-                    };
-
-                    if (step === SELECT_PACKAGE_STEP) {
-                        $scope.data.package = instancePackage;
-                    } else {
-                        $scope.selectedPackage = null;
-                        $scope.selectedPackageInfo = null;
-                        $scope.packageType = null;
+                    if (!$scope.selectedImage || $scope.selectedImage.id !== $scope.data.dataset &&
+                        $scope.instanceType !== INSTANCE_TYPES.dockerContainer) {
+                        resetSelectedData(step, $scope.data.package);
                     }
                 }
                 if ($scope.keys.length > 0) {
                     ng.element('.carousel').on('slid.bs.carousel', function () {
                         if ($scope.$$phase) {
-                            deleteProvisionStep(WizardSteps.SSH);
+                            $scope.provisionSteps[$scope.STEP_INDEX.ssh].hidden = true;
                         } else {
                             $scope.$apply(function () {
-                                deleteProvisionStep(WizardSteps.SSH);
+                                $scope.provisionSteps[$scope.STEP_INDEX.ssh].hidden = true;
                             });
                         }
                         ng.element('.carousel').off('slid.bs.carousel');
                     });
                 }
-                $scope.setCurrentStep(step);
-                $scope.slideCarousel(step);
+                goToStep(step);
                 if ($scope.features.instanceMetadata === 'enabled') {
                     ng.element('#metadata-configuration').fadeOut('fast');
                 }
@@ -628,19 +836,14 @@
                 preSelectedData = null;
             };
 
-            $scope.setCurrentStep = function (index) {
-                $scope.currentPageIndex = index;
-                $scope.currentStep = ng.element('.active-step').find('.current-step').eq(0).text();
+            $scope.selectLastDatasetVersion = function (image) {
+                var imageId = Provision.getLastDatasetId(image);
+                selectImage(imageId);
             };
 
-            $scope.selectLastDatasetVersion = function (dataset) {
-                var datasetId = Provision.getLastDatasetId(dataset);
-                selectDataset(datasetId);
-            };
-
-            function setPackagesPrice(dataset) {
-                if ($scope.packages && dataset['license_price']) {
-                    var lPrice = util.getNr(dataset['license_price']);
+            function setPackagesPrice(image) {
+                if ($scope.packages && image['license_price']) {
+                    var lPrice = util.getNr(image['license_price']);
                     if (lPrice !== false) {
                         $scope.packages.forEach(function (p) {
                             if (p.price) {
@@ -654,7 +857,7 @@
                             }
                         });
                     }
-                } else if (!dataset['license_price']) {
+                } else if (!image['license_price']) {
                     $scope.packages.forEach(function (p) {
                         delete(p['full_price']);
                         delete(p['full_price_month']);
@@ -696,109 +899,168 @@
                     });
                 });
                 $scope.filterModel.key = $scope.filterProps[0];
-                $scope.onFilterChange($scope.filterModel.key);
+                onFilterChange($scope.filterModel.key);
             }
 
-            var selectDataset = function (id, changeDataset) {
-                Image.image({id: id, datacenter: $scope.data.datacenter}).then(function (dataset) {
-                    if (IMAGE_TYPES.virtualmachine.indexOf(dataset.type) > -1) {
-                        $scope.datasetType = 'kvm';
-                    } else if (IMAGE_TYPES.smartmachine.indexOf(dataset.type) > -1) {
-                        $scope.datasetType = 'smartos';
-                    } else {
-                        $scope.datasetType = dataset.type;
-                    }
-
-                    ng.element('#next').trigger('click');
-                    ng.element('#step-configuration').fadeIn('fast');
-
-                    $scope.data.dataset = dataset.id;
-                    $scope.selectedDataset = dataset;
-                    dataset.visibility = dataset.public ? 'public' : 'custom';
-
-                    setPackagesPrice(dataset);
-                    setFreeTierHidden(freeTierOptions);
-
-                    if (!changeDataset) {
-                        $scope.setCurrentStep(SELECT_PACKAGE_STEP);
-                        $scope.slideCarousel(SELECT_PACKAGE_STEP);
-                    }
-
-                    if ($scope.packages && !externalInstanceParams) {
-                        setFilterValues(FilterValues);
-                    }
-                    $scope.filteredVersions = Provision.filterVersions(dataset, hostSpecification).reverse();
-                });
-            };
-
             $scope.selectVersion = function () {
-                selectDataset($scope.data.dataset, true);
+                selectImage($scope.data.dataset, true);
             };
 
-            $scope.selectPackageType = function (packageType) {
-                $scope.packageType = packageType;
+            $scope.selectPackageGroup = function (packageGroup) {
+                $scope.packageGroup = packageGroup;
             };
 
-            $scope.filterDatasets = function (item) {
-                if (!$scope.filterModel.searchText) {
-                    return true;
-                }
-                var props = ['id', 'name', 'description'];
-                var term = $scope.filterModel.searchText.toLowerCase();
-                return props.some(function (prop) {
-                    return item[prop] && item[prop].toLowerCase().indexOf(term) !== -1;
+            $scope.getAllFilteredImages = function () {
+                $scope.filteredImages = ($scope.images || []).filter(function (image) {
+                    return filterImages(image) && filterImagesByOS(image) && filterImagesByVisibility(image);
                 });
             };
 
-            $scope.filterDatasetsByOS = function (item) {
-                return $scope.data.opsys === 'All' || item.os && item.os.match($scope.data.opsys);
-            };
-
-            $scope.filterDatasetsByVisibility = function (item) {
-                var result = false;
-                if ($scope.instanceType === INSTANCE_TYPES.container) {
-                    result = item.public && IMAGE_TYPES.smartmachine.indexOf(item.type) > -1;
-                } else if ($scope.instanceType === INSTANCE_TYPES.machine) {
-                    result = item.public && IMAGE_TYPES.virtualmachine.indexOf(item.type) > -1;
-                } else if ($scope.instanceType === INSTANCE_TYPES.custom) {
-                    result = !item.public;
-                }
-                if ($scope.features.imageUse !== 'disabled') {
-                    result = item.state === 'active' && result;
-                }
-                return result;
-            };
-
-            $scope.getFilteredDatasets = function () {
-                $scope.filteredDatasets = ($scope.datasets || []).filter(function (item) {
-                    return $scope.filterDatasets(item) && $scope.filterDatasetsByOS(item) && $scope.filterDatasetsByVisibility(item);
+            $scope.setInstanceType = function () {
+                $scope.selectedInstanceType.data = $scope.instanceTypeOptions.find(function (instanceType) {
+                    return instanceType.type === $scope.instanceType;
                 });
+            };
+
+            var setAccountSshStepsVisibility = function (type) {
+                var isTypeDocker = type === INSTANCE_TYPES.dockerContainer;
+                $scope.provisionSteps[$scope.STEP_INDEX.account].hidden = isTypeDocker || $scope.account.provisionEnabled;
+                $scope.provisionSteps[$scope.STEP_INDEX.ssh].hidden = isTypeDocker || $scope.loading || $scope.keys.length > 0;
             };
 
             $scope.selectInstanceType = function (type) {
+                $scope.provisionSteps[$scope.STEP_INDEX.review].hidden = true;
+                if (type !== INSTANCE_TYPES.dockerContainer) {
+                    $scope.provisionSteps[$scope.STEP_INDEX.review].hidden = false;
+                    $scope.packageGroups = packageGroupsCache;
+                    $scope.packages = packagesCache;
+                }
+                $scope.provisionSteps[$scope.STEP_INDEX.attributes].hidden = !$scope.provisionSteps[$scope.STEP_INDEX.review].hidden;
+                setAccountSshStepsVisibility(type);
+                if (type !== $scope.instanceType) {
+                    resetSelectedData();
+                }
                 $scope.instanceType = type;
-                $scope.getFilteredDatasets();
-                $scope.reconfigure(0);
+                $scope.showSimpleType = false;
+                if (type === INSTANCE_TYPES.simple) {
+                    $location.path(ROUTES.simple);
+                    $scope.setCreateInstancePage(INSTANCE_TYPES.simple);
+                    $scope.setInstanceType();
+                    $scope.showSimpleType = true;
+                    return;
+                }
+                $scope.getAllFilteredImages();
+                $scope.reconfigure($scope.STEP_INDEX.image);
                 if (type === INSTANCE_TYPES.machine) {
                     $location.path(ROUTES.virtualMachine);
                     $scope.setCreateInstancePage(INSTANCE_TYPES.machine);
                 } else if (type === INSTANCE_TYPES.container) {
                     $location.path(ROUTES.nativeContainer);
                     $scope.setCreateInstancePage(INSTANCE_TYPES.container);
-                } else if (type === 'container') {
+                } else if (type === INSTANCE_TYPES.dockerContainer) {
                     $location.path(ROUTES.container);
-                    $scope.setCreateInstancePage('container');
-                } else if (type === 'custom') {
+                    $scope.setCreateInstancePage(INSTANCE_TYPES.dockerContainer);
+                } else if (type === INSTANCE_TYPES.custom) {
                     $location.path(ROUTES.custom);
-                    $scope.setCreateInstancePage('custom');
+                    $scope.setCreateInstancePage(INSTANCE_TYPES.custom);
+                }
+                $scope.setInstanceType();
+            };
+
+            $scope.instanceTypeOptions = angular.copy(INSTANCE_TYPE_OPTIONS);
+
+            $scope.setInstanceType();
+
+            $scope.goToNextStep = function () {
+                if ($scope.currentStepIndex === $scope.STEP_INDEX.package) {
+                    $scope.goToReviewPage();
+                } else if ($scope.currentStepIndex === $scope.STEP_INDEX.image) {
+                    $scope.reconfigure($scope.STEP_INDEX.package);
                 }
             };
 
-            $scope.checkLimit = function (dataset) {
-                if (dataset.limit && dataset.limit.$$v) {
+            $scope.goToInstances = function () {
+                var machine = Machine.machine();
+                if (machine && machine.length) {
+                    $location.path('/compute');
+                } else {
+                    $location.path('/dashboard');
+                }
+            };
+
+            $scope.goToPreviousStep = function () {
+                if ($scope.currentStepIndex) {
+                    var step = $scope.currentStepIndex - 1;
+                    if ($scope.currentStepIndex === $scope.STEP_INDEX.account ||
+                        $scope.currentStepIndex === $scope.STEP_INDEX.ssh &&
+                        $scope.provisionSteps[$scope.STEP_INDEX.account].hidden) {
+                        step = getReveiwStep();
+                    } else if ($scope.currentStepIndex === $scope.STEP_INDEX.attributes) {
+                        step = $scope.STEP_INDEX.package;
+                    }
+                    $scope.reconfigure(step);
+                } else if ($scope.instanceType === INSTANCE_TYPES.simple || !$scope.currentStepIndex) {
+                    $scope.goToInstances();
+                }
+            };
+
+            $scope.skipInstanceTypeStep = function () {
+                $scope.isInstanceTypeStepDisabled = !$scope.isInstanceTypeStepDisabled;
+                if ($scope.features.manta === 'enabled') {
+                    if (!instanceTypesStepConfig) {
+                        Account.getUserConfig('instanceTypeStep', function (config) {
+                            instanceTypesStepConfig = config;
+                            $scope.isInstanceTypeStepDisabled = $scope.isFirstSlideActive = instanceTypesStepConfig.isTypeCheckboxActive;
+                            if ($scope.isInstanceTypeStepDisabled) {
+                                $scope.selectInstanceType($scope.instanceType);
+                            }
+                        });
+                    } else {
+                        instanceTypesStepConfig.isTypeCheckboxActive = $scope.isInstanceTypeStepDisabled;
+                        Account.saveUserConfig();
+                    }
+                }
+            };
+            if (!preSelectedImageId) {
+                $scope.skipInstanceTypeStep();
+            }
+
+            $scope.getFilteredSimpleImages = function () {
+                $scope.filteredRecentInstances = getFilteredImages($scope.recentInstances);
+                $scope.filteredSimpleImages = getFilteredImages($scope.simpleImages);
+            };
+
+            $scope.getSearchedDockerImages = function () {
+                $scope.filteredDockerImages = ($scope.dockerImages || []).filter(function (image) {
+                    return filterImages(image);
+                });
+            };
+
+            $scope.selectDockerImage = function (image) {
+                $scope.packageGroups = [];
+                $scope.datasetType = 'smartos';
+                $scope.selectedImage = image;
+                $scope.packages = sdcPackages;
+                $scope.packages.forEach(function (pkg) {
+                    if ($scope.packageGroups.indexOf(pkg.group) === -1) {
+                        $scope.packageGroups.push(pkg.group);
+                    }
+                });
+                $scope.packageGroup = $scope.packageGroups[0];
+                $scope.filterModel.key = $scope.filterProps[0];
+                goToStep($scope.STEP_INDEX.package);
+                onFilterChange($scope.filterModel.key);
+            };
+
+            $rootScope.$on('closeSearchDialog', function () {
+                getImagesInfo($scope.data.datacenter);
+            });
+
+            $scope.checkLimit = function (image) {
+                if (image.limit && image.limit.$$v) {
                     $scope.goTo('/limits');
                 } else {
-                    $scope.selectLastDatasetVersion(dataset);
+                    $scope.selectLastDatasetVersion(image);
                 }
             };
 
@@ -812,18 +1074,18 @@
                 });
             };
             // TODO: need review this function
-            $scope.filterPackages = function (packageType, isPackageTypeCollapsed) {
+            $scope.filterPackages = function (packageGroup, isPackageGroupCollapsed) {
                 return function (item) {
                     var result = true;
                     if (publicSdc && ($scope.datasetType !== item.type || item.freeTierHidden ||
-                        isPackageTypeCollapsed && packageType === item.group)) {
+                        isPackageGroupCollapsed && packageGroup === item.group)) {
                         result = false;
-                    } else if (packageType && packageType !== item.group) {
-                        result = isPackageTypeCollapsed && $scope.collapsedPackageTypes.indexOf(item.group) === -1;
-                    } else if ($scope.selectedDataset && $scope.selectedDataset.requirements) {
+                    } else if (packageGroup && packageGroup !== item.group) {
+                        result = isPackageGroupCollapsed && $scope.collapsedPackageGroups.indexOf(item.group) === -1;
+                    } else if ($scope.selectedImage && $scope.selectedImage.requirements) {
                         var memory = item.memory && parseInt(item.memory, 10);
                         if (memory) {
-                            var requirements = $scope.selectedDataset.requirements;
+                            var requirements = $scope.selectedImage.requirements;
                             if (requirements['min_memory'] && memory < parseInt(requirements['min_memory'], 10) ||
                                 requirements['max_memory'] && memory > parseInt(requirements['max_memory'], 10)) {
                                 result = false;
@@ -834,10 +1096,10 @@
                 };
             };
 
-            $scope.filterPackageTypes = function (datasetType) {
-                return function (packageType) {
-                    return !publicSdc || indexPackageTypes[packageType].indexOf(datasetType) > -1 &&
-                        $scope.packages.filter($scope.filterPackagesByProp).some($scope.filterPackages(packageType));
+            $scope.filterPackageGroups = function (datasetType) {
+                return function (packageGroup) {
+                    return !publicSdc || indexPackageTypes[packageGroup].indexOf(datasetType) > -1 &&
+                        $scope.packages.filter($scope.filterPackagesByProp).some($scope.filterPackages(packageGroup));
                 };
             };
 
@@ -855,20 +1117,20 @@
                 return $filter('sizeFormat')(value);
             };
 
-            function selectMinimalPackage(packageType, isPackageCollapsed) {
-                $scope.selectPackageType(packageType);
+            function selectMinimalPackage(packageGroup, isPackageCollapsed) {
+                $scope.selectPackageGroup(packageGroup);
                 var preSelectedPackageInfo = preSelectedData && preSelectedData.selectedPackageInfo;
 
                 if (preSelectedPackageInfo && $scope.selectedPackage !== preSelectedPackageInfo.id) {
                     $scope.selectedPackageInfo = preSelectedPackageInfo;
                     $scope.selectPackage($scope.selectedPackage || $scope.selectedPackageInfo.id);
-                    $scope.reviewPage();
+                    $scope.goToReviewPage();
                     setNetworks($scope.data.datacenter);
                 } else if (!preSelectedData) {
                     var minimalPackage;
                     $scope.packages
                         .filter($scope.filterPackagesByProp)
-                        .filter($scope.filterPackages(packageType, isPackageCollapsed))
+                        .filter($scope.filterPackages(packageGroup, isPackageCollapsed))
                         .forEach(function (pkg) {
                             if (!minimalPackage || minimalPackage.memory > pkg.memory ||
                                 minimalPackage.memory === pkg.memory && pkg.group === 'Standard') {
@@ -881,42 +1143,6 @@
                 }
             }
 
-            var setDefaultAccordionBehavior = function (accordion) {
-                accordion.find('.panel-collapse').addClass('collapse').end()
-                    .find('a').addClass('collapsed').end()
-                    .find('.collapse.in').removeClass('in').removeAttr('style');
-            };
-
-            $scope.onFilterChange = function (newVal, packageType) {
-                if (newVal) {
-                    $scope.filterModel.value = $scope.filterValues[newVal][0];
-                }
-                if ($scope.packages) {
-                    selectMinimalPackage(packageType || '');
-                    $timeout(function () {
-                        var accordion = ng.element('#packagesAccordion');
-                        if ($scope.filterModel.key === 'No filter') {
-                            setDefaultAccordionBehavior(accordion);
-                            accordion.find('.panel-collapse.collapse').has('div.active').addClass('in')
-                                .removeAttr('style').parent()
-                                .find('a.collapsed').removeClass('collapsed');
-                        } else {
-                            $scope.collapsedPackageTypes = [];
-                            accordion.find('.collapse').addClass('in').end()
-                                .find('a.collapsed').removeClass('collapsed');
-                        }
-                    });
-                }
-            };
-
-            var selectFilter = function (key, name, callback) {
-                if (key === 'value') {
-                    $scope.onFilterChange();
-                } else {
-                    $scope.onFilterChange(name);
-                }
-                callback();
-            };
             $scope.selectFilterType = function (name) {
                 selectFilter('key', name, function () {
                     preSelectedData = null;
@@ -926,7 +1152,7 @@
                 selectFilter('value', name, function () {});
             };
 
-            $scope.changeSelectedPackage = function (event, packageType) {
+            $scope.changeSelectedPackage = function (event, packageGroup) {
                 $timeout(function () {
                     var accordion = ng.element('#packagesAccordion');
                     var elementsLength = accordion.find('.collapse.in').length;
@@ -934,53 +1160,21 @@
                         setDefaultAccordionBehavior(accordion);
                     }
                 });
-                if ($scope.packageType) {
+                if ($scope.packageGroup) {
                     return;
                 }
                 if (!event.target.classList.contains('collapsed')) {
                     if ($scope.filterModel.key !== 'No filter') {
-                        $scope.collapsedPackageTypes.push(packageType);
-                        selectMinimalPackage(packageType, true);
+                        $scope.collapsedPackageGroups.push(packageGroup);
+                        selectMinimalPackage(packageGroup, true);
                     }
                     return;
                 }
                 if ($scope.filterModel.key === 'No filter') {
-                    selectMinimalPackage(packageType);
+                    selectMinimalPackage(packageGroup);
                 } else {
-                    $scope.collapsedPackageTypes.splice($scope.collapsedPackageTypes.indexOf(packageType), 1);
+                    $scope.collapsedPackageGroups.splice($scope.collapsedPackageGroups.indexOf(packageGroup), 1);
                     selectMinimalPackage(true, true);
-                }
-            };
-
-            var unreachableDatacenters = [];
-
-            var switchToOtherDatacenter = function (datacenter, err) {
-                if (unreachableDatacenters.indexOf(datacenter) === -1) {
-                    unreachableDatacenters.push(datacenter);
-                }
-                if ($scope.datacenters && $scope.datacenters.length > 0) {
-                    var firstNonSelected = $scope.datacenters.find(function (dc) {
-                        return unreachableDatacenters.indexOf(dc.name) === -1;
-                    });
-                    if (firstNonSelected) {
-                        PopupDialog.error(
-                            localization.translate(
-                                null,
-                                null,
-                                'Error'
-                            ), err && err.restCode === 'NotAuthorized' ? err.message :
-                            localization.translate(
-                                null,
-                                'machine',
-                                'CloudAPI is not responding in the {{name}} data center.' +
-                                    ' Our operations team is investigating.',
-                                {name: datacenter}
-                            )
-                        );
-                        if (!err || err.restCode !== 'NotAuthorized') {
-                            $scope.data.datacenter = firstNonSelected.name;
-                        }
-                    }
                 }
             };
 
@@ -994,17 +1188,7 @@
                 return result;
             }
 
-            var hasVmImages = function (images) {
-                images = images || $scope.datasets;
-                var result = Provision.hasVmImages(images, IMAGE_TYPES.virtualmachine);
-                if (!result && $location.path() === ROUTES.virtualMachine) {
-                    $scope.selectInstanceType(INSTANCE_TYPES.container);
-                }
-                return result;
-            };
-
             // Watch datacenter change
-            var firstLoad = true;
             $scope.$watch('data.datacenter', function (newVal, oldVal) {
                 if (datacenterConfig && datacenterConfig.value !== newVal) {
                     datacenterConfig.value = newVal;
@@ -1014,6 +1198,13 @@
                     $scope.reloading = true;
                     $scope.datasetsLoading = true;
                     firstLoad = false;
+                    $scope.instanceTypeOptions = angular.copy(INSTANCE_TYPE_OPTIONS);
+                    resetSelectedData();
+                    getTritonDatacenterId(newVal);
+                    if ($scope.isTritonDatacenter) {
+                        getImagesInfo(newVal);
+                        $rootScope.$emit('tritonDatacenterId', getTritonDatacenterId(newVal));
+                    }
                     var tasks = [
                         $q.when(Image.image({datacenter: newVal})),
                         $q.when(Package.package({datacenter: newVal})),
@@ -1021,45 +1212,60 @@
                     ];
                     $qe.every(tasks).then(function (result) {
                         isAvailableSwitchDatacenter = true;
-                        var datasets = getEmptyOnError(result[0]);
+                        var images = getEmptyOnError(result[0]);
                         var packages = getEmptyOnError(result[1]);
 
-                        Provision.processDatasets(datasets, function (result) {
+                        Provision.processDatasets(images, function (result) {
                             $scope['operating_systems'] = result.operatingSystems;
-                            $scope.datasets = result.datasets;
-                            $scope.hasVmImages = hasVmImages();
-                            $scope.getFilteredDatasets();
+                            $scope.images = result.datasets;
+                            $scope.filteredSimpleImages = getFilteredImages($scope.simpleImages);
+                            $scope.hasVmImages = Provision.hasVmImages($scope.images, IMAGE_TYPES.virtualmachine);
+                            if (!$scope.hasVmImages) {
+                                if ($location.path() === ROUTES.virtualMachine) {
+                                    $scope.selectInstanceType(INSTANCE_TYPES.container);
+                                }
+                                $scope.instanceTypeOptions = $scope.instanceTypeOptions.filter(function (instanceType) {
+                                    return instanceType.type !== INSTANCE_TYPES.machine;
+                                });
+                            }
+                            if (!$rootScope.dockerHostsAvailable) {
+                                $scope.instanceTypeOptions = $scope.instanceTypeOptions.filter(function (instanceType) {
+                                    return instanceType.type !== INSTANCE_TYPES.dockerContainer;
+                                });
+                            }
+                            $scope.getAllFilteredImages();
                             $scope.manyVersions = result.manyVersions;
                             $scope.selectedVersions = result.selectedVersions;
                             $scope.datasetsLoading = false;
                             if (newVal === $scope.data.datacenter) {
                                 Provision.processPackages(packages, hostSpecification, function (result) {
                                     indexPackageTypes = result.indexPackageTypes;
-                                    $scope.packageTypes = result.packageTypes;
-                                    $scope.packages = result.packages;
+                                    $scope.packageGroups = packageGroupsCache = result.packageGroups;
+                                    $scope.packages = packagesCache = result.packages;
                                     if (preSelectedImageId) {
-                                        selectDataset(preSelectedImageId, externalInstanceParams);
+                                        selectImage(preSelectedImageId, externalInstanceParams);
                                         if (externalInstanceParams) {
                                             $scope.selectPackage(requestContext.getParam('package'));
-                                            $scope.reconfigure(REVIEW_STEP);
+                                            $scope.reconfigure(getReveiwStep());
                                         }
                                     }
                                 });
                             } else if (preSelectedImageId) {
-                                selectDataset(preSelectedImageId);
+                                selectImage(preSelectedImageId);
                             }
                         });
 
-                        if (isAvailableSwitchDatacenter && datasets.length === 0 && packages.length === 0) {
-                            switchToOtherDatacenter(newVal);
+                        if (isAvailableSwitchDatacenter && images.length === 0 && packages.length === 0) {
+                            switchToAliveDatacenter(newVal);
                         } else {
                             setNetworks(newVal);
                         }
                         if ($scope.isRecentInstancesEnabled) {
-                            $scope.recentInstances = Provision.processRecentInstances(result[2], datasets, $scope.packages);
+                            $scope.recentInstances = Provision.processRecentInstances(result[2], images, $scope.packages);
+                            $scope.filteredRecentInstances = getFilteredImages($scope.recentInstances);
                         }
                     }, function (err) {
-                        switchToOtherDatacenter(newVal, err);
+                        switchToAliveDatacenter(newVal, err);
                         $scope.datasetsLoading = false;
                     });
                 }
@@ -1070,13 +1276,7 @@
                 interval: false
             });
 
-            $scope.slideCarousel = function (step) {
-                ng.element('html, body').scrollTop(0);
-                ng.element('.carousel-inner').scrollTop(step || 0);
-                ng.element('.carousel').carousel(typeof step === 'number' ? step : 'next');
-            };
-
-            $scope.reviewPage = function () {
+            $scope.goToReviewPage = function () {
                 setTimeout(function () {
                     ng.element('input[name="machineName"]').focus();
                 }, 800);
@@ -1097,31 +1297,41 @@
                         if (isSuccess) {
                             $rootScope.commonConfig('preSelectedData', {
                                 selectedPackageInfo: $scope.selectedPackageInfo,
-                                preSelectedImageId: $scope.selectedDataset.id
+                                preSelectedImageId: $scope.selectedImage.id
                             });
                         }
                     });
                 } else {
-                    $scope.slideCarousel();
-                    $scope.setCurrentStep(REVIEW_STEP);
+                    goToStep(getReveiwStep());
+                }
+                if ($scope.instanceType === INSTANCE_TYPES.dockerContainer) {
+                    $rootScope.$emit('createContainer', {
+                        hostId: getTritonDatacenterId($scope.data.datacenter),
+                        image: $scope.selectedImage.repository,
+                        pkg: $scope.selectedPackageInfo
+                    });
                 }
             };
 
-            $scope.clickBackToQuickStart = function () {
-                $location.path('/compute/create/simple');
-                $scope.setCreateInstancePage('simple');
-            };
+            $rootScope.$on('containerLaunchButton', function (event, launchButtonData) {
+                $scope.isLaunchDisabled = launchButtonData.isButtonDisabled;
+                $scope.createContainer = launchButtonData.createContainer;
+            });
 
             $scope.goTo = function (path) {
                 $location.path(path);
                 $location.replace();
             };
 
-            $scope.selectDataValue = function (name) {
+            $scope.selectDataValue = function (name, isSimpleImages) {
                 var dataValue = 'No matches found';
                 if (name === 'os' && $scope['operating_systems']) {
                     dataValue = $scope.data.opsys;
-                    $scope.getFilteredDatasets();
+                    if (isSimpleImages) {
+                        $scope.getFilteredSimpleImages();
+                    } else {
+                        $scope.getAllFilteredImages();
+                    }
                 }
                 return dataValue;
             };

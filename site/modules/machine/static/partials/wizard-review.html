@@ -3,20 +3,20 @@
         <table>
             <td>
                 <div class="left small-icon"
-                     data-ng-class="selectedDataset.name | logo">
-                    <p>IMAGE:</p><button class="btn small" data-ng-hide="isChangeImageDenied()" data-ng-click="reconfigure(0)" data-target="#provisionCarousel" data-slide-to="0">Change</button>
-                    <div class="section-title">{{selectedDataset.name}}</div>
-                    <div class="dataset-desc crop text-wrap">{{selectedDataset.description}}</div>
+                     data-ng-class="selectedImage.name | logo">
+                    <p>IMAGE:</p><button class="btn small" data-ng-hide="isChangeImageDenied()" data-ng-click="reconfigure(STEP_INDEX.image)" data-target="#provisionCarousel" data-slide-to="{{STEP_INDEX.image}}">Change</button>
+                    <div class="section-title">{{selectedImage.name}}</div>
+                    <div class="dataset-desc crop text-wrap">{{selectedImage.description}}</div>
 
-                    <p data-ng-show="manyVersions[selectedDataset.visibility][selectedDataset.name]">IMAGE VERSION:</p>
-                    <div class="image-container" data-ng-if="manyVersions[selectedDataset.visibility][selectedDataset.name]">
+                    <p data-ng-show="manyVersions[selectedImage.visibility][selectedImage.name]">IMAGE VERSION:</p>
+                    <div class="image-container" data-ng-if="manyVersions[selectedImage.visibility][selectedImage.name]">
                         <div data-versions class="btn-group pull-left"></div>
                     </div>
                 </div>
             </td>
             <td class="separator">
                 <div class="center">
-                    <p>PACKAGE:</p><button class="btn small" data-ng-click="reconfigure(1)" data-slide="prev">Change</button>
+                    <p>PACKAGE:</p><button class="btn small" data-ng-click="reconfigure(STEP_INDEX.package)" data-slide="prev">Change</button>
                     <div class="package">
                         <div class="name">Configuration</div>
                         <div class="value">{{selectedPackageInfo.short_name}}</div>
@@ -53,7 +53,7 @@
                 </div>
             </td>
             <td>
-                <form name="provisionForm" id="provision-form" class="provision-form">
+                <form name="provisionForm.form" id="provision-form" class="provision-form">
                     <div class="right">
                         <p class="title-box-3">OPTIONAL SETTINGS:</p>
                         <span><span class="section-title instance-name-optional">Name Instance</span><p>(Optional)</p></span>

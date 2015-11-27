@@ -7,45 +7,75 @@
             Create Instance
         </h3>
         <div data-ng-hide="loading || datasetsLoading">
+            <div class="page-title-btn">
+                <button data-ng-hide="provisionSteps[0].hidden"
+                        type="button"
+                        class="btn orange review-btn"
+                        data-ng-click="goToPreviousStep()">Back
+                </button>
+                <button data-ng-show="currentStepIndex == STEP_INDEX.image && selectedImage || currentStepIndex == STEP_INDEX.package && !provisionSteps[0].hidden"
+                        type="button"
+                        id="button-review"
+                        class="btn orange review-btn"
+                        data-ng-click="goToNextStep()">Next
+                </button>
+                <button data-ng-show="currentStepIndex == STEP_INDEX.review && instanceType != 'container' && !provisionSteps[0].hidden"
+                        id="button-create"
+                        class="btn orange review-btn"
+                        data-ng-disabled="provisionForm.$invalid || provisioningInProgress"
+                        data-ng-click="clickProvision()"
+                        data-translate>{{getCreateTitle()}}
+                </button>
+                <button data-ng-show="currentStepIndex == STEP_INDEX.attributes && instanceType == 'container'"
+                        class="btn orange review-btn"
+                        data-ng-click="createContainer()"
+                        data-ng-disabled="isLaunchDisabled()"
+                        type="submit">Launch
+                </button>
+            </div>
             <div class="wizard-first-step row">
-                <div data-ng-hide="isCurrentLocation('compute/container/create|compute/docker/welcome')">
-                    <span class="select-name">Data Center:</span>
+                <span class="select-name">Data Center:</span>
+                <div class="btn-group btn-group-indent">
+                    <div class="loading-medium loading-medium-inline" data-ng-show="datasetsLoading"></div>
+                    <ui-select data-ng-model="data.datacenter"
+                               ng-disabled="datasetsLoading || currentStepIndex > STEP_INDEX.image"
+                               theme="select2"
+                               search-enabled="true"
+                               class="datacenter-select">
+                        <ui-select-match>{{$select.selected.name}}</ui-select-match>
+                        <ui-select-choices repeat="datacenter.name as datacenter in datacenters | filter: $select.search | orderBy: $index">
+                            {{datacenter.name}}
+                        </ui-select-choices>
+                    </ui-select>
+                </div>
+                <div data-ng-show="currentStepIndex == STEP_INDEX.image || showSimpleType && isCurrentLocation('/create/simple')" class="select-instance-type">
+                    <span class="select-name">Type:</span>
                     <div class="btn-group">
-                        <div class="loading-medium loading-medium-inline" data-ng-show="datasetsLoading"></div>
-                        <ui-select data-ng-model="data.datacenter"
-                                   ng-disabled="datasetsLoading || currentPageIndex"
+                        <ui-select data-ng-model="selectedInstanceType.data"
                                    theme="select2"
-                                   search-enabled="true"
-                                   class="datacenter-select">
+                                   search-enabled="false"
+                                   on-select="selectInstanceType($item.type)"
+                                   class="instance-types-select">
                             <ui-select-match>{{$select.selected.name}}</ui-select-match>
-                            <ui-select-choices repeat="datacenter.name as datacenter in datacenters | orderBy: $index | filter: $select.search">
-                                {{datacenter.name}}
+                            <ui-select-choices repeat="instanceTypeOption in instanceTypeOptions | orderBy: $index">
+                                {{instanceTypeOption.name}}
                             </ui-select-choices>
                         </ui-select>
                     </div>
+                    <div class="btn-group btn-group-indent tooltip-hover"
+                         data-toggle="tooltip"
+                         data-html="true"
+                         data-original-title="{{selectedInstanceType.data.description}}"
+                         data-trigger="hover">
+                        <div class="instance-type-help"></div>
+                    </div>
                 </div>
-                <div class="hotlinks">
-                    <create-instance-link path="create/simple"
-                                          action="clickBackToQuickStart()">
-                    </create-instance-link>
-                    <create-instance-link path="create/custom"
-                                          type="custom"
-                                          action="selectInstanceType(type)">
-                    </create-instance-link>
-                    <create-instance-link path="container/create"
-                                          data-ng-if="dockerHostsAvailable"
-                                          type="container"
-                                          action="setCreateInstancePage(type)">
-                    </create-instance-link>
-                    <create-instance-link path="create/native-container"
-                                          type="native-container"
-                                          action="selectInstanceType(type)">
-                    </create-instance-link>
-                    <create-instance-link path="create/virtual-machine"
-                                          data-ng-show="hasVmImages"
-                                          type="virtual-machine"
-                                          action="selectInstanceType(type)">
-                    </create-instance-link>
+                <div data-ng-show="currentStepIndex == STEP_INDEX.package || currentStepIndex == STEP_INDEX.review" class="select-instance-type">
+                    <span class="image-name">Image:</span>
+                    <span class="image-name text-indent">{{selectedImage.name}}</span>
+                    <span class="package-name">Package:</span>
+                    <span class="package-name">{{selectedPackageInfo.short_name}}</span>
+                    <span class="package-name">(<strong>${{selectedPackageInfo.full_price_month || selectedPackageInfo.price_month}}/month</strong>)</span>
                 </div>
             </div>
         </div>

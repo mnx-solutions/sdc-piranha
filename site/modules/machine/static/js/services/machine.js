@@ -47,13 +47,17 @@
                     $location.path(defaultPath + 'simple');
                     return;
                 }
-                if (createInstancePageConfig.page === 'container' ||
-                    createInstancePageConfig.page === 'native-container' &&
+                if ((createInstancePageConfig.page === 'container' ||
+                    createInstancePageConfig.page === 'native-container') &&
                     $rootScope.features && $rootScope.features.sdcDocker === 'disabled') {
                     createInstancePageConfig.page = 'simple';
                     Account.saveUserConfig();
                 }
                 var page = createInstancePageConfig.page ? createInstancePageConfig.page : 'simple';
+                if (createInstancePageConfig.page === 'container') {
+                    page = '';
+                    defaultPath = defaultPath.replace('create/', 'container/create');
+                }
                 $location.path(defaultPath + page);
             });
         };

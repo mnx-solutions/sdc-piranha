@@ -1,93 +1,96 @@
-<div class="container-min-width wizard-first-step">
-    <div class="choose-image-filter" data-ng-hide="isCurrentLocation('/container/create') || isCurrentLocation('/create/simple')">
+<div data-ng-show="isCurrentLocation('compute/container')" data-ng-include="'machine/static/partials/wizard-choose-container-image.html'"></div>
+<div data-ng-hide="isCurrentLocation('compute/container')">
+    <div class="container-min-width wizard-first-step">
+        <div class="choose-image-filter" data-ng-hide="isCurrentLocation('/create/simple')">
         <span class="select-name">
             OS:
         </span>
-        <div class="btn-group"
-             data-html="true"
-             data-original-title="Filter by operating system">
-            <ui-select data-ng-model="data.opsys"
-                       theme="select2"
-                       search-enabled="true"
-                       class="datacenter-select"
-                       on-select="selectDataValue('os')">
-                <ui-select-match>{{$select.selected}}</ui-select-match>
-                <ui-select-choices repeat="opsys in operating_systems | filter: $select.search">
-                    {{opsys}}
-                </ui-select-choices>
-            </ui-select>
-        </div>
-        <div class="in-line">
-            <input type="search"
-                   class="filter-images filter-field"
-                   placeholder="Search image"
-                   data-ng-model="filterModel.searchText"
-                   data-ng-change="getFilteredDatasets()"
-                   data-translate="placeholder" />
+            <div class="btn-group"
+                 data-html="true"
+                 data-original-title="Filter by operating system">
+                <ui-select data-ng-model="data.opsys"
+                           theme="select2"
+                           search-enabled="true"
+                           class="datacenter-select"
+                           on-select="selectDataValue('os')">
+                    <ui-select-match>{{$select.selected}}</ui-select-match>
+                    <ui-select-choices repeat="opsys in operating_systems | filter: $select.search">
+                        {{opsys}}
+                    </ui-select-choices>
+                </ui-select>
+            </div>
+            <div class="in-line">
+                <input type="search"
+                       class="filter-images filter-field"
+                       placeholder="Search image"
+                       data-ng-model="filterModel.searchText"
+                       data-ng-change="getAllFilteredImages()"
+                       data-translate="placeholder" />
+            </div>
         </div>
     </div>
-</div>
-<div class="advanced-table tooltip-hover">
-    <div data-ng-show="filteredDatasets.length == 0 && !reloading" class="notified">
-        No {{instanceType | lowercase}} images in this data center.
-    </div>
-    <div ng-show="filteredDatasets.length && !reloading">
-        <div data-ng-if="!isCurrentLocation('/create/custom') && !filterModel.searchText && popularImages.length && (filteredDatasets | filter: filterPopularImages).length">
-            <h4 class="page-title no-breadcrumb-line container-min-width" data-translate>Popular Images</h4>
-            <div class="row">
-                <div data-ng-repeat="dataset in filteredDatasets | filter: filterPopularImages | orderBy: ['type','name'] | limitTo: 10">
-                    <div class="advanced-instance-box small-icon"
-                         data-ng-class="dataset.name | logo"
-                         data-toggle="tooltip"
-                         data-tooltip-text="{{dataset.description}}"
-                         data-ng-click="checkLimit(dataset)">
-                        <div class="advanced-instance-title">
-                            <p data-tooltip-full-text data-original-title="{{dataset.name}}" data-ng-class="dataset.name | logo">{{dataset.name}}</p>
-                        </div>
-                        <div class="advanced-instance-description">
-                            <p data-tooltip-full-text data-original-title="{{dataset.description}}">{{dataset.description}}</p>
-                        </div>
-                        <div class="advanced-instance-btn-block">
-                            <button type="button"
-                                    name="dataset"
-                                    value="{{dataset.id}}"
-                                    data-ng-hide="dataset.limit"
-                                    data-ng-checked="selectedDataset.id == dataset.id"
-                                    class="btn advaced-instance-btn pull-right"><b>Select</b>
-                            </button>
-                            <div data-ng-show="dataset.limit" class="hotlinks limit-links">
-                                <a href="#!/limits">Provisioning limit is reached</a>
+    <div class="advanced-table tooltip-hover">
+        <div data-ng-show="filteredImages.length == 0 && !reloading" class="notified">
+            No {{instanceType | lowercase}} images in this data center.
+        </div>
+        <div ng-show="filteredImages.length && !reloading">
+            <div data-ng-if="!isCurrentLocation('/create/custom') && !filterModel.searchText && popularImages.length && (filteredImages | filter: filterPopularImages).length">
+                <h4 class="page-title no-breadcrumb-line container-min-width" data-translate>Popular Images</h4>
+                <div class="row">
+                    <div data-ng-repeat="image in filteredImages | filter: filterPopularImages | orderBy: ['type','name'] | limitTo: 10">
+                        <div class="advanced-instance-box small-icon"
+                             data-ng-class="image.name | logo"
+                             data-toggle="tooltip"
+                             data-tooltip-text="{{image.description}}"
+                             data-ng-click="checkLimit(image)">
+                            <div class="advanced-instance-title">
+                                <p data-tooltip-full-text data-original-title="{{image.name}}" data-ng-class="image.name | logo">{{image.name}}</p>
+                            </div>
+                            <div class="advanced-instance-description">
+                                <p data-tooltip-full-text data-original-title="{{image.description}}">{{image.description}}</p>
+                            </div>
+                            <div class="advanced-instance-btn-block">
+                                <button type="button"
+                                        name="dataset"
+                                        value="{{image.id}}"
+                                        data-ng-hide="image.limit"
+                                        data-ng-checked="selectedImage.id == image.id"
+                                        class="btn advaced-instance-btn pull-right"><b>Select</b>
+                                </button>
+                                <div data-ng-show="image.limit" class="hotlinks limit-links">
+                                    <a href="#!/limits">Provisioning limit is reached</a>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
+                <h4 class="page-title no-breadcrumb-line container-min-width" data-translate>All Images</h4>
             </div>
-            <h4 class="page-title no-breadcrumb-line container-min-width" data-translate>All Images</h4>
-        </div>
-        <div class="row">
-            <div data-ng-repeat="dataset in filteredDatasets | orderBy:['type','name']">
-                <div class="advanced-instance-box small-icon"
-                     data-ng-class="dataset.name | logo"
-                     data-toggle="tooltip"
-                     data-tooltip-text="{{dataset.description}}"
-                     data-ng-click="checkLimit(dataset)">
-                    <div class="advanced-instance-title">
-                        <p data-tooltip-full-text data-original-title="{{dataset.name}}" data-ng-class="dataset.name | logo">{{dataset.name}}</p>
-                    </div>
-                    <div class="advanced-instance-description">
-                        <p data-tooltip-full-text data-original-title="{{dataset.description}}">{{dataset.description}}</p>
-                    </div>
-                    <div class="advanced-instance-btn-block">
-                        <button type="button"
-                                id="dataset-{{dataset.id}}"
-                                name="dataset"
-                                value="{{dataset.id}}"
-                                data-ng-hide="dataset.limit"
-                                data-ng-checked="selectedDataset.id == dataset.id"
-                                class="btn advaced-instance-btn pull-right"><b>Select</b>
-                        </button>
-                        <div data-ng-show="dataset.limit" class="hotlinks limit-links">
-                            <a href="#!/limits">Provisioning limit is reached</a>
+            <div class="row">
+                <div data-ng-repeat="image in filteredImages | orderBy:['type','name']">
+                    <div class="advanced-instance-box small-icon"
+                         data-ng-class="image.name | logo"
+                         data-toggle="tooltip"
+                         data-tooltip-text="{{image.description}}"
+                         data-ng-click="checkLimit(image)">
+                        <div class="advanced-instance-title">
+                            <p data-tooltip-full-text data-original-title="{{image.name}}" data-ng-class="image.name | logo">{{image.name}}</p>
+                        </div>
+                        <div class="advanced-instance-description">
+                            <p data-tooltip-full-text data-original-title="{{image.description}}">{{image.description}}</p>
+                        </div>
+                        <div class="advanced-instance-btn-block">
+                            <button type="button"
+                                    id="dataset-{{image.id}}"
+                                    name="dataset"
+                                    value="{{image.id}}"
+                                    data-ng-hide="image.limit"
+                                    data-ng-checked="selectedImage.id == image.id"
+                                    class="btn advaced-instance-btn pull-right"><b>Select</b>
+                            </button>
+                            <div data-ng-show="image.limit" class="hotlinks limit-links">
+                                <a href="#!/limits">Provisioning limit is reached</a>
+                            </div>
                         </div>
                     </div>
                 </div>

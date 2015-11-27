@@ -156,6 +156,7 @@
     margin-right: 10px;
 }
 
+.select-instance-type,
 .block {
     display: inline-block;
 }
@@ -492,6 +493,10 @@
     background-color: #e2e8ec;
 }
 
+.docker-image-info {
+    padding: 0 12px;
+}
+
 .advanced-instance-title {
     padding: 10px 10px 0 11px;
 }
@@ -516,6 +521,37 @@
 
     font-size: 18px;
     line-height: 20px;
+}
+
+.instance-type-title p {
+    height: 100%;
+
+    white-space: normal;
+}
+
+.checkbox.instance-type {
+    padding-left: 0;
+
+    vertical-align: middle;
+}
+
+.checkbox.instance-type span {
+    padding-left: 5px;
+}
+
+.instance-type-help {
+    width: 20px;
+
+    cursor: default;
+    text-align: center;
+
+    color: black;
+    border-radius: 10px;
+    background-color: #ccc;
+}
+
+.instance-type-help:after {
+    content: '?';
 }
 
 .simple-image .name p {
@@ -624,6 +660,10 @@
     width: 100%;
 }
 
+.choose-container-image {
+    width: 1000px;
+}
+
 .wizard-first-step .hotlinks {
     margin: 10px 12px 0 0;
 }
@@ -636,6 +676,11 @@
     padding-top: 20px;
 }
 
+.wizard-first-step.row .text-indent,
+.wizard-first-step.row .btn-group-indent {
+    margin-right: 25px;
+}
+
 .choose-image-filter {
     margin: 10px 0;
 }
@@ -644,6 +689,16 @@
     margin-left: 25px;
 }
 
+.in-line.choose-image-registry {
+    margin-left: 0;
+}
+
+.registry-select {
+    width: 220px;
+}
+
+.image-name,
+.package-name,
 .select-name {
     padding-right: 2px;
 

@@ -12,17 +12,17 @@
                         <span class="span-price">PRICE</span>
                     </div>
                     <div class="panel-group accordion-package-select" id="packagesAccordion">
-                        <div class="panel panel-default" data-ng-repeat="packageType in packageTypes">
+                        <div class="panel panel-default" data-ng-repeat="packageGroup in packageGroups">
                             <div class="panel-heading">
                                 <a class="accordion-toggle toggle-icon" data-toggle="collapse" data-parent="#packagesAccordion"
                                    data-target="#collapse_{{$index}}">
-                                    {{packageType}}
-                                    <span class="accordion-package-count">{{(packages | filter:filterPackages(packageType)).length}}</span>
+                                    {{packageGroup}}
+                                    <span class="accordion-package-count">{{(packages | filter:filterPackages(packageGroup)).length}}</span>
                                 </a>
                             </div>
-                            <div id="collapse_{{$index}}" class="panel-collapse collapse" data-ng-class="{'in': selectedPackage.group == packageType}">
+                            <div id="collapse_{{$index}}" class="panel-collapse collapse" data-ng-class="{'in': selectedPackage.group == packageGroup}">
                                 <div class="panel-body">
-                                    <div class="package-info" data-ng-repeat="package in (packages | filter:filterPackages(packageType) | orderBy:sortPackages)"
+                                    <div class="package-info" data-ng-repeat="package in (packages | filter:filterPackages(packageGroup) | orderBy:sortPackages)"
                                          data-ng-click="selectPackage(package.id)"
                                          data-ng-checked="selectedPackage.id == package.id"
                                          data-ng-class="{active: selectedPackage.id == package.id}">

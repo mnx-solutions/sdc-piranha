@@ -1,7 +1,7 @@
-<div class="{{currentStep && 'row' || ''}} ">
+<div class="{{currentStepName && 'row' || ''}} ">
     <form name="accountForm" class="row">
         <fieldset class="line">
-            <legend data-translate data-ng-hide="currentStep">Contact Information</legend>
+            <legend data-translate data-ng-hide="currentStepName">Contact Information</legend>
             <div class="form-group">
                 <span class="edit-name" data-translate>
                     First Name
@@ -93,17 +93,17 @@
             </div>
         </fieldset>
 
-        <hr data-ng-show="currentStep" />
-        <a data-ng-show="currentStep" data-ng-click="signOut()" class="pull-left note text-small" data-translate>Click here to return to homepage</a>
-		<button class="btn orange"  data-ng-show="currentStep" data-ng-click="submitForm()" data-ng-disabled="loading || accountForm.$invalid" data-translate>Save changes</button>
-        <div class="pull-right loading-medium" data-ng-show="loading && currentStep"></div>
+        <hr data-ng-show="currentStepName" />
+        <a data-ng-show="currentStepName" data-ng-click="signOut()" class="pull-left note text-small" data-translate>Click here to return to homepage</a>
+		<button class="btn orange"  data-ng-show="currentStepName" data-ng-click="submitForm()" data-ng-disabled="loading || accountForm.$invalid" data-translate>Save changes</button>
+        <div class="pull-right loading-medium" data-ng-show="loading && currentStepName"></div>
     </form>
 
     <div class="pull-right">
         <a class="btn"  data-ng-disabled="loading" data-ng-click="cancelChanges()" data-translate>Cancel</a>
-        <button class="btn in-line orange" data-ng-show="!currentStep" data-ng-click="submitForm()" data-ng-disabled="loading" data-translate>Save Changes</button>
+        <button class="btn in-line orange" data-ng-show="!currentStepName" data-ng-click="submitForm()" data-ng-disabled="loading" data-translate>Save Changes</button>
     </div>
-    <div class="pull-right loading-medium-transparent" data-ng-show="loading && !currentStep"></div>
+    <div class="pull-right loading-medium-transparent" data-ng-show="loading && !currentStepName"></div>
     <div class="fieldset-spacer"></div>
 
 </div>

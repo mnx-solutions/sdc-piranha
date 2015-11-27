@@ -8,6 +8,7 @@
             'localization',
             'Docker',
             '$q',
+            '$rootScope',
             'PopupDialog',
             'Storage',
             '$location',
@@ -15,7 +16,7 @@
             'util',
             'Account',
             'dockerPullImage',
-            function ($scope, requestContext, localization, Docker, $q, PopupDialog, Storage, $location, $filter, util, Account, dockerPullImage) {
+            function ($scope, requestContext, localization, Docker, $q, $rootScope, PopupDialog, Storage, $location, $filter, util, Account, dockerPullImage) {
                 localization.bind('docker', $scope);
                 var CURRENT_PAGE_ACTION = 'docker.images';
                 requestContext.setUpRenderContext(CURRENT_PAGE_ACTION, $scope, {
@@ -286,6 +287,13 @@
 
                 Storage.pingManta(function () {
                     listAllImages();
+                    $rootScope.$on('tritonDatacenterId', function () {
+                        Docker.getRegistriesList({aggregate: true}).then(function (result) {
+                            $scope.registries = result.short;
+                            $scope.registries = Docker.addRegistryUsernames($scope.registries);
+                            $scope.registry = {data: $scope.registries[0]};
+                        });
+                    });
                 });
 
                 $scope.createImage = function () {
@@ -297,9 +305,19 @@
                 }
 
                 //search images
-                $scope.searchImages = function () {
+                $scope.searchImages = function (sdcDatacenter) {
                     $scope.pullDialogOpening = true;
-                    dockerPullImage(undefined, $scope.unreachableHosts, undefined, pullDialogOpeningStatus, function() {
+                    var searchImage;
+                    if ($location.path().indexOf('compute/container/create') > -1) {
+                        searchImage = {
+                            registryId: $scope.registry.data.id,
+                            term: $scope.term || ''
+                        };
+                        if (sdcDatacenter) {
+                            searchImage.sdcDatacenterId = sdcDatacenter.id;
+                        }
+                    }
+                    dockerPullImage(undefined, $scope.unreachableHosts, undefined, pullDialogOpeningStatus, searchImage, function() {
                         listAllImages(allImages);
                     });
                 };

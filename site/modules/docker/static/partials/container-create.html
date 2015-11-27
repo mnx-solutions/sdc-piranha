@@ -1,15 +1,18 @@
 <div data-ng-controller="Docker.ContainerCreateController">
-    <div class="container-fluid container-position">
-        <div data-ng-if="isCurrentLocation('compute/container')" data-ng-include="'machine/static/partials/create-instance-header.html'"></div>
+    <link data-ng-if="isCurrentLocation('compute/container')" href="docker/static/css/main.css" rel="stylesheet">
+    <div class="container-fluid container-position" data-ng-class="{'create-container': isCurrentLocation('compute/container')}">
         <ul data-ng-hide="isCurrentLocation('compute/container')" class="breadcrumb">
             <li><a href="#!/docker">Docker</a></li><!--
         --><li><a href="#!/docker/{{type | lowercase}}">Docker {{type}}</a></li>
         </ul>
-        <div class="page-header row container-min-width" data-ng-hide="isCurrentLocation('compute/container') && loading">
+        <div class="page-header row container-min-width" data-ng-hide="isCurrentLocation('compute/container') || loading">
             <h3 class="page-title">{{title}}</h3>
         </div>
         <div class="loading-large col-md-12" data-ng-show="loading"></div>
         <div class="row container-min-width" data-ng-hide="loading">
+            <div ng-show="isCurrentLocation('compute/container')" class="create-container-message">
+                All settings are optional. Container name will be a generated random name if it is left blank.
+            </div>
             <div ng-hide="hosts.length">
                 Docker hosts are not available, click to <a class="orange" href="#!/docker">Create Docker Host</a>
             </div>
@@ -34,7 +37,7 @@
                             </div>
                         </div>
                     </div>
-                    <div data-ng-hide="createImage" class="form-group">
+                    <div data-ng-hide="isCurrentLocation('compute/container') || createImage" class="form-group">
                         <div class="group-label">Data Center &amp; Host</div>
                         <div class="edit-value">
                             <div class="datacenter-info-wrapper dropdown-select" ng-click="setNotation('HOST')">
@@ -172,7 +175,7 @@
                                    data-ng-focus="setNotation('AUTHOR')" />
                         </span>
                     </div>
-                    <div data-ng-hide="createImage" class="form-group">
+                    <div data-ng-hide="isCurrentLocation('compute/container') || createImage" class="form-group">
                         <div class="group-label">Image</div>
                         <div class="edit-value">
 
@@ -422,9 +425,7 @@
                         <div class="pull-right">
                             <button class="btn" data-ng-disabled="creating" type="button" data-ng-click="cancel()">Cancel</button>
                             <button class="btn orange"
-                                    data-ng-disabled="containerCreateForm.$invalid || creating ||
-                                                      !container.Image && type == 'Containers' ||
-                                                      !container.container && type == 'Images'"
+                                    data-ng-disabled="isButtonDisabled()"
                                     type="submit">Start
                             </button>
                         </div>
@@ -432,7 +433,7 @@
                     </div>
                 </form>
                 <div class="pull-right">
-                    <div data-ng-hide="hidePackageInfo()" class="advanced-info">
+                    <div data-ng-hide="isCurrentLocation('compute/container') || hidePackageInfo()" class="advanced-info">
                         <div data-package-select data-name="{{packagePrefix}}" class="package-select" data-datacenter="host.datacenter" data-package="package" data-memory="{{input.Memory}}"></div>
                     </div>
                     <div class="advanced-info" data-ng-class="{'advanced-info-nosdc': !host.isSdc || createImage}" data-ng-bind-html="notation"></div>

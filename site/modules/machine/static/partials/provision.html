@@ -1,26 +1,27 @@
 <div class="container-fluid container-position" data-ng-controller="Machine.ProvisionController">
     <div data-ng-include="'machine/static/partials/create-instance-header.html'"></div>
     <div class="loading-large col-md-12" data-ng-show="loading || datasetsLoading"></div>
-    <div data-ng-hide="loading || datasetsLoading">
+    <div data-ng-show="showSimpleType" data-ng-include="'machine/static/partials/simple.html'"></div>
+    <div data-ng-hide="showSimpleType || loading || datasetsLoading">
         <div class="container-min-width">
             <div class="wizard-steps wizard-steps-provision">
-                <div data-ng-repeat="provisionStep in provisionSteps" data-ng-hide="provisionStep.hide" data-ng-class="{'firststep': $first , 'active-step': currentPageIndex == $index}">
-                    <p data-ng-show="currentPageIndex >= $index + 1">
+                <div data-ng-repeat="provisionStep in provisionSteps" data-ng-hide="provisionStep.hidden" data-ng-class="{'firststep': $first , 'active-step': currentStepIndex == $index}">
+                    <p data-ng-show="currentStepIndex >= $index + 1">
                         <span class="current-step"
                               data-target="#provisionCarousel"
                               data-ng-click="reconfigure($index)"
                               data-ng-slide-to="$index">{{provisionStep.name}}</span>
                     </p>
-                    <p data-ng-hide="currentPageIndex >= $index + 1">{{provisionStep.name}}</p>
+                    <p data-ng-hide="currentStepIndex >= $index + 1">{{provisionStep.name}}</p>
                 </div>
                 <div><p class="laststep"></p></div>
             </div>
             <div class="row carousel-container">
                 <div class="col-md-8 provisioning-carousel-span">
-                    <div id="provisionCarousel" class="carousel slide in-line">
+                    <div id="provisionCarousel" data-interval="false" class="carousel slide in-line">
                         <div class="carousel-inner provisioning-carousel-inner-box advanced-table"
                              data-ng-class="{'loading-medium':reloading}">
-                            <div data-ng-repeat="provisionStep in provisionSteps" data-ng-class="{'active': $first}"
+                            <div data-ng-repeat="provisionStep in provisionSteps" data-ng-hide="provisionStep.hidden" data-ng-class="{'active': isFirstSlideActive ? $index == 1 : $first}"
                                  class="item outer-provisioning-item" data-ng-include="provisionStep.template">
                             </div>
                         </div>

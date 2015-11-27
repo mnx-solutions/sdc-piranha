@@ -2524,7 +2524,6 @@ a.orange-link {
     vertical-align: middle;
 }
 
-.hotlinks a.not-active-link,
 .hotlinks span.active-link {
     color: #333;
 }
@@ -3059,6 +3058,14 @@ a.orange-link {
     padding-left: 48px;
 }
 
+.create-container {
+    padding: 5px 0 0;
+}
+
+.create-container-message {
+    padding-left: 15px;
+}
+
 .two-keys {
     display: inline-block;
 
@@ -3329,6 +3336,7 @@ a.orange-link {
 .dataset-select {
     width: 110px;
 }
+.instance-types-select,
 .key-select {
     width: 200px;
 }
@@ -3358,14 +3366,6 @@ a.orange-link {
 }
 .country-select {
     width: 340px;
-}
-
-create-instance-link:before {
-    content: ' |';
-}
-
-create-instance-link:first-child:before {
-    content: '';
 }
 
 .marketing-info {

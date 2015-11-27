@@ -16,7 +16,7 @@
                     // TODO: refactor and simplify!
                     var DEFAULT_PACKAGE_GROUP = 'Standard';
                     var SDC_DOCKER_DEFAULT_MEMORY_SIZE = 1024;
-                    scope.packageTypes = [];
+                    scope.packageGroups = [];
                     scope.loading = true;
 
                     var indexPackageTypes = {};
@@ -36,7 +36,7 @@
                                         }
                                         if (pkg.group && !indexPackageTypes[pkg.group]) {
                                             indexPackageTypes[pkg.group] = true;
-                                            scope.packageTypes.push(pkg.group);
+                                            scope.packageGroups.push(pkg.group);
                                         }
                                     }
                                 });
@@ -54,7 +54,7 @@
                                 angular.element('.btn.small.daffodil').blur();
                                 $scope.selectedPackage = parentScope.pkg;
                                 $scope.packages = parentScope.packages;
-                                $scope.packageTypes = parentScope.packageTypes;
+                                $scope.packageGroups = parentScope.packageGroups;
 
                                 $scope.sortPackages = function (pkg) {
                                     return parseInt(pkg.memory, 10);
@@ -68,9 +68,9 @@
                                     $scope.close();
                                 };
 
-                                $scope.filterPackages = function (packageType) {
+                                $scope.filterPackages = function (packageGroup) {
                                     return function (item) {
-                                        return !packageType || packageType === item.group;
+                                        return !packageGroup || packageGroup === item.group;
                                     };
                                 };
 

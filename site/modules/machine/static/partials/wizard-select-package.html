@@ -1,14 +1,14 @@
 <div class="item provisioning-item header row">
         <div data-ng-show="selectedPackageInfo" class="preselected pull-right">
             <div class="info small-icon"
-                 data-ng-class="selectedDataset.name | logo">
+                 data-ng-class="selectedImage.name | logo">
                 <p>IMAGE:</p>
-                <button class="btn small" data-ng-hide="isChangeImageDenied()" data-ng-click="reconfigure(0)" id="prev" data-slide="prev">Change</button>
-                <div class="section-title">{{selectedDataset.name}}</div>
-                <div class="dataset-desc crop text-wrap">{{selectedDataset.description}}</div>
+                <button class="btn small" data-ng-hide="isChangeImageDenied()" data-ng-click="reconfigure(STEP_INDEX.image)" id="prev" data-slide="prev">Change</button>
+                <div class="section-title">{{selectedImage.name}}</div>
+                <div class="dataset-desc crop text-wrap">{{selectedImage.description}}</div>
 
-                <p data-ng-show="manyVersions[selectedDataset.visibility][selectedDataset.name]">IMAGE VERSION:</p>
-                <div class="image-container" data-ng-if="manyVersions[selectedDataset.visibility][selectedDataset.name]">
+                <p data-ng-show="manyVersions[selectedImage.visibility][selectedImage.name]">IMAGE VERSION:</p>
+                <div class="image-container" data-ng-if="manyVersions[selectedImage.visibility][selectedImage.name]">
                     <div data-versions class="btn-group pull-left"></div>
                 </div>
                 <div class="dataset-cost cost" data-ng-show="features.billing == 'enabled'">
@@ -16,7 +16,7 @@
                     <span class="price-current">${{selectedPackageInfo.full_price_month || selectedPackageInfo.price_month}}</span>
                 </div>
                 <div class="pull-right">
-                    <button type="button" id="button-review" class="btn orange review-btn" data-ng-click="reviewPage()">Next</button>
+                    <button type="button" id="button-review" class="btn orange review-btn" data-ng-click="goToReviewPage()">Next</button>
                 </div>
             </div>
         </div>
@@ -26,6 +26,7 @@
             <ui-select data-ng-model="filterModel.key"
                        theme="select2"
                        search-enabled="false"
+                       data-ng-disabled="instanceType == 'container'"
                        class="filter-prop-select"
                        on-select="selectFilterType($select.selected)">
                 <ui-select-match>{{$select.selected | uppercase}}</ui-select-match>
@@ -54,17 +55,17 @@
             <span class="span-price" data-ng-show="features.billing == 'enabled'">PRICE</span>
         </div>
         <div class="panel-group accordion-package-select" id="packagesAccordion">
-            <div class="panel panel-default" data-ng-repeat="packageType in packageTypes | filter:filterPackageTypes(datasetType)">
+            <div class="panel panel-default" data-ng-repeat="packageGroup in packageGroups | filter:filterPackageGroups(datasetType)">
                 <div class="panel-heading">
                     <a class="accordion-toggle collapsed toggle-icon" data-toggle="collapse" data-parent="#packagesAccordion"
-                       data-target="#collapse_{{$index}}" data-ng-click="changeSelectedPackage($event, packageType)">
-                        {{packageType}}
-                        <span class="accordion-package-count">{{(packages | filter:filterPackagesByProp | filter:filterPackages(packageType)).length}}</span>
+                       data-target="#collapse_{{$index}}" data-ng-click="changeSelectedPackage($event, packageGroup)">
+                        {{packageGroup}}
+                        <span class="accordion-package-count">{{(packages | filter:filterPackagesByProp | filter:filterPackages(packageGroup)).length}}</span>
                     </a>
                 </div>
                 <div id="collapse_{{$index}}" class="panel-collapse collapse">
                     <div class="panel-body">
-                        <div class="package-info" data-ng-repeat="package in (packages | filter:filterPackagesByProp | orderBy:sortPackages) | filter:filterPackages(packageType)"
+                        <div class="package-info" data-ng-repeat="package in (packages | filter:filterPackagesByProp | orderBy:sortPackages) | filter:filterPackages(packageGroup)"
                              data-ng-click="selectPackage(package.id)"
                              data-ng-checked="selectedPackage == package.id"
                              data-ng-class="{active: selectedPackage == package.id}">

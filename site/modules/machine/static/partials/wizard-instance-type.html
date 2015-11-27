@@ -1,0 +1,24 @@
+<div class="advanced-table">
+    <div class="row">
+        <div data-ng-repeat="instanceTypeOption in instanceTypeOptions">
+            <div class="advanced-instance-box" data-ng-click="selectInstanceType(instanceTypeOption.type)">
+                <div class="advanced-instance-title instance-type-title">
+                    <p data-tooltip-full-text data-original-title="{{instanceTypeOption.name}}">{{instanceTypeOption.name}}</p>
+                </div>
+                <div class="advanced-instance-description">
+                    <p data-tooltip-full-text data-original-title="{{instanceTypeOption.description}}">{{instanceTypeOption.description}}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="indent-big">
+        <label class="checkbox instance-type in-line">
+            <div class="checker pull-left">
+                <span data-ng-click="skipInstanceTypeStep()" data-ng-class="{checked: isInstanceTypeStepDisabled}">
+                    <input type="checkbox" class="group-checkable">
+                </span>
+            </div>
+            <span class="pull-left">Do not show this again.</span>
+        </label>
+    </div>
+</div>

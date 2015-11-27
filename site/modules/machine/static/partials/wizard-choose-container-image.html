@@ -1,0 +1,98 @@
+<div class="container-min-width wizard-first-step choose-container-image">
+    <div class="choose-image-filter">
+        <span class="select-name">
+            OS:
+        </span>
+        <div class="btn-group"
+             data-html="true"
+             data-original-title="Filter by operating system">
+            <ui-select data-ng-model="data.opsys"
+                       theme="select2"
+                       data-ng-disabled="true"
+                       search-enabled="true"
+                       class="datacenter-select"
+                       on-select="selectDataValue('os')">
+                <ui-select-match>{{$select.selected}}</ui-select-match>
+                <ui-select-choices repeat="opsys in operating_systems | filter: $select.search">
+                    {{opsys}}
+                </ui-select-choices>
+            </ui-select>
+        </div>
+        <div class="in-line">
+            <input type="search"
+                   class="filter-images filter-field"
+                   placeholder="Search image"
+                   data-ng-model="filterModel.searchText"
+                   data-ng-change="getSearchedDockerImages()"
+                   data-translate="placeholder" />
+        </div>
+        <div data-ng-show="isTritonDatacenter"
+             data-ng-controller="Docker.ImagesController"
+             class="in-line choose-image-registry pull-right">
+            <span class="select-name">
+                Registry:
+            </span>
+            <div class="btn-group">
+                <ui-select data-ng-model="registry.data"
+                           append-to-body="true"
+                           theme="select2"
+                           search-enabled="false"
+                           data-ng-disabled="!isProvisionEnabled() || !registry.data"
+                           class="registry-select">
+                    <ui-select-match>{{$select.selected.userHost}}</ui-select-match>
+                    <ui-select-choices repeat="registry in registries">
+                        {{registry.userHost}}
+                    </ui-select-choices>
+                </ui-select>
+            </div>
+            <div class="in-line choose-image-registry">
+                <input type="text"
+                       id="term"
+                       name="term"
+                       data-ng-disabled="!isProvisionEnabled() || !registry.data"
+                       data-ng-model="term" />
+            </div>
+            <button data-ng-disabled="pullDialogOpening || !registry.data"
+                    data-ng-click="searchImages(tritonDatacenter)"
+                    type="button"
+                    class="btn orange in-line choose-image-registry">Search
+            </button>
+        </div>
+    </div>
+</div>
+<div class="advanced-table tooltip-hover">
+    <div data-ng-hide="isProvisionEnabled()">
+        <span class="page-subheading active-link" data-ng-click="completeAccount()">Complete your Account Information</span><span class="page-subheading"> in order to begin using Docker on the Joyent Public Cloud</span>
+    </div>
+    <div data-ng-show="isProvisionEnabled()">
+        <div data-ng-show="!isTritonDatacenter && !reloading" class="notified">
+            This datacenter does not support creation docker containers.
+        </div>
+        <div data-ng-show="isTritonDatacenter && filteredDockerImages.length == 0 && !reloading" class="notified">
+            No {{instanceType | lowercase}} images in this data center.
+        </div>
+    </div>
+    <div ng-show="isTritonDatacenter && filteredDockerImages.length && !reloading">
+        <div class="row">
+            <div data-ng-repeat="image in filteredDockerImages | orderBy:['name']">
+                <div class="advanced-instance-box"
+                     data-ng-click="selectDockerImage(image)">
+                    <div class="advanced-instance-title">
+                        <p data-tooltip-full-text data-original-title="{{image.name}}" data-ng-class="image.name">{{image.name}}</p>
+                    </div>
+                    <div class="docker-image-info">
+                        <p data-tooltip-full-text data-original-title="{{image.virtualSize}}">{{image.virtualSize}}</p>
+                    </div>
+                    <div class="docker-image-info">
+                        <p data-tooltip-full-text data-original-title="{{image.created}}">{{image.created}}</p>
+                    </div>
+                    <div class="advanced-instance-btn-block">
+                        <button type="button"
+                                class="btn advaced-instance-btn pull-right"><b>Select</b>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

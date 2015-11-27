@@ -2,8 +2,8 @@
 
 // TODO: review all
 (function (ng, app) {
-    app.factory('dockerPullImage', ['Docker', 'PopupDialog', '$q', 'util', function (Docker, PopupDialog, $q, util) {
-        return function(givenHost, unreachableHosts, progressHandler, pullDialogOpeningStatus, finalCallback) {
+    app.factory('dockerPullImage', ['Docker', 'PopupDialog', '$q', '$rootScope', 'util', function (Docker, PopupDialog, $q, $rootScope, util) {
+        return function(selectedHost, unreachableHosts, progressHandler, pullDialogOpeningStatus, searchImage, finalCallback) {
             function setPullProgress(hostId, state, image) {
                 if (typeof progressHandler === 'function') {
                     Docker.pullForHosts[hostId] = state;
@@ -67,9 +67,14 @@
                 return Docker[isLocalRegistry ? 'listRunningPrivateRegistryHosts' : 'completedHosts']();
             };
 
+            var getSearchOptions = function () {
+                return searchImage || {};
+            };
+
             var findImagesCtrl = function ($scope, dialog, Docker) {
                 var registry;
-                $scope.term = '';
+                var options = getSearchOptions();
+                $scope.term = options.term || '';
                 $scope.loading = true;
                 $scope.searching = false;
                 Docker.getRegistriesList({aggregate: true}).then(function (result) {
@@ -79,7 +84,11 @@
                     if (typeof pullDialogOpeningStatus === 'function') {
                         pullDialogOpeningStatus(false);
                     }
-                    $scope.registryId = $scope.registries[0].id || null;
+                    $scope.registryId = options.registryId || $scope.registries[0].id || null;
+                    if (options.term) {
+                        selectedHost = selectedHost || {id: options.sdcDatacenterId};
+                        $scope.findImages();
+                    }
                     $scope.loading = false;
                 }, function (error) {
                     errorCallback(error, $scope);
@@ -117,7 +126,7 @@
                                 $scope.hosts = hosts && hosts.length ? removeUnreachableHosts(hosts) : [];
                                 $scope.loading = false;
                                 $scope.hosts && $scope.hosts.forEach(function (host) {
-                                    if (givenHost && host.id === givenHost.id) {
+                                    if (selectedHost && host.id === selectedHost.id) {
                                         $scope.selectedHosts.push(host);
                                     }
                                 });
@@ -306,7 +315,7 @@
                                 $scope.tag = $scope.tags[0].name || null;
                                 $scope.loading = false;
                                 $scope.hosts && $scope.hosts.forEach(function (host) {
-                                    if (givenHost && host.id === givenHost.id) {
+                                    if (selectedHost && host.id === selectedHost.id) {
                                         $scope.selectedHosts.push(host);
                                     }
                                 });
@@ -370,6 +379,10 @@
             PopupDialog.custom({
                 templateUrl: 'docker/static/partials/find-images.html',
                 openCtrl: ['$scope', 'dialog', 'Docker', 'notification', findImagesCtrl]
+            }, function () {
+                if (searchImage) {
+                    $rootScope.$emit('closeSearchDialog');
+                }
             });
 
         };

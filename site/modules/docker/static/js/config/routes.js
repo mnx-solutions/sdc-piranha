@@ -70,21 +70,6 @@ window.JP.main.config(['routeProvider', function (routeProvider) {
             title: 'Create Container',
             action: 'docker.create',
             resolve: dockerResolve
-        }).when('/compute/container/create', {
-            title: 'Create Container',
-            action: 'docker.create',
-            resolve: {
-                data: ['$route', '$rootScope', '$location', '$q', 'Docker', 'Machine', 'Account', function ($route, $rootScope, $location, $q, Docker, Machine, Account) {
-                    if (!$rootScope.dockerHostsAvailable) {
-                        $location.path('/dashboard');
-                    }
-                    if ($location.path().indexOf('/compute/container/create') === 0) {
-                        checkProvisionEnabled($rootScope, $location, $q, Docker, Machine, Account);
-                        return;
-                    }
-                    dockerResolve.data($rootScope, $location, $q, Docker, Machine, Account);
-                }]
-            }
         }).when('/docker/container/:hostid/:containerid', {
             title: 'Container Details',
             action: 'docker.details',

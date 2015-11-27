@@ -1,103 +1,128 @@
-<div class="container-fluid container-position" data-ng-controller="Machine.ProvisionController">
-    <div data-ng-include="'machine/static/partials/create-instance-header.html'"></div>
-    <div class="loading-large col-md-12" data-ng-show="loading"></div>
-    <div class="" data-ng-hide="loading">
-        <div class="ci-desc">
-            Get started <span data-ng-hide="features.privateSdc == 'enabled'">with Joyent</span>
-            by selecting an instance below and start computing.
-        </div>
-        <div class="container-min-width">
-            <h4 class="page-title no-breadcrumb-line container-min-width"  data-ng-if="features.recentInstances == 'enabled'" data-translate>Recent Images</h4>
-            <div data-ng-show="recentInstances.length == 0" class="container-min-width">
-                No recent image / package combinations found.  You may need to provision some more instances.
+<div data-ng-hide="loading">
+    <div class="container-min-width wizard-first-step">
+        <div class="choose-image-filter">
+                <span class="select-name">
+                    OS:
+                </span>
+            <div class="btn-group"
+                 data-html="true"
+                 data-original-title="Filter by operating system">
+                <ui-select data-ng-model="data.opsys"
+                           theme="select2"
+                           search-enabled="true"
+                           class="datacenter-select"
+                           on-select="selectDataValue('os', true)">
+                    <ui-select-match>{{$select.selected}}</ui-select-match>
+                    <ui-select-choices repeat="opsys in operating_systems | filter: $select.search">
+                        {{opsys}}
+                    </ui-select-choices>
+                </ui-select>
             </div>
-            <div class="row">
-                <div class="simple-image recent-image small-icon"
-                     data-ng-repeat="instance in recentInstances | limitTo:8"
-                     data-ng-class="instance.datasetName | logo">
-                    <div class="name">
-                        <p data-tooltip-full-text data-original-title="{{instance.datasetName}}">{{instance.datasetName}}</p>
-                    </div>
-                    <div class="description recent-description">
-                        <p data-tooltip-full-text data-original-title="{{instance.description}}">{{instance.description}}</p>
-                    </div>
-                    <div class="info">
-                        <p>MEMORY</p><span><p>{{ instance.memory | sizeFormat }}</p></span>
-                    </div>
-                    <div class="info">
-                        <p>vCPUs</p><span><p>{{ instance.vcpus }}</p></span>
-                    </div>
-                    <div class="info">
-                        <p>Disk</p><span><p>{{ instance.disk | sizeFormat }}</p></span>
-                    </div>
+            <div class="in-line">
+                <input type="search"
+                       class="filter-images filter-field"
+                       placeholder="Search image"
+                       data-ng-model="filterModel.searchText"
+                       data-ng-change="getFilteredSimpleImages()"
+                       data-translate="placeholder" />
+            </div>
+        </div>
+    </div>
+    <div class="ci-desc">
+        Get started <span data-ng-hide="features.privateSdc == 'enabled'">with Joyent</span>
+        by selecting an instance below and start computing.
+    </div>
+    <div class="container-min-width">
+        <h4 class="page-title no-breadcrumb-line container-min-width"  data-ng-if="features.recentInstances == 'enabled'" data-translate>Recent Images</h4>
+        <div data-ng-show="filteredRecentInstances.length == 0" class="container-min-width">
+            No recent image / package combinations found.  You may need to provision some more instances.
+        </div>
+        <div class="row">
+            <div class="simple-image recent-image small-icon"
+                 data-ng-repeat="instance in filteredRecentInstances | limitTo:8"
+                 data-ng-class="instance.datasetName | logo">
+                <div class="name">
+                    <p data-tooltip-full-text data-original-title="{{instance.datasetName}}">{{instance.datasetName}}</p>
+                </div>
+                <div class="description recent-description">
+                    <p data-tooltip-full-text data-original-title="{{instance.description}}">{{instance.description}}</p>
+                </div>
+                <div class="info">
+                    <p>MEMORY</p><span><p>{{ instance.memory | sizeFormat }}</p></span>
+                </div>
+                <div class="info">
+                    <p>vCPUs</p><span><p>{{ instance.vcpus }}</p></span>
+                </div>
+                <div class="info">
+                    <p>Disk</p><span><p>{{ instance.disk | sizeFormat }}</p></span>
+                </div>
 
-                    <div class="btn-block recent-btn">
+                <div class="btn-block recent-btn">
                         <span data-ng-show="features.billing == 'enabled'">
                             <span class="price">${{ instance.price }}</span>
                             <span class="hour">per hour</span>
                         </span>
-                        <button type="button"
-                                data-ng-click="createRecent(instance)"
-                                class="btn select-btn small">
-                            <b>Launch</b>
-                        </button>
-                    </div>
+                    <button type="button"
+                            data-ng-click="createRecent(instance)"
+                            class="btn select-btn small">
+                        <b>Launch</b>
+                    </button>
                 </div>
             </div>
-            <h4 class="page-title no-breadcrumb-line container-min-width" data-translate>Popular Images</h4>
-            <div class="row images-wrapper">
-                <div class="simple-image"
-                     data-ng-repeat="image in simpleImages | filter: filterSimpleImagesByDatacenter | orderBy: 'order'"
-                     data-ng-class="image.className">
-                    <div class="name">
-                        <p data-tooltip-full-text data-original-title="{{image.name}}">{{image.name}}</p>
-                    </div>
-                    <div class="description">
-                        <p data-tooltip-full-text data-original-title="{{image.description.text}}">{{image.description.text}}</p>
-                    </div>
-                    <div class="info">
-                        <p>MEMORY</p><span><p>{{ image.description.memory }} GB</p></span>
-                    </div>
-                    <div class="info">
-                        <p>vCPUs</p><span><p>{{ image.description.cpu }}</p></span>
-                    </div>
-                    <div class="info">
-                        <p>Disk</p><span><p>{{ image.description.disk }} GB</p></span>
-                    </div>
-                    <div data-ng-show="image.imageData.freetier && !image.limit" class="freetier-info">
-                        <span>Free Dev Tier is valid until {{image.imageData.freeTierValidUntil | date:'yyyy-MM-dd'}}</span>
-                    </div>
+        </div>
+        <h4 class="page-title no-breadcrumb-line container-min-width" data-translate>Popular Images</h4>
+        <div class="row images-wrapper">
+            <div class="simple-image"
+                 data-ng-repeat="image in filteredSimpleImages | filter: filterSimpleImagesByDatacenter | orderBy: 'order'"
+                 data-ng-class="image.className">
+                <div class="name">
+                    <p data-tooltip-full-text data-original-title="{{image.name}}">{{image.name}}</p>
+                </div>
+                <div class="description">
+                    <p data-tooltip-full-text data-original-title="{{image.description.text}}">{{image.description.text}}</p>
+                </div>
+                <div class="info">
+                    <p>MEMORY</p><span><p>{{ image.description.memory }} GB</p></span>
+                </div>
+                <div class="info">
+                    <p>vCPUs</p><span><p>{{ image.description.cpu }}</p></span>
+                </div>
+                <div class="info">
+                    <p>Disk</p><span><p>{{ image.description.disk }} GB</p></span>
+                </div>
+                <div data-ng-show="image.imageData.freetier && !image.limit" class="freetier-info">
+                    <span>Free Dev Tier is valid until {{image.imageData.freeTierValidUntil | date:'yyyy-MM-dd'}}</span>
+                </div>
 
-                    <div class="btn-block" data-ng-class="{'freetier-btn-block': image.imageData.freetier || image.limit}">
-                        <div data-ng-hide="image.limit">
+                <div class="btn-block" data-ng-class="{'freetier-btn-block': image.imageData.freetier || image.limit}">
+                    <div data-ng-hide="image.limit">
                             <span data-ng-show="features.billing == 'enabled'">
                                 <span class="price">{{ image.imageData.freetier && 'FREE' || '$' + image.description.price }}</span>
                                 <span class="hour">{{ image.imageData.freetier && 'dev tier' || 'per hour' }}</span>
                             </span>
-                            <button type="button"
-                                    ng-click="image.limit && goTo('/limits') || !image.limit && createSimple(image.imageData)"
-                                    class="btn select-btn small">
-                                <b>Launch</b>
-                            </button>
-                        </div>
-                        <div data-ng-show="image.limit" class="hotlinks limit-links">
-                            <a href="#!/limits" class="">Provisioning limit is reached</a>
-                        </div>
+                        <button type="button"
+                                ng-click="image.limit && goTo('/limits') || !image.limit && createSimple(image.imageData)"
+                                class="btn select-btn small">
+                            <b>Launch</b>
+                        </button>
+                    </div>
+                    <div data-ng-show="image.limit" class="hotlinks limit-links">
+                        <a href="#!/limits" class="">Provisioning limit is reached</a>
                     </div>
                 </div>
+            </div>
 
-                <div data-ng-click="selectInstanceType('native-container')" class="simple-image simple-image-browse joyent-logo">
-                    <div class="browse">
-                        <div class="title">
-                            Browse our<br/>complete image<br/>library
-                        </div>
-                        <div class="description">
-                            Instances suitable for specific<br/>applications, database, traffic<br/>management and more.
-                        </div>
+            <div data-ng-click="selectInstanceType('native-container')" class="simple-image simple-image-browse joyent-logo">
+                <div class="browse">
+                    <div class="title">
+                        Browse our<br/>complete image<br/>library
                     </div>
-                    <div class="btn-block">
-                        <button class="btn orange btn-browse">View More Images</button>
+                    <div class="description">
+                        Instances suitable for specific<br/>applications, database, traffic<br/>management and more.
                     </div>
+                </div>
+                <div class="btn-block">
+                    <button class="btn orange btn-browse">View More Images</button>
                 </div>
             </div>
         </div>

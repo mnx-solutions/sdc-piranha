@@ -33,7 +33,7 @@ window.JP.main.config([
             }
         }).when('/compute/create/simple', {
             title: 'Quick Start: Create Instance',
-            action: 'machine.simple'
+            action: 'machine.provision'
         }).when('/compute/ssh', {
             title: 'SSH keys',
             action: 'machine.ssh'
@@ -42,6 +42,9 @@ window.JP.main.config([
             action: 'machine.provision'
         }).when('/compute/create/virtual-machine', {
             title: 'Create Instance',
+            action: 'machine.provision'
+        }).when('/compute/container/create', {
+            title: 'Create Container',
             action: 'machine.provision'
         }).when('/compute/create/:imageid', {
             title: 'Create Instance from custom image',

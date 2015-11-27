@@ -602,9 +602,6 @@
                     $scope.isSdc = host.isSdc;
                     $scope.host = host;
                     $scope.container.HostConfig.VolumesFrom = [];
-                    $q.when(Docker.hasVmImages(host.datacenter)).then(function (hasVmImages) {
-                        $scope.hasVmImages = hasVmImages;
-                    });
 
                     if ($scope.preSelectedData) {
                         if ($scope.preSelectedData.host !== host.id) {
@@ -643,7 +640,7 @@
                 $scope.portPattern = '(6553[0-5]|655[0-2]\\d|65[0-4]\\d{2}|6[0-4]\\d{3}|[1-5]\\d{4}|[1-9]\\d{0,3})';
                 $scope.exposedPattern = '(((\\d{1,3}\.){3}\\d{1,3}\\:)?' + $scope.portPattern + '?\\:)?' + $scope.portPattern;
 
-                Docker.completedHosts().then(function (hosts) {
+                var hostsPromise = Docker.completedHosts().then(function (hosts) {
                     $scope.hosts = hosts || [];
                     $scope.loading = false;
                     if ($scope.preSelectedData) {
@@ -684,6 +681,10 @@
                     }
                     if ($scope.container.name.length === 1) {
                         return errorCallback('Container name should be more than one character.');
+                    }
+                    if (containerImageName && containerPackage) {
+                        $scope.container.Image = containerImageName;
+                        $scope.package = containerPackage;
                     }
 
                     $scope.container.HostConfig.Links = parseContainerLinks($scope.input.Links);
@@ -732,6 +733,12 @@
                     }
                 };
 
+                $scope.isButtonDisabled = function () {
+                    return $scope.containerCreateForm.$invalid || $scope.creating ||
+                        !$scope.container.Image && $scope.type == 'Containers' ||
+                        !$scope.container.container && $scope.type == 'Images';
+                };
+
                 $scope.create = function () {
                     $scope.container.Cmd = Docker.parseCmd($scope.input.Cmd);
                     $scope.container.Labels = parseItems($scope.input.Labels);
@@ -759,6 +766,27 @@
                         createContainer();
                     }
                 };
+
+                if ($scope.isCurrentLocation('compute/container')) {
+                    var containerImageName;
+                    var containerPackage;
+                    $rootScope.$on('createContainer', function (event, data) {
+                        hostsPromise.then(function () {
+                            var host = $scope.hosts.find(function (host) {
+                                return host.id === data.hostId;
+                            });
+                            if (host) {
+                                $scope.changeHost(host);
+                            }
+                        });
+                        containerImageName = data.image;
+                        containerPackage = data.pkg;
+                    });
+                    $rootScope.$emit('containerLaunchButton', {
+                        isButtonDisabled: $scope.isButtonDisabled,
+                        createContainer: $scope.create
+                    });
+                }
 
                 $scope.cancel = function () {
                     $location.path('/docker/' + ($scope.preSelectedData ? 'audit' : $scope.type.toLowerCase()));
