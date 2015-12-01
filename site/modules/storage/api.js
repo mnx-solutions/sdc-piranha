@@ -14,6 +14,42 @@ if (config.features.manta === 'enabled' && config.manta.privateKey) {
 }
 
 exports.init = function execute(log, config, done) {
+    function safeUnlink(filePath, callback) {
+        var self = this;
+        var retries = 5;
+        var unlink = function unlink() {
+            var needRetry = function (error) {
+                if (error && (error.statusCode !== 410 || error.statusCode !== 404)) {
+                    retries -= 1;
+                    if (retries >= 0) {
+                        setImmediate(function () {
+                            unlink(filePath, callback);
+                        });
+                    } else {
+                        callback(error);
+                    }
+
+                    return true;
+                }
+            };
+
+            self.unlink(filePath, function (error) {
+                if (needRetry(error)) {
+                    return;
+                }
+
+                self.info(filePath, function (error) {
+                    if (needRetry(error)) {
+                        return;
+                    }
+                    callback();
+                });
+            });
+        };
+
+        unlink();
+    }
+
     function safeMkdirp(directory, opts, callback) {
         var self = this;
         var parts = directory.split('/');
@@ -279,6 +315,7 @@ exports.init = function execute(log, config, done) {
         client.putFileContents = putFileContents;
         client.safeMkdirp = safeMkdirp;
         client.safePutFileContents = safePutFileContents;
+        client.safeUnlink = safeUnlink;
         client.setRoleTags = setRoleTags;
         client.getRoleTags = getRoleTags;
         client.listDirectory = listDirectory;

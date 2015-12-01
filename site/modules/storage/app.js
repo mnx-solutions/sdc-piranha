@@ -1,88 +1,81 @@
 "use strict";
 
+var vasync = require('vasync');
 var path = require('path');
 var config = require('easy-config');
 var manta = require('manta');
 var formidable = require('formidable');
 var MemoryStream = require('memorystream');
+var EventEmitter = require('events').EventEmitter;
 
 module.exports = function (app) {
     var UPLOAD_ABORT_ERROR = 'write after end';
     var Manta = require('./').MantaClient;
-    var filesInProgress = {};
-    var waitCallbacks = {};
-    var requestsInProgress = {};
     var uploadProgresses = Manta.uploadProgresses = {};
-    var memoryStreams = {};
+    var uploadFiles = {};
 
-    var clearUpload = function (userId, fullPath, formId, keepProgress) {
-        if (requestsInProgress[formId]) {
-            delete requestsInProgress[formId][fullPath];
+    var abortUploading = function (userId, formId, callback) {
+        var progress = uploadProgresses[userId] && uploadProgresses[userId][formId];
+        if (!progress) {
+            return callback();
         }
-        delete filesInProgress[userId][fullPath];
-        if (!keepProgress) {
-            memoryStreams[formId] && memoryStreams[formId].end();
-            delete uploadProgresses[formId];
-        }
+        progress.on('complete', callback);
+
+        Object.keys(progress.files).forEach(function (filePath) {
+            var fileProgress = progress.files[filePath];
+            var mantaStream = fileProgress && fileProgress.streams && fileProgress.streams.mantaStream;
+            if (mantaStream) {
+                mantaStream.emit('error', new Error('abort'));
+            }
+        });
     };
 
     app.post('/upload', function (req, res, next) {
         var formId;
         var form = new formidable.IncomingForm();
         var client = Manta.createClient({req: req});
-        var filePath = false;
+        var directory = false;
         var userId = req.session.userId;
-        var memStream;
         var metadata;
+        var progresses = uploadProgresses[userId] = uploadProgresses[userId] || {};
+        var progress;
         var done = function done(data) {
             if (!res.headersSent) {
                 res.json(data);
             }
         };
 
-        form.setMaxListeners(0);
-        form.on('error', function (err) {
-            req.log.warn({err: err}, 'Incoming form error');
-            done({success: false, status: 200});
-            clearUpload(userId, form.fullPath, formId, false);
-        }).on('aborted', function (err) {
-            req.log.warn({err: err}, 'Incoming form aborted');
-            done({success: false, status: 200});
-            clearUpload(userId, form.fullPath, formId, false);
-        });
-        form.on('end', function () {
-            done({success: true, status: 200});
-        });
-
-        filesInProgress[userId] = filesInProgress[userId] || {};
-        waitCallbacks[userId] = waitCallbacks[userId] || {};
-
-        function checkFile(client, path, callback) {
-            client.info(path, function (error) {
-                if (error && error.statusCode === 404) {
-                    setTimeout(checkFile.bind(null, client, path, callback), 1000);
-                    return;
+        var checkFile = function (filePath, checker, callback) {
+            client.info(filePath, function (error, info) {
+                if (checker(error, info)) {
+                    callback(error, info);
+                } else {
+                    setTimeout(function () {
+                        checkFile(filePath, checker, callback);
+                    }, 1000);
                 }
-                callback();
             });
-        }
+        };
 
-        function waitFile(client, path, callback) {
-            var existingCallbacks = waitCallbacks[userId][path];
-            if (existingCallbacks && existingCallbacks.length > 0) {
-                existingCallbacks.push(callback);
+        var completeUploading = function (progress, filePath) {
+            delete progress.files[filePath];
+            if (!Object.keys(progress.files).length) {
+                progress.emit('complete');
+            }
+        };
+
+        var uploadFile = function uploadFile(filePath, part, callback) {
+            if (uploadFiles[filePath]) {
+                progress.files[filePath] = uploadFiles[filePath];
+                uploadFiles[filePath].on('complete', callback);
                 return;
             }
-            waitCallbacks[userId][path] = existingCallbacks = [callback];
-            checkFile(client, path, function () {
-                existingCallbacks.forEach(function (cb) {
-                    cb.call(this);
-                });
-                waitCallbacks[userId][path] = [];
-            });
-        }
+            if (progress.files[filePath]) {
+                progress.files[filePath].on('complete', callback);
+                return;
+            }
+            var fileProgress = progress.files[filePath] = new EventEmitter();
 
-        function uploadFile(path, part, callback) {
             var options = {
                 size: metadata.files[part.filename],
                 type: part.mime,
@@ -91,25 +84,49 @@ module.exports = function (app) {
                 },
                 mkdirs: true
             };
+            var complete = function (error) {
+                if (complete.called) {
+                    req.log.trace({stack: complete.called}, 'Callback was called twice.');
+                    return;
+                }
+                complete.called = new Error().stack;
+                if (error) {
+                    return client.safeUnlink(filePath, function () {
+                        fileProgress.emit('complete', error, fileProgress);
+                    });
+                }
+                fileProgress.emit('complete', error, fileProgress);
+            };
 
-            memStream = memoryStreams[formId] = new MemoryStream();
+            uploadFiles[filePath] = fileProgress;
+            fileProgress.once('complete', function () {
+                if (uploadFiles[filePath]) {
+                    delete uploadFiles[filePath];
+                }
+            });
+            fileProgress.on('complete', callback);
+
+            var memStream = new MemoryStream();
             part.pipe(memStream);
-            var outStream = client.createWriteStream('~~/' + path + '/' + part.filename, options);
-            memStream.pipe(outStream);
 
+            var mantaStream = client.createWriteStream(filePath, options);
+            memStream.pipe(mantaStream);
+            fileProgress.streams = {
+                mantaStream: mantaStream,
+                memStream: memStream
+            };
+
+            fileProgress.uploaded = 0;
             memStream.on('data', function (chunk) {
-                uploadProgresses[formId] += chunk.length;
+                fileProgress.uploaded += chunk.length;
             });
-            memStream.on('error', function (error) {
-                callback(error);
-            });
-            memStream.on('end', function () {
-                memStream = null;
-                callback();
-            });
-        }
 
-        function parseMetadata(part, callback) {
+            mantaStream.on('error', complete);
+
+            mantaStream.on('end', complete);
+        };
+
+        var parseMetadata = function parseMetadata(part, callback) {
             var data = '';
             part.on('data', function (chunk) {
                 data += chunk;
@@ -118,26 +135,21 @@ module.exports = function (app) {
                 callback(null, JSON.parse(data));
             });
             part.on('error', callback);
-        }
+        };
 
-        function checkForAllFinished() {
-            if (uploadProgresses[formId] && Object.keys(requestsInProgress[formId] || {}).length === 0) {
-                delete uploadProgresses[formId];
-            } else {
-                setTimeout(checkForAllFinished, 1000);
-            }
-        }
-
-        function handleFinishedDownload(fullPath) {
-            if (!filesInProgress[userId][fullPath]) {
-                return;
-            }
-            // manta storage didn't updated so quickly, not depending on the file size
-            waitFile(client, '~~/' + fullPath, function () {
-                clearUpload(userId, fullPath, formId, true);
-                checkForAllFinished();
+        form.setMaxListeners(0);
+        form.on('error', function (err) {
+            req.log.warn({err: err}, 'Incoming form error');
+            done({success: false, status: 200});
+        }).on('aborted', function (err) {
+            req.log.warn({err: err}, 'Incoming form aborted');
+            abortUploading(userId, formId, function () {
+                done({success: false, status: 200});
             });
-        }
+        });
+        form.on('end', function () {
+            done({success: true, status: 200});
+        });
 
         form.onPart = function (part) {
             if (part.name === 'metadata') {
@@ -146,64 +158,56 @@ module.exports = function (app) {
                         return next(error);
                     }
                     metadata = obj;
-                    filePath = obj.path;
+                    directory = obj.path;
                     formId = obj.formId;
+                    progress = progresses[formId] = progresses[formId] || new EventEmitter();
+                    progress.files = progress.files || {};
+                    progress.on('complete', function () {
+                        delete progresses[formId];
+                    });
                 });
             } else if (!part.filename) {
                 form.handlePart(part);
-            } else if (!filePath) {
+            } else if (!directory) {
                 next(new Error('variable "path" should be placed in a start of multipart data'));
             } else {
-                var fullPath = form.fullPath = filePath + '/' + part.filename;
-                // sometimes onPort calls twice, with same data... mb bug in formidable module
-                if (filesInProgress[userId][fullPath]) {
-                    if (requestsInProgress[formId]) {
-                        delete requestsInProgress[formId][fullPath];
-                    }
-                    return checkForAllFinished();
-                }
-                requestsInProgress[formId] = requestsInProgress[formId] || {};
-                filesInProgress[userId][fullPath] = true;
-                requestsInProgress[formId][fullPath] = true;
-                uploadProgresses[formId] = 1;
-                setTimeout(function () {
-                    delete filesInProgress[userId][fullPath];
-                }, 1000 * 60 * 30);
+                var filePath = client.path('~~/' + directory + '/' + part.filename);
                 uploadFile(filePath, part, function (error) {
                     if (error) {
-                        clearUpload(userId, fullPath, formId, true);
                         // If upload was aborted by user
-                        if (error.message === UPLOAD_ABORT_ERROR) {
-                            return;
-                        }
                         var logLevel = 'error';
                         var suppressError = false;
-                        if (error.name === 'NoMatchingRoleTagError' || (error.name === 'AuthorizationFailedError' ||
-                            error.name === 'ForbiddenError') && error.statusCode === 403 && req.session.subId) {
-                            logLevel = 'info';
-                            suppressError = true;
+                        if (error.message !== UPLOAD_ABORT_ERROR && error.message !== 'abort') {
+                            if (error.name === 'NoMatchingRoleTagError' ||
+                                (error.name === 'AuthorizationFailedError' || error.name === 'ForbiddenError') &&
+                                error.statusCode === 403 && req.session.subId) {
+                                logLevel = 'info';
+                                suppressError = true;
+                            }
+                            req.log[logLevel]({error: error}, 'Error while uploading files');
                         }
-                        req.log[logLevel]({error: error}, 'Error while uploading files');
+
                         if (suppressError) {
                             res.json({status: 'error', message: error.message});
-                            return;
-                        }
-                        if (!res.headersSent) {
+                        } else if (!res.headersSent) {
                             res.status(error.statusCode || 500).send(error.message);
                         }
-                        return;
                     }
-                    handleFinishedDownload(fullPath);
+
+                    completeUploading(progress, filePath);
                 });
             }
         };
+
         form.parse(req);
     });
 
     app.get('/upload/abort', function (req, res) {
         var formId = req.query.formId;
-        memoryStreams[formId] && memoryStreams[formId].end();
-        res.status(200).end();
+        var userId = req.session.userId;
+        abortUploading(userId, formId, function () {
+            res.status(200).end();
+        });
     });
 
     var getFile = function (req, res, action) {

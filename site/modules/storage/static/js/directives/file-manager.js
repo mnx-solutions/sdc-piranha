@@ -586,7 +586,7 @@
                 var createUploadTitle = function (progress) {
                     var currentProgress = scope.uploads[progress.id].progress;
                     var total = util.getReadableFileSizeString(progress.total, 1000);
-                    scope.uploads[progress.id].title = util.getReadableFileSizeString(currentProgress.loaded, 1000) + ' of ' + total +
+                    currentProgress.title = util.getReadableFileSizeString(currentProgress.loaded, 1000) + ' of ' + total +
                         ' -> server </br>' +
                         util.getReadableFileSizeString(currentProgress.serverLoaded, 1000) + ' of ' + total +
                         ' -> Manta';
