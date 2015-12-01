@@ -4,12 +4,13 @@ var fs = require('fs');
 var path = require('path');
 var config = require('easy-config');
 var vasync = require('vasync');
+var zuoraRest = require('zuora-rest');
 var options = config.zuora.rest;
 options.url = options.endpoint;
 options.password = config.zuora.password;
 options.user = config.zuora.user;
 
-var zuora = require('zuora-rest').create(options);
+var zuora = zuoraRest.create(options);
 var zuoraSoap = require('./zuora');
 var moment = require('moment');
 var noCopyFields = ['lastName', 'firstName', 'workPhone', 'promoCode'];
@@ -17,6 +18,11 @@ var noCopyFields = ['lastName', 'firstName', 'workPhone', 'promoCode'];
 var errorsFile = path.join(process.cwd(), '/var/errors.json');
 
 var zuoraErrors = {};
+var countries = zuoraRest.countries.array;
+var indexedCountries = {};
+countries.forEach(function (el) {
+    indexedCountries[el.iso3] = el.name;
+});
 
 function init(zuoraInit, callback) {
     if (typeof zuoraInit === 'function') {
@@ -42,14 +48,10 @@ function init(zuoraInit, callback) {
     });
 }
 
-module.exports.init = init;
-
 function notFound(resp) {
     // Return true if there is only one error and it is in the not found category.
     return (resp && resp.reasons && resp.reasons.length === 1 && resp.reasons[0].split.category.nr === '40');
 }
-
-module.exports.notFound = notFound;
 
 function updateErrorList(log, resp, callback) {
 
@@ -73,8 +75,6 @@ function updateErrorList(log, resp, callback) {
     }
     setImmediate(callback);
 }
-
-module.exports.updateErrorList = updateErrorList;
 
 function composeCreditCardObject(call, cb) {
     //Compose the creditcard object
@@ -116,8 +116,6 @@ function composeCreditCardObject(call, cb) {
     });
 }
 
-module.exports.composeCreditCardObject = composeCreditCardObject;
-
 function composeBillToContact(call, acc, cb) {
     if (!cb && typeof acc === 'function') {
         cb = acc;
@@ -155,16 +153,7 @@ function composeBillToContact(call, acc, cb) {
     });
 }
 
-module.exports.composeBillToContact = composeBillToContact;
-
-var countries = require('zuora-rest').countries.array;
-var indexedCountries = {};
-countries.forEach(function (el) {
-    indexedCountries[el.iso3] = el.name;
-});
-
 function compareBillToContacts(zContact, contact) {
-
     if (!zContact) {
         return false;
     }
@@ -177,8 +166,6 @@ function compareBillToContacts(zContact, contact) {
         return zContact[k] === contact[k];
     });
 }
-
-module.exports.compareBillToContacts = compareBillToContacts;
 
 function composeZuoraAccount(call, cb) {
     composeCreditCardObject(call, function (err, cc) {
@@ -222,9 +209,9 @@ function composeZuoraAccount(call, cb) {
                         || k);
                     obj.creditCard[key] = cc[k];
                 });
-                composeBillToContact(call, accountData, function (err3, billToContact) {
-                    if (err3) {
-                        cb(err3);
+                composeBillToContact(call, accountData, function (composeErr, billToContact) {
+                    if (composeErr) {
+                        cb(composeErr);
                         return;
                     }
                     obj.billToContact = billToContact;
@@ -278,11 +265,11 @@ function composeZuoraAccount(call, cb) {
             vasync.forEachParallel({
                 func: function(sku, callback) {
                     // make zuora query for each sku
-                    zuora.catalog.query({sku: sku}, function (err2, arr) {
-                        if (err2) {
+                    zuora.catalog.query({sku: sku}, function (error, arr) {
+                        if (error) {
                             // this sku resulted in error, not killing the process
                             // we'll get error from findZuoraProductId()
-                            call.log.warn('Sku %s resulted in error', sku, err2);
+                            call.log.warn('Sku %s resulted in error', sku, error);
                             callback(null, []);
                             return;
                         }
@@ -321,8 +308,6 @@ function composeZuoraAccount(call, cb) {
     });
 }
 
-module.exports.composeZuoraAccount = composeZuoraAccount;
-
 function getPaymentMethods(call, cb) {
     zuora.payment.get(call.req.session.userId, function (err, pms) {
         if (err) {
@@ -337,8 +322,6 @@ function getPaymentMethods(call, cb) {
         cb(null, pms);
     });
 }
-
-module.exports.getPaymentMethods = getPaymentMethods;
 
 function getAllButDefaultPaymentMethods(call, cb) {
     getPaymentMethods(call, function (err, pms) {
@@ -356,31 +339,24 @@ function getAllButDefaultPaymentMethods(call, cb) {
     });
 }
 
-module.exports.getAllButDefaultPaymentMethods = getAllButDefaultPaymentMethods;
-
 function deleteAllButDefaultPaymentMethods(call, cb) {
     getAllButDefaultPaymentMethods(call, function (err, notDefault) {
         if (err) { // Ignore errors
             cb(err);
             return;
         }
-        var count = notDefault.length;
-        if (count < 1) {
+
+        vasync.forEachParallel({
+            inputs: notDefault,
+            func: function(el, callback) {
+                zuora.payment.del(el.id, callback);
+            }
+        }, function () {
+            // Ignoring errors here
             cb();
-            return;
-        }
-        notDefault.forEach(function (el) {
-            zuora.payment.del(el.id, function (err2, resp) {
-                // Ignoring errors here
-                if (--count === 0) {
-                    cb();
-                }
-            });
         });
     });
 }
-
-module.exports.deleteAllButDefaultPaymentMethods = deleteAllButDefaultPaymentMethods;
 
 function createZuoraAccount(call, cb) {
     //User not found so create one
@@ -410,8 +386,6 @@ function createZuoraAccount(call, cb) {
         });
     });
 }
-
-module.exports.createZuoraAccount = createZuoraAccount;
 
 var getInvoiceFromCache = function (req, invoiceId, callback) {
     if (config.features.manta === 'enabled') {
@@ -493,5 +467,19 @@ function getInvoicePDF(req, res, next) {
         cacheResult.stream.pipe(res);
     });
 }
-module.exports.zSoap = zuoraSoap;
-module.exports.getInvoicePDF = getInvoicePDF;
+
+module.exports = {
+    zSoap: zuoraSoap,
+    init: init,
+    notFound: notFound,
+    updateErrorList: updateErrorList,
+    createZuoraAccount: createZuoraAccount,
+    composeZuoraAccount: composeZuoraAccount,
+    compareBillToContacts: compareBillToContacts,
+    composeBillToContact: composeBillToContact,
+    composeCreditCardObject: composeCreditCardObject,
+    getPaymentMethods: getPaymentMethods,
+    getAllButDefaultPaymentMethods: getAllButDefaultPaymentMethods,
+    deleteAllButDefaultPaymentMethods: deleteAllButDefaultPaymentMethods,
+    getInvoicePDF: getInvoicePDF
+};

@@ -6,6 +6,7 @@ if (config.features && config.features.billing === 'disabled') {
 }
 var moment = require('moment');
 var zHelpers = require('./lib/zuora-helpers');
+var vasync = require('vasync');
 
 module.exports = function execute(log, config) {
     var options = config.extend(config.zuora.rest, {
@@ -16,11 +17,18 @@ module.exports = function execute(log, config) {
     });
 
     var zuora = require('zuora-rest').create(options);
-
     var server = require('../server').Server;
     var Metadata = require('../account').Metadata;
     var SignupProgress = require('../account').SignupProgress;
     var MaxMind = require('../maxmind').MaxMind;
+
+    var modifyZuoraError = function (error) {
+        // changing zuoras errorCode from 401's to 500
+        if (error.statusCode === 401) {
+            error.statusCode = 500;
+        }
+        return error;
+    };
 
     server.onCall('listPaymentMethods', function (call) {
         zHelpers.getPaymentMethods(call, call.done.bind(call));
@@ -29,13 +37,7 @@ module.exports = function execute(log, config) {
     server.onCall('defaultCreditCard', function (call) {
         zHelpers.getPaymentMethods(call, function (err, pms) {
             if (err) {
-
-                // changing zuoras errorCode from 401's to 500
-                if (err.statusCode === 401) {
-                    err.statusCode = 500;
-                }
-
-                call.done(err);
+                call.done(modifyZuoraError(err));
                 return;
             }
 
@@ -113,11 +115,7 @@ module.exports = function execute(log, config) {
     }
 
     function zuoraError(call, err, resp, msg) {
-        // changing zuoras errorCode from 401's to 500
-        if (err.statusCode === 401) {
-            err.statusCode = 500;
-        }
-
+        err = modifyZuoraError(err);
         var logObj = {
             err: err
         };
@@ -143,79 +141,67 @@ module.exports = function execute(log, config) {
 
     var addOrUpdatePaymentMethod = function (call, acc) {
         var clearPaymentMethods = function (paymentMethodResponse) {
-            var count = 3;
-
             call.session(function (req) {
                 req.session.zuoraServiceAttempt = 0;
                 req.session.save();
             });
-            var isInSignup = call.req.session.signupStep && call.req.session.signupStep !== 'completed';
-            if (isInSignup) {
-                var email = acc.billToContact.workEmail || acc.soldToContact.workEmail;
-                performFraudValidation(call, email, function (err) {
-                    if (err) {
-                        count = -1; // No further call.done calls
-                        call.done(err);
-                        return;
-                    }
-                    if (--count === 0) {
-                        call.done(null, paymentMethodResponse);
-                    }
-                });
-            } else {
-                if (--count === 0) {
-                    call.done(null, paymentMethodResponse);
-                }
-            }
 
-            // Payment method added
-            // Have to remove previous billing methods.
-            zHelpers.deleteAllButDefaultPaymentMethods(call, function () {
-                //Ignoring errors
-                if (--count === 0) {
-                    call.done(null, paymentMethodResponse);
+            var pipeline = [];
+            pipeline.push(function necessaryFraudValidation(collector, callback) {
+                var isInSignup = call.req.session.signupStep && call.req.session.signupStep !== 'completed';
+                if (isInSignup) {
+                    var email = acc.billToContact.workEmail || acc.soldToContact.workEmail;
+                    performFraudValidation(call, email, callback);
+                } else {
+                    callback();
                 }
             });
 
-            // Check if we need to update account info
-            zHelpers.composeBillToContact(call, function (err, billToContact) {
-                if (err) { // Ignore errors here
-                    if (--count === 0) {
-                        call.done(null, paymentMethodResponse);
+            pipeline.push(function deleteAllButDefaultPaymentMethods(collector, callback) {
+                // Payment method added
+                // Have to remove previous billing methods.
+                zHelpers.deleteAllButDefaultPaymentMethods(call, function () {
+                    //Ignoring errors
+                    callback();
+                });
+            });
+
+            pipeline.push(function necessaryUpdateAccount(collector, callback) {
+                // Check if we need to update account info
+                zHelpers.composeBillToContact(call, function (err, billToContact) {
+                    if (err) { // Ignore errors here
+                        callback();
+                        return;
                     }
-                    return;
-                }
 
-                var same = zHelpers.compareBillToContacts(acc.basicInfo.billToContact, billToContact);
-                if (!same) { // Have to update
-                    var obj = {
-                        billToContact: billToContact,
-                        soldToContact: billToContact
-                    };
+                    var same = zHelpers.compareBillToContacts(acc.basicInfo.billToContact, billToContact);
+                    if (!same) { // Have to update
+                        var obj = {
+                            billToContact: billToContact,
+                            soldToContact: billToContact
+                        };
 
-                    zuora.account.update(call.req.session.userId, obj, function () {
-                        // Ignoring errors here
-                        if (--count === 0) {
-                            call.done(null, paymentMethodResponse);
-                        }
-                    });
-                    return;
-                }
+                        zuora.account.update(call.req.session.userId, obj, function () {
+                            callback();
+                        });
+                    } else {
+                        callback();
+                    }
+                });
+            });
 
-                if (--count === 0) {
-                    call.done(null, paymentMethodResponse);
-                }
+            vasync.pipeline({
+                funcs: pipeline,
+                arg: {}
+            }, function (err) {
+                call.done(err, paymentMethodResponse);
             });
         };
 
         //Compose the creditcard object
         zHelpers.composeCreditCardObject(call, function (err, data) {
             if (err) {
-                // changing zuoras errorCode from 401's to 500
-                if (err.statusCode === 401) {
-                    err.statusCode = 500;
-                }
-                zuoraError(call, err, data, 'CC failed local validation');
+                zuoraError(call, modifyZuoraError(err), data, 'CC failed local validation');
                 return;
             }
             if (data.creditCardNumber.indexOf('*') !== -1) {
@@ -253,11 +239,7 @@ module.exports = function execute(log, config) {
             // Create payment
             zuora.payment.create(data, function (createErr, resp) {
                 if (createErr) {
-                    // changing zuoras errorCode from 401's to 500
-                    if (createErr.statusCode === 401) {
-                        createErr.statusCode = 500;
-                    }
-                    zuoraError(call, createErr, resp);
+                    zuoraError(call, modifyZuoraError(createErr), resp);
                     return;
                 }
                 call.log.debug('Zuora payment.create returned with', resp);
@@ -277,10 +259,6 @@ module.exports = function execute(log, config) {
         call.log.debug('Checking if zuora account exists');
         zuora.account.get(call.req.session.userId, function (err, acc) {
             if (err) {
-                // changing zuoras errorCode from 401's to 500
-                if (err.statusCode === 401) {
-                    err.statusCode = 500;
-                }
                 if (!zHelpers.notFound(acc)) {
                     zuoraError(call, err, acc, 'Account check with zuora failed');
                     return;
@@ -290,10 +268,6 @@ module.exports = function execute(log, config) {
 
                 zHelpers.createZuoraAccount(call, function (createErr, data, user) {
                     if (createErr) {
-                        // changing zuoras errorCode from 401's to 500
-                        if (createErr.statusCode === 401) {
-                            createErr.statusCode = 500;
-                        }
                         zuoraError(call, createErr, data, 'Zuora account.create failed');
                         return;
                     }
@@ -316,28 +290,22 @@ module.exports = function execute(log, config) {
                         }
                     });
                 });
-                return;
+            } else {
+                call.log.debug('Attempting to add cc to zuora');
+                addOrUpdatePaymentMethod(call, acc);
             }
-
-            call.log.debug('Attempting to add cc to zuora');
-
-            addOrUpdatePaymentMethod(call, acc);
         });
     });
 
     server.onCall('getAccountPaymentInfo', function (call) {
         zuora.account.get(call.req.session.userId, function (err, acc) {
             if (err) {
-                // changing zuoras errorCode from 401's to 500
-                if (err.statusCode === 401) {
-                    err.statusCode = 500;
-                }
                 if (!zHelpers.notFound(acc)) {
                     call.log.warn('Zuora account not found');
                     call.error('Zuora account not found', true);
                     return;
                 }
-                call.done(err);
+                call.done(modifyZuoraError(err));
                 return;
             }
             call.done(null, acc.billToContact || acc.soldToContact);
@@ -348,10 +316,7 @@ module.exports = function execute(log, config) {
         server.onCall('listInvoices', function (call) {
             zuora.transaction.getInvoices(call.req.session.userId, function (err, resp) {
                 if (err) {
-                    // changing zuoras errorCode from 401's to 500
-                    if (err.statusCode === 401) {
-                        err.statusCode = 500;
-                    }
+                    err = modifyZuoraError(err);
                     if (resp && resp.reasons && !resp.success) {
                         err = resp.reasons[0];
                     }
@@ -366,10 +331,7 @@ module.exports = function execute(log, config) {
         server.onCall('getPayments', function (call) {
             zuora.transaction.getPayments(call.req.session.userId, function (err, resp) {
                 if (err) {
-                    // changing zuoras errorCode from 401's to 500
-                    if (err.statusCode === 401) {
-                        err.statusCode = 500;
-                    }
+                    err = modifyZuoraError(err);
                     if (resp && resp.reasons && !resp.success) {
                         err = resp.reasons[0];
                     }
@@ -384,11 +346,7 @@ module.exports = function execute(log, config) {
         server.onCall('getLastInvoice', function (call) {
             zuora.transaction.getInvoices(call.req.session.userId, function (err, resp) {
                 if (err) {
-                    // changing zuoras errorCode from 401's to 500
-                    if (err.statusCode === 401) {
-                        err.statusCode = 500;
-                    }
-                    call.done(err);
+                    call.done(modifyZuoraError(err));
                     return;
                 }
 
@@ -408,10 +366,7 @@ module.exports = function execute(log, config) {
         server.onCall('getSubscriptions', function (call) {
             zuora.subscription.getByAccount(call.req.session.userId, function (err, resp) {
                 if (err) {
-                    // changing zuoras errorCode from 401's to 500
-                    if (err.statusCode === 401) {
-                        err.statusCode = 500;
-                    }
+                    err = modifyZuoraError(err);
                     if (resp && resp.reasons && !resp.success) {
                         err = resp.reasons[0];
                     }
@@ -427,12 +382,7 @@ module.exports = function execute(log, config) {
         server.onCall('BillingProductRatePlans', function (call) {
             zuora.catalog.query({sku: call.data.sku}, function (err, arr) {
                 if (err) {
-                    // changing zuoras errorCode from 401's to 500
-                    if (err.statusCode === 401) {
-                        err.statusCode = 500;
-                    }
-
-                    call.done(err);
+                    call.done(modifyZuoraError(err));
                     return;
                 }
                 call.done(null, arr);
@@ -457,10 +407,8 @@ module.exports = function execute(log, config) {
                     ]
                 }, function (err, resp) {
                     if (err) {
+                        err = modifyZuoraError(err);
                         call.req.log.warn({err: err, resp: resp}, 'Got zuora error while subscribing to support plan');
-                        if (err.statusCode === 401) {
-                            err.statusCode = 500;
-                        }
                         return call.done(err);
                     }
 
@@ -509,40 +457,38 @@ module.exports = function execute(log, config) {
                 };
                 zuora.subscription.getByAccount(call.req.session.userId, function (subsErr, subsResult) {
                     if (subsErr) {
-                        if (subsErr.statusCode === 401) {
-                            subsErr.statusCode = 500;
+                        call.done(modifyZuoraError(subsErr));
+                        return;
+                    }
+                    var activeSubscriptions = [];
+                    subsResult.subscriptions.forEach(function (subscription) {
+                        if (subscription.status !== 'Cancelled') {
+                            subscription.ratePlans.forEach(function (ratePlan) {
+                                if (call.data.ids.indexOf(ratePlan.productRatePlanId) !== -1) {
+                                    activeSubscriptions.push(subscription.id);
+                                }
+                            });
                         }
-                        call.done(subsErr);
+                    });
+                    activeSubscriptions = activeSubscriptions.filter(function (subscriptionId, index) {
+                        return activeSubscriptions.indexOf(subscriptionId) === index;
+                    });
+                    if (activeSubscriptions.length === 0) {
+                        call.done();
                     } else {
-                        var activeSubscriptions = [];
-                        subsResult.subscriptions.forEach(function (subscription) {
-                            if (subscription.status !== 'Cancelled') {
-                                subscription.ratePlans.forEach(function (ratePlan) {
-                                    if (call.data.ids.indexOf(ratePlan.productRatePlanId) !== -1) {
-                                        activeSubscriptions.push(subscription.id);
-                                    }
-                                });
-                            }
-                        });
-                        activeSubscriptions = activeSubscriptions.filter(function (subscriptionId, index) {
-                            return activeSubscriptions.indexOf(subscriptionId) === index;
-                        });
-                        if (activeSubscriptions.length === 0) {
-                            call.done();
-                        } else {
-                            var activeSubscriptionsCount = activeSubscriptions.length;
-                            activeSubscriptions.forEach(function (currentSubscription) {
+                        vasync.forEachParallel({
+                            inputs: activeSubscriptions,
+                            func: function(currentSubscription, callback) {
                                 unsubscribe(currentSubscription, function (unsubErr, unsubRes) {
                                     if (unsubErr) {
                                         call.req.log.warn({err: unsubErr, resp: unsubRes}, 'Got zuora error while unsubscribing from support plan');
                                     }
-                                    activeSubscriptionsCount -= 1;
-                                    if (activeSubscriptionsCount === 0) {
-                                        call.done();
-                                    }
+                                    callback();
                                 });
-                            });
-                        }
+                            }
+                        }, function () {
+                            call.done();
+                        });
                     }
                 });
             }
