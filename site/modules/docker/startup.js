@@ -1130,7 +1130,8 @@ var Docker = function execute(log, config) {
                 return call.done(error);
             }
             list = list.filter(function (pkg) {
-                return pkg.name.indexOf(sdcDockerConfig.packagePrefix) !== -1;
+                // TODO cleanup when G4 packages will be implemented
+                return pkg.name.indexOf(sdcDockerConfig.packagePrefix) !== -1 || pkg.name.indexOf('g4-') !== -1;
             });
             call.done(null, list);
         });

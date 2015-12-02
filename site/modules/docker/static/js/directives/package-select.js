@@ -28,7 +28,7 @@
                                 list.forEach(function (pkg) {
                                     pkg.group = pkg.group || DEFAULT_PACKAGE_GROUP;
                                     defaultPackage = (!defaultPackage || (pkg.group === DEFAULT_PACKAGE_GROUP && pkg.default)) ? pkg : defaultPackage;
-                                    if (pkg.memory === SDC_DOCKER_DEFAULT_MEMORY_SIZE) {
+                                    if (pkg.memory === SDC_DOCKER_DEFAULT_MEMORY_SIZE && (!selectedPackage || pkg.group === DEFAULT_PACKAGE_GROUP)) {
                                         selectedPackage = pkg;
                                     } else {
                                         if (scope.memory && parseInt(scope.memory, 10) === parseInt(pkg.memory, 10)) {

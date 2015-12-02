@@ -556,9 +556,12 @@
                             selectNetwork(network.id);
                         }
                     });
+                    // TODO cleanup when G4 packages will be implemented
                     $scope.networks = networks.filter(function (net) {
-                        var pkg = $scope.selectedPackageInfo;
-                        return net && (pkg && pkg.name.substr(0, 3) === 't4-' || !net.hasOwnProperty('fabric') ||
+                        var pkgName = $scope.selectedPackageInfo && $scope.selectedPackageInfo.name;
+                        var isTriton = pkgName && (pkgName.substr(0, 3) === 't4-' || pkgName.substr(0, 3) === 'g4-');
+                        var isKvmImage = $scope.selectedDataset && $scope.selectedDataset.type === 'virtualmachine';
+                        return net && (!isKvmImage && isTriton || !net.hasOwnProperty('fabric') ||
                                 net.fabric !== true && net.public !== false);
                     });
                 });

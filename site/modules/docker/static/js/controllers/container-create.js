@@ -547,69 +547,6 @@
                     $scope.input.NetworkMode = $scope.input.NetworkMode === 'container' ? 'bridge' : $scope.input.NetworkMode;
                 }
 
-                function findValueById(values, id) {
-                    var value = values.find(function (val) {
-                        return val.id === id;
-                    });
-                    return value && value.value && value.value.value;
-                }
-
-                var loadMachineAnalytics = function (machine, data, retries) {
-                    if (!retries) {
-                        machine.stats = machine.analyticsUnavailable = true;
-                        return;
-                    }
-
-                    delete machine.stats;
-                    delete machine.analyticsUnavailable;
-
-                    CloudAnalytics.getValues({
-                        zoneId: machine.id,
-                        datacenter: $scope.host.datacenter,
-                        get start() {
-                            return Math.floor(new Date() / 1000) - 30;
-                        }
-                    }, function (err, value) {
-                        function retry () {
-                            setTimeout(function () {
-                                loadMachineAnalytics(machine, data, retries - 1);
-                            }, 1000);
-                        }
-
-                        if (!data['cpu:usage:'] || !data['memory:rss:'] || !data['memory:rss_limit:'] || !value.length) {
-                            return retry();
-                        }
-
-                        var cpuUsage = findValueById(value, data['cpu:usage:'].id) || 0;
-                        var memory_rss = findValueById(value, data['memory:rss:'].id);
-                        var memory_rss_limit = findValueById(value, data['memory:rss_limit:'].id);
-
-                        if (!memory_rss || !memory_rss_limit) {
-                            return retry();
-                        }
-
-                        Package.getPackage($scope.host.datacenter, machine.package).then(function (result) {
-                            if (!result || isNaN(result.vcpus)) {
-                                return loadMachineAnalytics(null, null, 0);
-                            }
-
-                            var currentHostStats = {
-                                cadvisorUnavailable: false,
-                                cpuLoad: cpuUsage / Number(result.vcpus),
-                                memoryLoad: Math.round((memory_rss / memory_rss_limit) * 100) + '%',
-                                stats: true
-                            };
-                            if (currentHostStats.cpuLoad > 100) {
-                                currentHostStats.cpuLoad = 100;
-                            }
-                            
-                            currentHostStats.cpuLoad += '%';
-                            hostsStats[machine.id] = currentHostStats;
-                            machine = ng.extend(machine, hostsStats[machine.id]);
-                        });
-                    });
-                };
-
                 var getHostStats = function (host) {
                     $scope.containers = null;
                     if (containers[host.id]) {
