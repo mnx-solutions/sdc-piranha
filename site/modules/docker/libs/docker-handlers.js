@@ -435,13 +435,9 @@ var pull = function (call) {
         var auth = registryRecord.auth || new Buffer(JSON.stringify({auth: '', email: ''})).toString('base64');
 
         getImageInfo(call, Docker, registryId, {name: call.data.options.fromImage, tag: call.data.options.tag}, function (err, result) {
-            if (err) {
-                if (err.statusCode === 400 && !err.message) {
-                    err.message = MESSAGE_WRONG_IMAGE_NAME;
-                }
-                return putToAudit(call, dockerClient.auditor, entry, options, err, true);
+            if (!err) {
+                call.update(null, {totalSize: result.size});
             }
-            call.update(null, {totalSize: result.size});
             pullImage(call, options, auth);
         });
     });
@@ -755,23 +751,8 @@ var getRegistryImages = function (call) {
                         }
                     };
 
-                    client.getManifest({name: image.name, tag: image.tag}, function (error, manifest) {
-                        if (error || !manifest) {
-                            return vasyncCallback();
-                        }
-                        manifest.history.forEach(function (layer) {
-                            var data = {};
-                            try {
-                                data = JSON.parse(layer.v1Compatibility);
-                            } catch (e) {
-                                return;
-                            }
-
-                            result.info.images.push(data);
-                            result.info.length += 1;
-                            result.info.size += data.Size || 0;
-                        });
-
+                    client.getImageInfo({name: image.name, tag: image.tag}, function (error, info) {
+                        result.info = info;
                         call.update(null, result);
                         vasyncCallback();
                     });

@@ -251,7 +251,7 @@
                                 delete $scope.registry.password;
                                 delete $scope.registry.email;
                             }
-                            $scope.registry.api = $scope.registry.api || response.apiVersion;
+                            $scope.registry.api = response.apiVersion || $scope.registry.api;
                             addRegistry($scope.registry);
                         }
                     }, function (err) {

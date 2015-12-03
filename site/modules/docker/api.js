@@ -393,6 +393,30 @@ exports.init = function execute(log, config, done) {
         });
     };
 
+    RegistryV2.prototype.getImageInfo = function (opts, callback) {
+        this.getManifest(opts, function (error, manifest) {
+            if (error) {
+                return callback(error);
+            }
+            var images = manifest.history.map(function (image) {
+                try {
+                    return JSON.parse(image.v1Compatibility)
+                } catch (ignored) {
+                    return {};
+                }
+            });
+
+            callback(error, {
+                id: images[0].id,
+                images: images,
+                length: images.length,
+                size: images.reduce(function (image, size) {
+                    return size + (image.Size || 0);
+                }, 0)
+            });
+        });
+    };
+
     api.convertToDockerStats = function (data) {
         data = data.stats[0];
         var cpuStats = data.cpu;
@@ -521,6 +545,11 @@ exports.init = function execute(log, config, done) {
     };
 
     api.getImageInfo = function getImageInfo(call, options, callback) {
+        if (options.registry && options.registry.api === 'v2') {
+            var registryClient = api.createRegistryClient(call, options.registry);
+            registryClient.getImageInfo({name: options.name, tag: options.tag}, callback);
+            return;
+        }
         var pipeline = [];
         pipeline.push(function getIndexClient(collector, callback) {
             api.createIndexClient(call, {registry: options.registry, image: options.name}, function (indexErr, clients) {
@@ -530,7 +559,7 @@ exports.init = function execute(log, config, done) {
                 collector.client = clients.registry;
 
                 clients.index.images({name: options.name}, function (imagesError, images) {
-                    if (images && images.length) {
+                    if (Array.isArray(images) && images.length) {
                         collector.ancestry = images.map(function (image) {
                             return image.id;
                         });
@@ -1221,13 +1250,17 @@ exports.init = function execute(log, config, done) {
     };
 
     api.getRegistryVersion = function (call, registry, callback) {
-        var callDone = false;
-        var done = function () {
-            if (callDone) {
+        var done = function (error, version) {
+            if (done.called) {
                 return;
             }
-            callDone = true;
-            return callback.apply(this, arguments);
+            done.called = true;
+
+            if (!version) {
+                error = 'Could not connect to registry.';
+            }
+
+            callback(error, version);
         };
 
         var client = restify.createClient({
@@ -1236,31 +1269,43 @@ exports.init = function execute(log, config, done) {
             connectTimeout: 4000
         });
 
-        client.get('/v1/_ping', function (error, req) {
-            var errorMessage = 'Could not connect to registry.';
-            if (error) {
-                return done(errorMessage);
-            }
+        var getHeaders = function (req, callback) {
             req.on('result', function (error, res) {
-                var apiVersion = 'v1';
-                var apiHeader = res && res.headers['docker-distribution-api-version'] || '';
-                var oldApiHeader = res && res.headers['x-docker-registry-version'] || '';
-                if (error && apiHeader.indexOf('registry/2') > -1) {
-                    apiVersion = 'v2';
-                    error = null;
-                } else if (!error && oldApiHeader) {
-                    error = null;
-                } else {
-                    error = errorMessage;
-                }
+                callback(error, res && res.headers);
+            });
+            req.on('error', callback);
+        };
 
-                client.close();
-                done(error, !error && apiVersion);
+        var getVersion = function getVersion(headers) {
+            headers = headers || {};
+            var version;
+            if (headers['x-docker-registry-version']) {
+                version = 'v1';
+            } else if (headers['docker-distribution-api-version']) {
+                version = 'v2';
+            }
+            return version;
+        };
+
+        var getHeadersVersion = function (url, callback) {
+            client.get(url, function (error, req) {
+                if (error) {
+                    return callback(error);
+                }
+                getHeaders(req, function (error, headers) {
+                    var version = getVersion(headers);
+                    callback(!version && error, version);
+                });
             });
-            req.on('error', function () {
-                done(errorMessage, true);
-            });
-        });
+        };
+
+        getHeadersVersion('/v2/', function (error, version) {
+            if (error || version !== 'v2') {
+                getHeadersVersion('/v1/_ping', done);
+            } else {
+                done(null, version);
+            }
+        })
     };
 
     api.SUBUSER_LOGIN = SUBUSER_LOGIN;

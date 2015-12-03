@@ -587,6 +587,9 @@ function startHttpServer(done) {
 gulp.task('pretty-stream', function () {
     var PrettyStream = require('bunyan-prettystream');
     var prettyStdOut = new PrettyStream();
+    process.stderr._write = function _write(chunk, encoding, callback) {
+        callback();
+    };
     prettyStdOut.pipe(process.stdout);
     loggerConfig.streams = loggerConfig.streams || [];
     loggerConfig.streams.push({
