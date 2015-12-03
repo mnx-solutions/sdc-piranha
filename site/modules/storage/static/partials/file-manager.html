@@ -1,58 +1,58 @@
 <div class="loading-large span12" data-ng-show="loading"></div>
 
-
     <div data-ng-include="'storage/static/partials/ocean.html'" data-ng-show="!provisionEnabled && !loading && !popup"></div>
 
     <div data-ng-show="provisionEnabled && !loading">
         <div class="header-btn-panel" data-ng-hide="loading || !showControls">
-    <div class="upload-btn">
-        <input type="file" id="uploadInput" name="uploadInput" class="hide" multiple
-               data-fileman-upload="uploadPath" data-existing-files="files">
-        <input type="hidden" name="path" value="{{ currentPath }}"/>
-        <label type="button" for="uploadInput" class="btn pull-left"><i class="plus-icon"></i>Add
-            files</label>
+        <div class="upload-btn">
+            <input type="file" id="uploadInput" name="uploadInput" class="hide" multiple
+                   data-fileman-upload="uploadPath" data-existing-files="files">
+            <input type="hidden" name="path" value="{{currentPath}}"/>
+            <label type="button" for="uploadInput" class="btn pull-left"><i class="plus-icon"></i>Add
+                files</label>
+        </div>
+        <button class="btn" data-ng-click="createFolder()"><i class="plus-icon"></i>New Folder</button>
+        <button class="btn" data-ng-click="downloadFile()"><i class="download-icon"></i>Download</button>
+        <button class="btn" data-ng-disabled="infoDialogOpening" data-ng-click="getInfo()"><i class="info-icon"></i>Get Info</button>
+        <button class="btn" data-ng-disabled="loadingFolder" data-ng-show="rbacEnabled" data-ng-click="roleTag()"><i class="tag-icon"></i>Role Tag</button>
+        <button class="btn" data-ng-click="deleteFile()"><i class="delete-icon"></i>Delete</button>
     </div>
-    <button class="btn" data-ng-click="createFolder()"><i class="plus-icon"></i>New Folder</button>
-    <button class="btn" data-ng-click="downloadFile()"><i class="download-icon"></i>Download</button>
-    <button class="btn" data-ng-disabled="infoDialogOpening" data-ng-click="getInfo()"><i class="info-icon"></i>Get Info</button>
-    <button class="btn" data-ng-disabled="loadingFolder" data-ng-show="rbacEnabled" data-ng-click="roleTag()"><i class="tag-icon"></i>Role Tag</button>
-    <button class="btn" data-ng-click="deleteFile()"><i class="delete-icon"></i>Delete</button>
-</div>
 
-<div id="folder" class="folder-container" data-path="{{ currentPath }}" data-ng-hide="loading">
-    <div class="folder-container-sub">
-        <div data-ng-repeat="(key, files) in filesTree" class="{{getColumnClass($index)}}" data-ng-class="{'column-folders': loadingFolder && (splittedCurrentPath.length == 2)}">
-            <div class="files-box" data-ng-class="{'column-files': loadingFolder && (splittedCurrentPath.length == 2)}">
-                <div class="loading-medium-transparent" data-ng-show="!refreshingProgress && refreshingFolder && $last"></div>
-                <div class="files-tree" data-ng-hide="!refreshingProgress && refreshingFolder && $last">
-                    <table class="upload-bar">
-                        <tr data-ng-repeat="(fileId, progress) in uploadProgresses()" data-ng-show="progress.filePath == key">
-                            <td>
-                                <div class="tooltip-hover bar-wrapper" data-toggle="tooltip" data-placement="top" data-html="true" data-original-title="{{progress.name}} <br> {{ progress.title }}">
-                                    <div class="bar" data-ng-class="{'bar-done': progress.clientDone}" data-ng-style="{width: progress.loaded / progress.total * 100 + '%'}"></div>
-                                    <div class="bar bar-server" data-ng-style="{width: progress.serverLoaded / progress.total * 100 + '%'}"></div>
-                                    <div class="path-name over">{{ progress.name }}</div>
-                                </div>
-                            </td>
-                            <td>
-                                <div class="tooltip-hover" data-toggle="tooltip" data-placement="top" data-html="true" data-original-title="Cancel upload">
-                                    <div class="remove-icon" data-ng-click="cancelUpload(fileId, progress)"></div>
-                                </div>
-                            </td>
-                        </tr>
-                    </table>
-                    <div data-ng-repeat="path in files"  class="finder-elements" data-ng-class="{active: path.active, path: currentSelectedObject.parent != path.parent}">
-                        <span data-ng-click="setCurrentPath(path, true)">
-                            <div class="{{path.type}} path-name"></div>
-                            <div data-tooltip-full-text class="path-name" data-type="dotdotdot" data-original-title="{{path.name}}">{{ path.name }}</div>
-                        </span>
+    <div id="folder" class="folder-container" data-path="{{ currentPath }}" data-ng-hide="loading">
+        <div class="folder-container-sub">
+            <div data-ng-repeat="(key, files) in filesTree" class="{{getColumnClass($index)}}" data-ng-class="{'column-folders': loadingFolder && (splittedCurrentPath.length == 2)}">
+                <div class="files-box" data-ng-class="{'column-files': loadingFolder && (splittedCurrentPath.length == 2)}">
+                    <div class="loading-medium-transparent" data-ng-show="!refreshingProgress && refreshingFolder && $last"></div>
+                    <div class="files-tree" data-ng-hide="!refreshingProgress && refreshingFolder && $last">
+                        <table class="upload-bar">
+                            <tr data-ng-repeat="(fileId, progress) in uploadProgresses()" data-ng-show="progress.filePath == key">
+                                <td>
+                                    <div class="tooltip-hover bar-wrapper" data-toggle="tooltip" data-placement="top" data-html="true" data-original-title="{{progress.name}} <br> {{ progress.title }}">
+                                        <div class="bar" data-ng-class="{'bar-done': progress.clientDone}" data-ng-style="{width: progress.loaded / progress.total * 100 + '%'}"></div>
+                                        <div class="bar bar-server" data-ng-style="{width: progress.serverLoaded / progress.total * 100 + '%'}"></div>
+                                        <div class="path-name over">{{ progress.name }}</div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="tooltip-hover" data-toggle="tooltip" data-placement="top" data-html="true" data-original-title="Cancel upload">
+                                        <div class="remove-icon" data-ng-click="cancelUpload(fileId, progress)"></div>
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                        <div data-ng-repeat="path in files"  class="finder-elements" data-ng-class="{active: path.active, path: currentSelectedObject.parent != path.parent}">
+                            <span data-ng-click="setCurrentPath(path, true)">
+                                <div class="{{path.type}} path-name"></div>
+                                <div data-tooltip-full-text class="path-name" data-type="dotdotdot" data-original-title="{{path.name}}">{{ path.name }}</div>
+                            </span>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-        <div class="finder-column" data-ng-class="{'finder-column-loader': switchLoaderPosition}" data-ng-show="loadingFolder">
-            <div class="files-box" data-ng-class="{'column-folders column-files': splittedCurrentPath.length == 2}">
-                <div class="loading-medium-transparent"></div>
+            <div class="finder-column" data-ng-class="{'finder-column-loader': switchLoaderPosition}" data-ng-show="loadingFolder && !refreshingFolder">
+                <div class="files-box" data-ng-class="{'column-folders column-files': splittedCurrentPath.length == 2}">
+                    <div class="loading-medium-transparent"></div>
+                </div>
             </div>
         </div>
     </div>

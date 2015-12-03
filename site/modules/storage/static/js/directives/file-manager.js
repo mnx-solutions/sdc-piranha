@@ -516,6 +516,9 @@
                     }
                     setSplittedCurrentPath();
                     scope.filesTree = getCurrentFilesTree();
+                    if (scope.refreshingFolder && userAction === 'delete') {
+                        scope.loadingFolder = true;
+                    }
                     if (typeof obj === 'string' || obj.type === 'directory') {
                         scope.createFilesTree(userAction, null, callback);
                     } else {
