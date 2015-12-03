@@ -1,0 +1,16 @@
+<div class="modal-dialog">
+    <div class="modal-content">
+        <div tabindex="-1" data-backdrop="static" data-focus-on="button">
+            <div class="modal-header confirm">
+                <h5><i class="glyphicon glyphicon-question-sign"></i><b>&nbsp;Confirm</b></h5>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to delete "{{folderName}}" which is not empty?</p>
+            </div>
+            <div class="modal-footer">
+                <button data-ng-click="close()" data-button-focus="true" data-label="Cancel" class="btn orange">No</button>
+                <button data-ng-click="deleteFolder()" data-button-focus="false"data-label="Cancel" class="btn grey">Yes</button>
+            </div>
+        </div>
+    </div>
+</div>

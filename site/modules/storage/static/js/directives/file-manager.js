@@ -201,6 +201,31 @@
                     });
                 };
 
+                var deleteFolder = function (file, path, method) {
+                    var deleteCallback = function (data) {
+                        if (!data) {
+                            return;
+                        }
+                        deleteFileAction(file, path, method);
+                    };
+                    var deleteFolderModalCtrl = function ($scope, dialog) {
+                        $scope.folderName = file.name;
+                        $scope.close = function (res) {
+                            dialog.close(res);
+                        };
+                        $scope.deleteFolder = function () {
+                            $scope.close(true);
+                        };
+                    };
+
+                    var opts = {
+                        templateUrl: 'storage/static/partials/deleteFolder.html',
+                        openCtrl: deleteFolderModalCtrl
+                    };
+
+                    PopupDialog.custom(opts, deleteCallback);
+                };
+
                 scope.deleteFile = function () {
                     if (!lastSelectedFile) {
                         return false;
@@ -210,11 +235,14 @@
                     var path = PathUtil.getObject(file);
                     var method = file.type === FILE_TYPE ? 'unlink' : 'rmr';
 
-                    if (file.type === 'directory' && file.parent.indexOf('/', 1) === -1) {
-                        var message = 'System folder "' + file.name + '" cannot be deleted.';
-                        return showPopupDialog('error', 'Message', message);
+                    if (file.type === 'directory') {
+                        if (file.parent.indexOf('/', 1) === -1) {
+                            var message = 'System folder "' + file.name + '" cannot be deleted.';
+                            return showPopupDialog('error', 'Message', message);
+                        } else if (scope.filesTree[scope.currentPath].length > 0) {
+                            return deleteFolder(file, path, method);
+                        }
                     }
-
                     return PopupDialog.confirm(null,
                         localization.translate(
                             scope,
