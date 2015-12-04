@@ -2951,8 +2951,9 @@ a.orange-link {
 
     line-height: 20px;
 }
-.accordion-max-width {
-    min-width: 507px;
+.accordion-max-width.detail-mdata {
+    min-width: 550px;
+    max-width: 550px;
 }
 
 .metadata .editable .value-width,
@@ -2988,6 +2989,14 @@ a.orange-link {
 .detail-tags .value-width,
 .detail-mdata .value.value-width {
     vertical-align: middle;
+}
+.detail-mdata .value.value-width,
+.detail-tags .value.value-width {
+    width: 270px;
+}
+.detail-mdata .key.key-width,
+.detail-tags .key-width {
+    width: 165px;
 }
 
 .key,
