@@ -1088,7 +1088,8 @@
                             dropboxID: $rootScope.zenboxParams.dropboxOrderPackageId ||
                                 $rootScope.zenboxParams.dropboxID,
                             'request_subject': 'I want to order ' + el.description + ' compute instance',
-                            'request_description': 'API Name: ' + el.name
+                            'request_description': 'API Name: ' + el.name + ', Datacenter: ' +
+                                $scope.data.datacenter + ', Image: ' + $scope.selectedDataset.name
                         });
                         loggingService.log('info', 'User is ordering instance package from support', el);
                     }, function (isSuccess) {
