@@ -226,6 +226,14 @@
                     PopupDialog.custom(opts, deleteCallback);
                 };
 
+                var hasUploadingFiles = function (folder) {
+                    var uploadingFiles = scope.uploadProgresses();
+                    var filesList = Object.keys(uploadingFiles).filter(function (key) {
+                        return uploadingFiles[key].path === PathUtil.getAbsolute(folder.parent) + '/' + folder.path;
+                    });
+                    return filesList.length > 0;
+                };
+
                 scope.deleteFile = function () {
                     if (!lastSelectedFile) {
                         return false;
@@ -236,8 +244,11 @@
                     var method = file.type === FILE_TYPE ? 'unlink' : 'rmr';
 
                     if (file.type === 'directory') {
+                        var message = 'System folder "' + file.name + '" cannot be deleted.';
                         if (file.parent.indexOf('/', 1) === -1) {
-                            var message = 'System folder "' + file.name + '" cannot be deleted.';
+                            return showPopupDialog('error', 'Message', message);
+                        } else if (hasUploadingFiles(file)) {
+                            message = 'Cannot delete folder "' + file.name + '" while uploading files to it.';
                             return showPopupDialog('error', 'Message', message);
                         } else if (scope.filesTree[scope.currentPath].length > 0) {
                             return deleteFolder(file, path, method);
