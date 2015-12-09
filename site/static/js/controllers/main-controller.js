@@ -72,9 +72,9 @@
 
                     if (window.navigator.onLine && $rootScope.isOnline) {
                         if ($rootScope.isAppDown) {
-                            $http.get('timeout/check?rnd=' + Math.floor(Math.random() * 123456))
-                            .success(function () {
+                            $http.get('timeout/check?rnd=' + Math.floor(Math.random() * 123456)).success(function () {
                                 $rootScope.isAppDown = false;
+                                $rootScope.$emit('notification', {theme: 'success', message: 'Connection to portal service restored.'});
                             });
                         }
                         var currentStep = $('#signupStep').val();
@@ -104,10 +104,8 @@
             $rootScope.$on(
                 'lostConnection',
                 function () {
-                    errorContext.emit(new Error(localization.translate(null,
-                        'main',
-                        'Can\'t connect to portal service. Confirm you are online and not experiencing any connectivity or DNS issues.'
-                    )));
+                    var message = 'Can\'t connect to portal service. Confirm you are online and not experiencing any connectivity or DNS issues.';
+                    $rootScope.$emit('notification', {theme: 'error', message: message});
                 }
             );
 
@@ -146,10 +144,8 @@
                         return;
                     }
                     $rootScope.isAppDown = true;
-                    errorContext.emit(new Error(localization.translate(null,
-                        'main',
-                        message || 'Unable to retrieve data from server.'
-                    )));
+                    message = message || 'Unable to retrieve data from server.';
+                    $rootScope.$emit('notification', {theme: 'error', message: message});
                 }
             );
 

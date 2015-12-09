@@ -8,6 +8,7 @@
                 var options = {
                     life: 10000,
                     sticky: true,
+                    allowDuplicates: false,
                     verticalEdge: 'right',
                     horizontalEdge: 'top'
                 };

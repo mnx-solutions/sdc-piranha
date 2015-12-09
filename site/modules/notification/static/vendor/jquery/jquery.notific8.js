@@ -39,8 +39,19 @@
          * @param object $this
          */
         function buildNotification($this) {
-            var data = $this.data('notific8'),
-                notification = $('<div />'),
+            var data = $this.data('notific8');
+            if (!data.settings.allowDuplicates) {
+                var isDuplicate = $('.jquery-notific8-notification')
+                    .find('.jquery-notific8-message').toArray()
+                    .some(function (el) {
+                        return data.message === $(el).html();
+                    });
+
+                if (isDuplicate) {
+                    return;
+                }
+            }
+            var notification = $('<div />'),
                 num = Number($('body').data('notific8s')),
                 close,
                 animate = 'margin-' + data.settings.verticalEdge,
