@@ -17,15 +17,11 @@ var Docker = function execute(log, config) {
     var DockerHandler = require(__dirname + '/libs/docker-handlers.js');
     var methods = Docker.getMethods();
     var methodsForAllHosts = ['containers', 'getInfo', 'images'];
-    var removedContainersCache = {};
     var DOCKER_LOGS_PATH = Docker.SDC_DOCKER_PATH + '/logs/';
     var DOCKER_REMOVED_LOGS_PATH = Docker.SDC_DOCKER_PATH + '/removed-logs.json';
     var DOCKER_EXEC_PATH = '/main/docker/exec/';
     var methodHandlers = {};
-    var cache = require('lru-cache')({
-        max: 1000,
-        maxAge: 15 * 60 * 1000
-    });
+    var removedContainersCaches = {};
 
     var isPrivateRegistryName = function (container) {
         return container.Names.some(function (name) {
@@ -63,12 +59,13 @@ var Docker = function execute(log, config) {
 
     var saveRemovedContainersList = function (call, data, callback) {
         callback = callback || call.done;
+        var userId = call.req.session.userId;
         var client = MantaClient.createClient(call);
         client.safePutFileContents(DOCKER_REMOVED_LOGS_PATH, JSON.stringify(data), function (error) {
             if (error && error.statusCode !== 404) {
                 return callback(error.message, true);
             }
-            removedContainersCache = {};
+            removedContainersCaches[userId] = {};
             return callback(null);
         });
     };
@@ -129,6 +126,7 @@ var Docker = function execute(log, config) {
 
     function removeContainer(call, client, container, options, callback) {
         var hostId = container.hostId;
+        var userId = call.req.session.userId;
         var logs = '';
         var logPath = path.join(DOCKER_LOGS_PATH, hostId, container.Id, Docker.getTomorrowDate() + '.log');
         if (typeof options === 'function') {
@@ -174,6 +172,7 @@ var Docker = function execute(log, config) {
                             removedContainer.isSdc = true;
                         }
                         removedContainers.push(removedContainer);
+                        var removedContainersCache = removedContainersCaches[userId] = removedContainersCaches[userId] || {};
                         if (Array.isArray(removedContainersCache[hostId])) {
                             removedContainersCache[hostId] = removedContainers.concat(removedContainersCache[hostId]);
                         } else {
@@ -421,16 +420,17 @@ var Docker = function execute(log, config) {
         handler: function (call) {
             var provisioningContainer = call.data.provisioningContainer;
             var containerFakeId = provisioningContainer.Id;
-            cache.set(containerFakeId, provisioningContainer);
+            var cachedContainers = call.req.session.containers = call.req.session.containers || {};
+            cachedContainers[containerFakeId] = provisioningContainer;
             DockerHandler.run(call, function (error, containerId) {
                 if (error) {
-                    var container = cache.get(containerFakeId);
+                    var container = cachedContainers[containerFakeId];
                     container.actionInProgress = false;
                     container.error = error;
-                    cache.set(containerFakeId, container);
+                    cachedContainers[containerFakeId] = container;
                     call.done();
                 } else {
-                    cache.del(containerFakeId);
+                    delete cachedContainers[containerFakeId];
                     call.done(null, containerId);
                 }
             });
@@ -442,14 +442,17 @@ var Docker = function execute(log, config) {
             return data && data.containerId;
         },
         handler: function (call) {
-            cache.del(call.data.containerId);
+            var cachedContainers = call.req.session.containers = call.req.session.containers || {};
+            delete cachedContainers[call.data.containerId];
             call.done();
         }
     });
 
     server.onCall('GetDockerContainersProvisioning', function (call) {
         var provisioningContainers = {};
-        cache.forEach(function (value, key) {
+        var cachedContainers = call.req.session.containers = call.req.session.containers || {};
+        Object.keys(cachedContainers).forEach(function (key) {
+            var value = cachedContainers[key];
             if (!call.data.host || call.data.host === value.host) {
                 provisioningContainers[key] = value;
             }
@@ -573,6 +576,7 @@ var Docker = function execute(log, config) {
                 datacenter: call.data.datacenter
             };
             var hostId = call.data.uuid;
+            var userId = call.req.session.userId;
             var removedContainerList = [];
             var getHostContainers = function (call, callback) {
                 var client = Docker.createClient(call, call.data.host, true);
@@ -655,6 +659,7 @@ var Docker = function execute(log, config) {
                                             }
                                         }
                                         removedContainerList = removedContainerList.concat(removedContainers);
+                                        var removedContainersCache = removedContainersCaches[userId] = removedContainersCaches[userId] || {};
                                         if (Array.isArray(removedContainersCache[hostId])) {
                                             removedContainersCache[hostId] = removedContainerList.concat(removedContainersCache[hostId]);
                                         } else {
