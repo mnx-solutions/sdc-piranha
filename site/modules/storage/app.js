@@ -58,6 +58,7 @@ module.exports = function (app) {
         };
 
         var completeUploading = function (progress, filePath) {
+            progress.uploaded += progress.files[filePath].uploaded;
             delete progress.files[filePath];
             if (!Object.keys(progress.files).length) {
                 progress.emit('complete');
@@ -162,6 +163,7 @@ module.exports = function (app) {
                     formId = obj.formId;
                     progress = progresses[formId] = progresses[formId] || new EventEmitter();
                     progress.files = progress.files || {};
+                    progress.uploaded = 0;
                     progress.on('complete', function () {
                         delete progresses[formId];
                     });

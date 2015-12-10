@@ -621,10 +621,10 @@
 
                         loadedProgress = loadedProgress.__read();
 
-                        if (Array.isArray(loadedProgress) || !scope.uploads[progress.id]) {
+                        if (Array.isArray(loadedProgress) || !scope.uploads[progress.id] || !loadedProgress) {
                             stopPolling();
                         } else {
-                            scope.uploads[progress.id].progress.serverLoaded = loadedProgress;
+                            scope.uploads[progress.id].progress.serverLoaded = loadedProgress.uploaded;
                             createUploadTitle(progress);
                         }
                     });

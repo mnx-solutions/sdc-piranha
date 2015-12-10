@@ -491,13 +491,13 @@ module.exports = function execute(log, config) {
         var userId = call.req.session.userId;
         var formId = call.data.formId;
         var progress = Manta.uploadProgresses[userId] && Manta.uploadProgresses[userId][formId];
-        var result = [];
+        var uploaded;
         if (progress) {
-            result = Object.keys(progress.files).reduce(function (sum, fileName) {
+            uploaded = Object.keys(progress.files).reduce(function (sum, fileName) {
                 return sum + (progress.files[fileName].uploaded || 0);
-            }, 0);
+            }, progress.uploaded);
         }
-        call.done(null, result);
+        call.done(null, uploaded && {uploaded: uploaded});
     });
 
     server.onCall('FileManMfind', {
