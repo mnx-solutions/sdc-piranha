@@ -11,31 +11,18 @@ window.JP.main.config(['routeProvider', function (routeProvider) {
             function changePath() {
                 if (!$rootScope.dockerHostsAvailable && features.sdcDocker === 'disabled') {
                     $location.path('/dashboard');
-                } else if ($location.path().indexOf('/docker') === 0 && $location.path() !== '/docker/welcome' &&
-                    !$rootScope.provisionEnabled) {
-                    $location.path('/docker/welcome');
-                } else if ($rootScope.provisionEnabled && ($location.path() === '/docker/welcome' ||
-                    $location.path() === '/docker' && !$rootScope.dockerHostsAvailable) &&
+                } else if ($rootScope.provisionEnabled && $location.path() === '/docker' &&
                     features.sdcDocker === 'enabled') {
                     $location.path('/docker/containers');
                 }
             }
 
-            if ($rootScope.dockerHostsAvailable) {
+            if ($rootScope.dockerHostsAvailable && $rootScope.provisionEnabled) {
                 changePath();
             } else {
-                $q.all([
-                    $q.when(Docker.completedHosts()),
-                    $q.when(Machine.machine()),
-                    $q.when(Account.getAccount())
-                ]).then(function (result) {
-                    var hosts = result[0] || [];
-                    var machines = result[1] || [];
-                    var account = result[2] || {};
+                Account.getAccount().then(function (account) {
+                    account = account || {};
                     $rootScope.provisionEnabled = account.provisionEnabled || false;
-                    hosts = hosts.filter(function (host) {
-                        return !host.isSdc;
-                    });
                     changePath();
                 }, changePath);
             }
@@ -48,7 +35,7 @@ window.JP.main.config(['routeProvider', function (routeProvider) {
             if (account.provisionEnabled) {
                 $location.path('/compute/container/create');
             } else {
-                $location.path('/compute/docker/welcome');
+                $location.path('/dashboard');
             }
         }, function () {
             dockerResolve.data($rootScope, $location, $q, Docker, Machine, Account);
@@ -58,11 +45,7 @@ window.JP.main.config(['routeProvider', function (routeProvider) {
     routeProvider
         .when('/docker', {
             title: 'Docker',
-            action: 'docker.index',
-            resolve: dockerResolve
-        }).when('/docker/welcome', {
-            title: 'Docker',
-            action: 'docker.welcome',
+            action: 'docker.containers',
             resolve: dockerResolve
         }).when('/docker/intro', {
             title: 'Docker',
@@ -87,18 +70,6 @@ window.JP.main.config(['routeProvider', function (routeProvider) {
             title: 'Create Container',
             action: 'docker.create',
             resolve: dockerResolve
-        }).when('/compute/docker/welcome', {
-            title: 'Docker',
-            action: 'docker.welcome',
-            resolve: {
-                data: ['$route', '$rootScope', '$location', '$q', 'Docker', 'Machine', 'Account', function ($route, $rootScope, $location, $q, Docker, Machine, Account) {
-                    if ($rootScope.dockerHostsAvailable) {
-                        checkProvisionEnabled($rootScope, $location, $q, Docker, Machine, Account);
-                    } else {
-                        $location.path('/dashboard');
-                    }
-                }]
-            }
         }).when('/compute/container/create', {
             title: 'Create Container',
             action: 'docker.create',
