@@ -245,12 +245,13 @@
 
                     if (file.type === 'directory') {
                         var message = 'System folder "' + file.name + '" cannot be deleted.';
+                        var filesTree = scope.filesTree[scope.currentPath] || [];
                         if (file.parent.indexOf('/', 1) === -1) {
                             return showPopupDialog('error', 'Message', message);
                         } else if (hasUploadingFiles(file)) {
                             message = 'Cannot delete folder "' + file.name + '" while uploading files to it.';
                             return showPopupDialog('error', 'Message', message);
-                        } else if (scope.filesTree[scope.currentPath].length > 0) {
+                        } else if (filesTree.length > 0) {
                             return deleteFolder(file, path, method);
                         }
                     }
