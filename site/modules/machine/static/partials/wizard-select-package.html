@@ -5,7 +5,8 @@
                 <p>IMAGE:</p>
                 <button class="btn small" data-ng-hide="isChangeImageDenied()" data-ng-click="reconfigure(STEP_INDEX.image)" id="prev" data-slide="prev">Change</button>
                 <div class="section-title">{{selectedImage.name}}</div>
-                <div class="dataset-desc crop text-wrap">{{selectedImage.description}}</div>
+                <div class="dataset-desc crop text-wrap" data-ng-hide="selectedImage.repoTags">{{selectedImage.description}}</div>
+                <div class="dataset-desc crop text-wrap" data-ng-show="selectedImage.repoTags">Tag: {{selectedImage.repoTags}}</div>
 
                 <p data-ng-show="manyVersions[selectedImage.visibility][selectedImage.name]">IMAGE VERSION:</p>
                 <div class="image-container" data-ng-if="manyVersions[selectedImage.visibility][selectedImage.name]">

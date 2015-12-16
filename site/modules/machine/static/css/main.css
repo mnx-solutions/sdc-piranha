@@ -161,6 +161,7 @@
     display: inline-block;
 }
 
+.docker-image-info .image-tag .label,
 .advanced-instance-description .label,
 .advanced-instance-title .label,
 .simple-image .label,
@@ -501,6 +502,7 @@
     padding: 10px 10px 0 11px;
 }
 
+.docker-image-info .image-tag,
 .advanced-instance-title p,
 .simple-image .name p {
     overflow: hidden;
@@ -514,6 +516,7 @@
     font-weight: bold;
 }
 
+.docker-image-info .image-tag,
 .advanced-instance-title p {
     white-space: nowrap;
 
@@ -521,6 +524,11 @@
 
     font-size: 18px;
     line-height: 20px;
+}
+
+.docker-image-info .image-tag {
+    font-size: 14px;
+    font-weight: normal;
 }
 
 .instance-type-title p {
@@ -1548,6 +1556,7 @@
     margin-top: 20px;
 }
 
+.container-image,
 .checkbox {
     margin-top: 0;
 }

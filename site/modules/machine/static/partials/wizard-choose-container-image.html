@@ -81,6 +81,9 @@
                         <p data-tooltip-full-text data-original-title="{{image.name}}" data-ng-class="image.name">{{image.name}}</p>
                     </div>
                     <div class="docker-image-info">
+                        <p data-tooltip-full-text class="image-tag" data-original-title="Tag: {{image.repoTags}}">Tag: {{image.repoTags}}</p>
+                    </div>
+                    <div class="docker-image-info">
                         <p data-tooltip-full-text data-original-title="{{image.virtualSize}}">{{image.virtualSize}}</p>
                     </div>
                     <div class="docker-image-info">
@@ -88,7 +91,7 @@
                     </div>
                     <div class="advanced-instance-btn-block">
                         <button type="button"
-                                class="btn advaced-instance-btn pull-right"><b>Select</b>
+                                class="btn advaced-instance-btn container-image pull-right"><b>Select</b>
                         </button>
                     </div>
                 </div>

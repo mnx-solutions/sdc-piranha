@@ -624,11 +624,12 @@
                 });
                 dockerImages.forEach(function (dockerImage) {
                     dockerImage.name = dockerImage.Id.slice(0, 12);
-                    dockerImage.repository = '';
+                    dockerImage.repository = dockerImage.repoTags = '';
                     var firstRepoTag = dockerImage.RepoTags && dockerImage.RepoTags[0];
                     if (firstRepoTag && firstRepoTag !== '<none>:<none>') {
                         dockerImage.name = firstRepoTag.split(':')[0];
                         dockerImage.repository = firstRepoTag;
+                        dockerImage.repoTags = Docker.getImageTagsList(dockerImage.RepoTags);
                     }
                     dockerImage.created = $filter('humanDate')(dockerImage.Created);
                     dockerImage.virtualSize = util.getReadableFileSizeString(dockerImage.VirtualSize);
