@@ -241,7 +241,7 @@
                                 <span data-ng-show="$select.selected.vcpus">VCPU: {{$select.selected.vcpus}}</span>
                                 <span data-ng-show="datasetType == 'smartos'"> and bursting</span>
                             </ui-select-match>
-                            <ui-select-choices repeat="package in packages | filter: $select.search">
+                            <ui-select-choices prevent-body-scroll repeat="package in packages | filter: $select.search">
                                 Mem: {{package.memory | sizeFormat}}
                                 Disk: {{package.disk | sizeFormat}}
                                 <span data-ng-show="package.vcpus">VCPU: {{package.vcpus}}</span>

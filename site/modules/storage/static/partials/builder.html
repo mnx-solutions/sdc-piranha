@@ -79,7 +79,7 @@
                                                        class="full-width"
                                                        on-select="setValue('amountOfDram', $select.selected)">
                                                 <ui-select-match>{{$select.selected}}</ui-select-match>
-                                                <ui-select-choices repeat="amountOfDram in amountOfDramOptions | filter: $select.search">
+                                                <ui-select-choices prevent-body-scroll repeat="amountOfDram in amountOfDramOptions | filter: $select.search">
                                                     {{amountOfDram}}
                                                 </ui-select-choices>
                                             </ui-select>
@@ -95,7 +95,7 @@
                                                        class="full-width"
                                                        on-select="setValue('amountOfDiskSpace', $select.selected)">
                                                 <ui-select-match>{{$select.selected}}</ui-select-match>
-                                                <ui-select-choices repeat="amountOfDiskSpace in amountOfDiskSpaceOptions | filter: $select.search">
+                                                <ui-select-choices prevent-body-scroll repeat="amountOfDiskSpace in amountOfDiskSpaceOptions | filter: $select.search">
                                                     {{amountOfDiskSpace}}
                                                 </ui-select-choices>
                                             </ui-select>

@@ -18,7 +18,7 @@
                                        ng-click="setNotation('NETWORK')"
                                        ng-disabled="image.progress">
                                 <ui-select-match>{{$select.selected.userHost}}</ui-select-match>
-                                <ui-select-choices repeat="registry.id as registry in registries | filter: $select.search">
+                                <ui-select-choices prevent-body-scroll repeat="registry.id as registry in registries | filter: $select.search">
                                     {{registry.userHost}}
                                 </ui-select-choices>
                             </ui-select>

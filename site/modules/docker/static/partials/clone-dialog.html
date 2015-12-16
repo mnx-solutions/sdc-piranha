@@ -16,7 +16,7 @@
                                        on-select="changeHost($select.selected)"
                                        class="host-select">
                                 <ui-select-match>{{$select.selected.name}}</ui-select-match>
-                                <ui-select-choices repeat="host.primaryIp as host in hosts">
+                                <ui-select-choices prevent-body-scroll repeat="host.primaryIp as host in hosts">
                                     {{host.name}}
                                 </ui-select-choices>
                             </ui-select>

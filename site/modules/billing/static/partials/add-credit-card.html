@@ -320,7 +320,7 @@
                                            class="edit-country"
                                            search-enabled="true">
                                     <ui-select-match>{{$select.selected.value}}</ui-select-match>
-                                    <ui-select-choices repeat="state.key as state in statesList | filter: $select.search">
+                                    <ui-select-choices prevent-body-scroll repeat="state.key as state in statesList | filter: $select.search">
                                         {{state.value}}
                                     </ui-select-choices>
                                 </ui-select>

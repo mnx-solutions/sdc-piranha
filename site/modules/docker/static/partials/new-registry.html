@@ -15,7 +15,7 @@
                                    search-enabled="true"
                                    class="registry-host-select">
                             <ui-select-match>{{$select.selected.name}}</ui-select-match>
-                            <ui-select-choices repeat="host.name as host in hosts | filter: $select.search">
+                            <ui-select-choices prevent-body-scroll repeat="host.name as host in hosts | filter: $select.search">
                                 {{host.name}}
                             </ui-select-choices>
                         </ui-select>

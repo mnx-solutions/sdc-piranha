@@ -18,7 +18,7 @@
                                        ng-click="setNotation('NETWORK')"
                                        on-select="setRegistryId($select.selected.id)">
                                 <ui-select-match>{{$select.selected.userHost}}</ui-select-match>
-                                <ui-select-choices repeat="registry.id as registry in registries">
+                                <ui-select-choices prevent-body-scroll repeat="registry.id as registry in registries">
                                     {{registry.userHost}}
                                 </ui-select-choices>
                             </ui-select>
