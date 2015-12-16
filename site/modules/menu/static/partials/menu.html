@@ -16,15 +16,20 @@
                     <i class="arrow-down"></i>
                 </a>
                 <ul class="dropdown-menu" data-ng-class="{'service-status': systemStatusTopics.length > 0}">
-                    <li data-ng-repeat="topic in systemStatusTopics | limitTo:7">
-                        <a target="_blank" ng-href="https://help.joyent.com/entries/{{topic.id}}">
-                            <span class="service-status-date">{{topic.created_at | date: 'MMMM'/'dd'/'YYYY'}}</span>
-                            <span class="service-status-text">{{topic.title}}</span>
-                            <span class="service-status-icon glyphicon" data-ng-class="{'glyphicon-check': topic.resolved, 'glyphicon-unchecked': !topic.resolved}"></span>
-                        </a>
-                    </li>
-                    <div class="service-status-btn-wrapper pull-right">
-                        <a class="btn" href="https://help.joyent.com/forums/21769270-Incidents-Notifications" target="_blank">View Older System Updates</a>
+                    <div data-ng-show="isZenboxError" class="service-status-btn-wrapper pull-right">
+                        <span class="service-status-error">Unavailable</span>
+                    </div>
+                    <div data-ng-hide="isZenboxError">
+                        <li data-ng-repeat="topic in systemStatusTopics | limitTo:7">
+                            <a target="_blank" ng-href="https://help.joyent.com/entries/{{topic.id}}">
+                                <span class="service-status-date">{{topic.created_at | date: 'MMMM'/'dd'/'YYYY'}}</span>
+                                <span class="service-status-text">{{topic.title}}</span>
+                                <span class="service-status-icon glyphicon" data-ng-class="{'glyphicon-check': topic.resolved, 'glyphicon-unchecked': !topic.resolved}"></span>
+                            </a>
+                        </li>
+                        <div class="service-status-btn-wrapper pull-right">
+                            <a class="btn" href="https://help.joyent.com/forums/21769270-Incidents-Notifications" target="_blank">View Older System Updates</a>
+                        </div>
                     </div>
                 </ul>
             </span>

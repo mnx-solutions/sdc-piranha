@@ -12,6 +12,7 @@
 
                 $scope.subuserAccountName = null;
                 $scope.systemStatusTopics = [];
+                $scope.isZenboxError = false;
 
                 function getSystemStatusTopics () {
                     Zendesk.getSystemStatusTopics().then(function (topics) {
@@ -24,6 +25,9 @@
                                 topic.resolved = true;
                             }
                         });
+                        $scope.isZenboxError = false;
+                    }, function () {
+                        $scope.isZenboxError = true;
                     });
                 }
                 if ($scope.features.zendesk === 'enabled' && $scope.features.systemStatus === 'enabled') {
@@ -50,6 +54,17 @@
                                 PopupDialog.errorObj(error);
                             }
                         });
+                    }
+                    if ($scope.features.zendesk === 'enabled' && $scope.features.systemStatus === 'enabled') {
+                        var zenboxTab = document.getElementById('zenbox_tab');
+                        if (zenboxTab) {
+                            zenboxTab.addEventListener('click', function () {
+                                if ($scope.isZenboxError) {
+                                    window.Zenbox.hide();
+                                    PopupDialog.error(null, 'Unable to submit tickets at this time, please re-try later.');
+                                }
+                            });
+                        }
                     }
                 });
 

@@ -76,8 +76,7 @@
     border: 2px solid #57879e;
     background-color: transparent;
 }
-.dd-account
-{
+.dd-account {
     min-width: 215px;
 }
 .service-status {
@@ -85,11 +84,12 @@
 }
 .service-status-date,
 .service-status-text,
-.service-status-icon  {
+.service-status-icon {
     display: inline-block;
     overflow: hidden;
-    white-space: pre-line;
+
     vertical-align: top;
+    white-space: pre-line;
 }
 .service-status-date {
     width: 83px;
@@ -97,8 +97,21 @@
 .service-status-text {
     width: 200px;
     margin: 0 10px;
+
     word-wrap: break-word;
 }
 .service-status-btn-wrapper {
     margin: 10px;
+}
+.service-status-error {
+    padding: 7px 66px;
+
+    text-align: center;
+    vertical-align: middle;
+
+    color: #f00;
+    background-color: #f3f3f3;
+
+    font-size: 14px;
+    line-height: 30px;
 }

@@ -33,17 +33,10 @@
                 return deferred.promise;
             };
 
-            service.getSystemStatusTopics = function() {
-                var deferred = $q.defer();
-
-                serverTab.call({
-                    name: 'ZendeskSystemStatusTopics',
-                    done: function(err, job) {
-                        deferred.resolve(job.__read());
-                    }
-                });
-
-                return deferred.promise;
+            service.getSystemStatusTopics = function () {
+                return serverTab.call({
+                    name: 'ZendeskSystemStatusTopics'
+                }).promise;
             };
 
             service.getSoftwareUpdateTopics = function() {
