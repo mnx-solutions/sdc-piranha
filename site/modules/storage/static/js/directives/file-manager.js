@@ -5,6 +5,8 @@
             'Storage', '$location', 'rbac.Service', 'notification', '$rootScope', 'http', '$http',
         function (Account, localization, PopupDialog, fileman, $timeout, $qe, util,
                   Storage, $location, RbacService, notification, $rootScope, http, $http) {
+        var uploads = {};
+        var serverUploadPollIntervals = [];
         return {
             restrict: 'EA',
             scope: {
@@ -19,13 +21,12 @@
                 scope.loading = true;
                 scope.infoDialogOpening = false;
                 scope.filesTree = {};
-                scope.uploads = {};
 
                 scope.uploadProgresses = function () {
                     var progresses = {};
 
-                    Object.keys(scope.uploads).forEach(function (id) {
-                        progresses[id] = scope.uploads[id].progress;
+                    Object.keys(uploads).forEach(function (id) {
+                        progresses[id] = uploads[id].progress;
                     });
 
                     return progresses;
@@ -41,7 +42,6 @@
                 var FILE_TYPE = 'object';
                 var lastSelectedFile = null;
                 var lastSelectedActive = false;
-                var serverUploadPollIntervals = [];
 
                 var PathUtil = {
                     getAbsolute: function (path) {
@@ -585,7 +585,7 @@
                 };
 
                 var createUploadTitle = function (progress) {
-                    var currentProgress = scope.uploads[progress.id].progress;
+                    var currentProgress = uploads[progress.id].progress;
                     var total = util.getReadableFileSizeString(progress.total, 1000);
                     currentProgress.title = util.getReadableFileSizeString(currentProgress.loaded, 1000) + ' of ' + total +
                         ' -> server </br>' +
@@ -595,8 +595,8 @@
 
                 var clearProgress = function (progressId, path) {
                     $timeout(function () {
-                        delete scope.uploads[progressId];
-                        if (Object.keys(scope.uploads).length === 0) {
+                        delete uploads[progressId];
+                        if (Object.keys(uploads).length === 0) {
                             scope.refreshingProgress = false;
                             scope.createFilesTree(true, path);
                         }
@@ -608,8 +608,8 @@
                     var stopPolling = function () {
                         clearInterval(serverUploadPollIntervals[progress.id]);
                         clearProgress(progress.id, progress.path);
-                        if (scope.uploads[progress.id]) {
-                            scope.uploads[progress.id].progress.clientDone = true;
+                        if (uploads[progress.id]) {
+                            uploads[progress.id].progress.clientDone = true;
                         }
                         emitter.$emit(fileman.UPLOAD_EVENTS.complete, data);
                     };
@@ -622,10 +622,10 @@
 
                         loadedProgress = loadedProgress.__read();
 
-                        if (Array.isArray(loadedProgress) || !scope.uploads[progress.id] || !loadedProgress) {
+                        if (Array.isArray(loadedProgress) || !uploads[progress.id] || !loadedProgress) {
                             stopPolling();
                         } else {
-                            scope.uploads[progress.id].progress.serverLoaded = loadedProgress.uploaded;
+                            uploads[progress.id].progress.serverLoaded = loadedProgress.uploaded;
                             createUploadTitle(progress);
                         }
                     });
@@ -637,14 +637,14 @@
                     });
 
                     emitter.$on(fileman.UPLOAD_EVENTS.ready, function ($scope, id) {
-                        if (scope.uploads[id]) {
-                            scope.uploads[id].progress.clientDone = true;
+                        if (uploads[id]) {
+                            uploads[id].progress.clientDone = true;
                         }
                     });
                     emitter.$on(fileman.UPLOAD_EVENTS.progress, function (event, data) {
                         var progress = data.progress;
                         data.emitter = emitter;
-                        scope.uploads[progress.id] = data;
+                        uploads[progress.id] = data;
                         progress.filePath = progress.path;
                         createUploadTitle(progress);
                         if (!serverUploadPollIntervals[progress.id]) {
@@ -657,7 +657,7 @@
 
                     emitter.$on(fileman.UPLOAD_EVENTS.waiting, function (event, data) {
                         data.emitter = emitter;
-                        scope.uploads[data.progress.id] = data;
+                        uploads[data.progress.id] = data;
                         data.progress.title = 'Waiting';
                     });
                 }
@@ -669,11 +669,9 @@
                 });
 
                 scope.cancelUpload = function (id, progress) {
-                    var data = scope.uploads[progress.id];
                     http.abortUploadFiles(id, progress);
                     $http.get('storage/upload/abort?formId=' + progress.formId);
                     clearProgress(progress.id, progress.path);
-                    data.emitter.$emit(fileman.UPLOAD_EVENTS.complete, data);
                 };
             }
         };

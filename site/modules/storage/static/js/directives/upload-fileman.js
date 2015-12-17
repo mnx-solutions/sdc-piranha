@@ -22,8 +22,9 @@
                                 errorMessage = message + ' \'~~' + data.path + '\'.';
                             }
                             PopupDialog.error(null, errorMessage);
-                            emitter.$emit(fileman.UPLOAD_EVENTS.error, data.id, data.path);
-                            cache.remove(data.path + '/' + data.name);
+                            data.names.forEach(function (name) {
+                                cache.remove(data.path + '/' + name);
+                            });
                         } else if (data.status === 'uploadWaiting') {
                             emitter.$emit(fileman.UPLOAD_EVENTS.waiting, data);
                         } else if (data.status === 'progress') {
