@@ -763,7 +763,7 @@
                     $scope.networks = networks.filter(function (net) {
                         var pkgName = $scope.selectedPackageInfo && $scope.selectedPackageInfo.name;
                         var isTriton = pkgName && (pkgName.substr(0, 3) === 't4-' || pkgName.substr(0, 3) === 'g4-');
-                        var isKvmImage = $scope.selectedDataset && $scope.selectedDataset.type === 'virtualmachine';
+                        var isKvmImage = $scope.selectedImage && $scope.selectedImage.type === 'virtualmachine';
                         return net && (!isKvmImage && isTriton || !net.hasOwnProperty('fabric') ||
                                 net.fabric !== true && net.public !== false);
                     });
@@ -1289,7 +1289,7 @@
                                 $rootScope.zenboxParams.dropboxID,
                             'request_subject': 'I want to order ' + el.description + ' compute instance',
                             'request_description': 'API Name: ' + el.name + ', Datacenter: ' +
-                                $scope.data.datacenter + ', Image: ' + $scope.selectedDataset.name
+                                $scope.data.datacenter + ', Image: ' + $scope.selectedImage.name
                         });
                         loggingService.log('info', 'User is ordering instance package from support', el);
                     }, function (isSuccess) {
