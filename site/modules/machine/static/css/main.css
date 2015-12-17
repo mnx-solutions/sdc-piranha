@@ -133,6 +133,7 @@
     border: none;
 }
 
+.create-instance-btn-pos .review-btn,
 .grid-view-pagination {
     margin: 0;
 }

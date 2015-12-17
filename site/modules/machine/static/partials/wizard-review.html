@@ -126,11 +126,17 @@
                                  data-review="true">
                             </div>
                         </div>
-                        <button id="button-create" class="btn orange create-instance-btn-pos pull-right"
-                                data-ng-disabled="provisionForm.$invalid || provisioningInProgress"
-                                data-ng-click="clickProvision()"
-                                data-translate>{{getCreateTitle()}}</button>
-                        <div class="loading-medium-transparent create-instance-btn-pos pull-right" data-ng-show="provisioningInProgress"></div>
+                        <div class="create-instance-btn-pos pull-right">
+                            <div class="loading-medium-transparent" data-ng-show="provisioningInProgress"></div>
+                            <button type="button"
+                                    class="btn orange review-btn"
+                                    data-ng-disabled="provisioningInProgress"
+                                    data-ng-click="goToPreviousStep()">Back</button>
+                            <button id="button-create" class="btn orange review-btn"
+                                    data-ng-disabled="provisionForm.$invalid || provisioningInProgress"
+                                    data-ng-click="clickProvision()"
+                                    data-translate>{{getCreateTitle()}}</button>
+                        </div>
                     </div>
                 </form>
             </td>

@@ -423,10 +423,18 @@
                     <hr data-ng-show="!loading" />
                     <div class="row btn-bottom-block" data-ng-show="!loading">
                         <div class="pull-right">
-                            <button class="btn" data-ng-disabled="creating" type="button" data-ng-click="cancel()">Cancel</button>
-                            <button class="btn orange"
+                            <button type="button"
+                                    data-ng-if="isCurrentLocation('compute/container')"
+                                    class="btn orange attributes-btn"
+                                    data-ng-click="goToPreviousStep()">Back</button>
+                            <button class="btn attributes-btn"
+                                    data-ng-hide="isCurrentLocation('compute/container')"
+                                    data-ng-disabled="creating"
+                                    type="button"
+                                    data-ng-click="cancel()">Cancel</button>
+                            <button class="btn orange attributes-btn"
                                     data-ng-disabled="isButtonDisabled()"
-                                    type="submit">Start
+                                    type="submit">Launch
                             </button>
                         </div>
                         <div class="pull-right loading-medium-transparent" data-ng-show="creating"></div>

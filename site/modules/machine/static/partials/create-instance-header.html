@@ -11,6 +11,7 @@
                 <button data-ng-hide="provisionSteps[0].hidden"
                         type="button"
                         class="btn orange review-btn"
+                        data-ng-disabled="provisioningInProgress"
                         data-ng-click="goToPreviousStep()">Back
                 </button>
                 <button data-ng-show="currentStepIndex == STEP_INDEX.image && selectedImage || currentStepIndex == STEP_INDEX.package && !provisionSteps[0].hidden"

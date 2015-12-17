@@ -499,7 +499,7 @@
             };
 
             $scope.getCreateTitle = function () {
-                return $scope.currentStepIndex === $scope.STEP_INDEX.review ? 'Create Instance' : 'Next';
+                return $scope.currentStepIndex === $scope.STEP_INDEX.review ? 'Launch' : 'Next';
             };
 
             $scope.provisioningInProgress = false;

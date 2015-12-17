@@ -1869,7 +1869,7 @@ label.checkbox {
 }
 
 .finder-elements.active.path {
-    background-color: #D1D1D1;
+    background-color: #d1d1d1;
 }
 
 .img-icon {
@@ -3201,6 +3201,9 @@ a.orange-link {
 
     font-size: 14px;
     font-weight: 300;
+}
+.attributes-btn {
+    min-width: 100px;
 }
 .package .value {
     font-size: 14px;
