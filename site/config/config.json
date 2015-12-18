@@ -91,6 +91,7 @@
   },
   "images": {
     "types": {
+      "alpine-3": "20151007",
       "apache": "14.1.0",
       "base": "13.3.0",
       "base-32": "15.1.0",
@@ -100,7 +101,9 @@
       "base64": "13.3.0",
       "cassandra": "14.1.0",
       "centos-6": "2.5.0",
+      "centos-7": "20151105",
       "debian-7": "20140729",
+      "debian-8": "20151109",
       "elasticsearch": "14.1.0",
       "freebsd-10": "20141115",
       "ghost": "13.4.2",
@@ -119,6 +122,7 @@
       "standard64": "14.1.0",
       "ubuntu-12.04": "2.4.2",
       "ubuntu-14.04": "20150819",
+      "ubuntu-15.04": "20151105",
       "ubuntu-certified-12.04": "20140219",
       "ubuntu-certified-13.10": "20140219",
       "ubuntu-certified-14.04": "20140416",
